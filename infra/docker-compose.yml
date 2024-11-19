@@ -1,0 +1,10 @@
+services:
+  wagtail:
+    image: 684212469706.dkr.ecr.us-east-1.amazonaws.com/website-wagtail:latest
+    restart: always
+    pull_policy: always
+    container_name: wagtail
+    ports:
+      - "8000:8000"
+    volumes:
+      - /data/sqlite:/app/data
