@@ -115,7 +115,7 @@ resource "aws_instance" "wagtail_instance" {
   EOF
 
   tags = {
-    Name = "docker-instance"
+    Name = "wagtail-website-instance"
   }
 }
 
@@ -162,6 +162,8 @@ resource "null_resource" "setup_compose" {
     inline = [
       "echo 'waiting for user data done'",
       "while [ ! -f /tmp/user_data_done ]; do sleep 5; done",
+      "echo 'waiting for Docker daemon to be accessible...'",
+      "while [ ! -S /var/run/docker.sock ]; do sleep 5; done",
       "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.us-east-1.amazonaws.com", 
       "docker-compose -f /home/ec2-user/docker-compose.yml up -d"
     ]
