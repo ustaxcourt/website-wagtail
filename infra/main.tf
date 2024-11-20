@@ -1,9 +1,3 @@
-# * Part 1 - Setup.
-locals {
-	container_name = "hello-world-container"
-	container_port = 8000 # ! Must be same port from our Dockerfile that we EXPOSE
-	example = "wagtail-repo"
-}
 
 provider "aws" {
 	region = "us-east-1"
@@ -11,6 +5,13 @@ provider "aws" {
 	default_tags {
 		tags = { example = local.example }
 	}
+}
+
+# * Part 1 - Setup.
+locals {
+	container_name = "hello-world-container"
+	container_port = 8000
+	example = "wagtail-repo"
 }
 
 # * Give Docker permission to pusher Docker Images to AWS.

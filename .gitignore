@@ -172,3 +172,7 @@ key.pem
 
 # sst
 .sst
+
+
+infra/execution-plan
+infra/destructive-plan
