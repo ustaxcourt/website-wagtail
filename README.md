@@ -1,6 +1,20 @@
 
 # The Developer Sandbox AWS Account
 
+
+## Getting AWS Credentials
+
+Mike will reach out to you with a aws console username & password.  Please verify you can login with it, and also reach out to have your default password changed because you can't do it in the console from what we've seen.
+
+Next, you'll want to make sure your application is setup with your sso.  You should be able to run this command and enter your SSO url when prompted.  You'll also be promted with some other stuff you want to fill in.
+
+- `aws sso configure`
+
+If you want to manually refresh your token which should last 8 hours, run this command
+
+- `aws sso login --profile sandbox`
+
+
 ## Deploying to your account
 
 If you want to deploy the application to your sandbox, follow these steps:
