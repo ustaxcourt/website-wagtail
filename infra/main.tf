@@ -137,13 +137,8 @@ module "ecs" {
 	fargate_capacity_providers = {
 		FARGATE = {
 			default_capacity_provider_strategy = {
-				base   = 20
-				weight = 50
-			}
-		}
-		FARGATE_SPOT = {
-			default_capacity_provider_strategy = {
-				weight = 50
+				base   = 0
+				weight = 100
 			}
 		}
 	}
@@ -168,6 +163,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 	policy_arn  = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 	role = resource.aws_iam_role.this.name
 }
+
 resource "aws_ecs_task_definition" "this" {
 	container_definitions = jsonencode([{
 		environment: [
@@ -178,10 +174,10 @@ resource "aws_ecs_task_definition" "this" {
 		name = local.container_name,
 		portMappings = [{ containerPort = local.container_port }],
 	}])
-	cpu = 256
+	cpu = 512 # 1 vCPU
 	execution_role_arn = resource.aws_iam_role.this.arn
 	family = "family-of-${local.example}-tasks"
-	memory = 512
+	memory = 1024 # wagtail recommended minimum
 	network_mode = "awsvpc"
 	requires_compatibilities = ["FARGATE"]
 }
