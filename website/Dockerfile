@@ -9,7 +9,7 @@ EXPOSE 8000
 
 # Set environment variables.
 # 1. Force Python stdout and stderr streams to be unbuffered.
-# 2. Set PORT variable that is used by Gunicorn. This should match "EXPOSE"
+# 2. Set PORT variable that isa used by Gunicorn. This should match "EXPOSE"
 #    command.
 ENV PYTHONUNBUFFERED=1 \
     PORT=8000
@@ -22,6 +22,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \
+    curl \
  && rm -rf /var/lib/apt/lists/*
 
 # Install the application server.
