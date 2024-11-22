@@ -24,15 +24,16 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 - `aws sso login --profile sandbox`
 
-## Deploying to your account
+## Deploying to your AWS Account
 
 If you want to deploy the application to your sandbox, follow these steps:
 
 prereqs: - install terraform (we recommend `brew install tfenv`) - install aws cli
 
-1. `cd infra`
-2. `./setup-tf-buckets.sh` (only run once on a brand new sandbox)
-3. `./deploy.sh` (re-run after any terraform changes to test)
+1. `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
+2. `cd infra`
+3. `./setup-tf-buckets.sh` (only run once on a brand new sandbox)
+4. `./deploy.sh` (re-run after any terraform changes to test)
 
 ## Destroying (assuming you've deployed at least once)
 
@@ -47,6 +48,6 @@ If you run a terraform init with your sandbox account, but then try to run it ag
 
 Because the RDS instance is behind a VPS, that means you will need to setup an SSH tunnel through a bastion host to be able to access it.
 
-`ssh -L 5432:<RDS_HOSTNAME>:5432 -N -i ~/.ssh/id_ed25519 ubuntu@<IP_ADDRESS>`
+`ssh -L 5432:<RDS_HOSTNAME>:5432 -N -i .ssh/id_rsa ubuntu@<IP_ADDRESS>`
 
 after running this in a separate terminal, you should be able to run migrations or connect directly using tableplus.
