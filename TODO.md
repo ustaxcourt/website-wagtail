@@ -1,3 +1,4 @@
+- [ ] think about how we are going to setup the super user account
 - [ ] get the application deployed to dev account via github actions
 - [ ] deploy the smallest RDS instance to support wagtail
     - [ ] database secrets should live in aws secrets manager
