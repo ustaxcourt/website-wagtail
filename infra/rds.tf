@@ -4,9 +4,9 @@ resource "aws_db_instance" "default" {
   engine              = "postgres"
   engine_version      = "16.3"
   instance_class      = "db.t3.micro"
-  username            = "foo"
-  password            = "foobarbaz"
-  skip_final_snapshot = true // required to destroy
+  username            = "admin"
+  password            = var.database_password
+  skip_final_snapshot = true
   #   deletion_protection = true
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]

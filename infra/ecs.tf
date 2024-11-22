@@ -56,13 +56,19 @@ resource "aws_ecs_task_definition" "this" {
 
 resource "aws_ecs_service" "this" {
   cluster         = module.ecs.cluster_id
-  desired_count   = 1
+  desired_count   = 0
   launch_type     = "FARGATE"
   name            = "website-service"
   task_definition = aws_ecs_task_definition.this.arn
 
   lifecycle {
-    ignore_changes = [desired_count]
+    // we ignore both of these because later in the github actions pipeline,
+    // we manually run an ECS update after the migration scripts have run
+    // so that we do not deploy new versions of the app before the migration scripts
+    ignore_changes = [
+      task_definition,
+      desired_count
+    ]
   }
 
   load_balancer {
