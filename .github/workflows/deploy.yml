@@ -26,6 +26,9 @@ jobs:
           pip3 --version
 
       - name: Apply Terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           ./setup-tf-buckets.sh
