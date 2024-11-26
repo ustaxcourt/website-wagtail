@@ -1,0 +1,47 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+	  {
+		"Effect": "Allow",
+		"Action": "s3:CreateBucket",
+		"Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state"
+	  },
+	  {
+		"Effect": "Allow",
+		"Action": "s3:PutBucketVersioning",
+		"Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state"
+	  },
+	  {
+		"Effect": "Allow",
+		"Action": [
+		  "s3:HeadObject",
+		  "s3:GetObject",
+		  "s3:PutObject",
+		  "s3:DeleteObject"
+		],
+		"Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state/*"
+	  },
+	  {
+		"Effect": "Allow",
+		"Action": [
+		  "s3:ListBucket",
+		  "s3:GetBucketLocation"
+		],
+		"Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state"
+	  },
+	  {
+		"Effect": "Allow",
+		"Action": [
+		  "dynamodb:GetItem",
+		  "dynamodb:PutItem",
+		  "dynamodb:DeleteItem",
+		  "dynamodb:UpdateItem",
+		  "dynamodb:DescribeTable",
+		  "dynamodb:CreateTable",
+	      "dynamodb:DeleteTable"
+		],
+		"Resource": "arn:aws:dynamodb:us-east-1:640168411491:table/terraform-locks"
+	  }
+	]
+  }
+  
