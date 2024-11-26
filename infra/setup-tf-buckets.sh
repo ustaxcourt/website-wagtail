@@ -10,7 +10,7 @@ if [ -z "$AWS_ACCOUNT_ID" ]; then
   exit 1
 fi
 
-STATE_BUCKET="${AWS_ACCOUNT_ID}-ustc-taxcourt-terraform-state"
+STATE_BUCKET="${AWS_ACCOUNT_ID}-website-taxcourt-terraform-state"
 
 # create a unique bucket which will store the tf state
 aws s3api create-bucket --bucket $STATE_BUCKET --region us-east-1

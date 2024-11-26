@@ -9,5 +9,5 @@ fi
 
 KEY="terraform.tfstate"
 REGION='us-east-1'
-STATE_BUCKET="${AWS_ACCOUNT_ID}-ustc-taxcourt-terraform-state"
+STATE_BUCKET="${AWS_ACCOUNT_ID}-website-taxcourt-terraform-state"
 LOCK_TABLE="terraform-locks"
