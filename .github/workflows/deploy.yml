@@ -42,7 +42,7 @@ jobs:
       - name: Set up SSH Key
         run: |
           echo "${{ secrets.BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
-          chmod 600 id_rsa
+          chmod 600 .ssh/id_rsa
 
       - name: Run Migrations
         env:
