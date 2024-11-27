@@ -34,8 +34,10 @@ jobs:
           cd infra
           ./setup-tf-buckets.sh
           ./deploy.sh
-          echo "bastion_public_ip=$(terraform output -raw bastion_public_ip)" >> $GITHUB_OUTPUT
-          echo "database_endpoint=$(terraform output -raw database_endpoint)" >> $GITHUB_OUTPUT
+          bastion_ip=$(terraform output -raw bastion_public_ip | tr -d '\n')
+          db_endpoint=$(terraform output -raw database_endpoint | tr -d '\n')
+          echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
+          echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
 
       - name: Run Migrations
         env:
