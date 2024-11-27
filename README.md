@@ -28,7 +28,11 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 If you want to deploy the application to your sandbox, follow these steps:
 
-prereqs: - install terraform (we recommend `brew install tfenv`) - install aws cli
+### Prereqs:
+
+- install terraform (we recommend `brew install tfenv`) - install aws cli
+- create aws secret inside of aws secrets manager called `website_secrets`
+  - it needs a `DATABASE_PASSWORD` set before you can run terraform.
 
 1. `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
 2. `cd infra`
