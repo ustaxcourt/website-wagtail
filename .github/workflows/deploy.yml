@@ -39,6 +39,11 @@ jobs:
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
 
+      - name: Set up SSH Key
+        run: |
+          echo "${{ secrets.BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
+          chmod 600 id_rsa
+
       - name: Run Migrations
         env:
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
