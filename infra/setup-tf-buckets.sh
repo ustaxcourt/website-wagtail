@@ -19,11 +19,15 @@ aws s3api put-bucket-versioning --bucket $STATE_BUCKET --versioning-configuratio
 # create the dynamodb table used for the locking
 LOCK_TABLE="terraform-locks"
 echo "Checking if DynamoDB table $LOCK_TABLE exists..."
-TABLE_EXISTS=$(aws dynamodb describe-table --region us-east-1 --table-name $LOCK_TABLE --query "Table.TableStatus" --output text --no-cli-pager 2>/dev/null)
 
-if [ "$TABLE_EXISTS" == "ACTIVE" ]; then
+set +e
+aws dynamodb describe-table --region us-east-1 --table-name $LOCK_TABLE --query "Table.TableStatus" --output text --no-cli-pager
+code=$?
+set -e
+
+if [ "${code}" == 0 ]; then
   echo "DynamoDB table $LOCK_TABLE already exists. Skipping creation."
-else
+else 
   echo "Creating DynamoDB table: $LOCK_TABLE"
   aws dynamodb create-table \
       --region us-east-1 \
