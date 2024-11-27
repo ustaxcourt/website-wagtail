@@ -46,6 +46,11 @@ jobs:
           echo "${{ secrets.BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
 
+      - name: Debug Terraform Outputs
+        run: |
+          echo "Bastion Public IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}"
+          echo "Database Endpoint: ${{ steps.tf_outputs.outputs.database_endpoint }}"
+
       - name: Run Migrations
         env:
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
