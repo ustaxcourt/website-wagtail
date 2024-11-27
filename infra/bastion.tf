@@ -43,7 +43,7 @@ EOF
 # Generate an SSH key pair
 resource "aws_key_pair" "bastion_key" {
   key_name   = "bastion-key"
-  public_key = file("../.ssh/id_rsa.pub")
+  public_key = base64decode(var.bastion_public_key)
 }
 
 # Security group for the Bastion Host

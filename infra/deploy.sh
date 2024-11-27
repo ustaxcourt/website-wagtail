@@ -16,6 +16,7 @@ required_env_vars=(
 check_env_vars "${required_env_vars[@]}"
 
 export TF_VAR_database_password=$DATABASE_PASSWORD
+export TF_VAR_bastion_public_key=$BASTION_PUBLIC_KEY
 
 terraform init \
     -upgrade \

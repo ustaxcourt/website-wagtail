@@ -33,11 +33,13 @@ If you want to deploy the application to your sandbox, follow these steps:
 - install terraform (we recommend `brew install tfenv`) - install aws cli
 - create aws secret inside of aws secrets manager called `website_secrets`
   - it needs a `DATABASE_PASSWORD` set before you can run terraform.
+  - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
 
 1. `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
-2. `cd infra`
-3. `./setup-tf-buckets.sh` (only run once on a brand new sandbox)
-4. `./deploy.sh` (re-run after any terraform changes to test)
+2. `cat .ssh/id_rsa.pub | base64 > .ssh/id_rsa.pub.base64` (generate a base64 of the public key)
+3. `cd infra`
+4. `./setup-tf-buckets.sh` (only run once on a brand new sandbox)
+5. `./deploy.sh` (re-run after any terraform changes to test)
 
 ## Destroying (assuming you've deployed at least once)
 
