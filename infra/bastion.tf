@@ -68,11 +68,11 @@ resource "aws_security_group" "bastion_sg" {
 }
 
 # Attach the RDS security group to the Bastion Host for access
-resource "aws_security_group_rule" "bastion_to_rds" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.bastion_sg.id
-  security_group_id        = aws_security_group.rds_sg.id
-}
+# resource "aws_security_group_rule" "bastion_to_rds" {
+#   type                     = "ingress"
+#   from_port                = 5432
+#   to_port                  = 5432
+#   protocol                 = "tcp"
+#   source_security_group_id = aws_security_group.bastion_sg.id
+#   security_group_id        = aws_security_group.rds_sg.id
+# }

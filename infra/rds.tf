@@ -4,7 +4,7 @@ resource "aws_db_instance" "default" {
   engine              = "postgres"
   engine_version      = "16.3"
   instance_class      = "db.t3.micro"
-  username            = "admin"
+  username            = "master"
   password            = var.database_password
   skip_final_snapshot = true
   #   deletion_protection = true
@@ -28,14 +28,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_sg.id]
-  }
-
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_sg.id]
+    security_groups = [aws_security_group.ecs_sg.id, aws_security_group.bastion_sg.id]
   }
 
   #   # Allow outbound traffic (e.g., for backups)
