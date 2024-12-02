@@ -43,14 +43,11 @@ jobs:
 
       - name: Set up SSH Key
         run: |
+          ls
+          pwd
           mkdir -p .ssh
           echo "${{ secrets.BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
-
-      - name: Debug Terraform Outputs
-        run: |
-          echo "Bastion Public IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}"
-          echo "Database Endpoint: ${{ steps.tf_outputs.outputs.database_endpoint }}"
 
       - name: Run Migrations
         env:
@@ -62,6 +59,7 @@ jobs:
           echo $DATABASE_HOSTNAME
           echo "setting up tunnel"
           set -e
+          ls ../.ssh
           ssh -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           echo "tunnel setup"
           pip3 install -r requirements.txt
