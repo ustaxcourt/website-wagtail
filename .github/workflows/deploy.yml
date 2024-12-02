@@ -18,6 +18,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.6
+          terraform_wrapper: false
 
       - name: Set up Python
         run: |
@@ -35,8 +36,8 @@ jobs:
           cd infra
           ./setup-tf-buckets.sh
           ./deploy.sh
-          bastion_ip=$(sh -c "terraform output -raw bastion_public_ip" | tr -d '\n')
-          db_endpoint=$(sh -c "terraform output -raw database_endpoint" | tr -d '\n')
+          bastion_ip=$(terraform output -raw bastion_public_ip)
+          db_endpoint=$(terraform output -raw database_endpoint)
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
 
