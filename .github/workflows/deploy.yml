@@ -50,7 +50,6 @@ jobs:
           . ./load-secrets.sh
           cd ..
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
-          echo "${DATABASE_PASSWORD}"
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
@@ -62,14 +61,11 @@ jobs:
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
         run: |
           cd website
-          echo "setting up tunnel"
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
-          echo "tunnel setup"
           pip3 install -r requirements.txt
-          echo "PASSWORD - ${DATABASE_PASSWORD}"
-          export DATABASE_URL="postgresql://admin:${DATABASE_PASSWORD}@localhost:5432/postgres?sslmode=require"
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           python3 manage.py migrate
 
       - name: Manually Deploy ECS Task (Post-Migration)
