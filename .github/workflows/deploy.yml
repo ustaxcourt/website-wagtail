@@ -40,9 +40,7 @@ jobs:
           db_endpoint=$(terraform output -raw database_endpoint)
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
-
-      - name: Set up SSH Key
-        run: |
+          cd ..
           mkdir -p .ssh
           echo "${{ secrets.BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
