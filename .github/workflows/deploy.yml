@@ -44,7 +44,8 @@ jobs:
           pwd
           echo "here"
           mkdir -p .ssh
-          echo "${{ secrets.BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
+          echo "${{ BASTION_PRIVATE_KEY }}"
+          echo "${{ BASTION_PRIVATE_KEY }}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
           echo "there"
           cat .ssh/id_rsa
