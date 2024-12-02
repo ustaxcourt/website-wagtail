@@ -50,6 +50,7 @@ jobs:
           . ./load-secrets.sh
           cd ..
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD" >> $GITHUB_ENV
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
@@ -67,6 +68,7 @@ jobs:
           pip3 install -r requirements.txt
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           python3 manage.py migrate
+          SUPERUSER_PASSWORD="${SUPERUSER_PASSWORD}" python3 manage.py shell < create_superuser.py
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
