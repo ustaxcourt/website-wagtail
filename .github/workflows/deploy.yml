@@ -39,6 +39,7 @@ jobs:
           db_endpoint=$(terraform output -raw database_endpoint | tr -d '\n')
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
+          echo "gg=GG" >> $GITHUB_OUTPUT
 
       - name: Set up SSH Key
         run: |
@@ -50,6 +51,7 @@ jobs:
         run: |
           echo "Bastion Public IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}"
           echo "Database Endpoint: ${{ steps.tf_outputs.outputs.database_endpoint }}"
+          echo "GG: ${{ steps.tf_outputs.outputs.gg }}"
 
       - name: Run Migrations
         env:
@@ -61,8 +63,8 @@ jobs:
           echo $DATABASE_HOSTNAME
           echo "setting up tunnel"
           set -e
-          ssh -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
-          echo "tunel setup"
+          ssh -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP}
+          echo "tunnel setup"
           pip3 install -r requirements.txt
           export DATABASE_URL="postgresql://admin:${DATABASE_PASSWORD}@localhost:5432/postgres"
           python3 manage.py migrate
