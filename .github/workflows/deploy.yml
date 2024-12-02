@@ -41,7 +41,7 @@ jobs:
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
 
-      - name: Set up SSH Key
+      - name: Set up ENV & SSH Key
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -49,6 +49,7 @@ jobs:
           cd infra
           . ./load-secrets.sh
           cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
@@ -56,7 +57,6 @@ jobs:
 
       - name: Run Migrations
         env:
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
         run: |
