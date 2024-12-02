@@ -35,8 +35,8 @@ jobs:
           cd infra
           ./setup-tf-buckets.sh
           ./deploy.sh
-          bastion_ip=$(terraform output -raw bastion_public_ip 2>/dev/null)
-          db_endpoint=$(terraform output -raw database_endpoint 2>/dev/null)
+          bastion_ip=$(sh -c "terraform output -raw bastion_public_ip" | tr -d '\n')
+          db_endpoint=$(sh -c "terraform output -raw database_endpoint" | tr -d '\n')
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
 
