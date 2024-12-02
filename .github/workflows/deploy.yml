@@ -67,7 +67,7 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           echo "tunnel setup"
           pip3 install -r requirements.txt
-          export DATABASE_URL="postgresql://admin:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          export DATABASE_URL="postgresql://admin:${DATABASE_PASSWORD}@localhost:5432/postgres?sslmode=require"
           python3 manage.py migrate
 
       - name: Manually Deploy ECS Task (Post-Migration)
