@@ -37,7 +37,8 @@ resource "aws_secretsmanager_secret_version" "database_url_secret_version" {
 
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
-    environment : [
+    environment: [],
+    secrets: [
       { 
         name = "DATABASE_URL", 
         valueFrom = "${aws_secretsmanager_secret.database_url_secret.arn}:DATABASE_URL"
