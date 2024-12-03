@@ -3,12 +3,9 @@ This is a collection of code styles for Python, Django, Testing and IaC. This is
 
 ## Python
 
-Setting up Django project.
-
-https://github.com/cookiecutter/cookiecutter-django?tab=readme-ov-file
+We use Python version [3.12](https://peps.python.org/pep-0693/).
 
 ### Django
-In Django, business logic should live in:
 
 - Services - functions, that mostly take care of writing things to the database. Services are where business logic lives.
 - Selectors - functions, that mostly take care of fetching things from the database.
@@ -16,6 +13,7 @@ In Django, business logic should live in:
 - Model clean method for additional validations (with some exceptions). If you can do validation using Django's constraints, then you should aim for that.
 
 #### Testing
+
 - Models need to be tested only if there's something additional to them - like validation, properties or methods.
 - Testing should be done using pytest.
 - Test files should be named `test_<module>.py`.
@@ -29,7 +27,13 @@ In Django, business logic should live in:
 - Service we use the naming convention: `<entity>_<action>`, example: `user_create()`.
 - APIs we use the following naming convention: `<Entity><Action>Api`, example: `UserCreateApi`.
 
+## Developer Experience
+
+- Typing: [mypy](https://www.mypy-lang.org/).
+- Linting and Formating: [ruff](https://github.com/astral-sh/ruff), usage: https://github.com/astral-sh/ruff?tab=readme-ov-file#usage.
+- Configure [pre-commit hooks](https://github.com/HackSoftware/Django-Styleguide-Example/blob/master/.pre-commit-config.yaml) to run on every code commit/push.
+
 ## Reference
+
 1. Django specific coding style recommendations from: Hacksoft Django Styleguide: https://github.com/HackSoftware/Django-Styleguide
 2. For Python, Django, Testing and Terraform, recommendations from: Kraken Technologies coding conventions: https://github.com/octoenergy/public-conventions?tab=readme-ov-file
-
