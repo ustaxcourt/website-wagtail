@@ -23,12 +23,25 @@ module "ecs" {
   }
 }
 
+resource "aws_secretsmanager_secret" "database_url_secret" {
+  name        = "database-url-secret"
+  description = "Secret for the PostgreSQL database URL"
+}
 
+resource "aws_secretsmanager_secret_version" "database_url_secret_version" {
+  secret_id = aws_secretsmanager_secret.database_url_secret.id
+  secret_string = jsonencode({
+    DATABASE_URL = "postgresql://${aws_db_instance.default.username}:${aws_db_instance.default.password}@${aws_db_instance.default.endpoint}/postgres"
+  })
+}
 
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
     environment : [
-      { name = "DATABASE_URL", value = "postgresql://${aws_db_instance.default.username}:${aws_db_instance.default.password}@${aws_db_instance.default.endpoint}/postgres" }
+      { 
+        name = "DATABASE_URL", 
+        valueFrom = "${aws_secretsmanager_secret.database_url_secret.arn}:DATABASE_URL"
+      }
     ],
     essential    = true,
     image        = docker_registry_image.this.name,
@@ -149,4 +162,24 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_logs" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+resource "aws_iam_role_policy" "ecs_task_secrets_access" {
+  name   = "ecs_task_secrets_access"
+  role   = aws_iam_role.this.name
+  policy = data.aws_iam_policy_document.ecs_task_secrets_policy.json
+}
+
+data "aws_iam_policy_document" "ecs_task_secrets_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+
+    resources = [
+      aws_secretsmanager_secret.database_url_secret.arn
+    ]
+  }
 }
