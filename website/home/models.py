@@ -19,3 +19,11 @@ class TestPage(Page):
         FieldPanel('other'),
         FieldPanel('body'),
     ]
+
+
+class DemoPage(Page):
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('body'),
+    ]
