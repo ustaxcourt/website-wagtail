@@ -5,6 +5,10 @@ This is a collection of code styles for Python, Django, Testing and IaC. This is
 
 We use Python version [3.12](https://peps.python.org/pep-0693/).
 
+### Requirements
+
+Requirements are installed using `pip`. Local/development requirements go to `local.txt` and production requirements can go to `base.txt`.
+
 ### Django
 
 - Services - functions, that mostly take care of writing things to the database. Services are where business logic lives.
@@ -15,7 +19,8 @@ We use Python version [3.12](https://peps.python.org/pep-0693/).
 #### Testing
 
 - Models need to be tested only if there's something additional to them - like validation, properties or methods.
-- Testing should be done using pytest.
+- General [test naming conventions](https://github.com/HackSoftware/Django-Styleguide?tab=readme-ov-file#testing-2).
+- Testing should be done using pytest, pytest-django.
 - Test files should be named `test_<module>.py`.
 - Test classes should be named `Test<Module>`.
 - Test methods should be named `test_<method>`.
