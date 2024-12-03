@@ -24,7 +24,7 @@ module "ecs" {
 }
 
 resource "aws_secretsmanager_secret" "database_url_secret" {
-  name        = "database-url-secret"
+  name        = "database-url"
   description = "Secret for the PostgreSQL database URL"
 }
 
