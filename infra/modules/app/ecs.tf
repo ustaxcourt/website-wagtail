@@ -74,7 +74,7 @@ resource "aws_ecs_task_definition" "this" {
 
 
 resource "aws_ecs_service" "this" {
-  depends_on = [aws_iam_service_linked_role.ecs]
+  # depends_on = [aws_iam_service_linked_role.ecs]
 
   cluster         = module.ecs.cluster_id
   desired_count   = 0
