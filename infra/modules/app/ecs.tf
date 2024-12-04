@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "this" {
     secrets: [
       { 
         name = "DATABASE_URL", 
-        valueFrom = "${aws_secretsmanager_secret.database_url_secret.arn}:DATABASE_URL"
+        valueFrom = "${aws_secretsmanager_secret.database_url_secret.arn}:DATABASE_URL::"
       }
     ],
     essential    = true,

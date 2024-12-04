@@ -39,9 +39,7 @@ jobs:
           bastion_ip=$(terraform output -raw bastion_public_ip)
           db_endpoint=$(terraform output -raw database_endpoint)
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
-          echo "::add-mask::${bastion_ip}" # prevent sensitive ip from logging out
           echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
-          echo "::add-mask::${db_endpoint}" # prevent endpoint from logging out
 
       - name: Set up SSH Key
         env:
