@@ -8,7 +8,7 @@ module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
   version = "~> 4.1.3"
 
-  cluster_name = "website-cluster"
+  cluster_name = "${var.environment}-website-cluster"
 
   # * Allocate 20% capacity to FARGATE and then split
   # * the remaining 80% capacity 50/50 between FARGATE
@@ -66,7 +66,7 @@ resource "aws_ecs_task_definition" "this" {
   }])
   cpu                      = 512 # 1 vCPU
   execution_role_arn       = aws_iam_role.this.arn
-  family                   = "website-tasks"
+  family                   = "${var.environment}-website-tasks"
   memory                   = 1024 # wagtail recommended minimum
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -79,7 +79,7 @@ resource "aws_ecs_service" "this" {
   cluster         = module.ecs.cluster_id
   desired_count   = 0
   launch_type     = "FARGATE"
-  name            = "website-service"
+  name            = "${var.environment}-website-service"
   task_definition = aws_ecs_task_definition.this.arn
 
   lifecycle {
@@ -108,7 +108,7 @@ resource "aws_ecs_service" "this" {
 
 # Security group for ECS tasks
 resource "aws_security_group" "ecs_sg" {
-  name        = "ecs-sg"
+  name        = "${var.environment}-ecs-sg"
   description = "Security group for ECS tasks"
   vpc_id      = module.vpc.vpc_id
 
@@ -132,7 +132,7 @@ resource "aws_security_group" "ecs_sg" {
 
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name              = "/ecs/website-logs"
+  name              = "/ecs/${var.environment}-website-logs"
   retention_in_days = 7 # You can modify this as needed
 }
 

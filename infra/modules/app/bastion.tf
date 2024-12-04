@@ -10,6 +10,11 @@ locals {
 resource "aws_instance" "bastion" {
   ami           = "ami-0866a3c8686eaeeba" # Ubuntu 24.0
   instance_type = "t2.micro"
+
+  tags = {
+    Name        = "${var.environment}-bastion-host"
+  }
+  
   key_name      = aws_key_pair.bastion_key.key_name
 
   user_data = <<EOF
@@ -34,21 +39,17 @@ EOF
   associate_public_ip_address = true                         # Ensure the instance gets a public IP
 
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-
-  tags = {
-    Name = "Bastion Host"
-  }
 }
 
 # Generate an SSH key pair
 resource "aws_key_pair" "bastion_key" {
-  key_name   = "bastion-key"
+  key_name   = "${var.environment}-bastion-key"
   public_key = base64decode(var.bastion_public_key)
 }
 
 # Security group for the Bastion Host
 resource "aws_security_group" "bastion_sg" {
-  name        = "bastion-sg"
+  name        = "${var.environment}-bastion-sg"
   description = "Allow SSH from my IP and traffic to RDS"
   vpc_id      = module.vpc.vpc_id
 

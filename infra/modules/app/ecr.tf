@@ -5,7 +5,7 @@ module "ecr" {
   version = "~> 1.6.0"
 
   repository_force_delete = true
-  repository_name         = "website-repo"
+  repository_name         = "${var.environment}-website-repo"
   repository_lifecycle_policy = jsonencode({
     rules = [{
       action       = { type = "expire" }

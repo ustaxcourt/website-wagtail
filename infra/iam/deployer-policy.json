@@ -4,12 +4,12 @@
     {
       "Effect": "Allow",
       "Action": "s3:CreateBucket",
-      "Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state"
+      "Resource": "arn:aws:s3:::*-website-taxcourt-terraform-state"
     },
     {
       "Effect": "Allow",
       "Action": "s3:PutBucketVersioning",
-      "Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state"
+      "Resource": "arn:aws:s3:::*-website-taxcourt-terraform-state"
     },
     {
       "Effect": "Allow",
@@ -19,12 +19,12 @@
         "s3:PutObject",
         "s3:DeleteObject"
       ],
-      "Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state/*"
+      "Resource": "arn:aws:s3:::*-website-taxcourt-terraform-state/*"
     },
     {
       "Effect": "Allow",
       "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
-      "Resource": "arn:aws:s3:::640168411491-website-taxcourt-terraform-state"
+      "Resource": "arn:aws:s3:::*-website-taxcourt-terraform-state"
     },
     {
       "Effect": "Allow",
@@ -37,12 +37,12 @@
         "dynamodb:CreateTable",
         "dynamodb:DeleteTable"
       ],
-      "Resource": "arn:aws:dynamodb:us-east-1:640168411491:table/terraform-locks"
+      "Resource": "arn:aws:dynamodb:us-east-1:*:table/terraform-locks"
     },
     {
       "Effect": "Allow",
       "Action": "secretsmanager:GetSecretValue",
-      "Resource": "arn:aws:secretsmanager:us-east-1:640168411491:secret:website_secrets*"
+      "Resource": "arn:aws:secretsmanager:us-east-1:*:secret:website_secrets*"
     },
     {
       "Effect": "Allow",
