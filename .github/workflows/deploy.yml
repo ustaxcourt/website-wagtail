@@ -50,9 +50,9 @@ jobs:
           . ./load-secrets.sh
           cd ..
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
-          echo "::add-mask::DATABASE_PASSWORD" # prevent the password from logging out
+          echo "::add-mask::$DATABASE_PASSWORD" # prevent the password from logging out
           echo "SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD" >> $GITHUB_ENV
-          echo "::add-mask::SUPERUSER_PASSWORD" # prevent the password from logging out
+          echo "::add-mask::$SUPERUSER_PASSWORD" # prevent the password from logging out
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
