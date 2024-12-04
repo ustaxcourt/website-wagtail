@@ -1,6 +1,6 @@
 
 resource "aws_db_instance" "default" {
-  db_name = "${var.environment}-rds-instance"
+  identifier_prefix = "${var.environment}"
   allocated_storage   = 10
   engine              = "postgres"
   engine_version      = "16.3"
