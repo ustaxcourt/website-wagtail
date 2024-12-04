@@ -38,7 +38,12 @@ Requirements are installed using `pip`. Local/development requirements go to `lo
 - Linting and Formating: [ruff](https://github.com/astral-sh/ruff), usage: https://github.com/astral-sh/ruff?tab=readme-ov-file#usage.
 - Configure [pre-commit hooks](https://github.com/HackSoftware/Django-Styleguide-Example/blob/master/.pre-commit-config.yaml) to run on every code commit/push.
 
+## Terraform
+
+See: https://github.com/octoenergy/public-conventions/blob/main/conventions/terraform.md
+
 ## Reference
 
 1. Django specific coding style recommendations from: Hacksoft Django Styleguide: https://github.com/HackSoftware/Django-Styleguide
 2. For Python, Django, Testing and Terraform, recommendations from: Kraken Technologies coding conventions: https://github.com/octoenergy/public-conventions?tab=readme-ov-file
+3. Wagtail getting started, from: https://docs.wagtail.org/en/stable/getting_started/tutorial.html
