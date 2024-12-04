@@ -1,7 +1,6 @@
-resource "aws_iam_service_linked_role" "ecs" {
-  aws_service_name = "ecs.amazonaws.com"
-  custom_suffix    = "${var.environment}-"
-}
+# resource "aws_iam_service_linked_role" "ecs" {
+#   aws_service_name = "ecs.amazonaws.com"
+# }
 
 module "ecs" {
   depends_on = [aws_iam_service_linked_role.ecs]
