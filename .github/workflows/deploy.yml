@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development
+      - cody-sandbox
 
 jobs:
   deploy:
@@ -11,6 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Set Environment
+        run: |
+          if [[ "${{ github.ref_name }}" == "development" ]]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "cody-sandbox" ]]; then
+            echo "ENVIRONMENT=cody" >> $GITHUB_ENV
+          else
+            exit 1
+          fi
+          
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -77,7 +89,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           taskArn=$(aws ecs list-task-definitions \
-            --family-prefix website-tasks \
+            --family-prefix "${ENVIRONMENT}-website-tasks" \
             --sort DESC \
             --region us-east-1 \
             --query 'taskDefinitionArns[0]' \
@@ -85,8 +97,8 @@ jobs:
           )
 
           aws ecs update-service \
-            --cluster website-cluster \
-            --service website-service \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --service "${ENVIRONMENT}-website-service" \
             --task-definition "${taskArn}" \
             --desired-count 1 \
             --force-new-deployment \
