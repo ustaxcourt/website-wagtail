@@ -29,4 +29,6 @@ run:
 setup: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r website/requirements.txt
-	# . $(VENV) && cd website && python manage.py createsuperuser
+
+superuser:
+	. $(VENV) && cd website && python manage.py createsuperuser
