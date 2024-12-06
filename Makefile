@@ -8,10 +8,10 @@ check:
 	. $(VENV) && cd website && python manage.py check --tag models --tag compatibility
 	. $(VENV) && cd website && python manage.py check --database default 
 
-migratecheck:
+migratecheck: # doesn't seem to work?
 	. $(VENV) && cd website && python manage.py sqlmigrate
 
-makemigrate:
+makemigrations:
 	. $(VENV) && cd website && python manage.py makemigrations
 
 showmigrations:
