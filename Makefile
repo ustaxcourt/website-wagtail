@@ -32,3 +32,6 @@ setup: init
 
 superuser:
 	. $(VENV) && cd website && python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+
+resetadminpassword:
+	. $(VENV) && cd website && python manage.py reset_admin_password
