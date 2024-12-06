@@ -2,19 +2,57 @@
 
 There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory:
 
-- `make setup`
-- `make check`
-- `make makemigrations`
-  - if there are changes detected:
-  - `make migrate`
-- `make superuser`
-  - if admin superuser already exists, you can use it as is or reset the password to default using:
-  - `make resetadminpassword`
-- `make run`
+### Setup development environment.
+
+```shell
+make setup
+```
+
+### Checks
+
+```shell
+make check
+```
+
+### Data/Model migrations.
+
+First run `makemigrations` to generate the data model changes.
+
+```shell
+make makemigrations
+```
+
+If there are changes detected, run `migrate` to apply the changes to database:
+
+```shell
+make migrate
+```
+
+### Setting up superuser to login.
+
+```shell
+make superuser
+```
+
+If admin superuser already exists, you can use it as is or reset the password to default using:
+
+```shell
+make resetadminpassword
+```
+
+### Run
+
+Finally, running applicaiton.
+
+```shell
+make run
+```
 
 ## Default Admin Account
 - Default username: admin
 - Default password: ustcAdminPW!
+
+See `make superuser` to see how it is setup first time.
 
 # The Developer Sandbox AWS Account
 
