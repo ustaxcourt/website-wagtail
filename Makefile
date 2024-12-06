@@ -31,4 +31,4 @@ setup: init
 	. $(VENV) && pip install -r website/requirements.txt
 
 superuser:
-	. $(VENV) && cd website && python manage.py createsuperuser
+	. $(VENV) && cd website && python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
