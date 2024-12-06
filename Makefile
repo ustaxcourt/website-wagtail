@@ -1,19 +1,32 @@
+VENV=~/.venv/website-wagtail/bin/activate
+
 init:
 	python3 -m venv ~/.venv/website-wagtail
-	source ~/.venv/website-wagtail/bin/activate
+
+check:
+	. $(VENV) && cd website && python manage.py check
+	. $(VENV) && cd website && python manage.py check --tag models --tag compatibility
+	. $(VENV) && cd website && python manage.py check --database default 
 
 migratecheck:
-	cd website && python manage.py sqlmigrate
+	. $(VENV) && cd website && python manage.py sqlmigrate
 
 makemigrate:
-	cd website && python manage.py makemigrations
+	. $(VENV) && cd website && python manage.py makemigrations
+
+showmigrations:
+	. $(VENV) && cd website && python manage.py showmigrations
+
+sqlmigrate:
+	. $(VENV) && cd website && python manage.py sqlmigrate $(name) 0001
 
 migrate:
-	cd website && python manage.py migrate
+	. $(VENV) && cd website && python manage.py migrate
 
 run:
-	cd website && python manage.py runserver
+	. $(VENV) && cd website && python manage.py runserver
 
-setup:
-	pip install --upgrade pip
-	pip install -r website/requirements.txt
+setup: init
+	. $(VENV) && pip install --upgrade pip
+	. $(VENV) && pip install -r website/requirements.txt
+	# . $(VENV) && cd website && python manage.py createsuperuser
