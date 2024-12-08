@@ -14,7 +14,7 @@ resource "aws_instance" "bastion" {
   tags = {
     Name        = "${var.environment}-bastion-host"
   }
-  
+
   key_name      = aws_key_pair.bastion_key.key_name
 
   user_data = <<EOF

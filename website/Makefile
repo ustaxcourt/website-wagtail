@@ -6,7 +6,20 @@ init:
 check:
 	. $(VENV) && python manage.py check
 	. $(VENV) && python manage.py check --tag models --tag compatibility
-	. $(VENV) && python manage.py check --database default 
+	. $(VENV) && python manage.py check --database default
+	. $(VENV) && ruff check
+
+format:
+	. $(VENV) && ruff format
+
+fix:
+	. $(VENV) && ruff check --fix
+
+typecheck:
+	. $(VENV) && mypy .
+
+precommit:
+	. $(VENV) && pre-commit sample-config && pre-commit run --all-files
 
 migratecheck: # doesn't seem to work?
 	. $(VENV) && python manage.py sqlmigrate
@@ -28,7 +41,7 @@ run:
 
 setup: init
 	. $(VENV) && pip install --upgrade pip
-	. $(VENV) && pip install -r website/requirements.txt
+	. $(VENV) && pip install -r requirements.txt
 
 superuser:
 	. $(VENV) && python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"

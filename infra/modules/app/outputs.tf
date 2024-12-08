@@ -9,4 +9,3 @@ output "database_endpoint" {
 }
 
 output "lb_url" { value = "http://${module.alb.lb_dns_name}" }
-

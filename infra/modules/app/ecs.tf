@@ -39,8 +39,8 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
     environment: [],
     secrets: [
-      { 
-        name = "DATABASE_URL", 
+      {
+        name = "DATABASE_URL",
         valueFrom = "${aws_secretsmanager_secret.database_url_secret.arn}:DATABASE_URL::"
       }
     ],

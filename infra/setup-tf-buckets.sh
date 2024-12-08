@@ -27,7 +27,7 @@ set -e
 
 if [ "${code}" == 0 ]; then
   echo "DynamoDB table $LOCK_TABLE already exists. Skipping creation."
-else 
+else
   echo "Creating DynamoDB table: $LOCK_TABLE"
   aws dynamodb create-table \
       --region us-east-1 \

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-AWS_REGION="us-east-1" 
-AWS_ACCOUNT_ID="684212469706" 
-ECR_REPO_NAME="website-wagtail" 
-IMAGE_TAG="latest" 
-IMAGE_NAME="website-wagtail" 
+AWS_REGION="us-east-1"
+AWS_ACCOUNT_ID="684212469706"
+ECR_REPO_NAME="website-wagtail"
+IMAGE_TAG="latest"
+IMAGE_NAME="website-wagtail"
 
 # Get the ECR login password and login to ECR
 echo "Logging in to Amazon ECR..."

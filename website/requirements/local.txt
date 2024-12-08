@@ -2,3 +2,6 @@
 
 pytest
 pytest-django
+mypy
+ruff
+pre-commit

@@ -17,4 +17,3 @@ We decided to more forward using Wagtail as our CMS system built on top of the D
 Wagtail has the ability to hook into Postgres, one of the most popular databases, and S3 for storing media, assets, images, etc.  Django is built ontop of a powerful ORM which allows easy customization for where external data storage shoud live.
 
 ## Consequences
-
