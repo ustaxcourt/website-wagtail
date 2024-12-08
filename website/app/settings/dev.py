@@ -14,7 +14,8 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 os.environ["DJANGO_SUPERUSER_PASSWORD"] = "ustcAdminPW!"
 
-# try:
-#     from .local import *
-# except ImportError:
-#     pass
+try:
+    from .local import *  # noqa: F403
+
+except ImportError:
+    pass
