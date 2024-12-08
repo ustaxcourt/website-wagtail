@@ -1,4 +1,5 @@
-from .base import *
+from .base import *  # noqa: F403
+import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -13,7 +14,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 os.environ["DJANGO_SUPERUSER_PASSWORD"] = "ustcAdminPW!"
 
-try:
-    from .local import *
-except ImportError:
-    pass
+# try:
+#     from .local import *
+# except ImportError:
+#     pass
