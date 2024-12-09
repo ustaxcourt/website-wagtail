@@ -30,21 +30,18 @@ If you want to deploy the application to your sandbox, follow these steps:
 
 ### Prereqs:
 
-- install terraform (we recommend `brew install tfenv`) - install aws cli
-- create aws secret inside of aws secrets manager called `website_secrets`
+- generate your private and public key pairs needed to remote into the bastion host
+  - `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
+  - `cat .ssh/id_rsa.pub | base64 > .ssh/id_rsa.pub.base64` (generate a base64 of the public key)
+- update the `deploy.yml` Set Environment task branch logic to map your sandbox branch name to an environment prefix
+- push code to your sandbox branch, `cody-sandbox`
+- login to your sandbox aws account and create a secret in aws secrets manager called `website_secrets` in `us-east-1`
   - it needs a `DATABASE_PASSWORD` set before you can run terraform.
   - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
+  - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
+  - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
 
-1. `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
-2. `cat .ssh/id_rsa.pub | base64 > .ssh/id_rsa.pub.base64` (generate a base64 of the public key)
-3. `cd infra`
-4. `./setup-tf-buckets.sh` (only run once on a brand new sandbox)
-5. `./deploy.sh` (re-run after any terraform changes to test)
-
-## Destroying (assuming you've deployed at least once)
-
-1. `cd infra`
-2. `./destroy.sh`
+Now you can push changes to your sandbox branch and it'll auto deploy using github actions.
 
 ## Cavets
 

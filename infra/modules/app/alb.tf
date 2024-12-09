@@ -2,6 +2,8 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.4.0"
 
+  name = "${var.environment}-load-balancer"
+
   load_balancer_type = "application"
   security_groups    = [module.vpc.default_security_group_id]
   subnets            = module.vpc.public_subnets

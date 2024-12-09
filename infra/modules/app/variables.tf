@@ -6,3 +6,7 @@ variable "database_password" {
 variable "bastion_public_key" {
   type = string
 }
+
+variable "environment" {
+  type = string
+}

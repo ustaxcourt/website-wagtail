@@ -7,6 +7,7 @@ module "app" {
   source = "./modules/app"
   bastion_public_key = var.bastion_public_key
   database_password = var.database_password
+  environment = var.environment
   providers = {
     docker = docker
   }
