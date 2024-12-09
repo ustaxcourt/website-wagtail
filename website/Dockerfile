@@ -13,7 +13,7 @@ EXPOSE 8000
 #    command.
 ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
-    ENV=production
+    DJANGO_SETTINGS_MODULE="app.settings.production"
 
 # Install system packages required by Wagtail and Django.
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
