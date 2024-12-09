@@ -23,15 +23,16 @@ module "ecs" {
   }
 }
 
-resource "aws_secretsmanager_secret" "database_url_secret" {
+resource "aws_secretsmanager_secret" "ecs_task_secrets" {
   name        = "database-url"
   description = "Secret for the PostgreSQL database URL"
 }
 
-resource "aws_secretsmanager_secret_version" "database_url_secret_version" {
-  secret_id = aws_secretsmanager_secret.database_url_secret.id
+resource "aws_secretsmanager_secret_version" "ecs_task_secrets_version" {
+  secret_id = aws_secretsmanager_secret.ecs_task_secrets.id
   secret_string = jsonencode({
     DATABASE_URL = "postgresql://${aws_db_instance.default.username}:${aws_db_instance.default.password}@${aws_db_instance.default.endpoint}/postgres"
+    SECRET_KEY = var.secret_key
   })
 }
 
@@ -41,7 +42,11 @@ resource "aws_ecs_task_definition" "this" {
     secrets: [
       {
         name = "DATABASE_URL",
-        valueFrom = "${aws_secretsmanager_secret.database_url_secret.arn}:DATABASE_URL::"
+        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:DATABASE_URL::"
+      },
+      {
+        name = "SECRET_KEY",
+        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:SECRET_KEY::"
       }
     ],
     essential    = true,
@@ -180,7 +185,7 @@ data "aws_iam_policy_document" "ecs_task_secrets_policy" {
     ]
 
     resources = [
-      aws_secretsmanager_secret.database_url_secret.arn
+      aws_secretsmanager_secret.ecs_task_secrets.arn
     ]
   }
 }

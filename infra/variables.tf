@@ -10,3 +10,7 @@ variable "bastion_public_key" {
 variable "environment" {
   type = string
 }
+
+variable "secret_key" {
+  type = string
+}
