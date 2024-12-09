@@ -7,8 +7,9 @@ resource "aws_db_instance" "default" {
   instance_class      = "db.t3.micro"
   username            = "master"
   password            = var.database_password
+  backup_retention_period = 14
   skip_final_snapshot = true
-  #   deletion_protection = true
+  deletion_protection = true
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
