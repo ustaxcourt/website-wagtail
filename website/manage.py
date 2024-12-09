@@ -9,7 +9,7 @@ print(f"ENV was set to ${env}")
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"app.settings.{env}")
 
-    print(os.envron)
+    print(os.environ)
 
     from django.core.management import execute_from_command_line
 

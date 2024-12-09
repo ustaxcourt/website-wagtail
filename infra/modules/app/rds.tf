@@ -12,6 +12,8 @@ resource "aws_db_instance" "default" {
   skip_final_snapshot = true
   deletion_protection = true
 
+  apply_immediately = true # only use when needing to force updates to the database, probably never use on production unless in a scheduled update window
+
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
 
