@@ -5,6 +5,7 @@ runs:
   steps:
     - name: Load Python Version
       id: python_version
+      shell: bash
       run: |
         cd website
         PYTHON_VERSION=$(cat .python-version)
