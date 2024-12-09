@@ -1,3 +1,7 @@
 from .base import *  # noqa: F403
 
-DEBUG = False
+# Temp
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+ALLOWED_HOSTS = ["*"]
+
+DEBUG = True
