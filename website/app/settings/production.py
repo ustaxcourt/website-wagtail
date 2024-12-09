@@ -1,7 +1,8 @@
+import os
 from .base import *  # noqa: F403
 
-# Temp
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-ALLOWED_HOSTS = ["*"]
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# ALLOWED_HOSTS = ["*"]
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
