@@ -8,4 +8,7 @@ if __name__ == "__main__":
 
     from django.core.management import execute_from_command_line
 
+    print("we are here")
+    print(os.environ)
+
     execute_from_command_line(sys.argv)

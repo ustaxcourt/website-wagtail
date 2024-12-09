@@ -25,7 +25,7 @@ module "ecs" {
 
 resource "aws_secretsmanager_secret" "ecs_task_secrets" {
   name        = "ecs-task-secrets"
-  description = "Secret for the PostgreSQL database URL"
+  description = "Secrets used for the ecs task to prevent easy access to the secrets via aws cli commands"
 }
 
 resource "aws_secretsmanager_secret_version" "ecs_task_secrets_version" {
