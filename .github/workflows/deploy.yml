@@ -5,14 +5,11 @@ on:
     branches:
       - development
       - cody-sandbox
-
 jobs:
   deploy:
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
-
     steps:
-
       - name: Set Environment
         run: |
           if [[ "${{ github.ref_name }}" == "development" ]]; then
