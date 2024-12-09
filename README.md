@@ -12,6 +12,14 @@ cd website
 pyenv install
 ```
 
+#### Setup Pre-Commit
+
+Before you commit to the repo, we run some checks to verify and fix the formatting of python.
+
+```
+brew install pre-commit
+```
+
 ### Setup development environment.
 
 ```shell
