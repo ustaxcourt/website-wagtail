@@ -4,7 +4,7 @@ import sys
 
 env = os.getenv("ENV", "dev")
 
-print(f"ENV was set to ${env}")
+print(f"ENV was set to {env}")
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"app.settings.{env}")
