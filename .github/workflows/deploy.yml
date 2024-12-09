@@ -19,10 +19,8 @@ jobs:
           else
             exit 1
           fi
-
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
