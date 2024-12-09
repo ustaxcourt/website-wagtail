@@ -1,0 +1,7 @@
+-r base.txt
+
+pytest
+pytest-django
+mypy
+ruff
+pre-commit

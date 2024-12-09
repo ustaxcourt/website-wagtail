@@ -8,7 +8,6 @@ output "database_endpoint" {
   value = module.app.database_endpoint
 }
 
-output "lb_url" { 
+output "lb_url" {
   value = module.app.lb_url
 }
-

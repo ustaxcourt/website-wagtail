@@ -1,14 +1,77 @@
 # Running the Wagtail Website
 
-After cloning the repo, you'll need to make sure you have python3 installed along with pip3.
+There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory:
 
-- `cd website`
-- `python3 -m venv env`
-- `source env/bin/activate`
-- `pip3 install -r requirements.txt`
-- `python3 manage.py migrate` (only needed once unless new models added)
-- `python3 manage.py createsuperuser` (only run once)
-- `python3 manage.py runserver`
+### Pre-reqs
+
+#### Setup PyEnv
+
+```
+brew install pyenv
+cd website
+pyenv install
+```
+
+#### Setup Pre-Commit
+
+Before you commit to the repo, we run some checks to verify and fix the formatting of python.
+
+```
+brew install pre-commit
+pre-commit install # do this at project root
+```
+
+### Setup development environment.
+
+```shell
+make setup
+```
+
+### Checks
+
+```shell
+make check
+```
+
+### Data/Model migrations.
+
+First run `makemigrations` to generate the data model changes.
+
+```shell
+make makemigrations
+```
+
+If there are changes detected, run `migrate` to apply the changes to database:
+
+```shell
+make migrate
+```
+
+### Setting up superuser to login.
+
+```shell
+make superuser
+```
+
+If admin superuser already exists, you can use it as is or reset the password to default using:
+
+```shell
+make resetadminpassword
+```
+
+### Run
+
+Finally, running applicaiton.
+
+```shell
+make run
+```
+
+## Default Admin Account
+- Default username: admin
+- Default password: ustcAdminPW!
+
+See `make superuser` to see how it is setup first time.
 
 # The Developer Sandbox AWS Account
 
@@ -43,7 +106,7 @@ If you want to deploy the application to your sandbox, follow these steps:
 
 Now you can push changes to your sandbox branch and it'll auto deploy using github actions.
 
-## Cavets
+## Caveats
 
 If you run a terraform init with your sandbox account, but then try to run it again for another account, remember to delete the infra/.terraform directory otherwise you'll run into state issues. After deleting that directory, terraform will reconfigure the backend state from s3 to your local machine instead of re-using the existing local state file.
 

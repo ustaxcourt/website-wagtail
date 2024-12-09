@@ -5,14 +5,11 @@ on:
     branches:
       - development
       - cody-sandbox
-
 jobs:
   deploy:
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
-
     steps:
-
       - name: Set Environment
         run: |
           if [[ "${{ github.ref_name }}" == "development" ]]; then
@@ -22,7 +19,7 @@ jobs:
           else
             exit 1
           fi
-          
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -33,11 +30,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Set up Python
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3 python3-pip
-          python3 --version
-          pip3 --version
+        uses: ./.github/actions/setup-python
 
       - name: Apply Terraform
         id: tf_outputs
@@ -78,9 +71,9 @@ jobs:
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
-          pip3 install -r requirements.txt
+          make setup
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
-          python3 manage.py migrate
+          make migrate
           SUPERUSER_PASSWORD="${SUPERUSER_PASSWORD}" python3 manage.py shell < create_superuser.py
 
       - name: Manually Deploy ECS Task (Post-Migration)
