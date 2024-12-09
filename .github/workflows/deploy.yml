@@ -28,8 +28,10 @@ jobs:
         with:
           terraform_version: 1.9.6
           terraform_wrapper: false
+
       - name: Set up Python
         uses: ./.github/actions/setup-python
+
       - name: Apply Terraform
         id: tf_outputs
         env:
