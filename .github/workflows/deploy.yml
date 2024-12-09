@@ -74,7 +74,8 @@ jobs:
           make setup
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make remotesuperuser password="${SUPERUSER_PASSWORD}"
+          set +e
+          make superuser env=production password="${SUPERUSER_PASSWORD}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:

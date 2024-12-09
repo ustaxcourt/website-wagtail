@@ -44,10 +44,7 @@ setup: init
 	. $(VENV) && pip install -r requirements.txt
 
 superuser:
-	. $(VENV) && python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+	. $(VENV) && ENV=$(env) DJANGO_SUPERUSER_PASSWORD=$(password) python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
 
 resetadminpassword:
 	. $(VENV) && python manage.py reset_admin_password
-
-remotesuperuser:
-	. $(VENV) && SUPERUSER_PASSWORD=$(password) python manage.py shell < create_superuser.py
