@@ -48,3 +48,6 @@ superuser:
 
 resetadminpassword:
 	. $(VENV) && python manage.py reset_admin_password
+
+remotesuperuser:
+	. $(VENV) && SUPERUSER_PASSWORD=$(password) python manage.py shell < create_superuser.py

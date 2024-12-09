@@ -74,7 +74,7 @@ jobs:
           make setup
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          SUPERUSER_PASSWORD="${SUPERUSER_PASSWORD}" python3 manage.py shell < create_superuser.py
+          make remotesuperuser password="${SUPERUSER_PASSWORD}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
