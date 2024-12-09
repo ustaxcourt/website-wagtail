@@ -15,7 +15,7 @@ resource "aws_db_instance" "default" {
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
 
   lifecycle {
-    prevent_destroy = false
+    prevent_destroy = true
   }
 }
 
