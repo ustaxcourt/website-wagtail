@@ -2,6 +2,16 @@
 
 There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory:
 
+### Pre-reqs
+
+#### Setup PyEnv
+
+```
+brew install pyenv
+cd website
+pyenv install
+```
+
 ### Setup development environment.
 
 ```shell

@@ -1,0 +1,17 @@
+name: Setup Python Environment
+description: Custom action to set up a Python environment with a specific version.
+runs:
+  using: "composite"
+  steps:
+    - name: Load Python Version
+      id: python_version
+      run: |
+        cd website
+        PYTHON_VERSION=$(cat .python-version)
+        echo "python_version=${PYTHON_VERSION}" >> $GITHUB_OUTPUT
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ steps.python_version.outputs.python_version }}
+
