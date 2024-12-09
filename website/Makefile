@@ -22,7 +22,7 @@ precommit:
 	. $(VENV) && pre-commit sample-config && pre-commit run --all-files
 
 migratecheck: # doesn't seem to work?
-	. $(VENV) && python manage.py sqlmigrate
+	. $(VENV) && python manage.py sqlmigrate $(name) $(id)
 
 makemigrations:
 	. $(VENV) && python manage.py makemigrations
@@ -31,7 +31,7 @@ showmigrations:
 	. $(VENV) && python manage.py showmigrations
 
 sqlmigrate:
-	. $(VENV) && python manage.py sqlmigrate $(name) 0001
+	. $(VENV) && python manage.py sqlmigrate $(name) $(id)
 
 migrate:
 	. $(VENV) && python manage.py migrate
