@@ -95,7 +95,8 @@ If you want to deploy the application to your sandbox, follow these steps:
 
 - generate your private and public key pairs needed to remote into the bastion host
   - `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
-  - `cat .ssh/id_rsa.pub | base64 > .ssh/id_rsa.pub.base64` (generate a base64 of the public key)
+  - `cat .ssh/id_rsa | base64 > .ssh/id_rsa.base64` (generate a base64 of the private key - used for bastion)
+  - `cat .ssh/id_rsa.pub | base64 > .ssh/id_rsa.pub.base64` (generate a base64 of the public key - used for bastion)
 - update the `deploy.yml` Set Environment task branch logic to map your sandbox branch name to an environment prefix
 - push code to your sandbox branch, `cody-sandbox`
 - login to your sandbox aws account and create a secret in aws secrets manager called `website_secrets` in `us-east-1`
@@ -103,6 +104,7 @@ If you want to deploy the application to your sandbox, follow these steps:
   - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
   - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
+  - set `SECRET_KEY`, used by django
 
 Now you can push changes to your sandbox branch and it'll auto deploy using github actions.
 
@@ -117,3 +119,12 @@ Because the RDS instance is behind a VPS, that means you will need to setup an S
 `ssh -L 5432:<RDS_HOSTNAME>:5432 -N -i .ssh/id_rsa ubuntu@<IP_ADDRESS>`
 
 after running this in a separate terminal, you should be able to run migrations or connect directly using tableplus.
+
+
+## CI / CD
+
+Our code is currently deployed using github actions when your pull request is merged to the `development` branch.  The way this works, is the github action will spin up an ubuntu machine, pull in the branch code, setup python and terraform, and eventually it'll run terraform which will build the wagtail container, and deploy that container to aws ecs.  After updating our infrastructure, the ci/cd pipeline will run migration scripts via the bastion host tunnel which will update the rds instance with the latest wagtail migration scripts.  Finally, the github action workflow will update the ECS task to run with the latest version of the wagtail container.
+
+The application is publically accessible via an AWS ALB which points to ECS.
+
+![./docs/diagrams/ci-cd.png](./docs/diagrams/ci-cd.png)
