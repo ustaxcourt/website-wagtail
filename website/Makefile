@@ -21,7 +21,7 @@ typecheck:
 precommit:
 	. $(VENV) && pre-commit sample-config && pre-commit run --all-files
 
-migratecheck: # doesn't seem to work?
+migratecheck:
 	. $(VENV) && python manage.py sqlmigrate $(name) $(id)
 
 makemigrations:
@@ -44,7 +44,7 @@ setup: init
 	. $(VENV) && pip install -r requirements.txt
 
 superuser:
-	. $(VENV) && DJANGO_SETTINGS_MODULE=$(settings) DJANGO_SUPERUSER_PASSWORD=$(password) python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
 
 resetadminpassword:
 	. $(VENV) && python manage.py reset_admin_password
