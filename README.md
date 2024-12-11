@@ -104,7 +104,7 @@ If you want to deploy the application to your sandbox, follow these steps:
   - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
   - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
-  - set `SECRET_KEY`, used by django
+  - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
 - create an iam `deployer` user
   - attach policies directly, create a new policy called `deployer-policy`, paste in the `deployer-policy.json`
   - attach the new policy to your user
