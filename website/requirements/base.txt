@@ -33,3 +33,4 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 wagtail==6.3.1
 Willow==1.9.0
+whitenoise==6.8.2
