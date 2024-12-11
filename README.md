@@ -105,6 +105,14 @@ If you want to deploy the application to your sandbox, follow these steps:
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
   - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django
+- create an iam `deployer` user
+  - attach policies directly, create a new policy called `deployer-policy`, paste in the `deployer-policy.json`
+  - attach the new policy to your user
+  - create an access key for that user, choose cli option
+  - copy those keys for the next step
+- create a github action context with the same name of your branch `cody-sandbox`
+  - `AWS_ACCESS_KEY_ID`
+  - `AWS_SECRET_ACCESS_KEY`
 
 Now you can push changes to your sandbox branch and it'll auto deploy using github actions.
 
@@ -123,7 +131,7 @@ after running this in a separate terminal, you should be able to run migrations 
 
 ## CI / CD
 
-Our code is currently deployed using github actions when your pull request is merged to the `development` branch.  The way this works, is the github action will spin up an ubuntu machine, pull in the branch code, setup python and terraform, and eventually it'll run terraform which will build the wagtail container, and deploy that container to aws ecs.  After updating our infrastructure, the ci/cd pipeline will run migration scripts via the bastion host tunnel which will update the rds instance with the latest wagtail migration scripts.  Finally, the github action workflow will update the ECS task to run with the latest version of the wagtail container.
+Our code is currently deployed using github actions when your pull request is merged to the `development` branch.  The way this works, is the github action will spin up an ubuntu machine, pull in the branch code, setup python and terraform, and eventually it'll run terraform which will build the wagtail container, and deploy that container to aws ecs.  After updating our infrastructure, the ci/cd pipeline will run migration scripts via the bastion host tunnel which will update the ecs service with the latest wagtail migration scripts.  Finally, the github action workflow will update the ECS task to run with the latest version of the wagtail container.
 
 The application is publically accessible via an AWS ALB which points to ECS.
 
