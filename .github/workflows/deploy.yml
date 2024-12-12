@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - development
-      - cody-sandbox
-      - sree-sandbox
+      - '*-sandbox'
 jobs:
   deploy:
     environment: ${{ github.ref_name }}
