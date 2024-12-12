@@ -87,7 +87,7 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 - `aws sso login --profile sandbox`
 
-## Deploying to your AWS Account
+## Deploying to your Sandbox
 
 If you want to deploy the application to your sandbox, follow these steps:
 
@@ -119,6 +119,15 @@ Now you can push changes to your sandbox branch and it'll auto deploy using gith
 ## Caveats
 
 If you run a terraform init with your sandbox account, but then try to run it again for another account, remember to delete the infra/.terraform directory otherwise you'll run into state issues. After deleting that directory, terraform will reconfigure the backend state from s3 to your local machine instead of re-using the existing local state file.
+
+## Destroying your Sandbox
+
+Leaving your sandbox running without being used will waste money.  Remember to clean it up with the following steps:
+
+1. `cd infra`
+2. manually disable delete protection for your rds database
+3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance
+4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh`
 
 ## Manually Connecting to DB
 
