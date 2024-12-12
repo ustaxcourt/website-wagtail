@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./init.sh
+source ./setup.sh
 
 terraform init \
     -upgrade \
@@ -10,4 +10,4 @@ terraform init \
     -backend-config=dynamodb_table="${LOCK_TABLE}" \
     -backend-config=region="${REGION}"
 terraform plan -destroy -out destructive-plan
-terraform apply -auto-approve destructive-plan
+terraform apply destructive-plan
