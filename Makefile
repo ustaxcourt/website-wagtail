@@ -43,24 +43,7 @@ aws-setup:
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)"
 	aws iam create-access-key --user-name deployer > ./infra/iam/generated-deployer-access-key.json
 
-env-setup:
-
-# clean:
-# 	@echo "Cleaning up..."
-# 	@aws secretsmanager delete-secret --secret-id website_secrets --region us-east-1
-# 	@echo ".... Secrets deleted."
-# 	@aws iam detach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)" || true
-# 	@echo ".... Policy detached."
-# 	@aws iam delete-policy --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)" || true
-# 	@echo ".... Policy deleted."
-# 	@aws iam delete-access-key --user-name deployer --access-key-id "$$(jq -r '.AccessKey.AccessKeyId' ./infra/iam/generated-deployer-access-key.json)" || true
-# 	@echo ".... Access key deleted."
-# 	@aws iam delete-user --user-name deployer
-# 	@echo ".... User deleted."
-# 	@rm -rf ./infra/iam/generated-deployer-access-key.json
-# 	@echo ".... Cleaned up."
-
-clean:
+teardown:
 	@echo "Cleaning up..."
 
 	# Delete the secret if it exists
