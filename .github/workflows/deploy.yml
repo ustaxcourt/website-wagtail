@@ -5,6 +5,7 @@ on:
     branches:
       - development
       - cody-sandbox
+      - sree-sandbox
 jobs:
   deploy:
     environment: ${{ github.ref_name }}
