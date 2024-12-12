@@ -95,8 +95,8 @@ If you want to deploy the application to your sandbox, follow these steps:
 
 - generate your private and public key pairs needed to remote into the bastion host
   - `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
-  - `cat .ssh/id_rsa | base64 > .ssh/id_rsa.base64` (generate a base64 of the private key - used for bastion)
-  - `cat .ssh/id_rsa.pub | base64 > .ssh/id_rsa.pub.base64` (generate a base64 of the public key - used for bastion)
+  - `cat .ssh/id_rsa | base64 | tr -d '\n' > .ssh/id_rsa.base64` (generate a base64 of the private key - used for bastion)
+  - `cat .ssh/id_rsa.pub | base64 | tr -d '\n' > .ssh/id_rsa.pub.base64` (generate a base64 of the public key - used for bastion)
 - update the `deploy.yml` Set Environment task branch logic to map your sandbox branch name to an environment prefix
 - push code to your sandbox branch, `cody-sandbox`
 - login to your sandbox aws account and create a secret in aws secrets manager called `website_secrets` in `us-east-1`
