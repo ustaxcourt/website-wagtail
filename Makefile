@@ -43,7 +43,7 @@ aws-setup:
 	fi
 
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)"
-	aws iam create-access-key --user-name deployer > ./infra/iam/generated-deployer-access-key.json || true
+	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
 
 init:
 	cd infra && ./init.sh
