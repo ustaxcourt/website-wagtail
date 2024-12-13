@@ -93,6 +93,8 @@ If you want to deploy the application to your sandbox, follow these steps:
 
 ### Prereqs:
 
+Use make command `make aws-setup` to complete the necessary aws infra setup. It does the following steps that can be performed manually too.
+
 - generate your private and public key pairs needed to remote into the bastion host
   - `mkdir -p .ssh && ssh-keygen -f .ssh/id_rsa` (generate the ssh key used for the bastion host)
   - `cat .ssh/id_rsa | base64 | tr -d '\n' > .ssh/id_rsa.base64` (generate a base64 of the private key - used for bastion)
@@ -125,9 +127,10 @@ If you run a terraform init with your sandbox account, but then try to run it ag
 Leaving your sandbox running without being used will waste money.  Remember to clean it up with the following steps:
 
 1. `cd infra`
-2. manually disable delete protection for your rds database
+2. manually disable delete protection for your rds database in file [rds.tf](./infra/modules/rds.tf)
 3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance
-4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh`
+4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh` or run `make destroy`
+
 
 ## Manually Connecting to DB
 
