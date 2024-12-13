@@ -1,3 +1,13 @@
+
+# Overview
+
+This repository contains the code for [ustaxcourt.gov](https://ustaxcourt.gov).  It is a wagtail website deployed to AWS. You can access the deployed environments at the following URLs:
+
+- [Development](http://dev-load-balancer-2111086971.us-east-1.elb.amazonaws.com/)
+- [Test](http://test-load-balancer-1349842350.us-east-1.elb.amazonaws.com/)
+
+Note, we plan to get sub domains for these environments, and these links are subject to change for now.  Also, until we get the domains, they will be non https (so not secure).
+
 # Running the Wagtail Website
 
 There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory:
