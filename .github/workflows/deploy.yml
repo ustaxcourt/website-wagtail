@@ -78,7 +78,9 @@ jobs:
           make setup
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.production" password="${SUPERUSER_PASSWORD}" || echo "user already exists, skipping"
+          make superuser settings="app.settings.production"|| echo "user already exists, skipping"
+          export DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
+          make resetadminpassword
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
