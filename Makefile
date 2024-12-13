@@ -1,6 +1,6 @@
 aws-setup:
 	@if [ -f ~/.ssh/wagtail_bastion_key_id_rsa ]; then \
-		echo "Key already exists"; \
+		echo "Local SSH Key already exists"; \
 	else \
 		cd ~/.ssh && ssh-keygen -f wagtail_bastion_key_id_rsa -N ''; \
 		cd ~/.ssh && cat wagtail_bastion_key_id_rsa | base64 > wagtail_bastion_key_id_rsa.base64; \
