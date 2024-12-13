@@ -24,4 +24,6 @@ jobs:
 
       # Run pytest
       - name: Run Pytest
-        run: make pytest
+        run: |
+          cd website
+          make pytest
