@@ -30,6 +30,9 @@ makemigrations:
 showmigrations:
 	. $(VENV) && python manage.py showmigrations
 
+pytest:
+	. $(VENV) && pytest
+
 sqlmigrate:
 	. $(VENV) && python manage.py sqlmigrate $(name) $(id)
 
