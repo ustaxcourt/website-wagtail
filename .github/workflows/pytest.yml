@@ -26,4 +26,6 @@ jobs:
       - name: Run Pytest
         run: |
           cd website
+          set -e
+          make setup
           make pytest
