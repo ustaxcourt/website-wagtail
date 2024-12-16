@@ -1,28 +1,30 @@
+env := $(shell ./infra/get_env.sh)
+
 aws-setup:
-	@if [ -f ~/.ssh/wagtail_bastion_key_id_rsa ]; then \
-		echo "Local SSH Key already exists"; \
+	@if [ -f ~/.ssh/wagtail_$(env)_bastion_key_id_rsa ]; then \
+		echo "Local SSH Key for environment '$(env)' already exists."; \
 	else \
-		cd ~/.ssh && ssh-keygen -f wagtail_bastion_key_id_rsa -N ''; \
-		cd ~/.ssh && cat wagtail_bastion_key_id_rsa | base64 > wagtail_bastion_key_id_rsa.base64; \
-		cd ~/.ssh && cat wagtail_bastion_key_id_rsa.pub | base64 > wagtail_bastion_key_id_rsa.pub.base64; \
+		cd ~/.ssh && ssh-keygen -f wagtail_$(env)_bastion_key_id_rsa -N ''; \
+		cd ~/.ssh && cat wagtail_$(env)_bastion_key_id_rsa | base64 > wagtail_$(env)_bastion_key_id_rsa.base64; \
+		cd ~/.ssh && cat wagtail_$(env)_bastion_key_id_rsa.pub | base64 > wagtail_$(env)_bastion_key_id_rsa.pub.base64; \
 	fi
 	@if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
 		echo "Secret exists. Updating secret..."; \
 		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string '{ \
-			"DATABASE_PASSWORD": "your_database_password_here", \
-			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_bastion_key_id_rsa.pub.base64)"'", \
-			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_bastion_key_id_rsa.base64)"'", \
+			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
+			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
+			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
-			"SECRET_KEY": "your_superuser_password_here" \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
 	else \
 		echo "Creating new secret..."; \
 		aws secretsmanager create-secret --name website_secrets --region us-east-1 --description "Secrets for website infrastructure" --secret-string '{ \
-			"DATABASE_PASSWORD": "your_database_password_here", \
-			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_bastion_key_id_rsa.pub.base64)"'", \
-			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_bastion_key_id_rsa.base64)"'", \
+			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
+			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
+			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
-			"SECRET_KEY": "your_superuser_password_here" \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
 	fi
 
@@ -41,7 +43,19 @@ aws-setup:
 	fi
 
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)"
-	aws iam create-access-key --user-name deployer > ./infra/iam/generated-deployer-access-key.json
+	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
+
+init:
+	cd infra && ./init.sh
+
+deploy:
+	@echo "Deploying to environment: $(env)"
+	cd infra && rm -rf .terraform && ENVIRONMENT=$(env) ./init.sh
+	cd infra && ENVIRONMENT=$(env) ./deploy.sh
+
+destroy:
+	@echo "Destroying environment: $(env)"
+	cd infra && ENVIRONMENT=$(env) ./destroy.sh
 
 teardown:
 	@echo "Cleaning up..."

@@ -177,4 +177,4 @@ key.pem
 # infra
 infra/execution-plan
 infra/destructive-plan
-infra/iam/generated-deployer-access-key.json
+infra/iam/*generated-deployer-access-key.json
