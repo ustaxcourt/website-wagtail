@@ -24,3 +24,10 @@ jobs:
 
     - name: Run pre-commit hooks
       run: pre-commit run --all-files
+
+    - name: Run Unit Tests
+      run: |
+        cd website
+        set -e
+        make setup
+        make pytest
