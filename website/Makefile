@@ -34,6 +34,9 @@ coverage:
 	. $(VENV) && coverage run -m pytest
 	. $(VENV) && coverage report
 
+test-e2e:
+	npx cypress run --browser chrome
+
 pytest:
 	. $(VENV) && pytest
 
