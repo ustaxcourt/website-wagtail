@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - development
-      - cody-sandbox
+      - test
+      - '*-sandbox'
 jobs:
   deploy:
     environment: ${{ github.ref_name }}
@@ -14,8 +15,11 @@ jobs:
         run: |
           if [[ "${{ github.ref_name }}" == "development" ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "cody-sandbox" ]]; then
-            echo "ENVIRONMENT=cody" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "test" ]]; then
+            echo "ENVIRONMENT=test" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == *-sandbox ]]; then
+            IFS='-' read -ra ADDR <<< "${{ github.ref_name }}"
+            echo "ENVIRONMENT=${ADDR[0]}" >> $GITHUB_ENV
           else
             exit 1
           fi
@@ -74,7 +78,9 @@ jobs:
           make setup
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.production" password="${SUPERUSER_PASSWORD}" || echo "user already exists, skipping"
+          make superuser settings="app.settings.production"|| echo "user already exists, skipping"
+          export DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
+          make resetadminpassword
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:

@@ -36,6 +36,9 @@ else
       --key-schema AttributeName=LockID,KeyType=HASH \
       --billing-mode PAY_PER_REQUEST \
       --no-cli-pager
+
+  echo "Waiting for DynamoDB table to become active..."
+  aws dynamodb wait table-exists --table-name $LOCK_TABLE --region us-east-1
 fi
 
 echo "Setup complete for AWS account: $AWS_ACCOUNT_ID"
