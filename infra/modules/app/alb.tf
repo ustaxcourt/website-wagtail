@@ -1,3 +1,41 @@
+# Create ACM certificate for HTTPS
+resource "aws_acm_certificate" "main" {
+  domain_name       = var.domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Create DNS records for certificate validation
+resource "aws_route53_record" "cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.main.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = aws_route53_zone.main.zone_id
+
+  depends_on = [aws_route53_zone.main]
+}
+
+# Certificate validation
+resource "aws_acm_certificate_validation" "main" {
+  certificate_arn         = aws_acm_certificate.main.arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
+
+  depends_on = [aws_route53_record.cert_validation]
+}
+
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.4.0"
@@ -18,7 +56,14 @@ module "alb" {
       description = "HTTP web traffic"
       cidr_blocks = ["0.0.0.0/0"]
     }
-
+    ingress_all_https = {
+      type        = "ingress"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "TCP"
+      description = "HTTPS web traffic"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
     egress_all = {
       type        = "egress"
       from_port   = 0
@@ -30,10 +75,22 @@ module "alb" {
 
   http_tcp_listeners = [
     {
-      # ! Defaults to "forward" action for "target group"
-      # ! at index = 0 in "the target_groups" input below.
-      port               = 80
-      protocol           = "HTTP"
+      port        = 80
+      protocol    = "HTTP"
+      action_type = "redirect"
+      redirect = {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
+    }
+  ]
+
+  https_listeners = [
+    {
+      port               = 443
+      protocol          = "HTTPS"
+      certificate_arn   = aws_acm_certificate.main.arn
       target_group_index = 0
     }
   ]
@@ -45,14 +102,19 @@ module "alb" {
       target_type      = "ip"
 
       health_check = {
-        healthy_threshold   = 3              # Increase the number of consecutive successful health checks before considering as healthy
-        interval            = 30             # Health check interval in seconds
-        path                = "/"            # Adjust if you have a custom health check endpoint
-        port                = "traffic-port" # Port to use for health checks (typically "traffic-port")
-        protocol            = "HTTP"         # Use HTTP for health checks
-        timeout             = 5              # Timeout for health check
-        unhealthy_threshold = 3              # Number of consecutive failed health checks before considering as unhealthy
+        healthy_threshold   = 3
+        interval           = 30
+        path               = "/"
+        port               = "traffic-port"
+        protocol          = "HTTP"
+        timeout           = 5
+        unhealthy_threshold = 3
       }
     }
+  ]
+
+  depends_on = [
+    aws_acm_certificate.main,
+    aws_acm_certificate_validation.main
   ]
 }

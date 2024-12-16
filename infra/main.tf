@@ -9,6 +9,8 @@ module "app" {
   database_password = var.database_password
   secret_key = var.secret_key
   environment = var.environment
+  domain_name = var.domain_name
+
   providers = {
     docker = docker
   }
