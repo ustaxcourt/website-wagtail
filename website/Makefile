@@ -42,6 +42,9 @@ run:
 setup: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
+	npm install
+	npx gulp init
+	npx gulp compile
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
