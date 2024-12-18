@@ -17,7 +17,10 @@ uswds.settings.version = 3;
 * Set as many as you need
 */
 uswds.paths.dist.css = './app/static/uswds/css';
-uswds.paths.dist.theme = './sass/uswds';
+uswds.paths.dist.fonts = './app/static/uswds/fonts';
+uswds.paths.dist.img = './app/static/uswds/img';
+uswds.paths.dist.js = './app/static/uswds/js';
+uswds.paths.dist.theme = './app/static/uswds/sass';
 
 /**
 * Exports
