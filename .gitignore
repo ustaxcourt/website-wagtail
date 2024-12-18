@@ -180,3 +180,7 @@ infra/destructive-plan
 infra/iam/*generated-deployer-access-key.json
 
 website/node_modules
+website/assets/css/styles.css
+website/assets/css/styles.css.map
+website/assets/uswds/*
+website/sass/uswds/*
