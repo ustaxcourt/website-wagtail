@@ -158,3 +158,36 @@ Our code is currently deployed using github actions when your pull request is me
 The application is publically accessible via an AWS ALB which points to ECS.
 
 ![./docs/diagrams/ci-cd.png](./docs/diagrams/ci-cd.png)
+
+# Pull Request Workflow
+
+# Pull Request 
+
+This document clarifies the process a developer should follow when assigned to an issue.  
+
+## Summary
+
+Generally speaking, this project will follow a [feature-branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow):
+-  `main` branch represents the official project history, and the starting point for all story work
+- developers work on stories by branching off of `main`, implementing their work in an feature branch, and ultimately integrating their feature branch back into `main` once their work is comoplete
+
+Additionally, we will use tags to facilitate deployment to production and sandbox instances.
+
+## The Workflow 
+1. Pick up a story on the main board,
+2. Create feature branch that includes the Monday.com story ID e.g. `feature/xyz-12345678` 
+3. Develop and test locally
+4. When ready for review, push branch to github (if not done already) and create a draft PR
+5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox-name` , e.g. 
+```
+    git tag -f jim-sandbox
+    git push -f origin jim-sandbox
+```
+> Additionally, you can add/reassign tags using the Github website.
+
+6. Developer notifies team that feature is ready for review
+7. UX verifies AC in sandbox
+8. PO verifies AC in sandbox 
+9. Take your PR out of draft and request reviews
+> If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
+10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
