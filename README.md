@@ -161,15 +161,13 @@ The application is publically accessible via an AWS ALB which points to ECS.
 
 # Pull Request Workflow
 
-# Pull Request 
-
-This document clarifies the process a developer should follow when assigned to an issue.  
+This document clarifies the process a developer should follow when assigned to an issue/story.  
 
 ## Summary
 
 Generally speaking, this project will follow a [feature-branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow):
 -  `main` branch represents the official project history, and the starting point for all story work
-- developers work on stories by branching off of `main`, implementing their work in an feature branch, and ultimately integrating their feature branch back into `main` once their work is comoplete
+- developers work on stories by branching off of `main`, implementing their work in a feature branch, and ultimately integrating their feature branch back into `main` once their work is complete
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
