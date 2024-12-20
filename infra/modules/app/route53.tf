@@ -1,13 +1,12 @@
 # infra/modules/app/route53.tf
 
-# Create a Route53 zone for your application
-resource "aws_route53_zone" "main" {
+data "aws_route53_zone" "main" {
   name = var.domain_name
 }
 
 # Create an A record for the domain pointing to the ALB
 resource "aws_route53_record" "app" {
-  zone_id = aws_route53_zone.main.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = var.domain_name
   type    = "A"
 
@@ -20,7 +19,7 @@ resource "aws_route53_record" "app" {
 
 # Create a www subdomain that redirects to the apex domain
 resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.main.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
 
