@@ -159,3 +159,12 @@ Our code is currently deployed using github actions when your pull request is me
 The application is publically accessible via an AWS ALB which points to ECS.
 
 ![./docs/diagrams/ci-cd.png](./docs/diagrams/ci-cd.png)
+
+
+## Route53 Setup
+
+The domains are setup using Route53.  It's good to know that there is a service called get.gov which is a registrar used by the us government for setting up domains.  The Tax Court domain of ustaxcourt.gov is registered through get.gov, and they have a NS record setup to point to a route53 zone inside of the ustaxcourt.gov aws account.  That AWS account then points to the route53 zone in our various sandbox and production accounts.
+
+Note: Jim or someone on the tax court is responsible for adding those NS records manually to their aws account.  See the diagram below for more details.
+
+![./docs/diagrams/route53-setup.png](./docs/diagrams/route53-setup.png)
