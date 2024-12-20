@@ -1,6 +1,16 @@
 #!/bin/bash
 
+echo "WARNING: This will destroy the database and all data. Are you sure you want to continue? (Y/n)?"
+read -r response
+
+if [[ ! "$response" =~ ^[Yy]$ ]]; then
+    echo "Aborting destruction process."
+    exit 1
+fi
+
 source ./setup.sh
+
+source ./delete-rds-instance.sh
 
 terraform init \
     -upgrade \
