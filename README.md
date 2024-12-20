@@ -117,6 +117,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
   - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
+  - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
 - create an iam `deployer` user
   - attach policies directly, create a new policy called `deployer-policy`, paste in the `deployer-policy.json`
   - attach the new policy to your user

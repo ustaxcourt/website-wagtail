@@ -14,3 +14,7 @@ variable "environment" {
 variable "secret_key" {
   type = string
 }
+
+variable "domain_name" {
+  type = string
+}

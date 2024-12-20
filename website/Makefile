@@ -1,7 +1,7 @@
 VENV=~/.venv/website-wagtail/bin/activate
 
 init:
-	python3 -m venv ~/.venv/website-wagtail
+	python -m venv ~/.venv/website-wagtail
 
 check:
 	. $(VENV) && python manage.py check
@@ -29,6 +29,16 @@ makemigrations:
 
 showmigrations:
 	. $(VENV) && python manage.py showmigrations
+
+coverage:
+	. $(VENV) && coverage run -m pytest
+	. $(VENV) && coverage report
+
+test-e2e:
+	npx cypress run --browser chrome
+
+pytest:
+	. $(VENV) && pytest
 
 sqlmigrate:
 	. $(VENV) && python manage.py sqlmigrate $(name) $(id)

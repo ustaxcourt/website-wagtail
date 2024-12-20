@@ -11,3 +11,11 @@ output "database_endpoint" {
 output "lb_url" {
   value = module.app.lb_url
 }
+
+output "nameservers" {
+  value = module.app.nameservers
+}
+
+output "zone_id" {
+  value = module.app.zone_id
+}
