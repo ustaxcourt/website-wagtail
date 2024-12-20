@@ -2,6 +2,8 @@
 
 source ./setup.sh
 
+source ./setup_zone.sh
+
 terraform init \
     -upgrade \
     -backend=true \
