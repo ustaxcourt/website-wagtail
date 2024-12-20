@@ -168,3 +168,12 @@ The domains are setup using Route53.  It's good to know that there is a service 
 Note: Jim or someone on the tax court is responsible for adding those NS records manually to their aws account.  See the diagram below for more details.
 
 ![./docs/diagrams/route53-setup.png](./docs/diagrams/route53-setup.png)
+
+
+## Updating the Deployer Policy
+
+The deployer policy is setup in the aws account using the `update_aws_policy.sh` script.  This script will get the aws account id and use that to update the policy in the aws account.  It will also update the policy in the `deployer-policy.json` file.
+
+```shell
+./update_aws_policy.sh
+```
