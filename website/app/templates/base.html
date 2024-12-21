@@ -25,6 +25,7 @@
 
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}">
 
         {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
@@ -32,12 +33,15 @@
     </head>
 
     <body class="{% block body_class %}{% endblock %}">
+        {% include "banner.html" %}
+
         {% wagtailuserbar %}
 
         {% block content %}{% endblock %}
 
         {# Global javascript #}
         <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+        <script type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
 
         {% block extra_js %}
         {# Override this in templates to add extra javascript #}
