@@ -82,6 +82,14 @@ jobs:
           export DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
           make resetadminpassword
 
+      - name: Turn off Bastion Host
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./disable-bastion-host.sh
+
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
