@@ -2,24 +2,26 @@ name: Deploy
 
 on:
   push:
-    branches:
-      - development
-      - test
-      - '*-sandbox'
+    tags:
+      - 'sandbox-*'
+      - 'development'
+      - 'test'
+
 jobs:
   deploy:
-    environment: ${{ github.ref_name }}
+    environment: ${{ startsWith(github.ref, 'refs/tags/sandbox-') && 'sandbox' || github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Environment
         run: |
-          if [[ "${{ github.ref_name }}" == "development" ]]; then
+          if [[ "${{ github.ref }}" == refs/tags/sandbox-* ]]; then
+            TAG_NAME="${{ github.ref_name }}"
+            ENV_NAME=${TAG_NAME#sandbox-}
+            echo "ENVIRONMENT=${ENV_NAME}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "test" ]]; then
+          elif [[ "${{ github.ref }}" == refs/tags/test ]]; then
             echo "ENVIRONMENT=test" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == *-sandbox ]]; then
-            IFS='-' read -ra ADDR <<< "${{ github.ref_name }}"
-            echo "ENVIRONMENT=${ADDR[0]}" >> $GITHUB_ENV
           else
             exit 1
           fi
