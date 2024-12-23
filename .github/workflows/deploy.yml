@@ -9,10 +9,11 @@ on:
 
 jobs:
   deploy:
-    environment: ${{ startsWith(github.ref, 'refs/tags/sandbox-') && 'sandbox' || github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' }}
+    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || github.ref == 'refs/tags/sandbox-cody' && 'cody' }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Environment
+        id: set_env
         run: |
           echo "Debug: github.ref = ${{ github.ref }}"
           echo "Debug: github.ref_name = ${{ github.ref_name }}"
