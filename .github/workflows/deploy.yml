@@ -14,17 +14,27 @@ jobs:
     steps:
       - name: Set Environment
         run: |
+          echo "Debug: github.ref = ${{ github.ref }}"
+          echo "Debug: github.ref_name = ${{ github.ref_name }}"
+
           if [[ "${{ github.ref }}" == refs/tags/sandbox-* ]]; then
             TAG_NAME="${{ github.ref_name }}"
             ENV_NAME=${TAG_NAME#sandbox-}
+            echo "Debug: TAG_NAME = ${TAG_NAME}"
+            echo "Debug: ENV_NAME = ${ENV_NAME}"
             echo "ENVIRONMENT=${ENV_NAME}" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
+            echo "Debug: Matched development tag"
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/test ]]; then
+            echo "Debug: Matched test tag"
             echo "ENVIRONMENT=test" >> $GITHUB_ENV
           else
+            echo "Debug: No matching condition found"
             exit 1
           fi
+
+          echo "Debug: Final ENVIRONMENT value = $(cat $GITHUB_ENV | grep ENVIRONMENT)"
 
       - name: Checkout code
         uses: actions/checkout@v3
