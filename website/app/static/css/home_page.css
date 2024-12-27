@@ -1,0 +1,17 @@
+
+
+.entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.entries-list .entry {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.content {
+    padding: 40px 0;
+}

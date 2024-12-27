@@ -1,0 +1,33 @@
+:root {
+  --dark-blue: rgb(18, 33, 64);
+  --light-blue: rgba(0, 94, 162, 1.00);
+}
+
+
+.blue-banner {
+    background-color: var(--dark-blue);
+}
+
+.blue-banner .dawson {
+    width: 60px;
+}
+
+.wide-container {
+    max-width: 1440px;
+}
+
+.navigation {
+    border: solid var(--light-blue);
+    border-width: 5px 0px 1px 0px;
+    padding: 14px 0px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style-type: none;
+}
+
+.nav-link {
+    color: var(--light-blue);
+    font-weight: bold;
+}

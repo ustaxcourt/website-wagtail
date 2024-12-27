@@ -11,9 +11,22 @@
 {% comment %}
 Delete the line below if you're just getting started and want to remove the welcome screen!
 {% endcomment %}
-<link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
-{{ page.body|richtext }}
+
+<div class="grid-container wide-container">
+    <div class="content">
+<div class="entries-list">
+    {% for entry in page.entries.all %}
+    <div class="entry">
+        <h3>{{ entry.title }}</h3>
+        <div class="entry-body">{{ entry.body | richtext }}</div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+</div>
+
 {% endblock content %}
