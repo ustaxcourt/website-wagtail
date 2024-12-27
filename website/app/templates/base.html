@@ -24,8 +24,8 @@
         {% endif %}
 
         {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
 
         {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
@@ -34,6 +34,7 @@
 
     <body class="{% block body_class %}{% endblock %}">
         {% include "banner.html" %}
+        {% include "header.html" %}
 
         {% wagtailuserbar %}
 
