@@ -22,6 +22,12 @@ cd website
 pyenv install
 ```
 
+#### Setup Ruff
+
+```
+brew install ruff
+```
+
 #### Setup Pre-Commit
 
 Before you commit to the repo, we run some checks to verify and fix the formatting of python.
