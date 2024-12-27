@@ -7,5 +7,6 @@ from .base import *  # noqa: F403
 ALLOWED_HOSTS = [os.getenv("DOMAIN_NAME")]
 SECRET_KEY = os.getenv("SECRET_KEY")
 CSRF_TRUSTED_ORIGINS = ["https://*.ustaxcourt.gov"]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 DEBUG = False
