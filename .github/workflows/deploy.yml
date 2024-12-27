@@ -95,6 +95,7 @@ jobs:
           make migrate
           make superuser settings="app.settings.production"|| echo "user already exists, skipping"
           export DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
+          # TODO: I do not think this is working; after deploing to dev, the password was still the ustcAdminPW! password
           make resetadminpassword
 
       # TODO: disabling for now because of An error occurred (IncorrectInstanceState) when calling the StopInstances operation: This instance 'i-02e10df312188338c' is not in a state from which it can be stopped.
