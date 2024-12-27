@@ -3,8 +3,8 @@
 
 This repository contains the code for [ustaxcourt.gov](https://ustaxcourt.gov).  It is a wagtail website deployed to AWS. You can access the deployed environments at the following URLs:
 
-- [Development](http://dev-load-balancer-2111086971.us-east-1.elb.amazonaws.com/)
-- [Test](http://test-load-balancer-1349842350.us-east-1.elb.amazonaws.com/)
+- [Development](https://dev-web.ustaxcourt.gov)
+- [Test](https://test-web.ustaxcourt.gov)
 
 Note, we plan to get sub domains for these environments, and these links are subject to change for now.  Also, until we get the domains, they will be non https (so not secure).
 

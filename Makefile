@@ -57,6 +57,10 @@ destroy:
 	@echo "Destroying environment: $(env)"
 	cd infra && ENVIRONMENT=$(env) ./destroy.sh
 
+tag:
+	git tag -f $(tag)
+	git push -f origin $(tag)
+
 teardown:
 	@echo "Cleaning up..."
 
