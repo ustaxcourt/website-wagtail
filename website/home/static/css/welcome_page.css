@@ -9,10 +9,10 @@ html {
 }
 
 body {
-    max-width: 960px;
+    width: 100vw;
     min-height: 100vh;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 0 auto;
     color: #231f20;
     font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
     line-height: 1.25;

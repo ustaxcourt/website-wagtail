@@ -117,6 +117,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
   - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
+  - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
 - create an iam `deployer` user
   - attach policies directly, create a new policy called `deployer-policy`, paste in the `deployer-policy.json`
   - attach the new policy to your user
@@ -159,6 +160,23 @@ The application is publically accessible via an AWS ALB which points to ECS.
 
 ![./docs/diagrams/ci-cd.png](./docs/diagrams/ci-cd.png)
 
+## Route53 Setup
+
+The domains are setup using Route53.  It's good to know that there is a service called get.gov which is a registrar used by the us government for setting up domains.  The Tax Court domain of ustaxcourt.gov is registered through get.gov, and they have a NS record setup to point to a route53 zone inside of the ustaxcourt.gov aws account.  That AWS account then points to the route53 zone in our various sandbox and production accounts.
+
+Note: Jim or someone on the tax court is responsible for adding those NS records manually to their aws account.  See the diagram below for more details.
+
+![./docs/diagrams/route53-setup.png](./docs/diagrams/route53-setup.png)
+
+
+## Updating the Deployer Policy
+
+The deployer policy is setup in the aws account using the `update_aws_policy.sh` script.  This script will get the aws account id and use that to update the policy in the aws account.  It will also update the policy in the `deployer-policy.json` file.
+
+```shell
+./update_aws_policy.sh
+```
+
 # Pull Request Workflow
 
 This document clarifies the process a developer should follow when assigned to an issue/story.  
@@ -195,4 +213,3 @@ Additionally, we will use tags to facilitate deployment to production and sandbo
 > If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
-

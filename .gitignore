@@ -179,6 +179,9 @@ infra/execution-plan
 infra/destructive-plan
 infra/iam/*generated-deployer-access-key.json
 
+website/node_modules
+website/app/static/uswds/*
+
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
@@ -233,3 +236,5 @@ web_modules/
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
+
+.vscode

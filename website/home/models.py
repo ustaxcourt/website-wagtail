@@ -1,29 +1,25 @@
+from django.db import models
 from wagtail.models import Page
 from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel
+from modelcluster.fields import ParentalKey
 
 
 class HomePage(Page):
-    body = RichTextField(blank=True)
+    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
     content_panels = Page.content_panels + [
-        FieldPanel("body"),
+        FieldPanel("intro"),
+        InlinePanel("entries", label="Entries"),
     ]
 
 
-class TestPage(Page):
-    body = RichTextField(blank=True)
-    other = RichTextField(blank=True)
-
-    content_panels = Page.content_panels + [
-        FieldPanel("other"),
-        FieldPanel("body"),
-    ]
-
-
-class DemoPage(Page):
+class HomePageEntry(models.Model):
+    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
     body = RichTextField(blank=True)
 
-    content_panels = Page.content_panels + [
+    panels = [
+        FieldPanel("title"),
         FieldPanel("body"),
     ]
