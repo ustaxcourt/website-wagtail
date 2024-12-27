@@ -179,7 +179,7 @@ The deployer policy is setup in the aws account using the `update_aws_policy.sh`
 
 # Pull Request Workflow
 
-This document clarifies the process a developer should follow when assigned to an issue/story.  
+This document clarifies the process a developer should follow when assigned to an issue/story.
 
 ## Summary
 
@@ -189,7 +189,7 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
-## The Workflow 
+## The Workflow
 1. Pick up a story on the main board,
 2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
     - `type`: the value of the **Type** column in Monday.com
@@ -197,7 +197,7 @@ Additionally, we will use tags to facilitate deployment to production and sandbo
     - `monday-id`: the valu of the **Item ID** in Monday.com
 3. Develop and test locally
 4. When ready for review, push branch to github (if not done already) and create a draft PR to `main`
-5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox-name` , e.g. 
+5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox-name` , e.g.
 ```
     git tag -f jim-sandbox
     git push -f origin jim-sandbox
@@ -208,7 +208,7 @@ Additionally, we will use tags to facilitate deployment to production and sandbo
   - by moving the story card in Monday.com to the `Watiting for review` lane, and
   - by notifying the stakeholders (UX, PO) in Teams that the feature is ready for testing.
 7. UX verifies AC in sandbox
-8. PO verifies AC in sandbox 
+8. PO verifies AC in sandbox
 9. Take your PR out of draft and request reviews
 > If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
