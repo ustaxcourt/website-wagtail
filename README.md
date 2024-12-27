@@ -160,7 +160,6 @@ The application is publically accessible via an AWS ALB which points to ECS.
 
 ![./docs/diagrams/ci-cd.png](./docs/diagrams/ci-cd.png)
 
-
 ## Route53 Setup
 
 The domains are setup using Route53.  It's good to know that there is a service called get.gov which is a registrar used by the us government for setting up domains.  The Tax Court domain of ustaxcourt.gov is registered through get.gov, and they have a NS record setup to point to a route53 zone inside of the ustaxcourt.gov aws account.  That AWS account then points to the route53 zone in our various sandbox and production accounts.
@@ -177,3 +176,40 @@ The deployer policy is setup in the aws account using the `update_aws_policy.sh`
 ```shell
 ./update_aws_policy.sh
 ```
+
+# Pull Request Workflow
+
+This document clarifies the process a developer should follow when assigned to an issue/story.  
+
+## Summary
+
+Generally speaking, this project will follow a [feature-branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow):
+-  `main` branch represents the official project history, and the starting point for all story work
+- developers work on stories by branching off of `main`, implementing their work in a feature branch, and ultimately integrating their feature branch back into `main` once their work is complete
+
+Additionally, we will use tags to facilitate deployment to production and sandbox instances.
+
+## The Workflow 
+1. Pick up a story on the main board,
+2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
+    - `type`: the value of the **Type** column in Monday.com
+    - `brief-description`: a few words to describe the purpose of the branch
+    - `monday-id`: the valu of the **Item ID** in Monday.com
+3. Develop and test locally
+4. When ready for review, push branch to github (if not done already) and create a draft PR to `main`
+5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox-name` , e.g. 
+```
+    git tag -f jim-sandbox
+    git push -f origin jim-sandbox
+```
+> Additionally, you can add/reassign tags using the Github website.
+
+6. Developer notifies team that feature is ready for review:
+  - by moving the story card in Monday.com to the `Watiting for review` lane, and
+  - by notifying the stakeholders (UX, PO) in Teams that the feature is ready for testing.
+7. UX verifies AC in sandbox
+8. PO verifies AC in sandbox 
+9. Take your PR out of draft and request reviews
+> If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
+10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
+11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
