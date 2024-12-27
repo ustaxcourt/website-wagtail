@@ -38,7 +38,12 @@ resource "aws_secretsmanager_secret_version" "ecs_task_secrets_version" {
 
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
-    environment: [],
+    environment: [
+      {
+        name = "DOMAIN_NAME",
+        value = var.domain_name
+      }
+    ],
     secrets: [
       {
         name = "DATABASE_URL",
@@ -49,6 +54,7 @@ resource "aws_ecs_task_definition" "this" {
         valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:SECRET_KEY::"
       }
     ],
+
     essential    = true,
     image        = docker_registry_image.this.name,
     name         = local.container_name,
