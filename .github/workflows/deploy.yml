@@ -86,13 +86,14 @@ jobs:
           export DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
           make resetadminpassword
 
-      - name: Turn off Bastion Host
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          cd infra
-          ./disable-bastion-host.sh
+      # TODO: disabling for now because of An error occurred (IncorrectInstanceState) when calling the StopInstances operation: This instance 'i-02e10df312188338c' is not in a state from which it can be stopped.
+      # - name: Turn off Bastion Host
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #   run: |
+      #     cd infra
+      #     ./disable-bastion-host.sh
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
