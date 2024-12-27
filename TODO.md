@@ -1,0 +1,17 @@
+- [ ] think about how we are going to setup the super user account
+- [ ] get the application deployed to dev account via github actions
+- [ ] deploy the smallest RDS instance to support wagtail
+    - [ ] database secrets should live in aws secrets manager
+    - [ ] should backup data up to 30 days
+- [ ] setup HTTPS
+- [ ] configure the deployment to know how to hook into the rds instance
+- [ ] create automated process to run the wagtail migration scripts
+- [ ] deploy an s3 bucket and configure wagtail to store assets into it
+- [ ] hook up a custom domain
+    - [ ] figure out if we plan to have subdomains for this app, i.e. stg.ustaxcourt.gov
+- [ ] break up the terraform into modules
+- [ ] make a spike to research some other deployment options, including
+     - [ ] lightsail
+     - [ ] amplify
+     - [ ] elastic beanstalk
+     - [ ] app runner

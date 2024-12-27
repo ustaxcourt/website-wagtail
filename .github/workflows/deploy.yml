@@ -1,0 +1,112 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - development
+      - test
+      - '*-sandbox'
+jobs:
+  deploy:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Environment
+        run: |
+          if [[ "${{ github.ref_name }}" == "development" ]]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "test" ]]; then
+            echo "ENVIRONMENT=test" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == *-sandbox ]]; then
+            IFS='-' read -ra ADDR <<< "${{ github.ref_name }}"
+            echo "ENVIRONMENT=${ADDR[0]}" >> $GITHUB_ENV
+          else
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.6
+          terraform_wrapper: false
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Apply Terraform
+        id: tf_outputs
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./setup-tf-buckets.sh
+          ./deploy.sh
+          bastion_ip=$(terraform output -raw bastion_public_ip)
+          db_endpoint=$(terraform output -raw database_endpoint)
+          echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
+          echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}" # prevent the password from logging out
+          echo "SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${SUPERUSER_PASSWORD}" # prevent the password from logging out
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations
+        env:
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+        run: |
+          cd website
+          set -e
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          make setup
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make migrate
+          make superuser settings="app.settings.production"|| echo "user already exists, skipping"
+          export DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
+          make resetadminpassword
+
+      - name: Turn off Bastion Host
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./disable-bastion-host.sh
+
+      - name: Manually Deploy ECS Task (Post-Migration)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          taskArn=$(aws ecs list-task-definitions \
+            --family-prefix "${ENVIRONMENT}-website-tasks" \
+            --sort DESC \
+            --region us-east-1 \
+            --query 'taskDefinitionArns[0]' \
+            --output text
+          )
+
+          aws ecs update-service \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --service "${ENVIRONMENT}-website-service" \
+            --task-definition "${taskArn}" \
+            --desired-count 1 \
+            --force-new-deployment \
+            --region us-east-1
