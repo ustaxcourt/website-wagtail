@@ -2,50 +2,67 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>
-            {% block title %}
-            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
-            {% endblock %}
-            {% block title_suffix %}
-            {% wagtail_site as current_site %}
-            {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
-            {% endblock %}
-        </title>
-        {% if page.search_description %}
-        <meta name="description" content="{{ page.search_description }}" />
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      {% block title %}
+        {% if page.seo_title %}
+          {{ page.seo_title }}
+        {% else %}
+          {{ page.title }}
         {% endif %}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        {# Force all links in the live preview panel to be opened in a new tab #}
-        {% if request.in_preview_panel %}
-        <base target="_blank">
+      {% endblock %}
+      {% block title_suffix %}
+        {% wagtail_site as current_site %}
+        {% if current_site and current_site.site_name %}
+          - {{ current_site.site_name }}
         {% endif %}
+      {% endblock %}
+    </title>
+    {% if page.search_description %}
+      <meta name="description" content="{{ page.search_description }}" />
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+    {# Force all links in the live preview panel to be opened in a new tab #}
+    {% if request.in_preview_panel %}
+      <base target="_blank" />
+    {% endif %}
 
-        {% block extra_css %}
-        {# Override this in templates to add extra stylesheets #}
-        {% endblock %}
-    </head>
+    {# Global stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
 
-    <body class="{% block body_class %}{% endblock %}">
-        {% include "banner.html" %}
-        {% include "header.html" %}
+    {# Web Fonts #}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
 
-        {% wagtailuserbar %}
+    {% block extra_css %}
+      {# Override this in templates to add extra stylesheets #}
+    {% endblock %}
+  </head>
 
-        {% block content %}{% endblock %}
+  <body class="{% block body_class %}
 
-        {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
-        <script type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
+    {% endblock %}">
+    {% include 'banner.html' %}
+    {% include 'header.html' %}
 
-        {% block extra_js %}
-        {# Override this in templates to add extra javascript #}
-        {% endblock %}
-    </body>
+    {% wagtailuserbar %}
+
+    {% block content %}
+
+    {% endblock %}
+
+    {% include 'footer.html' %}
+
+    {# Global javascript #}
+    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
+
+    {% block extra_js %}
+      {# Override this in templates to add extra javascript #}
+    {% endblock %}
+  </body>
 </html>

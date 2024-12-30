@@ -14,11 +14,13 @@
 {% endblock %}
 
 {% block content %}
+  <img src="{% static 'images/building.jpg' %}" />
+
   <div class="grid-container wide-container">
     <div class="content">
       <div class="entries-list">
         {% for entry in page.entries.all %}
-          <div class="entry">
+          <div class="entry shadow-2">
             <h3>{{ entry.title }}</h3>
             <div class="entry-body">{{ entry.body|richtext }}</div>
           </div>
