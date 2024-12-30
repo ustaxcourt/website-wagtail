@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ["*"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-os.environ["DJANGO_SUPERUSER_PASSWORD"] = "ustcAdminPW!"
+os.environ.setdefault("DJANGO_SUPERUSER_PASSWORD", "ustcAdminPW!")
 
 try:
     from .local import *  # noqa: F403
