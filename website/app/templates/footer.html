@@ -1,15 +1,25 @@
 {% load static %}
 
+{% load wagtailcore_tags %}
+
 <footer>
   <div class="grid-container wide-container">
     <div class="grid-row">
       <div class="grid-col">
         <h3>Technical Questions?</h3>
-        <p>For assistance with DAWSON, view the FAQs and other materials here. To contact the Webmaster for technical issues or problems with the website, send an email to webmaster@ustaxcourt.gov. No documents can be filed with the Court at this email address.</p>
+        <p>
+          {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
+            {{ technicalQuestions|richtext }}
+          {% endwith %}
+        </p>
       </div>
       <div class="grid-col">
         <h3>Other Questions?</h3>
-        <p>For all non-technical questions, contact the Office of the Clerk of the Court at (202) 521-0700.</p>
+        <p>
+          {% with otherQuestions=settings.home.Footer.otherQuestions %}
+            {{ otherQuestions|richtext }}
+          {% endwith %}
+        </p>
       </div>
     </div>
   </div>
