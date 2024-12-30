@@ -33,12 +33,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
 
+    {# Web Fonts #}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+
     {% block extra_css %}
       {# Override this in templates to add extra stylesheets #}
     {% endblock %}
   </head>
 
   <body class="{% block body_class %}
+
     {% endblock %}">
     {% include 'banner.html' %}
     {% include 'header.html' %}
@@ -46,6 +52,7 @@
     {% wagtailuserbar %}
 
     {% block content %}
+
     {% endblock %}
 
     {% include 'footer.html' %}
