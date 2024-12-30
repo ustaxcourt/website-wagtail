@@ -94,7 +94,7 @@ jobs:
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
           make superuser settings="app.settings.production"|| echo "user already exists, skipping"
-          DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD make resetadminpassword settings="app.settings.production"
+          make resetadminpassword settings="app.settings.production"
 
       # TODO: disabling for now because of An error occurred (IncorrectInstanceState) when calling the StopInstances operation: This instance 'i-02e10df312188338c' is not in a state from which it can be stopped.
       # - name: Turn off Bastion Host
