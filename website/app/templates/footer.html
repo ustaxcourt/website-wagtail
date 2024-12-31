@@ -3,9 +3,9 @@
 {% load wagtailcore_tags %}
 
 <footer>
-  <div class="grid-container wide-container">
-    <div class="grid-row">
-      <div class="grid-col">
+  <div class="grid-container">
+    <div class="grid-row grid-gap">
+      <div class="grid-col-12 desktop:grid-col">
         <h3>Technical Questions?</h3>
         <p>
           {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
@@ -13,7 +13,7 @@
           {% endwith %}
         </p>
       </div>
-      <div class="grid-col">
+      <div class="grid-col-12 desktop:grid-col">
         <h3>Other Questions?</h3>
         <p>
           {% with otherQuestions=settings.home.Footer.otherQuestions %}
@@ -26,7 +26,7 @@
 </footer>
 
 <div class="footer-address">
-  <div class="grid-container wide-container">
+  <div class="grid-container">
     <div class="content">
       <a href="/"><img class="seal" src="{% static 'images/seal.png' %}" /></a>
 

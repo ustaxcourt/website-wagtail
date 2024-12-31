@@ -1,13 +1,14 @@
 {% load static wagtailcore_tags %}
 
 <header class="blue-banner">
-  <div class="grid-container wide-container padding-1">
+  <div class="grid-container padding-1">
     <div class="usa-header__inner display-flex flex-justify flex-align-center">
-      <img src="{% static 'images/logo.png' %}" alt="US Tax Court Logo">
-
-      <a href="https://dawson.ustaxcourt.gov/">
-        <img class="dawson" src="{% static 'images/dawson.png' %}" alt="Dawson Logo">
+      <a>
+        <img class="tablet:display-none logo-seal" src="{% static 'images/logo_seal.png' %}" alt="US Tax Court Logo" />
+        <img class="display-none tablet:display-block" src="{% static 'images/logo.png' %}" alt="US Tax Court Logo" />
       </a>
+
+      <a href="https://dawson.ustaxcourt.gov/"><img class="dawson" src="{% static 'images/dawson.png' %}" alt="Dawson Logo" /></a>
     </div>
   </div>
 </header>
@@ -15,6 +16,6 @@
 <ul class="navigation">
   <li class="nav-link">ABOUT THE COURT</li>
   <li class="nav-link">RULES & GUIDANCE</li>
-  <li class="nav-link">ORDERS & OPINIONS </li>
+  <li class="nav-link">ORDERS & OPINIONS</li>
   <li class="nav-link">eFILING & CASE MAINTENANCE</li>
 </ul>
