@@ -32,3 +32,22 @@ jobs:
       run: |
         cd website
         make pytest
+
+    - name: Run Cypress Tests
+      run: |
+        cd website
+        make run &
+        echo "Waiting for application to be ready on port 8000..."
+        for i in {1..30}; do
+          if curl -s http://localhost:8000 > /dev/null; then
+            echo "Application is ready!"
+            break
+          fi
+          echo "Waiting for port 8000... ($i/30)"
+          sleep 2
+        done
+        if ! curl -s http://localhost:8000 > /dev/null; then
+          echo "Application failed to start on port 8000 within the expected time." >&2
+          exit 1
+        fi
+        make test-e2e

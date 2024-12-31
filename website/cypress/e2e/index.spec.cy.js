@@ -1,6 +1,6 @@
 describe('index page', () => {
   beforeEach(() => {
-    cy.visit('http://127.0.0.1:8000/')
+    cy.visit('/')
   })
 
   it('has required federal banner', () => {

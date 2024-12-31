@@ -46,6 +46,10 @@ sqlmigrate:
 migrate:
 	. $(VENV) && python manage.py migrate
 
+reset:
+	. $(VENV) && rm ./db.sqlite3 || echo "file already deleted"
+	make migrate
+
 run:
 	. $(VENV) && python manage.py runserver
 
