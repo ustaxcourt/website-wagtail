@@ -13,6 +13,7 @@
     "@uswds/uswds": "3.10.0"
   },
   "devDependencies": {
-    "@uswds/compile": "^1.2.0"
+    "@uswds/compile": "^1.2.0",
+    "cypress": "^13.17.0"
   }
 }
