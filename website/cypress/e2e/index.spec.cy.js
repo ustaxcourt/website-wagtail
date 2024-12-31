@@ -8,15 +8,17 @@ describe('index page', () => {
   })
 
   it('unhides/hides banner content when button is clicked', () => {
+    // arrange
+    let button = cy.get('button').should('have.class', 'usa-accordion__button').should('have.class', 'usa-accordion__button')
+    let bannerContent = () => cy.get('div').should('have.class', 'usa-banner__content').should('have.class', 'usa-accordion__content wide-container')
+
     // state when loaded
-    cy.get('div').should('have.class', 'usa-banner__content').should('have.class', 'usa-accordion__content wide-container').should('be.hidden') 
+    bannerContent().should('be.hidden')
     
-    // open banner content
-    cy.get('button').should('have.class', 'usa-accordion__button').should('have.class', 'usa-accordion__button').click()
-    cy.get('div').should('have.class', 'usa-banner__content').should('have.class', 'usa-accordion__content wide-container').should('be.visible') 
+    button.click()
+    bannerContent().should('be.visible')
     
-    // click again to close content
-    cy.get('button').should('have.class', 'usa-accordion__button').should('have.class', 'usa-accordion__button').click()
-    cy.get('div').should('have.class', 'usa-banner__content').should('have.class', 'usa-accordion__content wide-container').should('be.hidden') 
+    button.click()
+    bannerContent().should('be.hidden')
   })
 })
