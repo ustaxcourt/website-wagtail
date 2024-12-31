@@ -16,11 +16,9 @@
 }
 
 .hero-image {
-    height: 400px;
+    max-height: 300px;
     width: 100%;
     object-fit: cover;
-    /* -160 is for the building_far.png image */
-    object-position: center -160px; /* Offsets the image content up by 50px */
 }
 
 .carousel {
