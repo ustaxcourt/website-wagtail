@@ -14,10 +14,10 @@ describe('index page', () => {
 
     // state when loaded
     bannerContent().should('be.hidden')
-    
+
     button.click()
     bannerContent().should('be.visible')
-    
+
     button.click()
     bannerContent().should('be.hidden')
   })
