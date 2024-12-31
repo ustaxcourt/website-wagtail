@@ -2,8 +2,8 @@ describe('index page', () => {
   beforeEach(() => {
     cy.visit('http://127.0.0.1:8000/')
   })
-  
-  it('has required us govt banner', () => {
+
+  it('has required federal banner', () => {
     cy.get('section').should('have.class', 'usa-banner')
   })
 
