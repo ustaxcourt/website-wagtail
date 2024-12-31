@@ -14,3 +14,16 @@
 .content {
     padding: 40px 0;
 }
+
+.hero-image {
+    height: 400px;
+    width: 100%;
+    object-fit: cover;
+    /* -160 is for the building_far.png image */
+    object-position: center -160px; /* Offsets the image content up by 50px */
+}
+
+.carousel {
+    display: flex;
+    width: 100%;
+}
