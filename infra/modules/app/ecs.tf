@@ -164,6 +164,22 @@ data "aws_iam_policy_document" "this" {
     }
   }
 }
+
+data "aws_iam_policy_document" "ecs_s3_access_policy" {
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject"
+    ]
+    effect    = "Allow"
+    resources = [
+      "${aws_s3_bucket.private_bucket.arn}/*"
+    ]
+  }
+}
+
+
+
 resource "aws_iam_role" "this" { assume_role_policy = data.aws_iam_policy_document.this.json }
 
 resource "aws_iam_role_policy_attachment" "this" {
@@ -174,6 +190,12 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_logs" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+resource "aws_iam_role_policy" "ecs_s3_access" {
+  name   = "ecs_s3_access_policy"
+  role   = aws_iam_role.this.name
+  policy = data.aws_iam_policy_document.ecs_s3_access_policy.json
 }
 
 resource "aws_iam_role_policy" "ecs_task_secrets_access" {
