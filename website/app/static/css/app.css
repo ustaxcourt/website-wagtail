@@ -5,10 +5,16 @@
   --light-blue: rgba(0, 94, 162, 1.00);
   --medium-gray: rgb(240, 240, 240);
   --dark-gray: rgb(220, 222, 224);
+  --link-hover-blue: #003256;
   --link-blue: rgb(0, 94, 162);
   --heading-font: "Noto Serif JP";
   --body-font: 'Source Sans Pro';
   --base-font-size: 17px;
+  --container-width: 1440px;
+}
+
+.font-heading {
+    font-family: var(--heading-font);
 }
 
 body {
@@ -32,13 +38,21 @@ a {
     color: var(--link-blue);
     font-weight: bold;
     text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--link-hover-blue);
 }
 
 /* ustc overrides */
 .grid-container {
-    max-width: 1440px;
+    max-width: var(--container-width);
 }
 
+
+/* custom */
 .wide-container {
-    max-width: 1440px;
+    max-width: var(--container-width);
 }

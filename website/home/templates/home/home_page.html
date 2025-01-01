@@ -13,9 +13,30 @@
   <link rel="stylesheet" href="{% static 'css/home_page.css' %}" />
 {% endblock %}
 
+{% block extra_js %}
+  <script>
+    const rotationPeriod = 5000
+
+    function rotateImages() {
+      const images = document.querySelectorAll('.hero-image')
+      let currentIndex = 0
+
+      setInterval(() => {
+        images.forEach((img) => img.classList.remove('active'))
+        currentIndex = (currentIndex + 1) % images.length
+        images[currentIndex].classList.add('active')
+      }, rotationPeriod)
+    }
+
+    document.addEventListener('DOMContentLoaded', rotateImages)
+  </script>
+{% endblock %}
+
 {% block content %}
   <div class="carousel">
-    <img class="hero-image" src="{% static 'images/home/building_far.jpg' %}" />
+    <img class="hero-image active" src="{% static 'images/home/building_far.jpg' %}" />
+    <img class="hero-image" src="{% static 'images/home/building_tree.jpg' %}" />
+    <img class="hero-image" src="{% static 'images/home/building_front.jpg' %}" />
   </div>
 
   <div class="grid-container">

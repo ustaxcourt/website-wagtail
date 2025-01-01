@@ -15,13 +15,23 @@
     padding: 40px 0;
 }
 
-.hero-image {
-    max-height: 300px;
+.carousel {
+    position: relative;
     width: 100%;
-    object-fit: cover;
+    aspect-ratio: 16/9;
+    max-height: 300px;
+    overflow: hidden;
 }
 
-.carousel {
-    display: flex;
+.hero-image {
+    position: absolute;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+.hero-image.active {
+    opacity: 1;
 }
