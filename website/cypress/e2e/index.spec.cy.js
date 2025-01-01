@@ -4,13 +4,13 @@ describe('index page', () => {
   })
 
   it('has required federal banner', () => {
-    cy.get('section').should('have.class', 'usa-banner')
+    cy.get('[data-testid="usa-banner"]').contains('An official website of the United States government')
   })
 
   it('unhides/hides banner content when button is clicked', () => {
     // arrange
-    let button = cy.get('button').should('have.class', 'usa-accordion__button').should('have.class', 'usa-accordion__button')
-    let bannerContent = () => cy.get('div').should('have.class', 'usa-banner__content').should('have.class', 'usa-accordion__content wide-container')
+    let button = cy.get('[data-testid="toggle-usa-banner"]')
+    let bannerContent = () => cy.get('[data-testid="usa-banner-content"]')
 
     // state when loaded
     bannerContent().should('be.hidden')

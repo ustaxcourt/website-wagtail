@@ -1,6 +1,6 @@
 {% load static %}
 
-<section class="usa-banner" aria-label="Official website of the United States government">
+<section data-testid="usa-banner" class="usa-banner" aria-label="Official website of the United States government">
   <div class="usa-accordion">
     <header class="usa-banner__header">
       <div class="usa-banner__inner wide-container">
@@ -11,10 +11,10 @@
           <p class="usa-banner__header-text">An official website of the United States government</p>
           <p class="usa-banner__header-action">Here’s how you know</p>
         </div>
-        <button type="button" class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner-default"><span class="usa-banner__button-text">Here’s how you know</span></button>
+        <button data-testid="toggle-usa-banner" type="button" class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner-default"><span class="usa-banner__button-text">Here’s how you know</span></button>
       </div>
     </header>
-    <div class="usa-banner__content usa-accordion__content wide-container" id="gov-banner-default">
+    <div data-testid="usa-banner-content" class="usa-banner__content usa-accordion__content wide-container" id="gov-banner-default">
       <div class="grid-row grid-gap-lg">
         <div class="usa-banner__guidance tablet:grid-col-6">
           <img class="usa-banner__icon usa-media-block__img" src="{% static 'uswds/img/icon-dot-gov.svg' %}" role="img" alt="" aria-hidden="true" />
