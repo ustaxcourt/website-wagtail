@@ -56,3 +56,27 @@ a:hover {
 .wide-container {
     max-width: var(--container-width);
 }
+
+
+#scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 8px 10px;
+}
+
+#scroll-to-top img {
+    filter: brightness(0) invert(1);
+}
+
+.fade-in {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0s 0.5s; /* Delay visibility to match opacity fade-out */
+}
+
+.fade-in.visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0s 0s; /* Immediate visibility when fading in */
+}
