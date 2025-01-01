@@ -16,6 +16,13 @@
       "Action": [
         "s3:*"
       ],
+      "Resource": "arn:aws:s3:::*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
       "Resource": "arn:aws:s3:::*-ustc-website-assets/*"
     },
     {
