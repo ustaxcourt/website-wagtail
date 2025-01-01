@@ -49,6 +49,7 @@ migrate:
 reset:
 	. $(VENV) && rm ./db.sqlite3 || echo "file already deleted"
 	make migrate
+	make superuser
 
 run:
 	. $(VENV) && python manage.py runserver
