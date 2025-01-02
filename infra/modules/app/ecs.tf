@@ -36,6 +36,19 @@ resource "aws_secretsmanager_secret_version" "ecs_task_secrets_version" {
   })
 }
 
+# Define a new IAM role for the ECS task
+resource "aws_iam_role" "ecs_task_role" {
+  name               = "${var.environment}-ecs-task-role"
+  assume_role_policy = data.aws_iam_policy_document.this.json
+}
+
+# Attach the S3 full access policy to the ECS task role
+resource "aws_iam_role_policy_attachment" "ecs_task_s3_access" {
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+# Updated ECS task definition
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
     environment: [
@@ -81,12 +94,12 @@ resource "aws_ecs_task_definition" "this" {
   }])
   cpu                      = 512 # 1 vCPU
   execution_role_arn       = aws_iam_role.this.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn # Assign task role ARN here
   family                   = "${var.environment}-website-tasks"
   memory                   = 1024 # wagtail recommended minimum
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 }
-
 
 resource "aws_ecs_service" "this" {
   # depends_on = [aws_iam_service_linked_role.ecs]
@@ -169,17 +182,6 @@ data "aws_iam_policy_document" "this" {
   }
 }
 
-data "aws_iam_policy_document" "ecs_s3_access_policy" {
-  statement {
-    actions = [
-      "s3:*"
-    ]
-    effect    = "Allow"
-    resources = [
-      "${aws_s3_bucket.private_bucket.arn}/*"
-    ]
-  }
-}
 
 resource "aws_iam_role" "this" { assume_role_policy = data.aws_iam_policy_document.this.json }
 
@@ -191,12 +193,6 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_logs" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-}
-
-resource "aws_iam_role_policy" "ecs_s3_access" {
-  name   = "ecs_s3_access_policy"
-  role   = aws_iam_role.this.name
-  policy = data.aws_iam_policy_document.ecs_s3_access_policy.json
 }
 
 resource "aws_iam_role_policy" "ecs_task_secrets_access" {
