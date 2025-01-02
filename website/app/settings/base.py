@@ -170,7 +170,6 @@ STORAGES = {
 
 aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
 if aws_bucket_name:
-    print("we are here")
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     }
