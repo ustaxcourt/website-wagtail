@@ -21,9 +21,22 @@
     justify-content: center;
     gap: 40px;
     list-style-type: none;
-}
 
-.nav-link {
-    color: var(--light-blue);
-    font-weight: bold;
+    :hover {
+        .navigation-list {
+            display: flex;
+        }
+    }
+
+    .navigation-list {
+        display: none;
+        list-style-type: none;
+        padding-inline-start: 5px;
+        background-color: #005EA2;
+
+        .nav-link {
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+    }
 }

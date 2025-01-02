@@ -1,21 +1,39 @@
 {% load static wagtailcore_tags %}
+{% load wagtailcore_tags navigation_tags %}
 
 <header class="blue-banner">
+
   <div class="grid-container padding-1">
     <div class="usa-header__inner display-flex flex-justify flex-align-center">
-      <a>
-        <img class="tablet:display-none logo-seal" src="{% static 'images/header/logo_seal.png' %}" alt="US Tax Court Logo" />
-        <img class="display-none tablet:display-block" src="{% static 'images/header/logo.png' %}" alt="US Tax Court Logo" />
+      <a href="/">
+        <img class="tablet:display-none logo-seal" src="{% static 'images/header/logo_seal.png' %}"
+          alt="US Tax Court Logo" />
+        <img class="display-none tablet:display-block" src="{% static 'images/header/logo.png' %}"
+          alt="US Tax Court Logo" />
       </a>
 
-      <a href="https://dawson.ustaxcourt.gov/"><img class="dawson" src="{% static 'images/header/dawson.png' %}" alt="Dawson Logo" /></a>
+      <a href="https://dawson.ustaxcourt.gov/"><img class="dawson" src="{% static 'images/header/dawson.png' %}"
+          alt="Dawson Logo" /></a>
     </div>
   </div>
 </header>
 
+{% get_site_root as site_root %}
 <ul class="navigation">
+  <li><a href="#">ABOUT THE COURT</a>
+    <ul class="navigation-list">
+      {% for menuitem in site_root.get_children.live.in_menu %}
+      <li class="nav-link">
+        <a href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </li>
+</ul>
+
+<!-- <ul class="navigation">
   <li class="nav-link">ABOUT THE COURT</li>
   <li class="nav-link">RULES & GUIDANCE</li>
   <li class="nav-link">ORDERS & OPINIONS</li>
   <li class="nav-link">eFILING & CASE MAINTENANCE</li>
-</ul>
+</ul> -->

@@ -4,6 +4,11 @@ from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 
+from wagtail.admin.panels import (
+    FieldPanel,
+    MultiFieldPanel,
+)
+
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
@@ -17,7 +22,6 @@ class HomePage(Page):
         FieldPanel("intro"),
         InlinePanel("entries", label="Entries"),
     ]
-
 
 @register_setting
 class Footer(BaseGenericSetting):
