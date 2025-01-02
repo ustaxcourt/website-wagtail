@@ -19,3 +19,5 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 DEBUG = True
+
+print(os.environ)
