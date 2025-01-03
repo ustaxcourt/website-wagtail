@@ -105,6 +105,7 @@ jobs:
       #   run: |
       #     cd infra
       #     ./disable-bastion-host.sh
+      #
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
