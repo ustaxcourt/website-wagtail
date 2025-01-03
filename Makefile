@@ -61,7 +61,7 @@ tag:
 	git tag -f $(tag)
 	git push -f origin $(tag)
 
-teardown:
+teardown: destroy
 	@echo "Cleaning up..."
 
 	# Delete the secret if it exists

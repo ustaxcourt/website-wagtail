@@ -90,13 +90,13 @@ jobs:
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
-          make setup
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
           make superuser settings="app.settings.production"|| echo "user already exists, skipping"
           make resetadminpassword settings="app.settings.production"
 
       # TODO: disabling for now because of An error occurred (IncorrectInstanceState) when calling the StopInstances operation: This instance 'i-02e10df312188338c' is not in a state from which it can be stopped.
+      # TODO: disable this for security reasons
       # - name: Turn off Bastion Host
       #   env:
       #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
