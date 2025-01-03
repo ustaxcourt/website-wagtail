@@ -47,9 +47,11 @@ migrate:
 	. $(VENV) && python manage.py migrate
 
 reset:
-	. $(VENV) && rm ./db.sqlite3 || echo "file already deleted"
+	rm ./db.sqlite3 || echo "file already deleted"
+	make makemigrations
 	make migrate
 	make superuser
+	make createpages
 
 run:
 	. $(VENV) && python manage.py runserver
@@ -67,3 +69,7 @@ superuser:
 export DJANGO_SUPERUSER_PASSWORD=$(SUPERUSER_PASSWORD)
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py reset_admin_password
+
+# an idempotent command for creating the pages after all the models / migrations have finished running
+createpages:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_pages

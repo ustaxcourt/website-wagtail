@@ -10,15 +10,6 @@ from wagtail.contrib.settings.models import (
 )
 
 
-class HomePage(Page):
-    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
-
-    content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        InlinePanel("entries", label="Entries"),
-    ]
-
-
 @register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
@@ -32,6 +23,15 @@ class Footer(BaseGenericSetting):
     ]
 
 
+class HomePage(Page):
+    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        InlinePanel("entries", label="Entries"),
+    ]
+
+
 class HomePageEntry(models.Model):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
@@ -40,4 +40,35 @@ class HomePageEntry(models.Model):
     panels = [
         FieldPanel("title"),
         FieldPanel("body"),
+    ]
+
+
+class CaseRelatedFormsPage(Page):
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel("body"),
+        InlinePanel("forms", label="Forms"),
+    ]
+
+
+class CaseRelatedFormsEntry(models.Model):
+    formName = models.CharField(max_length=255)
+    pdf = models.FileField(upload_to="forms/")
+    number = models.CharField(max_length=255)
+    formNameNote = models.CharField(max_length=255)
+    eligibleForEFilingByPetitioners = models.CharField(max_length=255)
+    eligibleForEFilingByPractitioners = models.CharField(max_length=255)
+
+    parentpage = ParentalKey(
+        "CaseRelatedFormsPage", related_name="forms", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("formName"),
+        FieldPanel("formNameNote"),
+        FieldPanel("pdf"),
+        FieldPanel("number"),
+        FieldPanel("eligibleForEFilingByPetitioners"),
+        FieldPanel("eligibleForEFilingByPractitioners"),
     ]
