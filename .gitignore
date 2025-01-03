@@ -242,3 +242,4 @@ web_modules/
 .DS_Store
 
 website/cypress/screenshots/*
+website/media
