@@ -20,20 +20,48 @@
 
 {% get_site_root as site_root %}
 <ul class="navigation">
-  <li><a href="#">ABOUT THE COURT</a>
-    <ul class="navigation-list">
-      {% for menuitem in site_root.get_children.live.in_menu %}
-      <li class="nav-link">
-        <a href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </li>
+    <li><a href="#">ABOUT THE COURT</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+          {% if menuitem.specific.navigation_category == "ABOUT" %}
+            <li class="nav-link">
+              <a href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li><a href="#">RULES & GUIDANCE</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+          {% if menuitem.specific.navigation_category == "RULES" %}
+            <li class="nav-link">
+              <a href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li><a href="#">ORDERS & OPINIONS</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+          {% if menuitem.specific.navigation_category == "ORDERS" %}
+            <li class="nav-link">
+              <a href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li><a href="#">eFILING & CASE MAINTENANCE</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+          {% if menuitem.specific.navigation_category == "eFILING" %}
+            <li class="nav-link">
+              <a href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
 </ul>
-
-<!-- <ul class="navigation">
-  <li class="nav-link">ABOUT THE COURT</li>
-  <li class="nav-link">RULES & GUIDANCE</li>
-  <li class="nav-link">ORDERS & OPINIONS</li>
-  <li class="nav-link">eFILING & CASE MAINTENANCE</li>
-</ul> -->

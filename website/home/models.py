@@ -1,14 +1,9 @@
+from django import forms
 from django.db import models
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
-
-from wagtail.admin.panels import (
-    FieldPanel,
-    MultiFieldPanel,
-)
-
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
@@ -45,3 +40,30 @@ class HomePageEntry(models.Model):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+class NavigationCategories(models.TextChoices):
+    NONE = "NONE", "None"
+    ABOUT_THE_COURT = "ABOUT", "About the Court"
+    RULES_AND_GUIDANCE = "RULES", "Rules and Guidance"
+    ORDERS_AND_OPINIONS = "ORDERS", "Orders and Opinions"
+    eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling and Case Maintenance"
+
+class NavigationMixin(Page):
+    class Meta:
+        abstract = True
+
+    no_index = models.BooleanField(default=False)
+
+    navigation_category = models.TextField(
+        max_length=45,
+        choices=NavigationCategories.choices,
+        default=NavigationCategories.NONE,
+    )
+
+    promote_panels = Page.promote_panels + [
+        FieldPanel("navigation_category", widget=forms.Select)
+    ]
+
+class StandardPage(NavigationMixin):
+    class Meta:
+        abstract = False
