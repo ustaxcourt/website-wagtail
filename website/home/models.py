@@ -18,6 +18,7 @@ class HomePage(Page):
         InlinePanel("entries", label="Entries"),
     ]
 
+
 @register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
@@ -41,12 +42,14 @@ class HomePageEntry(models.Model):
         FieldPanel("body"),
     ]
 
+
 class NavigationCategories(models.TextChoices):
     NONE = "NONE", "None"
     ABOUT_THE_COURT = "ABOUT", "About the Court"
     RULES_AND_GUIDANCE = "RULES", "Rules and Guidance"
     ORDERS_AND_OPINIONS = "ORDERS", "Orders and Opinions"
     eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling and Case Maintenance"
+
 
 class NavigationMixin(Page):
     class Meta:
@@ -64,6 +67,11 @@ class NavigationMixin(Page):
         FieldPanel("navigation_category", widget=forms.Select)
     ]
 
+
 class StandardPage(NavigationMixin):
     class Meta:
         abstract = False
+
+    body = RichTextField(blank=True, help_text="Insert text here.")
+
+    content_panels = Page.content_panels + [FieldPanel("body")]

@@ -5,23 +5,48 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0013_delete_navigationsettings'),
-        ('wagtailcore', '0094_alter_page_locale'),
+        ("home", "0013_delete_navigationsettings"),
+        ("wagtailcore", "0094_alter_page_locale"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='StandardPage',
+            name="StandardPage",
             fields=[
-                ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.page')),
-                ('no_index', models.BooleanField(default=False)),
-                ('navigation_category', models.TextField(choices=[('NONE', 'None'), ('ABOUT', 'About the Court'), ('RULES & GUIDANCE', 'Rules and Guidance'), ('ORDERS & OPINIONS', 'Orders and Opinions'), ('FILING & CASE MAINTENANCE', 'Filing and Case Maintenance')], default='NONE', max_length=45)),
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.page",
+                    ),
+                ),
+                ("no_index", models.BooleanField(default=False)),
+                (
+                    "navigation_category",
+                    models.TextField(
+                        choices=[
+                            ("NONE", "None"),
+                            ("ABOUT", "About the Court"),
+                            ("RULES & GUIDANCE", "Rules and Guidance"),
+                            ("ORDERS & OPINIONS", "Orders and Opinions"),
+                            (
+                                "FILING & CASE MAINTENANCE",
+                                "Filing and Case Maintenance",
+                            ),
+                        ],
+                        default="NONE",
+                        max_length=45,
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('wagtailcore.page',),
+            bases=("wagtailcore.page",),
         ),
     ]

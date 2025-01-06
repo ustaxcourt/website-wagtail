@@ -4,13 +4,12 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0012_navigationsettings'),
+        ("home", "0012_navigationsettings"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='NavigationSettings',
+            name="NavigationSettings",
         ),
     ]

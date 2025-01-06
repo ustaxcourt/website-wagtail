@@ -14,13 +14,17 @@
 
 .navigation {
     border: solid var(--light-blue);
+    background-color: f2f4f4;
     border-width: 5px 0px 1px 0px;
-    padding: 14px 0px;
+    padding: 0px 0px;
     margin: 0;
     display: flex;
     justify-content: center;
     gap: 40px;
     list-style-type: none;
+    height: 52px;
+    display: flex;
+    align-items: center;
 
     :hover {
         .navigation-list {
@@ -33,10 +37,28 @@
         list-style-type: none;
         padding-inline-start: 5px;
         background-color: #005EA2;
+        position: absolute;
+        top: 190px;
+        min-width: 320px;
+        z-index: 500;
+        flex-direction: column;
+        padding: 10px;
 
         .nav-link {
             color: #FFFFFF;
             font-weight: bold;
+            padding: 4px;
+
+            a {
+                color: #FFFFFF;
+                padding: 3px 10px;
+            }
         }
     }
+}
+
+.navigation-header{
+    height: 55px;
+    display: flex;
+    align-items: center;
 }

@@ -4,22 +4,35 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0011_home_page_meta'),
+        ("home", "0011_home_page_meta"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='NavigationSettings',
+            name="NavigationSettings",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('linkedin_url', models.URLField(blank=True, verbose_name='LinkedIn URL')),
-                ('github_url', models.URLField(blank=True, verbose_name='GitHub URL')),
-                ('mastodon_url', models.URLField(blank=True, verbose_name='Mastodon URL')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "linkedin_url",
+                    models.URLField(blank=True, verbose_name="LinkedIn URL"),
+                ),
+                ("github_url", models.URLField(blank=True, verbose_name="GitHub URL")),
+                (
+                    "mastodon_url",
+                    models.URLField(blank=True, verbose_name="Mastodon URL"),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

@@ -30,6 +30,11 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 8px;
 }
 
+h1 {
+    margin-bottom: 8.5px;
+    line-height: 41.6px;
+}
+
 h3 {
     font-size: 1.5rem;
 }
@@ -79,4 +84,14 @@ a:hover {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.5s ease, visibility 0s 0s; /* Immediate visibility when fading in */
+}
+
+.foundry-divider-simple {
+    margin: 17px 0 17px 0;
+    border-top: 1px solid #eeeeee;
+    height: 0;
+}
+
+.nav-icon {
+    height: 16px;
 }
