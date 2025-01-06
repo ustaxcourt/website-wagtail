@@ -26,7 +26,7 @@
           {% for menuitem in site_root.get_children.live.in_menu %}
             {% if menuitem.specific.navigation_category == "ABOUT" %}
               <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.title }}</a>
+                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
               </li>
             {% endif %}
           {% endfor %}
@@ -37,7 +37,7 @@
           {% for menuitem in site_root.get_children.live.in_menu %}
             {% if menuitem.specific.navigation_category == "RULES" %}
               <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.title }}</a>
+                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
               </li>
             {% endif %}
           {% endfor %}
@@ -48,7 +48,7 @@
           {% for menuitem in site_root.get_children.live.in_menu %}
             {% if menuitem.specific.navigation_category == "ORDERS" %}
               <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.title }}</a>
+                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
               </li>
             {% endif %}
           {% endfor %}
@@ -59,7 +59,7 @@
           {% for menuitem in site_root.get_children.live.in_menu %}
             {% if menuitem.specific.navigation_category == "eFILING" %}
               <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.title }}</a>
+                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
               </li>
             {% endif %}
           {% endfor %}
