@@ -54,7 +54,13 @@ class CaseRelatedFormsPage(Page):
 
 class CaseRelatedFormsEntry(models.Model):
     formName = models.CharField(max_length=255)
-    pdf = models.FileField(upload_to="forms/")
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     number = models.CharField(max_length=255)
     formNameNote = models.CharField(max_length=255)
     eligibleForEFilingByPetitioners = models.CharField(max_length=255)

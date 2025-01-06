@@ -7,6 +7,8 @@ from home.models import (
 )  # Update to include your form model
 from django.core.files import File
 import os
+from wagtail.documents import get_document_model
+
 
 forms_data = [
     {
@@ -274,8 +276,16 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"PDF file not found at {pdf_path}."))
             return
 
+        Document = get_document_model()
+
         # Create the form record - remove the add_child call
         with open(pdf_path, "rb") as pdf_file:
+            document = Document(
+                title=formData["formName"],
+                file=File(pdf_file, name=os.path.basename(pdf_path)),
+            )
+            document.save()
+
             form = CaseRelatedFormsEntry(
                 formName=formData["formName"],
                 formNameNote=formData["formNameNote"],
@@ -286,7 +296,7 @@ class Command(BaseCommand):
                 eligibleForEFilingByPractitioners=formData[
                     "eligibleForEFilingByPractitioners"
                 ],
-                pdf=File(pdf_file, name=os.path.basename(pdf_path)),
+                pdf=document,
                 parentpage=parent_page,  # Use parentpage directly, not parentpage_id
             )
             form.save()  # Just save the model directly
