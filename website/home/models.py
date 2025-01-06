@@ -9,7 +9,6 @@ from wagtail.contrib.settings.models import (
     register_setting,
 )
 
-
 class HomePage(Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
@@ -69,9 +68,6 @@ class NavigationMixin(Page):
         FieldPanel("navigation_category", widget=forms.Select),
         FieldPanel("menu_item_name")
     ]
-
-    
-
 
 class StandardPage(NavigationMixin):
     class Meta:

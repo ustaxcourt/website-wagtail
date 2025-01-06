@@ -14,7 +14,7 @@
 
 .navigation {
     border: solid var(--light-blue);
-    background-color: f2f4f4;
+    background-color: #f2f4f4;
     border-width: 5px 0px 1px 0px;
     padding: 0px 0px;
     margin: 0;
@@ -30,6 +30,11 @@
         .navigation-list {
             display: flex;
         }
+    }
+
+    .nav-hamburger {
+        height: 16px;
+        display: none;
     }
 
     .navigation-list {
@@ -57,8 +62,35 @@
     }
 }
 
-.navigation-header{
+.navigation-header {
     height: 55px;
     display: flex;
     align-items: center;
+}
+
+
+@media (max-width: 480px) {
+
+    .navigation-header {
+        display: none;
+    }
+
+    .navigation-header.displayed-navigation-header {
+        display: flex;
+    }
+
+    .navigation {
+        flex-direction: column;
+        .nav-hamburger {
+            display: flex;
+            height: 16px;
+
+            :hover {
+                +.navigation {
+                    display: flex;
+                }
+            }
+
+        }
+    }
 }

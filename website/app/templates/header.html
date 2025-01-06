@@ -21,49 +21,69 @@
 {% get_site_root as site_root %}
 <div class="navigation-bar">
   <ul class="navigation">
-      <li class="navigation-header"><a href="#">ABOUT THE COURT</a>
-        <ul class="navigation-list">
-          {% for menuitem in site_root.get_children.live.in_menu %}
-            {% if menuitem.specific.navigation_category == "ABOUT" %}
-              <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
-      <li class="navigation-header"><a href="#">RULES & GUIDANCE</a>
-        <ul class="navigation-list">
-          {% for menuitem in site_root.get_children.live.in_menu %}
-            {% if menuitem.specific.navigation_category == "RULES" %}
-              <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
-      <li class="navigation-header"><a href="#">ORDERS & OPINIONS</a>
-        <ul class="navigation-list">
-          {% for menuitem in site_root.get_children.live.in_menu %}
-            {% if menuitem.specific.navigation_category == "ORDERS" %}
-              <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
-      <li class="navigation-header"><a href="#">eFILING & CASE MAINTENANCE</a>
-        <ul class="navigation-list">
-          {% for menuitem in site_root.get_children.live.in_menu %}
-            {% if menuitem.specific.navigation_category == "eFILING" %}
-              <li class="nav-link">
-                <a href="{% pageurl menuitem %}"><img class="nav-icon" src="{% static 'images/header/chevron-right.svg' %}" /> {{ menuitem.specific.menu_item_name }}</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
+    <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
+    <li class="navigation-header"><a href="#">ABOUT THE COURT</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "ABOUT" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+              src="{% static 'images/header/chevron-right.svg' %}" />
+            {{ menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li class="navigation-header"><a href="#">RULES & GUIDANCE</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "RULES" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+              src="{% static 'images/header/chevron-right.svg' %}" />
+            {{ menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li class="navigation-header"><a href="#">ORDERS & OPINIONS</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "ORDERS" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+              src="{% static 'images/header/chevron-right.svg' %}" />
+            {{ menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li class="navigation-header"><a href="#">eFILING & CASE MAINTENANCE</a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "eFILING" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+              src="{% static 'images/header/chevron-right.svg' %}" />
+            {{ menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
   </ul>
 </div>
+
+{% block extra_js %}
+<script>
+  function toggleHeaders(){
+    const elements = document.getElementsByClassName("navigation-header");
+    for(element of elements){
+      element.classList.add("displayed-navigation-header");
+    }
+  }
+</script>
+{% endblock %}
