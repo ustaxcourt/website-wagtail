@@ -6,13 +6,13 @@ bucket_name="${ENVIRONMENT}-ustc-website-assets"
 # Check if bucket exists
 if aws s3 ls "s3://${bucket_name}" 2>&1 | grep -q 'NoSuchBucket'; then
     echo "Bucket ${bucket_name} does not exist, continuing to run terraform destroy"
-    return 0
+    exit 0
 fi
 
 echo "Found bucket: ${bucket_name}"
-echo "Deleting all objects..."
+echo "Deleting all objects and directories..."
 
-# Delete all versions and delete markers
+# First delete all versions and delete markers
 aws s3api list-object-versions \
     --bucket "${bucket_name}" \
     --output json \
@@ -27,7 +27,29 @@ while IFS=$'\t' read -r key version_id; do
         --region us-east-1
 done
 
-# Delete remaining objects
-aws s3 rm "s3://${bucket_name}" --recursive --region us-east-1
+# List and delete all objects including those in subdirectories
+aws s3api list-objects-v2 \
+    --bucket "${bucket_name}" \
+    --region us-east-1 \
+    --query 'Contents[].{Key: Key}' \
+    --output json | \
+jq -r '.[] | .Key' | \
+while read -r key; do
+    if [ ! -z "$key" ]; then
+        aws s3api delete-object \
+            --bucket "${bucket_name}" \
+            --key "$key" \
+            --region us-east-1
+    fi
+done
+
+# Force delete any remaining objects and their versions
+aws s3 rm "s3://${bucket_name}" \
+    --recursive \
+    --force \
+    --region us-east-1 \
+    --include "*"
 
 echo "Bucket cleanup complete"
+
+exit 1;
