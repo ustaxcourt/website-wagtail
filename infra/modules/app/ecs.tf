@@ -24,7 +24,7 @@ module "ecs" {
 }
 
 resource "aws_secretsmanager_secret" "ecs_task_secrets" {
-  name        = "ecs-task-secrets-12"
+  name        = "ecs-task-secrets"
   description = "Secrets used for the ecs task to prevent easy access to the secrets via aws cli commands"
 }
 
