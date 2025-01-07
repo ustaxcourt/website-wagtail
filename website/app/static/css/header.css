@@ -58,11 +58,9 @@
         gap: 40px;
         list-style-type: none;
 
-        @media (min-width: 481px) {
-            :hover {
-                .navigation-list:has(li) {
-                    display: flex;
-                }
+        :hover {
+            .navigation-list:has(li) {
+                display: flex;
             }
         }
 

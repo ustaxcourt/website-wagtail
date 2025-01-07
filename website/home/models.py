@@ -45,9 +45,9 @@ class HomePageEntry(models.Model):
 class NavigationCategories(models.TextChoices):
     NONE = "NONE", "None"
     ABOUT_THE_COURT = "ABOUT", "About the Court"
-    RULES_AND_GUIDANCE = "RULES", "Rules and Guidance"
-    ORDERS_AND_OPINIONS = "ORDERS", "Orders and Opinions"
-    eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling and Case Maintenance"
+    RULES_AND_GUIDANCE = "RULES", "Rules & Guidance"
+    ORDERS_AND_OPINIONS = "ORDERS", "Orders & Opinions"
+    eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
 
 
 class NavigationMixin(Page):
