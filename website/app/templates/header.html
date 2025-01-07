@@ -20,55 +20,71 @@
 
 {% get_site_root as site_root %}
 <div class="navigation-bar">
+  <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
   <ul class="navigation">
-    <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
-    <li class="navigation-header"><a href="#" onclick="toggleMenuItems(this)">ABOUT THE COURT</a>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        ABOUT THE COURT
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == "ABOUT" %}
         <li class="nav-link">
           <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-              src="{% static 'images/header/chevron-right.svg' %}" />
-            {{ menuitem.specific.menu_item_name }}</a>
+              src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
         </li>
         {% endif %}
         {% endfor %}
       </ul>
     </li>
-    <li class="navigation-header"><a href="#">RULES & GUIDANCE</a>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        RULES & GUIDANCE
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == "RULES" %}
         <li class="nav-link">
           <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-              src="{% static 'images/header/chevron-right.svg' %}" />
-            {{ menuitem.specific.menu_item_name }}</a>
+            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
         </li>
         {% endif %}
         {% endfor %}
       </ul>
     </li>
-    <li class="navigation-header"><a href="#">ORDERS & OPINIONS</a>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        ORDERS & OPINIONS
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == "ORDERS" %}
         <li class="nav-link">
           <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-              src="{% static 'images/header/chevron-right.svg' %}" />
-            {{ menuitem.specific.menu_item_name }}</a>
+            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
         </li>
         {% endif %}
         {% endfor %}
       </ul>
     </li>
-    <li class="navigation-header"><a href="#">eFILING & CASE MAINTENANCE</a>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        eFILING & CASE MAINTENANCE
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == "eFILING" %}
         <li class="nav-link">
           <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-              src="{% static 'images/header/chevron-right.svg' %}" />
-            {{ menuitem.specific.menu_item_name }}</a>
+            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
         </li>
         {% endif %}
         {% endfor %}
@@ -79,20 +95,20 @@
 
 {% block extra_js %}
 <script>
-  function toggleHeaders(){
+  function toggleHeaders() {
     const elements = document.getElementsByClassName("navigation-header");
-    for(element of elements){
-      if(element.classList.contains("displayed-navigation-header")){
+    for (element of elements) {
+      if (element.classList.contains("displayed-navigation-header")) {
         element.classList.remove("displayed-navigation-header");
       } else {
         element.classList.add("displayed-navigation-header");
       }
     }
   }
-  function toggleMenuItems(element){
+  function toggleMenuItems(element) {
     const elements = element.parentElement.getElementsByClassName("navigation-list");
-    for(element of elements){
-      if(element.classList.contains("displayed-navigation-list")){
+    for (element of elements) {
+      if (element.classList.contains("displayed-navigation-list")) {
         element.classList.remove("displayed-navigation-list");
       } else {
         element.classList.add("displayed-navigation-list");
