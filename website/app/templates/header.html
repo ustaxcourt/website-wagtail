@@ -22,7 +22,7 @@
 <div class="navigation-bar">
   <ul class="navigation">
     <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
-    <li class="navigation-header"><a href="#">ABOUT THE COURT</a>
+    <li class="navigation-header"><a href="#" onclick="toggleMenuItems(this)">ABOUT THE COURT</a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == "ABOUT" %}
@@ -82,7 +82,21 @@
   function toggleHeaders(){
     const elements = document.getElementsByClassName("navigation-header");
     for(element of elements){
-      element.classList.add("displayed-navigation-header");
+      if(element.classList.contains("displayed-navigation-header")){
+        element.classList.remove("displayed-navigation-header");
+      } else {
+        element.classList.add("displayed-navigation-header");
+      }
+    }
+  }
+  function toggleMenuItems(element){
+    const elements = element.parentElement.getElementsByClassName("navigation-list");
+    for(element of elements){
+      if(element.classList.contains("displayed-navigation-list")){
+        element.classList.remove("displayed-navigation-list");
+      } else {
+        element.classList.add("displayed-navigation-list");
+      }
     }
   }
 </script>
