@@ -49,7 +49,7 @@ migrate:
 rmdb:
 	rm ./db.sqlite3 || echo "Local DB file already deleted"
 
-reset: rmdb setup makemigrations migrate superuser
+reset: rmdb setup makemigrations migrate superuser users
 
 run:
 	. $(VENV) && python manage.py runserver
@@ -62,11 +62,11 @@ setup: init
 	npx gulp compile
 
 superuser:
-	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPustcAdminPWW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
 
-user:
-	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --name $${name:-"editor"} --group $${group:-"Editors"}
+users:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --group_name $${group:-"Editors"}
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --group_name $${group:-"Moderators"}
 
-export DJANGO_SUPERUSER_PASSWORD=$(SUPERUSER_PASSWORD)
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py reset_admin_password

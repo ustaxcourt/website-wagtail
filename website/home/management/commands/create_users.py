@@ -15,8 +15,7 @@ class UserConfig:
 
 # Define user_map with dataclass instances
 user_map = {
-    "admin": [],
-    "moderator": [
+    "Moderators": [
         UserConfig(
             username="moderator",
             group_name="Moderators",
@@ -25,7 +24,7 @@ user_map = {
             last_name="User",
         )
     ],
-    "editor": [
+    "Editors": [
         UserConfig(
             username="editor",
             group_name="Editors",
@@ -44,14 +43,23 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "group_name",
+            "--group_name",
+            type=str,
+            help="Specify the group name (e.g., 'admin', 'moderator', 'editor')",
+        )
+        parser.add_argument(
+            "--user_name",
             type=str,
             help="Specify the group name (e.g., 'admin', 'moderator', 'editor')",
         )
 
     def handle(self, *args, **kwargs):
         group_name = kwargs["group_name"]
+        user_name = kwargs["user_name"]
+
         users = user_map[group_name]
+        if user_name:
+            users = [user for user in users if user.username == user_name]
 
         for user in users:
             if User.objects.filter(username=user.username).exists():
@@ -59,7 +67,7 @@ class Command(BaseCommand):
                 u.set_password(SUPERUSER_PASSWORD)
                 u.save()
                 print(
-                    f"{user.first_name} password successfully changed and added to '{group_name}' group"
+                    f"{user.first_name} password successfully changed and added to '{group_name}' group.'"
                 )
             else:
                 group, _ = Group.objects.get_or_create(name=group_name)
@@ -72,5 +80,5 @@ class Command(BaseCommand):
                 )
                 u.groups.add(group)
                 print(
-                    f"{user.first_name} account successfully created and added to '{group_name}' group"
+                    f"{user.first_name} account successfully created and added to '{group_name}' group.'"
                 )
