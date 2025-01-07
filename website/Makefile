@@ -46,9 +46,10 @@ sqlmigrate:
 migrate:
 	. $(VENV) && python manage.py migrate
 
-reset:
-	. $(VENV) && rm ./db.sqlite3 || echo "file already deleted"
-	make migrate
+rmdb:
+	rm ./db.sqlite3 || echo "Local DB file already deleted"
+
+reset: rmdb setup makemigrations migrate superuser
 
 run:
 	. $(VENV) && python manage.py runserver
@@ -62,6 +63,9 @@ setup: init
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+
+user:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --name $${name:-"editor"} --group $${group:-"Editors"}
 
 export DJANGO_SUPERUSER_PASSWORD=$(SUPERUSER_PASSWORD)
 resetadminpassword:
