@@ -3,11 +3,11 @@ describe('index page', () => {
     cy.visit('/')
   })
 
-  xit('has required federal banner', () => {
+  it('has required federal banner', () => {
     cy.get('[data-testid="usa-banner"]').contains('An official website of the United States government')
   })
 
-  xit('unhides/hides banner content when button is clicked', () => {
+  it('unhides/hides banner content when button is clicked', () => {
     // arrange
     let button = cy.get('[data-testid="toggle-usa-banner"]')
     let bannerContent = () => cy.get('[data-testid="usa-banner-content"]')

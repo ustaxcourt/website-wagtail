@@ -98,21 +98,13 @@
   function toggleHeaders() {
     const elements = document.getElementsByClassName("navigation-header");
     for (element of elements) {
-      if (element.classList.contains("displayed-navigation-header")) {
-        element.classList.remove("displayed-navigation-header");
-      } else {
-        element.classList.add("displayed-navigation-header");
-      }
+      element.classList.toggle("displayed-navigation-header");
     }
   }
   function toggleMenuItems(element) {
     const elements = element.parentElement.getElementsByClassName("navigation-list");
     for (element of elements) {
-      if (element.classList.contains("displayed-navigation-list")) {
-        element.classList.remove("displayed-navigation-list");
-      } else {
-        element.classList.add("displayed-navigation-list");
-      }
+      element.classList.toggle("displayed-navigation-list");
     }
   }
 </script>
