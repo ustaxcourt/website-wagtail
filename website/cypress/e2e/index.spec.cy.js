@@ -21,4 +21,18 @@ describe('index page', () => {
     button.click()
     bannerContent().should('be.hidden')
   })
+
+  // note: would have liked to have tested that the lists are visible but the behavior is driven by CSS, but Cypress does not support
+  it('has navigation headers with hidden navigation links', () => {
+    cy.get('[data-testid="navigation-bar"]')
+      .should('be.visible')
+      .find('.navigation')
+      .children('.navigation-header')
+      .each((header) => {
+
+        cy.wrap(header)
+          .find('.navigation-list')
+          .should('be.hidden');
+      })
+  })
 })
