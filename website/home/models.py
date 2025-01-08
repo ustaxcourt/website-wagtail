@@ -32,6 +32,17 @@ class Footer(BaseGenericSetting):
     ]
 
 
+@register_setting
+class GoogleAnalyticsSettings(BaseGenericSetting):
+    tracking_id = models.CharField(
+        max_length=20, help_text="Google Analytics Measurement ID (e.g., G-XXXXXXXXXX)"
+    )
+
+    panels = [
+        FieldPanel("tracking_id"),
+    ]
+
+
 class HomePageEntry(models.Model):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
