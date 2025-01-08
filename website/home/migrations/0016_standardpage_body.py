@@ -5,15 +5,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0015_alter_standardpage_navigation_category'),
+        ("home", "0015_alter_standardpage_navigation_category"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='standardpage',
-            name='body',
+            model_name="standardpage",
+            name="body",
             field=wagtail.fields.RichTextField(blank=True),
         ),
     ]

@@ -5,15 +5,16 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0016_standardpage_body'),
+        ("home", "0016_standardpage_body"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='standardpage',
-            name='body',
-            field=wagtail.fields.RichTextField(blank=True, help_text='Insert text here.'),
+            model_name="standardpage",
+            name="body",
+            field=wagtail.fields.RichTextField(
+                blank=True, help_text="Insert text here."
+            ),
         ),
     ]

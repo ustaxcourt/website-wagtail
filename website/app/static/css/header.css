@@ -58,16 +58,16 @@
         gap: 40px;
         list-style-type: none;
 
-        :hover {
-            .navigation-list:has(li) {
-                display: flex;
-            }
-        }
-
         .navigation-header {
             height: 55px;
             display: flex;
             align-items: center;
+
+            &:hover {
+                .navigation-list:has(li) {
+                    display: flex;
+                }
+            }
 
             .navigation-list {
                 padding-inline-start: 5px;

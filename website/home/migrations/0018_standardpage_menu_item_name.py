@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0017_alter_standardpage_body'),
+        ("home", "0017_alter_standardpage_body"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='standardpage',
-            name='menu_item_name',
-            field=models.CharField(default='*NOT SET*', max_length=255),
+            model_name="standardpage",
+            name="menu_item_name",
+            field=models.CharField(default="*NOT SET*", max_length=255),
         ),
     ]

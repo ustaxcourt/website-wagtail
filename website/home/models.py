@@ -9,6 +9,7 @@ from wagtail.contrib.settings.models import (
     register_setting,
 )
 
+
 class HomePage(Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
@@ -27,7 +28,7 @@ class Footer(BaseGenericSetting):
 
     content_panels = Page.content_panels + [
         FieldPanel("technicalQuestions"),
-        FieldPanel("otherQuestions")
+        FieldPanel("otherQuestions"),
     ]
 
 
@@ -62,12 +63,17 @@ class NavigationMixin(Page):
         default=NavigationCategories.NONE,
     )
 
-    menu_item_name = models.CharField(max_length=255, default="*NOT SET*", help_text="Enter the name of the page for the navigation bar link.")
+    menu_item_name = models.CharField(
+        max_length=255,
+        default="*NOT SET*",
+        help_text="Enter the name of the page for the navigation bar link.",
+    )
 
     promote_panels = Page.promote_panels + [
         FieldPanel("navigation_category", widget=forms.Select),
-        FieldPanel("menu_item_name")
+        FieldPanel("menu_item_name"),
     ]
+
 
 class StandardPage(NavigationMixin):
     class Meta:

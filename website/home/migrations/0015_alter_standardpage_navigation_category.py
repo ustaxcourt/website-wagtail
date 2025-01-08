@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0014_standardpage'),
+        ("home", "0014_standardpage"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='standardpage',
-            name='navigation_category',
-            field=models.TextField(choices=[('NONE', 'None'), ('ABOUT', 'About the Court'), ('RULES', 'Rules and Guidance'), ('ORDERS', 'Orders and Opinions'), ('eFILING', 'eFiling and Case Maintenance')], default='NONE', max_length=45),
+            model_name="standardpage",
+            name="navigation_category",
+            field=models.TextField(
+                choices=[
+                    ("NONE", "None"),
+                    ("ABOUT", "About the Court"),
+                    ("RULES", "Rules and Guidance"),
+                    ("ORDERS", "Orders and Opinions"),
+                    ("eFILING", "eFiling and Case Maintenance"),
+                ],
+                default="NONE",
+                max_length=45,
+            ),
         ),
     ]
