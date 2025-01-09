@@ -66,7 +66,6 @@ superuser:
 
 users:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --group_name $${group:-"Editors"}
-	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --group_name $${group:-"Moderators"}
 
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py reset_admin_password

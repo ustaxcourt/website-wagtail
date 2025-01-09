@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from django.core.management.base import BaseCommand
 from dataclasses import dataclass
-import os
+from home.utils.secrets import get_secret
 
 
 @dataclass
@@ -35,8 +35,6 @@ user_map = {
     ],
 }
 
-SUPERUSER_PASSWORD = os.getenv("DJANGO_SUPERUSER_PASSWORD")
-
 
 class Command(BaseCommand):
     help = "Update moderator password to default"
@@ -45,12 +43,12 @@ class Command(BaseCommand):
         parser.add_argument(
             "--group_name",
             type=str,
-            help="Specify the group name (e.g., 'admin', 'moderator', 'editor')",
+            help="Specify the group name (e.g., 'Moderators', 'Editors')",
         )
         parser.add_argument(
             "--user_name",
             type=str,
-            help="Specify the group name (e.g., 'admin', 'moderator', 'editor')",
+            help="Specify the user name (e.g., 'moderator', 'editor')",
         )
 
     def handle(self, *args, **kwargs):
@@ -62,9 +60,10 @@ class Command(BaseCommand):
             users = [user for user in users if user.username == user_name]
 
         for user in users:
+            user_password = get_secret(f"WAGTAIL_{user.first_name.upper()}_PASSWORD")
             if User.objects.filter(username=user.username).exists():
                 u = User.objects.get(username=user.username)
-                u.set_password(SUPERUSER_PASSWORD)
+                u.set_password(user_password)
                 u.save()
                 print(
                     f"{user.first_name} password successfully changed and added to '{group_name}' group.'"
@@ -74,7 +73,7 @@ class Command(BaseCommand):
                 u = User.objects.create_user(
                     username=user.username,
                     email=user.email,
-                    password=SUPERUSER_PASSWORD,
+                    password=user_password,
                     first_name=user.first_name,
                     last_name=user.last_name,
                 )
