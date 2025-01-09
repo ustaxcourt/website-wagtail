@@ -3,6 +3,7 @@
 pytest==8.3.4
 pytest-django==4.9.0
 coverage
+moto==5.0.26
 mypy
 ruff
 pre-commit
