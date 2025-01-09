@@ -33,6 +33,7 @@ showmigrations:
 coverage:
 	. $(VENV) && coverage run -m pytest
 	. $(VENV) && coverage report
+	. $(VENV) && coverage html -d coverage_html && open coverage_html/index.html
 
 test-e2e:
 	npx cypress run --browser chrome

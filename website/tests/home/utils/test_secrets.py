@@ -87,14 +87,28 @@ def test_get_secret_with_custom_region():
     assert retrieved_secret is not None
 
 
-@mock_aws
-def test_create_secret_error():
-    """Test handling of secret creation error"""
-    # Setup
-    secret_name = "test-secret"
+class MockSecretsManagerExceptions:
+    class ResourceNotFoundException(ClientError):
+        def __init__(self):
+            super().__init__(
+                error_response={
+                    "Error": {
+                        "Code": "ResourceNotFoundException",
+                        "Message": "Secrets Manager can't find the specified secret.",
+                    }
+                },
+                operation_name="GetSecretValue",
+            )
 
-    # Mock boto3 client to raise an error during secret creation
-    def mock_create_secret(*args, **kwargs):
+
+class MockSecretsManagerClient:
+    def __init__(self):
+        self.exceptions = MockSecretsManagerExceptions
+
+    def get_secret_value(self, SecretId):
+        raise self.exceptions.ResourceNotFoundException()
+
+    def create_secret(self, Name, Description, SecretString):
         raise ClientError(
             error_response={
                 "Error": {
@@ -105,14 +119,25 @@ def test_create_secret_error():
             operation_name="CreateSecret",
         )
 
-    client = boto3.client("secretsmanager", region_name="us-east-1")
-    client.create_secret = mock_create_secret
+
+@mock_aws
+def test_create_secret_error(monkeypatch):
+    """Test handling of secret creation error"""
+    # Setup
+    secret_name = "test-secret"
+
+    def mock_client(*args, **kwargs):
+        return MockSecretsManagerClient()
+
+    # Patch the boto3 client creation
+    monkeypatch.setattr(boto3.session.Session, "client", mock_client)
 
     # Test
     with pytest.raises(RuntimeError) as exc_info:
         get_secret(secret_name)
 
     assert "Failed to create secret" in str(exc_info.value)
+    assert "Internal service error" in str(exc_info.value)
 
 
 # Optional: Add fixtures if needed
