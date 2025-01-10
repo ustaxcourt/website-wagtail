@@ -61,8 +61,8 @@ class CaseRelatedFormsEntry(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    number = models.CharField(max_length=255)
-    formNameNote = models.CharField(max_length=255)
+    number = models.CharField(max_length=255, blank=True)
+    formNameNote = models.CharField(max_length=255, blank=True)
     eligibleForEFilingByPetitioners = models.CharField(max_length=255)
     eligibleForEFilingByPractitioners = models.CharField(max_length=255)
 
