@@ -1,6 +1,5 @@
 from django import forms
 from django.db import models
-from django import forms
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel
