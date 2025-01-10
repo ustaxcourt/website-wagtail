@@ -238,3 +238,8 @@ web_modules/
 .parcel-cache
 
 .vscode
+
+.DS_Store
+
+website/cypress/screenshots/*
+website/media

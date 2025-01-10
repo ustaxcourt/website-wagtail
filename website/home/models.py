@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from django import forms
 from wagtail.models import Page
@@ -5,6 +6,7 @@ from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 from django.conf import settings
+
 
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
@@ -59,3 +61,44 @@ class HomePageEntry(models.Model):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+
+class NavigationCategories(models.TextChoices):
+    NONE = "NONE", "None"
+    ABOUT_THE_COURT = "ABOUT", "About the Court"
+    RULES_AND_GUIDANCE = "RULES", "Rules & Guidance"
+    ORDERS_AND_OPINIONS = "ORDERS", "Orders & Opinions"
+    eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
+
+
+class NavigationMixin(Page):
+    class Meta:
+        abstract = True
+
+    no_index = models.BooleanField(default=False)
+
+    navigation_category = models.TextField(
+        max_length=45,
+        choices=NavigationCategories.choices,
+        default=NavigationCategories.NONE,
+    )
+
+    menu_item_name = models.CharField(
+        max_length=255,
+        default="*NOT SET*",
+        help_text="Enter the name of the page for the navigation bar link.",
+    )
+
+    promote_panels = Page.promote_panels + [
+        FieldPanel("navigation_category", widget=forms.Select),
+        FieldPanel("menu_item_name"),
+    ]
+
+
+class StandardPage(NavigationMixin):
+    class Meta:
+        abstract = False
+
+    body = RichTextField(blank=True, help_text="Insert text here.")
+
+    content_panels = Page.content_panels + [FieldPanel("body")]
