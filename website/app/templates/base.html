@@ -60,13 +60,8 @@
     {# Global javascript #}
     <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
     <script type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.googleanalyticssettings.tracking_id }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', '{{ settings.googleanalyticssettings.tracking_id }}');
-    </script>
+
+    {% include 'google_analytics.html' %}
 
     {% block extra_js %}
       {# Override this in templates to add extra javascript #}
