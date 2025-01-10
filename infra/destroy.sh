@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "WARNING: This will destroy the database and all data. Are you sure you want to continue? (Y/n)?"
+echo "WARNING: This will destroy the database and all data in buckets. Are you sure you want to continue? (Y/n)?"
 read -r response
 
 if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -10,8 +10,13 @@ fi
 
 source ./setup.sh
 
+echo "deleting rds instance"
 source ./delete-rds-instance.sh
 
+echo "emptying the assets bucket"
+source ./empty-asset-bucket.sh
+
+echo "running terraform destroy"
 terraform init \
     -upgrade \
     -backend=true \

@@ -3,7 +3,6 @@
 AWS_DEFAULT_REGION="us-east-1"
 export AWS_DEFAULT_REGION
 
-
 source ./helpers.sh
 
 required_env_vars=(
