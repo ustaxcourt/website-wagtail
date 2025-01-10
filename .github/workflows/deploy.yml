@@ -100,6 +100,7 @@ jobs:
           make users group="Moderators"
 
       # TODO: disabling for now because of An error occurred (IncorrectInstanceState) when calling the StopInstances operation: This instance 'i-02e10df312188338c' is not in a state from which it can be stopped.
+      # TODO: disable this for security reasons
       # - name: Turn off Bastion Host
       #   env:
       #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

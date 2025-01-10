@@ -1,20 +1,111 @@
 {% load static wagtailcore_tags %}
+{% load wagtailcore_tags navigation_tags %}
 
 <header class="blue-banner">
-  <div class="grid-container wide-container padding-1">
-    <div class="usa-header__inner display-flex flex-justify flex-align-center">
-      <img src="{% static 'images/logo.png' %}" alt="US Tax Court Logo">
 
-      <a href="https://dawson.ustaxcourt.gov/">
-        <img class="dawson" src="{% static 'images/dawson.png' %}" alt="Dawson Logo">
+  <div class="grid-container padding-1">
+    <div class="usa-header__inner display-flex flex-justify flex-align-center">
+      <a href="/">
+        <img class="tablet:display-none logo-seal" src="{% static 'images/header/logo_seal.png' %}"
+          alt="US Tax Court Logo" />
+        <img class="display-none tablet:display-block" src="{% static 'images/header/logo.png' %}"
+          alt="US Tax Court Logo" />
       </a>
+
+      <a href="https://dawson.ustaxcourt.gov/"><img class="dawson" src="{% static 'images/header/dawson.png' %}"
+          alt="Dawson Logo" /></a>
     </div>
   </div>
 </header>
 
-<ul class="navigation">
-  <li class="nav-link">ABOUT THE COURT</li>
-  <li class="nav-link">RULES & GUIDANCE</li>
-  <li class="nav-link">ORDERS & OPINIONS </li>
-  <li class="nav-link">eFILING & CASE MAINTENANCE</li>
-</ul>
+{% get_site_root as site_root %}
+<div class="navigation-bar" data-testid="navigation-bar">
+  <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
+  <ul class="navigation">
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        ABOUT THE COURT
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "ABOUT" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+              src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        RULES & GUIDANCE
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "RULES" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        ORDERS & OPINIONS
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "ORDERS" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+    <li class="navigation-header">
+      <a href="#" onclick="toggleMenuItems(this)">
+        eFILING & CASE MAINTENANCE
+        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+      </a>
+      <ul class="navigation-list">
+        {% for menuitem in site_root.get_children.live.in_menu %}
+        {% if menuitem.specific.navigation_category == "eFILING" %}
+        <li class="nav-link">
+          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{menuitem.specific.menu_item_name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+  </ul>
+</div>
+
+{% block extra_js %}
+<script>
+  function toggleHeaders() {
+    const elements = document.getElementsByClassName("navigation-header");
+    for (element of elements) {
+      element.classList.toggle("displayed-navigation-header");
+    }
+  }
+  function toggleMenuItems(element) {
+    const elements = element.parentElement.getElementsByClassName("navigation-list");
+    for (element of elements) {
+      element.classList.toggle("displayed-navigation-list");
+    }
+  }
+</script>
+{% endblock %}

@@ -50,7 +50,7 @@ migrate:
 rmdb:
 	rm ./db.sqlite3 || echo "Local DB file already deleted"
 
-reset: rmdb setup makemigrations migrate superuser users
+reset: rmdb setup makemigrations migrate superuser
 
 run:
 	. $(VENV) && python manage.py runserver

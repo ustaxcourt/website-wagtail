@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "wagtail",
     "modelcluster",
     "taggit",
+    "storages",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -167,6 +168,18 @@ STORAGES = {
     },
 }
 
+aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
+if aws_bucket_name:
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    }
+    AWS_STORAGE_BUCKET_NAME = aws_bucket_name
+    AWS_S3_REGION_NAME = "us-east-1"
+    AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+    MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_ADDRESSING_STYLE = "path"
 
 # Wagtail settings
 
