@@ -66,6 +66,8 @@
     <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
     <script type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
 
+    {% include 'google_analytics.html' %}
+
     {% block extra_js %}
       {# Override this in templates to add extra javascript #}
     {% endblock %}

@@ -4,6 +4,9 @@ from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
+from django.conf import settings
+
+
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
@@ -29,6 +32,22 @@ class Footer(BaseGenericSetting):
     content_panels = Page.content_panels + [
         FieldPanel("technicalQuestions"),
         FieldPanel("otherQuestions"),
+    ]
+
+
+@register_setting
+class GoogleAnalyticsSettings(BaseGenericSetting):
+    tracking_id = models.CharField(
+        max_length=20,
+        help_text="Google Analytics Measurement ID (e.g., G-1234567890)",
+        default=settings.GOOGLE_ANALYTICS_ID,
+    )
+
+    panels = [
+        FieldPanel(
+            "tracking_id",
+            widget=forms.TextInput(attrs={"value": settings.GOOGLE_ANALYTICS_ID}),
+        ),
     ]
 
 
