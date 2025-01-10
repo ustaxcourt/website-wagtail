@@ -33,6 +33,7 @@ showmigrations:
 coverage:
 	. $(VENV) && coverage run -m pytest
 	. $(VENV) && coverage report
+	. $(VENV) && coverage html -d coverage_html && open coverage_html/index.html
 
 test-e2e:
 	npx cypress run --browser chrome
@@ -46,12 +47,10 @@ sqlmigrate:
 migrate:
 	. $(VENV) && python manage.py migrate
 
-reset:
-	rm ./db.sqlite3 || echo "file already deleted"
-	make makemigrations
-	make migrate
-	make superuser
-	make createpages
+rmdb:
+	rm ./db.sqlite3 || echo "Local DB file already deleted"
+
+reset: rmdb setup makemigrations migrate superuser createpages
 
 run:
 	. $(VENV) && python manage.py runserver
@@ -64,9 +63,11 @@ setup: init
 	npx gulp compile
 
 superuser:
-	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPustcAdminPWW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
 
-export DJANGO_SUPERUSER_PASSWORD=$(SUPERUSER_PASSWORD)
+users:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_users --group_name $${group:-"Editors"}
+
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py reset_admin_password
 

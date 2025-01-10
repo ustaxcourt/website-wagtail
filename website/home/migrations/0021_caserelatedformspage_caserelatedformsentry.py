@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0011_home_page_meta"),
+        ("home", "0020_googleanalyticssettings_alter_footer_id_and_more"),
         ("wagtailcore", "0094_alter_page_locale"),
         ("wagtaildocs", "0014_alter_document_file_size"),
     ]

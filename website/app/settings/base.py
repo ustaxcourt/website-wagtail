@@ -213,3 +213,8 @@ WAGTAILDOCS_EXTENSIONS = [
     "xlsx",
     "zip",
 ]
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Add this setting to store your GA tracking ID
+GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"

@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0012_caserelatedformspage_caserelatedformsentry"),
+        ("home", "0021_caserelatedformspage_caserelatedformsentry"),
     ]
 
     operations = [
