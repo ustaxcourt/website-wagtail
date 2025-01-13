@@ -1,6 +1,13 @@
 env := $(shell ./infra/get_env.sh)
 
+# this command is used to setting up the bastion ssh keys and the aws secret manager secrets
+# that will be used for the terraform setup during the ci/cd pipeline
 aws-setup:
+	@if [ -z "$(DOMAIN_NAME)" ]; then \
+		echo "Error: DOMAIN_NAME environment variable is not set"; \
+		exit 1; \
+	fi
+
 	@if [ -f ~/.ssh/wagtail_$(env)_bastion_key_id_rsa ]; then \
 		echo "Local SSH Key for environment '$(env)' already exists."; \
 	else \
@@ -8,6 +15,7 @@ aws-setup:
 		cd ~/.ssh && cat wagtail_$(env)_bastion_key_id_rsa | base64 > wagtail_$(env)_bastion_key_id_rsa.base64; \
 		cd ~/.ssh && cat wagtail_$(env)_bastion_key_id_rsa.pub | base64 > wagtail_$(env)_bastion_key_id_rsa.pub.base64; \
 	fi
+
 	@if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
 		echo "Secret exists. Updating secret..."; \
 		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string '{ \
@@ -15,6 +23,7 @@ aws-setup:
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
 	else \
@@ -24,6 +33,7 @@ aws-setup:
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
 	fi
@@ -61,7 +71,7 @@ tag:
 	git tag -f $(tag)
 	git push -f origin $(tag)
 
-teardown: destroy
+aws-teardown: destroy
 	@echo "Cleaning up..."
 
 	# Delete the secret if it exists
