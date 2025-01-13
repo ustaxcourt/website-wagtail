@@ -15,7 +15,8 @@ aws-setup:
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
+			"DOMAIN_NAME": "$(env)-web.ustaxcourt.gov" \
 		}'; \
 	else \
 		echo "Creating new secret..."; \
@@ -24,7 +25,8 @@ aws-setup:
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
+			"DOMAIN_NAME": "$(env)-web.ustaxcourt.gov" \
 		}'; \
 	fi
 
@@ -42,6 +44,7 @@ aws-setup:
 		aws iam create-policy --policy-name deployer-policy --policy-document file://./infra/iam/deployer-policy.json; \
 	fi
 
+	aws iam create-policy-version --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)" --policy-document file://./infra/iam/deployer-policy.json --set-as-default
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)"
 	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
 
