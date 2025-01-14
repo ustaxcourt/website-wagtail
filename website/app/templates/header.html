@@ -82,7 +82,8 @@
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == "eFILING" %}
         <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
+          <a href="{% pageurl menuitem %}">
+            <img class="nav-item-icon"
             src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
             {{menuitem.specific.menu_item_name }}</a>
         </li>

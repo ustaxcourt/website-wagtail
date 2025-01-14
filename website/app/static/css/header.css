@@ -39,7 +39,14 @@
                 color: #FFFFFF;
                 font-weight: bold;
 
+                .nav-item-icon {
+                    height: 16px;
+                }
+
                 a {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
                     color: #FFFFFF;
                 }
             }
@@ -79,9 +86,15 @@
                 padding: 10px;
 
                 .nav-link {
-                    padding: 4px;
+
+                    .nav-item-icon {
+                        height: 16px;
+                    }
 
                     a {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
                         padding: 3px 10px;
                     }
                 }
