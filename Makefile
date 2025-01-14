@@ -31,8 +31,8 @@ aws-setup: init
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
-			"DOMAIN_NAME": "$(DOMAIN_NAME)" \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
 	else \
 		echo "Creating new secret..."; \
@@ -41,8 +41,7 @@ aws-setup: init
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
-			"DOMAIN_NAME": "$(DOMAIN_NAME)" \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
 	fi
