@@ -12,14 +12,7 @@ from wagtail.contrib.settings.models import (
     register_setting,
 )
 
-
-class HomePage(Page):
-    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
-
-    content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        InlinePanel("entries", label="Entries"),
-    ]
+Page._meta.get_field("search_description").blank = False
 
 
 @register_setting
@@ -32,6 +25,15 @@ class Footer(BaseGenericSetting):
     content_panels = Page.content_panels + [
         FieldPanel("technicalQuestions"),
         FieldPanel("otherQuestions"),
+    ]
+
+
+class HomePage(Page):
+    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        InlinePanel("entries", label="Entries"),
     ]
 
 
@@ -101,3 +103,40 @@ class StandardPage(NavigationMixin):
     body = RichTextField(blank=True, help_text="Insert text here.")
 
     content_panels = Page.content_panels + [FieldPanel("body")]
+
+
+class CaseRelatedFormsPage(Page):
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel("body"),
+        InlinePanel("forms", label="Forms"),
+    ]
+
+
+class CaseRelatedFormsEntry(models.Model):
+    formName = models.CharField(max_length=255)
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    number = models.CharField(max_length=255, blank=True)
+    formNameNote = models.CharField(max_length=255, blank=True)
+    eligibleForEFilingByPetitioners = models.CharField(max_length=255)
+    eligibleForEFilingByPractitioners = models.CharField(max_length=255)
+
+    parentpage = ParentalKey(
+        "CaseRelatedFormsPage", related_name="forms", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("formName"),
+        FieldPanel("formNameNote"),
+        FieldPanel("pdf"),
+        FieldPanel("number"),
+        FieldPanel("eligibleForEFilingByPetitioners"),
+        FieldPanel("eligibleForEFilingByPractitioners"),
+    ]

@@ -31,6 +31,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2.0rem;
     margin-bottom: 8.5px;
     line-height: 41.6px;
 }
@@ -84,6 +89,17 @@ a:hover {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.5s ease, visibility 0s 0s; /* Immediate visibility when fading in */
+}
+
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 1em 0;
+    padding: 0;
+
 }
 
 .foundry-divider-simple {

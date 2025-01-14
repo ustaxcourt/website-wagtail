@@ -50,7 +50,7 @@ migrate:
 rmdb:
 	rm ./db.sqlite3 || echo "Local DB file already deleted"
 
-reset: rmdb setup makemigrations migrate superuser
+reset: rmdb setup makemigrations migrate superuser createpages
 
 run:
 	. $(VENV) && python manage.py runserver
@@ -70,3 +70,7 @@ users:
 
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py reset_admin_password
+
+# an idempotent command for creating the pages after all the models / migrations have finished running
+createpages:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.dev} python manage.py create_pages
