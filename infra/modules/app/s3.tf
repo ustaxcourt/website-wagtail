@@ -18,7 +18,7 @@ resource "aws_s3_bucket_policy" "public_access_policy" {
     ]
   })
 
-  depends_on = [aws_s3_bucket_public_access_block.public_access, aws_s3_bucker.private_bucket]
+  depends_on = [aws_s3_bucket_public_access_block.public_access]
 }
 
 resource "aws_s3_bucket_public_access_block" "public_access" {
