@@ -1,6 +1,7 @@
 env := $(shell ./infra/get_env.sh)
 
-aws-setup:
+aws-setup: init
+	@echo "Setting up AWS environment for $(env)..."
 	@if [ -f ~/.ssh/wagtail_$(env)_bastion_key_id_rsa ]; then \
 		echo "Local SSH Key for environment '$(env)' already exists."; \
 	else \
@@ -37,19 +38,24 @@ aws-setup:
 		aws iam create-user --user-name deployer; \
 	fi
 
-	@if aws iam list-policies --query "Policies[?PolicyName=='deployer-policy']" --output text | grep -q 'deployer-policy'; then \
+	@POLICY_ARN=$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text); \
+	if [ -n "$$POLICY_ARN" ]; then \
 		echo "Policy 'deployer-policy' already exists."; \
 	else \
 		echo "Creating policy 'deployer-policy'..."; \
 		aws iam create-policy --policy-name deployer-policy --policy-document file://./infra/iam/deployer-policy.json; \
-	fi
+	fi;\
+	aws iam create-policy-version --policy-arn "$$POLICY_ARN" --policy-document file://./infra/iam/deployer-policy.json --set-as-default;\
+	aws iam attach-user-policy --user-name deployer --policy-arn "$$POLICY_ARN";
 
-	aws iam create-policy-version --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)" --policy-document file://./infra/iam/deployer-policy.json --set-as-default
-	aws iam attach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)"
 	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
 
 init:
-	cd infra && ./init.sh
+	@echo "Initializing environment: $(env)"
+	@cd infra && ./init.sh && \
+	   . ./load-secrets.sh && \
+	   echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64 && \
+	   echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64
 
 deploy:
 	@echo "Deploying to environment: $(env)"
