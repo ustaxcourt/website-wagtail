@@ -14,6 +14,7 @@ from wagtail.contrib.settings.models import (
 
 Page._meta.get_field("search_description").blank = False
 
+
 @register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
