@@ -1,5 +1,11 @@
 env := $(shell ./infra/get_env.sh)
 
+ifeq ($(env),prod)
+	DOMAIN_NAME := ustaxcourt.gov
+else
+	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
+endif
+
 aws-setup: init
 	@echo "Setting up AWS environment for $(env)..."
 	@if [ -f ~/.ssh/wagtail_$(env)_bastion_key_id_rsa ]; then \
@@ -17,7 +23,7 @@ aws-setup: init
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
-			"DOMAIN_NAME": "$(env)-web.ustaxcourt.gov" \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)" \
 		}'; \
 	else \
 		echo "Creating new secret..."; \
@@ -27,7 +33,7 @@ aws-setup: init
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
 			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
-			"DOMAIN_NAME": "$(env)-web.ustaxcourt.gov" \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)" \
 		}'; \
 	fi
 
