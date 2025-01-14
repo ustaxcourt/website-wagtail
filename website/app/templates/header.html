@@ -22,75 +22,26 @@
 <div class="navigation-bar" data-testid="navigation-bar">
   <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
   <ul class="navigation">
+    {% for section in navigation_sections %}
     <li class="navigation-header">
       <a href="#" onclick="toggleMenuItems(this)">
-        ABOUT THE COURT
+        {{ section.title }}
         <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
       </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "ABOUT" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-              src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-    <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
-        RULES & GUIDANCE
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
-      </a>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "RULES" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-    <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
-        ORDERS & OPINIONS
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
-      </a>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "ORDERS" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-    <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
-        eFILING & CASE MAINTENANCE
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
-      </a>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "eFILING" %}
+        {% if menuitem.specific.navigation_category == section.key %}
         <li class="nav-link">
           <a href="{% pageurl menuitem %}">
-            <img class="nav-item-icon"
-            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
+            <img class="nav-item-icon" src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+            {{ menuitem.specific.menu_item_name }}
+          </a>
         </li>
         {% endif %}
         {% endfor %}
       </ul>
     </li>
+    {% endfor %}
   </ul>
 </div>
 
