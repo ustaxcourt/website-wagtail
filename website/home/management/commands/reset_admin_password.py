@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from home.utils.secrets import get_secret
+import os
 
 username = "admin"
 email = "admin@example.com"
-SUPERUSER_PASSWORD = get_secret("WAGTAIL_ADMIN_PASSWORD")
+SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD")
 
 
 class Command(BaseCommand):
