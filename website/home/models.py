@@ -93,6 +93,16 @@ class NavigationMixin(Page):
         FieldPanel("menu_item_name"),
     ]
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        navigation_sections = [
+            {"title": label.upper(), "key": value}
+            for value, label in NavigationCategories.choices
+            if value != NavigationCategories.NONE
+        ]
+        context["navigation_sections"] = navigation_sections
+        return context
+
 
 class StandardPage(NavigationMixin):
     class Meta:
@@ -103,11 +113,8 @@ class StandardPage(NavigationMixin):
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
-class CaseRelatedFormsPage(Page):
-    body = RichTextField(blank=True)
-
+class CaseRelatedFormsPage(StandardPage):
     content_panels = Page.content_panels + [
-        FieldPanel("body"),
         InlinePanel("forms", label="Forms"),
     ]
 
