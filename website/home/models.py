@@ -103,11 +103,8 @@ class StandardPage(NavigationMixin):
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
-class CaseRelatedFormsPage(Page):
-    body = RichTextField(blank=True)
-
+class CaseRelatedFormsPage(StandardPage):
     content_panels = Page.content_panels + [
-        FieldPanel("body"),
         InlinePanel("forms", label="Forms"),
     ]
 
