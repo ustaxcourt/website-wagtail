@@ -18,7 +18,7 @@ jobs:
           ACTORNAME="${{ github.actor }}"
           if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
             TAG_NAME="${{ github.ref_name }}"
-            echo "ENVIRONMENT=$ACTORNAME_$TAG_NAME" >> $GITHUB_ENV
+            echo "ENVIRONMENT="${ACTORNAME}_${TAG_NAME}" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/test ]]; then
