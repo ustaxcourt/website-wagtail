@@ -230,6 +230,8 @@ class CaseRelatedFormPage(PageInitializer):
             logger.info(f"'{title}' page already exists.")
             return
 
+        logger.info(f"Creating the '{title}' page.")
+
         content_type = ContentType.objects.get_for_model(CaseRelatedFormsPage)
 
         new_page = home_page.add_child(

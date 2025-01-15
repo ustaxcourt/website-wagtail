@@ -6,7 +6,6 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 from django.conf import settings
 
-
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
@@ -26,15 +25,6 @@ class Footer(BaseGenericSetting):
     ]
 
 
-class HomePage(Page):
-    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
-
-    content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        InlinePanel("entries", label="Entries"),
-    ]
-
-
 @register_setting
 class GoogleAnalyticsSettings(BaseGenericSetting):
     tracking_id = models.CharField(
@@ -48,17 +38,6 @@ class GoogleAnalyticsSettings(BaseGenericSetting):
             "tracking_id",
             widget=forms.TextInput(attrs={"value": settings.GOOGLE_ANALYTICS_ID}),
         ),
-    ]
-
-
-class HomePageEntry(models.Model):
-    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    body = RichTextField(blank=True)
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("body"),
     ]
 
 
@@ -100,6 +79,8 @@ class NavigationMixin(Page):
             for value, label in NavigationCategories.choices
             if value != NavigationCategories.NONE
         ]
+        print(navigation_sections)
+        print("gg")
         context["navigation_sections"] = navigation_sections
         return context
 
@@ -144,4 +125,21 @@ class CaseRelatedFormsEntry(models.Model):
         FieldPanel("number"),
         FieldPanel("eligibleForEFilingByPetitioners"),
         FieldPanel("eligibleForEFilingByPractitioners"),
+    ]
+
+
+class HomePage(NavigationMixin):
+    content_panels = Page.content_panels + [
+        InlinePanel("entries", label="Entries"),
+    ]
+
+
+class HomePageEntry(models.Model):
+    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    body = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
     ]
