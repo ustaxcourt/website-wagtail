@@ -18,8 +18,7 @@ jobs:
           ACTORNAME="${{ github.actor }}"
           if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
             TAG_NAME="${{ github.ref_name }}"
-            ENV_NAME=${TAG_NAME%-sandbox}
-            echo "ENVIRONMENT=${ENV_NAME}" >> $GITHUB_ENV
+            echo "ENVIRONMENT=$ACTORNAME_$TAG_NAME" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/test ]]; then
@@ -28,9 +27,6 @@ jobs:
             echo "Debug: No matching condition found"
             exit 1
           fi
-          FINAL_VARIABLE="${ACTORNAME}_${ENVIRONMENT}"
-          echo "FINAL_VARIABLE=${FINAL_VARIABLE}" >> $GITHUB_ENV
-          echo $FINAL_VARIABLE
           cat $GITHUB_ENV
           exit 1
 
