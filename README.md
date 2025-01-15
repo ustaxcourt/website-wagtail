@@ -89,7 +89,7 @@ make run
 
 See `make superuser` to see how it is setup first time.
 
-# The Developer Sandbox AWS Account
+# The Developer Sandbox AWS Accounts
 
 ## Getting AWS Credentials
 
