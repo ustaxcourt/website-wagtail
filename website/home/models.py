@@ -82,6 +82,8 @@ class NavigationMixin(Page):
         default=NavigationCategories.NONE,
     )
 
+    redirectLink = models.CharField(blank=True, help_text="Insert link here.", max_length=250)
+
     menu_item_name = models.CharField(
         max_length=255,
         default="*NOT SET*",
@@ -91,6 +93,7 @@ class NavigationMixin(Page):
     promote_panels = Page.promote_panels + [
         FieldPanel("navigation_category", widget=forms.Select),
         FieldPanel("menu_item_name"),
+        FieldPanel("redirectLink")
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -151,7 +154,3 @@ class CaseRelatedFormsEntry(models.Model):
 class ExternalRedirectPage(NavigationMixin):
     class Meta:
         abstract = False
-
-    redirectLink = models.CharField(blank=False, help_text="Insert link here.", max_length=250)
-
-    content_panels = Page.content_panels + [FieldPanel("redirectLink")]
