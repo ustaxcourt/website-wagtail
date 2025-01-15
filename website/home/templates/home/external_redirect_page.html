@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags %}
+
+{% load static %}
+
+{% block body_class %}
+  template-standard_page
+{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+  <h1>{{ page.title }}</h1>
+  <hr class="foundry-divider-simple">
+  <p>One moment while you are redirected to {{ page.link }}</p>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  window.location.replace("{{ page.redirectLink }}");
+</script>
+{% endblock %}

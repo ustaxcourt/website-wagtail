@@ -113,7 +113,9 @@ class StandardPage(NavigationMixin):
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
+
 class CaseRelatedFormsPage(StandardPage):
+
     content_panels = Page.content_panels + [
         InlinePanel("forms", label="Forms"),
     ]
@@ -145,3 +147,11 @@ class CaseRelatedFormsEntry(models.Model):
         FieldPanel("eligibleForEFilingByPetitioners"),
         FieldPanel("eligibleForEFilingByPractitioners"),
     ]
+
+class ExternalRedirectPage(NavigationMixin):
+    class Meta:
+        abstract = False
+
+    redirectLink = models.CharField(blank=False, help_text="Insert link here.", max_length=250)
+
+    content_panels = Page.content_panels + [FieldPanel("redirectLink")]ç
