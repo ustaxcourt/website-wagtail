@@ -1,0 +1,51 @@
+import logging
+from wagtail.models import Page
+from django.contrib.contenttypes.models import ContentType
+from home.models import StandardPage
+from home.management.commands.pages.page_initializer import PageInitializer
+from home.models import NavigationCategories
+
+logger = logging.getLogger(__name__)
+
+
+class DawsonSearchPageInitializer(PageInitializer):
+    def create(self):
+        try:
+            home_page = Page.objects.get(slug="home")
+        except Page.DoesNotExist:
+            logger.error("Home page does not exist.")
+            return
+
+        self.create_page_info(home_page)
+
+    def create_page_info(self, home_page):
+        slug = "search"
+        title = "Search"
+
+        if Page.objects.filter(slug=slug).exists():
+            logger.info(f"'{title}' page already exists.")
+            return
+
+        logger.info(f"Creating the '{title}' page.")
+
+        content_type = ContentType.objects.get_for_model(StandardPage)
+
+        new_page = home_page.add_child(
+            instance=StandardPage(
+                title=title,
+                body="Search Page - Redirect",
+                slug=slug,
+                seo_title=title,
+                search_description="Dawson Search",
+                content_type=content_type,
+                show_in_menus=True,
+            )
+        )
+
+        StandardPage.objects.filter(id=new_page.id).update(
+            menu_item_name="SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
+            navigation_category=NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
+            redirectLink="https://dawson.ustaxcourt.gov/",
+        )
+
+        logger.info(f"Successfully created the '{title}' page.")

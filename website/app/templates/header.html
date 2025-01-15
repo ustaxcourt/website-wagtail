@@ -33,7 +33,7 @@
         {% if menuitem.specific.navigation_category == section.key %}
           {% if menuitem.specific.redirectLink %}
             <li class="nav-link">
-              <a href="{{ menuitem.specific.redirectLink }}">
+              <a target="_blank" href="{{ menuitem.specific.redirectLink }}">
                 <img class="nav-item-icon" src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
                 {{ menuitem.specific.menu_item_name }}
               </a>

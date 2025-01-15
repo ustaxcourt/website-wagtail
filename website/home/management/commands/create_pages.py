@@ -3,10 +3,14 @@ from home.management.commands.pages.case_related_forms_page import (
     CaseRelatedFormPageInitializer,
 )
 from home.management.commands.pages.dawson_page import DawsonPageInitializer
+from home.management.commands.pages.dawson_search_page import (
+    DawsonSearchPageInitializer,
+)
 
 pages_to_initialize = [
-    CaseRelatedFormPageInitializer,
+    DawsonSearchPageInitializer,
     DawsonPageInitializer,
+    CaseRelatedFormPageInitializer,
 ]
 
 
