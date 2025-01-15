@@ -3,19 +3,20 @@ name: Deploy
 on:
   push:
     tags:
-      - 'cody-sandbox'
+      - 'sandbox'
       - 'development'
       - 'test'
 
 jobs:
   deploy:
-    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || github.ref == 'refs/tags/cody-sandbox' && 'cody-sandbox' }}
+    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || github.ref == 'refs/tags/sandbox' && 'sandbox' }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Environment
         id: set_env
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/*-sandbox ]]; then
+          ACTORNAME="${{ github.actor }}"
+          if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
             TAG_NAME="${{ github.ref_name }}"
             ENV_NAME=${TAG_NAME%-sandbox}
             echo "ENVIRONMENT=${ENV_NAME}" >> $GITHUB_ENV
@@ -27,6 +28,10 @@ jobs:
             echo "Debug: No matching condition found"
             exit 1
           fi
+          FINAL_VARIABLE="${ACTORNAME}_${ENVIRONMENT}"
+          echo "FINAL_VARIABLE=${FINAL_VARIABLE}" >> $GITHUB_ENV
+          echo $FINAL_VARIABLE
+          exit 1
 
       - name: Checkout code
         uses: actions/checkout@v3
