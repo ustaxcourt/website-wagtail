@@ -154,4 +154,4 @@ class ExternalRedirectPage(NavigationMixin):
 
     redirectLink = models.CharField(blank=False, help_text="Insert link here.", max_length=250)
 
-    content_panels = Page.content_panels + [FieldPanel("redirectLink")]ç
+    content_panels = Page.content_panels + [FieldPanel("redirectLink")]
