@@ -209,7 +209,7 @@ forms_data = [
 ]
 
 
-class CaseRelatedFormPage(PageInitializer):
+class CaseRelatedFormPageInitializer(PageInitializer):
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")

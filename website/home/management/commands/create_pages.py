@@ -1,8 +1,12 @@
 from django.core.management.base import BaseCommand
-from home.management.commands.pages.case_related_forms_page import CaseRelatedFormPage
+from home.management.commands.pages.case_related_forms_page import (
+    CaseRelatedFormPageInitializer,
+)
+from home.management.commands.pages.dawson_page import DawsonPageInitializer
 
 pages_to_initialize = [
-    CaseRelatedFormPage,
+    CaseRelatedFormPageInitializer,
+    DawsonPageInitializer,
 ]
 
 

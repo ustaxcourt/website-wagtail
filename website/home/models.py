@@ -79,8 +79,6 @@ class NavigationMixin(Page):
             for value, label in NavigationCategories.choices
             if value != NavigationCategories.NONE
         ]
-        print(navigation_sections)
-        print("gg")
         context["navigation_sections"] = navigation_sections
         return context
 
@@ -143,3 +141,7 @@ class HomePageEntry(models.Model):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+
+class DawsonPage(StandardPage):
+    pass
