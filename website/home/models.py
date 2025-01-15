@@ -6,6 +6,7 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 from django.conf import settings
 
+
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
@@ -61,6 +62,10 @@ class NavigationMixin(Page):
         default=NavigationCategories.NONE,
     )
 
+    redirectLink = models.CharField(
+        blank=True, help_text="Insert link here.", max_length=250
+    )
+
     menu_item_name = models.CharField(
         max_length=255,
         default="*NOT SET*",
@@ -70,6 +75,7 @@ class NavigationMixin(Page):
     promote_panels = Page.promote_panels + [
         FieldPanel("navigation_category", widget=forms.Select),
         FieldPanel("menu_item_name"),
+        FieldPanel("redirectLink"),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -95,6 +101,26 @@ class StandardPage(NavigationMixin):
 class CaseRelatedFormsPage(StandardPage):
     content_panels = Page.content_panels + [
         InlinePanel("forms", label="Forms"),
+    ]
+
+
+class HomePage(NavigationMixin):
+    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        InlinePanel("entries", label="Entries"),
+    ]
+
+
+class HomePageEntry(models.Model):
+    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    body = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
     ]
 
 
@@ -126,21 +152,9 @@ class CaseRelatedFormsEntry(models.Model):
     ]
 
 
-class HomePage(NavigationMixin):
-    content_panels = Page.content_panels + [
-        InlinePanel("entries", label="Entries"),
-    ]
-
-
-class HomePageEntry(models.Model):
-    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    body = RichTextField(blank=True)
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("body"),
-    ]
+class ExternalRedirectPage(NavigationMixin):
+    class Meta:
+        abstract = False
 
 
 class DawsonPage(StandardPage):
