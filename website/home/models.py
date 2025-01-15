@@ -12,6 +12,8 @@ from wagtail.contrib.settings.models import (
     register_setting,
 )
 
+Page._meta.get_field("search_description").blank = False
+
 
 @register_setting
 class Footer(BaseGenericSetting):
