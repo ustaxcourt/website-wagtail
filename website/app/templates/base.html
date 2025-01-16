@@ -32,6 +32,7 @@
     {# Global stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
+     <link rel="stylesheet" type="text/css" href="{% static 'css/alert_banner.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
 
@@ -50,6 +51,11 @@
 
     {% endblock %}">
     {% include 'banner.html' %}
+    {% with env=settings.home.environment %}
+    {% if env == "dev" %}
+      {% include 'alert_banner.html' %}
+    {% endif %}
+    {% endwith %}
     {% include 'header.html' %}
 
     {% wagtailuserbar %}

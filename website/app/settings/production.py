@@ -22,3 +22,5 @@ DEBUG = False
 
 # Add this setting to store your GA tracking ID
 GOOGLE_ANALYTICS_ID = "G-09HTDLXBMS"
+
+ENVIRONMENT = "prod"
