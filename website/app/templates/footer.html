@@ -3,38 +3,40 @@
 {% load wagtailcore_tags %}
 
 <footer>
-  <div class="grid-container">
-    <div class="grid-row grid-gap">
-      <div class="grid-col-12 desktop:grid-col">
-        <h3>Technical Questions?</h3>
-        <p>
-          {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
+  <div class="main">
+    <div class="grid-container">
+      <div class="grid-row grid-gap">
+        <div class="grid-col-12 desktop:grid-col">
+          <h3>Technical Questions?</h3>
+          <p>
+            {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
             {{ technicalQuestions|richtext }}
-          {% endwith %}
-        </p>
-      </div>
-      <div class="grid-col-12 desktop:grid-col">
-        <h3>Other Questions?</h3>
-        <p>
-          {% with otherQuestions=settings.home.Footer.otherQuestions %}
+            {% endwith %}
+          </p>
+        </div>
+        <div class="grid-col-12 desktop:grid-col">
+          <h3>Other Questions?</h3>
+          <p>
+            {% with otherQuestions=settings.home.Footer.otherQuestions %}
             {{ otherQuestions|richtext }}
-          {% endwith %}
-        </p>
+            {% endwith %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-address">
+    <div class="grid-container">
+      <div class="content">
+        <a href="/"><img alt="US Tax Court Logo" class="seal" src="{% static 'images/footer/seal.png' %}" /></a>
+
+        <hr />
+
+        <p class="font-heading">United States Tax Court</p>
+        <p>400 Second Street, NW, Washington, DC 20217 | <span class="phone">(202) 521-0700</span></p>
+        <p>All Rights Reserved</p>
       </div>
     </div>
   </div>
 </footer>
-
-<div class="footer-address">
-  <div class="grid-container">
-    <div class="content">
-      <a href="/"><img class="seal" src="{% static 'images/footer/seal.png' %}" /></a>
-
-      <hr />
-
-      <p class="font-heading">United States Tax Court</p>
-      <p>400 Second Street, NW, Washington, DC 20217 | (202) 521-0700</p>
-      <p>All Rights Reserved</p>
-    </div>
-  </div>
-</div>
