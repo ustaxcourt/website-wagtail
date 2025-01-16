@@ -1,3 +1,5 @@
+import { checkA11y } from "../support/commands"
+
 describe('index page', () => {
   beforeEach(() => {
     cy.visit('/')
@@ -17,6 +19,8 @@ describe('index page', () => {
 
     button.click()
     bannerContent().should('be.visible')
+
+    checkA11y();
 
     button.click()
     bannerContent().should('be.hidden')

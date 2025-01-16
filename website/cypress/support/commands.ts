@@ -23,3 +23,31 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import { Result } from 'axe-core';
+
+export function terminalLog(violations: Result[]): void {
+  const violationData = violations.map(
+    ({ description, id, impact, nodes }) => ({
+      description,
+      id,
+      impact,
+      nodes: nodes.length,
+    }),
+  );
+
+  cy.task('table', violationData);
+}
+
+
+export function checkA11y() {
+  cy.injectAxe();
+
+  cy.checkA11y(
+    undefined,
+    {
+      includedImpacts: ['serious', 'critical'],
+      retries: 3,
+    },
+    terminalLog,
+  );
+}
