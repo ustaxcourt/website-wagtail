@@ -16,8 +16,9 @@ jobs:
         id: set_env
         run: |
           ACTORNAME="${{ github.actor }}"
+          TAG_NAME="${{ github.ref_name }}"
+          echo "DEPLOY_ENVIRONMENT=${TAG_NAME}" >> $GITHUB_ENV
           if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
-            TAG_NAME="${{ github.ref_name }}"
             echo "ENVIRONMENT=${ACTORNAME}_${TAG_NAME}" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
@@ -40,7 +41,9 @@ jobs:
           terraform_wrapper: false
 
       - name: Set up Python
-        uses: ./.github/actions/setup-python
+        uses: actions/setup-python
+        with:
+          python-version-file: website/.python-version
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -96,9 +99,9 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.production"|| echo "user already exists, skipping"
-          make resetadminpassword settings="app.settings.production"
-          make createpages settings="app.settings.production"
+          make superuser settings="app.settings.${DEPLOY_ENVIRONMENT}"|| echo "user already exists, skipping"
+          make resetadminpassword settings="app.settings.${DEPLOY_ENVIRONMENT}"
+          make createpages settings="app.settings.${DEPLOY_ENVIRONMENT}"
           make users group="Editors"
           make users group="Moderators"
 

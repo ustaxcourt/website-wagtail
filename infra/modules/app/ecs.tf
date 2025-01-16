@@ -59,6 +59,10 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "AWS_STORAGE_BUCKET_NAME",
         value = aws_s3_bucket.private_bucket.id
+      },
+      {
+        name = "DJANGO_SETTINGS_MODULE",
+        value = "app.settings.${var.environment}"
       }
     ],
     secrets: [
