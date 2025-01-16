@@ -70,8 +70,7 @@
             display: flex;
             align-items: center;
 
-            &:hover,
-            &:focus-within {
+            &:hover {
                 .navigation-list:has(li) {
                     display: flex;
                 }

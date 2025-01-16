@@ -68,5 +68,17 @@
       element.classList.toggle("displayed-navigation-list");
     }
   }
+  document.querySelectorAll('.navigation-header').forEach(header => {
+    header.addEventListener('keydown', event => {
+        if (event.code === 'Space' || event.code === 'Enter') {
+            event.preventDefault();
+            const navigationList = header.querySelector('.navigation-list');
+            if (navigationList && navigationList.childElementCount > 0) {
+                navigationList.style.display = navigationList.style.display === 'flex' ? 'none' : 'flex';
+                header.setAttribute('aria-expanded', navigationList.style.display === 'flex');
+            }
+        }
+    });
+});
 </script>
 {% endblock %}
