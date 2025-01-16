@@ -40,8 +40,6 @@ jobs:
 
       - name: Set up Python
         uses: ./.github/actions/setup-python
-        with:
-          python-version-file: website/.python-version
 
       - name: Setup Node
         uses: actions/setup-node@v4
