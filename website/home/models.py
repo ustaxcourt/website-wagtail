@@ -29,7 +29,6 @@ class Footer(BaseGenericSetting):
 
 
 class HomePage(Page):
-    environment = settings.ENVIRONMENT
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
     content_panels = Page.content_panels + [
