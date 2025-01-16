@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - 'cody-sandbox'
-      - 'sree-sandbox'
       - 'development'
       - 'test'
 
