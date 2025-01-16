@@ -41,7 +41,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Set up Python
-        uses: actions/setup-python
+        uses: ./.github/actions/setup-python
         with:
           python-version-file: website/.python-version
 
