@@ -28,8 +28,6 @@ jobs:
             echo "Debug: No matching condition found"
             exit 1
           fi
-          cat $GITHUB_ENV
-          exit 1
 
       - name: Checkout code
         uses: actions/checkout@v3
