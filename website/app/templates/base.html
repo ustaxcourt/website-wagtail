@@ -60,7 +60,9 @@
 
     {% include 'footer.html' %}
 
-    <button title="Scroll to top" id="scroll-to-top" type="button" class="usa-button fade-in"><img src="{% static 'uswds/img/usa-icons/arrow_drop_up.svg' %}" role="img" alt="" aria-hidden="true" /></button>
+    <button title="Scroll to top" id="scroll-to-top" type="button" class="usa-button fade-in">
+      <img src="{% static 'uswds/img/usa-icons/arrow_drop_up.svg' %}" role="img" alt="scroll to top button" aria-hidden="true" />
+    </button>
 
     {# Global javascript #}
     <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
