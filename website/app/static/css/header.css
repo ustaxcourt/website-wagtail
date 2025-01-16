@@ -48,7 +48,7 @@
 }
 
 /* styles for larger screens - i.e. laptops */
-@media (min-width: 481px) {
+@media (min-width: 854px) {
     .nav-hamburger {
         height: 16px;
         display: none;
@@ -91,7 +91,7 @@
 }
 
 /* styles for smaller screens - i.e. cell phones */
-@media (max-width: 480px) {
+@media (max-width: 853px) {
     .navigation-bar {
         border: solid var(--light-blue);
         background-color: #f2f4f4;
