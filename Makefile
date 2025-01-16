@@ -1,8 +1,16 @@
 env := $(shell ./infra/get_env.sh)
 
+ifeq ($(env),prod)
+	DOMAIN_NAME := ustaxcourt.gov
+else
+	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
+endif
+
 # this command is used to setting up the bastion ssh keys and the aws secret manager secrets
 # that will be used for the terraform setup during the ci/cd pipeline
-aws-setup:
+aws-setup: init
+	@echo "Setting up AWS environment for $(env)..."
+
 	@if [ -z "$(DOMAIN_NAME)" ]; then \
 		echo "Error: DOMAIN_NAME environment variable is not set"; \
 		exit 1; \
@@ -45,18 +53,24 @@ aws-setup:
 		aws iam create-user --user-name deployer; \
 	fi
 
-	@if aws iam list-policies --query "Policies[?PolicyName=='deployer-policy']" --output text | grep -q 'deployer-policy'; then \
+	@POLICY_ARN=$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text); \
+	if [ -n "$$POLICY_ARN" ]; then \
 		echo "Policy 'deployer-policy' already exists."; \
 	else \
 		echo "Creating policy 'deployer-policy'..."; \
 		aws iam create-policy --policy-name deployer-policy --policy-document file://./infra/iam/deployer-policy.json; \
-	fi
+	fi;\
+	aws iam create-policy-version --policy-arn "$$POLICY_ARN" --policy-document file://./infra/iam/deployer-policy.json --set-as-default;\
+	aws iam attach-user-policy --user-name deployer --policy-arn "$$POLICY_ARN";
 
-	aws iam attach-user-policy --user-name deployer --policy-arn "$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text)"
 	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
 
 init:
-	cd infra && ./init.sh
+	@echo "Initializing environment: $(env)"
+	@cd infra && ./init.sh && \
+	   . ./load-secrets.sh && \
+	   echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64 && \
+	   echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64
 
 deploy:
 	@echo "Deploying to environment: $(env)"
