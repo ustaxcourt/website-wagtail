@@ -87,6 +87,10 @@ tag:
 	git tag -f $(tag)
 	git push -f origin $(tag)
 
+restore:
+	@echo "Restoring secrets in AWS environment: $(env)"
+	aws secretsmanager restore-secret --secret-id website_secrets
+
 aws-teardown: destroy
 	@echo "Cleaning up..."
 
