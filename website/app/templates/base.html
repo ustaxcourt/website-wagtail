@@ -52,7 +52,7 @@
     {% endblock %}">
     {% include 'banner.html' %}
     {% get_enviroment as environment%}
-    {% if environment == "dev" %}
+    {% if environment != "production" %}
       {% include 'alert_banner.html' %}
     {% endif %}
     {% include 'header.html' %}
