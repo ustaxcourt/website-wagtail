@@ -28,6 +28,18 @@ pyenv install
 brew install ruff
 ```
 
+
+#### Setup Tfenv
+
+You will want to install tfenv so that you can install and switch to different terraform versions.
+
+```
+brew install tfenv
+tfenv install 1.10.4
+tfenv use 1.10.4
+```
+
+
 #### Setup Pre-Commit
 
 Before you commit to the repo, we run some checks to verify and fix the formatting of python.
