@@ -1,6 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar %}
-{% load settings_tags %}
-{{ settings.ENVIRONMENT }}
+{% load static wagtailcore_tags wagtailuserbar env_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +51,8 @@
 
     {% endblock %}">
     {% include 'banner.html' %}
-    {% if settings.ENVIRONMENT == "dev" %}
+    {% get_enviroment as environment%}
+    {% if environment == "dev" %}
       {% include 'alert_banner.html' %}
     {% endif %}
     {% include 'header.html' %}
