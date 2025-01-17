@@ -2,24 +2,25 @@
   background-color: #faf3cf;
   color: #000;
   font-weight: bold;
+}
+
+.alert-content{
+  padding: 0;
   display: flex;
+  justify-content: space-evenly;
 }
 
 .alert-banner p{
   margin-top: 0;
   margin-bottom: 0;
-  margin-left: 176px;
-  padding-left: 32px;
 }
 
 .alert-banner a {
   color: #000;
   text-decoration: underline;
-  padding-right: 400px;
 }
 
 .close-btn {
-  position: absolute;
   cursor: pointer;
   border: none;
   background-color: #0000;
