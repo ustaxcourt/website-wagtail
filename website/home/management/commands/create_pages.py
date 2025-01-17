@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for page_class in pages_to_initialize:
-            page_instance = page_class()
+            page_instance = page_class(self.stdout)
             page_instance.create()
 
         self.stdout.write(self.style.SUCCESS("All pages have been initialized."))

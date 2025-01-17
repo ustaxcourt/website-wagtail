@@ -1,19 +1,19 @@
-import logging
 from wagtail.models import Page
 from django.contrib.contenttypes.models import ContentType
 from home.models import StandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
 
-logger = logging.getLogger(__name__)
-
 
 class DawsonSearchPageInitializer(PageInitializer):
+    def __init__(self, logger):
+        super().__init__(logger)
+
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            logger.error("Home page does not exist.")
+            self.logger.write("Home page does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -23,10 +23,10 @@ class DawsonSearchPageInitializer(PageInitializer):
         title = "Search"
 
         if Page.objects.filter(slug=slug).exists():
-            logger.info(f"'{title}' page already exists.")
+            self.logger.write(f"'{title}' page already exists.")
             return
 
-        logger.info(f"Creating the '{title}' page.")
+        self.logger.write(f"Creating the '{title}' page.")
 
         content_type = ContentType.objects.get_for_model(StandardPage)
 
@@ -48,4 +48,4 @@ class DawsonSearchPageInitializer(PageInitializer):
             redirectLink="https://dawson.ustaxcourt.gov/",
         )
 
-        logger.info(f"Successfully created the '{title}' page.")
+        self.logger.write(f"Successfully created the '{title}' page.")

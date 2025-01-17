@@ -1,4 +1,3 @@
-import logging
 import os
 from wagtail.models import Page
 from django.contrib.contenttypes.models import ContentType
@@ -10,8 +9,6 @@ from django.core.files import File
 from wagtail.documents import get_document_model
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
-
-logger = logging.getLogger(__name__)
 
 forms_data = [
     {
@@ -210,11 +207,14 @@ forms_data = [
 
 
 class CaseRelatedFormPageInitializer(PageInitializer):
+    def __init__(self, logger):
+        super().__init__(logger)
+
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            logger.error("Home page does not exist.")
+            self.logger.write("Home page does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -227,10 +227,10 @@ class CaseRelatedFormPageInitializer(PageInitializer):
         title = "Case Related Forms"
 
         if Page.objects.filter(slug=slug).exists():
-            logger.info(f"'{title}' page already exists.")
+            self.logger.write(f"'{title}' page already exists.")
             return
 
-        logger.info(f"Creating the '{title}' page.")
+        self.logger.write(f"Creating the '{title}' page.")
 
         content_type = ContentType.objects.get_for_model(CaseRelatedFormsPage)
 
@@ -251,18 +251,18 @@ class CaseRelatedFormPageInitializer(PageInitializer):
             navigation_category=NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
         )
 
-        logger.info(f"Successfully created the '{title}' page.")
+        self.logger.write(f"Successfully created the '{title}' page.")
 
     def create_form_entry(self, formData):
         try:
             parent_page = CaseRelatedFormsPage.objects.get(slug="case_related_forms")
         except CaseRelatedFormsPage.DoesNotExist:
-            logger.error("Parent page 'Case Related Forms' does not exist.")
+            self.logger.write("Parent page 'Case Related Forms' does not exist.")
             return
 
         # Check if the form already exists
         if CaseRelatedFormsEntry.objects.filter(formName=formData["formName"]).exists():
-            logger.info(f"Form entry for {formData['formName']} already exists.")
+            self.logger.write(f"Form entry for {formData['formName']} already exists.")
             return
 
         pdf_path = (
@@ -270,7 +270,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
         )
 
         if not os.path.exists(pdf_path):
-            logger.error(f"PDF file not found at {pdf_path}.")
+            self.logger.write(f"PDF file not found at {pdf_path}.")
             return
 
         Document = get_document_model()
@@ -298,4 +298,4 @@ class CaseRelatedFormPageInitializer(PageInitializer):
             )
             form.save()  # Just save the model directly
 
-        logger.info(f"Successfully created form entry: {formData['formName']}")
+        self.logger.write(f"Successfully created form entry: {formData['formName']}")
