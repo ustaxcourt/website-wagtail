@@ -4,11 +4,11 @@ import os
 
 username = "admin"
 email = "admin@example.com"
-SUPERUSER_PASSWORD = os.getenv("DJANGO_SUPERUSER_PASSWORD")
+SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD")
 
 
 class Command(BaseCommand):
-    help = "Update superuser admin password to default"
+    help = "Update superuser admin password to default stored in secrets"
 
     def handle(self, *args, **kwargs):
         if User.objects.filter(username=username).exists():
