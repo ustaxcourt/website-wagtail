@@ -16,7 +16,7 @@ jobs:
         id: set_env
         run: |
           if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
-            echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+            echo "ENVIRONMENT=${{github.actor}}_sandbox" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/test ]]; then
