@@ -168,7 +168,10 @@ STORAGES = {
 }
 
 aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
+print("pre")
 if aws_bucket_name:
+    print("we are here")
+    print(aws_bucket_name)
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     }
@@ -182,6 +185,7 @@ if aws_bucket_name:
 
     # when running in github actions, we use access keys instead of assumed roles like on ECS
     if os.getenv("AWS_ACCESS_KEY_ID"):
+        print("we are there")
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
