@@ -2,6 +2,8 @@ name: Deploy
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'sandbox'
       - 'development'
@@ -9,7 +11,7 @@ on:
 
 jobs:
   deploy:
-    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || '' }}
+    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Environment
@@ -18,6 +20,8 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
             echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/test ]]; then
             echo "ENVIRONMENT=test" >> $GITHUB_ENV
