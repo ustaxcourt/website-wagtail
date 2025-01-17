@@ -92,9 +92,9 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.${DEPLOY_ENVIRONMENT}"|| echo "user already exists, skipping"
-          make resetadminpassword settings="app.settings.${DEPLOY_ENVIRONMENT}"
-          make createpages settings="app.settings.${DEPLOY_ENVIRONMENT}"
+          make superuser settings="app.settings.${ENVIRONMENT}"|| echo "user already exists, skipping"
+          make resetadminpassword settings="app.settings.${ENVIRONMENT}"
+          make createpages settings="app.settings.${ENVIRONMENT}"
           make users group="Editors"
           make users group="Moderators"
 

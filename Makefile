@@ -2,6 +2,8 @@ env := $(shell ./infra/get_env.sh)
 
 ifeq ($(env),prod)
 	DOMAIN_NAME := ustaxcourt.gov
+else ifeq ($(env),sandbox)
+	DOMAIN_NAME := $(USER)-sandbox-web.ustaxcourt.gov
 else
 	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
 endif
