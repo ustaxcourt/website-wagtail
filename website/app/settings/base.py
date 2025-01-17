@@ -180,6 +180,11 @@ if aws_bucket_name:
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
 
+    # when running in github actions, we use access keys instead of assumed roles like on ECS
+    if os.getenv("AWS_ACCESS_KEY_ID"):
+        AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "app"
