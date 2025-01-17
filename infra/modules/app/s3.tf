@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "private_bucket" {
-  bucket = "${var.environment}-ustc-website-assets"
+  bucket = "${var.domain_name}-ustc-website-assets"
 }
 
 # Add a bucket policy for public access
