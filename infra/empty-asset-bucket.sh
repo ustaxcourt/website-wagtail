@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export AWS_PAGER=""
-bucket_name="${ENVIRONMENT}-ustc-website-assets"
+bucket_name="${DOMAIN_NAME}-ustc-website-assets"
 
 # Check if bucket exists
 if aws s3 ls "s3://${bucket_name}" 2>&1 | grep -q 'NoSuchBucket'; then
