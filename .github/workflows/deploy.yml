@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || (github.ref == 'refs/tags/sandbox' && github.actor + '_sandbox') }}
+    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/test' && 'test' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Environment
