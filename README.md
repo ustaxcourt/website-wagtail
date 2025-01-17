@@ -31,7 +31,7 @@ brew install ruff
 
 #### Setup Tfenv
 
-You will want tfenv so that you can install and switch to different terraform versions.
+You will want to install tfenv so that you can install and switch to different terraform versions.
 
 ```
 brew install tfenv
