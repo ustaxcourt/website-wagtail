@@ -195,6 +195,21 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
+### Test environment configuration
+Each developer need to configure and maintain a feature testable enviornment. Currently, the developers sandbox account is deemed as such a test environment. If you have not configured the sandbox account yet, do the following.
+
+1. Login to AWS sandbox account and export the account keys for sandbox. Configure the sandbox keys as your current AWS environment in your laptop (copy paste the exports to laptop shell console).
+2. Checkout the main branch.
+3. While in the repository root directory, run the following command in console. The `aws-setup` command will create necessary `website_secrets` in your AWS sandbox environment.
+```shell
+make aws-setup
+```
+4. Confirm `DOMAIN_NAME`. Login to your AWS Sandbox account, and check the secrets entry under `website_secrets`. The `DOMAIN_NAME` value could be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the `DOMAIN_NAME` now is a good time to change it to a different one you want to.
+5. Back in your laptop console, run the following command. This will create a deployment workflow action in github. You can monitor the deployment in [actions > deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). Once the action is completed successfully, you will need to provide NS entries to [@jtdevos](https://github.com/jtdevos)
+```shell
+make tag tag=sandbox
+```
+6. Wait
 ## The Workflow
 1. Pick up a story on the main board,
 2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
@@ -203,10 +218,14 @@ Additionally, we will use tags to facilitate deployment to production and sandbo
     - `monday-id`: the valu of the **Item ID** in Monday.com
 3. Develop and test locally
 4. When ready for review, push branch to github (if not done already) and create a draft PR to `main`
-5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox-name` , e.g.
+5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox` , e.g.
+```shell
+    make tag tag=sandbox
 ```
-    git tag -f jim-sandbox
-    git push -f origin jim-sandbox
+Or, the following equivalent command.
+```shell
+    git tag -f sandbox
+    git push -f origin sandbox
 ```
 > Additionally, you can add/reassign tags using the Github website.
 
