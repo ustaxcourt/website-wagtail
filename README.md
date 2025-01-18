@@ -195,30 +195,32 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
-### Test environment configuration
-Each developer need to configure and maintain a feature testable enviornment. Currently, the developers sandbox account is deemed as such a test environment. If you have not configured the sandbox account yet, do the following.
+**Test Environment Configuration**
 
-1. Login to AWS sandbox account and export the account keys for sandbox. Configure the sandbox keys as your current AWS environment in your laptop (copy paste the exports to laptop shell console).
-2. Checkout the main branch.
-3. While in the repository root directory, run the following command in console. The `aws-setup` command will create necessary `website_secrets` in your AWS sandbox environment.
-```shell
-make aws-setup
-```
-4. Confirm `DOMAIN_NAME`. Login to your AWS Sandbox account, and check the secrets entry under `website_secrets`. The `DOMAIN_NAME` value could be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the `DOMAIN_NAME` now is a good time to change it to a different one you want to.
-5. Back in your laptop console, run the following command. This will create a deployment workflow action in github. You can monitor the deployment in [actions > deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). This workflow will not complete and will wait on a terraform deployment step for resource: "`module.app.aws_acm_certificate_validation.main: Still creating... [4m30s elapsed]`". You will be able to complete the deployment successfully after you provide NS entries to [@jtdevos](https://github.com/jtdevos), see next step.
-```shell
-make tag tag=sandbox
-```
-6. Wait for the Github deploy workflow to complete. Login to AWS sandbox admin console and navigate to "[Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1)". And then click open the link on `"{{DOMAIN_NAME}}"`. Copy the "Value/Route traffic to" entries for `"NS"` Type record on Record Name for `"{{DOMAIN_NAME}}"`. It should be something similar to:
+Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
 
-```text
-ns-1396.awsdns-46.org.
-ns-886.awsdns-46.net.
-ns-1560.awsdns-03.co.uk.
-ns-341.awsdns-42.com.
-```
-7. Provide the `ns` entries and `DOMAIN_NAME` to [@jtdevos](https://github.com/jtdevos). Once Jim configures and complete the routing, the deployment workflow from step #5 should complete successfully.
-8. This completes your deployment to sandbox. Open the `DOMAIN_NAME` to validate the website opens fine.
+1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console).
+2. **Check out the `main` branch** of the repository.
+3. **From the repository’s root directory**, run:
+   ```shell
+   make aws-setup
+   ```
+   This command creates the necessary `website_secrets` in your AWS sandbox environment.
+4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
+5. **Run the following command** from your laptop console to create a deployment workflow in GitHub:
+   ```shell
+   make tag tag=sandbox
+   ```
+   Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). You can complete the deployment after you provide NS entries to [@jtdevos](https://github.com/jtdevos).
+6. **Wait for the GitHub deployment workflow to complete.** Then log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
+   ```text
+   ns-1396.awsdns-46.org.
+   ns-886.awsdns-46.net.
+   ns-1560.awsdns-03.co.uk.
+   ns-341.awsdns-42.com.
+   ```
+7. **Provide the `NS` entries and `DOMAIN_NAME`** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow from step 5 should complete successfully.
+8. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
 
 ## The Workflow
 1. Pick up a story on the main board,
