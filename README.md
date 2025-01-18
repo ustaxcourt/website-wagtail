@@ -205,11 +205,21 @@ Each developer need to configure and maintain a feature testable enviornment. Cu
 make aws-setup
 ```
 4. Confirm `DOMAIN_NAME`. Login to your AWS Sandbox account, and check the secrets entry under `website_secrets`. The `DOMAIN_NAME` value could be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the `DOMAIN_NAME` now is a good time to change it to a different one you want to.
-5. Back in your laptop console, run the following command. This will create a deployment workflow action in github. You can monitor the deployment in [actions > deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). Once the action is completed successfully, you will need to provide NS entries to [@jtdevos](https://github.com/jtdevos)
+5. Back in your laptop console, run the following command. This will create a deployment workflow action in github. You can monitor the deployment in [actions > deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). This workflow will not complete and will wait on a terraform deployment step for resource: "`module.app.aws_acm_certificate_validation.main: Still creating... [4m30s elapsed]`". You will be able to complete the deployment successfully after you provide NS entries to [@jtdevos](https://github.com/jtdevos), see next step.
 ```shell
 make tag tag=sandbox
 ```
-6. Wait
+6. Wait for the Github deploy workflow to complete. Login to AWS sandbox admin console and navigate to "[Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1)". And then click open the link on `"{{DOMAIN_NAME}}"`. Copy the "Value/Route traffic to" entries for `"NS"` Type record on Record Name for `"{{DOMAIN_NAME}}"`. It should be something similar to:
+
+```text
+ns-1396.awsdns-46.org.
+ns-886.awsdns-46.net.
+ns-1560.awsdns-03.co.uk.
+ns-341.awsdns-42.com.
+```
+7. Provide the `ns` entries and `DOMAIN_NAME` to [@jtdevos](https://github.com/jtdevos). Once Jim configures and complete the routing, the deployment workflow from step #5 should complete successfully.
+8. This completes your deployment to sandbox. Open the `DOMAIN_NAME` to validate the website opens fine.
+
 ## The Workflow
 1. Pick up a story on the main board,
 2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
