@@ -1,7 +1,11 @@
 #!/bin/bash
 
 export AWS_PAGER=""
-bucket_name="${DOMAIN_NAME%-web.ustaxcourt.gov}-ustc-website-assets"
+bucket_name="${ENVIRONMENT}-ustc-website-assets"
+
+if [ "${ENVIRONMENT}" = "sandbox" ]; then
+    bucket_name="${DOMAIN_NAME%-web.ustaxcourt.gov}-ustc-website-assets"
+fi
 
 # Check if bucket exists
 if aws s3 ls "s3://${bucket_name}" 2>&1 | grep -q 'NoSuchBucket'; then
