@@ -53,6 +53,11 @@ jobs:
           cd website
           make setup
 
+      - name: Generate Release Tag
+        if: ${{ github.ref == 'refs/heads/main' }}
+        id: current_date
+        run: echo "DATE=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_OUTPUT
+
       - name: Apply Terraform
         id: tf_outputs
         env:
@@ -112,6 +117,19 @@ jobs:
       #     cd infra
       #     ./disable-bastion-host.sh
       #
+
+      - name: Create GitHub Release (optional)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.current_date.outputs.DATE }}
+          release_name: ${{ steps.current_date.outputs.DATE }}
+          draft: false
+          prerelease: false
+          body: ${{ github.event.pull_request.title || 'No PR title available.' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
