@@ -37,6 +37,7 @@ jobs:
       run: |
         cd website
         make migrate
+        make createpages
         make run &
         echo "Waiting for application to be ready on port 8000..."
         for i in {1..30}; do
