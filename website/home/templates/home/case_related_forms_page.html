@@ -25,7 +25,7 @@
             {% for form in page.forms.all %}
               <tr>
                 <td class="padding-y-2">
-                  <a class="usa-link" href="{{ form.pdf.url }}" target="_blank">{{ form.formName }}</a> {{ form.formNameNote }}
+                  <a data-testid="{{ form.formName }}" class="usa-link" href="{{ form.pdf.url }}" target="_blank">{{ form.formName }}</a> {{ form.formNameNote }}
                 </td>
                 <td class="padding-y-2">{{ form.number }}</td>
                 <td class="padding-y-2">{{ form.eligibleForEFilingByPetitioners }}</td>

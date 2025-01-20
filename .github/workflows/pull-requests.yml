@@ -37,17 +37,19 @@ jobs:
       run: |
         cd website
         make migrate
+        make createpages
         make run &
         echo "Waiting for application to be ready on port 8000..."
         for i in {1..30}; do
-          if curl -s http://localhost:8000 > /dev/null; then
+          if curl -s http://127.0.0.1:8000 > /dev/null; then
             echo "Application is ready!"
+            sleep 2
             break
           fi
           echo "Waiting for port 8000... ($i/30)"
           sleep 2
         done
-        if ! curl -s http://localhost:8000 > /dev/null; then
+        if ! curl -s http://127.0.0.1:8000 > /dev/null; then
           echo "Application failed to start on port 8000 within the expected time." >&2
           exit 1
         fi
