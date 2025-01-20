@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags %}
+{% load static %}
+
+{% block content %}
+  <div class="grid-container usa-prose margin-top-5">
+    <div class="content">
+      <h2 class="margin-bottom-3">{{ page.title }}</h2>
+      <hr />
+      <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
+    </div>
+  </div>
+{% endblock %}

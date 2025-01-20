@@ -1,10 +1,12 @@
 from django import forms
 from django.db import models
+from django.conf import settings
 from wagtail.models import Page
 from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from modelcluster.fields import ParentalKey
-from django.conf import settings
+from modelcluster.models import ClusterableModel
+from wagtail.snippets.models import register_snippet
 
 
 from wagtail.contrib.settings.models import (
@@ -159,5 +161,50 @@ class ExternalRedirectPage(NavigationMixin):
         abstract = False
 
 
-class DawsonPage(StandardPage):
-    pass
+class RelatedPage(models.Model):
+    """Model to store multiple related pages for a DawsonCard."""
+
+    card = ParentalKey("DawsonCard", related_name="related_pages", on_delete=models.CASCADE)
+    related_page = models.ForeignKey(
+        "StandardPage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    panels = [
+        PageChooserPanel("related_page"),
+    ]
+
+
+@register_snippet
+class DawsonCard(ClusterableModel):
+    """A DawsonCard that contains an icon, title, and related pages."""
+
+    parent_page = ParentalKey(
+        'DawsonEFilingPage', related_name='cards', on_delete=models.CASCADE
+    )
+    card_title = models.CharField(max_length=255, blank=False, default="Title")
+    card_icon = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    # Define panels for the admin interface
+    panels = [
+        FieldPanel("card_title"),
+        FieldPanel("card_icon"),
+        InlinePanel("related_pages", label="Related Pages"),
+    ]
+
+
+class DawsonEFilingPage(StandardPage):
+    """Page model for managing Dawson Cards."""
+
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("cards", label="Dawson Cards"),
+    ]
