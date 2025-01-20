@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar %}
+{% load static wagtailcore_tags wagtailuserbar env_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +32,7 @@
     {# Global stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'uswds/css/styles.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
+     <link rel="stylesheet" type="text/css" href="{% static 'css/alert_banner.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
 
@@ -50,6 +51,10 @@
 
     {% endblock %}">
     {% include 'banner.html' %}
+    {% get_enviroment as environment%}
+    {% if environment != "production" %}
+      {% include 'alert_banner.html' %}
+    {% endif %}
     {% include 'header.html' %}
 
     {% wagtailuserbar %}
