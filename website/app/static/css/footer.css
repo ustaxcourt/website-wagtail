@@ -2,7 +2,6 @@
 
 
 footer {
-
     .main {
         background: var(--medium-gray);
         padding: 20px 0px;
@@ -20,6 +19,7 @@ footer {
         color: #555;
         font-family: var(--font-family);
         text-align: center;
+        padding-bottom: 10px;
 
         .content {
             display: flex;
