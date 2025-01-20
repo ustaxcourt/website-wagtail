@@ -2,7 +2,7 @@ import { checkA11y } from "../support/commands"
 
 describe('case related forms page', () => {
   beforeEach(() => {
-    cy.visit('/case_related_forms')
+    cy.visit('/case_related_forms/')
     checkA11y()
   })
 
