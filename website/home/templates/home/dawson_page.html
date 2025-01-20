@@ -9,6 +9,18 @@
       <h2 class="margin-bottom-3">{{ page.title }}</h2>
       <hr />
       <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
+      {% for card in page.cards.all %}
+      <div>{{card.card_title}}</div>
+      {% for related_page in card.related_pages.all %}
+        <li class="card-related-page">
+          <img class="related-page-icon"
+          src="{% static 'images/header/chevron-right-nav-header.svg' %}"
+          alt="chevron right icon" />
+          <a href="{{ related_page.related_page.url }}">{{ related_page.related_page.title }}</a>
+        </li>
+      {% endfor %}
+      {% endfor %}
+
     </div>
   </div>
 {% endblock %}

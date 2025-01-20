@@ -164,7 +164,9 @@ class ExternalRedirectPage(NavigationMixin):
 class RelatedPage(models.Model):
     """Model to store multiple related pages for a DawsonCard."""
 
-    card = ParentalKey("DawsonCard", related_name="related_pages", on_delete=models.CASCADE)
+    card = ParentalKey(
+        "DawsonCard", related_name="related_pages", on_delete=models.CASCADE
+    )
     related_page = models.ForeignKey(
         "StandardPage",
         null=True,
@@ -183,7 +185,7 @@ class DawsonCard(ClusterableModel):
     """A DawsonCard that contains an icon, title, and related pages."""
 
     parent_page = ParentalKey(
-        'DawsonEFilingPage', related_name='cards', on_delete=models.CASCADE
+        "DawsonPage", related_name="cards", on_delete=models.CASCADE
     )
     card_title = models.CharField(max_length=255, blank=False, default="Title")
     card_icon = models.ForeignKey(
@@ -202,7 +204,7 @@ class DawsonCard(ClusterableModel):
     ]
 
 
-class DawsonEFilingPage(StandardPage):
+class DawsonPage(StandardPage):
     """Page model for managing Dawson Cards."""
 
     content_panels = StandardPage.content_panels + [
