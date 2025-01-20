@@ -32,7 +32,7 @@ aws-setup: init
 			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
+			"DJANGO_SUPERUSER_PASSWORD": "ustcAdminPW!", \
 			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \
@@ -42,7 +42,7 @@ aws-setup: init
 			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"SUPERUSER_PASSWORD": "ustcAdminPW!", \
+			"DJANGO_SUPERUSER_PASSWORD": "ustcAdminPW!", \
 			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
 		}'; \

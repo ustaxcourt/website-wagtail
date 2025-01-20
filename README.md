@@ -121,7 +121,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - it needs a `DATABASE_PASSWORD` set before you can run terraform.
   - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
-  - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
+  - set `DJANGO_SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
   - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
 - create an iam `deployer` user
@@ -195,7 +195,7 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
-**Sandbox Environment Configuration**
+## Sandbox Environment Application Configuration
 
 Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
 
@@ -223,7 +223,7 @@ Each developer needs to configure and maintain a test environment for new featur
 8. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
 
 ## The Workflow
-1. Pick up a story on the main board,
+1. Pick up a story on the main board.
 2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
     - `type`: the value of the **Type** column in Monday.com
     - `brief-description`: a few words to describe the purpose of the branch
