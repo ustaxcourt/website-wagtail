@@ -195,7 +195,7 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
-**Test Environment Configuration**
+**Sandbox Environment Configuration**
 
 Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
 
