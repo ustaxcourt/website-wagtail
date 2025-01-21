@@ -19,3 +19,8 @@ output "nameservers" {
 output "zone_id" {
   value = module.app.zone_id
 }
+
+
+output "bucket_name" {
+  value = module.app.bucket_name
+}
