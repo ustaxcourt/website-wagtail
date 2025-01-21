@@ -4,7 +4,7 @@ import os
 
 username = "admin"
 email = "admin@example.com"
-SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD")
+DJANGO_SUPERUSER_PASSWORD = os.getenv("DJANGO_SUPERUSER_PASSWORD")
 
 
 class Command(BaseCommand):
@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         if User.objects.filter(username=username).exists():
             u = User.objects.get(username="admin")
-            u.set_password(SUPERUSER_PASSWORD)
+            u.set_password(DJANGO_SUPERUSER_PASSWORD)
             u.save()
             print("Superuser password successfully changed")
         else:

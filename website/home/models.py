@@ -28,15 +28,6 @@ class Footer(BaseGenericSetting):
     ]
 
 
-class HomePage(Page):
-    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
-
-    content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        InlinePanel("entries", label="Entries"),
-    ]
-
-
 @register_setting
 class GoogleAnalyticsSettings(BaseGenericSetting):
     tracking_id = models.CharField(
@@ -50,17 +41,6 @@ class GoogleAnalyticsSettings(BaseGenericSetting):
             "tracking_id",
             widget=forms.TextInput(attrs={"value": settings.GOOGLE_ANALYTICS_ID}),
         ),
-    ]
-
-
-class HomePageEntry(models.Model):
-    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    body = RichTextField(blank=True)
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("body"),
     ]
 
 
@@ -84,6 +64,10 @@ class NavigationMixin(Page):
         default=NavigationCategories.NONE,
     )
 
+    redirectLink = models.CharField(
+        blank=True, help_text="Insert link here.", max_length=250
+    )
+
     menu_item_name = models.CharField(
         max_length=255,
         default="*NOT SET*",
@@ -93,7 +77,18 @@ class NavigationMixin(Page):
     promote_panels = Page.promote_panels + [
         FieldPanel("navigation_category", widget=forms.Select),
         FieldPanel("menu_item_name"),
+        FieldPanel("redirectLink"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        navigation_sections = [
+            {"title": label.upper(), "key": value}
+            for value, label in NavigationCategories.choices
+            if value != NavigationCategories.NONE
+        ]
+        context["navigation_sections"] = navigation_sections
+        return context
 
 
 class StandardPage(NavigationMixin):
@@ -105,12 +100,29 @@ class StandardPage(NavigationMixin):
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
-class CaseRelatedFormsPage(Page):
-    body = RichTextField(blank=True)
+class CaseRelatedFormsPage(StandardPage):
+    content_panels = Page.content_panels + [
+        InlinePanel("forms", label="Forms"),
+    ]
+
+
+class HomePage(NavigationMixin):
+    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
     content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        InlinePanel("entries", label="Entries"),
+    ]
+
+
+class HomePageEntry(models.Model):
+    homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    body = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel("title"),
         FieldPanel("body"),
-        InlinePanel("forms", label="Forms"),
     ]
 
 
@@ -140,3 +152,12 @@ class CaseRelatedFormsEntry(models.Model):
         FieldPanel("eligibleForEFilingByPetitioners"),
         FieldPanel("eligibleForEFilingByPractitioners"),
     ]
+
+
+class ExternalRedirectPage(NavigationMixin):
+    class Meta:
+        abstract = False
+
+
+class DawsonPage(StandardPage):
+    pass

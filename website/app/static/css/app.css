@@ -6,6 +6,7 @@
   --medium-gray: rgb(240, 240, 240);
   --dark-gray: rgb(220, 222, 224);
   --link-hover-blue: #003256;
+  --faint-gray: #eee;
   --link-blue: rgb(0, 94, 162);
   --heading-font: "Noto Serif JP";
   --body-font: 'Source Sans Pro';
@@ -96,18 +97,49 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--faint-gray);
     margin: 1em 0;
     padding: 0;
-
 }
 
 .foundry-divider-simple {
     margin: 17px 0 17px 0;
-    border-top: 1px solid #eeeeee;
+    border-top: 1px solid var(--faint-gray);
     height: 0;
 }
 
-.nav-item-icon {
-    height: 16px;
+.usa-table {
+    td, tr {
+        padding: 20px 0px;
+    }
+}
+
+.usa-table--borderless {
+    td {
+        border: none;
+    }
+
+    thead th {
+        border-color: var(--faint-gray);
+        font-size: 1.3rem;
+    }
+}
+
+.usa-table--stacked {
+    tr:first-child td:first-child {
+        border-color: var(--faint-gray);
+    }
+
+    tr, td {
+        padding: 20px 0px;
+        border-color: var(--faint-gray);
+    }
+}
+
+@media (max-width: 480px) {
+    .usa-table--stacked {
+        tr, td {
+            padding: 10px 0px;
+        }
+    }
 }

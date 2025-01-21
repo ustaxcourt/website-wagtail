@@ -28,6 +28,18 @@ pyenv install
 brew install ruff
 ```
 
+
+#### Setup Tfenv
+
+You will want to install tfenv so that you can install and switch to different terraform versions.
+
+```
+brew install tfenv
+tfenv install 1.10.4
+tfenv use 1.10.4
+```
+
+
 #### Setup Pre-Commit
 
 Before you commit to the repo, we run some checks to verify and fix the formatting of python.
@@ -89,7 +101,7 @@ make run
 
 See `make superuser` to see how it is setup first time.
 
-# The Developer Sandbox AWS Account
+# The Developer Sandbox AWS Accounts
 
 ## Getting AWS Credentials
 
@@ -121,7 +133,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - it needs a `DATABASE_PASSWORD` set before you can run terraform.
   - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
-  - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
+  - set `DJANGO_SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
   - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
 - create an iam `deployer` user

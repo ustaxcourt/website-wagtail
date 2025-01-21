@@ -12,7 +12,8 @@
           alt="US Tax Court Logo" />
       </a>
 
-      <a href="https://dawson.ustaxcourt.gov/"><img class="dawson" src="{% static 'images/header/dawson.png' %}"
+      <a href="https://dawson.ustaxcourt.gov/">
+        <img class="dawson" src="{% static 'images/header/dawson.png' %}"
           alt="Dawson Logo" /></a>
     </div>
   </div>
@@ -20,76 +21,45 @@
 
 {% get_site_root as site_root %}
 <div class="navigation-bar" data-testid="navigation-bar">
-  <img class="nav-hamburger" src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
+  <img class="nav-hamburger"
+    alt="mobile menu hamburger icon"
+    src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
   <ul class="navigation">
+    {% for section in navigation_sections %}
     <li class="navigation-header">
       <a href="#" onclick="toggleMenuItems(this)">
-        ABOUT THE COURT
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
+        {{ section.title }}
+        <img class="nav-header-icon"
+          src="{% static 'images/header/chevron-right-nav-header.svg' %}"
+          alt="chevron right icon" />
       </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "ABOUT" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-              src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
+        {% if menuitem.specific.navigation_category == section.key %}
+          {% if menuitem.specific.redirectLink %}
+            <li class="nav-link">
+              <a target="_blank" href="{{ menuitem.specific.redirectLink }}">
+                <img class="nav-item-icon"
+                  src="{% static 'images/header/chevron-right-nav-link.svg' %}"
+                  alt="chevron right icon" />
+                {{ menuitem.specific.menu_item_name }}
+              </a>
+            </li>
+          {% else %}
+            <li class="nav-link">
+              <a href="{% pageurl menuitem %}">
+                <img class="nav-item-icon"
+                alt="chevron right icon"
+                src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+                {{ menuitem.specific.menu_item_name }}
+              </a>
+            </li>
+          {% endif %}
         {% endif %}
         {% endfor %}
       </ul>
     </li>
-    <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
-        RULES & GUIDANCE
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
-      </a>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "RULES" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-    <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
-        ORDERS & OPINIONS
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
-      </a>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "ORDERS" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-    <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
-        eFILING & CASE MAINTENANCE
-        <img class="nav-header-icon" src="{% static 'images/header/chevron-right-nav-header.svg' %}" />
-      </a>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == "eFILING" %}
-        <li class="nav-link">
-          <a href="{% pageurl menuitem %}"><img class="nav-item-icon"
-            src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
-            {{menuitem.specific.menu_item_name }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
+    {% endfor %}
   </ul>
 </div>
 
@@ -107,5 +77,17 @@
       element.classList.toggle("displayed-navigation-list");
     }
   }
+  document.querySelectorAll('.navigation-header').forEach(header => {
+    header.addEventListener('keydown', event => {
+        if (event.code === 'Space' || event.code === 'Enter') {
+            event.preventDefault();
+            const navigationList = header.querySelector('.navigation-list');
+            if (navigationList && navigationList.childElementCount > 0) {
+                navigationList.style.display = navigationList.style.display === 'flex' ? 'none' : 'flex';
+                header.setAttribute('aria-expanded', navigationList.style.display === 'flex');
+            }
+        }
+    });
+});
 </script>
 {% endblock %}
