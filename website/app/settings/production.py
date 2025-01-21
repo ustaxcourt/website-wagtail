@@ -24,3 +24,5 @@ DEBUG = False
 GOOGLE_ANALYTICS_ID = "G-09HTDLXBMS"
 
 ENVIRONMENT = "production"
+
+BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'

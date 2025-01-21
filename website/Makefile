@@ -55,6 +55,8 @@ rmdb:
 
 reset: rmdb setup makemigrations migrate superuser createpages
 
+resetdb: rmdb makemigrations migrate superuser createpages
+
 run:
 	. $(VENV) && python manage.py runserver
 
