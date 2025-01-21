@@ -6,7 +6,7 @@ on:
       - 'sandbox-destroy'
 
 jobs:
-  deploy:
+  destroy:
     environment: ${{ github.ref == 'refs/tags/sandbox-destroy' && format('{0}_sandbox', github.actor) || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -32,7 +32,7 @@ jobs:
           terraform_version: 1.9.6
           terraform_wrapper: false
 
-      - name: Apply Terraform
+      - name: Apply Terraform destructive plan
         id: tf_outputs
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
