@@ -24,7 +24,7 @@ module "ecs" {
 }
 
 resource "aws_secretsmanager_secret" "ecs_task_secrets" {
-  name        = "ecs-task-secrets"
+  name_prefix = "ecs-task-secrets-"
   description = "Secrets used for the ecs task to prevent easy access to the secrets via aws cli commands"
 }
 
@@ -59,6 +59,10 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "AWS_STORAGE_BUCKET_NAME",
         value = aws_s3_bucket.private_bucket.id
+      },
+      {
+        name = "DJANGO_SETTINGS_MODULE",
+        value = "app.settings.${var.environment}"
       }
     ],
     secrets: [
