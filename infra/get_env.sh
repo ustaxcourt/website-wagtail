@@ -8,5 +8,6 @@ case "$ACCOUNT_ID" in
     "221082179478") echo "sandbox";; # Sree
     "047719633139") echo "sandbox";; # Cody
     "354918408861") echo "sandbox";; # Miriam
+    "890742592290") echo "sandbox";; # Joe
     *) echo "unknown";;
 esac

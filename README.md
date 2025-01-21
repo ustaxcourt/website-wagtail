@@ -22,6 +22,12 @@ cd website
 pyenv install
 ```
 
+#### Setup aws cli
+
+```
+brew install awscli
+```
+
 #### Setup Ruff
 
 ```
@@ -121,7 +127,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - it needs a `DATABASE_PASSWORD` set before you can run terraform.
   - it also needs `BASTION_PUBLIC_KEY` (see step 1 and 2 below on how it's generated)
   - also set `BASTION_PRIVATE_KEY`, this is used by circle to ssh into the bastion host
-  - set `DJANGO_SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
+  - set `SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
   - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
 - create an iam `deployer` user
@@ -195,11 +201,11 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
 
-## Sandbox Environment Application Configuration
+**Sandbox Environment Configuration**
 
 Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
 
-1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console).
+1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console and use this console for remaining steps).
 2. **Check out the `main` branch** of the repository.
 3. **From the repository’s root directory**, run:
    ```shell
@@ -207,23 +213,26 @@ Each developer needs to configure and maintain a test environment for new featur
    ```
    This command creates the necessary `website_secrets` in your AWS sandbox environment.
 4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
-5. **Run the following command** from your laptop console to create a deployment workflow in GitHub:
+
+5. **Configure github sandbox environment** Open file "infra/iam/sandbox_generated-deployer-access-key.json" and provide "AccessKeyId" and the "SecretAccessKey" values to [@jtdevos](https://github.com/jtdevos)/admin for github environment configuration. a new environment with "github user_sandbox" will be created.
+
+6. **Run the following command** from your laptop console to create a deployment workflow in GitHub:
    ```shell
    make tag tag=sandbox
    ```
    Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). You can complete the deployment after you provide NS entries to [@jtdevos](https://github.com/jtdevos).
-6. **Wait for the GitHub deployment workflow to complete.** Then log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
+7. **Wait for the GitHub deployment workflow to complete.** Then log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
    ```text
    ns-1396.awsdns-46.org.
    ns-886.awsdns-46.net.
    ns-1560.awsdns-03.co.uk.
    ns-341.awsdns-42.com.
    ```
-7. **Provide the `NS` entries and `DOMAIN_NAME`** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow from step 5 should complete successfully.
-8. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
+8. **Provide the `NS` entries and `DOMAIN_NAME`** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow from step 5 should complete successfully.
+9. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
 
 ## The Workflow
-1. Pick up a story on the main board.
+1. Pick up a story on the main board,
 2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
     - `type`: the value of the **Type** column in Monday.com
     - `brief-description`: a few words to describe the purpose of the branch
