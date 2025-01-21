@@ -206,30 +206,45 @@ Additionally, we will use tags to facilitate deployment to production and sandbo
 Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
 
 1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console and use this console for remaining steps).
+
 2. **Check out the `main` branch** of the repository.
+
 3. **From the repository’s root directory**, run:
    ```shell
    make aws-setup
    ```
    This command creates the necessary `website_secrets` in your AWS sandbox environment.
+
 4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
 
 5. **Configure github sandbox environment** Open file "infra/iam/sandbox_generated-deployer-access-key.json" and provide "AccessKeyId" and the "SecretAccessKey" values to [@jtdevos](https://github.com/jtdevos)/admin for github environment configuration. a new environment with "github user_sandbox" will be created.
 
-6. **Run the following command** from your laptop console to create a deployment workflow in GitHub:
+6. **Push `sandbox` tag to setup your sandbox environment**. In your laptop console, run the following command to create a deployment workflow in GitHub to start the application deployment workflow:
    ```shell
    make tag tag=sandbox
    ```
-   Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). You can complete the deployment after you provide NS entries to [@jtdevos](https://github.com/jtdevos).
-7. **Wait for the GitHub deployment workflow to complete.** Then log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
+   Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). The entire deployment will complete after you provide NS entries to [@jtdevos](https://github.com/jtdevos). See next step.
+
+7. **While the github workflow is in progress.** Log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
    ```text
    ns-1396.awsdns-46.org.
    ns-886.awsdns-46.net.
    ns-1560.awsdns-03.co.uk.
    ns-341.awsdns-42.com.
    ```
-8. **Provide the `NS` entries and `DOMAIN_NAME`** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow from step 5 should complete successfully.
+
+8. **Provide the `NS` entries and "Record name" (`DOMAIN_NAME`)** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow should complete successfully.
+
 9. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
+
+10. **Destroy application environment**. Verify you are able to destory the application environment by running destory command.
+
+> [!WARNING]
+> Leaving your sandbox application environment running might incur unwanted expense. Once the testing is done, you should destroy the AWS resources.
+
+```shell
+make tag tag=sandbox-destroy
+```
 
 ## The Workflow
 1. Pick up a story on the main board,
