@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "private_bucket" {
-  bucket = "${var.environment}-ustc-website-assets"
+  bucket = var.environment == "sandbox" ? "${replace(var.domain_name, "-web.ustaxcourt.gov", "")}-ustc-website-assets": "${var.environment}-ustc-website-assets"
 }
 
 # Add a bucket policy for public access
