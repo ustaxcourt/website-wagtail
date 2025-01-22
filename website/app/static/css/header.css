@@ -20,14 +20,25 @@
     padding: 0px 0px;
     margin: 0;
     display: flex;
-    justify-content: center;
     min-height: 52px;
-    display: flex;
-    align-items: center;
 
     .navigation-header {
-        .nav-header-icon {
-            height: 12px;
+
+        white-space: nowrap;
+
+        &:hover {
+            background-color: var(--light-gray-hover);
+        }
+
+        a {
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: var(--link-blue);
         }
 
         .navigation-list {
@@ -39,8 +50,9 @@
                 color: #FFFFFF;
                 font-weight: bold;
 
-                .nav-item-icon {
-                    height: 16px;
+                &:hover {
+                    background: white;
+                    border-radius: 6px;
                 }
 
                 a {
@@ -48,6 +60,10 @@
                     align-items: center;
                     gap: 10px;
                     color: #FFFFFF;
+                }
+
+                a:hover {
+                    color: var(--light-blue);
                 }
             }
         }
@@ -62,13 +78,14 @@
     }
 
     .navigation {
-        gap: 40px;
         list-style-type: none;
 
         .navigation-header {
             height: 55px;
             display: flex;
             align-items: center;
+            position: relative;
+            padding: 0px 30px;
 
             &:hover {
                 .navigation-list:has(li) {
@@ -77,19 +94,18 @@
             }
 
             .navigation-list {
-                padding-inline-start: 5px;
                 position: absolute;
-                top: 198px;
                 min-width: 320px;
+                top: 55px;
                 z-index: 500;
                 flex-direction: column;
                 padding: 10px;
+                left: 0px;
 
                 .nav-link {
-
-                    .nav-item-icon {
+                    /* .nav-item-icon {
                         height: 16px;
-                    }
+                    } */
 
                     a {
                         display: flex;
@@ -129,9 +145,26 @@
             .navigation-header {
                 display: none;
                 background-color: #efefef;
+                padding: 0;
 
                 .navigation-list {
                     display: none;
+                }
+
+                a {
+                    padding: 0 20px;
+                }
+
+                &:hover {
+                    background-color: var(--light-blue);
+                    a {
+                        color: white;
+                    }
+                }
+
+
+                .nav-link {
+                    padding: 0 10px;
                 }
             }
 
@@ -140,7 +173,6 @@
                 flex-direction: column;
                 width: 100%;
                 line-height: 44px;
-                padding: 0 20px;
 
                 .navigation-list {
                     display: none;

@@ -28,10 +28,8 @@
     {% for section in navigation_sections %}
     <li class="navigation-header">
       <a href="#" onclick="toggleMenuItems(this)">
-        {{ section.title }}
-        <img class="nav-header-icon"
-          src="{% static 'images/header/chevron-right-nav-header.svg' %}"
-          alt="chevron right icon" />
+        <div>{{ section.title }}
+        <i class="ti ti-chevron-right"></i></div>
       </a>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
@@ -39,18 +37,14 @@
           {% if menuitem.specific.redirectLink %}
             <li class="nav-link">
               <a target="_blank" href="{{ menuitem.specific.redirectLink }}">
-                <img class="nav-item-icon"
-                  src="{% static 'images/header/chevron-right-nav-link.svg' %}"
-                  alt="chevron right icon" />
+                <i class="ti ti-chevron-right"></i>
                 {{ menuitem.specific.menu_item_name }}
               </a>
             </li>
           {% else %}
             <li class="nav-link">
               <a href="{% pageurl menuitem %}">
-                <img class="nav-item-icon"
-                alt="chevron right icon"
-                src="{% static 'images/header/chevron-right-nav-link.svg' %}" />
+                <i class="ti ti-chevron-right"></i>
                 {{ menuitem.specific.menu_item_name }}
               </a>
             </li>
