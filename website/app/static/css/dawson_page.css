@@ -1,9 +1,5 @@
-.card-related-page {
+.card-related-pages-list {
     list-style-type: none;
-
+    padding: 0;
 }
 
-.related-page-icon {
-    height: 12px;
-    padding-right: 12px;
-}

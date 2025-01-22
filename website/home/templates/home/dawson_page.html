@@ -3,24 +3,41 @@
 {% load wagtailcore_tags %}
 {% load static %}
 
-{% block content %}
-  <div class="grid-container usa-prose margin-top-5">
-    <div class="content">
-      <h2 class="margin-bottom-3">{{ page.title }}</h2>
-      <hr />
-      <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
-      {% for card in page.cards.all %}
-      <div>{{card.card_title}}</div>
-      {% for related_page in card.related_pages.all %}
-        <li class="card-related-page">
-          <img class="related-page-icon"
-          src="{% static 'images/header/chevron-right-nav-header.svg' %}"
-          alt="chevron right icon" />
-          <a href="{{ related_page.related_page.url }}">{{ related_page.related_page.title }}</a>
-        </li>
-      {% endfor %}
-      {% endfor %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dawson_page.css' %}" />
+{% endblock %}
 
-    </div>
+{% block content %}
+<div class="grid-container usa-prose margin-top-5">
+  <div class="content">
+    <h2 class="margin-bottom-3">{{ page.title }}</h2>
+    <hr />
+    <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
+
+    <ul class="usa-card-group">
+      {% for card in page.cards.all %}
+      <li class="usa-card grid-col-3">
+        <div class="usa-card__container">
+          <div class="usa-card__header">
+            <h4 class="usa-card__heading">{{card.card_title}}</h4>
+          </div>
+          <div class="usa-card__body">
+            <p>
+            <ul class="card-related-pages-list">
+              {% for related_page in card.related_pages.all %}
+              <li>
+                <i class="ti ti-chevron-right"></i>
+                <a href="{{ related_page.related_page.url }}">{{ related_page.related_page.title }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+            </p>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
   </div>
+</div>
 {% endblock %}
