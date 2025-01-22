@@ -7,7 +7,8 @@
 .alert-content{
   padding: 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
+  gap: 75px;
 }
 
 .alert-banner p{
