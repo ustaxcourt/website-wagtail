@@ -26,6 +26,16 @@
     align-items: center;
 
     .navigation-header {
+
+        &:hover {
+            background-color: var(--light-gray-hover);
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: var(--link-blue);
+        }
+
         .nav-header-icon {
             height: 12px;
         }
@@ -39,6 +49,16 @@
                 color: #FFFFFF;
                 font-weight: bold;
 
+                &:hover {
+                    background: white;
+                    border-radius: 6px;
+
+                    .nav-item-icon {
+                        -webkit-filter: invert(1);
+                        filter: invert(1);
+                    }
+                }
+
                 .nav-item-icon {
                     height: 16px;
                 }
@@ -48,6 +68,10 @@
                     align-items: center;
                     gap: 10px;
                     color: #FFFFFF;
+                }
+
+                a:hover {
+                    color: var(--light-blue);
                 }
             }
         }
@@ -62,13 +86,14 @@
     }
 
     .navigation {
-        gap: 40px;
         list-style-type: none;
 
         .navigation-header {
             height: 55px;
             display: flex;
             align-items: center;
+            position: relative;
+            padding: 0px 30px;
 
             &:hover {
                 .navigation-list:has(li) {
@@ -77,16 +102,15 @@
             }
 
             .navigation-list {
-                padding-inline-start: 5px;
                 position: absolute;
-                top: 198px;
                 min-width: 320px;
+                top: 55px;
                 z-index: 500;
                 flex-direction: column;
                 padding: 10px;
+                left: 0px;
 
                 .nav-link {
-
                     .nav-item-icon {
                         height: 16px;
                     }
@@ -129,9 +153,31 @@
             .navigation-header {
                 display: none;
                 background-color: #efefef;
+                padding: 0;
 
                 .navigation-list {
                     display: none;
+                }
+
+                a {
+                    padding: 0 20px;
+                }
+
+                &:hover {
+                    background-color: var(--light-blue);
+                    a {
+                        color: white;
+                    }
+
+                    .nav-header-icon {
+                        -webkit-filter: invert(1);
+                        filter: invert(1);
+                    }
+                }
+
+
+                .nav-link {
+                    padding: 0 10px;
                 }
             }
 
@@ -140,7 +186,6 @@
                 flex-direction: column;
                 width: 100%;
                 line-height: 44px;
-                padding: 0 20px;
 
                 .navigation-list {
                     display: none;
