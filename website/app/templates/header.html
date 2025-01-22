@@ -27,10 +27,10 @@
   <ul class="navigation">
     {% for section in navigation_sections %}
     <li class="navigation-header">
-      <a href="#" onclick="toggleMenuItems(this)">
+      <button aria-expanded="false" class="link" onclick="toggleMenuItems(this)">
         <div>{{ section.title }}
         <i class="ti ti-chevron-right"></i></div>
-      </a>
+      </button>
       <ul class="navigation-list">
         {% for menuitem in site_root.get_children.live.in_menu %}
         {% if menuitem.specific.navigation_category == section.key %}
@@ -66,22 +66,47 @@
     }
   }
   function toggleMenuItems(element) {
-    const elements = element.parentElement.getElementsByClassName("navigation-list");
-    for (element of elements) {
-      element.classList.toggle("displayed-navigation-list");
+    const navigationList = element.parentElement.querySelector('.navigation-list');
+    const isExpanded = element.getAttribute('aria-expanded') === 'true';
+
+    element.setAttribute('aria-expanded', !isExpanded);
+
+    if (navigationList) {
+      if (isExpanded) {
+        // When closing, temporarily prevent hover from showing the menu
+        navigationList.classList.add('force-hide');
+        // Remove the force-hide class after a short delay
+        setTimeout(() => {
+          navigationList.classList.remove('force-hide');
+        }, 300);
+      }
+      navigationList.classList.toggle('displayed-navigation-list');
     }
   }
   document.querySelectorAll('.navigation-header').forEach(header => {
-    header.addEventListener('keydown', event => {
-        if (event.code === 'Space' || event.code === 'Enter') {
-            event.preventDefault();
-            const navigationList = header.querySelector('.navigation-list');
-            if (navigationList && navigationList.childElementCount > 0) {
-                navigationList.style.display = navigationList.style.display === 'flex' ? 'none' : 'flex';
-                header.setAttribute('aria-expanded', navigationList.style.display === 'flex');
-            }
+    const button = header.querySelector('button');
+    const navigationList = header.querySelector('.navigation-list');
+
+    // Handle button keyboard events
+    button.addEventListener('keydown', event => {
+      if (event.code === 'Space' || event.code === 'Enter') {
+        event.preventDefault();
+        if (navigationList && navigationList.childElementCount > 0) {
+          toggleMenuItems(button);
         }
+      }
     });
-});
+
+    // Handle navigation link keyboard events
+    const navLinks = header.querySelectorAll('.nav-link a');
+    navLinks.forEach(link => {
+      link.addEventListener('keydown', event => {
+        if (event.code === 'Space') {
+          event.preventDefault();
+          link.click();
+        }
+      });
+    });
+  });
 </script>
 {% endblock %}

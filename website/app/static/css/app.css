@@ -144,3 +144,16 @@ hr {
         }
     }
 }
+
+
+button.link {
+    all: unset; /* Resets all default styles */
+    color: blue; /* Match standard link color */
+    cursor: pointer; /* Ensures it still looks clickable */
+    text-decoration: underline; /* Mimics a hyperlink */
+    display: inline; /* Ensures inline behavior like a <a> tag */
+}
+
+button.link:hover {
+    text-decoration: none; /* Optional: Remove underline on hover */
+}
