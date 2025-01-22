@@ -2,6 +2,8 @@ env := $(shell ./infra/get_env.sh)
 
 ifeq ($(env),prod)
 	DOMAIN_NAME := ustaxcourt.gov
+else ifeq ($(env),sandbox)
+	DOMAIN_NAME := $(USER)-sandbox-web.ustaxcourt.gov
 else
 	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
 endif
@@ -84,6 +86,10 @@ destroy:
 tag:
 	git tag -f $(tag)
 	git push -f origin $(tag)
+
+restore:
+	@echo "Restoring secrets in AWS environment: $(env)"
+	aws secretsmanager restore-secret --secret-id website_secrets
 
 aws-teardown: destroy
 	@echo "Cleaning up..."

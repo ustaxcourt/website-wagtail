@@ -1,14 +1,22 @@
-import os
 from .base import *  # noqa: F403
+import os
 
-# TODO: I don't think we'd need this at all?
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
-# TODO: remove the *
-# when I set this to [os.getenv("DOMAIN_NAME")], it seems to fail
-# because ECS is doing a healthcheck on localhost:8000, but then django fails
-# because that's not an allowed domain.  We may need to just add both the real domain and local host
+# SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ["*"]
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+os.environ.setdefault("SUPERUSER_PASSWORD", "ustcAdminPW!")
+
+try:
+    from .local import *  # noqa: F403
+
+except ImportError:
+    pass
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("DOMAIN_NAME")}']
 # TODO: verify if this is actually needed (read it was needed when using AWS ALB)
@@ -19,8 +27,3 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 DEBUG = False
-
-# Add this setting to store your GA tracking ID
-GOOGLE_ANALYTICS_ID = "G-09HTDLXBMS"
-
-ENVIRONMENT = "production"

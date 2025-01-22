@@ -22,33 +22,76 @@
     display: flex;
     justify-content: center;
     min-height: 52px;
+}
+
+/* Navigation header styles */
+.navigation-header {
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--light-gray-hover);
+    }
+}
+
+/* Button and link shared styles */
+.navigation-header .link,
+.navigation-header a {
     display: flex;
     align-items: center;
+    gap: 4px;
+    text-decoration: none;
 
-    .navigation-header {
-        .nav-header-icon {
-            height: 12px;
+    &:hover {
+        text-decoration: none;
+        color: var(--link-blue);
+    }
+}
+
+/* Button specific styles */
+.navigation-header .link {
+    background: none;
+    border: none;
+    padding: 0 30px;
+    font: inherit;
+    color: var(--light-blue);
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start;
+    font-weight: bold;
+    font-size: 1rem;
+
+    > div {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        width: 100%;
+    }
+}
+
+/* Dropdown menu styles */
+.navigation-list {
+    display: none;
+    list-style-type: none;
+    background-color: var(--light-blue);
+
+    .nav-link {
+        color: #FFFFFF;
+        font-weight: bold;
+
+        &:hover {
+            background: white;
+            border-radius: 6px;
         }
 
-        .navigation-list {
-            display: none;
-            list-style-type: none;
-            background-color: var(--light-blue);
+        a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #FFFFFF;
 
-            .nav-link {
-                color: #FFFFFF;
-                font-weight: bold;
-
-                .nav-item-icon {
-                    height: 16px;
-                }
-
-                a {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    color: #FFFFFF;
-                }
+            &:hover {
+                color: var(--light-blue);
             }
         }
     }
@@ -61,44 +104,45 @@
         display: none;
     }
 
-    .navigation {
-        gap: 40px;
-        list-style-type: none;
+    .navigation-header {
+        height: 55px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 0;
 
-        .navigation-header {
-            height: 55px;
+        &:hover .navigation-list:has(li):not(.force-hide),
+        .link[aria-expanded="true"] + .navigation-list:has(li) {
             display: flex;
-            align-items: center;
+            opacity: 1;
+            visibility: visible;
+        }
 
-            &:hover {
-                .navigation-list:has(li) {
-                    display: flex;
-                }
+        .navigation-list {
+            position: absolute;
+            min-width: 320px;
+            top: 55px;
+            left: 0;
+            z-index: 500;
+            flex-direction: column;
+            padding: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+
+            &.force-hide {
+                display: none !important;
+                transition: none;
             }
 
-            .navigation-list {
-                padding-inline-start: 5px;
-                position: absolute;
-                top: 198px;
-                min-width: 320px;
-                z-index: 500;
-                flex-direction: column;
-                padding: 10px;
-
-                .nav-link {
-
-                    .nav-item-icon {
-                        height: 16px;
-                    }
-
-                    a {
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        padding: 3px 10px;
-                    }
-                }
+            .nav-link a {
+                padding: 3px 10px;
             }
+        }
+
+        .link:focus {
+            outline: 2px solid var(--link-blue);
+            outline-offset: -2px;
         }
     }
 }
@@ -129,9 +173,34 @@
             .navigation-header {
                 display: none;
                 background-color: #efefef;
+                padding: 0;
 
                 .navigation-list {
                     display: none;
+                }
+
+                .link {
+                    width: 100%;
+                    padding: 0 20px;
+                    text-align: left;
+                }
+
+                &:hover {
+                    background-color: var(--light-blue);
+
+                    /* Update hover styles for both links and buttons */
+                    a, .link {
+                        color: white;
+                    }
+                }
+
+                /* Remove duplicate hover color change */
+                .link:hover {
+                    color: white;
+                }
+
+                .nav-link {
+                    padding: 0 10px;
                 }
             }
 
@@ -140,7 +209,6 @@
                 flex-direction: column;
                 width: 100%;
                 line-height: 44px;
-                padding: 0 20px;
 
                 .navigation-list {
                     display: none;

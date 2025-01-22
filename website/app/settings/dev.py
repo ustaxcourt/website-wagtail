@@ -4,9 +4,6 @@ import os
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-eygp9+*6&f+f)@u&qw#u4lue&%6j)95l!*1god6dw7i@yy13fn"
-
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ["*"]
 
@@ -19,3 +16,14 @@ try:
 
 except ImportError:
     pass
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("DOMAIN_NAME")}']
+# TODO: verify if this is actually needed (read it was needed when using AWS ALB)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# TODO: verify if these are needed; I had to add / remove a lot of config before I got this all working, so these might not actually be needed
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+DEBUG = False
