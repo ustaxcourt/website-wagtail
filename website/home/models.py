@@ -4,17 +4,15 @@ from django.conf import settings
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
+from wagtail.snippets.models import register_snippet
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.snippets.models import register_snippet
 
 
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
 )
-
-Page._meta.get_field("search_description").blank = False
 
 
 @register_setting
@@ -81,6 +79,12 @@ class NavigationMixin(Page):
         FieldPanel("menu_item_name"),
         FieldPanel("redirectLink"),
     ]
+
+    def clean(self):
+        # Ensure 'search_description' is not empty
+        super().clean()
+        if not self.search_description:
+            raise ValidationError({"search_description": "This field cannot be blank."})
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

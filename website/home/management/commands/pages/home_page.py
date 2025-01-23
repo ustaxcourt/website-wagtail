@@ -1,14 +1,53 @@
-from django.db import migrations
+from wagtail.models import Page, Site
+from home.models import HomePage, HomePageEntry
+from home.management.commands.pages.page_initializer import PageInitializer
 
 
-def create_homepage_entry(apps, schema_editor):
-    HomePage = apps.get_model("home", "HomePage")
-    HomePageEntry = apps.get_model("home", "HomePageEntry")
+class HomePageInitializer(PageInitializer):
+    def __init__(self, logger):
+        super().__init__(logger)
 
-    # Assuming there's a single HomePage instance. Update query as needed.
-    homepage = HomePage.objects.first()
+    def create(self):
+        root = Page.objects.filter(depth=1).first()
+        title = "Home"
 
-    if homepage:
+        if not root:
+            self.logger.write("Error: No root page found. Cannot create Home page.")
+            return
+
+        if HomePage.objects.filter(title=title).exists():
+            self.logger.write(f"- {title} page already exists.")
+            return
+
+        homepage = HomePage(
+            title=title,
+            draft_title="Home",
+            slug=None,
+            search_description="Official Site of the United States Tax Court",
+            seo_title="United States Tax Court",
+        )
+
+        root.add_child(instance=homepage)
+        homepage.save_revision().publish()
+
+        site = Site.objects.filter(is_default_site=True).first()
+        if site:
+            site.root_page = homepage
+            site.save()
+            self.logger.write("Updated default site root to the new Home page.")
+
+        # delete the wagtail generated page (it doesn't have the mixin)
+        wagtailHome = Page.objects.filter(
+            title="Welcome to your new Wagtail site!"
+        ).first()
+        if wagtailHome:
+            self.logger.write("Deleting the default wagtail home")
+            wagtailHome.delete()
+
+        # set the new home page slug as home now that the wagtail default page is deleted
+        homepage.slug = "home"
+        homepage.save_revision().publish()
+
         HomePageEntry.objects.create(
             homepage=homepage,
             title="Remote Proceedings Info",
@@ -53,12 +92,4 @@ def create_homepage_entry(apps, schema_editor):
             ),
         )
 
-
-class Migration(migrations.Migration):
-    dependencies = [
-        ("home", "0009_footer_values"),
-    ]
-
-    operations = [
-        migrations.RunPython(create_homepage_entry),
-    ]
+        self.logger.write("Successfully created the new Home page.")

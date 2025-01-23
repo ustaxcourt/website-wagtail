@@ -10,12 +10,7 @@ class DawsonSearchPageInitializer(PageInitializer):
         super().__init__(logger)
 
     def create(self):
-        try:
-            home_page = Page.objects.get(slug="home")
-        except Page.DoesNotExist:
-            self.logger.write("Home page does not exist.")
-            return
-
+        home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
@@ -23,7 +18,7 @@ class DawsonSearchPageInitializer(PageInitializer):
         title = "Search"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"'{title}' page already exists.")
+            self.logger.write(f"- {title} page already exists.")
             return
 
         self.logger.write(f"Creating the '{title}' page.")

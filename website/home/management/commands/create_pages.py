@@ -6,11 +6,15 @@ from home.management.commands.pages.dawson_page import DawsonPageInitializer
 from home.management.commands.pages.dawson_search_page import (
     DawsonSearchPageInitializer,
 )
+from home.management.commands.pages.home_page import HomePageInitializer
+from home.management.commands.pages.footer import FooterInitializer
 
 pages_to_initialize = [
+    HomePageInitializer,
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
+    FooterInitializer,
 ]
 
 
