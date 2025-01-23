@@ -10,10 +10,20 @@
     color: var(--light-blue);
 }
 
-.usa-card__header {
-    text-align: center;
+.usa-card__container {
+    border-width: 1px;
+    border-radius: 0;
+    transition: box-shadow 0.2s;
 
-    h5 {
-        font-size: 15px;
+    .usa-card__header {
+        text-align: center;
+
+        h5 {
+            font-size: 15px;
+        }
     }
+}
+
+.usa-card__container:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on the outermost div */
 }
