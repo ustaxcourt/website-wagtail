@@ -1,19 +1,16 @@
 from django import forms
-from django.db import models
 from django.conf import settings
-from wagtail.models import Page
-from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
-from wagtail.snippets.models import register_snippet
+from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-
-
+from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
 )
-
+from wagtail.fields import RichTextField
+from wagtail.models import Page
+from wagtail.snippets.models import register_snippet
 
 @register_setting
 class Footer(BaseGenericSetting):
