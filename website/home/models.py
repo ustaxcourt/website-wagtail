@@ -165,7 +165,7 @@ class RelatedPage(models.Model):
     """Model to store multiple related pages for a DawsonCard."""
 
     card = ParentalKey(
-        "DawsonCard", related_name="related_pages", on_delete=models.CASCADE
+        "SimpleCards", related_name="related_pages", on_delete=models.CASCADE
     )
     related_page = models.ForeignKey(
         "StandardPage",
@@ -181,14 +181,17 @@ class RelatedPage(models.Model):
 
 
 @register_snippet
-class DawsonCard(ClusterableModel):
-    """A DawsonCard that contains an icon, title, and related pages."""
+class SimpleCards(ClusterableModel):
+    """A Simple Card that contains optional title, icon, and related pages."""
 
     parent_page = ParentalKey(
-        "DawsonPage", related_name="cards", on_delete=models.CASCADE
+        "SimpleCardGroup", 
+        related_name="cards", 
+        on_delete=models.CASCADE
     )
-    card_title = models.CharField(max_length=255, blank=False, default="Title")
-    card_icon = models.CharField(max_length=200, null=True, help_text="Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. \"accessible\")")
+
+    card_title = models.CharField(max_length=255, null=True, blank="True", help_text="The title to appear at the top of the card")
+    card_icon = models.CharField(max_length=200, null=True, blank="True", help_text="Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. \"accessible\")")
 
     # Define panels for the admin interface
     panels = [
@@ -198,9 +201,66 @@ class DawsonCard(ClusterableModel):
     ]
 
 
+class SimpleCardGroup(ClusterableModel):
+    """Group model for dynamically grouping Simple Cards."""
+    
+    parent_page = ParentalKey(
+        "DawsonPage", 
+        related_name="card_groups", 
+        on_delete=models.CASCADE
+    )
+
+    group_label = models.CharField(
+        max_length=255, 
+        help_text="Label for this group of cards (e.g., 'Section 1: Featured Cards')."
+    )
+
+    panels = [
+        FieldPanel("group_label"),
+        InlinePanel("cards", label="Cards in this Group"),
+    ]
+
+    def __str__(self):
+        return self.group_label
+    
+
+class PhotoDedication(models.Model):
+    """Model to store data for a dedication."""
+
+    card = ParentalKey(
+        "DawsonPage", related_name="photo_dedication", on_delete=models.CASCADE
+    )
+
+    title = models.CharField(
+        max_length=255,
+        help_text="Enter the title for the dedication",
+    )
+
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Upload an image to display with this dedication",
+    )
+
+    paragraph_text = RichTextField(
+        blank=True,
+        help_text="Add the main paragraph text for the dedication section",
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("photo"),
+        FieldPanel("paragraph_text"),
+    ]
+
+
 class DawsonPage(StandardPage):
-    """Page model for managing Dawson Cards."""
+    """Page model for Dawson eFiling Page."""
 
     content_panels = StandardPage.content_panels + [
-        InlinePanel("cards", label="Dawson Cards"),
+        InlinePanel("card_groups", label="Card Sections"),
+        InlinePanel("photo_dedication", label="Photo Dedication"),
     ]

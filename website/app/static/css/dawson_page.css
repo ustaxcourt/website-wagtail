@@ -10,20 +10,56 @@
     color: var(--light-blue);
 }
 
-.usa-card__container {
-    border-width: 1px;
-    border-radius: 0;
-    transition: box-shadow 0.2s;
+.usa-card-group {
+    justify-content: center;
 
-    .usa-card__header {
-        text-align: center;
+    .usa-card {
+        margin-bottom: 0 !important;
 
-        h5 {
-            font-size: 15px;
+        .usa-card__container {
+            border-width: 1px;
+            border-radius: 0;
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.17);
+            transition: box-shadow 0.2s;
+            background-color: rgba(255, 255, 255, 1.00);
+
+            .usa-card__header {
+                text-align: center;
+
+                h5 {
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .usa-card__container:hover {
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
         }
     }
 }
 
-.usa-card__container:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on the outermost div */
+.dedication {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+
+    .dedication-image {
+        flex-shrink: 0;
+
+        img {
+            border-style: none;
+            margin: 0;
+            border: 1px solid rgba(0, 0, 0, 1.00);
+            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.33);
+        }
+    }
+
+    .dedication-text {
+        flex: 1;
+
+        h2 {
+            margin: 8px 0;
+        }
+    }
+
 }

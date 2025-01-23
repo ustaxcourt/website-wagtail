@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 {% load static %}
 
 {% block extra_css %}
@@ -14,18 +15,23 @@
     <hr />
     <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
 
+    {% for group in page.card_groups.all %}
+    <hr />
     <ul class="usa-card-group">
-      {% for card in page.cards.all %}
+      {% for card in group.cards.all %}
       <li class="usa-card grid-col-3">
         <div class="usa-card__container">
+          {% if card.card_title %}
           <div class="usa-card__header">
             <h5>{{card.card_title}}</h5>
           </div>
+          {% endif %}
           {% if card.card_icon %}
-            <i class="ti ti-{{ card.card_icon }} card-icon"></i>
+          <i class="ti ti-{{ card.card_icon }} card-icon"></i>
           {% endif %}
           <div class="usa-card__body">
             <p>
+              {% if card.related_pages.all %}
             <ul class="card-related-pages-list">
               {% for related_page in card.related_pages.all %}
               <li>
@@ -34,12 +40,32 @@
               </li>
               {% endfor %}
             </ul>
+            {% endif %}
             </p>
           </div>
         </div>
       </li>
       {% endfor %}
     </ul>
+    {% endfor %}
+
+    <hr />
+
+    {% for dedication in page.photo_dedication.all %}
+    <div class="dedication">
+      {% if dedication.photo %}
+      <div class="dedication-image">
+        {% image dedication.photo width-250 %}
+      </div>
+      {% endif %}
+      <div class="dedication-text">
+        <h2>{{ dedication.title }}</h2>
+        {{ dedication.paragraph_text | richtext }}
+      </div>
+    </div>
+    {% endfor %}
+
+
 
   </div>
 </div>
