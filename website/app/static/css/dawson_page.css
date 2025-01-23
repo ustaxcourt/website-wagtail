@@ -3,3 +3,17 @@
     padding: 0;
 }
 
+.card-icon {
+    text-align: center;
+    font-size: 70px;
+    padding-top: 5px;
+    color: var(--light-blue);
+}
+
+.usa-card__header {
+    text-align: center;
+
+    h5 {
+        font-size: 15px;
+    }
+}

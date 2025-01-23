@@ -188,13 +188,7 @@ class DawsonCard(ClusterableModel):
         "DawsonPage", related_name="cards", on_delete=models.CASCADE
     )
     card_title = models.CharField(max_length=255, blank=False, default="Title")
-    card_icon = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
+    card_icon = models.CharField(max_length=200, null=True, help_text="Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. \"accessible\")")
 
     # Define panels for the admin interface
     panels = [

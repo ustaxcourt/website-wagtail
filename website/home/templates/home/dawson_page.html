@@ -19,8 +19,11 @@
       <li class="usa-card grid-col-3">
         <div class="usa-card__container">
           <div class="usa-card__header">
-            <h4 class="usa-card__heading">{{card.card_title}}</h4>
+            <h5>{{card.card_title}}</h5>
           </div>
+          {% if card.card_icon %}
+            <i class="ti ti-{{ card.card_icon }} card-icon"></i>
+          {% endif %}
           <div class="usa-card__body">
             <p>
             <ul class="card-related-pages-list">
