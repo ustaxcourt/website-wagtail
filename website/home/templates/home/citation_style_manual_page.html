@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags %}
+{% load static %}
+
+{% block content %}
+<div class="grid-container padding-top-2">
+    <h1>{{ page.title }}</h1>
+    <hr class="foundry-divider-simple">
+    {{ page.body|richtext }}
+    {% if page.document %}
+        <hr/>
+        <p>
+            <i class="ti ti-file-type-pdf margin-right-1 font-light-blue"></i>
+            <a href="{{ page.document.url }}" class="font-normal">
+                {{ page.document.title }}
+            </a>
+        </p>
+    {% endif %}
+</div>
+{% endblock %}
