@@ -6,7 +6,7 @@
 {% block content %}
   <div class="grid-container usa-prose margin-top-5">
     <div class="content">
-      <h2 class="margin-bottom-3">{{ page.title }}</h2>
+      <h1 class="margin-bottom-3">{{ page.title }}</h1>
       <hr />
       <div class="page-body margin-bottom-5">{{ page.body|richtext }}</div>
       <hr />
@@ -15,21 +15,21 @@
         <table class="usa-table usa-table--stacked usa-table--borderless width-full">
           <thead>
             <tr>
-              <th scope="col" class="text-left padding-y-2">Form</th>
-              <th scope="col" class="text-left padding-y-2">Number</th>
-              <th scope="col" class="text-left padding-y-2">Eligible for eFiling by Pro Se Petitioners</th>
-              <th scope="col" class="text-left padding-y-2">Eligible for eFiling by Practitioners (Counsel)</th>
+              <th scope="col">Form</th>
+              <th scope="col">Number</th>
+              <th scope="col" class="display-none mobile-lg:display-table-cell">Eligible for eFiling by Pro Se Petitioners</th>
+              <th scope="col" class="display-none mobile-lg:display-table-cell">Eligible for eFiling by Practitioners (Counsel)</th>
             </tr>
           </thead>
           <tbody>
             {% for form in page.forms.all %}
               <tr>
-                <td class="padding-y-2">
+                <td>
                   <a data-testid="{{ form.formName }}" class="usa-link" href="{{ form.pdf.url }}" target="_blank">{{ form.formName }}</a> {{ form.formNameNote }}
                 </td>
-                <td class="padding-y-2">{{ form.number }}</td>
-                <td class="padding-y-2">{{ form.eligibleForEFilingByPetitioners }}</td>
-                <td class="padding-y-2">{{ form.eligibleForEFilingByPractitioners }}</td>
+                <td>{{ form.number }}</td>
+                <td class="display-none mobile-lg:display-table-cell">{{ form.eligibleForEFilingByPetitioners }}</td>
+                <td class="display-none mobile-lg:display-table-cell">{{ form.eligibleForEFilingByPractitioners }}</td>
               </tr>
             {% endfor %}
           </tbody>
