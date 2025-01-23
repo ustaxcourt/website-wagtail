@@ -1,20 +1,24 @@
-/* This is where any global related styles should be placed */
-
+/* ==========================================================================
+   CSS Variables / Root Settings
+   ========================================================================== */
 :root {
-  --dark-blue: rgb(18, 33, 64);
-  --light-blue: rgba(0, 94, 162, 1.00);
-  --medium-gray: rgb(240, 240, 240);
-  --dark-gray: rgb(220, 222, 224);
-  --link-hover-blue: #003256;
-  --light-gray-hover: rgb(231, 231, 231);
-  --faint-gray: #eee;
-  --link-blue: rgb(0, 94, 162);
-  --heading-font: "Noto Serif JP";
-  --body-font: 'Source Sans Pro';
-  --base-font-size: 17px;
-  --container-width: 1440px;
+    --dark-blue: rgb(18, 33, 64);
+    --light-blue: rgba(0, 94, 162, 1.00);
+    --medium-gray: rgb(240, 240, 240);
+    --dark-gray: rgb(220, 222, 224);
+    --link-hover-blue: #003256;
+    --light-gray-hover: rgb(231, 231, 231);
+    --faint-gray: #eee;
+    --link-blue: rgb(0, 94, 162);
+    --heading-font: "Noto Serif JP";
+    --body-font: 'Source Sans Pro';
+    --base-font-size: 17px;
+    --container-width: 1440px;
 }
 
+/* ==========================================================================
+   Typography
+   ========================================================================== */
 .font-heading {
     font-family: var(--heading-font);
 }
@@ -25,6 +29,7 @@ body {
     font-size: var(--base-font-size);
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font);
     font-weight: 700;
@@ -46,6 +51,7 @@ h3 {
     font-size: 1.5rem;
 }
 
+/* Links */
 a {
     color: var(--link-blue);
     font-weight: bold;
@@ -58,18 +64,22 @@ a:hover {
     color: var(--link-hover-blue);
 }
 
-/* ustc overrides */
+/* ==========================================================================
+   Layout Components
+   ========================================================================== */
+/* Container Styles */
 .grid-container {
     max-width: var(--container-width);
 }
 
-
-/* custom */
 .wide-container {
     max-width: var(--container-width);
 }
 
-
+/* ==========================================================================
+   UI Elements
+   ========================================================================== */
+/* Scroll to Top Button */
 #scroll-to-top {
     position: fixed;
     bottom: 20px;
@@ -81,19 +91,20 @@ a:hover {
     filter: brightness(0) invert(1);
 }
 
+/* Fade Animation */
 .fade-in {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0s 0.5s; /* Delay visibility to match opacity fade-out */
+    transition: opacity 0.5s ease, visibility 0s 0.5s;
 }
 
 .fade-in.visible {
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.5s ease, visibility 0s 0s; /* Immediate visibility when fading in */
+    transition: opacity 0.5s ease, visibility 0s 0s;
 }
 
-
+/* Dividers */
 hr {
     display: block;
     height: 1px;
@@ -109,6 +120,9 @@ hr {
     height: 0;
 }
 
+/* ==========================================================================
+   Tables
+   ========================================================================== */
 .usa-table {
     td, tr {
         padding: 20px 0px;
@@ -131,12 +145,16 @@ hr {
         border-color: var(--faint-gray);
     }
 
+    th {
+        padding: 0px 20px;
+    }
     tr, td {
-        padding: 20px 0px;
+        padding: 20px 20px;
         border-color: var(--faint-gray);
     }
 }
 
+/* Table Responsive Styles */
 @media (max-width: 480px) {
     .usa-table--stacked {
         tr, td {
@@ -145,15 +163,18 @@ hr {
     }
 }
 
-
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+/* Link-styled Buttons */
 button.link {
-    all: unset; /* Resets all default styles */
-    color: blue; /* Match standard link color */
-    cursor: pointer; /* Ensures it still looks clickable */
-    text-decoration: underline; /* Mimics a hyperlink */
-    display: inline; /* Ensures inline behavior like a <a> tag */
+    all: unset;
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline;
 }
 
 button.link:hover {
-    text-decoration: none; /* Optional: Remove underline on hover */
+    text-decoration: none;
 }

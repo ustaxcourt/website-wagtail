@@ -1,61 +1,289 @@
 {% load static wagtailcore_tags %}
 {% load wagtailcore_tags navigation_tags %}
 
-<header class="blue-banner">
+{% block extra_css %}
+<style>
+header#top-navigation {
+    /* Banner styles */
+    .blue-banner {
+        background-color: var(--dark-blue);
 
-  <div class="grid-container padding-1">
-    <div class="usa-header__inner display-flex flex-justify flex-align-center">
-      <a href="/">
-        <img class="tablet:display-none logo-seal" src="{% static 'images/header/logo_seal.png' %}"
-          alt="US Tax Court Logo" />
-        <img class="display-none tablet:display-block" src="{% static 'images/header/logo.png' %}"
-          alt="US Tax Court Logo" />
-      </a>
+        .dawson {
+            width: 60px;
+        }
+    }
 
-      <a href="https://dawson.ustaxcourt.gov/">
-        <img class="dawson" src="{% static 'images/header/dawson.png' %}"
-          alt="Dawson Logo" /></a>
+    .logo-seal {
+        width: 70px;
+    }
+
+    /* Navigation styles */
+    .navigation {
+        border: solid var(--light-blue);
+        background-color: #f2f4f4;
+        border-width: 5px 0px 1px 0px;
+        padding: 0px 0px;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 52px;
+    }
+
+    .navigation-header {
+        white-space: nowrap;
+
+        &:hover {
+            background-color: var(--light-gray-hover);
+        }
+
+        /* Button and link shared styles */
+        .link,
+        a {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: none;
+                color: var(--link-blue);
+            }
+        }
+
+        /* Button specific styles */
+        .link {
+            background: none;
+            border: none;
+            padding: 0 30px;
+            font: inherit;
+            color: var(--light-blue);
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            justify-content: flex-start;
+            font-weight: bold;
+            font-size: 1rem;
+
+            > div {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                width: 100%;
+            }
+        }
+    }
+
+    /* Dropdown menu styles */
+    .navigation-list {
+        display: none;
+        list-style-type: none;
+        background-color: var(--light-blue);
+
+        .nav-link {
+            color: #FFFFFF;
+            font-weight: bold;
+
+            &:hover {
+                background: white;
+                border-radius: 6px;
+            }
+
+            a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #FFFFFF;
+
+                &:hover {
+                    color: var(--light-blue);
+                }
+            }
+        }
+    }
+
+    /* Responsive styles */
+    @media (min-width: 854px) {
+        .nav-hamburger {
+            height: 16px;
+            display: none;
+        }
+
+        .navigation-header {
+            height: 55px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 0;
+
+            &:hover .navigation-list:has(li):not(.force-hide),
+            .link[aria-expanded="true"] + .navigation-list:has(li) {
+                display: flex;
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .navigation-list {
+                position: absolute;
+                min-width: 320px;
+                top: 55px;
+                left: 0;
+                z-index: 500;
+                flex-direction: column;
+                padding: 10px;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.2s, visibility 0.2s;
+
+                &.force-hide {
+                    display: none !important;
+                    transition: none;
+                }
+
+                .nav-link a {
+                    padding: 3px 10px;
+                }
+            }
+
+            .link:focus {
+                outline: 2px solid var(--link-blue);
+                outline-offset: -2px;
+            }
+        }
+    }
+
+    @media (max-width: 853px) {
+        .navigation-bar {
+            border: solid var(--light-blue);
+            background-color: #f2f4f4;
+            border-width: 5px 0px 1px 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: normal;
+            justify-content: center;
+
+            .nav-hamburger {
+                display: flex;
+                height: 24px;
+                margin: 10px;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 0px;
+                border-width: 0;
+                min-height: 0;
+
+                .navigation-header {
+                    display: none;
+                    background-color: #efefef;
+                    padding: 0;
+
+                    .navigation-list {
+                        display: none;
+                    }
+
+                    .link {
+                        width: 100%;
+                        padding: 0 20px;
+                        text-align: left;
+                    }
+
+                    &:hover {
+                        background-color: var(--light-blue);
+
+                        a, .link {
+                            color: white;
+                        }
+                    }
+
+                    .link:hover {
+                        color: white;
+                    }
+
+                    .nav-link {
+                        padding: 0 10px;
+                    }
+
+                    &.displayed-navigation-header {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        line-height: 44px;
+
+                        .navigation-list {
+                            display: none;
+
+                            &.displayed-navigation-list {
+                                display: flex;
+                                flex-direction: column;
+                                padding-left: 10px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</style>
+{% endblock %}
+
+<header id="top-navigation" >
+  <div class="blue-banner">
+    <div class="grid-container padding-1">
+      <div class="usa-header__inner display-flex flex-justify flex-align-center">
+        <a href="/">
+          <img class="tablet:display-none logo-seal" src="{% static 'images/header/logo_seal.png' %}"
+            alt="US Tax Court Logo" />
+          <img class="display-none tablet:display-block" src="{% static 'images/header/logo.png' %}"
+            alt="US Tax Court Logo" />
+        </a>
+
+        <a href="https://dawson.ustaxcourt.gov/">
+          <img class="dawson" src="{% static 'images/header/dawson.png' %}"
+            alt="Dawson Logo" /></a>
+      </div>
     </div>
   </div>
-</header>
 
-{% get_site_root as site_root %}
-<div class="navigation-bar" data-testid="navigation-bar">
-  <img class="nav-hamburger"
-    alt="mobile menu hamburger icon"
-    src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
-  <ul class="navigation">
-    {% for section in navigation_sections %}
-    <li class="navigation-header">
-      <button aria-expanded="false" class="link" onclick="toggleMenuItems(this)">
-        <div>{{ section.title }}
-        <i class="ti ti-chevron-right"></i></div>
-      </button>
-      <ul class="navigation-list">
-        {% for menuitem in site_root.get_children.live.in_menu %}
-        {% if menuitem.specific.navigation_category == section.key %}
-          {% if menuitem.specific.redirectLink %}
-            <li class="nav-link">
-              <a target="_blank" href="{{ menuitem.specific.redirectLink }}">
-                <i class="ti ti-chevron-right"></i>
-                {{ menuitem.specific.menu_item_name }}
-              </a>
-            </li>
-          {% else %}
-            <li class="nav-link">
-              <a href="{% pageurl menuitem %}">
-                <i class="ti ti-chevron-right"></i>
-                {{ menuitem.specific.menu_item_name }}
-              </a>
-            </li>
+  {% get_site_root as site_root %}
+  <div class="navigation-bar" data-testid="navigation-bar">
+    <img class="nav-hamburger"
+      alt="mobile menu hamburger icon"
+      src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
+    <ul class="navigation">
+      {% for section in navigation_sections %}
+      <li class="navigation-header">
+        <button aria-expanded="false" class="link" onclick="toggleMenuItems(this)">
+          <div>{{ section.title }}
+          <i class="ti ti-chevron-right"></i></div>
+        </button>
+        <ul class="navigation-list">
+          {% for menuitem in site_root.get_children.live.in_menu %}
+          {% if menuitem.specific.navigation_category == section.key %}
+            {% if menuitem.specific.redirectLink %}
+              <li class="nav-link">
+                <a target="_blank" href="{{ menuitem.specific.redirectLink }}">
+                  <i class="ti ti-chevron-right"></i>
+                  {{ menuitem.specific.menu_item_name }}
+                </a>
+              </li>
+            {% else %}
+              <li class="nav-link">
+                <a href="{% pageurl menuitem %}">
+                  <i class="ti ti-chevron-right"></i>
+                  {{ menuitem.specific.menu_item_name }}
+                </a>
+              </li>
+            {% endif %}
           {% endif %}
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</header>
 
 {% block extra_js %}
 <script>
@@ -66,47 +294,22 @@
     }
   }
   function toggleMenuItems(element) {
-    const navigationList = element.parentElement.querySelector('.navigation-list');
-    const isExpanded = element.getAttribute('aria-expanded') === 'true';
-
-    element.setAttribute('aria-expanded', !isExpanded);
-
-    if (navigationList) {
-      if (isExpanded) {
-        // When closing, temporarily prevent hover from showing the menu
-        navigationList.classList.add('force-hide');
-        // Remove the force-hide class after a short delay
-        setTimeout(() => {
-          navigationList.classList.remove('force-hide');
-        }, 300);
-      }
-      navigationList.classList.toggle('displayed-navigation-list');
+    const elements = element.parentElement.getElementsByClassName("navigation-list");
+    for (element of elements) {
+      element.classList.toggle("displayed-navigation-list");
     }
   }
   document.querySelectorAll('.navigation-header').forEach(header => {
-    const button = header.querySelector('button');
-    const navigationList = header.querySelector('.navigation-list');
-
-    // Handle button keyboard events
-    button.addEventListener('keydown', event => {
-      if (event.code === 'Space' || event.code === 'Enter') {
-        event.preventDefault();
-        if (navigationList && navigationList.childElementCount > 0) {
-          toggleMenuItems(button);
+    header.addEventListener('keydown', event => {
+        if (event.code === 'Space' || event.code === 'Enter') {
+            event.preventDefault();
+            const navigationList = header.querySelector('.navigation-list');
+            if (navigationList && navigationList.childElementCount > 0) {
+                navigationList.style.display = navigationList.style.display === 'flex' ? 'none' : 'flex';
+                header.setAttribute('aria-expanded', navigationList.style.display === 'flex');
+            }
         }
-      }
     });
-
-    // Handle navigation link keyboard events
-    const navLinks = header.querySelectorAll('.nav-link a');
-    navLinks.forEach(link => {
-      link.addEventListener('keydown', event => {
-        if (event.code === 'Space') {
-          event.preventDefault();
-          link.click();
-        }
-      });
-    });
-  });
+});
 </script>
 {% endblock %}
