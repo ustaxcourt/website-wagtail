@@ -18,7 +18,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-DEBUG = False
+DEBUG = os.getenv("DEBUG") == "true"
 
 # Add this setting to store your GA tracking ID
 GOOGLE_ANALYTICS_ID = "G-09HTDLXBMS"

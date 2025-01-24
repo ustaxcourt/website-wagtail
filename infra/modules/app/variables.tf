@@ -18,3 +18,8 @@ variable "domain_name" {
   description = "The domain name for the application (e.g., app.example.com)"
   type        = string
 }
+
+variable "debug" {
+  type = string
+  default = "false"
+}

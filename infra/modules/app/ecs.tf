@@ -63,6 +63,10 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "DJANGO_SETTINGS_MODULE",
         value = "app.settings.${var.environment}"
+      },
+      {
+        name = "DEBUG",
+        value = var.debug
       }
     ],
     secrets: [
