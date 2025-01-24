@@ -25,5 +25,3 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # TODO: verify if these are needed; I had to add / remove a lot of config before I got this all working, so these might not actually be needed
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
-DEBUG = os.getenv("DEBUG") == "true"

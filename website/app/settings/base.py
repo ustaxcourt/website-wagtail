@@ -227,3 +227,5 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
+
+DEBUG = os.getenv("DEBUG", "false") == "true"
