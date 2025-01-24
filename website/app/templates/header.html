@@ -254,23 +254,27 @@ header#top-navigation {
     <ul class="navigation">
       {% for section in navigation_sections %}
       <li class="navigation-header">
-        <button aria-expanded="false" class="link" onclick="toggleMenuItems(this)">
+        <button aria-expanded="false" class="link"
+          data-testid="nav-button-{{ section.title|slugify }}"
+          onclick="toggleMenuItems(this)">
           <div>{{ section.title }}
           <i class="ti ti-chevron-right"></i></div>
         </button>
-        <ul class="navigation-list">
+        <ul class="navigation-list" data-testid="nav-list-{{ section.title|slugify }}">
           {% for menuitem in site_root.get_children.live.in_menu %}
           {% if menuitem.specific.navigation_category == section.key %}
             {% if menuitem.specific.redirectLink %}
               <li class="nav-link">
-                <a target="_blank" href="{{ menuitem.specific.redirectLink }}">
+                <a target="_blank" href="{{ menuitem.specific.redirectLink }}"
+                   data-testid="nav-link-{{ menuitem.specific.menu_item_name|slugify }}">
                   <i class="ti ti-chevron-right"></i>
                   {{ menuitem.specific.menu_item_name }}
                 </a>
               </li>
             {% else %}
               <li class="nav-link">
-                <a href="{% pageurl menuitem %}">
+                <a href="{% pageurl menuitem %}"
+                   data-testid="nav-link-{{ menuitem.specific.menu_item_name|slugify }}">
                   <i class="ti ti-chevron-right"></i>
                   {{ menuitem.specific.menu_item_name }}
                 </a>
