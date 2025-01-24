@@ -15,7 +15,7 @@ class TranscriptsAndCopiesPageInitializer(PageInitializer):
 
     def create_page_info(self, home_page):
         slug = "transcripts_and_copies"
-        title = "Transcripts & Copies | United States Tax Court"
+        title = "Transcripts & Copies"
 
         if Page.objects.filter(slug=slug).exists():
             self.logger.write(f"- {title} page already exists.")

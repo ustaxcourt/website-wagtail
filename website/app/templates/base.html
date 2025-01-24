@@ -14,8 +14,8 @@
       {% endblock %}
       {% block title_suffix %}
         {% wagtail_site as current_site %}
-        {% if current_site and current_site.site_name %}
-          - {{ current_site.site_name }}
+        {% if current_site %}
+          | United States Tax Court
         {% endif %}
       {% endblock %}
     </title>
