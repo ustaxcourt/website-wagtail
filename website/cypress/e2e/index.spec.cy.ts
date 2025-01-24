@@ -3,6 +3,8 @@ import { checkA11y } from "../support/commands"
 describe('index page', () => {
   beforeEach(() => {
     cy.visit('/')
+    cy.get('.entries-list').should('exist')
+    checkA11y();
   })
 
   it('has required federal banner', () => {
@@ -26,17 +28,15 @@ describe('index page', () => {
     bannerContent().should('be.hidden')
   })
 
-  // note: would have liked to have tested that the lists are visible but the behavior is driven by CSS, but Cypress does not support
-  it('has navigation headers with hidden navigation links', () => {
-    cy.get('[data-testid="navigation-bar"]')
-      .should('be.visible')
-      .find('.navigation')
-      .children('.navigation-header')
-      .each((header) => {
+  it('can expand eFiling navigation to show Case Related Forms link', () => {
+    // Check initial state
+    cy.get('[data-testid="nav-button-efiling-case-maintenance"]')
+      .should('be.visible').realHover()
 
-        cy.wrap(header)
-          .find('.navigation-list')
-          .should('be.hidden');
-      })
+    cy.get('[data-testid="nav-link-case-related-forms"]')
+      .should('be.visible')
+      .click();
+
+    cy.url().should('include', '/case_related_forms/')
   })
 })

@@ -6,7 +6,7 @@
     "noEmit": true,
     "target": "es5",
     "lib": ["es5", "dom"],
-    "types": ["cypress", "node", "cypress-axe"]
+    "types": ["cypress", "node", "cypress-axe", "cypress-real-events"]
   },
   "include": ["**/*.ts"]
 }
