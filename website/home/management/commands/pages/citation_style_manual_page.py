@@ -17,7 +17,7 @@ class CitationStyleManualPageInitializer(PageInitializer):
         slug = "citation-style-manual"
         title = "Citation and Style Manual"
 
-        if self.does_page_exist(slug):
+        if Page.objects.filter(slug=slug).exists():
             self.logger.write(f"- {title} page already exists.")
             return
 

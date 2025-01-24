@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import os
 from wagtail.documents import get_document_model
 from django.core.files import File
-from wagtail.models import Page
 
 
 class PageInitializer(ABC):
@@ -14,11 +13,6 @@ class PageInitializer(ABC):
     @abstractmethod
     def create(self):
         pass
-
-    def does_page_exist(self, slug):
-        if Page.objects.filter(slug=slug).exists():
-            return True
-        return False
 
     def load_document_from_documents_dir(self, subdirectory, filename, title=None):
         """
