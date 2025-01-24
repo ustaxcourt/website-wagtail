@@ -2,7 +2,7 @@ import { checkA11y } from "../../support/commands"
 
 describe('citation style manual page', () => {
   beforeEach(() => {
-    cy.visit('/citation-style-manual/')
+    cy.visit('/citation_and_style_manual/')
   })
 
   it('verify page content and document is downloadable', () => {
