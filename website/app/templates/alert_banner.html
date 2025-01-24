@@ -1,48 +1,38 @@
 {% load static %}
 
-{% block extra_css %}
-  <style>
-    .alert-banner {
-      background-color: #faf3cf;
+<style>
+  .alert-banner {
+    background-color: #faf3cf;
+    color: #000;
+    font-weight: bold;
+
+    p {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    a {
       color: #000;
-      font-weight: bold;
+      text-decoration: underline;
+    }
 
-      p {
-        margin-top: 0;
-        margin-bottom: 0;
-      }
+    .close-btn {
+      cursor: pointer;
+      border: none;
+      background-color: #0000;
 
-      a {
-        color: #000;
-        text-decoration: underline;
-      }
-
-      .close-btn {
-        cursor: pointer;
-        border: none;
-        background-color: #0000;
-
-        &:hover {
-          color: #333;
-        }
-      }
-      .alert-content {
-        padding: 0;
-        display: flex;
-        justify-content: space-evenly;
-        gap: 75px;
+      &:hover {
+        color: #333;
       }
     }
-  </style>
-{% endblock %}
-
-{% block extra_js %}
-<script type="text/javascript">
-  function closeBanner() {
-    document.getElementById("alertBanner").style.display = "none";
-  };
-</script>
-{% endblock %}
+    .alert-content {
+      padding: 0;
+      display: flex;
+      justify-content: space-evenly;
+      gap: 75px;
+    }
+  }
+</style>
 
 <div class="alert-banner" id="alertBanner">
   <div class="alert-content">
@@ -53,3 +43,9 @@
     </button>
   </div>
 </div>
+
+<script type="text/javascript">
+  function closeBanner() {
+    document.getElementById("alertBanner").style.display = "none";
+  };
+</script>
