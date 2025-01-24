@@ -1,9 +1,8 @@
 {% load static wagtailcore_tags %}
 {% load wagtailcore_tags navigation_tags %}
 
-{% block extra_css %}
 <style>
-header#top-navigation {
+  header#top-navigation {
     /* Banner styles */
     .blue-banner {
         background-color: var(--dark-blue);
@@ -224,9 +223,8 @@ header#top-navigation {
             }
         }
     }
-}
+  }
 </style>
-{% endblock %}
 
 <header id="top-navigation" >
   <div class="blue-banner">
@@ -289,7 +287,6 @@ header#top-navigation {
   </div>
 </header>
 
-{% block extra_js %}
 <script>
   function toggleHeaders() {
     const elements = document.getElementsByClassName("navigation-header");
@@ -316,4 +313,3 @@ header#top-navigation {
     });
 });
 </script>
-{% endblock %}

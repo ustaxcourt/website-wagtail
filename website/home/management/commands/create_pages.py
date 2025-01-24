@@ -11,6 +11,9 @@ from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.transcripts_and_copies_page import (
     TranscriptsAndCopiesPageInitializer,
 )
+from home.management.commands.pages.citation_style_manual_page import (
+    CitationStyleManualPageInitializer,
+)
 
 pages_to_initialize = [
     HomePageInitializer,
@@ -18,6 +21,7 @@ pages_to_initialize = [
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
     TranscriptsAndCopiesPageInitializer,
+    CitationStyleManualPageInitializer,
     FooterInitializer,
 ]
 

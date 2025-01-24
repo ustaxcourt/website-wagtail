@@ -16,6 +16,10 @@
     --container-width: 1440px;
 }
 
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
 /* ==========================================================================
    Typography
    ========================================================================== */
@@ -29,6 +33,7 @@ body {
     font-size: var(--base-font-size);
     -webkit-font-smoothing: antialiased;
 }
+
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -62,9 +67,17 @@ a {
     cursor: pointer;
 }
 
+a.font-normal {
+    font-weight: 400;
+}
+
 a:hover {
     text-decoration: underline;
     color: var(--link-hover-blue);
+}
+
+.font-light-blue {
+    color: var(--light-blue)
 }
 
 /* ==========================================================================
