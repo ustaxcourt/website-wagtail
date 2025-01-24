@@ -28,14 +28,14 @@ class TranscriptsAndCopiesPageInitializer(PageInitializer):
         body_text = (
             "<strong>Transcripts</strong><br>"
             "<p>Transcripts of proceedings before the Tax Court are supplied to the parties and to the public by the official reporter at such rates as may be fixed by contract "
-            'between the Court and the reporter. Transcripts may be ordered directly from the official reporter, <a href="https://www.escribers.net/">eScribers</a>, by submitting a '
-            '<a href="https://gateway.escribers.net/newportal/home/ordertranscriptform/340">Transcript Order Form</a> or by calling (800) 257-0885 ext. 7. You can also send an email to '
+            'between the Court and the reporter. Transcripts may be ordered directly from the official reporter, <a href="https://www.escribers.net/" target="_blank" rel="noopener noreferrer">eScribers</a>, by submitting a '
+            '<a href="https://gateway.escribers.net/newportal/home/ordertranscriptform/340" target="_blank" rel="noopener noreferrer">Transcript Order Form</a> or by calling <a href="tel:+18002570885">800-257-0885</a> ext. 7. You can also send an email to '
             '<a href="mailto:reportingsales@escribers.net">reportingsales@escribers.net</a>.</p>'
-            "<p>Transcripts are not viewable even to the parties through <a target='_blank' href='https://dawson.ustaxcourt.gov/'>DAWSON</a> until 90 days after the date of the trial (or hearing). Transcripts are available as a copy "
+            '<p>Transcripts are not viewable even to the parties through <a href="https://dawson.ustaxcourt.gov/">DAWSON</a> until 90 days after the date of the trial (or hearing). Transcripts are available as a copy '
             "request after 90 days.</p>"
             "<strong>Copies</strong><br>"
             "<p>Requests for copies of Court records from non-parties (copy requests) may be made in person or by telephone and will be fulfilled electronically by email. The "
-            "Court's fees with respect to these copy requests will be $0.50 per page, with a per-document cap of $3.00. The Records Department can be reached at (202) 521-4688.</p>"
+            'Court\'s fees with respect to these copy requests will be $0.50 per page, with a per-document cap of $3.00. The Records Department can be reached at <a href="tel:+12025214688">202-521-4688</a>.</p>'
             "<p>Litigants with active cases who are registered for electronic access may electronically file, view, and print at home documents in their cases without charge. "
             'Register for DAWSON by following the <a href="/dawson">Register for DAWSON instructions</a>.</p>'
         )
