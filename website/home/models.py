@@ -165,3 +165,7 @@ class ExternalRedirectPage(NavigationMixin):
 
 class DawsonPage(StandardPage):
     pass
+
+
+class TranscriptsAndCopiesPage(StandardPage):
+    template = "home/transcripts_and_copies_page.html"
