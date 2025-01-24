@@ -1,0 +1,29 @@
+import { checkA11y } from "../../support/commands"
+
+describe('citation style manual page', () => {
+  beforeEach(() => {
+    cy.visit('/citation-style-manual/')
+  })
+
+  it('verify page content and document is downloadable', () => {
+    // Check title exists
+    cy.get('[data-testid="page-title"]').should('contain', 'Citation and Style Manual')
+
+    // Check body text exists
+    cy.get('[data-testid="page-body"]').should('contain', 'In January 2022')
+
+    checkA11y()
+
+    // Check document link exists and is downloadable
+    const documentLink = cy.get('[data-testid="citation-style-manual-pdf"]')
+    documentLink.should('exist')
+
+    documentLink.then($link => {
+      const href = $link.prop('href')
+      cy.request(href).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.headers['content-type']).to.include('application/pdf')
+      })
+    })
+  })
+})
