@@ -16,6 +16,10 @@
     --container-width: 1440px;
 }
 
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
 /* ==========================================================================
    Typography
    ========================================================================== */
@@ -29,16 +33,18 @@ body {
     font-size: var(--base-font-size);
 }
 
+
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font);
     font-weight: 700;
     line-height: 2rem;
     margin-bottom: 8px;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
 }
 
 h2 {
@@ -59,9 +65,17 @@ a {
     cursor: pointer;
 }
 
+a.font-normal {
+    font-weight: 400;
+}
+
 a:hover {
     text-decoration: underline;
     color: var(--link-hover-blue);
+}
+
+.font-light-blue {
+    color: var(--light-blue)
 }
 
 /* ==========================================================================
