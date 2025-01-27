@@ -81,8 +81,8 @@ resource "aws_ecs_task_definition" "this" {
     name         = local.container_name,
     portMappings = [{ containerPort = local.container_port }],
     healthCheck = {
-      "command"     = ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:${local.container_port}/\")'"]
-      "interval"    = 30 # check every 30 seconds
+      "command"     = ["CMD", "curl", "-f", "http://localhost:${local.container_port}"]
+      "interval"    = 90 # check every 30 seconds
       "retries"     = 3  # retry 3 times before marking as unhealthy
       "startPeriod" = 60 # initial delay before starting health checks
       "timeout"     = 5  # health check timeout in seconds
