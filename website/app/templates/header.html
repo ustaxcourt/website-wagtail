@@ -114,11 +114,15 @@
             position: relative;
             padding: 0;
 
-            &:hover .navigation-list:has(li):not(.force-hide),
-            .link[aria-expanded="true"] + .navigation-list:has(li) {
+            &:hover .navigation-list:has(li),
+            &.active .navigation-list:has(li) {
                 display: flex;
                 opacity: 1;
                 visibility: visible;
+            }
+
+            &:hover {
+                z-index: 501;
             }
 
             .navigation-list {
@@ -132,11 +136,6 @@
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.2s, visibility 0.2s;
-
-                &.force-hide {
-                    display: none !important;
-                    transition: none;
-                }
 
                 .nav-link a {
                     padding: 3px 10px;
@@ -288,28 +287,74 @@
 </header>
 
 <script>
-  function toggleHeaders() {
-    const elements = document.getElementsByClassName("navigation-header");
-    for (element of elements) {
-      element.classList.toggle("displayed-navigation-header");
-    }
-  }
-  function toggleMenuItems(element) {
-    const elements = element.parentElement.getElementsByClassName("navigation-list");
-    for (element of elements) {
-      element.classList.toggle("displayed-navigation-list");
-    }
-  }
-  document.querySelectorAll('.navigation-header').forEach(header => {
-    header.addEventListener('keydown', event => {
-        if (event.code === 'Space' || event.code === 'Enter') {
-            event.preventDefault();
-            const navigationList = header.querySelector('.navigation-list');
-            if (navigationList && navigationList.childElementCount > 0) {
-                navigationList.style.display = navigationList.style.display === 'flex' ? 'none' : 'flex';
-                header.setAttribute('aria-expanded', navigationList.style.display === 'flex');
+  document.addEventListener('DOMContentLoaded', function() {
+    const navigationHeaders = document.querySelectorAll('.navigation-header');
+
+    navigationHeaders.forEach(header => {
+      // Handle clicks
+      header.addEventListener('click', function(e) {
+        navigationHeaders.forEach(h => {
+          if (h !== header) h.classList.remove('active');
+        });
+        header.classList.toggle('active');
+      });
+
+      // Handle hover
+      header.addEventListener('mouseenter', function() {
+        navigationHeaders.forEach(h => {
+          if (h !== header) h.classList.remove('active');
+        });
+      });
+
+      // Add keyboard navigation for dropdown items
+      header.addEventListener('keydown', function(e) {
+        const activeList = header.querySelector('.navigation-list');
+        const links = activeList?.querySelectorAll('.nav-link a');
+        if (!links?.length) return;
+
+        const currentFocus = document.activeElement;
+        let currentIndex = Array.from(links).indexOf(currentFocus);
+
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            if (currentIndex === -1) {
+              links[0].focus();
+            } else {
+              const nextIndex = (currentIndex + 1) % links.length;
+              links[nextIndex].focus();
             }
+            break;
+
+          case 'ArrowUp':
+            e.preventDefault();
+            if (currentIndex === -1) {
+              links[links.length - 1].focus();
+            } else {
+              const prevIndex = (currentIndex - 1 + links.length) % links.length;
+              links[prevIndex].focus();
+            }
+            break;
         }
+      });
     });
-});
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.navigation-header')) {
+        navigationHeaders.forEach(header => {
+          header.classList.remove('active');
+        });
+      }
+    });
+
+    // Close dropdown when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        navigationHeaders.forEach(header => {
+          header.classList.remove('active');
+        });
+      }
+    });
+  });
 </script>
