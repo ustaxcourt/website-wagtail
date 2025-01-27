@@ -152,7 +152,6 @@ hr {
 
     thead th {
         border-color: var(--faint-gray);
-        font-size: 1.3rem;
     }
 }
 
@@ -162,10 +161,10 @@ hr {
     }
 
     th {
-        padding: 0px 20px;
+        padding: 0px 16px;
     }
     tr, td {
-        padding: 20px 20px;
+        padding: 20px 16px;
         border-color: var(--faint-gray);
     }
 }
