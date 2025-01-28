@@ -169,7 +169,7 @@ STORAGES = {
 
 aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
 if aws_bucket_name:
-    print(aws_bucket_name)
+    print(f"Loading from base config, bucket: {aws_bucket_name}")
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     }
@@ -227,3 +227,4 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
+print(f"Finished base: BASE_URL: {BASE_URL}")
