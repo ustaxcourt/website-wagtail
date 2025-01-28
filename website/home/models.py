@@ -267,7 +267,12 @@ class PhotoDedication(models.Model):
 
 
 class DawsonPage(StandardPage):
-    pass
+    """Page model for Dawson eFiling Page."""
+
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("card_groups", label="Card Sections"),
+        InlinePanel("photo_dedication", label="Photo Dedication"),
+    ]
 
 
 class CitationStyleManualPage(StandardPage):
