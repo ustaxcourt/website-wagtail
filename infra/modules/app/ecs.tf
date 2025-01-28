@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "this" {
       "command"     = ["CMD", "curl", "-f", "http://localhost:${local.container_port}"]
       "interval"    = 30 # check every 30 seconds
       "retries"     = 3  # retry 3 times before marking as unhealthy
-      "startPeriod" = 10 # initial delay before starting health checks
+      "startPeriod" = 30 # initial delay before starting health checks
       "timeout"     = 5  # health check timeout in seconds
     }
     logConfiguration = {
@@ -92,7 +92,7 @@ resource "aws_ecs_task_definition" "this" {
       options = {
         "awslogs-group"         = aws_cloudwatch_log_group.ecs_log_group.name, # Reference the CloudWatch log group
         "awslogs-region"        = "us-east-1",                                 # Your AWS region
-        "awslogs-stream-prefix" = "my-fargate-service"                         # Log stream prefix
+        "awslogs-stream-prefix" = "wagtail-fargate-service"                         # Log stream prefix
       }
     }
   }])
@@ -114,6 +114,15 @@ resource "aws_ecs_service" "this" {
   name            = "${var.environment}-website-service"
   task_definition = aws_ecs_task_definition.this.arn
 
+  # Enable the ECS deployment circuit breaker for rollbacks
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
   lifecycle {
     // we ignore both of these because later in the github actions pipeline,
     // we manually run an ECS update after the migration scripts have run
