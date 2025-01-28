@@ -2,7 +2,56 @@
 
 {% load wagtailcore_tags %}
 
-<footer>
+<style>
+  footer#app-footer {
+    .main {
+        background: var(--medium-gray);
+        padding: 20px 0px;
+        line-height: 1.6rem;
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0px;
+            font-weight: 500;
+        }
+    }
+
+    .footer-address {
+        background: var(--dark-gray);
+        color: #555;
+        font-family: var(--font-family);
+        text-align: center;
+        padding-bottom: 10px;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .phone {
+            white-space: nowrap;
+        }
+
+        p {
+            margin-bottom: 0px;
+            margin-top: 4px;
+        }
+
+        hr {
+            width: 100%;
+            height: 1px;
+            margin: 10px;
+        }
+
+        .seal {
+            width: 100px;
+        }
+    }
+  }
+</style>
+
+<footer id="app-footer">
   <div class="main">
     <div class="grid-container">
       <div class="grid-row grid-gap">

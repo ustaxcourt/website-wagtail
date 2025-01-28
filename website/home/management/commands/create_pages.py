@@ -8,12 +8,20 @@ from home.management.commands.pages.dawson_search_page import (
 )
 from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.footer import FooterInitializer
+from home.management.commands.pages.transcripts_and_copies_page import (
+    TranscriptsAndCopiesPageInitializer,
+)
+from home.management.commands.pages.citation_style_manual_page import (
+    CitationStyleManualPageInitializer,
+)
 
 pages_to_initialize = [
     HomePageInitializer,
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
+    TranscriptsAndCopiesPageInitializer,
+    CitationStyleManualPageInitializer,
     FooterInitializer,
 ]
 

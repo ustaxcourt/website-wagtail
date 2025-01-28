@@ -11,6 +11,8 @@ from wagtail.contrib.settings.models import (
 from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
+from django.core.exceptions import ValidationError
+
 
 @register_setting
 class Footer(BaseGenericSetting):
@@ -186,13 +188,21 @@ class SimpleCards(ClusterableModel):
     """A Simple Card that contains optional title, icon, and related pages."""
 
     parent_page = ParentalKey(
-        "SimpleCardGroup", 
-        related_name="cards", 
-        on_delete=models.CASCADE
+        "SimpleCardGroup", related_name="cards", on_delete=models.CASCADE
     )
 
-    card_title = models.CharField(max_length=255, null=True, blank="True", help_text="The title to appear at the top of the card")
-    card_icon = models.CharField(max_length=200, null=True, blank="True", help_text="Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. \"accessible\")")
+    card_title = models.CharField(
+        max_length=255,
+        null=True,
+        blank="True",
+        help_text="The title to appear at the top of the card",
+    )
+    card_icon = models.CharField(
+        max_length=200,
+        null=True,
+        blank="True",
+        help_text='Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. "accessible")',
+    )
 
     # Define panels for the admin interface
     panels = [
@@ -204,16 +214,14 @@ class SimpleCards(ClusterableModel):
 
 class SimpleCardGroup(ClusterableModel):
     """Group model for dynamically grouping Simple Cards."""
-    
+
     parent_page = ParentalKey(
-        "DawsonPage", 
-        related_name="card_groups", 
-        on_delete=models.CASCADE
+        "DawsonPage", related_name="card_groups", on_delete=models.CASCADE
     )
 
     group_label = models.CharField(
-        max_length=255, 
-        help_text="Label for this group of cards (e.g., 'Section 1: Featured Cards')."
+        max_length=255,
+        help_text="Label for this group of cards (e.g., 'Section 1: Featured Cards').",
     )
 
     panels = [
@@ -223,7 +231,7 @@ class SimpleCardGroup(ClusterableModel):
 
     def __str__(self):
         return self.group_label
-    
+
 
 class PhotoDedication(models.Model):
     """Model to store data for a dedication."""
@@ -259,9 +267,18 @@ class PhotoDedication(models.Model):
 
 
 class DawsonPage(StandardPage):
-    """Page model for Dawson eFiling Page."""
+    pass
+
+
+class CitationStyleManualPage(StandardPage):
+    document = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     content_panels = StandardPage.content_panels + [
-        InlinePanel("card_groups", label="Card Sections"),
-        InlinePanel("photo_dedication", label="Photo Dedication"),
+        FieldPanel("document"),
     ]

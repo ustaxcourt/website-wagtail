@@ -14,32 +14,39 @@ There are a number of make commands to run the service locally. See Makefile for
 
 ### Pre-reqs
 
+We will use `brew` to install all necessary software for a Mac laptop. To start ensure you have installed brew.
+
+```shell
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
 #### Setup PyEnv
 
-```
+```shell
 brew install pyenv
+pyenv init
 cd website
 pyenv install
 ```
 
 #### Setup aws cli
 
-```
+```shell
 brew install awscli
 ```
 
-#### Setup Ruff
+#### Setup Node
 
+```shell
+brew install node
+brew install nvm
 ```
-brew install ruff
-```
-
 
 #### Setup Tfenv
 
 You will want to install tfenv so that you can install and switch to different terraform versions.
 
-```
+```shell
 brew install tfenv
 tfenv install 1.10.4
 tfenv use 1.10.4
@@ -50,7 +57,7 @@ tfenv use 1.10.4
 
 Before you commit to the repo, we run some checks to verify and fix the formatting of python.
 
-```
+```shell
 brew install pre-commit
 pre-commit install # do this at project root
 ```
@@ -293,3 +300,6 @@ Or, the following equivalent command.
 > If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
+
+## Troubleshooting Python/Python 3
+  - if make commands are not running try doing the command "which python3"  which should give you a path which can be inserted into the "path" portion of the following command to alias python with python3. (sudo ln -s "path" /usr/local/bin/python)
