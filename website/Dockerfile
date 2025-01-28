@@ -50,4 +50,5 @@ USER wagtail
 RUN python manage.py collectstatic --noinput --clear
 
 # Run the service
+ENV GUNICORN_CMD_ARGS="--log-level debug"
 CMD set -xe; gunicorn app.wsgi:application
