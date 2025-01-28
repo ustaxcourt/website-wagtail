@@ -14,16 +14,36 @@ from home.management.commands.pages.transcripts_and_copies_page import (
 from home.management.commands.pages.citation_style_manual_page import (
     CitationStyleManualPageInitializer,
 )
+from home.management.commands.pages.search_page import SearchPageInitializer
+from home.management.commands.pages.todays_orders import TodaysOrdersPageInitializer
+from home.management.commands.pages.todays_opinions import TodaysOpinionsPageInitializer
 
-pages_to_initialize = [
+other_pages_to_initialize = [
     HomePageInitializer,
+    FooterInitializer,
+]
+
+# NOTE, the order of these dictates the order in the dropdowns.
+orders_opinions_pages_to_initialize = [
+    TodaysOrdersPageInitializer,
+    TodaysOpinionsPageInitializer,
+    SearchPageInitializer,
+    CitationStyleManualPageInitializer,
+    TranscriptsAndCopiesPageInitializer,
+]
+
+# NOTE, the order of these dictates the order in the dropdowns.
+efiling_pages_to_initialize = [
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
-    TranscriptsAndCopiesPageInitializer,
-    CitationStyleManualPageInitializer,
-    FooterInitializer,
 ]
+
+pages_to_initialize = (
+    other_pages_to_initialize
+    + efiling_pages_to_initialize
+    + orders_opinions_pages_to_initialize
+)
 
 
 class Command(BaseCommand):
