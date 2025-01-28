@@ -103,7 +103,7 @@ module "alb" {
 
       health_check = {
         healthy_threshold   = 3
-        interval           = 90
+        interval           = 30
         path               = "/"
         port               = "traffic-port"
         protocol          = "HTTP"
