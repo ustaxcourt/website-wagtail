@@ -189,8 +189,13 @@
 
             .nav-hamburger {
                 display: flex;
+                align-items: center;
+                justify-content: center;
                 height: 24px;
                 margin: 10px;
+                background: none;
+                border: none;
+                cursor: pointer;
             }
 
             .navigation {
@@ -303,9 +308,11 @@
 
   {% get_site_root as site_root %}
   <div class="navigation-bar" data-testid="navigation-bar">
-    <img class="nav-hamburger"
-      alt="mobile menu hamburger icon"
-      src="{% static 'images/header/hamburger.svg' %}" onclick="toggleHeaders()" />
+    <button class="nav-hamburger"
+            aria-label="Toggle mobile menu"
+            onclick="toggleHeaders()">
+            <i class="ti ti-menu-2"></i>
+    </button>
     <ul class="navigation">
       {% for section in navigation_sections %}
       <li class="navigation-header">
@@ -425,8 +432,15 @@
     // Close dropdown when pressing Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
+        // Close desktop dropdowns
         navigationHeaders.forEach(header => {
           header.classList.remove('active');
+          // Close mobile menu
+          header.classList.remove('displayed-navigation-header');
+          const navigationList = header.querySelector('.navigation-list');
+          if (navigationList) {
+            navigationList.classList.remove('displayed-navigation-list');
+          }
         });
       }
     });
