@@ -293,3 +293,6 @@ Or, the following equivalent command.
 > If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
+
+## Troubleshooting Python/Python 3
+  - if make commands are not running try doing the command "which python3"  which should give you a path which can be inserted into the "path" portion of the following command to alias python with python3. (sudo ln -s "path" /usr/local/bin/python)
