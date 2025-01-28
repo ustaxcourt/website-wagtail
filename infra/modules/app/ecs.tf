@@ -114,6 +114,15 @@ resource "aws_ecs_service" "this" {
   name            = "${var.environment}-website-service"
   task_definition = aws_ecs_task_definition.this.arn
 
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
   lifecycle {
     // we ignore both of these because later in the github actions pipeline,
     // we manually run an ECS update after the migration scripts have run
