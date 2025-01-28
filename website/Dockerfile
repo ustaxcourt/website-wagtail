@@ -26,7 +26,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
  && rm -rf /var/lib/apt/lists/*
 
 # Install the application server.
-RUN pip install "gunicorn==20.0.4"
+RUN pip install "gunicorn==23.0.0"
 
 # Install the project requirements.
 COPY requirements/base.txt /requirements.txt
@@ -51,6 +51,8 @@ RUN python manage.py collectstatic --noinput --clear
 
 # Run the service
 ENV GUNICORN_CMD_ARGS="--log-level debug"
+ENV DJANGO_DEBUG=True
+
 CMD set -xe; \
     python manage.py migrate --noinput && \
     gunicorn app.wsgi:application
