@@ -217,9 +217,9 @@ class DawsonPageInitializer(PageInitializer):
         }
 
         all_new_std_pages = {}
-        for card_names in standard_pages.items():
+        for card_name in standard_pages.keys():
             new_std_pages = []
-            for page in standard_pages["petition"]:
+            for page in standard_pages[card_name]:
                 std_page = (
                     home_page.get_children().live().filter(slug=page["slug"]).first()
                 )
@@ -236,7 +236,7 @@ class DawsonPageInitializer(PageInitializer):
                     dawson_page.add_child(instance=new_std_page)
                     print(f"Created {new_std_page.title} page.")
                     new_std_pages.append(new_std_page)
-            all_new_std_pages[card_names] = new_std_pages
+            all_new_std_pages[card_name] = new_std_pages
 
         petition_simple_card = SimpleCards(
             card_title="Filing a Petition",
