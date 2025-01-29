@@ -7,11 +7,13 @@ from django.core.files import File
 from django.contrib.contenttypes.models import ContentType
 from home.models import (
     DawsonPage,
-    # SimpleCardGroup,
-    # SimpleCards,
-    # RelatedPage,
+    SimpleCardGroup,
+    SimpleCards,
+    RelatedPage,
     PhotoDedication,
+    StandardPage,
 )
+from django.core.exceptions import ValidationError
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
 
@@ -36,7 +38,95 @@ class DawsonPageInitializer(PageInitializer):
             "filed with the Court at this email address. Any documents received via email will NOT be filed in your case."
         )
 
-        content_type = ContentType.objects.get_for_model(DawsonPage)
+        dawson_page = DawsonPage(
+            title=title,
+            slug=slug,
+            search_description="Dawson eFiling main page",
+            body="Placeholder body text.",
+        )
+        try:
+            home_page.get_children().live().filter(slug=slug).first().delete()
+            print(f"Deleted existing {title} page.")
+        except ValidationError:
+            pass
+        home_page.add_child(instance=dawson_page)
+        print(f"Created {title} page stub.")
+
+        dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
+
+        dawson_card_group = SimpleCardGroup(
+            group_label="Filing a Petition", parent_page=dawson_page
+        )
+
+        dawson_card_group.save()
+        print("Created 'Filing a Petition' card group.")
+
+        standard_pages = [
+            {
+                "title": "How to eFile a Petition",
+                "body": "Before starting the e-filing process, please review the helpful tips provided below. They will instruct you in what is needed and how to go about filing your petition electronically in DAWSON (Docket Access Within and Secure Online Network), the Court’s electronic filing and case management system. For more detailed instructions, refer to the DAWSON user guides.",
+                "slug": "petition",
+                "show_in_menus": False,
+                "path": "petition",
+                "depth": 4,
+                "search_description": "How to eFile a Petition",
+            },
+            {
+                "title": "How to Pay the Filing Fee",
+                "body": "Filing fees are required to submit a petition. The Court’s filing fee is $60 and may be paid online, by mail, or in person. The fee may be waived by filing an Application for Waiver of Filing Fee. Your petition must be processed by the Court before the Application for Waiver of Filing fee can be filed electronically.",
+                "slug": "file-fee",
+                "show_in_menus": False,
+                "path": "file-fee",
+                "depth": 4,
+                "search_description": "How to Pay the Filing Fee",
+            },
+            {
+                "title": "How to Merge PDFs",
+                "body": "These instructions apply only to Adobe Acrobat Professional and Standard. A user utilizing other software to create PDFs must follow the software vendor's instructions for creating a single PDF from multiple PDFs.",
+                "slug": "merge-pdfs",
+                "show_in_menus": False,
+                "path": "merge-pdfs",
+                "depth": 4,
+                "search_description": "How to Merge PDFs",
+            },
+        ]
+
+        new_std_pages = []
+        for page in standard_pages:
+            std_page = home_page.get_children().live().filter(slug=page["slug"]).first()
+            if std_page:
+                std_page.title = page["title"]
+                std_page.body = page["body"]
+                std_page.search_description = page["search_description"]
+                dawson_page.add_child(instance=std_page)
+                dawson_page.save()
+                print(f"Updated {std_page.title} page.")
+                new_std_pages.append(std_page)
+            else:
+                new_std_page = StandardPage(**page)
+                dawson_page.add_child(instance=new_std_page)
+                print(f"Created {new_std_page.title} page.")
+                new_std_pages.append(new_std_page)
+
+            # related_page = RelatedPage(related_page=new_std_page)
+
+            # dawson_card_group.cards.add(related_page)
+            # related_pages.append(related_page)
+
+        petition_simple_card = SimpleCards(
+            card_title="Filing a Petition",
+            card_icon="file-text",
+            # related_pages=related_pages,
+            parent_page=dawson_card_group,
+        )
+
+        petition_simple_card.save()
+        print("Created 'Filing a Petition' card.")
+
+        for std_page in new_std_pages:
+            RelatedPage.objects.create(card=petition_simple_card, related_page=std_page)
+
+        petition_simple_card.save()
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
@@ -72,10 +162,11 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "slug": slug,
             "seo_title": title,
             "search_description": "Dawson",
-            "content_type": content_type,
+            "content_type": dawson_content_type,
             "show_in_menus": True,
             "menu_item_name": "DAWSON (eFILING SYSTEM)",
             "navigation_category": NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
+            "card_groups": [dawson_card_group],
             "photo_dedication": [photo_dedication],
         }
 
@@ -83,7 +174,7 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
         existing_page = DawsonPage.objects.filter(slug=slug).first()
 
         if existing_page:
-            # Update scenario
+            # Update
             self.logger.write(f"- {title} page already exists. Updating content.")
 
             for field_name, field_value in page_fields.items():
@@ -94,7 +185,7 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             self.logger.write(f"Successfully updated the '{title}' page.")
 
         else:
-            # Create scenario
+            # Create
             self.logger.write(f"Creating the '{title}' page.")
             new_page = DawsonPage(**page_fields)
 
