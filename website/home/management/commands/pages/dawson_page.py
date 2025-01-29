@@ -54,15 +54,15 @@ class DawsonPageInitializer(PageInitializer):
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
 
-        dawson_card_group = SimpleCardGroup(
-            group_label="Filing a Petition", parent_page=dawson_page
-        )
-        dawson_card_group.save()
-
         dawson_petition_card_group = SimpleCardGroup(
             group_label="", parent_page=dawson_page
         )
         dawson_petition_card_group.save()
+
+        dawson_card_group = SimpleCardGroup(
+            group_label="Filing a Petition", parent_page=dawson_page
+        )
+        dawson_card_group.save()
 
         print("Created card groups.")
 
@@ -311,6 +311,12 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
 
         print("Created cards.")
 
+        for registration_std_page in all_new_std_pages["registration"]:
+            RelatedPage.objects.create(
+                card=register_card, related_page=registration_std_page
+            )
+        register_card.save()
+
         for petition_std_page in all_new_std_pages["petition"]:
             RelatedPage.objects.create(
                 card=petition_simple_card, related_page=petition_std_page
@@ -334,12 +340,6 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
                 card=reference_materials_card, related_page=reference_materials_std_page
             )
         reference_materials_card.save()
-
-        for registration_std_page in all_new_std_pages["registration"]:
-            RelatedPage.objects.create(
-                card=register_card, related_page=registration_std_page
-            )
-        register_card.save()
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
