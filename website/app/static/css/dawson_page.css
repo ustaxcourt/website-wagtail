@@ -41,11 +41,12 @@
 .dedication {
     display: flex;
     align-items: flex-start;
+    padding-bottom: 2em;
     gap: 1rem;
 
     .dedication-image {
         flex-shrink: 0;
-
+        padding-top: 1em;
         img {
             border-style: none;
             margin: 0;
