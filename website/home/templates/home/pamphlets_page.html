@@ -110,7 +110,7 @@
                 </div>
                 <div class="entry-right">
                     <h3>
-                        <a href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
+                        <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
                     </h3>
                     <p class="date-range">{{ pamphlet.date_range }}</p>
                     <div>{{ pamphlet.citation|richtext }}</div>
