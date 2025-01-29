@@ -61,72 +61,236 @@ class DawsonPageInitializer(PageInitializer):
         dawson_card_group.save()
         print("Created 'Filing a Petition' card group.")
 
-        standard_pages = [
-            {
-                "title": "How to eFile a Petition",
-                "body": "Before starting the e-filing process, please review the helpful tips provided below. They will instruct you in what is needed and how to go about filing your petition electronically in DAWSON (Docket Access Within and Secure Online Network), the Court’s electronic filing and case management system. For more detailed instructions, refer to the DAWSON user guides.",
-                "slug": "petition",
-                "show_in_menus": False,
-                "path": "petition",
-                "depth": 4,
-                "search_description": "How to eFile a Petition",
-            },
-            {
-                "title": "How to Pay the Filing Fee",
-                "body": "Filing fees are required to submit a petition. The Court’s filing fee is $60 and may be paid online, by mail, or in person. The fee may be waived by filing an Application for Waiver of Filing Fee. Your petition must be processed by the Court before the Application for Waiver of Filing fee can be filed electronically.",
-                "slug": "file-fee",
-                "show_in_menus": False,
-                "path": "file-fee",
-                "depth": 4,
-                "search_description": "How to Pay the Filing Fee",
-            },
-            {
-                "title": "How to Merge PDFs",
-                "body": "These instructions apply only to Adobe Acrobat Professional and Standard. A user utilizing other software to create PDFs must follow the software vendor's instructions for creating a single PDF from multiple PDFs.",
-                "slug": "merge-pdfs",
-                "show_in_menus": False,
-                "path": "merge-pdfs",
-                "depth": 4,
-                "search_description": "How to Merge PDFs",
-            },
-        ]
+        standard_pages = {
+            "petition": [
+                {
+                    "title": "How to eFile a Petition",
+                    "body": "Before starting the e-filing process, please review the helpful tips provided below. They will instruct you in what is needed and how to go about filing your petition electronically in DAWSON (Docket Access Within and Secure Online Network), the Court’s electronic filing and case management system. For more detailed instructions, refer to the DAWSON user guides.",
+                    "slug": "efile_a_petition",
+                    "show_in_menus": False,
+                    "path": "efile_a_petition",
+                    "depth": 4,
+                    "search_description": "How to eFile a Petition",
+                },
+                {
+                    "title": "How to Pay the Filing Fee",
+                    "body": "Filing fees are required to submit a petition. The Court’s filing fee is $60 and may be paid online, by mail, or in person. The fee may be waived by filing an Application for Waiver of Filing Fee. Your petition must be processed by the Court before the Application for Waiver of Filing fee can be filed electronically.",
+                    "slug": "pay_filing_fee",
+                    "show_in_menus": False,
+                    "path": "pay_filing_fee",
+                    "depth": 4,
+                    "search_description": "How to Pay the Filing Fee",
+                },
+                {
+                    "title": "How to Merge PDFs",
+                    "body": "These instructions apply only to Adobe Acrobat Professional and Standard. A user utilizing other software to create PDFs must follow the software vendor's instructions for creating a single PDF from multiple PDFs.",
+                    "slug": "merging_files",
+                    "show_in_menus": False,
+                    "path": "merge-pdfs",
+                    "depth": 4,
+                    "search_description": "How to Merge PDFs",
+                },
+            ],
+            "managing_case": [
+                {
+                    "title": "How to View Your Dashboard",
+                    "body": "Dashboard Your dashboard is your main landing page once you are signed in to DAWSON.",
+                    "slug": "dashboard",
+                    "show_in_menus": False,
+                    "path": "dashboard",
+                    "depth": 4,
+                    "search_description": "How to View Your Dashboard",
+                },
+                {
+                    "title": "How to Update Your Contact Information",
+                    "body": "Update Contact Information",
+                    "slug": "update_contact_information",
+                    "show_in_menus": False,
+                    "path": "update_contact_information",
+                    "depth": 4,
+                    "search_description": "How to Update Your Contact Information",
+                },
+            ],
+            "searching_case": [
+                {
+                    "title": "How to Search for a Case",
+                    "body": "Find a Case: To search for a case in DAWSON, go to the DAWSON homepage. You can search for a case by Petitioner Name or Docket Number on the Case tab.",
+                    "slug": "find_a_case",
+                    "show_in_menus": False,
+                    "path": "find_a_case",
+                    "depth": 4,
+                    "search_description": "How to Search for a Case",
+                },
+                {
+                    "title": "How to Search for an Order",
+                    "body": "Find an Order: An Order is a written direction or command issued by a Judge. Each day’s Orders are posted on the Court’s website, www.ustaxcourt.gov, under “Today’s Orders” in “Orders & Opinions”. To search for an order, you can search by a keyword or phrase. In addition, you may also narrow your search results by adding in a specific Docket number, Case Title/Petitioner’s name, the Judge who issued the order, or by including a specific date or date range.",
+                    "slug": "find_an_order",
+                    "show_in_menus": False,
+                    "path": "find_an_order",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "How to Search for an Opinion",
+                    "body": "Find an Opinion: An opinion is the written determination of a Judge on the issues tried and submitted to the Court for decision. Each dayʼs opinions are posted on the Courtʼs website, www.ustaxcourt.gov, in “Todayʼs Opinions” under “Orders & Opinions”. If you need to search for an opinion, you can search by a keyword or phrase. In addition, you may narrow your search results by adding in a specific Docket Number, Case Title/Petitionerʼs name, the Judge who issued the Opinion, or by including a specific date or date range. You may also filter by opinion type.",
+                    "slug": "find_an_opinion",
+                    "show_in_menus": False,
+                    "path": "find_an_opinion",
+                    "depth": 4,
+                    "search_description": "How to Search for an Opinion",
+                },
+            ],
+            "reference_materials": [
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+                {
+                    "title": "",
+                    "body": "",
+                    "slug": "",
+                    "show_in_menus": False,
+                    "path": "",
+                    "depth": 4,
+                    "search_description": "",
+                },
+            ],
+        }
 
-        new_std_pages = []
-        for page in standard_pages:
-            std_page = home_page.get_children().live().filter(slug=page["slug"]).first()
-            if std_page:
-                std_page.title = page["title"]
-                std_page.body = page["body"]
-                std_page.search_description = page["search_description"]
-                dawson_page.add_child(instance=std_page)
-                dawson_page.save()
-                print(f"Updated {std_page.title} page.")
-                new_std_pages.append(std_page)
-            else:
-                new_std_page = StandardPage(**page)
-                dawson_page.add_child(instance=new_std_page)
-                print(f"Created {new_std_page.title} page.")
-                new_std_pages.append(new_std_page)
-
-            # related_page = RelatedPage(related_page=new_std_page)
-
-            # dawson_card_group.cards.add(related_page)
-            # related_pages.append(related_page)
+        all_new_std_pages = {}
+        for card_names in standard_pages.items():
+            new_std_pages = []
+            for page in standard_pages["petition"]:
+                std_page = (
+                    home_page.get_children().live().filter(slug=page["slug"]).first()
+                )
+                if std_page:
+                    std_page.title = page["title"]
+                    std_page.body = page["body"]
+                    std_page.search_description = page["search_description"]
+                    dawson_page.add_child(instance=std_page)
+                    dawson_page.save()
+                    print(f"Updated {std_page.title} page.")
+                    new_std_pages.append(std_page)
+                else:
+                    new_std_page = StandardPage(**page)
+                    dawson_page.add_child(instance=new_std_page)
+                    print(f"Created {new_std_page.title} page.")
+                    new_std_pages.append(new_std_page)
+            all_new_std_pages[card_names] = new_std_pages
 
         petition_simple_card = SimpleCards(
             card_title="Filing a Petition",
             card_icon="file-text",
-            # related_pages=related_pages,
+            parent_page=dawson_card_group,
+        )
+
+        managing_case_card = SimpleCards(
+            card_title="Managing Your Cases",
+            card_icon="file-text",
+            parent_page=dawson_card_group,
+        )
+
+        searching_case_card = SimpleCards(
+            card_title="Searching for Cases and Documents",
+            card_icon="file-text",
+            parent_page=dawson_card_group,
+        )
+
+        reference_materials_card = SimpleCards(
+            card_title="Reference Materials",
+            card_icon="file-text",
             parent_page=dawson_card_group,
         )
 
         petition_simple_card.save()
-        print("Created 'Filing a Petition' card.")
+        managing_case_card.save()
+        searching_case_card.save()
+        reference_materials_card.save()
+        print("Created cards.")
 
-        for std_page in new_std_pages:
-            RelatedPage.objects.create(card=petition_simple_card, related_page=std_page)
-
+        for petition_std_page in all_new_std_pages["petition"]:
+            RelatedPage.objects.create(
+                card=petition_simple_card, related_page=petition_std_page
+            )
         petition_simple_card.save()
+
+        for managing_case_std_page in all_new_std_pages["managing_case"]:
+            RelatedPage.objects.create(
+                card=managing_case_card, related_page=managing_case_std_page
+            )
+        managing_case_card.save()
+
+        for searching_case_std_page in all_new_std_pages["searching_case"]:
+            RelatedPage.objects.create(
+                card=searching_case_card, related_page=searching_case_std_page
+            )
+        searching_case_card.save()
+
+        for reference_materials_std_page in all_new_std_pages["reference_materials"]:
+            RelatedPage.objects.create(
+                card=reference_materials_card, related_page=reference_materials_std_page
+            )
+        reference_materials_card.save()
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
