@@ -100,7 +100,6 @@ class StandardPage(NavigationMixin):
         abstract = False
 
     body = RichTextField(blank=True, help_text="Insert text here.")
-
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
@@ -185,7 +184,7 @@ class PamphletsPage(StandardPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    content_panels = Page.content_panels + [
+    content_panels = StandardPage.content_panels + [
         InlinePanel("entries", label="Entries"),
     ]
 

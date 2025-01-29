@@ -10,7 +10,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: nowrap;
+            gap: 50px;
 
             .bookshelf-image {
                 max-width: 100%;
@@ -22,6 +22,9 @@
         .pamphlets-section {
             .pamphlet-entry {
                 display: flex;
+                margin-bottom: 40px;
+                margin-top: 40px;
+                gap: 40px;
 
                 .entry-left {
                     width: 200px;
@@ -29,11 +32,48 @@
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+
+                    a {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .pamphlet-image {
+                        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                .entry-right {
+                    h3 {
+                        margin-top: 0;
+                    }
                 }
 
                 .date-range {
-                    font-size: 1.2rem;
-                    font-weight: 600;
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 840px) {
+        #pamphlets-page {
+            .header-section {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 0px;
+            }
+
+            .pamphlets-section {
+                .pamphlet-entry {
+                    .entry-left {
+                        display: none;
+                    }
                 }
             }
         }
@@ -48,6 +88,7 @@
         <div class="header-section">
             <div>
                 <h1>{{ page.title }}</h1>
+                <hr />
                 <div>{{ page.body|richtext }}</div>
             </div>
 
@@ -60,18 +101,18 @@
             {% for pamphlet in page.entries.all %}
             <div class="pamphlet-entry">
                 <div class="entry-left">
-                    <div class="pamphlet-image">
-                        <img src="{% static 'images/pamphlet.png' %}" alt="Tax Court Pamphlet">
-                    </div>
-                    <div class="entry-code">
-                        <a href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.code }}</a>
-                    </div>
+                    <a href="{{ pamphlet.pdf.url }}" target="_blank">
+                        <div class="pamphlet-image">
+                            <img src="{% static 'images/pamphlet.png' %}" alt="Tax Court Pamphlet">
+                        </div>
+                        <div class="entry-code">{{ pamphlet.code }}</div>
+                    </a>
                 </div>
                 <div class="entry-right">
-                    <h2>
+                    <h3>
                         <a href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
-                        </h2>
-                    <h2 class="date-range">{{ pamphlet.date_range }}</h2>
+                    </h3>
+                    <p class="date-range">{{ pamphlet.date_range }}</p>
                     <div>{{ pamphlet.citation|richtext }}</div>
 
                 </div>

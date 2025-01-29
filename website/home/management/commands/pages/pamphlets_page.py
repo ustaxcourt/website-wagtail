@@ -153,7 +153,7 @@ class PamphletsPageInitializer(PageInitializer):
             return
 
     def create_page_info(self, parent_page):
-        title = "Pamphlets"
+        title = "United States Tax Court Reports: Pamphlets"
 
         if Page.objects.filter(slug=self.slug).exists():
             self.logger.write(f"- {title} page already exists.")
@@ -166,7 +166,7 @@ class PamphletsPageInitializer(PageInitializer):
         new_page = parent_page.add_child(
             instance=PamphletsPage(
                 title=title,
-                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<br/><br/>Smith v. Commissioner, 159 T.C. 33 (2022)",
+                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner, 159 T.C. 33 (2022)</i></blockquote>",
                 slug=self.slug,
                 seo_title="Tax Court Reports Pamphlets",
                 show_in_menus=True,
@@ -176,7 +176,7 @@ class PamphletsPageInitializer(PageInitializer):
         )
 
         PamphletsPage.objects.filter(id=new_page.id).update(
-            menu_item_name="PAMPHLETS",
+            menu_item_name="TAX COURT REPORTS: PAMPHLETS",
             navigation_category=NavigationCategories.ORDERS_AND_OPINIONS,
         )
 
