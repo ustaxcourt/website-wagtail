@@ -57,9 +57,14 @@ class DawsonPageInitializer(PageInitializer):
         dawson_card_group = SimpleCardGroup(
             group_label="Filing a Petition", parent_page=dawson_page
         )
-
         dawson_card_group.save()
-        print("Created 'Filing a Petition' card group.")
+
+        dawson_petition_card_group = SimpleCardGroup(
+            group_label="", parent_page=dawson_page
+        )
+        dawson_petition_card_group.save()
+
+        print("Created card groups.")
 
         standard_pages = {
             "petition": [
@@ -225,6 +230,26 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
                     "search_description": "DAWSON Status",
                 },
             ],
+            "registration": [
+                {
+                    "title": "Petitioner Registration",
+                    "body": "",
+                    "slug": "dawson_petitioner_registration",
+                    "show_in_menus": False,
+                    "path": "https://app.dawson.ustaxcourt.gov/create-account/petitioner",
+                    "depth": 4,
+                    "search_description": "Petitioner Registration",
+                },
+                {
+                    "title": "Practitioner Registration",
+                    "body": "How to Get a DAWSON Account: Practitioners: The Court will create DAWSON accounts for practitioners.",
+                    "slug": "dawson_account_practitioner",
+                    "show_in_menus": False,
+                    "path": "dawson_account_practitioner",
+                    "depth": 4,
+                    "search_description": "Practitioner Registration",
+                },
+            ],
         }
 
         all_new_std_pages = {}
@@ -254,29 +279,36 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
             card_icon="file-text",
             parent_page=dawson_card_group,
         )
+        petition_simple_card.save()
 
         managing_case_card = SimpleCards(
             card_title="Managing Your Cases",
             card_icon="file-text",
             parent_page=dawson_card_group,
         )
+        managing_case_card.save()
 
         searching_case_card = SimpleCards(
             card_title="Searching for Cases and Documents",
             card_icon="file-text",
             parent_page=dawson_card_group,
         )
+        searching_case_card.save()
 
         reference_materials_card = SimpleCards(
             card_title="Reference Materials",
             card_icon="file-text",
             parent_page=dawson_card_group,
         )
-
-        petition_simple_card.save()
-        managing_case_card.save()
-        searching_case_card.save()
         reference_materials_card.save()
+
+        register_card = SimpleCards(
+            card_title="",
+            card_icon="",
+            parent_page=dawson_petition_card_group,
+        )
+        register_card.save()
+
         print("Created cards.")
 
         for petition_std_page in all_new_std_pages["petition"]:
@@ -302,6 +334,12 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
                 card=reference_materials_card, related_page=reference_materials_std_page
             )
         reference_materials_card.save()
+
+        for registration_std_page in all_new_std_pages["registration"]:
+            RelatedPage.objects.create(
+                card=register_card, related_page=registration_std_page
+            )
+        register_card.save()
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
@@ -341,7 +379,7 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "show_in_menus": True,
             "menu_item_name": "DAWSON (eFILING SYSTEM)",
             "navigation_category": NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
-            "card_groups": [dawson_card_group],
+            "card_groups": [dawson_petition_card_group, dawson_card_group],
             "photo_dedication": [photo_dedication],
         }
 
