@@ -204,3 +204,73 @@ button.link {
 button.link:hover {
     text-decoration: none;
 }
+
+.pamphlets-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.pamphlet-header {
+    margin-bottom: 3rem;
+}
+
+.pamphlet-description {
+    margin: 1.5rem 0;
+    line-height: 1.6;
+}
+
+.citation-example {
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.pamphlet-volume {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pamphlet-info h2 {
+    color: #003366;
+    margin-bottom: 0.5rem;
+}
+
+.date-range {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+.pamphlet-entries {
+    margin-top: 1rem;
+}
+
+.entry {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.entry-link {
+    color: #003366;
+    text-decoration: none;
+}
+
+.entry-link:hover {
+    text-decoration: underline;
+}
+
+.entry-description {
+    color: #666;
+    margin-left: 1rem;
+    font-size: 0.9em;
+}
+
+.volume-citation {
+    margin-top: 1rem;
+    font-weight: bold;
+}

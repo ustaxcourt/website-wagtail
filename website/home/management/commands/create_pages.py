@@ -17,6 +17,7 @@ from home.management.commands.pages.citation_style_manual_page import (
 from home.management.commands.pages.search_page import SearchPageInitializer
 from home.management.commands.pages.todays_orders import TodaysOrdersPageInitializer
 from home.management.commands.pages.todays_opinions import TodaysOpinionsPageInitializer
+from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -30,6 +31,7 @@ orders_opinions_pages_to_initialize = [
     SearchPageInitializer,
     CitationStyleManualPageInitializer,
     TranscriptsAndCopiesPageInitializer,
+    PamphletsPageInitializer,
 ]
 
 # NOTE, the order of these dictates the order in the dropdowns.
