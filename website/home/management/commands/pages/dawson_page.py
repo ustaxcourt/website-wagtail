@@ -13,7 +13,6 @@ from home.models import (
     PhotoDedication,
     StandardPage,
 )
-from django.core.exceptions import ValidationError
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
 
@@ -44,11 +43,12 @@ class DawsonPageInitializer(PageInitializer):
             search_description="Dawson eFiling main page",
             body="Placeholder body text.",
         )
-        try:
-            home_page.get_children().live().filter(slug=slug).first().delete()
+
+        existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
+        if existing_dawson_page:
+            existing_dawson_page.delete()
             print(f"Deleted existing {title} page.")
-        except ValidationError:
-            pass
+
         home_page.add_child(instance=dawson_page)
         print(f"Created {title} page stub.")
 
