@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0003_pamphletspage_pamphletentry'),
+        ("home", "0003_pamphletspage_pamphletentry"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='pamphletentry',
-            name='order',
+            model_name="pamphletentry",
+            name="order",
         ),
         migrations.AddField(
-            model_name='pamphletentry',
-            name='volume_number',
+            model_name="pamphletentry",
+            name="volume_number",
             field=models.FloatField(default=0),
         ),
     ]
