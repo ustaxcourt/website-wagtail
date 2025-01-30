@@ -47,8 +47,10 @@
                 }
 
                 .entry-right {
-                    h3 {
+                    h2 {
                         margin-top: 0;
+                        margin-bottom: 0;
+                        font-size: 1.3rem;
                     }
                 }
 
@@ -56,6 +58,7 @@
                     font-size: 1.1rem;
                     font-weight: 500;
                     margin-top: 0;
+                    font-style: italic;
                 }
             }
         }
@@ -109,9 +112,9 @@
                     </a>
                 </div>
                 <div class="entry-right">
-                    <h3>
+                    <h2>
                         <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
-                    </h3>
+                    </h2>
                     <p class="date-range">{{ pamphlet.date_range }}</p>
                     <div>{{ pamphlet.citation|richtext }}</div>
 
