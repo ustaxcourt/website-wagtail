@@ -274,6 +274,13 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
                     new_std_pages.append(new_std_page)
             all_new_std_pages[card_name] = new_std_pages
 
+        register_card = SimpleCards(
+            card_title="",
+            card_icon="",
+            parent_page=dawson_petition_card_group,
+        )
+        register_card.save()
+
         petition_simple_card = SimpleCards(
             card_title="Filing a Petition",
             card_icon="file-text",
@@ -283,31 +290,24 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
 
         managing_case_card = SimpleCards(
             card_title="Managing Your Cases",
-            card_icon="file-text",
+            card_icon="wheel",
             parent_page=dawson_card_group,
         )
         managing_case_card.save()
 
         searching_case_card = SimpleCards(
             card_title="Searching for Cases and Documents",
-            card_icon="file-text",
+            card_icon="search",
             parent_page=dawson_card_group,
         )
         searching_case_card.save()
 
         reference_materials_card = SimpleCards(
             card_title="Reference Materials",
-            card_icon="file-text",
+            card_icon="book",
             parent_page=dawson_card_group,
         )
         reference_materials_card.save()
-
-        register_card = SimpleCards(
-            card_title="",
-            card_icon="",
-            parent_page=dawson_petition_card_group,
-        )
-        register_card.save()
 
         print("Created cards.")
 

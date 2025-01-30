@@ -1,6 +1,7 @@
 .card-related-pages-list {
     list-style-type: none;
     padding: 0;
+    font-size: smaller;
 }
 
 .card-icon {
@@ -14,7 +15,7 @@
     justify-content: center;
 
     .usa-card {
-        margin-bottom: 0 !important;
+        margin-bottom: 1 !important;
 
         .usa-card__container {
             border-width: 1px;
@@ -39,14 +40,16 @@
 }
 
 .dedication {
-    display: flex;
-    align-items: flex-start;
     padding-bottom: 2em;
     gap: 1rem;
 
     .dedication-image {
+        float: left;
         flex-shrink: 0;
         padding-top: 1em;
+        padding-right: 1em;
+        padding-left: 1em;
+        padding-bottom: 1em;
         img {
             border-style: none;
             margin: 0;
