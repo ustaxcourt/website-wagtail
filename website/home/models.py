@@ -250,6 +250,7 @@ class SimpleCardGroup(ClusterableModel):
     )
 
     group_label = models.CharField(
+        blank=True,
         max_length=255,
         help_text="Label for this group of cards (e.g., 'Section 1: Featured Cards').",
     )
