@@ -48,10 +48,10 @@ class DawsonPageInitializer(PageInitializer):
         existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
         if existing_dawson_page:
             existing_dawson_page.delete()
-            print(f"Deleted existing {title} page.")
+            self.logger.write(f"Deleted existing {title} page.")
 
         home_page.add_child(instance=dawson_page)
-        print(f"Created {title} page stub.")
+        self.logger.write(f"Created {title} page stub.")
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
 
@@ -87,7 +87,7 @@ class DawsonPageInitializer(PageInitializer):
         )
         dawson_card_group.save()
 
-        print("Created card groups.")
+        self.logger.write("Created card groups.")
 
         standard_pages = {
             "petition": [
@@ -288,12 +288,12 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
                     std_page.search_description = page["search_description"]
                     dawson_page.add_child(instance=std_page)
                     dawson_page.save()
-                    print(f"Updated {std_page.title} page.")
+                    self.logger.write(f"Updated {std_page.title} page.")
                     new_std_pages.append(std_page)
                 else:
                     new_std_page = StandardPage(**page)
                     dawson_page.add_child(instance=new_std_page)
-                    print(f"Created {new_std_page.title} page.")
+                    self.logger.write(f"Created {new_std_page.title} page.")
                     new_std_pages.append(new_std_page)
             all_new_std_pages[card_name] = new_std_pages
 
@@ -332,7 +332,7 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
         )
         reference_materials_card.save()
 
-        print("Created cards.")
+        self.logger.write("Created cards.")
 
         for registration_std_page in all_new_std_pages["registration"]:
             RelatedPage.objects.create(
