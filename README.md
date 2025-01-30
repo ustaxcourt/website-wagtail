@@ -226,6 +226,9 @@ Each developer needs to configure and maintain a test environment for new featur
 
 1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console and use this console for remaining steps).
 
+> [!IMPORTANT]
+> You should add an account alias to your AWS Sandbox account. It should end with `-sandbox`, a good alias would be: `ustc-username-sandbox`. See [IAM console](https://docs.aws.amazon.com/IAM/latest/UserGuide/account-alias-create.html#w5aab9c19c19b7) section for "To create an AWS account alias".
+
 2. **Check out the `main` branch** of the repository.
 
 3. **From the repository’s root directory**, run:
