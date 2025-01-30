@@ -188,6 +188,12 @@ class PamphletsPage(StandardPage):
         InlinePanel("entries", label="Entries"),
     ]
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        entries = PamphletEntry.objects.all().order_by("-volume_number")
+        context["entries"] = entries
+        return context
+
 
 class PamphletEntry(models.Model):
     title = models.CharField(max_length=255)
@@ -201,7 +207,7 @@ class PamphletEntry(models.Model):
     code = models.CharField(max_length=255, blank=True)
     date_range = models.CharField(max_length=255)
     citation = RichTextField(blank=True)
-    order = models.IntegerField(default=0)
+    volume_number = models.FloatField(default=0)
 
     parentpage = ParentalKey(
         "PamphletsPage", related_name="entries", on_delete=models.CASCADE
@@ -213,5 +219,5 @@ class PamphletEntry(models.Model):
         FieldPanel("code"),
         FieldPanel("date_range"),
         FieldPanel("citation"),
-        FieldPanel("order"),
+        FieldPanel("volume_number"),
     ]

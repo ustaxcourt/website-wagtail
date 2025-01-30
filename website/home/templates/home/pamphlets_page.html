@@ -101,7 +101,7 @@
         <hr />
 
         <div class="pamphlets-section">
-            {% for pamphlet in page.entries.all %}
+            {% for pamphlet in entries %}
             <div class="pamphlet-entry">
                 <div class="entry-left">
                     <a href="{{ pamphlet.pdf.url }}" target="_blank">
