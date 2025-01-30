@@ -179,3 +179,73 @@ class CitationStyleManualPage(StandardPage):
     content_panels = StandardPage.content_panels + [
         FieldPanel("document"),
     ]
+
+
+class RemoteProceedingsPage(StandardPage):
+    faq_title = models.CharField(max_length=255)
+    additional_info = RichTextField(blank=True)
+    example_title = models.CharField(max_length=255)
+    example_body = RichTextField(blank=True)
+    feedback_form = models.CharField(max_length=1000, blank=True)
+
+    content_panels = StandardPage.content_panels + [
+        FieldPanel("faq_title"),
+        FieldPanel("additional_info"),
+        FieldPanel("example_title"),
+        FieldPanel("example_body"),
+        FieldPanel("feedback_form"),
+        InlinePanel("examples", label="Examples"),
+        InlinePanel("info", label="Info"),
+        InlinePanel("faq_links", label="FAQLinks"),
+    ]
+
+
+class RemoteProceedingsFAQLinks(models.Model):
+    title = models.CharField(max_length=255)
+    link = models.CharField(max_length=1000)
+
+    parentpage = ParentalKey(
+        "RemoteProceedingsPage", related_name="faq_links", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("link"),
+    ]
+
+
+class RemoteProceedingsInfo(models.Model):
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    parentpage = ParentalKey(
+        "RemoteProceedingsPage", related_name="info", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("pdf"),
+    ]
+
+
+class RemoteProceedingsExample(models.Model):
+    title = models.CharField(max_length=255)
+    speaker_title = models.CharField(max_length=255)
+    speaker_url = models.CharField(max_length=1000)
+    gallery_title = models.CharField(max_length=255)
+    gallery_url = models.CharField(max_length=1000)
+    parentpage = ParentalKey(
+        "RemoteProceedingsPage", related_name="examples", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("speaker_title"),
+        FieldPanel("speaker_url"),
+        FieldPanel("gallery_title"),
+        FieldPanel("gallery_url"),
+    ]

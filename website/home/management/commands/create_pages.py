@@ -17,6 +17,9 @@ from home.management.commands.pages.citation_style_manual_page import (
 from home.management.commands.pages.search_page import SearchPageInitializer
 from home.management.commands.pages.todays_orders import TodaysOrdersPageInitializer
 from home.management.commands.pages.todays_opinions import TodaysOpinionsPageInitializer
+from home.management.commands.pages.remote_proceedings_page import (
+    RemoteProceedingsPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -39,8 +42,13 @@ efiling_pages_to_initialize = [
     CaseRelatedFormPageInitializer,
 ]
 
+rules_and_guidance = [
+    RemoteProceedingsPageInitializer,
+]
+
 pages_to_initialize = (
     other_pages_to_initialize
+    + rules_and_guidance
     + efiling_pages_to_initialize
     + orders_opinions_pages_to_initialize
 )
