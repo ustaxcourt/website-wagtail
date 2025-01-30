@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import os
 from wagtail.documents import get_document_model
-from wagtail.images.models import Image
+from wagtail.images import get_image_model
 from django.core.files import File
 
 
@@ -71,7 +71,8 @@ class PageInitializer(ABC):
 
         with open(file_path, "rb") as image_file:
             # login_image = Image(title="DAWSON Log In")
-            # login_image.file.save("DAWSON-log-in.png", login_file, save=True)
+            # login_image.file.save("DAWSON-log-in.png", login_file, save=True
+            Image = get_image_model()
             image = Image(
                 title=title,
                 file=File(image_file, name=filename),
