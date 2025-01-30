@@ -7,6 +7,7 @@ from django.core.files import File
 from django.contrib.contenttypes.models import ContentType
 from home.models import (
     DawsonPage,
+    FancyCard,
     SimpleCardGroup,
     SimpleCards,
     RelatedPage,
@@ -53,6 +54,28 @@ class DawsonPageInitializer(PageInitializer):
         print(f"Created {title} page stub.")
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
+
+        image_path = os.path.join(
+            settings.BASE_DIR,  # points to your project base directory
+            "app",
+            "static",
+            "images",
+            "page",
+            "DAWSON-log-in.png",
+        )
+
+        with open(image_path, "rb") as f:
+            login_file = File(f, name="DAWSON-log-in.png")
+
+            login_image = Image(title="DAWSON Log In")
+            login_image.file.save("DAWSON-log-in.png", login_file, save=True)
+
+        dawson_fancy_card = FancyCard(
+            url="https://dawson.ustaxcourt.gov/",
+            text="DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
+            parent_page=dawson_page,
+        )
+        dawson_fancy_card.photo = login_image
 
         dawson_petition_card_group = SimpleCardGroup(
             group_label="", parent_page=dawson_page
@@ -379,6 +402,7 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "show_in_menus": True,
             "menu_item_name": "DAWSON (eFILING SYSTEM)",
             "navigation_category": NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
+            "fancy_card": [dawson_fancy_card],
             "card_groups": [dawson_petition_card_group, dawson_card_group],
             "photo_dedication": [photo_dedication],
         }

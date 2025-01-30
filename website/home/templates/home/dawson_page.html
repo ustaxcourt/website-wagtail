@@ -15,6 +15,27 @@
     <hr />
     <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
 
+    {% for fancy_card in page.fancy_card.all %}
+    <hr />
+    <ul class="usa-card-group grid-row fancy-card-group">
+      <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-4 desktop:grid-col-3 dark-blue-card">
+        <div class="usa-card__container">
+          <a href="{{ fancy_card.url }}">
+          {% image fancy_card.photo max-160x80 %}
+          </a>
+        </div>
+      </li>
+
+      <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-8 desktop:grid-col-9 light-blue-card">
+        <div class="usa-card__container">
+          <div>
+            <strong style="color:#990000;">IMPORTANT:</strong>
+            <span>{{ fancy_card.text }}</span>
+          </div>
+        </div>
+      </li>
+    </ul>
+    {% endfor %}
     {% for group in page.card_groups.all %}
     <hr />
     <ul class="usa-card-group">

@@ -212,6 +212,36 @@ class SimpleCards(ClusterableModel):
     ]
 
 
+@register_snippet
+class FancyCard(ClusterableModel):
+    parent_page = ParentalKey(
+        "DawsonPage", related_name="fancy_card", on_delete=models.CASCADE
+    )
+
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Upload an image to display with in dark blue card.",
+    )
+
+    url = models.CharField(
+        max_length=255,
+        null=True,
+        blank="True",
+        help_text="The URL to link to when the photo is clicked.",
+    )
+
+    text = models.CharField(
+        max_length=255,
+        null=True,
+        blank="True",
+        help_text="The text to appear next to the image in the light blue card.",
+    )
+
+
 class SimpleCardGroup(ClusterableModel):
     """Group model for dynamically grouping Simple Cards."""
 
@@ -270,6 +300,7 @@ class DawsonPage(StandardPage):
     """Page model for Dawson eFiling Page."""
 
     content_panels = StandardPage.content_panels + [
+        InlinePanel("fancy_card", label="Full Width Card Sections"),
         InlinePanel("card_groups", label="Card Sections"),
         InlinePanel("photo_dedication", label="Photo Dedication"),
     ]

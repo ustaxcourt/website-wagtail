@@ -67,3 +67,43 @@
     }
 
 }
+
+/* Target your specific group so it doesn’t affect other cards */
+.usa-card-group.fancy-card-group {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .usa-card-group.fancy-card-group .usa-card {
+    margin: 0 !important;
+    padding: 0;
+  }
+
+  .usa-card-group.fancy-card-group .usa-card__container {
+    margin: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Higher specificity for the dark-blue card */
+  .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
+    background-color: #07294D !important;
+    color: #fff !important;
+  }
+
+  /* Light-blue card if also needed */
+  .fancy-card-group .light-blue-card.usa-card .usa-card__container {
+    background-color: #E1F3F8 !important;
+    color: #000 !important;
+  }
+
+  .dark-blue-card .usa-card__container {
+    display: flex;
+    flex-direction: column;      /* stack items top to bottom */
+    justify-content: center;     /* vertical center */
+    align-items: center;         /* horizontal center */
+    /* Optionally give a fixed or min-height for perfect vertical centering */
+    min-height: 80px; /* adjust as desired */
+    text-align: center; /* ensures text lines are also centered */
+  }
