@@ -6,6 +6,9 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from wagtail.snippets.models import register_snippet
+from wagtail.documents.widgets import AdminDocumentChooser
+from modelcluster.models import ClusterableModel
 
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
@@ -179,3 +182,37 @@ class CitationStyleManualPage(StandardPage):
     content_panels = StandardPage.content_panels + [
         FieldPanel("document"),
     ]
+
+
+@register_snippet
+class PDFListComponent(ClusterableModel):
+    title = models.CharField(max_length=255, help_text="Title for the PDF list")
+
+    panels = [
+        FieldPanel("title"),
+        InlinePanel("pdfs", label="PDF Documents"),
+    ]
+
+    def __str__(self):
+        return self.title
+
+
+class PDFDocument(models.Model):
+    component = ParentalKey(
+        PDFListComponent, on_delete=models.CASCADE, related_name="pdfs"
+    )
+    document = models.ForeignKey(
+        "wagtaildocs.Document", on_delete=models.CASCADE, related_name="+"
+    )
+    description = models.CharField(
+        max_length=255,
+        help_text="Document description (e.g., 'Administrative Order 2024-01')",
+    )
+
+    panels = [
+        FieldPanel("document", widget=AdminDocumentChooser),
+        FieldPanel("description"),
+    ]
+
+    def __str__(self):
+        return self.description
