@@ -26,16 +26,6 @@ class RemoteProceedingsPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        # Load the PDF document
-        # document = self.load_document_from_documents_dir(
-        #     "citation_style_manual",
-        #     "USTC_Citation_and_Style_Manual_modified_2024.09.pdf",
-        #     "USTC Citation and Style Manual",
-        # )
-
-        # if not document:
-        #     return
-
         content_type = ContentType.objects.get_for_model(RemoteProceedingsPage)
 
         new_page = home_page.add_child(
