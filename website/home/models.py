@@ -101,14 +101,7 @@ class StandardPage(NavigationMixin):
         abstract = False
 
     body = RichTextField(blank=True, help_text="Insert text here.")
-
     content_panels = Page.content_panels + [FieldPanel("body")]
-
-
-class CaseRelatedFormsPage(StandardPage):
-    content_panels = Page.content_panels + [
-        InlinePanel("forms", label="Forms"),
-    ]
 
 
 class HomePage(NavigationMixin):
@@ -128,6 +121,12 @@ class HomePageEntry(models.Model):
     panels = [
         FieldPanel("title"),
         FieldPanel("body"),
+    ]
+
+
+class CaseRelatedFormsPage(StandardPage):
+    content_panels = Page.content_panels + [
+        InlinePanel("forms", label="Forms"),
     ]
 
 
@@ -318,4 +317,47 @@ class CitationStyleManualPage(StandardPage):
 
     content_panels = StandardPage.content_panels + [
         FieldPanel("document"),
+    ]
+
+
+class PamphletsPage(StandardPage):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("entries", label="Entries"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        entries = PamphletEntry.objects.all().order_by("-volume_number")
+        context["entries"] = entries
+        return context
+
+
+class PamphletEntry(models.Model):
+    title = models.CharField(max_length=255)
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    code = models.CharField(max_length=255, blank=True)
+    date_range = models.CharField(max_length=255)
+    citation = RichTextField(blank=True)
+    volume_number = models.FloatField(default=0)
+
+    parentpage = ParentalKey(
+        "PamphletsPage", related_name="entries", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("pdf"),
+        FieldPanel("code"),
+        FieldPanel("date_range"),
+        FieldPanel("citation"),
+        FieldPanel("volume_number"),
     ]
