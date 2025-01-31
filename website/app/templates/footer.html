@@ -9,10 +9,13 @@
         padding: 20px 0px;
         line-height: 1.6rem;
 
-        h3 {
+        .title {
             font-size: 1.4rem;
-            margin-bottom: 0px;
-            font-weight: 500;
+            font-family: var(--heading-font);
+            font-weight: 600;
+            line-height: 2rem;
+            margin-bottom: 8px;
+            -webkit-font-smoothing: antialiased;
         }
     }
 
@@ -21,7 +24,8 @@
         color: #555;
         font-family: var(--font-family);
         text-align: center;
-        padding-bottom: 10px;
+        padding-bottom: 20px;
+        padding-top: 20px;
 
         .content {
             display: flex;
@@ -56,7 +60,7 @@
     <div class="grid-container">
       <div class="grid-row grid-gap">
         <div class="grid-col-12 desktop:grid-col">
-          <h3>Technical Questions?</h3>
+          <p class="title">Technical Questions?</p>
           <p>
             {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
             {{ technicalQuestions|richtext }}
@@ -64,7 +68,7 @@
           </p>
         </div>
         <div class="grid-col-12 desktop:grid-col">
-          <h3>Other Questions?</h3>
+          <p class="title">Other Questions?</p>
           <p>
             {% with otherQuestions=settings.home.Footer.otherQuestions %}
             {{ otherQuestions|richtext }}

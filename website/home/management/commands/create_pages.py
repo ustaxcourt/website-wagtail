@@ -20,6 +20,7 @@ from home.management.commands.pages.todays_opinions import TodaysOpinionsPageIni
 from home.management.commands.pages.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
+from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -33,6 +34,7 @@ orders_opinions_pages_to_initialize = [
     SearchPageInitializer,
     CitationStyleManualPageInitializer,
     TranscriptsAndCopiesPageInitializer,
+    PamphletsPageInitializer,
 ]
 
 # NOTE, the order of these dictates the order in the dropdowns.

@@ -102,6 +102,39 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
     DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 
+WAGTAILADMIN_RICH_TEXT_EDITORS = {
+    "default": {
+        "WIDGET": "wagtail.admin.rich_text.DraftailRichTextArea",
+        "OPTIONS": {
+            "features": [
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "bold",
+                "italic",
+                "link",
+                "document-link",
+                "blockquote",
+                "ul",
+                "ol",
+                "hr",
+                "image",
+                "embed",
+                "code",
+                "superscript",
+                "subscript",
+                "strikethrough",
+                "blockquote",
+            ]
+        },
+    },
+    "secondary": {
+        "WIDGET": "some.external.RichTextEditor",
+    },
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
