@@ -6,10 +6,42 @@
 {% block extra_css %}
 <style>
   #remote-proceedings {
+
     .links {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      padding-left: 20px;
+
+      a {
+        font-weight: normal;
+      }
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+    }
+
+    .info-body {
+      position: relative;
+    }
+
+    .anchor-link {
+      position: absolute;
+      left: -40px;
+      top: 0px;
+      font-size: 1.5rem;
+    }
+
+    .examples:last-child {
+      hr {
+        display: none;
+      }
     }
   }
 </style>
@@ -28,7 +60,7 @@
       {% for faq in page.faq_links.all %}
       <div>
         <a href="{{ faq.link }}">
-          <i class="ti ti-arrow-right"></i>
+          <i class="ti ti-chevron-right"></i>
           {{ faq.title }}
         </a>
       </div>
@@ -58,21 +90,30 @@
 
     <hr />
 
-    <h2 class="info-body">{{ page.example_title | richtext }}</h2>
+    <h2 class="info-body" id="examples">
+      <a class="anchor-link" href="/{{ page.slug }}#examples"><i class="ti ti-bookmark-filled"></i></a>
+      {{ page.example_title | richtext }}
+    </h2>
 
     <div class="example-body">{{ page.example_body | richtext }}</div>
 
     {% for example in page.examples.all %}
-    <div>
+    <div class="examples" >
       <h3>{{ example.title }}</h3>
-      <a href="{{ example.speaker_url }}">
-        <i class="ti ti-file-type-pdf margin-right-1"></i>
-        {{ example.speaker_title }}
-      </a>
-      <a href="{{ example.gallery_url }}">
-        <i class="ti ti-file-type-pdf margin-right-1"></i>
-        {{ example.gallery_title }}
-      </a>
+
+      <div class="links">
+        <a href="{{ example.speaker_url }}">
+          <i class="ti ti-video-filled margin-right-1"></i>
+          {{ example.speaker_title }}
+        </a>
+
+        <a href="{{ example.gallery_url }}">
+          <i class="ti ti-video-filled margin-right-1"></i>
+          {{ example.gallery_title }}
+        </a>
+      </div>
+
+      <hr />
     </div>
     {% endfor %}
 
