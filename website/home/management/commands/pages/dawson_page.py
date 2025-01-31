@@ -1,9 +1,4 @@
-import os
-
 from wagtail.models import Page
-from wagtail.images.models import Image
-from django.conf import settings
-from django.core.files import File
 from django.contrib.contenttypes.models import ContentType
 from home.models import (
     DawsonPage,
@@ -55,25 +50,13 @@ class DawsonPageInitializer(PageInitializer):
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
 
-        image_path = os.path.join(
-            settings.BASE_DIR,  # points to your project base directory
-            "app",
-            "static",
-            "images",
-            "page",
-            "DAWSON-log-in.png",
-        )
-
-        with open(image_path, "rb") as f:
-            login_file = File(f, name="DAWSON-log-in.png")
-
-            login_image = Image(title="DAWSON Log In")
-            login_image.file.save("DAWSON-log-in.png", login_file, save=True)
-
         dawson_fancy_card = FancyCard(
             url="https://dawson.ustaxcourt.gov/",
             text="DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
             parent_page=dawson_page,
+        )
+        login_image = self.load_image_from_images_dir(
+            "dawson", "DAWSON-log-in.png", "DAWSON Log In"
         )
         dawson_fancy_card.photo = login_image
 
@@ -375,22 +358,10 @@ He had a long career in public service, spending two years in the European Theat
 Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticulous record keeper and for his wealth of information on virtually every aspect of Tax Court history and lore, he was always happy to share his knowledge with everyone. It is only fitting that the case management system, the records base for the Tax Court itself, should be named in his memory.""",
         )
 
-        image_path = os.path.join(
-            settings.BASE_DIR,  # points to your project base directory
-            "app",
-            "static",
-            "images",
-            "page",
-            "judge-howard-a-dawson-jr.png",
+        dawson_image = self.load_image_from_images_dir(
+            "dawson", "judge-howard-a-dawson-jr.png", "Judge Howard A. Dawson, Jr."
         )
-
-        with open(image_path, "rb") as f:
-            dj_file = File(f, name="judge-howard-a-dawson-jr.png")
-
-            new_image = Image(title="Judge Howard A. Dawson, Jr.")
-            new_image.file.save("judge-howard-a-dawson-jr.png", dj_file, save=True)
-
-            photo_dedication.photo = new_image
+        photo_dedication.photo = dawson_image
 
         page_fields = {
             "title": title,
