@@ -12,6 +12,9 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
+from wagtail import blocks
+from wagtail.fields import StreamField
+from wagtail.documents.blocks import DocumentChooserBlock
 
 
 @register_setting
@@ -430,4 +433,47 @@ class RemoteProceedingsExample(models.Model):
         FieldPanel("speaker_url"),
         FieldPanel("gallery_title"),
         FieldPanel("gallery_url"),
+    ]
+
+
+class PdfFileBlock(blocks.StructBlock):
+    """Holds a descriptive title and the actual PDF document."""
+
+    title = blocks.CharBlock(
+        required=False, help_text="An optional descriptive name for the PDF."
+    )
+    pdf_document = DocumentChooserBlock(
+        required=True, help_text="Upload or choose an existing PDF."
+    )
+
+
+class PdfSectionBlock(blocks.StructBlock):
+    section_title = blocks.CharBlock(
+        required=False, null=True, blank=True, help_text="Optional Section Title"
+    )
+    pdfs = blocks.ListBlock(
+        PdfFileBlock(), help_text="Add one or more PDF documents (drag to reorder)."
+    )
+    ordering = blocks.ChoiceBlock(
+        choices=[("asc", "Ascending"), ("desc", "Descending")],
+        help_text="Optional ordering",
+    )
+
+    class Meta:
+        icon = "doc-full"
+        label = "PDF Section"
+        template = "home/pdf_section_block.html"
+
+
+class AdministrativeOrdersPage(StandardPage):
+    pdf_section = StreamField(
+        [
+            ("pdf_section", PdfSectionBlock()),
+        ],
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = StandardPage.content_panels + [
+        FieldPanel("pdf_section"),
     ]

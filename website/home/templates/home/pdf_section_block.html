@@ -1,0 +1,15 @@
+{% load static wagtailcore_tags %}
+
+<div class="pdf-section">
+  {% if self.section_title %}
+    <h2>{{ self.section_title }}</h2>
+  {% endif %}
+
+  <ul>
+    {% for item in self.pdfs %}
+      <li>
+        <a href="{{ item.url }}">{{ item.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
