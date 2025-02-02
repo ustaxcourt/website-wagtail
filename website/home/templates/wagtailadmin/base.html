@@ -1,0 +1,33 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Create the button
+            var scrollButton = document.createElement("button");
+            scrollButton.innerText = "Scroll to Bottom";
+            scrollButton.style.position = "fixed";
+            scrollButton.style.bottom = "20px";
+            scrollButton.style.right = "20px";
+            scrollButton.style.padding = "10px 15px";
+            scrollButton.style.background = "#007acc";
+            scrollButton.style.color = "white";
+            scrollButton.style.border = "none";
+            scrollButton.style.borderRadius = "5px";
+            scrollButton.style.cursor = "pointer";
+            scrollButton.style.zIndex = "1000";
+            scrollButton.style.boxShadow = "0 2px 5px rgba(0,0,0,0.3)";
+
+            // Scroll to bottom when clicked
+            scrollButton.addEventListener("click", function() {
+                const wrapper = document.getElementById("main");
+                const pageHeight = wrapper.scrollHeight;
+                wrapper.scrollTo({ top: pageHeight, behavior: "smooth" });
+            });
+
+            // Add the button to the admin dashboard
+            document.body.appendChild(scrollButton);
+        });
+    </script>
+{% endblock %}

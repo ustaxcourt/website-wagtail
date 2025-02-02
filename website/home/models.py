@@ -1,19 +1,17 @@
 from django import forms
-from django.db import models
-from wagtail.models import Page
-from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel, InlinePanel
-from modelcluster.fields import ParentalKey
 from django.conf import settings
-from django.core.exceptions import ValidationError
-from wagtail.snippets.models import register_snippet
-from wagtail.documents.widgets import AdminDocumentChooser
+from django.db import models
+from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-
+from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
     register_setting,
 )
+from wagtail.fields import RichTextField
+from wagtail.models import Page
+from wagtail.snippets.models import register_snippet
+from django.core.exceptions import ValidationError
 
 
 @register_setting
@@ -103,14 +101,7 @@ class StandardPage(NavigationMixin):
         abstract = False
 
     body = RichTextField(blank=True, help_text="Insert text here.")
-
     content_panels = Page.content_panels + [FieldPanel("body")]
-
-
-class CaseRelatedFormsPage(StandardPage):
-    content_panels = Page.content_panels + [
-        InlinePanel("forms", label="Forms"),
-    ]
 
 
 class HomePage(NavigationMixin):
@@ -130,6 +121,12 @@ class HomePageEntry(models.Model):
     panels = [
         FieldPanel("title"),
         FieldPanel("body"),
+    ]
+
+
+class CaseRelatedFormsPage(StandardPage):
+    content_panels = Page.content_panels + [
+        InlinePanel("forms", label="Forms"),
     ]
 
 
@@ -166,8 +163,147 @@ class ExternalRedirectPage(NavigationMixin):
         abstract = False
 
 
+class RelatedPage(models.Model):
+    """Model to store multiple related pages for a DawsonCard."""
+
+    card = ParentalKey(
+        "SimpleCards", related_name="related_pages", on_delete=models.CASCADE
+    )
+    related_page = models.ForeignKey(
+        "StandardPage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    panels = [
+        PageChooserPanel("related_page"),
+    ]
+
+
+@register_snippet
+class SimpleCards(ClusterableModel):
+    """A Simple Card that contains optional title, icon, and related pages."""
+
+    parent_page = ParentalKey(
+        "SimpleCardGroup", related_name="cards", on_delete=models.CASCADE
+    )
+
+    card_title = models.CharField(
+        max_length=255,
+        null=True,
+        blank="True",
+        help_text="The title to appear at the top of the card",
+    )
+    card_icon = models.CharField(
+        max_length=200,
+        null=True,
+        blank="True",
+        help_text='Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. "accessible")',
+    )
+
+    # Define panels for the admin interface
+    panels = [
+        FieldPanel("card_title"),
+        FieldPanel("card_icon"),
+        InlinePanel("related_pages", label="Related Pages"),
+    ]
+
+
+@register_snippet
+class FancyCard(ClusterableModel):
+    parent_page = ParentalKey(
+        "DawsonPage", related_name="fancy_card", on_delete=models.CASCADE
+    )
+
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Upload an image to display with in dark blue card.",
+    )
+
+    url = models.CharField(
+        max_length=255,
+        null=True,
+        blank="True",
+        help_text="The URL to link to when the photo is clicked.",
+    )
+
+    text = models.CharField(
+        max_length=255,
+        null=True,
+        blank="True",
+        help_text="The text to appear next to the image in the light blue card.",
+    )
+
+
+class SimpleCardGroup(ClusterableModel):
+    """Group model for dynamically grouping Simple Cards."""
+
+    parent_page = ParentalKey(
+        "DawsonPage", related_name="card_groups", on_delete=models.CASCADE
+    )
+
+    group_label = models.CharField(
+        blank=True,
+        max_length=255,
+        help_text="Label for this group of cards (e.g., 'Section 1: Featured Cards').",
+    )
+
+    panels = [
+        FieldPanel("group_label"),
+        InlinePanel("cards", label="Cards in this Group"),
+    ]
+
+    def __str__(self):
+        return self.group_label
+
+
+class PhotoDedication(models.Model):
+    """Model to store data for a dedication."""
+
+    card = ParentalKey(
+        "DawsonPage", related_name="photo_dedication", on_delete=models.CASCADE
+    )
+
+    title = models.CharField(
+        max_length=255,
+        help_text="Enter the title for the dedication",
+    )
+
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Upload an image to display with this dedication",
+    )
+
+    paragraph_text = RichTextField(
+        blank=True,
+        help_text="Add the main paragraph text for the dedication section",
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("photo"),
+        FieldPanel("paragraph_text"),
+    ]
+
+
 class DawsonPage(StandardPage):
-    pass
+    """Page model for Dawson eFiling Page."""
+
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("fancy_card", label="Full Width Card Sections"),
+        InlinePanel("card_groups", label="Card Sections"),
+        InlinePanel("photo_dedication", label="Photo Dedication"),
+    ]
 
 
 class CitationStyleManualPage(StandardPage):
@@ -184,35 +320,114 @@ class CitationStyleManualPage(StandardPage):
     ]
 
 
-@register_snippet
-class PDFListComponent(ClusterableModel):
-    title = models.CharField(max_length=255, help_text="Title for the PDF list")
+class PamphletsPage(StandardPage):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("entries", label="Entries"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        entries = PamphletEntry.objects.all().order_by("-volume_number")
+        context["entries"] = entries
+        return context
+
+
+class PamphletEntry(models.Model):
+    title = models.CharField(max_length=255)
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    code = models.CharField(max_length=255, blank=True)
+    date_range = models.CharField(max_length=255)
+    citation = RichTextField(blank=True)
+    volume_number = models.FloatField(default=0)
+
+    parentpage = ParentalKey(
+        "PamphletsPage", related_name="entries", on_delete=models.CASCADE
+    )
 
     panels = [
         FieldPanel("title"),
-        InlinePanel("pdfs", label="PDF Documents"),
+        FieldPanel("pdf"),
+        FieldPanel("code"),
+        FieldPanel("date_range"),
+        FieldPanel("citation"),
+        FieldPanel("volume_number"),
     ]
 
-    def __str__(self):
-        return self.title
+
+class RemoteProceedingsPage(StandardPage):
+    faq_title = models.CharField(max_length=255)
+    additional_info = RichTextField(blank=True)
+    example_title = models.CharField(max_length=255)
+    example_body = RichTextField(blank=True)
+    feedback_form = models.CharField(max_length=1000, blank=True)
+
+    content_panels = StandardPage.content_panels + [
+        FieldPanel("faq_title"),
+        FieldPanel("additional_info"),
+        FieldPanel("example_title"),
+        FieldPanel("example_body"),
+        FieldPanel("feedback_form"),
+        InlinePanel("examples", label="Examples"),
+        InlinePanel("info", label="Info"),
+        InlinePanel("faq_links", label="FAQLinks"),
+    ]
 
 
-class PDFDocument(models.Model):
-    component = ParentalKey(
-        PDFListComponent, on_delete=models.CASCADE, related_name="pdfs"
-    )
-    document = models.ForeignKey(
-        "wagtaildocs.Document", on_delete=models.CASCADE, related_name="+"
-    )
-    description = models.CharField(
-        max_length=255,
-        help_text="Document description (e.g., 'Administrative Order 2024-01')",
+class RemoteProceedingsFAQLinks(models.Model):
+    title = models.CharField(max_length=255)
+    link = models.CharField(max_length=1000)
+
+    parentpage = ParentalKey(
+        "RemoteProceedingsPage", related_name="faq_links", on_delete=models.CASCADE
     )
 
     panels = [
-        FieldPanel("document", widget=AdminDocumentChooser),
-        FieldPanel("description"),
+        FieldPanel("title"),
+        FieldPanel("link"),
     ]
 
-    def __str__(self):
-        return self.description
+
+class RemoteProceedingsInfo(models.Model):
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    parentpage = ParentalKey(
+        "RemoteProceedingsPage", related_name="info", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("pdf"),
+    ]
+
+
+class RemoteProceedingsExample(models.Model):
+    title = models.CharField(max_length=255)
+    speaker_title = models.CharField(max_length=255)
+    speaker_url = models.CharField(max_length=1000)
+    gallery_title = models.CharField(max_length=255)
+    gallery_url = models.CharField(max_length=1000)
+    parentpage = ParentalKey(
+        "RemoteProceedingsPage", related_name="examples", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("speaker_title"),
+        FieldPanel("speaker_url"),
+        FieldPanel("gallery_title"),
+        FieldPanel("gallery_url"),
+    ]
