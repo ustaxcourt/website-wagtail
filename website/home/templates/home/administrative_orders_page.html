@@ -1,50 +1,40 @@
 {% extends 'base.html' %}
-
 {% load wagtailcore_tags %}
 {% load static %}
-
 {% block extra_css %}
-<style>
-  #administrative-orders {
-    .pdf-section-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-left: 20px;
+    <style>
+        #administrative-orders {
+            .pdf-section-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding-left: 20px;
 
-      a {
-        font-weight: normal;
-      }
-    }
+                a {
+                    font-weight: normal;
+                }
+            }
 
-    h2 {
-      margin-bottom: 20px;
-      font-size: 1.3rem;
-    }
+            h2 {
+                margin-bottom: 20px;
+                font-size: 1.3rem;
+            }
 
-    h3 {
-      font-size: 1.1rem;
-    }
-  }
-</style>
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 {% endblock %}
 {% block content %}
-  <!-- Page Title -->
-  <h1>{{ page.title }}</h1>
-
-  {# StandardPage often has a body field (inherited) #}
-  {% if page.body %}
-    <div class="page-body">
-      {{ page.body|richtext }}
-    </div>
-  {% endif %}
-
-  {# Render the PDF section StreamField #}
-  {% if page.pdf_section %}
-    <!-- This will automatically use "blocks/pdf_section_block.html"
+    <!-- Page Title -->
+    <h1>{{ page.title }}</h1>
+    {# StandardPage often has a body field (inherited) #}
+    {% if page.body %}<div class="page-body">{{ page.body|richtext }}</div>{% endif %}
+    {# Render the PDF section StreamField #}
+    {% if page.pdf_section %}
+        <!-- This will automatically use "blocks/pdf_section_block.html"
          for the PdfSectionBlock(s) in StreamField. -->
-    <div class="pdf-section-wrapper">
-      {{ page.pdf_section }}
-    </div>
-  {% endif %}
+        <div class="pdf-section-wrapper">{{ page.pdf_section }}</div>
+    {% endif %}
 {% endblock content %}
