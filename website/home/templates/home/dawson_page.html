@@ -41,6 +41,7 @@
 
             h2 {
               font-size: 17px;
+              line-height: 24px;
             }
           }
         }
@@ -147,12 +148,15 @@
     <hr />
     <ul class="usa-card-group">
       {% for card in group.cards.all %}
-      <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-3">
-        <div class="usa-card__container">
           {% if card.card_title %}
-          <div class="usa-card__header">
-            <h2>{{card.card_title}}</h2>
-          </div>
+            <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-3">
+              <div class="usa-card__container">
+                <div class="usa-card__header">
+                  <h2>{{card.card_title}}</h2>
+                </div>
+          {% else %}
+            <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-4">
+             <div class="usa-card__container">
           {% endif %}
           {% if card.card_icon %}
           <i class="ti ti-{{ card.card_icon }} card-icon"></i>
