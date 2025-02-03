@@ -296,7 +296,7 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
 
         managing_case_card = SimpleCards(
             card_title="Managing Your Cases",
-            card_icon="wheel",
+            card_icon="settings-cog",
             parent_page=dawson_card_group,
         )
         managing_case_card.save()

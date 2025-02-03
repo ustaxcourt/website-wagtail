@@ -7,10 +7,12 @@
 {% block extra_css %}
 <style>
   #dawson-page {
+    body {
+      font-size: 1rem;
+    }
     .card-related-pages-list {
       list-style-type: none;
       padding: 0;
-      font-size: smaller;
     }
 
     .card-icon {
@@ -35,9 +37,10 @@
 
           .usa-card__header {
             text-align: center;
+            padding: 1.5rem .5rem .5rem;
 
-            h5 {
-              font-size: 15px;
+            h2 {
+              font-size: 17px;
             }
           }
         }
@@ -70,15 +73,9 @@
 
       .dedication-text {
         flex: 1;
-
-        h2 {
-          margin: 8px 0;
-        }
       }
-
     }
 
-    /* Target your specific group so it doesn’t affect other cards */
     .usa-card-group.fancy-card-group {
       margin: 0;
       padding: 0;
@@ -96,13 +93,11 @@
       box-shadow: none;
     }
 
-    /* Higher specificity for the dark-blue card */
     .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
       background-color: #07294D !important;
       color: #fff !important;
     }
 
-    /* Light-blue card if also needed */
     .fancy-card-group .light-blue-card.usa-card .usa-card__container {
       background-color: #E1F3F8 !important;
       color: #000 !important;
@@ -111,16 +106,10 @@
     .dark-blue-card .usa-card__container {
       display: flex;
       flex-direction: column;
-      /* stack items top to bottom */
       justify-content: center;
-      /* vertical center */
       align-items: center;
-      /* horizontal center */
-      /* Optionally give a fixed or min-height for perfect vertical centering */
       min-height: 80px;
-      /* adjust as desired */
       text-align: center;
-      /* ensures text lines are also centered */
     }
   }
 </style>
@@ -162,7 +151,7 @@
         <div class="usa-card__container">
           {% if card.card_title %}
           <div class="usa-card__header">
-            <h5>{{card.card_title}}</h5>
+            <h2>{{card.card_title}}</h2>
           </div>
           {% endif %}
           {% if card.card_icon %}
