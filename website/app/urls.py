@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
+from .views import redirect_view
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -10,6 +11,7 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    path("redirect/", redirect_view, name="redirect"),
 ]
 
 

@@ -102,3 +102,28 @@
     {% endblock %}
   </body>
 </html>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const allowedDomains = [];
+      document.body.addEventListener("click", function (event) {
+        let link = event.target.closest("a")
+        if (link) {
+            let linkHostname = new URL(link.href).hostname;
+            let currentHostname = window.location.hostname
+
+            let isExternal = (linkHostname !== currentHostname) && !allowedDomains.some(domain => linkHostname.endsWith(domain));
+
+            if(isExternal) {
+              event.preventDefault();
+
+              sessionStorage.setItem("redirect_url", link.href);
+              window.location.href = "/redirect/";
+
+            }
+
+        }
+      });
+    });
+</script>
