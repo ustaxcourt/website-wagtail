@@ -106,15 +106,20 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const allowedDomains = [];
+      function getRootDomain(hostname){
+              let parts = hostname.split(".");
+              return parts.length > 2 ? parts.slice(-2).join("."): hostname;
+            }
+
+      let currentRootDomain = getRootDomain(window.location.hostname)
+
       document.body.addEventListener("click", function (event) {
         let link = event.target.closest("a")
         if (link) {
             let linkHostname = new URL(link.href).hostname;
-            let currentHostname = window.location.hostname
+            let linkRootDomain = getRootDomain(linkHostname)
 
-            let isExternal = (linkHostname !== currentHostname) && !allowedDomains.some(domain => linkHostname.endsWith(domain));
-
+            let isExternal = linkRootDomain !== currentRootDomain
             if(isExternal) {
               event.preventDefault();
 
