@@ -112,10 +112,8 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
                     f"   - **Failed** to load document: {file_detail['name']}"
                 )
 
-        AdministrativeOrdersPage.objects.filter(id=new_page.id).update(
-            menu_item_name="ADMINISTRATIVE ORDERS",
-            navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
-        )
+        new_page.menu_item_name = "ADMINISTRATIVE ORDERS"
+        new_page.navigation_category = NavigationCategories.RULES_AND_GUIDANCE
 
         self.logger.write(f"Successfully created the '{title}' page.")
         new_page.save()
