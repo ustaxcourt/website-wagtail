@@ -453,10 +453,6 @@ class PDFs(Orderable):
 
 
 class AdministrativeOrdersPage(StandardPage):
-    parentpage = ParentalKey(
-        "HomePage", related_name="administrative_orders", on_delete=models.CASCADE
-    )
-
     content_panels = StandardPage.content_panels + [
         InlinePanel("pdfs", label="PDFs"),
     ]

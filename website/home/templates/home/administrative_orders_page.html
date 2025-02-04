@@ -28,13 +28,25 @@
 {% endblock %}
 {% block content %}
     <!-- Page Title -->
-    <h1>{{ page.title }}</h1>
-    {# StandardPage often has a body field (inherited) #}
-    {% if page.body %}<div class="page-body">{{ page.body|richtext }}</div>{% endif %}
-    {# Render the PDF section StreamField #}
-    {% if page.pdf_section %}
-        <!-- This will automatically use "blocks/pdf_section_block.html"
-         for the PdfSectionBlock(s) in StreamField. -->
-        <div class="pdf-section-wrapper">{{ page.pdf_section }}</div>
-    {% endif %}
+    <div id="remote-proceedings"
+         class="grid-container usa-prose margin-top-5 margin-bottom-5">
+        <div class="content">
+            <h1 class="margin-bottom-3">{{ page.title }}</h1>
+            <hr />
+            {% if page.body %}<div class="page-body">{{ page.body|richtext }}</div>{% endif %}
+            <div class="links">
+                {% for pdf_item in page.pdfs.all %}
+                    {% if pdf_item.pdf %}
+                        <div>
+                            <a href="{{ pdf_item.pdf.url }}">
+                                <i class="ti ti-file-type-pdf margin-right-1"></i>
+                                {{ pdf_item.pdf.title }}
+                            </a>
+                        </div>
+                    {% else %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock content %}
