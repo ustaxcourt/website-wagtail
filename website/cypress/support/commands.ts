@@ -51,3 +51,52 @@ export function checkA11y() {
     terminalLog,
   );
 }
+
+export function checkHeaderOrder() {
+    const headers = ['h1', 'h2', 'h3', 'h4'];
+    cy.document().then((doc) => {
+        const headerElements = Array.from(doc.querySelectorAll(headers.join(',')));
+        if (headerElements.length === 0) {
+            cy.log('No headers found, skipping order check.');
+            return;
+        }
+        let lastLevel = 0;
+        headerElements.forEach((header) => {
+            const currentLevel = parseInt(header.tagName.replace('H', ''), 10);
+            if (currentLevel < lastLevel) {
+                throw new Error(
+                    `Header order violation: ${header.tagName} appears after a higher-level header (${headers[lastLevel - 1].toUpperCase()})`
+                );
+            }
+            lastLevel = currentLevel;
+        });
+    });
+}
+
+export function checkHeaderStyles() {
+    const headerStyles = {
+        h1: { fontFamily: 'Noto Serif JP', fontSize: '32px', lineHeight: '40px' },
+        h2: { fontFamily: 'Noto Serif JP', fontSize: '24px', lineHeight: '30px' },
+        h3: { fontFamily: 'Source Sans Pro', fontSize: '20px', lineHeight: '25px' },
+        h4: { fontFamily: 'Source Sans Pro', fontSize: '17px', lineHeight: '24px' },
+    };
+    Object.entries(headerStyles).forEach(([header, styles]) => {
+        cy.get('body').then(($body) => {
+            if ($body.find(header).length === 0) {
+                cy.log(`⚠️ Skipping ${header} checks: No ${header} elements found.`);
+                return;
+            }
+            cy.get(header).each(($el) => {
+                cy.wrap($el).should('have.css', 'font-family').then((fontFamily) => {
+                    expect(fontFamily.toLowerCase()).to.include(styles.fontFamily.toLowerCase());
+                });
+                cy.wrap($el).should('have.css', 'font-size').then((fontSize) => {
+                    expect(fontSize).to.eq(styles.fontSize);
+                });
+                cy.wrap($el).should('have.css', 'line-height').then((lineHeight) => {
+                    expect(lineHeight).to.eq(styles.lineHeight);
+                });
+            });
+        });
+    });
+}
