@@ -4,13 +4,21 @@ ifeq ($(env),prod)
 	DOMAIN_NAME := ustaxcourt.gov
 else ifeq ($(env),sandbox)
 	DOMAIN_NAME := $(USER)-sandbox-web.ustaxcourt.gov
+else ifeq ($(env),localhost)
+	DOMAIN_NAME := localhost:8000
 else
 	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
 endif
 
+check-env:
+	@if [ $(env) = "localhost" ]; then \
+		echo "Environment is 'localhost'. Error: Not connected to AWS environment."; \
+		exit 1; \
+	fi
+
 # this command is used to setting up the bastion ssh keys and the aws secret manager secrets
 # that will be used for the terraform setup during the ci/cd pipeline
-aws-setup: init
+aws-setup: check-env aws-init
 	@echo "Setting up AWS environment for $(env)..."
 
 	@if [ -z "$(DOMAIN_NAME)" ]; then \
@@ -68,6 +76,10 @@ aws-setup: init
 	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
 
 init:
+	@echo "Initializing environment: $(env)"
+	@cd infra && ./local_init.sh
+
+aws-init: check-env
 	@echo "Initializing environment: $(env)"
 	@cd infra && ./init.sh && \
 	   . ./load-secrets.sh && \
