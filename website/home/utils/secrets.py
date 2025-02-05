@@ -4,11 +4,12 @@ import string
 import secrets
 import json
 from botocore.exceptions import ClientError
+from django.conf import settings
 
 
 def environment_is_local():
     try:
-        return True if os.environ["ENVIRONMENT"] == "local" else False
+        return True if settings.ENVIRONMENT == "local" else False
     except KeyError:
         return False
 
@@ -47,26 +48,39 @@ def generate_random_password(length=16):
 
 def get_secret_from_aws(secret_name):
     region_name = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+    secret_id = "website_secrets"
 
     session = boto3.session.Session()
     client = session.client(
-        service_name="secretsmanager",
+        service_name=secret_id,
         region_name=region_name,
     )
 
+    secret_dict = {}
     try:
-        response = client.get_secret_value(SecretId=secret_name)
-        print(f"{secret_name} retrieved from AWS Secrets Manager.")
-        return response["SecretString"]
+        response = client.get_secret_value(SecretId="website_secrets")
+        secret_dict = json.loads(response["SecretString"])
+
+        if secret_name in secret_dict:
+            print(f"'{secret_name}' retrieved from AWS Secrets Manager.")
+            return secret_dict[secret_name]
+        else:
+            print(f"{secret_name} is not in the response from AWS Secrets Manager.")
+            secret_dict[secret_name] = generate_random_password()
+            client.put_secret_value(
+                SecretId=secret_id, SecretString=json.dumps(secret_dict)
+            )
+            return response[secret_name]
 
     except client.exceptions.ResourceNotFoundException:
         # The secret does not exist, so let's create it
         new_password = generate_random_password()
+        secret_dict[secret_name] = new_password
         try:
             client.create_secret(
-                Name=secret_name,
+                Name=secret_id,
                 Description="Auto-generated secret for Wagtail user password.",
-                SecretString=new_password,
+                SecretString=json.dumps(response),
             )
             print(f"Secret '{secret_name}' not found. Created a new secret.")
             return new_password
