@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories
+from home.models import BlueNavigationBar, IconCategories, NavigationCategories
 from home.models import EnhancedStandardPage
 
 
@@ -28,53 +28,18 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
             title="DAWSON Self-Represented (Pro Se) Training Guide",
         )
 
+        blue_navigation_bar = BlueNavigationBar.objects.filter(
+            name="Blue Navigation Bar"
+        ).first()
+
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
                 seo_title=title,
+                blue_navigation_bar=blue_navigation_bar,
                 search_description="Resources about the Court's Zoomgov remote proceedings",
                 body=[
-                    {
-                        "type": "blue_page_links_bar",
-                        "value": [
-                            {
-                                "title": "Introduction",
-                                "icon": "ti ti-info-circle-filled",
-                                "url": "/petitioners",
-                            },
-                            {
-                                "title": "About the Court",
-                                "icon": "ti ti-building-bank",
-                                "url": "/petitioners_about",
-                            },
-                            {
-                                "title": "Starting A Case",
-                                "icon": "ti ti-file",
-                                "url": "/petitioners_start",
-                            },
-                            {
-                                "title": "Things That Occur Before Trial",
-                                "icon": "ti ti-calendar-month",
-                                "url": "/petitioners_before",
-                            },
-                            {
-                                "title": "Things That Occur During Trial",
-                                "icon": "ti ti-hammer",
-                                "url": "/petitioners_during",
-                            },
-                            {
-                                "title": "Things That Occur After Trial",
-                                "icon": "ti ti-scale",
-                                "url": "/petitioners_after",
-                            },
-                            {
-                                "title": "Glossary",
-                                "icon": "ti ti-book-2",
-                                "url": "/petitioners_glossary",
-                            },
-                        ],
-                    },
                     {"type": "heading", "value": "Introduction"},
                     {"type": "hr", "value": True},
                     {
@@ -86,31 +51,31 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                         "value": [
                             {
                                 "title": "Starting A Case",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/petitioners_start",
                             },
                             {
                                 "title": "Things that occur before trial",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/petitioners_before",
                             },
                             {
                                 "title": "Things that occur during trial",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/petitioners_during",
                             },
                             {
                                 "title": "Things that occur after trial",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/petitioners_after",
                             },
                             {
                                 "title": "Definition of terms (Glossary)",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/petitioners_glossary",
                             },
@@ -127,19 +92,19 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                         "value": [
                             {
                                 "title": "DAWSON Self-Represented (Pro Se) Training Guide",
-                                "icon": "ti ti-file-type-pdf",
+                                "icon": IconCategories.PDF,
                                 "document": document.id,
                                 "url": None,
                             },
                             {
                                 "title": " Clinic Program Information",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/clinics",
                             },
                             {
                                 "title": "Case Procedure Information",
-                                "icon": "ti ti-info-circle-filled",
+                                "icon": IconCategories.INFO_CIRCLE_FILLED,
                                 "document": None,
                                 "url": "/case_procedure",
                             },

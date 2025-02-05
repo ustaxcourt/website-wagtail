@@ -24,6 +24,9 @@ from home.management.commands.pages.pamphlets_page import PamphletsPageInitializ
 from home.management.commands.pages.guidence_for_petitioners import (
     GuidenceForPetitionersPageInitializer,
 )
+from home.management.commands.snippets.blue_navigation_bar import (
+    BlueNavigationBarInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -59,11 +62,19 @@ pages_to_initialize = (
     + orders_opinions_pages_to_initialize
 )
 
+snippets_to_initialize = [
+    BlueNavigationBarInitializer,
+]
+
 
 class Command(BaseCommand):
     help = "Create initial pages and form records if they don't already exist."
 
     def handle(self, *args, **options):
+        for snippet_class in snippets_to_initialize:
+            snippet_instance = snippet_class(self.stdout)
+            snippet_instance.create()
+
         for page_class in pages_to_initialize:
             page_instance = page_class(self.stdout)
             page_instance.create()

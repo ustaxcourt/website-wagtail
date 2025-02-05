@@ -56,10 +56,17 @@ class NavigationCategories(models.TextChoices):
     eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
 
 
-# class IconCategories(models.TextChoices):
-#     NONE = "",
-#     INFO = "ti ti-info-circle"
-#     PDF = "ti ti-file-type-pdf"
+class IconCategories(models.TextChoices):
+    NONE = ("",)
+    INFO = "ti ti-info-circle"
+    PDF = "ti ti-file-type-pdf"
+    BOOK_2 = "ti ti-book-2"
+    BUILDING_BANK = "ti ti-building-bank"
+    HAMMER = "ti ti-hammer"
+    SCALE = "ti ti-scale"
+    CALENDAR_MONTH = "ti ti-calendar-month"
+    FILE = "ti ti-file"
+    INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
 
 
 class NavigationMixin(Page):
@@ -116,9 +123,45 @@ class StandardPage(NavigationMixin):
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
+class BlueNavigationBarLink(models.Model):
+    title = models.CharField(max_length=255)
+    icon = models.CharField(max_length=200, choices=IconCategories.choices)
+    url = models.CharField(max_length=1000)
+
+    blue_navigation_bar = ParentalKey(
+        "BlueNavigationBar", related_name="links", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("icon"),
+        FieldPanel("url"),
+    ]
+
+
+@register_snippet
+class BlueNavigationBar(ClusterableModel):
+    name = models.CharField(max_length=255)
+
+    panels = [
+        InlinePanel("links", label="Links"),  # Now properly references the ParentalKey
+    ]
+
+    def __str__(self):
+        return self.name
+
+
 class EnhancedStandardPage(NavigationMixin):
     class Meta:
         abstract = False
+
+    blue_navigation_bar = models.ForeignKey(
+        "BlueNavigationBar",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     body = StreamField(
         [
@@ -126,28 +169,6 @@ class EnhancedStandardPage(NavigationMixin):
             ("paragraph", blocks.RichTextBlock()),
             ("hr", blocks.BooleanBlock()),
             ("image", ImageBlock()),
-            (
-                "blue_page_links_bar",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("title", blocks.CharBlock()),
-                            (
-                                "icon",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        ("ti ti-file-type-pdf", "PDF"),
-                                        ("ti ti-info-circle-filled", "Info"),
-                                        ("ti ti-link", "Link"),
-                                    ]
-                                ),
-                            ),
-                            ("url", blocks.CharBlock(required=False)),
-                        ]
-                    ),
-                    required=False,
-                ),
-            ),
             (
                 "links",
                 blocks.ListBlock(
@@ -164,7 +185,7 @@ class EnhancedStandardPage(NavigationMixin):
                                     ]
                                 ),
                             ),
-                            ("document", DocumentChooserBlock()),
+                            ("document", DocumentChooserBlock(required=False)),
                             ("url", blocks.CharBlock(required=False)),
                         ]
                     )
@@ -172,7 +193,10 @@ class EnhancedStandardPage(NavigationMixin):
             ),
         ]
     )
-    content_panels = Page.content_panels + [FieldPanel("body")]
+    content_panels = Page.content_panels + [
+        FieldPanel("blue_navigation_bar"),
+        FieldPanel("body"),
+    ]
 
 
 class HomePage(NavigationMixin):
@@ -465,63 +489,6 @@ class RemoteProceedingsFAQLinks(models.Model):
         FieldPanel("title"),
         FieldPanel("link"),
     ]
-
-
-# class GuidanceForPetitionersPage(StandardPage):
-#     title = models.CharField(max_length=255)
-#     link = models.CharField(max_length=1000)
-
-#     parentpage = ParentalKey(
-#         "RemoteProceedingsPage", related_name="faq_links", on_delete=models.CASCADE
-#     )
-
-#     sections = models.ManyToManyField(
-#         Section,  # Directly linking to Wagtail's Document model
-#         blank=True,
-#         related_name="+",
-#     )
-
-#     panels = [
-#         FieldPanel("title"),
-#         FieldPanel("link"),
-#     ]
-
-# class Section(models.Model):
-
-#     title = models.CharField(max_length=255)
-#     pdf = models.ForeignKey(
-#         "wagtaildocs.Document",
-#         null=True,
-#         blank=True,
-#         on_delete=models.SET_NULL,
-#         related_name="+",
-#     )
-
-#     links =
-
-#     panels = [
-#         FieldPanel("title"),
-#         FieldPanel("pdf"),
-#     ]
-
-
-# class Link(models.Model):
-#     text = models.CharField(max_length=255)
-#     pdf = models.ForeignKey(
-#         "wagtaildocs.Document",
-#         null=True,
-#         blank=True,
-#         on_delete=models.SET_NULL,
-#         related_name="+",
-#     )
-#     icon =
-#     url = models.CharField(max_length=1000)
-
-#     panels = [
-#         FieldPanel("title"),
-#         FieldPanel("pdf"),
-#         FieldPanel("url"),
-#     ]
 
 
 class RemoteProceedingsInfo(models.Model):
