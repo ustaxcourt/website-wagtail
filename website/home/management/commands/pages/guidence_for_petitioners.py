@@ -48,38 +48,40 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                     },
                     {
                         "type": "links",
-                        "value": [
-                            {
-                                "title": "Starting A Case",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/petitioners_start",
-                            },
-                            {
-                                "title": "Things that occur before trial",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/petitioners_before",
-                            },
-                            {
-                                "title": "Things that occur during trial",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/petitioners_during",
-                            },
-                            {
-                                "title": "Things that occur after trial",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/petitioners_after",
-                            },
-                            {
-                                "title": "Definition of terms (Glossary)",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/petitioners_glossary",
-                            },
-                        ],
+                        "value": {
+                            "links": [
+                                {
+                                    "title": "Starting A Case",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/petitioners_start",
+                                },
+                                {
+                                    "title": "Things that occur before trial",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/petitioners_before",
+                                },
+                                {
+                                    "title": "Things that occur during trial",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/petitioners_during",
+                                },
+                                {
+                                    "title": "Things that occur after trial",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/petitioners_after",
+                                },
+                                {
+                                    "title": "Definition of terms (Glossary)",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/petitioners_glossary",
+                                },
+                            ],
+                        },
                     },
                     {
                         "type": "paragraph",
@@ -89,26 +91,28 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "links",
-                        "value": [
-                            {
-                                "title": "DAWSON Self-Represented (Pro Se) Training Guide",
-                                "icon": IconCategories.PDF,
-                                "document": document.id,
-                                "url": None,
-                            },
-                            {
-                                "title": " Clinic Program Information",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/clinics",
-                            },
-                            {
-                                "title": "Case Procedure Information",
-                                "icon": IconCategories.INFO_CIRCLE_FILLED,
-                                "document": None,
-                                "url": "/case_procedure",
-                            },
-                        ],
+                        "value": {
+                            "links": [
+                                {
+                                    "title": "DAWSON Self-Represented (Pro Se) Training Guide",
+                                    "icon": IconCategories.PDF,
+                                    "document": document.id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": " Clinic Program Information",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/clinics",
+                                },
+                                {
+                                    "title": "Case Procedure Information",
+                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "document": None,
+                                    "url": "/case_procedure",
+                                },
+                            ]
+                        },
                     },
                     {"type": "hr", "value": True},
                     {

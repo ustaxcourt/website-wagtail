@@ -214,6 +214,10 @@ i {
     top: 2px;
 }
 
+.links.unindented {
+    padding-left: 0;
+}
+
 .links {
     list-style-type: none;
     display: flex;

@@ -1,6 +1,5 @@
 from wagtail.models import Page
-from django.contrib.contenttypes.models import ContentType
-from home.models import StandardPage
+from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
 
@@ -23,8 +22,6 @@ class TranscriptsAndCopiesPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        content_type = ContentType.objects.get_for_model(StandardPage)
-
         body_text = (
             "<strong>Transcripts</strong><br>"
             "<p>Transcripts of proceedings before the Tax Court are supplied to the parties and to the public by the official reporter at such rates as may be fixed by contract "
@@ -41,18 +38,19 @@ class TranscriptsAndCopiesPageInitializer(PageInitializer):
         )
 
         new_page = home_page.add_child(
-            instance=StandardPage(
+            instance=EnhancedStandardPage(
                 title=title,
-                body=body_text,
                 slug=slug,
                 seo_title=title,
                 search_description="Information about obtaining transcripts and copies of Tax Court documents",
-                content_type=content_type,
                 show_in_menus=True,
+                body=[
+                    {"type": "paragraph", "value": body_text},
+                ],
             )
         )
 
-        StandardPage.objects.filter(id=new_page.id).update(
+        EnhancedStandardPage.objects.filter(id=new_page.id).update(
             menu_item_name="TRANSCRIPTS & COPIES",
             navigation_category=NavigationCategories.ORDERS_AND_OPINIONS,
         )

@@ -56,6 +56,11 @@ class NavigationCategories(models.TextChoices):
     eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
 
 
+class IndentStyle(models.TextChoices):
+    INDENTED = "indented"
+    UNINDENTED = "unindented"
+
+
 class IconCategories(models.TextChoices):
     NONE = ("",)
     INFO = "ti ti-info-circle"
@@ -171,24 +176,47 @@ class EnhancedStandardPage(NavigationMixin):
             ("image", ImageBlock()),
             (
                 "links",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("title", blocks.CharBlock()),
-                            (
-                                "icon",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        ("ti ti-file-type-pdf", "PDF"),
-                                        ("ti ti-info-circle-filled", "Info"),
-                                        ("ti ti-link", "Link"),
-                                    ]
-                                ),
+                blocks.StructBlock(
+                    [
+                        (
+                            "class",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("indented", IndentStyle.INDENTED),
+                                    ("unindented", IndentStyle.UNINDENTED),
+                                ],
+                                default=IndentStyle.INDENTED,
                             ),
-                            ("document", DocumentChooserBlock(required=False)),
-                            ("url", blocks.CharBlock(required=False)),
-                        ]
-                    )
+                        ),
+                        (
+                            "links",
+                            blocks.ListBlock(
+                                blocks.StructBlock(
+                                    [
+                                        ("title", blocks.CharBlock()),
+                                        (
+                                            "icon",
+                                            blocks.ChoiceBlock(
+                                                choices=[
+                                                    ("ti ti-file-type-pdf", "PDF"),
+                                                    (
+                                                        "ti ti-info-circle-filled",
+                                                        "Info",
+                                                    ),
+                                                    ("ti ti-link", "Link"),
+                                                ]
+                                            ),
+                                        ),
+                                        (
+                                            "document",
+                                            DocumentChooserBlock(required=False),
+                                        ),
+                                        ("url", blocks.CharBlock(required=False)),
+                                    ]
+                                )
+                            ),
+                        ),
+                    ]
                 ),
             ),
         ]
@@ -398,20 +426,6 @@ class DawsonPage(StandardPage):
         InlinePanel("fancy_card", label="Full Width Card Sections"),
         InlinePanel("card_groups", label="Card Sections"),
         InlinePanel("photo_dedication", label="Photo Dedication"),
-    ]
-
-
-class CitationStyleManualPage(StandardPage):
-    document = models.ForeignKey(
-        "wagtaildocs.Document",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    content_panels = StandardPage.content_panels + [
-        FieldPanel("document"),
     ]
 
 

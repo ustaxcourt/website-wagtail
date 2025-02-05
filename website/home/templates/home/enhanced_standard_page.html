@@ -32,8 +32,8 @@
     {% elif block.block_type == 'hr' %}
         <hr />
     {% elif block.block_type == 'links' %}
-        <ul class="links">
-            {% for link in block.value %}
+        <ul class="links {{ block.value.class }}">
+            {% for link in block.value.links %}
                 {% if link.document %}
                     <li><a href="{{ link.document.url }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a></li>
                 {% else %}
