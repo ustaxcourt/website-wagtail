@@ -13,7 +13,7 @@ KEYS=(
   "SECRET_KEY"
 )
 
-FILE_WITH_PATH="../website_secrets"
+FILE_WITH_PATH="../website/website_secrets"
 # If website_secrets doesn't exist, create a blank JSON file
 if [ ! -f $FILE_WITH_PATH ]; then
   echo "No '$FILE_WITH_PATH' file found. Creating a new one..."
