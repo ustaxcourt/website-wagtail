@@ -13,16 +13,17 @@ KEYS=(
   "SECRET_KEY"
 )
 
+FILE_WITH_PATH="../website_secrets"
 # If website_secrets doesn't exist, create a blank JSON file
-if [ ! -f website_secrets ]; then
-  echo "No 'website_secrets' file found. Creating a new one..."
-  echo "{}" > website_secrets
+if [ ! -f $FILE_WITH_PATH ]; then
+  echo "No '$FILE_WITH_PATH' file found. Creating a new one..."
+  echo "{}" > $FILE_WITH_PATH
 fi
 
 # For each key in KEYS, prompt user
 for KEY in "${KEYS[@]}"; do
   # Extract current value from website_secrets (if it exists)
-  CURRENT_VALUE=$(jq -r --arg KEY "$KEY" '.[$KEY] // ""' website_secrets)
+  CURRENT_VALUE=$(jq -r --arg KEY "$KEY" '.[$KEY] // ""' $FILE_WITH_PATH)
 
   if [ -n "$CURRENT_VALUE" ]; then
     echo "Current value for $KEY: $CURRENT_VALUE"
@@ -36,8 +37,8 @@ for KEY in "${KEYS[@]}"; do
   # If user entered a new value, update it
   if [ -n "$NEW_VALUE" ]; then
     jq --arg KEY "$KEY" --arg NEW_VALUE "$NEW_VALUE" \
-      '.[$KEY] = $NEW_VALUE' website_secrets > website_secrets.tmp
-    mv website_secrets.tmp website_secrets
+      '.[$KEY] = $NEW_VALUE' $FILE_WITH_PATH > $FILE_WITH_PATH.tmp
+    mv $FILE_WITH_PATH.tmp $FILE_WITH_PATH
     echo "Updated $KEY."
   else
     echo "Keeping existing $KEY."

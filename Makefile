@@ -4,14 +4,14 @@ ifeq ($(env),prod)
 	DOMAIN_NAME := ustaxcourt.gov
 else ifeq ($(env),sandbox)
 	DOMAIN_NAME := $(USER)-sandbox-web.ustaxcourt.gov
-else ifeq ($(env),localhost)
+else ifeq ($(env),local)
 	DOMAIN_NAME := localhost:8000
 else
 	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
 endif
 
 check-env:
-	@if [ $(env) = "localhost" ]; then \
+	@if [ $(env) = "local" ]; then \
 		echo "Environment is 'localhost'. Error: Not connected to AWS environment."; \
 		exit 1; \
 	fi
