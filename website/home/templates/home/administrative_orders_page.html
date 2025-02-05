@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        #administrative-orders {
+            .pdf-section-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding-left: 20px;
+
+                a {
+                    font-weight: normal;
+                    flex-shrink: 1;
+                    color: var(--link-blue);
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+            }
+        }
+    </style>
+{% endblock extra_css %}
+{% block content %}
+    <div id="administrative-orders"
+         class="grid-container usa-prose margin-top-5 margin-bottom-5">
+        <div class="content">
+            <h1 class="margin-bottom-3">{{ page.title }}</h1>
+            <hr />
+            {% if page.body %}<div class="page-body">{{ page.body|richtext }}</div>{% endif %}
+            <div class="pdf-section-wrapper">
+                {% for pdf_item in page.pdfs.all %}
+                    {% if pdf_item.pdf %}
+                    <div>
+                       <a href="{{ pdf_item.pdf.url }}" target="_blank">
+                           <i class="ti ti-file-type-pdf margin-right-1"></i>
+                           {{ pdf_item.pdf.title }}
+                       </a>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
