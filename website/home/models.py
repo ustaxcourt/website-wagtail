@@ -167,6 +167,10 @@ class DawsonPage(StandardPage):
     pass
 
 
+class RedirectPage(StandardPage):
+    content_panels = StandardPage.content_panels
+
+
 class CitationStyleManualPage(StandardPage):
     document = models.ForeignKey(
         "wagtaildocs.Document",
