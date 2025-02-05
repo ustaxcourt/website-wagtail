@@ -102,7 +102,8 @@ def get_secret(secret_name):
     - If in AWS environment, use AWS Secrets Manager.
     - Otherwise, use local 'website_secrets' JSON file.
     """
-    if environment_is_local():
-        return get_secret_from_local(secret_name)
-    else:
-        return get_secret_from_aws(secret_name)
+    return (
+        get_secret_from_local(secret_name)
+        if environment_is_local()
+        else get_secret_from_aws(secret_name)
+    )
