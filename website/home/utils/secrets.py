@@ -52,7 +52,7 @@ def get_secret_from_aws(secret_name):
 
     session = boto3.session.Session()
     client = session.client(
-        service_name=secret_id,
+        service_name="secretsmanager",
         region_name=region_name,
     )
 
