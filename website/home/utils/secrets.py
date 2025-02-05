@@ -2,7 +2,38 @@ import os
 import boto3
 import string
 import secrets
+import json
 from botocore.exceptions import ClientError
+
+
+def environment_is_local():
+    try:
+        return True if os.environ["ENVIRONMENT"] == "local" else False
+    except KeyError:
+        return False
+
+
+def read_local_secrets(filename="website_secrets"):
+    """
+    Read JSON data from a local secrets file.
+    If the file does not exist or is invalid, return an empty dict.
+    """
+    if not os.path.isfile(filename):
+        return {}
+    try:
+        with open(filename, "r") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        # Could not parse JSON, or an OS error occurred
+        return {}
+
+
+def write_local_secrets(data, filename="website_secrets"):
+    """
+    Write JSON data to the local secrets file.
+    """
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=2)
 
 
 def generate_random_password(length=16):
@@ -14,7 +45,7 @@ def generate_random_password(length=16):
     return "".join(secrets.choice(characters) for _ in range(length))
 
 
-def get_secret(secret_name):
+def get_secret_from_aws(secret_name):
     region_name = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
 
     session = boto3.session.Session()
@@ -43,3 +74,35 @@ def get_secret(secret_name):
             raise RuntimeError(
                 f"Failed to create secret '{secret_name}' in AWS Secrets Manager: {str(e)}"
             )
+
+
+def get_secret_from_local(secret_name, filename="website_secrets"):
+    """
+    Retrieve a secret from a local JSON file; create it if it doesn't exist.
+    """
+    data = read_local_secrets(filename)
+
+    if secret_name in data:
+        print(f"{secret_name} retrieved from local secrets file '{filename}'.")
+        return data[secret_name]
+    else:
+        # Secret does not exist locally; create a new one
+        new_password = generate_random_password()
+        data[secret_name] = new_password
+        write_local_secrets(data, filename)
+        print(
+            f"Secret '{secret_name}' not found in '{filename}'; created new secret locally."
+        )
+        return new_password
+
+
+def get_secret(secret_name):
+    """
+    Retrieve or create a secret.
+    - If in AWS environment, use AWS Secrets Manager.
+    - Otherwise, use local 'website_secrets' JSON file.
+    """
+    if environment_is_local():
+        return get_secret_from_local(secret_name)
+    else:
+        return get_secret_from_aws(secret_name)
