@@ -4,6 +4,7 @@
 :root {
     --dark-blue: rgb(18, 33, 64);
     --light-blue: rgba(0, 94, 162, 1.00);
+    --faint-blue: rgba(0, 94, 162, 0.1);
     --medium-gray: rgb(240, 240, 240);
     --dark-gray: rgb(220, 222, 224);
     --link-hover-blue: #003256;
@@ -203,4 +204,54 @@ button.link {
 
 button.link:hover {
     text-decoration: none;
+}
+
+
+i {
+    color: var(--light-blue);
+    font-size: 1.2rem;
+    position: relative;
+    top: 2px;
+}
+
+.links {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    a {
+        font-weight: normal;
+    }
+}
+
+.blue-page-links-bar {
+    display: flex;
+    background-color: var(--light-blue);
+    border-radius: 5px;
+    gap: 10px;
+
+    a {
+        flex-grow: 1;
+        text-decoration: none;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-weight: normal;
+        font-size: .9rem;
+        padding: 16px;
+
+    }
+
+    a:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .ti {
+        color: white;
+        font-size: 2.5rem;
+    }
 }

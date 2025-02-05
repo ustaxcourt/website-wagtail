@@ -13,6 +13,11 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 
+from wagtail.fields import StreamField
+from wagtail import blocks
+from wagtail.images.blocks import ImageBlock
+from wagtail.documents.blocks import DocumentChooserBlock
+
 
 @register_setting
 class Footer(BaseGenericSetting):
@@ -49,6 +54,12 @@ class NavigationCategories(models.TextChoices):
     RULES_AND_GUIDANCE = "RULES", "Rules & Guidance"
     ORDERS_AND_OPINIONS = "ORDERS", "Orders & Opinions"
     eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
+
+
+# class IconCategories(models.TextChoices):
+#     NONE = "",
+#     INFO = "ti ti-info-circle"
+#     PDF = "ti ti-file-type-pdf"
 
 
 class NavigationMixin(Page):
@@ -101,6 +112,66 @@ class StandardPage(NavigationMixin):
         abstract = False
 
     body = RichTextField(blank=True, help_text="Insert text here.")
+
+    content_panels = Page.content_panels + [FieldPanel("body")]
+
+
+class EnhancedStandardPage(NavigationMixin):
+    class Meta:
+        abstract = False
+
+    body = StreamField(
+        [
+            ("heading", blocks.CharBlock()),
+            ("paragraph", blocks.RichTextBlock()),
+            ("hr", blocks.BooleanBlock()),
+            ("image", ImageBlock()),
+            (
+                "blue_page_links_bar",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("title", blocks.CharBlock()),
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("ti ti-file-type-pdf", "PDF"),
+                                        ("ti ti-info-circle-filled", "Info"),
+                                        ("ti ti-link", "Link"),
+                                    ]
+                                ),
+                            ),
+                            ("url", blocks.CharBlock(required=False)),
+                        ]
+                    ),
+                    required=False,
+                ),
+            ),
+            (
+                "links",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("title", blocks.CharBlock()),
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("ti ti-file-type-pdf", "PDF"),
+                                        ("ti ti-info-circle-filled", "Info"),
+                                        ("ti ti-link", "Link"),
+                                    ]
+                                ),
+                            ),
+                            ("document", DocumentChooserBlock()),
+                            ("url", blocks.CharBlock(required=False)),
+                        ]
+                    )
+                ),
+            ),
+        ]
+    )
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
@@ -394,6 +465,63 @@ class RemoteProceedingsFAQLinks(models.Model):
         FieldPanel("title"),
         FieldPanel("link"),
     ]
+
+
+# class GuidanceForPetitionersPage(StandardPage):
+#     title = models.CharField(max_length=255)
+#     link = models.CharField(max_length=1000)
+
+#     parentpage = ParentalKey(
+#         "RemoteProceedingsPage", related_name="faq_links", on_delete=models.CASCADE
+#     )
+
+#     sections = models.ManyToManyField(
+#         Section,  # Directly linking to Wagtail's Document model
+#         blank=True,
+#         related_name="+",
+#     )
+
+#     panels = [
+#         FieldPanel("title"),
+#         FieldPanel("link"),
+#     ]
+
+# class Section(models.Model):
+
+#     title = models.CharField(max_length=255)
+#     pdf = models.ForeignKey(
+#         "wagtaildocs.Document",
+#         null=True,
+#         blank=True,
+#         on_delete=models.SET_NULL,
+#         related_name="+",
+#     )
+
+#     links =
+
+#     panels = [
+#         FieldPanel("title"),
+#         FieldPanel("pdf"),
+#     ]
+
+
+# class Link(models.Model):
+#     text = models.CharField(max_length=255)
+#     pdf = models.ForeignKey(
+#         "wagtaildocs.Document",
+#         null=True,
+#         blank=True,
+#         on_delete=models.SET_NULL,
+#         related_name="+",
+#     )
+#     icon =
+#     url = models.CharField(max_length=1000)
+
+#     panels = [
+#         FieldPanel("title"),
+#         FieldPanel("pdf"),
+#         FieldPanel("url"),
+#     ]
 
 
 class RemoteProceedingsInfo(models.Model):

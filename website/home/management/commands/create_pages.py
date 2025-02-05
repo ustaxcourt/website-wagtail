@@ -21,6 +21,9 @@ from home.management.commands.pages.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
 from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
+from home.management.commands.pages.guidence_for_petitioners import (
+    GuidenceForPetitionersPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -46,6 +49,7 @@ efiling_pages_to_initialize = [
 
 rules_and_guidance = [
     RemoteProceedingsPageInitializer,
+    GuidenceForPetitionersPageInitializer,
 ]
 
 pages_to_initialize = (
