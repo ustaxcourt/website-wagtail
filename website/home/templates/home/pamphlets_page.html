@@ -47,10 +47,12 @@
                 }
 
                 .entry-right {
-                    h2 {
-                        margin-top: 0;
-                        margin-bottom: 0;
+                    p {
+                        margin: 0;
                         font-size: 1.3rem;
+                        font-family: var(--heading-font);
+                        font-weight: 700;
+                        line-height: 41.6px;
                     }
                 }
 
@@ -59,6 +61,8 @@
                     font-weight: 500;
                     margin-top: 0;
                     font-style: italic;
+                    display: block;
+                    margin-block-end: 1em;
                 }
             }
         }
@@ -112,10 +116,10 @@
                     </a>
                 </div>
                 <div class="entry-right">
-                    <h2>
-                        <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
-                    </h2>
-                    <p class="date-range">{{ pamphlet.date_range }}</p>
+                    <p>
+                        <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}123</a>
+                    </p>
+                    <span class="date-range">{{ pamphlet.date_range }}</span>
                     <div>{{ pamphlet.citation|richtext }}</div>
 
                 </div>

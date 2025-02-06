@@ -12,6 +12,7 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
+from wagtail.models import Orderable
 
 
 @register_setting
@@ -430,4 +431,28 @@ class RemoteProceedingsExample(models.Model):
         FieldPanel("speaker_url"),
         FieldPanel("gallery_title"),
         FieldPanel("gallery_url"),
+    ]
+
+
+class PDFs(Orderable):
+    page = ParentalKey(
+        "AdministrativeOrdersPage", related_name="pdfs", on_delete=models.CASCADE
+    )
+
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    panels = [
+        FieldPanel("pdf"),
+    ]
+
+
+class AdministrativeOrdersPage(StandardPage):
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("pdfs", label="PDFs"),
     ]
