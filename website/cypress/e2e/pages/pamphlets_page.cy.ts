@@ -1,4 +1,4 @@
-import { checkA11y } from "../../support/commands"
+import {checkA11y, checkHeaderOrder, checkHeaderStyles} from "../../support/commands"
 
 describe('pamphlets page', () => {
   it('verify the documents are displayed and clickable', function() {
@@ -7,7 +7,9 @@ describe('pamphlets page', () => {
     const documentLink = cy.get('a[data-testid="Volume 161, Numbers 5 and 6"]');
     documentLink.should('exist');
 
-    checkA11y()
+      checkA11y();
+      checkHeaderOrder();
+      checkHeaderStyles();
 
     documentLink
       .then($link => {
