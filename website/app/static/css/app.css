@@ -52,11 +52,12 @@ h1 {
 h2 {
     font-size: 1.8rem;
     margin-bottom: 8.5px;
-    line-height: 41.6px;
+    line-height: 25px;
 }
 
 h3 {
     font-size: 1.5rem;
+    line-height: 24px;
 }
 
 /* Links */

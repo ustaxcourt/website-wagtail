@@ -50,11 +50,11 @@
 {% block content %}
 <div id="remote-proceedings" class="grid-container usa-prose margin-top-5 margin-bottom-5">
   <div class="content">
-    <h1 class="margin-bottom-3">{{ page.title }}</h1>
+    <h1>{{ page.title }}</h1>
     <hr />
     <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
     <hr />
-    <h2 class="margin-bottom-3">{{ page.faq_title }}</h2>
+    <h2>{{ page.faq_title }}</h2>
 
     <div class="links">
       {% for faq in page.faq_links.all %}
@@ -91,7 +91,6 @@
     <hr />
 
     <h2 class="info-body" id="examples">
-      <a class="anchor-link" href="/{{ page.slug }}#examples"><i class="ti ti-bookmark-filled"></i></a>
       {{ page.example_title | richtext }}
     </h2>
 
