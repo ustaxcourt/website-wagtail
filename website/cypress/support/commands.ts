@@ -88,8 +88,8 @@ export function checkHeaderStyles() {
             }
             cy.get(header).each(($el) => {
                 cy.wrap($el).should('have.css', 'font-family').then((fontFamily) => {
-                    // @ts-ignore
-                    expect(fontFamily.toLowerCase()).to.include(styles.fontFamily.toLowerCase());
+                    const fontFamilyString = String(fontFamily);
+                    expect(fontFamilyString.toLowerCase()).to.include(styles.fontFamily.toLowerCase());
                 });
                 cy.wrap($el).should('have.css', 'font-size').then((fontSize) => {
                     expect(fontSize).to.eq(styles.fontSize);
