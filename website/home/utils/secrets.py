@@ -15,14 +15,16 @@ def environment_is_local():
 
 
 def read_local_secrets(filename="website_secrets"):
-    if not os.path.isfile(filename):
+    file_with_path = os.path.join(settings.BASE_DIR, filename)
+    if not os.path.isfile(file_with_path):
         return {}
     try:
-        with open(filename, "r") as f:
+        with open(file_with_path, "r") as f:
             return json.load(f)
     except (json.JSONDecodeError, OSError):
         # Could not parse JSON, or some file error occurred
-        return {}
+        print(f"Error reading or parsing '{file_with_path}'.")
+        raise RuntimeError(f"Error reading or parsing '{file_with_path}'.")
 
 
 def write_local_secrets(data, filename="website_secrets"):
