@@ -4,7 +4,7 @@ from home.models import (
     DawsonPage,
     FancyCard,
     SimpleCardGroup,
-    SimpleCards,
+    SimpleCard,
     RelatedPage,
     PhotoDedication,
     StandardPage,
@@ -25,6 +25,11 @@ class DawsonPageInitializer(PageInitializer):
         slug = "dawson"
         title = "DAWSON"
 
+        existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
+        if existing_dawson_page:
+            self.logger.write(f"- {title} page already exists.")
+            return
+
         body_content = (
             "DAWSON (Docket Access Within a Secure Online Network) is the U.S. Tax Court's electronic filing and "
             'case management system. See the <a href="https://ustaxcourt.gov/dawson_user_guides.html">user guides</a> '
@@ -39,11 +44,6 @@ class DawsonPageInitializer(PageInitializer):
             search_description="Dawson eFiling main page",
             body="Placeholder body text.",
         )
-
-        existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
-        if existing_dawson_page:
-            existing_dawson_page.delete()
-            self.logger.write(f"Deleted existing {title} page.")
 
         home_page.add_child(instance=dawson_page)
         self.logger.write(f"Created {title} page stub.")
@@ -280,35 +280,35 @@ The United States Tax Court reserves the right to deny, limit, or suspend access
                     new_std_pages.append(new_std_page)
             all_new_std_pages[card_name] = new_std_pages
 
-        register_card = SimpleCards(
+        register_card = SimpleCard(
             card_title="",
             card_icon="",
             parent_page=dawson_petition_card_group,
         )
         register_card.save()
 
-        petition_simple_card = SimpleCards(
+        petition_simple_card = SimpleCard(
             card_title="Filing a Petition",
-            card_icon="file-text",
+            card_icon="file-lines",
             parent_page=dawson_card_group,
         )
         petition_simple_card.save()
 
-        managing_case_card = SimpleCards(
+        managing_case_card = SimpleCard(
             card_title="Managing Your Cases",
-            card_icon="settings-cog",
+            card_icon="gears",
             parent_page=dawson_card_group,
         )
         managing_case_card.save()
 
-        searching_case_card = SimpleCards(
+        searching_case_card = SimpleCard(
             card_title="Searching for Cases and Documents",
             card_icon="search",
             parent_page=dawson_card_group,
         )
         searching_case_card.save()
 
-        reference_materials_card = SimpleCards(
+        reference_materials_card = SimpleCard(
             card_title="Reference Materials",
             card_icon="book",
             parent_page=dawson_card_group,

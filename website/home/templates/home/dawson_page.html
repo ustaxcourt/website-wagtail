@@ -17,7 +17,7 @@
 
     .card-icon {
       text-align: center;
-      font-size: 70px;
+      font-size: 50px;
       padding-top: 5px;
       color: var(--light-blue);
     }
@@ -39,9 +39,11 @@
             text-align: center;
             padding: 1.5rem .5rem .5rem;
 
-            h2 {
+            p {
               font-size: 17px;
               line-height: 24px;
+              font-family: var(--heading-font);
+              font-weight: 700;
             }
           }
         }
@@ -74,6 +76,12 @@
 
       .dedication-text {
         flex: 1;
+        p{
+          font-size: 24px;;
+          line-height: 32px;
+          font-family: var(--heading-font);
+          font-weight: 700;
+        }
       }
     }
 
@@ -128,7 +136,7 @@
     <ul class="usa-card-group grid-row fancy-card-group">
       <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-4 desktop:grid-col-3 dark-blue-card">
         <div class="usa-card__container">
-          <a data-testid="dawson-logo" aria-label="Dawson Home" href="{{ fancy_card.url }}">
+          <a data-testid="dawson-logo" aria-label="Dawson Home" href="{{ fancy_card.url }}" target="_blank">
             {% image fancy_card.photo max-160x80 %}
           </a>
         </div>
@@ -152,14 +160,14 @@
             <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-3">
               <div class="usa-card__container">
                 <div class="usa-card__header">
-                  <h2>{{card.card_title}}</h2>
+                  <p>{{card.card_title}}</p>
                 </div>
           {% else %}
             <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-4">
              <div class="usa-card__container">
           {% endif %}
           {% if card.card_icon %}
-          <i class="ti ti-{{ card.card_icon }} card-icon"></i>
+          <i class="fa-solid fa-{{ card.card_icon }} card-icon"></i>
           {% endif %}
           <div class="usa-card__body">
             <p>
@@ -191,7 +199,7 @@
       </div>
       {% endif %}
       <div class="dedication-text">
-        <h3>{{ dedication.title }}</h3>
+        <p>{{ dedication.title }}</p>
         {{ dedication.paragraph_text | richtext }}
       </div>
     </div>
