@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import BlueNavigationBar, IconCategories, NavigationCategories
+from home.models import NavigationRibbon, IconCategories, NavigationCategories
 from home.models import EnhancedStandardPage
 
 
@@ -28,7 +28,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
             title="DAWSON Self-Represented (Pro Se) Training Guide",
         )
 
-        blue_navigation_bar = BlueNavigationBar.objects.filter(
+        navigation_ribbon = NavigationRibbon.objects.filter(
             name="Blue Navigation Bar"
         ).first()
 
@@ -37,7 +37,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
-                blue_navigation_bar=blue_navigation_bar,
+                navigation_ribbon=navigation_ribbon,
                 search_description="Resources about the Court's Zoomgov remote proceedings",
                 body=[
                     {"type": "heading", "value": "Introduction"},

@@ -1,21 +1,21 @@
-from home.models import BlueNavigationBar, BlueNavigationBarLink, IconCategories
+from home.models import NavigationRibbon, NavigationRibbonLink, IconCategories
 
 
-class BlueNavigationBarInitializer:
+class NavigationRibbonInitializer:
     def __init__(self, logger):
         self.logger = logger
 
     def create(self):
-        if BlueNavigationBar.objects.filter(name="Blue Navigation Bar").exists():
+        if NavigationRibbon.objects.filter(name="Blue Navigation Bar").exists():
             self.logger.write("Blue navigation bar already exists.")
             return
 
         self.logger.write("Creating the blue navigation bar.")
 
-        blue_navigation_bar = BlueNavigationBar(
+        navigation_ribbon = NavigationRibbon(
             name="Blue Navigation Bar",
         )
-        blue_navigation_bar.save()
+        navigation_ribbon.save()
 
         links = [
             {
@@ -56,12 +56,12 @@ class BlueNavigationBarInitializer:
         ]
 
         for link in links:
-            link = BlueNavigationBarLink(
-                blue_navigation_bar=blue_navigation_bar,
+            link = NavigationRibbonLink(
+                navigation_ribbon=navigation_ribbon,
                 title=link["title"],
                 icon=link["icon"],
                 url=link["url"],
             )
             link.save()
 
-        self.model = blue_navigation_bar
+        self.model = navigation_ribbon

@@ -24,8 +24,8 @@ from home.management.commands.pages.pamphlets_page import PamphletsPageInitializ
 from home.management.commands.pages.guidence_for_petitioners import (
     GuidenceForPetitionersPageInitializer,
 )
-from home.management.commands.snippets.blue_navigation_bar import (
-    BlueNavigationBarInitializer,
+from home.management.commands.snippets.navigation_ribbon import (
+    NavigationRibbonInitializer,
 )
 
 other_pages_to_initialize = [
@@ -63,7 +63,7 @@ pages_to_initialize = (
 )
 
 snippets_to_initialize = [
-    BlueNavigationBarInitializer,
+    NavigationRibbonInitializer,
 ]
 
 

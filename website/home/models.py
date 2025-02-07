@@ -130,13 +130,13 @@ class StandardPage(NavigationMixin):
     content_panels = Page.content_panels + [FieldPanel("body")]
 
 
-class BlueNavigationBarLink(models.Model):
+class NavigationRibbonLink(models.Model):
     title = models.CharField(max_length=255)
     icon = models.CharField(max_length=200, choices=IconCategories.choices)
     url = models.CharField(max_length=1000)
 
-    blue_navigation_bar = ParentalKey(
-        "BlueNavigationBar", related_name="links", on_delete=models.CASCADE
+    navigation_ribbon = ParentalKey(
+        "NavigationRibbon", related_name="links", on_delete=models.CASCADE
     )
 
     panels = [
@@ -147,7 +147,7 @@ class BlueNavigationBarLink(models.Model):
 
 
 @register_snippet
-class BlueNavigationBar(ClusterableModel):
+class NavigationRibbon(ClusterableModel):
     name = models.CharField(max_length=255)
 
     panels = [
@@ -162,8 +162,8 @@ class EnhancedStandardPage(NavigationMixin):
     class Meta:
         abstract = False
 
-    blue_navigation_bar = models.ForeignKey(
-        "BlueNavigationBar",
+    navigation_ribbon = models.ForeignKey(
+        "NavigationRibbon",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -226,7 +226,7 @@ class EnhancedStandardPage(NavigationMixin):
         ]
     )
     content_panels = Page.content_panels + [
-        FieldPanel("blue_navigation_bar"),
+        FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
     ]
 
