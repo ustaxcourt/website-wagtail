@@ -106,29 +106,66 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-      function getRootDomain(hostname){
-              let parts = hostname.split(".");
-              return parts.length > 2 ? parts.slice(-2).join("."): hostname;
+      document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function (event){
+          let href = this.getAttribute("href")
+
+          if (!href || href.startsWith("mailto:") || href.startsWith("tel:") || isSamedomain(href)) {
+            return;
+          }
+
+          event.preventDefault();
+
+          if (isSubdomain(href)) {
+            window.open(href, "_blank");
+          } else{
+
+            let newTab = window.open("/redirect/", "_blank");
+
+            if (newTab) {
+              newTab.sessionStorage.setItem("redirect_url", href);
+            } else{
+              alert("Pop-up blocked!  Please allow pop-ups for this site.");
+
             }
+          }
 
-      let currentRootDomain = getRootDomain(window.location.hostname)
 
-      document.body.addEventListener("click", function (event) {
-        let link = event.target.closest("a")
-        if (link) {
-            let linkHostname = new URL(link.href).hostname;
-            let linkRootDomain = getRootDomain(linkHostname)
-
-            let isExternal = linkRootDomain !== currentRootDomain
-            if(isExternal) {
-              event.preventDefault();
-
-              sessionStorage.setItem("redirect_url", link.href);
-              window.location.href = "/redirect/";
-
-            }
-
-        }
+        });
       });
     });
+
+    function getRootDomain(url){
+        try{
+          let hostname = new URL(url, window.location.origin).hostname;
+          let parts = hostname.split(".").reverse();
+
+          if(parts.length >= 2) {
+            return parts[1] + "." + parts[0]
+          }
+          return hostname
+        } catch (e) {
+          return null
+        }
+      }
+
+      function isSamedomain(url){
+        let currentDomain = window.location.hostname;
+        let linkDomain;
+
+        try{
+          linkDomain = new URL(url, window.location.origin).hostname;
+        }catch (e) {
+          return true;
+        }
+
+        return linkDomain === currentDomain;
+      }
+
+      function isSubdomain(url) {
+        let currentRootDomain = getRootDomain(window.location.hostname);
+        let linkRootDomain = getRootDomain(url);
+
+        return linkRootDomain && linkRootDomain === currentRootDomain;
+      }
 </script>
