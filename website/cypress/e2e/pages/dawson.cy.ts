@@ -1,13 +1,15 @@
-import { checkA11y } from "../../support/commands"
+import {checkA11y, checkHeaderOrder, checkHeaderStyles} from "../../support/commands"
 
 describe('dawson page', () => {
-  it('verify the page load and links are displayed and clickable', function() {
+  it('verify the page load and links are displayed, clickable  and check accessibility & header consistency', function() {
     cy.visit('/dawson/')
 
     const logoLink = cy.get('a[data-testid="dawson-logo"]');
     logoLink.should('exist');
 
-    checkA11y()
+      checkA11y();
+      checkHeaderOrder();
+      checkHeaderStyles();
 
     logoLink
       .then($link => {

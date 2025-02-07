@@ -27,6 +27,9 @@ from home.management.commands.pages.guidence_for_petitioners import (
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
+from home.management.commands.pages.administrative_orders_page import (
+    AdministrativeOrdersPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -53,6 +56,7 @@ efiling_pages_to_initialize = [
 rules_and_guidance = [
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
+    AdministrativeOrdersPageInitializer,
 ]
 
 pages_to_initialize = (

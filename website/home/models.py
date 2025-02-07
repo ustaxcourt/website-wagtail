@@ -12,6 +12,7 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
+from wagtail.models import Orderable
 
 from wagtail.fields import StreamField
 from wagtail import blocks
@@ -294,7 +295,7 @@ class RelatedPage(models.Model):
     """Model to store multiple related pages for a DawsonCard."""
 
     card = ParentalKey(
-        "SimpleCards", related_name="related_pages", on_delete=models.CASCADE
+        "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
     related_page = models.ForeignKey(
         "StandardPage",
@@ -310,7 +311,7 @@ class RelatedPage(models.Model):
 
 
 @register_snippet
-class SimpleCards(ClusterableModel):
+class SimpleCard(ClusterableModel):
     """A Simple Card that contains optional title, icon, and related pages."""
 
     parent_page = ParentalKey(
@@ -327,7 +328,7 @@ class SimpleCards(ClusterableModel):
         max_length=200,
         null=True,
         blank="True",
-        help_text='Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. "accessible")',
+        help_text='Icon Name - see https://fontawesome.com/icons/ and enter the name of the icon (i.e. "accessible")',
     )
 
     # Define panels for the admin interface
@@ -473,4 +474,28 @@ class PamphletEntry(models.Model):
         FieldPanel("date_range"),
         FieldPanel("citation"),
         FieldPanel("volume_number"),
+    ]
+
+
+class PDFs(Orderable):
+    page = ParentalKey(
+        "AdministrativeOrdersPage", related_name="pdfs", on_delete=models.CASCADE
+    )
+
+    pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    panels = [
+        FieldPanel("pdf"),
+    ]
+
+
+class AdministrativeOrdersPage(StandardPage):
+    content_panels = StandardPage.content_panels + [
+        InlinePanel("pdfs", label="PDFs"),
     ]

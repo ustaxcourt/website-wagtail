@@ -9,7 +9,7 @@ ALLOWED_HOSTS = ["*"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-os.environ.setdefault("SUPERUSER_PASSWORD", "ustcAdminPW!")
+os.environ.setdefault("DJANGO_SUPERUSER_PASSWORD", "ustcAdminPW!")
 
 try:
     from .local import *  # noqa: F403
@@ -28,3 +28,4 @@ SESSION_COOKIE_SECURE = True
 
 DEBUG = True
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
+ENVIRONMENT = "sandbox"

@@ -1,18 +1,20 @@
-import { checkA11y } from "../../support/commands"
+import {checkA11y, checkHeaderOrder, checkHeaderStyles} from "../../support/commands"
 
 describe('citation style manual page', () => {
   beforeEach(() => {
     cy.visit('/citation_and_style_manual/')
   })
 
-  it('verify page content and document is downloadable', () => {
+  it('verify page content and document is downloadable  and check accessibility & header consistency', () => {
     // Check title exists
     cy.get('[data-testid="page-title"]').should('contain', 'Citation and Style Manual')
 
     // Check body text exists
     cy.get('[data-testid="page-body"]').should('contain', 'In January 2022')
 
-    checkA11y()
+    checkA11y();
+    checkHeaderOrder();
+    checkHeaderStyles();
 
     // Check document link exists and is downloadable
     const documentLink = cy.get('[data-testid="citation-style-manual-pdf"]')

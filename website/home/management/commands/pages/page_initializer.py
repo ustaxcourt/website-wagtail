@@ -3,6 +3,7 @@ import os
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 from django.core.files import File
+from django.conf import settings
 
 
 class PageInitializer(ABC):
@@ -59,7 +60,10 @@ class PageInitializer(ABC):
         Returns:
             Image: The created image instance or None if file not found
         """
-        file_path = os.path.join(self.IMAGES_BASE_PATH, subdirectory, filename)
+        file_path = os.path.join(
+            settings.BASE_DIR, self.IMAGES_BASE_PATH, subdirectory, filename
+        )
+        self.logger.write(f"file_path: {file_path}")
 
         if not os.path.exists(file_path):
             self.logger.write(f"Image file not found at {file_path}")
@@ -78,4 +82,5 @@ class PageInitializer(ABC):
                 file=File(image_file, name=filename),
             )
             image.save()
+            self.logger.write(f"Image created: {image}")
             return image
