@@ -168,7 +168,7 @@ class RelatedPage(models.Model):
     """Model to store multiple related pages for a DawsonCard."""
 
     card = ParentalKey(
-        "SimpleCards", related_name="related_pages", on_delete=models.CASCADE
+        "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
     related_page = models.ForeignKey(
         "StandardPage",
@@ -184,7 +184,7 @@ class RelatedPage(models.Model):
 
 
 @register_snippet
-class SimpleCards(ClusterableModel):
+class SimpleCard(ClusterableModel):
     """A Simple Card that contains optional title, icon, and related pages."""
 
     parent_page = ParentalKey(
@@ -201,7 +201,7 @@ class SimpleCards(ClusterableModel):
         max_length=200,
         null=True,
         blank="True",
-        help_text='Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. "accessible")',
+        help_text='Icon Name - see https://fontawesome.com/icons/ and enter the name of the icon (i.e. "accessible")',
     )
 
     # Define panels for the admin interface
