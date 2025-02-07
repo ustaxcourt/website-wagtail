@@ -18,7 +18,8 @@ class PetitionersStartPageInitializer(PageInitializer):
 
         if Page.objects.filter(slug=slug).exists():
             self.logger.write(f"- {title} page already exists.")
-            return
+            Page.objects.get(slug=slug).delete()
+            # return
 
         self.logger.write(f"Creating the '{title}' page.")
 
@@ -80,7 +81,7 @@ class PetitionersStartPageInitializer(PageInitializer):
                 "title": question,
                 "icon": IconCategories.INFO_CIRCLE_FILLED,
                 "document": None,
-                "url": f"#START{i+1}",
+                "anchorurl": f"START{i+1}",
             }
             for i, question in enumerate(questions)
         ]

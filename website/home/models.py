@@ -217,6 +217,7 @@ class EnhancedStandardPage(NavigationMixin):
                                             DocumentChooserBlock(required=False),
                                         ),
                                         ("url", blocks.CharBlock(required=False)),
+                                        ("anchorurl", blocks.CharBlock(required=False)),
                                     ]
                                 )
                             ),
