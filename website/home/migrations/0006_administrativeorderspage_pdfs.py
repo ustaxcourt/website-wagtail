@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0004_pamphletspage_pamphletentry"),
+        ("home", "0005_remoteproceedingspage_remoteproceedingsinfo_and_more"),
         ("wagtaildocs", "0014_alter_document_file_size"),
     ]
 

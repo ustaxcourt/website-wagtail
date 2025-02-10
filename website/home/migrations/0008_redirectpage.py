@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0007_navigationribbon_enhancedstandardpage_and_more"),
+        ("home", "0007_simplecard_alter_relatedpage_card_delete_simplecards"),
     ]
 
     operations = [
