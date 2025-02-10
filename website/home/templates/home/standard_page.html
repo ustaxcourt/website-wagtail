@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% load wagtailcore_tags %}
-{% load custom_icons %}
 
 {% load static %}
 
@@ -13,7 +12,7 @@
 <div class="grid-container padding-bottom-2 padding-top-2">
   <h1>{{ page.title }}</h1>
   <hr class="foundry-divider-simple">
-  <p>{{ page.body|custom_icons|richtext }}</p>
+  <p>{{ page.body|richtext }}</p>
 </div>
 
 {% endblock content %}
