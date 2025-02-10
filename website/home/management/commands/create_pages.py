@@ -7,6 +7,7 @@ from home.management.commands.pages.dawson_search_page import (
     DawsonSearchPageInitializer,
 )
 from home.management.commands.pages.home_page import HomePageInitializer
+from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.transcripts_and_copies_page import (
     TranscriptsAndCopiesPageInitializer,
@@ -29,6 +30,7 @@ from home.management.commands.pages.administrative_orders_page import (
 other_pages_to_initialize = [
     HomePageInitializer,
     FooterInitializer,
+    RedirectPageInitializer,
 ]
 
 # NOTE, the order of these dictates the order in the dropdowns.
