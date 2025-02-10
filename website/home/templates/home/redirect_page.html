@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% load static %}
+
+{% block content %}
+  <style>
+    .r1{
+      text-align: center;
+    }
+
+    .r2{
+      text-align: center;
+      padding-bottom: 100px;
+    }
+
+
+  </style>
+  <p class="r1">You are now leaving the Official Web Site of the United States Tax Court.</p>
+  <p class="r2">One moment please....</p>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let redirectUrl = sessionStorage.getItem("redirect_url");
+
+      if(redirectUrl){
+        setTimeout(function() {
+          window.location.href = redirectUrl;
+        }, 2000)
+      }
+    });
+  </script>
+{% endblock %}

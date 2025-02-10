@@ -445,6 +445,10 @@ class DawsonPage(StandardPage):
     ]
 
 
+class RedirectPage(StandardPage):
+    content_panels = StandardPage.content_panels
+
+
 class PamphletsPage(StandardPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

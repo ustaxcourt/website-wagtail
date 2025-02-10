@@ -7,17 +7,17 @@ describe('citation style manual page', () => {
 
   it('verify page content and document is downloadable  and check accessibility & header consistency', () => {
     // Check title exists
-    cy.get('[data-testid="page-title"]').should('contain', 'Citation and Style Manual')
+    cy.get('h1').should('contain', 'Citation and Style Manual')
 
     // Check body text exists
-    cy.get('[data-testid="page-body-paragraph"]').should('contain', 'In January 2022')
+    cy.get('p').should('contain', 'In January 2022')
 
     checkA11y();
     checkHeaderOrder();
     checkHeaderStyles();
 
     // Check document link exists and is downloadable
-    const documentLink = cy.get('[data-testid="document-link"]')
+    const documentLink = cy.get('a').contains('USTC Citation and Style Manual')
     documentLink.should('exist')
 
     documentLink.then($link => {
