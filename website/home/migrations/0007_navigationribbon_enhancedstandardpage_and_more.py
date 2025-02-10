@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0006_simplecard_alter_relatedpage_card_delete_simplecards"),
-        ("wagtailcore", "0098_alter_page_search_description"),
+        ("wagtailcore", "__latest__"),
     ]
 
     operations = [

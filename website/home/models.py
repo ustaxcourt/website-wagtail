@@ -434,6 +434,24 @@ class DawsonPage(StandardPage):
     ]
 
 
+class RedirectPage(StandardPage):
+    content_panels = StandardPage.content_panels
+
+
+class CitationStyleManualPage(StandardPage):
+    document = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    content_panels = StandardPage.content_panels + [
+        FieldPanel("document"),
+    ]
+
+
 class PamphletsPage(StandardPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
