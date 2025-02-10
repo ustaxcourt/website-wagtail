@@ -58,7 +58,7 @@ Before you commit to the repo, we run some checks to verify and fix the formatti
 
 ```shell
 brew install pre-commit
-pre-commit install # do this at project root
+pre-commit install # do this at project root.
 ```
 
 ### Setup development environment.
