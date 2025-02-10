@@ -217,12 +217,22 @@ class EnhancedStandardPage(NavigationMixin):
                                             DocumentChooserBlock(required=False),
                                         ),
                                         ("url", blocks.CharBlock(required=False)),
-                                        ("anchorurl", blocks.CharBlock(required=False)),
                                     ]
                                 )
                             ),
                         ),
                     ]
+                ),
+            ),
+            (
+                "QuestionAnswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("Question", blocks.CharBlock(required=False)),
+                            ("Answer", blocks.RichTextBlock()),
+                        ]
+                    )
                 ),
             ),
         ]

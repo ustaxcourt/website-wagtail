@@ -53,6 +53,10 @@
             {% endfor %}
         </ul>
     {% endif %}
+        <details>
+            <summary>{{ block.value.question }}</summary>
+            <p>{{ block.value.answer|safe }}</p>
+        </details>
   {% endfor %}
 </div>
 
