@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0008_redirectpage"),
-        ("wagtailcore", "0098_alter_page_search_description"),
+        ("wagtailcore", "__latest__"),
     ]
 
     operations = [
