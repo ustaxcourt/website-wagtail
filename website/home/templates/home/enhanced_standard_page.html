@@ -2,6 +2,7 @@
 
 {% load wagtailcore_tags %}
 {% load filters %}
+{% load debug_tags %}
 <!-- {% load custom_icons %} -->
 
 {% load static %}
@@ -22,6 +23,11 @@
         {% endfor %}
     </div>
   {% endif %}
+
+  {% comment %} {% debug_model_fields page %} {% endcomment %}
+  {% comment %} {% debug_model_fields page as debug_info %} {% endcomment %}
+    {% comment %} {{ debug_info|safe }} {% endcomment %}
+  {% debug %}
 
   {% for block in page.body %}
     {% if block.block_type == 'heading' %}
@@ -52,11 +58,12 @@
                 {% endif %}
             {% endfor %}
         </ul>
+    {% elif block.block_type == 'questionanswers' %}
+        {% for ques in block.value.questionanswers %}
+            <p>Question {{ ques.question }}</p>
+            <p>Answer {{ ques.answer|safe }}</p>
+        {% endfor %}
     {% endif %}
-        <details>
-            <summary>{{ block.value.question }}</summary>
-            <p>{{ block.value.answer|safe }}</p>
-        </details>
   {% endfor %}
 </div>
 

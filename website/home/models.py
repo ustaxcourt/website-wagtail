@@ -225,12 +225,12 @@ class EnhancedStandardPage(NavigationMixin):
                 ),
             ),
             (
-                "QuestionAnswers",
+                "questionanswers",
                 blocks.ListBlock(
                     blocks.StructBlock(
                         [
-                            ("Question", blocks.CharBlock(required=False)),
-                            ("Answer", blocks.RichTextBlock()),
+                            ("question", blocks.CharBlock(required=False)),
+                            ("answer", blocks.RichTextBlock()),
                         ]
                     )
                 ),
