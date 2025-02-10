@@ -13,7 +13,7 @@ class NavigationRibbonInitializer:
         self.logger.write("Creating the blue navigation bar.")
 
         navigation_ribbon = NavigationRibbon(
-            name="Blue Navigation Bar",
+            name="Guidance for Petitioners Ribbon",
         )
         navigation_ribbon.save()
 
