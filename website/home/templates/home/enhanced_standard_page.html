@@ -55,12 +55,12 @@
     {% elif block.block_type == 'questionanswers' %}
         <ul>
         {% for q in block.value %}
-            <li> <a href="{{ page.url|strip_trailing_slash}}#"><i class="info"></i> {{ q.question }}</a> </li>
+            <li> <a href="{{ page.url|strip_trailing_slash}}#{{ forloop.counter }}"><i class="info"></i> {{ q.question }}</a> </li>
         {% endfor %}
         </ul>
         <hr />
         {% for q in block.value %}
-            <h3>{{ q.question }}</h3>
+            <h3 id="{{ forloop.counter }}">{{ q.question }}</h3>
             <div>{{ q.answer|richtext }}</div>
             <hr />
         {% endfor %}
