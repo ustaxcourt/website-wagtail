@@ -1,19 +1,22 @@
 from home.models import NavigationRibbon, NavigationRibbonLink, IconCategories
 
 
+ribbon_snippet_name = "Guidance for Petitioners Ribbon"
+
+
 class NavigationRibbonInitializer:
     def __init__(self, logger):
         self.logger = logger
 
     def create(self):
-        if NavigationRibbon.objects.filter(name="Blue Navigation Bar").exists():
-            self.logger.write("Blue navigation bar already exists.")
+        if NavigationRibbon.objects.filter(name=ribbon_snippet_name).exists():
+            self.logger.write("Guidance for Petitioners Ribbon already exists.")
             return
 
-        self.logger.write("Creating the blue navigation bar.")
+        self.logger.write("Creating the Guidance for Petitioners Ribbon.")
 
         navigation_ribbon = NavigationRibbon(
-            name="Guidance for Petitioners Ribbon",
+            name=ribbon_snippet_name,
         )
         navigation_ribbon.save()
 

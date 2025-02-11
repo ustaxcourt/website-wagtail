@@ -2,6 +2,7 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon, IconCategories, NavigationCategories
 from home.models import EnhancedStandardPage
+from home.management.commands.snippets.navigation_ribbon import ribbon_snippet_name
 
 
 class GuidenceForPetitionersPageInitializer(PageInitializer):
@@ -29,7 +30,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
         )
 
         navigation_ribbon = NavigationRibbon.objects.filter(
-            name="Blue Navigation Bar"
+            name=ribbon_snippet_name
         ).first()
 
         new_page = home_page.add_child(
