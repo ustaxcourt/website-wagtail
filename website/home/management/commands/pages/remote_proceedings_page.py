@@ -7,6 +7,10 @@ from home.models import RemoteProceedingsFAQLinks
 from home.models import RemoteProceedingsInfo
 from home.models import RemoteProceedingsExample
 
+# from home.models import ZoomProceedingsDetailPage
+# from wagtail.fields import RichTextField
+# from wagtail.admin.panels import FieldPanel, PageChooserPanel
+
 
 class RemoteProceedingsPageInitializer(PageInitializer):
     def __init__(self, logger):
@@ -31,9 +35,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=RemoteProceedingsPage(
                 title=title,
-                body=(
-                    "This guide provides resources about the Court's Zoomgov remote proceedings."
-                ),
+                body="This guide provides resources about the Court's Zoomgov remote proceedings.",
                 slug=slug,
                 seo_title=title,
                 search_description="Resources about the Court's Zoomgov remote proceedings",
@@ -74,6 +76,20 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                 parentpage=new_page,
             )
             entry.save()
+
+        #             body = RichTextField()
+        #             zoomgov_page = models.ForeignKey(
+        #                 "home.ZoomProceedingsDetailPage",
+        #                 null=True,
+        #                 blank=True,
+        #                 on_delete=models.SET_NULL,
+        #                 related_name="remote_proceedings",
+        #             )
+
+        #             content_panels = Page.content_panels + [
+        #                 FieldPanel("body"),
+        #                 PageChooserPanel("zoomgov_page"),
+        #             ]
 
         info = [
             {

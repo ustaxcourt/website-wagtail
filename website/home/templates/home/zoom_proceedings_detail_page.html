@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ page.header }}</h1>
+    <p>{{ page.description|richtext }}</p>
+
+    <div class="faq">
+        <h2>Zoomgov FAQ: Zoomgov Proceedings</h2>
+        <ul>
+            <li><a href="#faq1">What should I do the day of my Zoomgov proceeding?</a></li>
+            <li><a href="#faq2">Who can be in the Zoomgov courtroom during a proceeding?</a></li>
+            <li><a href="#faq3">What happens when I join the proceeding?</a></li>
+            <li><a href="#faq4">Do I have to be on video?</a></li>
+            <li><a href="#faq5">Will my telephone number be visible if I call in?</a></li>
+            <li><a href="#faq6">Does the Court have any tips for participating in a Zoomgov proceeding?</a></li>
+            <li><a href="#faq7">What if I get disconnected?</a></li>
+            <li><a href="#faq8">Can I record the Zoomgov proceeding?</a></li>
+            <li><a href="#faq9">What if I want to speak with my representative or obtain privacy?</a></li>
+            <li><a href="#faq10">What is a breakout room?</a></li>
+            <li><a href="#faq11">Will the Court allow low-income taxpayers and cultural oral programs to participate?</a></li>
+            <li><a href="#faq12">How do I connect to a Zoomgov proceeding if I am a member of the general public or the press?</a></li>
+        </ul>
+
+        <div class="faq-content">
+            <h3 id="faq1">What should I do the day of my Zoomgov proceeding?</h3>
+            <p>Sign in early, check your internet connection, ensure your display name is accurate, and mute yourself unless speaking.</p>
+
+            <h3 id="faq2">Who can be in the Zoomgov courtroom during a proceeding?</h3>
+            <p>Participants may include judges, court personnel, attorneys, and other required personnel.</p>
+
+            <h3 id="faq3">What happens when I join the proceeding?</h3>
+            <p>You may enter a virtual waiting room. Follow court instructions when admitted.</p>
+
+            <h3 id="faq4">Do I have to be on video?</h3>
+            <p>Video is typically required, but certain situations allow for exceptions.</p>
+
+            <h3 id="faq5">Will my telephone number be visible if I call in?</h3>
+            <p>No, phone numbers are masked for privacy.</p>
+
+            <h3 id="faq6">Does the Court have any tips for participating in a Zoomgov proceeding?</h3>
+            <p>Use a quiet location, ensure good lighting, and speak clearly.</p>
+
+            <h3 id="faq7">What if I get disconnected?</h3>
+            <p>Reconnect using the same meeting link or call the court for assistance.</p>
+
+            <h3 id="faq8">Can I record the Zoomgov proceeding?</h3>
+            <p>No, recording is strictly prohibited.</p>
+
+            <h3 id="faq9">What if I want to speak with my representative or obtain privacy?</h3>
+            <p>The judge may allow private breakout rooms.</p>
+
+            <h3 id="faq10">What is a breakout room?</h3>
+            <p>Breakout rooms allow private discussions.</p>
+
+            <h3 id="faq11">Will the Court allow low-income taxpayers and cultural oral programs to participate?</h3>
+            <p>Yes, special accommodations may be provided.</p>
+
+            <h3 id="faq12">How do I connect to a Zoomgov proceeding if I am a member of the general public or the press?</h3>
+            <p>Visit the Court’s website for access instructions.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
