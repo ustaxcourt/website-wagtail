@@ -53,9 +53,9 @@
             {% endfor %}
         </ul>
     {% elif block.block_type == 'questionanswers' %}
-        <ul>
+        <ul class="links indented">
         {% for q in block.value %}
-            <li> <a href="{{ page.url|strip_trailing_slash}}#{{ forloop.counter }}"><i class="info"></i> {{ q.question }}</a> </li>
+            <li> <a href="{{ page.url|strip_trailing_slash}}#{{ forloop.counter }}"> <i class="ti ti-info-circle-filled"></i> {{ q.question }}</a> </li>
         {% endfor %}
         </ul>
         <hr />
