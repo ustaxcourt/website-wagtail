@@ -218,13 +218,6 @@ button.link:hover {
 }
 
 
-i {
-    color: var(--light-blue);
-    font-size: 1.2rem;
-    position: relative;
-    top: 2px;
-}
-
 .links.unindented {
     padding-left: 0;
 }
