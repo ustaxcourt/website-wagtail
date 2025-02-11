@@ -1,6 +1,5 @@
 from wagtail.models import Page
-from django.contrib.contenttypes.models import ContentType
-from home.models import CitationStyleManualPage
+from home.models import EnhancedStandardPage, IconCategories, IndentStyle
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
 
@@ -33,28 +32,48 @@ class CitationStyleManualPageInitializer(PageInitializer):
         if not document:
             return
 
-        content_type = ContentType.objects.get_for_model(CitationStyleManualPage)
-
         new_page = home_page.add_child(
-            instance=CitationStyleManualPage(
+            instance=EnhancedStandardPage(
                 title=title,
-                body=(
-                    "In January 2022, the Tax Court modified the format, citation, and style "
-                    "used for all opinions and orders. The Citation and Style Manual was updated "
-                    "September 2024 and is available below. Opinions and orders issued before 2022 "
-                    "reflect the pre-2022 format and style."
-                ),
-                document=document,
                 slug=slug,
                 seo_title=title,
                 search_description="Citation and Style Manual for the United States Tax Court",
-                content_type=content_type,
                 show_in_menus=True,
+                body=[
+                    {
+                        "type": "paragraph",
+                        "value": (
+                            "In January 2022, the Tax Court modified the format, citation, and style "
+                            "used for all opinions and orders. The Citation and Style Manual was updated "
+                            "September 2024 and is available below. Opinions and orders issued before 2022 "
+                            "reflect the pre-2022 format and style."
+                        ),
+                    },
+                    {
+                        "type": "hr",
+                        "value": True,
+                    },
+                    {
+                        "type": "links",
+                        "value": {
+                            "class": IndentStyle.UNINDENTED,
+                            "links": [
+                                {
+                                    "title": "USTC Citation and Style Manual",
+                                    "icon": IconCategories.PDF,
+                                    "document": document.id,
+                                    "url": None,
+                                },
+                            ],
+                        },
+                    },
+                ],
             )
         )
 
-        CitationStyleManualPage.objects.filter(id=new_page.id).update(
+        EnhancedStandardPage.objects.filter(id=new_page.id).update(
             menu_item_name="CITATION & STYLE MANUAL",
             navigation_category=NavigationCategories.ORDERS_AND_OPINIONS,
         )
+
         self.logger.write(f"Successfully created the '{title}' page.")

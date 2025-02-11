@@ -117,7 +117,6 @@ WAGTAILADMIN_RICH_TEXT_EDITORS = {
                 "italic",
                 "link",
                 "document-link",
-                "blockquote",
                 "ul",
                 "ol",
                 "hr",
