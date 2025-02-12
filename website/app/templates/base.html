@@ -111,10 +111,20 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", function (event){
+        link.addEventListener("click", function (event) {
           let href = this.getAttribute("href")
 
-          if (!href || href.startsWith("mailto:") || href.startsWith("tel:") || isSamedomain(href)) {
+          if (!href) {
+            return;
+          }
+
+          if (isSamedomain(href) && isPdf(href)) {
+            window.open(href, "_blank");
+            event.preventDefault();
+            return;
+          }
+
+          if (href.startsWith("mailto:") || href.startsWith("tel:") || isSamedomain(href)) {
             return;
           }
 
@@ -171,5 +181,9 @@
         let linkRootDomain = getRootDomain(url);
 
         return linkRootDomain && linkRootDomain === currentRootDomain;
+      }
+
+      function isPdf(url) {
+        return url.endsWith('.pdf')
       }
 </script>
