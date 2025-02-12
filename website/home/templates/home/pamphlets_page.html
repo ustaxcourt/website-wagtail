@@ -50,7 +50,6 @@
                     p {
                         margin: 0;
                         font-size: 1.3rem;
-                        font-family: var(--heading-font);
                         font-weight: 700;
                         line-height: 41.6px;
                     }
@@ -117,7 +116,7 @@
                 </div>
                 <div class="entry-right">
                     <p>
-                        <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}123</a>
+                        <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
                     </p>
                     <span class="date-range">{{ pamphlet.date_range }}</span>
                     <div>{{ pamphlet.citation|richtext }}</div>

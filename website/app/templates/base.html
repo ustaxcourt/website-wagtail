@@ -56,7 +56,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
 
     {# Icons #}
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/dist/tabler-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 
     {# Web Fonts #}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -102,3 +106,70 @@
     {% endblock %}
   </body>
 </html>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function (event){
+          let href = this.getAttribute("href")
+
+          if (!href || href.startsWith("mailto:") || href.startsWith("tel:") || isSamedomain(href)) {
+            return;
+          }
+
+          event.preventDefault();
+
+          if (isSubdomain(href)) {
+            window.open(href, "_blank");
+          } else{
+
+            let newTab = window.open("/redirect/", "_blank");
+
+            if (newTab) {
+              newTab.sessionStorage.setItem("redirect_url", href);
+            } else{
+              alert("Pop-up blocked!  Please allow pop-ups for this site.");
+
+            }
+          }
+
+
+        });
+      });
+    });
+
+    function getRootDomain(url){
+        try{
+          let hostname = new URL(url, window.location.origin).hostname;
+          let parts = hostname.split(".").reverse();
+
+          if(parts.length >= 2) {
+            return parts[1] + "." + parts[0]
+          }
+          return hostname
+        } catch (e) {
+          return null
+        }
+      }
+
+      function isSamedomain(url){
+        let currentDomain = window.location.hostname;
+        let linkDomain;
+
+        try{
+          linkDomain = new URL(url, window.location.origin).hostname;
+        }catch (e) {
+          return true;
+        }
+
+        return linkDomain === currentDomain;
+      }
+
+      function isSubdomain(url) {
+        let currentRootDomain = getRootDomain(window.location.hostname);
+        let linkRootDomain = getRootDomain(url);
+
+        return linkRootDomain && linkRootDomain === currentRootDomain;
+      }
+</script>

@@ -7,6 +7,7 @@ from home.management.commands.pages.dawson_search_page import (
     DawsonSearchPageInitializer,
 )
 from home.management.commands.pages.home_page import HomePageInitializer
+from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.transcripts_and_copies_page import (
     TranscriptsAndCopiesPageInitializer,
@@ -21,14 +22,20 @@ from home.management.commands.pages.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
 from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
+from home.management.commands.pages.guidence_for_petitioners import (
+    GuidenceForPetitionersPageInitializer,
+)
+from home.management.commands.snippets.navigation_ribbon import (
+    NavigationRibbonInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
 
-
 other_pages_to_initialize = [
     HomePageInitializer,
     FooterInitializer,
+    RedirectPageInitializer,
 ]
 
 # NOTE, the order of these dictates the order in the dropdowns.
@@ -50,6 +57,7 @@ efiling_pages_to_initialize = [
 
 rules_and_guidance = [
     RemoteProceedingsPageInitializer,
+    GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
 ]
 
@@ -60,11 +68,19 @@ pages_to_initialize = (
     + orders_opinions_pages_to_initialize
 )
 
+snippets_to_initialize = [
+    NavigationRibbonInitializer,
+]
+
 
 class Command(BaseCommand):
     help = "Create initial pages and form records if they don't already exist."
 
     def handle(self, *args, **options):
+        for snippet_class in snippets_to_initialize:
+            snippet_instance = snippet_class(self.stdout)
+            snippet_instance.create()
+
         for page_class in pages_to_initialize:
             page_instance = page_class(self.stdout)
             page_instance.create()

@@ -14,6 +14,11 @@ from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 from wagtail.models import Orderable
 
+from wagtail.fields import StreamField
+from wagtail import blocks
+from wagtail.images.blocks import ImageBlock
+from wagtail.documents.blocks import DocumentChooserBlock
+
 
 @register_setting
 class Footer(BaseGenericSetting):
@@ -50,6 +55,26 @@ class NavigationCategories(models.TextChoices):
     RULES_AND_GUIDANCE = "RULES", "Rules & Guidance"
     ORDERS_AND_OPINIONS = "ORDERS", "Orders & Opinions"
     eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
+
+
+class IndentStyle(models.TextChoices):
+    INDENTED = "indented"
+    UNINDENTED = "unindented"
+
+
+class IconCategories(models.TextChoices):
+    NONE = ("",)
+    INFO = "ti ti-info-circle"
+    PDF = "ti ti-file-type-pdf"
+    BOOK_2 = "ti ti-book-2"
+    BUILDING_BANK = "ti ti-building-bank"
+    HAMMER = "ti ti-hammer"
+    SCALE = "ti ti-scale"
+    CALENDAR_MONTH = "ti ti-calendar-month"
+    FILE = "ti ti-file"
+    INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
+    CHEVRON_RIGHT = "ti ti-chevron-right"
+    VIDEO = "ti ti-video-filled"
 
 
 class NavigationMixin(Page):
@@ -102,7 +127,109 @@ class StandardPage(NavigationMixin):
         abstract = False
 
     body = RichTextField(blank=True, help_text="Insert text here.")
+
     content_panels = Page.content_panels + [FieldPanel("body")]
+
+
+class NavigationRibbonLink(models.Model):
+    title = models.CharField(max_length=255)
+    icon = models.CharField(max_length=200, choices=IconCategories.choices)
+    url = models.CharField(max_length=1000)
+
+    navigation_ribbon = ParentalKey(
+        "NavigationRibbon", related_name="links", on_delete=models.CASCADE
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("icon"),
+        FieldPanel("url"),
+    ]
+
+
+@register_snippet
+class NavigationRibbon(ClusterableModel):
+    name = models.CharField(max_length=255)
+
+    panels = [
+        InlinePanel("links", label="Links"),  # Now properly references the ParentalKey
+    ]
+
+    def __str__(self):
+        return self.name
+
+
+class EnhancedStandardPage(NavigationMixin):
+    class Meta:
+        abstract = False
+
+    navigation_ribbon = models.ForeignKey(
+        "NavigationRibbon",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    body = StreamField(
+        [
+            ("heading", blocks.CharBlock()),
+            ("h3", blocks.CharBlock()),
+            ("h4", blocks.CharBlock()),
+            ("paragraph", blocks.RichTextBlock()),
+            ("hr", blocks.BooleanBlock()),
+            ("image", ImageBlock()),
+            (
+                "links",
+                blocks.StructBlock(
+                    [
+                        (
+                            "class",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("indented", IndentStyle.INDENTED),
+                                    ("unindented", IndentStyle.UNINDENTED),
+                                ],
+                                default=IndentStyle.INDENTED,
+                            ),
+                        ),
+                        (
+                            "links",
+                            blocks.ListBlock(
+                                blocks.StructBlock(
+                                    [
+                                        ("title", blocks.CharBlock()),
+                                        (
+                                            "icon",
+                                            blocks.ChoiceBlock(
+                                                choices=[
+                                                    ("ti ti-file-type-pdf", "PDF"),
+                                                    (
+                                                        "ti ti-info-circle-filled",
+                                                        "Info",
+                                                    ),
+                                                    ("ti ti-link", "Link"),
+                                                ]
+                                            ),
+                                        ),
+                                        (
+                                            "document",
+                                            DocumentChooserBlock(required=False),
+                                        ),
+                                        ("url", blocks.CharBlock(required=False)),
+                                    ]
+                                )
+                            ),
+                        ),
+                    ]
+                ),
+            ),
+        ]
+    )
+    content_panels = Page.content_panels + [
+        FieldPanel("navigation_ribbon"),
+        FieldPanel("body"),
+    ]
 
 
 class HomePage(NavigationMixin):
@@ -168,7 +295,7 @@ class RelatedPage(models.Model):
     """Model to store multiple related pages for a DawsonCard."""
 
     card = ParentalKey(
-        "SimpleCards", related_name="related_pages", on_delete=models.CASCADE
+        "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
     related_page = models.ForeignKey(
         "StandardPage",
@@ -184,7 +311,7 @@ class RelatedPage(models.Model):
 
 
 @register_snippet
-class SimpleCards(ClusterableModel):
+class SimpleCard(ClusterableModel):
     """A Simple Card that contains optional title, icon, and related pages."""
 
     parent_page = ParentalKey(
@@ -201,7 +328,7 @@ class SimpleCards(ClusterableModel):
         max_length=200,
         null=True,
         blank="True",
-        help_text='Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. "accessible")',
+        help_text='Icon Name - see https://fontawesome.com/icons/ and enter the name of the icon (i.e. "accessible")',
     )
 
     # Define panels for the admin interface
@@ -307,18 +434,8 @@ class DawsonPage(StandardPage):
     ]
 
 
-class CitationStyleManualPage(StandardPage):
-    document = models.ForeignKey(
-        "wagtaildocs.Document",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    content_panels = StandardPage.content_panels + [
-        FieldPanel("document"),
-    ]
+class RedirectPage(StandardPage):
+    content_panels = StandardPage.content_panels
 
 
 class PamphletsPage(StandardPage):
@@ -361,76 +478,6 @@ class PamphletEntry(models.Model):
         FieldPanel("date_range"),
         FieldPanel("citation"),
         FieldPanel("volume_number"),
-    ]
-
-
-class RemoteProceedingsPage(StandardPage):
-    faq_title = models.CharField(max_length=255)
-    additional_info = RichTextField(blank=True)
-    example_title = models.CharField(max_length=255)
-    example_body = RichTextField(blank=True)
-    feedback_form = models.CharField(max_length=1000, blank=True)
-
-    content_panels = StandardPage.content_panels + [
-        FieldPanel("faq_title"),
-        FieldPanel("additional_info"),
-        FieldPanel("example_title"),
-        FieldPanel("example_body"),
-        FieldPanel("feedback_form"),
-        InlinePanel("examples", label="Examples"),
-        InlinePanel("info", label="Info"),
-        InlinePanel("faq_links", label="FAQLinks"),
-    ]
-
-
-class RemoteProceedingsFAQLinks(models.Model):
-    title = models.CharField(max_length=255)
-    link = models.CharField(max_length=1000)
-
-    parentpage = ParentalKey(
-        "RemoteProceedingsPage", related_name="faq_links", on_delete=models.CASCADE
-    )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("link"),
-    ]
-
-
-class RemoteProceedingsInfo(models.Model):
-    pdf = models.ForeignKey(
-        "wagtaildocs.Document",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    parentpage = ParentalKey(
-        "RemoteProceedingsPage", related_name="info", on_delete=models.CASCADE
-    )
-
-    panels = [
-        FieldPanel("pdf"),
-    ]
-
-
-class RemoteProceedingsExample(models.Model):
-    title = models.CharField(max_length=255)
-    speaker_title = models.CharField(max_length=255)
-    speaker_url = models.CharField(max_length=1000)
-    gallery_title = models.CharField(max_length=255)
-    gallery_url = models.CharField(max_length=1000)
-    parentpage = ParentalKey(
-        "RemoteProceedingsPage", related_name="examples", on_delete=models.CASCADE
-    )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("speaker_title"),
-        FieldPanel("speaker_url"),
-        FieldPanel("gallery_title"),
-        FieldPanel("gallery_url"),
     ]
 
 
