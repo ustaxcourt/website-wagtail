@@ -118,7 +118,7 @@
             return;
           }
 
-          if (isPdf(href)) {
+          if (isSamedomain(href) && isPdf(href)) {
             window.open(href, "_blank");
             event.preventDefault();
             return;
