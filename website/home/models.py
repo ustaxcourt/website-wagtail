@@ -231,6 +231,7 @@ class EnhancedStandardPage(NavigationMixin):
                         [
                             ("question", blocks.CharBlock(required=False)),
                             ("answer", blocks.RichTextBlock()),
+                            ("anchortag", blocks.CharBlock()),
                         ]
                     )
                 ),
