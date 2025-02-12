@@ -224,6 +224,18 @@ class EnhancedStandardPage(NavigationMixin):
                     ]
                 ),
             ),
+            (
+                "zoomgovquestionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            ("answer", blocks.RichTextBlock()),
+                            ("anchortag", blocks.CharBlock()),
+                        ]
+                    )
+                ),
+            ),
         ]
     )
     content_panels = Page.content_panels + [
@@ -503,22 +515,3 @@ class AdministrativeOrdersPage(StandardPage):
     content_panels = StandardPage.content_panels + [
         InlinePanel("pdfs", label="PDFs"),
     ]
-
-
-class ZoomProceedingsDetailPage(Page):
-    body = RichTextField()
-    additional_info = models.TextField(blank=True)
-    parentpage = ParentalKey(
-        "home.RemoteProceedingsPage",
-        related_name="zoom_proceedings_details",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-
-    content_panels = Page.content_panels + [
-        FieldPanel("body"),
-        FieldPanel("additional_info"),
-    ]
-
-    template = "home/zoom_proceedings_detail_page.html"

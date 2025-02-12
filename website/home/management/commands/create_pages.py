@@ -21,6 +21,9 @@ from home.management.commands.pages.todays_opinions import TodaysOpinionsPageIni
 from home.management.commands.pages.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
+from home.management.commands.pages.zoomgov_proceedings_page import (
+    ZoomGovProceedingPageInitializer,
+)
 from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
 from home.management.commands.pages.guidence_for_petitioners import (
     GuidenceForPetitionersPageInitializer,
@@ -59,6 +62,7 @@ rules_and_guidance = [
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    ZoomGovProceedingPageInitializer,
 ]
 
 pages_to_initialize = (
