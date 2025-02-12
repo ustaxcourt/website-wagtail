@@ -39,7 +39,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
-                search_description="Resources about the Court's Zoomgov remote proceedings",
+                search_description="Guidance for Petitioners",
                 body=[
                     {"type": "heading", "value": "Introduction"},
                     {"type": "hr", "value": True},
