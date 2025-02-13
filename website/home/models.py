@@ -226,6 +226,18 @@ class EnhancedStandardPage(NavigationMixin):
                 ),
             ),
             (
+                "questionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            ("answer", blocks.RichTextBlock()),
+                            ("anchortag", blocks.CharBlock()),
+                        ]
+                    )
+                ),
+            ),
+            (
                 "zoomgovquestionanswers",
                 blocks.ListBlock(
                     blocks.StructBlock(

@@ -137,7 +137,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                         "value": "These videos are merely examples. Any resemblance to actual persons, living or dead, or actual events, is purely coincidental.",
                     },
                     {
-                        "type": "h4",
+                        "type": "h3",
                         "value": "Pre-Calendar Call: Trial Clerk Recognizes Participants",
                     },
                     {
@@ -161,7 +161,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                         },
                     },
                     {
-                        "type": "h4",
+                        "type": "h3",
                         "value": "Clinic Breakout Room: Clinics Arrange Assistance for a Self-represented Taxpayer",
                     },
                     {
@@ -185,7 +185,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                         },
                     },
                     {
-                        "type": "h4",
+                        "type": "h3",
                         "value": "Calendar Call: Judge Calls the Calendar and Schedules Trials",
                     },
                     {
@@ -208,7 +208,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                             ],
                         },
                     },
-                    {"type": "h4", "value": "Trial: Judge Conducts a Trial"},
+                    {"type": "h3", "value": "Trial: Judge Conducts a Trial"},
                     {
                         "type": "links",
                         "value": {

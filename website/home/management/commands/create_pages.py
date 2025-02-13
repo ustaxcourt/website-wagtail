@@ -31,11 +31,14 @@ from home.management.commands.pages.guidence_for_petitioners import (
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
-from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
-    ZoomgovProceedingRibbonInitializer,
+from home.management.commands.pages.petitioners_start_page import (
+    PetitionersStartPageInitializer,
 )
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
+)
+from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
+    ZoomgovProceedingRibbonInitializer,
 )
 
 other_pages_to_initialize = [
@@ -65,6 +68,7 @@ rules_and_guidance = [
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    PetitionersStartPageInitializer,
     ZoomgovProceedingPageInitializer,
 ]
 
