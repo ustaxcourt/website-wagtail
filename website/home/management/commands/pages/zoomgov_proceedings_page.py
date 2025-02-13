@@ -6,7 +6,7 @@ from home.models import (
 )
 
 
-class ZoomGovProceedingPageInitializer(PageInitializer):
+class ZoomgovProceedingPageInitializer(PageInitializer):
     def __init__(self, logger):
         super().__init__(logger)
 
@@ -16,7 +16,7 @@ class ZoomGovProceedingPageInitializer(PageInitializer):
 
     def create_page_info(self, home_page):
         slug = "zoomgov_zoomgov_proceedings"
-        title = "ZoomGov Proceedings"
+        title = "Zoomgov Proceedings"
 
         if Page.objects.filter(slug=slug).exists():
             self.logger.write(f"- {title} page already exists.")
@@ -25,21 +25,8 @@ class ZoomGovProceedingPageInitializer(PageInitializer):
         self.logger.write(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
-            name="Zoomgov Proceedings ribbon"
+            name="Zoomgov Proceedings Ribbon"
         ).first()
-
-        new_page = home_page.add_child(
-            instance=EnhancedStandardPage(
-                title=title,
-                body="Detailed information about Zoom proceedings.",
-                slug=slug,
-                seo_title=title,
-                navigation_ribbon=navigation_ribbon,
-                search_description="Details on Zoom proceedings for remote court sessions.",
-                show_in_menus=True,
-                additional_info="Additional information regarding Zoom proceedings.",
-            )
-        )
 
         questions = [
             {
@@ -146,7 +133,7 @@ class ZoomGovProceedingPageInitializer(PageInitializer):
             },
         ]
 
-        new_page.body = home_page.add_child(
+        new_page = home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
