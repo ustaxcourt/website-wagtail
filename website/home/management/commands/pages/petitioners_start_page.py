@@ -149,7 +149,7 @@ class PetitionersStartPageInitializer(PageInitializer):
                 "anchortag": "START24",
             },
             {
-                "question": "How do I pay by check or Money Order?",
+                "question": "How do I pay by check or money order?",
                 "answer": 'Checks and money orders should be made payable to "Clerk, United States Tax Court". Please review our check policy and additional information on our <a href="https://www.ustaxcourt.gov/fees_and_charges.html">fees and charges page</a>.',
                 "anchortag": "START25",
             },
