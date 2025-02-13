@@ -67,27 +67,6 @@
             <hr />
         {% endfor %}
       {% endwith %}
-        {% elif block.block_type == 'zoomgovquestionanswers' %}
-        {% with page_url=page.url|strip_trailing_slash %}
-        <ul class="links indented">
-            {% for q in block.value %}
-            <li><a href="{{ page_url}}#{{ q.anchortag }}"> <i class="ti ti-info-circle-filled"
-                                                              style="padding-right: .4em"></i> {{ q.question }}</a></li>
-            {% endfor %}
-        </ul>
-        <hr/>
-        {% for q in block.value %}
-        <div style="display: flex; align-items: center;">
-            <a href="{{ page_url}}#{{ q.anchortag }}">
-                <div style="margin-left: -1.5em; margin-top: 1em; font-size: larger;" class="ti ti-bookmark"
-                     id="{{ q.anchortag }}"></div>
-            </a>
-            <h3>{{ q.question }}</h3>
-        </div>
-        <div>{{ q.answer|richtext }}</div>
-        <hr/>
-        {% endfor %}
-        {% endwith %}
     {% endif %}
   {% endfor %}
 </div>

@@ -124,7 +124,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 "question": "How do I connect to a Zoomgov proceeding if I am a member of the general public or the press?",
                 "answer": """<ul>
              <li>Prior to each trial session, a link to an audio stream of the Zoomgov courtroom will be available on the Court’s website,
-              <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov.</a></strong.</li>
+             <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov.</a></strong>.</li>
              <li>Audio will be streamed only while the Court is in session.</li>
              <li>Audio recordings will not be archived.</li>
              <li>The Court’s standing rules prohibit you from recording the proceedings.</li>
@@ -142,7 +142,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 search_description="Zoomgov Proceedings",
                 body=[
                     {"type": "heading", "value": "Zoomgov FAQs: Zoomgov Proceedings"},
-                    {"type": "zoomgovquestionanswers", "value": questions},
+                    {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,
             )
