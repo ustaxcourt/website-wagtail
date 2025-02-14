@@ -39,7 +39,7 @@ body {
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font);
-    font-weight: 700;
+    font-weight: bold;
     line-height: 2rem;
     margin-bottom: 8px;
     -webkit-font-smoothing: antialiased;
@@ -59,7 +59,7 @@ h2 {
 h3 {
     font-size: 1.25rem;
     line-height: 1.563rem;
-    font-family: 'Source Sans Pro Bold';
+    font-family: 'Source Sans Pro';
 }
 
 h4 {
