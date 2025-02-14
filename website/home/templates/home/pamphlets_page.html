@@ -47,21 +47,17 @@
                 }
 
                 .entry-right {
-                    p {
-                        margin: 0;
+                    div.entry-header {
                         font-size: 1.3rem;
-                        font-weight: 700;
-                        line-height: 41.6px;
                     }
-                }
-
-                .date-range {
-                    font-size: 1.1rem;
-                    font-weight: 500;
-                    margin-top: 0;
-                    font-style: italic;
-                    display: block;
-                    margin-block-end: 1em;
+                    .date-range {
+                        font-size: 1.1rem;
+                        font-weight: 500;
+                        margin-top: 0;
+                        font-style: italic;
+                        display: block;
+                        margin-block-end: 1em;
+                    }
                 }
             }
         }
@@ -115,11 +111,11 @@
                     </a>
                 </div>
                 <div class="entry-right">
-                    <p>
+                    <div class="entry-header">
                         <a data-testid="{{pamphlet.title}}" href="{{ pamphlet.pdf.url }}" target="_blank">{{ pamphlet.title }}</a>
-                    </p>
+                    </div>
                     <span class="date-range">{{ pamphlet.date_range }}</span>
-                    <div>{{ pamphlet.citation|richtext }}</div>
+                    <div class="entry-body">{{ pamphlet.citation|richtext }}</div>
 
                 </div>
             </div>
