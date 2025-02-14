@@ -10,7 +10,7 @@ pamphlets_data = [
         "pdf": "161_TC_112-328.pdf",
         "code": "161 T.C. 112-328",
         "date_range": "November 1, 2023 to December 31, 2023",
-        "citation": "Liberty Global, Inc.<br/>McKelvey, Andrew J., Estate<br/>Peters, Bradford G., Executor<br/>Sall, Madiodio<br/>Sanders, Tiffany Lashun<br/>Soroban Capital Partners GP LLC, Tax Matters Partner<br/>Soroban Capital Partners LP<br/>YA Global Investments, LP<br/>Yorkville Advisors, GP LLC, Tax Matters Partner<br/>Yorkville Advisors, LLC, Tax Matters Partner",
+        "citation": "<p>Liberty Global, Inc.<br/>McKelvey, Andrew J., Estate<br/>Peters, Bradford G., Executor<br/>Sall, Madiodio<br/>Sanders, Tiffany Lashun<br/>Soroban Capital Partners GP LLC, Tax Matters Partner<br/>Soroban Capital Partners LP<br/>YA Global Investments, LP<br/>Yorkville Advisors, GP LLC, Tax Matters Partner<br/>Yorkville Advisors, LLC, Tax Matters Partner</p>",
         "volume_number": 161.5,
     },
     {
@@ -18,7 +18,7 @@ pamphlets_data = [
         "pdf": "161_TC_58-112.pdf",
         "code": "161 T.C. 58-112",
         "date_range": "October 1, 2023 to October 31, 2023",
-        "citation": "Caan, James E., Estate<br/>Caan, Scott, Trustee, Special Administrator<br/>Jacaan Administrative Trust<br/>Kraske, Wolfgang, Frederick<br/>Whistleblower 8391-18W",
+        "citation": "<p>Caan, James E., Estate<br/>Caan, Scott, Trustee, Special Administrator<br/>Jacaan Administrative Trust<br/>Kraske, Wolfgang, Frederick<br/>Whistleblower 8391-18W</p>",
         "volume_number": 161.4,
     },
     {
@@ -26,7 +26,7 @@ pamphlets_data = [
         "pdf": "161_TC_9-58.pdf",
         "code": "161 T.C. 9-58",
         "date_range": "September 1, 2023 to September 30, 2023",
-        "citation": "Organic Cannabis Foundation, LLC<br/>Piper Trucking & Leasing, LLC",
+        "citation": "<p>Organic Cannabis Foundation, LLC<br/>Piper Trucking & Leasing, LLC</p>",
         "volume_number": 161.3,
     },
     {
@@ -34,7 +34,7 @@ pamphlets_data = [
         "pdf": "161_TC_1-9.pdf",
         "code": "161 T.C. 1-9",
         "date_range": "July 1, 2023 to August 31, 2023",
-        "citation": "Joseph E. Abe, DDS, Inc.<br/>Pugh, Zola Jane",
+        "citation": "<p>Joseph E. Abe, DDS, Inc.<br/>Pugh, Zola Jane</p>",
         "volume_number": 161.1,
     },
     {
@@ -42,7 +42,7 @@ pamphlets_data = [
         "pdf": "160_TC_557-690.pdf",
         "code": "160 T.C. 557-690",
         "date_range": "June 1, 2023 to June 30, 2023",
-        "citation": "Castillo, Josefa<br/>Sanders, Antawn Jamal<br/>Amendments to Rules of Practice and Procedure",
+        "citation": "<p>Castillo, Josefa<br/>Sanders, Antawn Jamal<br/>Amendments to Rules of Practice and Procedure</p>",
         "volume_number": 160.6,
     },
     {
@@ -50,7 +50,7 @@ pamphlets_data = [
         "pdf": "160_TC_470-557.pdf",
         "code": "160 T.C. 470-557",
         "date_range": "May 1, 2023 to May 31, 2023",
-        "citation": "Berenblatt, Jeremy<br/>Growmark Inc. and Subsidiaries<br/>Meduty, Prince Amun-Ra Hotep Ankh<br/>Nutt, Roy A. and Bonnie W.<br/>United Therapeutics Corporation",
+        "citation": "<p>Berenblatt, Jeremy<br/>Growmark Inc. and Subsidiaries<br/>Meduty, Prince Amun-Ra Hotep Ankh<br/>Nutt, Roy A. and Bonnie W.<br/>United Therapeutics Corporation</p>",
         "volume_number": 160.5,
     },
     {
@@ -58,7 +58,7 @@ pamphlets_data = [
         "pdf": "160_TC_399-470.pdf",
         "code": "160 T.C. 399-470",
         "date_range": "April 1, 2023 to April 30, 2023",
-        "citation": "Farhy, Alon<br/>Gerhardt, Alan A. and Audrey M.<br/>Gerhardt, Gladys L., et al.<br/>Gerhardt, Jack R. and Shelley R.<br/>Gerhardt, Pamela J. Holck<br/>Gerhardt, Tim L.<br/>Stanojevich, Srbislav B.<br/>Tice, David W.",
+        "citation": "<p>Farhy, Alon<br/>Gerhardt, Alan A. and Audrey M.<br/>Gerhardt, Gladys L., et al.<br/>Gerhardt, Jack R. and Shelley R.<br/>Gerhardt, Pamela J. Holck<br/>Gerhardt, Tim L.<br/>Stanojevich, Srbislav B.<br/>Tice, David W.</p>",
         "volume_number": 160.4,
     },
     {
@@ -66,7 +66,7 @@ pamphlets_data = [
         "pdf": "160_TC_389-399.pdf",
         "code": "160 T.C. 389-399",
         "date_range": "March 1, 2023 to March 31, 2023",
-        "citation": "Shands, Thomas",
+        "citation": "<p>Shands, Thomas</p>",
         "volume_number": 160.3,
     },
     {
@@ -74,7 +74,7 @@ pamphlets_data = [
         "pdf": "160_TC_50-388.pdf",
         "code": "160 T.C. 50-388",
         "date_range": "February 1, 2023 to February 28, 2023",
-        "citation": "3M Company and Subsidiaries<br/>Thomas, Sydney Ann Chaney",
+        "citation": "<p>3M Company and Subsidiaries<br/>Thomas, Sydney Ann Chaney</p>",
         "volume_number": 160.2,
     },
     {
@@ -82,7 +82,7 @@ pamphlets_data = [
         "pdf": "160_TC_1-49.pdf",
         "code": "160 T.C. 1-49",
         "date_range": "January 1, 2023 to January 31, 2023",
-        "citation": "Adams, Blake M.<br/>Johnson, Michael and Cynthia, et al.",
+        "citation": "<p>Adams, Blake M.<br/>Johnson, Michael and Cynthia, et al.</p>",
         "volume_number": 160.1,
     },
     {
@@ -90,7 +90,7 @@ pamphlets_data = [
         "pdf": "159_TC_80-183.pdf",
         "code": "159 T.C. 80-183",
         "date_range": "November 1, 2022 to December 31, 2022",
-        "citation": "Green Valley Investors, LLC, et al.<br/>Hallmark Research Collective",
+        "citation": "<p>Green Valley Investors, LLC, et al.<br/>Hallmark Research Collective</p>",
         "volume_number": 159.5,
     },
     {
@@ -98,7 +98,7 @@ pamphlets_data = [
         "pdf": "159_TC_75-80.pdf",
         "code": "159 T.C. 75–80",
         "date_range": "September 1, 2022 to October 31, 2022",
-        "citation": "Cochran, Daniel and Kelley",
+        "citation": "<p>Cochran, Daniel and Kelley</p>",
         "volume_number": 159.3,
     },
     {
@@ -106,7 +106,7 @@ pamphlets_data = [
         "pdf": "159_TC_28-75.pdf",
         "code": "159 T.C. 28-75",
         "date_range": "August 1, 2022 to August 31, 2022",
-        "citation": "Smith, Cory H.<br/>Whistleblower 769-16W",
+        "citation": "<p>Smith, Cory H.<br/>Whistleblower 769-16W</p>",
         "volume_number": 159.2,
     },
     {
@@ -114,7 +114,7 @@ pamphlets_data = [
         "pdf": "159_TC_1-27.pdf",
         "code": "159 T.C. 1-27",
         "date_range": "July 1, 2022 to July 31, 2022",
-        "citation": "Whistleblower 972-17W",
+        "citation": "<p>Whistleblower 972-17W</p>",
         "volume_number": 159.1,
     },
     {
@@ -122,7 +122,7 @@ pamphlets_data = [
         "pdf": "158_TC_99-199.pdf",
         "code": "158 T.C. 99-199",
         "date_range": "March 1, 2022 to June 30, 2022",
-        "citation": "AptarGroup Inc.<br/>BATS Global Markets Holdings, Inc. and Subsidiaries<br/>Brown, Michael D.<br/>Chavis, Angela M.<br/>DelPonte, Michelle<br/>Lewis, Gina C.<br/>Treece Financial Services Group",
+        "citation": "<p>AptarGroup Inc.<br/>BATS Global Markets Holdings, Inc. and Subsidiaries<br/>Brown, Michael D.<br/>Chavis, Angela M.<br/>DelPonte, Michelle<br/>Lewis, Gina C.<br/>Treece Financial Services Group</p>",
         "volume_number": 158.3,
     },
     {
@@ -130,7 +130,7 @@ pamphlets_data = [
         "pdf": "158_TC_1-98.pdf",
         "code": "158 T.C. 1-98",
         "date_range": "January 1, 2022 to February 28, 2022",
-        "citation": "Levine, Marion, Estate, Robert L. Larson, Personal Representative<br/>TBL Licensing LLC f.k.a. The Timberland Company, and Subsidiaries (A Consolidated Group)",
+        "citation": "<p>Levine, Marion, Estate, Robert L. Larson, Personal Representative<br/>TBL Licensing LLC f.k.a. The Timberland Company, and Subsidiaries (A Consolidated Group)</p>",
         "volume_number": 158.1,
     },
 ]

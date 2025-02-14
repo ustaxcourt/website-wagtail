@@ -57,13 +57,9 @@ h2 {
 }
 
 h3 {
-    font-size: 1.5rem;
-    line-height: 1.875rem;
-}
-
-h3 {
     font-size: 1.25rem;
     line-height: 1.563rem;
+    font-family: 'Source Sans Pro Bold';
 }
 
 h4 {

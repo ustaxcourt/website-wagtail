@@ -33,7 +33,7 @@ def write_local_secrets(data, filename="website_secrets"):
 
 
 def generate_random_password(length=16):
-    characters = string.ascii_letters + string.digits + string.punctuation
+    characters = string.ascii_letters + string.digits + "+-_/:;.,()[]<>?!"
     return "".join(secrets.choice(characters) for _ in range(length))
 
 
