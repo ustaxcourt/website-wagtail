@@ -116,7 +116,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 "answer": """<ul>
              <li>Yes. Please arrive to the virtual proceeding at least 60 minutes early if you would like to speak with a volunteer attorney about your case.</li>
              <li>You can also reach out to a low income taxpayer clinic or calendar call pro bono program as soon as you are issued your notice setting the case for trial. A list of participating programs can be found on the Court’s website at
-              <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov.</a></strong.</li>
+              <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov.</a></strong>.</li>
              </ul>""",
                 "anchortag": "START11",
             },
