@@ -38,8 +38,7 @@ class PetitionersStartPageInitializer(PageInitializer):
 
         if Page.objects.filter(slug=slug).exists():
             self.logger.write(f"- {title} page already exists.")
-            Page.objects.get(slug=slug).delete()
-            # return
+            return
 
         self.logger.write(f"Creating the '{title}' page.")
 
