@@ -31,6 +31,9 @@ from home.management.commands.snippets.navigation_ribbon import (
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
+from home.management.commands.pages.employment_page import (
+    EmploymentPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -60,12 +63,15 @@ rules_and_guidance = [
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
 ]
-
+about_the_court = [
+    EmploymentPageInitializer,
+]
 pages_to_initialize = (
     other_pages_to_initialize
     + rules_and_guidance
     + efiling_pages_to_initialize
     + orders_opinions_pages_to_initialize
+    + about_the_court
 )
 
 snippets_to_initialize = [
