@@ -63,7 +63,6 @@ class PageInitializer(ABC):
         file_path = os.path.join(
             settings.BASE_DIR, self.IMAGES_BASE_PATH, subdirectory, filename
         )
-        self.logger.write(f"file_path: {file_path}")
 
         if not os.path.exists(file_path):
             self.logger.write(f"Image file not found at {file_path}")
@@ -72,6 +71,13 @@ class PageInitializer(ABC):
         if title is None:
             # Use filename without extension as title
             title = os.path.splitext(filename)[0].replace("_", " ")
+
+        Image = get_image_model()
+        if Image.objects.filter(title=title).exists():
+            self.logger.write(
+                f"Image file already exists: {filename}. Choose a different file or title."
+            )
+            return None
 
         with open(file_path, "rb") as image_file:
             # login_image = Image(title="DAWSON Log In")

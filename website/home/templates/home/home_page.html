@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% load static %}
 
@@ -34,8 +34,12 @@
 
 {% block content %}
   <div class="carousel">
-    {% for image in page.images.all %}
-      <img alt="{{ image.title }}" class="hero-image" src="{% static 'images/home/building_far.jpg' %}" />
+    {% for picture in page.images.all %}
+    <img
+      src="{{ picture.image.file.url }}"
+      alt="{{ picture.image.title }}"
+      class="hero-image {% if forloop.first %}active{% endif %}"
+    >
     {% endfor %}
   </div>
 

@@ -32,15 +32,20 @@ class HomePageInitializer(PageInitializer):
 
         if HomePage.objects.filter(title=title).exists():
             self.logger.write(f"- {title} page already exists.")
-            return
+            homepage = HomePage.objects.get(title=title)
+        else:
+            homepage = HomePage(
+                title=title,
+                draft_title="Home",
+                slug=None,
+                search_description="Official Site of the United States Tax Court",
+                seo_title="United States Tax Court",
+            )
 
-        homepage = HomePage(
-            title=title,
-            draft_title="Home",
-            slug=None,
-            search_description="Official Site of the United States Tax Court",
-            seo_title="United States Tax Court",
-        )
+        for image in carousel_images:
+            _ = self.load_image_from_images_dir(
+                "home", image["filename"], image["title"]
+            )
 
         root.add_child(instance=homepage)
         homepage.save_revision().publish()
