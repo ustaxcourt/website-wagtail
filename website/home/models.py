@@ -237,7 +237,23 @@ class HomePage(NavigationMixin):
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
+        InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries"),
+    ]
+
+
+class HomePageImage(Orderable):
+    page = ParentalKey("HomePage", related_name="images", on_delete=models.CASCADE)
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    panels = [
+        FieldPanel("image"),
     ]
 
 

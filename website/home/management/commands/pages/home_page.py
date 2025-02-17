@@ -2,6 +2,21 @@ from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry
 from home.management.commands.pages.page_initializer import PageInitializer
 
+carousel_images = [
+    {
+        "title": "image of the united states tax court building far away",
+        "filename": "building_far.jpg",
+    },
+    {
+        "title": "image of the united states tax court building from the front",
+        "filename": "building_front.jpg",
+    },
+    {
+        "title": "image of the united states tax court building with trees",
+        "filename": "building_tree.jpg",
+    },
+]
+
 
 class HomePageInitializer(PageInitializer):
     def __init__(self, logger):
