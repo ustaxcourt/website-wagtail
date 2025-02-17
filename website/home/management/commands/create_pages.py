@@ -34,6 +34,9 @@ from home.management.commands.pages.administrative_orders_page import (
 from home.management.commands.pages.petitioners_start_page import (
     PetitionersStartPageInitializer,
 )
+from home.management.commands.pages.petitioners_glossary_page import (
+    PetitionersGlossaryPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -63,6 +66,7 @@ rules_and_guidance = [
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
+    PetitionersGlossaryPageInitializer,
 ]
 
 pages_to_initialize = (
