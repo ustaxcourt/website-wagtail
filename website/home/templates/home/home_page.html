@@ -34,9 +34,9 @@
 
 {% block content %}
   <div class="carousel">
-    <img alt="image of the united states tax court building" class="hero-image active" src="{% static 'images/home/building_far.jpg' %}" />
-    <img alt="image of the united states tax court building" class="hero-image" src="{% static 'images/home/building_tree.jpg' %}" />
-    <img alt="image of the united states tax court building" class="hero-image" src="{% static 'images/home/building_front.jpg' %}" />
+    {% for image in page.images.all %}
+      <img alt="{{ image.title }}" class="hero-image" src="{% static 'images/home/building_far.jpg' %}" />
+    {% endfor %}
   </div>
 
   <div class="grid-container">
