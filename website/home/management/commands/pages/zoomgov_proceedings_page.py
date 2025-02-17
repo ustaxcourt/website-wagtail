@@ -85,7 +85,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 "question": "What if I get disconnected?",
                 "answer": """<ul>
              <li>If you get disconnected, call into the proceeding using the dial-in number provided in your notice.</li>
-             <li>If you still have difficulty connecting, call the Clerk’s Office at (202) 521-0700 for assistance</li>
+             <li>If you still have difficulty connecting, call the Clerk’s Office at (202) 521-0700 for assistance.</li>
              </ul>""",
                 "anchortag": "START7",
             },
@@ -116,7 +116,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 "answer": """<ul>
              <li>Yes. Please arrive to the virtual proceeding at least 60 minutes early if you would like to speak with a volunteer attorney about your case.</li>
              <li>You can also reach out to a low income taxpayer clinic or calendar call pro bono program as soon as you are issued your notice setting the case for trial. A list of participating programs can be found on the Court’s website at
-              <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov.</a></strong>.</li>
+              <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov</a></strong>.</li>
              </ul>""",
                 "anchortag": "START11",
             },
@@ -124,7 +124,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 "question": "How do I connect to a Zoomgov proceeding if I am a member of the general public or the press?",
                 "answer": """<ul>
              <li>Prior to each trial session, a link to an audio stream of the Zoomgov courtroom will be available on the Court’s website,
-             <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov.</a></strong>.</li>
+             <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">www.ustaxcourt.gov</a></strong>.</li>
              <li>Audio will be streamed only while the Court is in session.</li>
              <li>Audio recordings will not be archived.</li>
              <li>The Court’s standing rules prohibit you from recording the proceedings.</li>
