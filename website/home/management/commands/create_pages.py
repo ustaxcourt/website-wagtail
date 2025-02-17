@@ -27,6 +27,7 @@ from home.management.commands.pages.guidence_for_petitioners import (
 )
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
+    RemoteProceedingsRibbonInitializer,
 )
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
@@ -34,6 +35,7 @@ from home.management.commands.pages.administrative_orders_page import (
 from home.management.commands.pages.petitioners_start_page import (
     PetitionersStartPageInitializer,
 )
+from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -63,6 +65,7 @@ rules_and_guidance = [
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
+    RemoteBasicsPageInitializer,
 ]
 
 pages_to_initialize = (
@@ -74,6 +77,7 @@ pages_to_initialize = (
 
 snippets_to_initialize = [
     NavigationRibbonInitializer,
+    RemoteProceedingsRibbonInitializer,
 ]
 
 

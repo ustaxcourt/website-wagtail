@@ -66,6 +66,7 @@ class IconCategories(models.TextChoices):
     NONE = ("",)
     INFO = "ti ti-info-circle"
     PDF = "ti ti-file-type-pdf"
+    USER = "ti ti-user-filled"
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
     HAMMER = "ti ti-hammer"
