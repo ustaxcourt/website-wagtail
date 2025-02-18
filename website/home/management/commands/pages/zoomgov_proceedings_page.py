@@ -4,6 +4,9 @@ from home.models import (
     NavigationRibbon,
     EnhancedStandardPage,
 )
+from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
+    remote_proceedings_ribbon_name,
+)
 
 
 class ZoomgovProceedingPageInitializer(PageInitializer):
@@ -25,7 +28,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
         self.logger.write(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
-            name="Zoomgov Proceedings Ribbon"
+            name=remote_proceedings_ribbon_name
         ).first()
 
         questions = [

@@ -1,6 +1,6 @@
 from home.models import NavigationRibbon, NavigationRibbonLink, IconCategories
 
-ribbon_snippet_name = "Zoomgov Proceedings Ribbon"
+remote_proceedings_ribbon_name = "Zoomgov Proceedings Ribbon"
 
 
 class ZoomgovProceedingRibbonInitializer:
@@ -8,14 +8,16 @@ class ZoomgovProceedingRibbonInitializer:
         self.logger = logger
 
     def create(self):
-        if NavigationRibbon.objects.filter(name=ribbon_snippet_name).exists():
-            self.logger.write(f"{ribbon_snippet_name} already exists.")
+        if NavigationRibbon.objects.filter(
+            name=remote_proceedings_ribbon_name
+        ).exists():
+            self.logger.write(f"{remote_proceedings_ribbon_name} already exists.")
             return
 
-        self.logger.write(f"Creating the {ribbon_snippet_name}.")
+        self.logger.write(f"Creating the {remote_proceedings_ribbon_name}.")
 
         navigation_ribbon = NavigationRibbon(
-            name=ribbon_snippet_name,
+            name=remote_proceedings_ribbon_name,
         )
         navigation_ribbon.save()
 
