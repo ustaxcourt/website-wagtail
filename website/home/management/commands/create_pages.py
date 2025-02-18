@@ -34,6 +34,9 @@ from home.management.commands.snippets.navigation_ribbon import (
 from home.management.commands.pages.petitioners_start_page import (
     PetitionersStartPageInitializer,
 )
+from home.management.commands.pages.petitioners_before_trial_page import (
+    PetitionersBeforeTrialInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
@@ -69,6 +72,7 @@ rules_and_guidance = [
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
+    PetitionersBeforeTrialInitializer,
     ZoomgovProceedingPageInitializer,
 ]
 
