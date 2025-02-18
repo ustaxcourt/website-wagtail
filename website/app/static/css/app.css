@@ -240,6 +240,11 @@ button.link:hover {
     background-color: var(--light-blue);
     border-radius: 5px;
 
+    .title {
+        white-space: normal;
+        word-break: keep-all;
+    }
+
     a {
         flex-grow: 1;
         text-decoration: none;
