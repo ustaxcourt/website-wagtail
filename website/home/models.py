@@ -75,6 +75,7 @@ class IconCategories(models.TextChoices):
     INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
     CHEVRON_RIGHT = "ti ti-chevron-right"
     VIDEO = "ti ti-video-filled"
+    USER = "ti ti-user-filled"
 
 
 class NavigationMixin(Page):
@@ -222,6 +223,18 @@ class EnhancedStandardPage(NavigationMixin):
                             ),
                         ),
                     ]
+                ),
+            ),
+            (
+                "questionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            ("answer", blocks.RichTextBlock()),
+                            ("anchortag", blocks.CharBlock()),
+                        ]
+                    )
                 ),
             ),
         ]
