@@ -18,7 +18,7 @@
   {% if page.navigation_ribbon %}
     <div class="blue-page-links-bar">
         {% for link in page.navigation_ribbon.links.all %}
-            <a href="{{ link.url }}"><i class="{{ link.icon }}"></i><div>{{ link.title }}</div></a>
+            <a href="{{ link.url }}"><i class="{{ link.icon }}"></i><div class="title">{{ link.title }}</div></a>
         {% endfor %}
     </div>
   {% endif %}
