@@ -3,6 +3,9 @@ VENV=~/.venv/website-wagtail/bin/activate
 init:
 	python -m venv ~/.venv/website-wagtail
 
+cmd:
+	. $(VENV) && $(c)
+
 check:
 	. $(VENV) && python manage.py check
 	. $(VENV) && python manage.py check --tag models --tag compatibility

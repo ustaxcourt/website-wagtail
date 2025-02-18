@@ -224,6 +224,18 @@ class EnhancedStandardPage(NavigationMixin):
                     ]
                 ),
             ),
+            (
+                "questionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            ("answer", blocks.RichTextBlock()),
+                            ("anchortag", blocks.CharBlock()),
+                        ]
+                    )
+                ),
+            ),
         ]
     )
     content_panels = Page.content_panels + [

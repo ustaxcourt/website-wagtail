@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% load wagtailcore_tags %}
+{% load filters %}
+{% comment %} {% load custom_icons %} {% endcomment %}
 
 {% load static %}
 
@@ -10,8 +12,8 @@
 
 {% block content %}
 <div class="grid-container padding-bottom-2 padding-top-2">
-  <h1>{{ page.title }}</h1>
-  <hr >
+  <h1 data-testid="page-title">{{ page.title }}</h1>
+  <hr />
 
   {% if page.navigation_ribbon %}
     <div class="blue-page-links-bar">
@@ -29,7 +31,7 @@
     {% elif block.block_type == 'h4' %}
         <h4>{{ block.value }}</h4>
     {% elif block.block_type == 'paragraph' %}
-        <p>{{ block.value }}</p>
+        <p data-testid="page-body-paragraph">{{ block.value }}</p>
     {% elif block.block_type == 'image' %}
         <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
     {% elif block.block_type == 'hr' %}
@@ -38,15 +40,33 @@
         <ul class="links {{ block.value.class }}">
             {% for link in block.value.links %}
                 {% if link.document %}
-                    <li><a href="{{ link.document.url }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a></li>
+                    <li><a href="{{ link.document.url }}" data-testid="document-link"><i class="{{ link.icon }}"></i> {{ link.title }}</a></li>
                 {% else %}
-                    <li><a href="{{ link.url }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a></li>
+                    <li>
+                        {% if link.url %}
+                            <a href="{{ link.url }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                        {% endif %}
+                    </li>
                 {% endif %}
-            {% if block.value.url %}
-            <li><a href="{{ block.value.url }}"><i class="{{ block.value.icon }}"></i> {{ block.value.title }}</a></li>
-        {% endif %}
             {% endfor %}
         </ul>
+    {% elif block.block_type == 'questionanswers' %}
+      {% with page_url=page.url|strip_trailing_slash %}
+        <ul class="links indented">
+        {% for q in block.value %}
+            <li> <a href="{{ page_url}}#{{ q.anchortag }}"> <i class="ti ti-info-circle-filled" style="padding-right: .4em" ></i> {{ q.question }}</a> </li>
+        {% endfor %}
+        </ul>
+        <hr />
+        {% for q in block.value %}
+            <div style="display: flex; align-items: left;">
+                <a href="{{ page_url}}#{{ q.anchortag }}" title="{{q.question}}" ><div style="margin-left: -1.5em; margin-top: 1em; font-size: larger;" class="ti ti-bookmark" id="{{ q.anchortag }}"></div></a>
+                <h3>{{ q.question }}</h3>
+            </div>
+            <div>{{ q.answer|richtext }}</div>
+            <hr />
+        {% endfor %}
+      {% endwith %}
     {% endif %}
   {% endfor %}
 </div>

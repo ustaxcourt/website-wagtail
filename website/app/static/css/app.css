@@ -39,7 +39,7 @@ body {
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font);
-    font-weight: 700;
+    font-weight: bold;
     line-height: 2rem;
     margin-bottom: 8px;
     -webkit-font-smoothing: antialiased;
@@ -57,18 +57,15 @@ h2 {
 }
 
 h3 {
-    font-size: 1.5rem;
-    line-height: 1.875rem;
-}
-
-h3 {
     font-size: 1.25rem;
     line-height: 1.563rem;
+    font-family: 'Source Sans Pro';
 }
 
 h4 {
     font-size: 1.063rem;
     line-height: 1.5rem;
+    font-family: 'Source Sans Pro';
 }
 
 /* Links */
@@ -77,6 +74,11 @@ a {
     font-weight: bold;
     text-decoration: none;
     cursor: pointer;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 
 a.font-normal {
