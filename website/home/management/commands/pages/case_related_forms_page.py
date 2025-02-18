@@ -1,12 +1,8 @@
-import os
 from wagtail.models import Page
-from django.contrib.contenttypes.models import ContentType
 from home.models import (
     CaseRelatedFormsPage,
     CaseRelatedFormsEntry,
 )
-from django.core.files import File
-from wagtail.documents import get_document_model
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationCategories
 
@@ -228,8 +224,6 @@ class CaseRelatedFormPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        content_type = ContentType.objects.get_for_model(CaseRelatedFormsPage)
-
         new_page = home_page.add_child(
             instance=CaseRelatedFormsPage(
                 title=title,
@@ -237,7 +231,6 @@ class CaseRelatedFormPageInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 search_description="Case Related Forms",
-                content_type=content_type,
                 show_in_menus=True,
             )
         )
@@ -263,37 +256,23 @@ class CaseRelatedFormPageInitializer(PageInitializer):
             )
             return
 
-        pdf_path = (
-            f'home/management/documents/case_related_forms/{formData["pdf_filename"]}'
+        document = self.load_document_from_documents_dir(
+            subdirectory="case_related_forms",
+            filename=formData["pdf_filename"],
+            title=formData["formName"],
         )
 
-        if not os.path.exists(pdf_path):
-            self.logger.write(f"PDF file not found at {pdf_path}.")
-            return
-
-        Document = get_document_model()
-
-        # Create the form record
-        with open(pdf_path, "rb") as pdf_file:
-            document = Document(
-                title=formData["formName"],
-                file=File(pdf_file, name=os.path.basename(pdf_path)),
-            )
-            document.save()
-
-            form = CaseRelatedFormsEntry(
-                formName=formData["formName"],
-                formNameNote=formData["formNameNote"],
-                number=formData["number"],
-                eligibleForEFilingByPetitioners=formData[
-                    "eligibleForEFilingByPetitioners"
-                ],
-                eligibleForEFilingByPractitioners=formData[
-                    "eligibleForEFilingByPractitioners"
-                ],
-                pdf=document,
-                parentpage=parent_page,  # Use parentpage directly, not parentpage_id
-            )
-            form.save()  # Just save the model directly
+        form = CaseRelatedFormsEntry(
+            formName=formData["formName"],
+            formNameNote=formData["formNameNote"],
+            number=formData["number"],
+            eligibleForEFilingByPetitioners=formData["eligibleForEFilingByPetitioners"],
+            eligibleForEFilingByPractitioners=formData[
+                "eligibleForEFilingByPractitioners"
+            ],
+            pdf=document,
+            parentpage=parent_page,
+        )
+        form.save()
 
         self.logger.write(f"Successfully created form entry: {formData['formName']}")
