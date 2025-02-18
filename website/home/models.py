@@ -66,7 +66,6 @@ class IconCategories(models.TextChoices):
     NONE = ("",)
     INFO = "ti ti-info-circle"
     PDF = "ti ti-file-type-pdf"
-    USER = "ti ti-user-filled"
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
     HAMMER = "ti ti-hammer"
@@ -76,6 +75,7 @@ class IconCategories(models.TextChoices):
     INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
     CHEVRON_RIGHT = "ti ti-chevron-right"
     VIDEO = "ti ti-video-filled"
+    USER = "ti ti-user-filled"
 
 
 class NavigationMixin(Page):

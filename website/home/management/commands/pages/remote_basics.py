@@ -2,7 +2,7 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon
 from home.models import EnhancedStandardPage
-from home.management.commands.snippets.navigation_ribbon import (
+from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     remote_proceedings_ribbon_name,
 )
 
