@@ -21,6 +21,9 @@ from home.management.commands.pages.todays_opinions import TodaysOpinionsPageIni
 from home.management.commands.pages.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
+from home.management.commands.pages.zoomgov_proceedings_page import (
+    ZoomgovProceedingPageInitializer,
+)
 from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
 from home.management.commands.pages.guidence_for_petitioners import (
     GuidenceForPetitionersPageInitializer,
@@ -28,11 +31,14 @@ from home.management.commands.pages.guidence_for_petitioners import (
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
+from home.management.commands.pages.petitioners_start_page import (
+    PetitionersStartPageInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
-from home.management.commands.pages.petitioners_start_page import (
-    PetitionersStartPageInitializer,
+from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
+    ZoomgovProceedingRibbonInitializer,
 )
 from home.management.commands.pages.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
@@ -67,6 +73,7 @@ rules_and_guidance = [
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
     PetitionersGlossaryPageInitializer,
+    ZoomgovProceedingPageInitializer,
 ]
 
 pages_to_initialize = (
@@ -78,6 +85,7 @@ pages_to_initialize = (
 
 snippets_to_initialize = [
     NavigationRibbonInitializer,
+    ZoomgovProceedingRibbonInitializer,
 ]
 
 

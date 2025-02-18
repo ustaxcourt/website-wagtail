@@ -60,7 +60,7 @@
         <hr />
         {% for q in block.value %}
             <div style="display: flex; align-items: left;">
-                <a href="{{ page_url}}#{{ q.anchortag }}" title="{{q.question}}" ><div style="margin-left: -1.5em; margin-top: 1em; font-size: larger;" class="ti ti-bookmark" id="{{ q.anchortag }}"></div></a>
+                <a href="{{ page_url}}#{{ q.anchortag }}" title="{{q.question}}" ><div style="margin-left: -1.5em; margin-top: 1em; font-size: larger;" class="ti ti-bookmark-filled" id="{{ q.anchortag }}"></div></a>
                 <h3>{{ q.question }}</h3>
             </div>
             <div>{{ q.answer|richtext }}</div>
