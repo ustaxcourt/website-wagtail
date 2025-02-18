@@ -132,18 +132,14 @@
 
           if (isSubdomain(href)) {
             window.open(href, "_blank");
-          } else{
-
+          } else {
             let newTab = window.open("/redirect/", "_blank");
-
             if (newTab) {
               newTab.sessionStorage.setItem("redirect_url", href);
             } else{
               alert("Pop-up blocked!  Please allow pop-ups for this site.");
-
             }
           }
-
 
         });
       });
