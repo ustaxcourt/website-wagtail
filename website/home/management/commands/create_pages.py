@@ -31,6 +31,9 @@ from home.management.commands.snippets.navigation_ribbon import (
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
+from home.management.commands.pages.getting_ready_page import (
+    GettingReadyPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -59,6 +62,7 @@ rules_and_guidance = [
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    GettingReadyPageInitializer,
 ]
 
 pages_to_initialize = (
