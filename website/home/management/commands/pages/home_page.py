@@ -32,15 +32,15 @@ class HomePageInitializer(PageInitializer):
 
         if HomePage.objects.filter(title=title).exists():
             self.logger.write(f"- {title} page already exists.")
-            homepage = HomePage.objects.get(title=title)
-        else:
-            homepage = HomePage(
-                title=title,
-                draft_title="Home",
-                slug=None,
-                search_description="Official Site of the United States Tax Court",
-                seo_title="United States Tax Court",
-            )
+            return
+
+        homepage = HomePage(
+            title=title,
+            draft_title="Home",
+            slug=None,
+            search_description="Official Site of the United States Tax Court",
+            seo_title="United States Tax Court",
+        )
 
         loaded_images = []
         for image in carousel_images:
@@ -77,7 +77,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Remote Proceedings Info",
             body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" title="Zoomgov Proceedings" href="/zoomgov">here.</a>'
+                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
             ),
         )
         HomePageEntry.objects.create(
