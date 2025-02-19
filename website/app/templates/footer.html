@@ -60,7 +60,7 @@
     <div class="grid-container">
       <div class="grid-row grid-gap">
         <div class="grid-col-12 desktop:grid-col">
-          <p class="title">Technical Questions?</p>
+          <h2 class="title">Technical Questions?</h2>
           <p>
             {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
             {{ technicalQuestions|richtext }}
@@ -68,7 +68,7 @@
           </p>
         </div>
         <div class="grid-col-12 desktop:grid-col">
-          <p class="title">Other Questions?</p>
+          <h2 class="title">Other Questions?</h2>
           <p>
             {% with otherQuestions=settings.home.Footer.otherQuestions %}
             {{ otherQuestions|richtext }}
