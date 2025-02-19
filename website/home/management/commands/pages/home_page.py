@@ -1,5 +1,5 @@
 from wagtail.models import Page, Site
-from home.models import HomePage, HomePageEntry
+from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
 
 carousel_images = [
@@ -42,10 +42,15 @@ class HomePageInitializer(PageInitializer):
                 seo_title="United States Tax Court",
             )
 
+        loaded_images = []
         for image in carousel_images:
-            _ = self.load_image_from_images_dir(
+            image_uploaded = self.load_image_from_images_dir(
                 "home", image["filename"], image["title"]
             )
+            loaded_images.append(HomePageImage(image=image_uploaded))
+
+        if loaded_images:
+            homepage.images = loaded_images
 
         root.add_child(instance=homepage)
         homepage.save_revision().publish()
