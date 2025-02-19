@@ -50,6 +50,9 @@ from home.management.commands.pages.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
 )
 from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
+from home.management.commands.pages.clinics_pro_bono_page import (
+    ClinicsProBonoProgramsPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -83,6 +86,7 @@ rules_and_guidance = [
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
+    ClinicsProBonoProgramsPageInitializer,
 ]
 about_the_court = [
     EmploymentPageInitializer,
