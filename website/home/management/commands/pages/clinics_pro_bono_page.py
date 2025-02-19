@@ -45,7 +45,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "h3",
-                        "value": "Requirements for Participation in the U.S. Tax Court Clinical, Student Practice & Bar Sponsored Calendar Call Program",
+                        "value": "Requirements for Participation in the United States Tax Court Clinical, Student Practice & Bar Sponsored Calendar Call Program",
                     },
                     {
                         "type": "paragraph",
