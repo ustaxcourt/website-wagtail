@@ -27,9 +27,11 @@ class PageInitializer(ABC):
             title (str, optional): Title for the document. If None, uses filename without extension
 
         Returns:
-            Document: The created document instance or None if file not found
+            Document: The created document instance or None if file not found or already exists
         """
-        file_path = os.path.join(self.DOCUMENTS_BASE_PATH, subdirectory, filename)
+        file_path = os.path.join(
+            settings.BASE_DIR, self.DOCUMENTS_BASE_PATH, subdirectory, filename
+        )
 
         if not os.path.exists(file_path):
             self.logger.write(f"Document file not found at {file_path}")
@@ -40,12 +42,19 @@ class PageInitializer(ABC):
             title = os.path.splitext(filename)[0].replace("_", " ")
 
         Document = get_document_model()
+
+        # Check if the document already exists
+        if Document.objects.filter(title=title).exists():
+            self.logger.write(f"Document with title '{title}' already exists.")
+            return Document.objects.get(title=title)
+
         with open(file_path, "rb") as doc_file:
             document = Document(
                 title=title,
                 file=File(doc_file, name=filename),
             )
             document.save()
+            self.logger.write(f"Document created: {document}")
             return document
 
     def load_image_from_images_dir(self, subdirectory, filename, title=None):
