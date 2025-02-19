@@ -86,7 +86,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": "A helpful Glossary (definition of terms) is available on the Court’s website. A User Guide for the Court’s electronic filing and case management system, is also available.",
+                        "value": "A helpful <strong><a href='/petitioners_glossary'>Glossary</a></strong> (definition of terms) is available on the Court’s website. A <strong>User Guide</strong> for the Court’s electronic filing and case management system, is also available.",
                     },
                     {"type": "heading", "value": "Additional Resources"},
                     {"type": "hr", "value": True},
@@ -118,7 +118,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
-                        "value": "For more detailed information, consult the Tax Court Rules of Practice and Procedure.",
+                        "value": "For more detailed information, consult the Tax Court <a href='/rules'>Rules of Practice and Procedure</a>.",
                     },
                 ],
                 show_in_menus=True,

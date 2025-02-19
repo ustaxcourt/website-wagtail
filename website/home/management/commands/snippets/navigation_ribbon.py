@@ -1,6 +1,5 @@
 from home.models import NavigationRibbon, NavigationRibbonLink, IconCategories
 
-
 ribbon_snippet_name = "Guidance for Petitioners Ribbon"
 
 

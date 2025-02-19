@@ -21,6 +21,9 @@ from home.management.commands.pages.todays_opinions import TodaysOpinionsPageIni
 from home.management.commands.pages.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
+from home.management.commands.pages.zoomgov_proceedings_page import (
+    ZoomgovProceedingPageInitializer,
+)
 from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
 from home.management.commands.pages.guidence_for_petitioners import (
     GuidenceForPetitionersPageInitializer,
@@ -28,8 +31,27 @@ from home.management.commands.pages.guidence_for_petitioners import (
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
+from home.management.commands.pages.petitioners_start_page import (
+    PetitionersStartPageInitializer,
+)
+from home.management.commands.pages.petitioners_before_trial_page import (
+    PetitionersBeforeTrialInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
+)
+from home.management.commands.pages.employment_page import (
+    EmploymentPageInitializer,
+)
+from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
+    ZoomgovProceedingRibbonInitializer,
+)
+from home.management.commands.pages.petitioners_glossary_page import (
+    PetitionersGlossaryPageInitializer,
+)
+from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
+from home.management.commands.pages.clinics_pro_bono_page import (
+    ClinicsProBonoProgramsPageInitializer,
 )
 from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
@@ -62,7 +84,17 @@ rules_and_guidance = [
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    PetitionersStartPageInitializer,
+    PetitionersBeforeTrialInitializer,
+    PetitionersGlossaryPageInitializer,
+    RemoteBasicsPageInitializer,
+    ZoomgovProceedingPageInitializer,
+    ClinicsProBonoProgramsPageInitializer,
     GettingReadyPageInitializer,
+]
+
+about_the_court = [
+    EmploymentPageInitializer,
 ]
 
 pages_to_initialize = (
@@ -70,10 +102,12 @@ pages_to_initialize = (
     + rules_and_guidance
     + efiling_pages_to_initialize
     + orders_opinions_pages_to_initialize
+    + about_the_court
 )
 
 snippets_to_initialize = [
     NavigationRibbonInitializer,
+    ZoomgovProceedingRibbonInitializer,
 ]
 
 

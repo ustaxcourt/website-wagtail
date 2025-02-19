@@ -29,7 +29,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
         info = [
             {
                 "title": "Sample Notice Setting Case For Trial for Remote Proceedings",
-                "document": "subpoenas_for_remote_proceedings.pdf",
+                "document": "sample_notice_setting_case_for_trial.pdf",
             },
             {
                 "title": "Sample Standing Pretrial Order for Remote Proceedings",
