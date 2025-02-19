@@ -1,18 +1,11 @@
 {% extends 'base.html' %}
-
 {% load wagtailcore_tags %}
-
 {% load static %}
-
-{% block body_class %}
-  template-standard_page
-{% endblock %}
-
+{% block body_class %}template-standard_page{% endblock %}
 {% block content %}
-<div class="grid-container padding-bottom-2 padding-top-2">
-  <h1>{{ page.title }}</h1>
-  <hr class="foundry-divider-simple">
-  <p>{{ page.body|richtext }}</p>
-</div>
-
+    <div class="grid-container padding-bottom-2 padding-top-2">
+        <h1>{{ page.title }}</h1>
+        <hr class="foundry-divider-simple">
+        <p>{{ page.body|richtext }}</p>
+    </div>
 {% endblock content %}

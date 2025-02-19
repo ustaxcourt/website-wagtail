@@ -1,121 +1,103 @@
 {% extends 'base.html' %}
-
 {% load wagtailcore_tags %}
 {% load static %}
-
 {% block extra_css %}
-<style>
-  #remote-proceedings {
+    <style>
+        #remote-proceedings {
 
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-left: 20px;
+            .links {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding-left: 20px;
 
-      a {
-        font-weight: normal;
-      }
-    }
+                a {
+                    font-weight: normal;
+                }
+            }
 
-    h2 {
-      margin-bottom: 20px;
-      font-size: 1.3rem;
-    }
+            h2 {
+                margin-bottom: 20px;
+                font-size: 1.3rem;
+            }
 
-    h3 {
-      font-size: 1.1rem;
-    }
+            h3 {
+                font-size: 1.1rem;
+            }
 
-    .info-body {
-      position: relative;
-    }
+            .info-body {
+                position: relative;
+            }
 
-    .anchor-link {
-      position: absolute;
-      left: -40px;
-      top: 0px;
-      font-size: 1.5rem;
-    }
+            .anchor-link {
+                position: absolute;
+                left: -40px;
+                top: 0px;
+                font-size: 1.5rem;
+            }
 
-    .examples:last-child {
-      hr {
-        display: none;
-      }
-    }
-  }
-</style>
+            .examples:last-child {
+                hr {
+                    display: none;
+                }
+            }
+        }
+    </style>
 {% endblock %}
-
 {% block content %}
-<div id="remote-proceedings" class="grid-container usa-prose margin-top-5 margin-bottom-5">
-  <div class="content">
-    <h1>{{ page.title }}</h1>
-    <hr />
-    <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
-    <hr />
-    <h2>{{ page.faq_title }}</h2>
-
-    <div class="links">
-      {% for faq in page.faq_links.all %}
-      <div>
-        <a href="{{ faq.link }}">
-          <i class="ti ti-chevron-right"></i>
-          {{ faq.title }}
-        </a>
-      </div>
-      {% endfor %}
+    <div id="remote-proceedings"
+         class="grid-container usa-prose margin-top-5 margin-bottom-5">
+        <div class="content">
+            <h1>{{ page.title }}</h1>
+            <hr />
+            <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
+            <hr />
+            <h2>{{ page.faq_title }}</h2>
+            <div class="links">
+                {% for faq in page.faq_links.all %}
+                    <div>
+                        <a href="{{ faq.link }}">
+                            <i class="ti ti-chevron-right"></i>
+                            {{ faq.title }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <hr />
+            <div class="info">
+                <div class="info-body">{{ page.feedback_form | richtext }}</div>
+            </div>
+            <hr />
+            <h2 class="info-body">{{ page.additional_info | richtext }}</h2>
+            <div class="links">
+                {% for info in page.info.all %}
+                    <div>
+                        <a href="{{ info.pdf.url }}">
+                            <i class="ti ti-file-type-pdf margin-right-1"></i>
+                            {{ info.pdf.title }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <hr />
+            <h2 class="info-body" id="examples">{{ page.example_title | richtext }}</h2>
+            <div class="example-body">{{ page.example_body | richtext }}</div>
+            {% for example in page.examples.all %}
+                <div class="examples">
+                    <h3>{{ example.title }}</h3>
+                    <div class="links">
+                        <a href="{{ example.speaker_url }}">
+                            <i class="ti ti-video-filled margin-right-1"></i>
+                            {{ example.speaker_title }}
+                        </a>
+                        <a href="{{ example.gallery_url }}">
+                            <i class="ti ti-video-filled margin-right-1"></i>
+                            {{ example.gallery_title }}
+                        </a>
+                    </div>
+                    <hr />
+                </div>
+            {% endfor %}
+        </div>
     </div>
-
-    <hr />
-
-    <div class="info">
-      <div class="info-body">{{ page.feedback_form | richtext }}</div>
-    </div>
-
-    <hr />
-
-    <h2 class="info-body">{{ page.additional_info | richtext }}</h2>
-
-    <div class="links">
-      {% for info in page.info.all %}
-      <div>
-        <a href="{{ info.pdf.url }}">
-          <i class="ti ti-file-type-pdf margin-right-1"></i>
-          {{ info.pdf.title }}
-        </a>
-      </div>
-      {% endfor %}
-    </div>
-
-    <hr />
-
-    <h2 class="info-body" id="examples">
-      {{ page.example_title | richtext }}
-    </h2>
-
-    <div class="example-body">{{ page.example_body | richtext }}</div>
-
-    {% for example in page.examples.all %}
-    <div class="examples" >
-      <h3>{{ example.title }}</h3>
-
-      <div class="links">
-        <a href="{{ example.speaker_url }}">
-          <i class="ti ti-video-filled margin-right-1"></i>
-          {{ example.speaker_title }}
-        </a>
-
-        <a href="{{ example.gallery_url }}">
-          <i class="ti ti-video-filled margin-right-1"></i>
-          {{ example.gallery_title }}
-        </a>
-      </div>
-
-      <hr />
-    </div>
-    {% endfor %}
-
-  </div>
-</div>
 {% endblock %}
