@@ -86,12 +86,9 @@ class PageInitializer(ABC):
             self.logger.write(
                 f"Image file already exists: {filename}. Choose a different file or title."
             )
-            return None
+            return Image.objects.get(title=title)
 
         with open(file_path, "rb") as image_file:
-            # login_image = Image(title="DAWSON Log In")
-            # login_image.file.save("DAWSON-log-in.png", login_file, save=True
-            Image = get_image_model()
             image = Image(
                 title=title,
                 file=File(image_file, name=filename),
