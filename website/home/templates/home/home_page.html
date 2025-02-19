@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% load wagtailcore_tags wagtailimages_tags %}
-
 {% load static %}
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
@@ -27,33 +25,25 @@
     </script>
 {% endblock %}
 {% block content %}
-  <div class="carousel">
-    {% for picture in page.images.all %}
-    {% image picture.image fill-2000x400-c80  as myrendition %}
-    <img
-    src="{{ myrendition.url }}"
-    alt="{{ myrendition.title }}"
-    class="hero-image {% if forloop.first %}active{% endif %}"
-    {% if myrendition.focal_point %}
-        data-focus-x="{{ myrendition.focal_point.centroid.x }}"
-        data-focus-y="{{ myrendition.focal_point.centroid.y }}"
-        data-focus-width="{{ myrendition.focal_point.width }}"
-        data-focus-height="{{ myrendition.focal_point.height }}"
-    {% endif %}
-    />
-    {% endfor %}
-  </div>
-
-  <div class="grid-container">
-    <div class="content">
-      <div class="entries-list">
-        {% for entry in page.entries.all %}
-          <div class="entry shadow-2">
-            <h3>{{ entry.title }}</h3>
-            <div>{{ entry.body|richtext }}</div>
-          </div>
+    <div class="carousel">
+        {% for picture in page.images.all %}
+            {% image picture.image fill-2000x400-c80  as myrendition %}
+            <img src="{{ myrendition.url }}"
+                 alt="{{ myrendition.title }}"
+                 class="hero-image {% if forloop.first %}active{% endif %}"
+                 {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
         {% endfor %}
-      </div>
     </div>
-  </div>
+    <div class="grid-container">
+        <div class="content">
+            <div class="entries-list">
+                {% for entry in page.entries.all %}
+                    <div class="entry shadow-2">
+                        <h3>{{ entry.title }}</h3>
+                        <div>{{ entry.body|richtext }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
