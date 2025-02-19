@@ -136,7 +136,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                              for S cases </a></strong>or a <strong><a href="{petitioners_docs["Sample_Notice_Setting_Case_for_Trial_R_cases.pdf"]}" target="_blank" title="Notice for Regular Cases" > notice for regular cases </a></strong>
                              setting your case for trial generally about five months before the trial date.The notice setting the case for trial provides information such as where and when to appear for your trial session.The Tax Court will attempt to schedule the trial at the city requested in your request for place of trial, but if no courtroom is available, the Tax Court may schedule it at a city reasonably nearby.The Tax Court will issue a
                              <strong><a href="{petitioners_docs["SPTO_regular_sample.pdf"]}" target="_blank" title="Standing Pretrial Order" > Standing Pretrial Order </a></strong>
-                             in a regular case or a< strong > < a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases" > Standing Pretrial Order For Small Tax Cases </a></strong>
+                             in a regular case or a<strong><a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases"> Standing Pretrial Order For Small Tax Cases </a></strong>
                              which will inform you what you need to do to prepare for trial.For information specific to remote proceedings, see
                              <strong><a href="/zoomgov" title="Zoomgov Proceedings" > Remote Proceeding Information </a></strong>.""",
                 "anchortag": "START10",
@@ -188,9 +188,9 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
-                search_description="Guidance for Petitioners - Starting a Case",
+                search_description="Guidance for Petitioners - Things That Occur Before Trial",
                 body=[
-                    {"type": "heading", "value": "Starting A Case"},
+                    {"type": "heading", "value": "Things That Occur Before Trial"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,
