@@ -77,7 +77,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Remote Proceedings Info",
             body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
+                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" title="Zoomgov Proceedings" href="/zoomgov">here.</a>'
             ),
         )
         HomePageEntry.objects.create(
