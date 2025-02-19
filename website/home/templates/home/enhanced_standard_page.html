@@ -20,6 +20,8 @@
 {% for block in page.body %}
     {% if block.block_type == 'heading' %}
         <h2>{{ block.value }}</h2>
+    {% elif block.block_type == 'h2' %}
+        <h2>{{ block.value }}</h2>
     {% elif block.block_type == 'h3' %}
         <h3>{{ block.value }}</h3>
     {% elif block.block_type == 'h4' %}

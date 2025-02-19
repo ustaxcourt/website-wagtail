@@ -44,7 +44,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                 show_in_menus=True,
                 body=[
                     {
-                        "type": "h3",
+                        "type": "h2",
                         "value": "Requirements for Participation in the United States Tax Court Clinical, Student Practice & Bar Sponsored Calendar Call Program",
                     },
                     {
@@ -56,7 +56,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                         "value": 'The United States Tax Court includes on its Web site requirements for academic law school clinics (“<strong><a href="/clinics_academic">U.S. Tax Court Requirements for Academic Clinics (Law School)</a></strong>”), non law school academic clinics ("<strong><a href="/clinics_academic_non_law_school">U.S. Tax Court Requirements for Academic Clinics (Non Law School)</a></strong>") and nonacademic clinics (“<strong><a href="/clinics_nonacademic">U.S. Tax Court Requirements for Nonacademic Clinics</a></strong>”). The Court also includes on its Web site requirements for Bar sponsored calendar call programs (“<strong><a href="/clinics_calendar_call">U.S. Tax Court Requirements for Bar Sponsored Calendar Call Programs</a></strong>”), and the student practice program sponsored by the Office of Chief Counsel of the Internal Revenue Service (“<strong><a href="/clinics_chief_counsel">U.S. Tax Court Requirements for Office of Chief Counsel Student Practice Program</a></strong>”).',
                     },
                     {
-                        "type": "h3",
+                        "type": "h2",
                         "value": "Procedures for Programs Currently Participating",
                     },
                     {
@@ -64,7 +64,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                         "value": 'In order for an academic clinic, nonacademic clinic or Bar sponsored calendar call program to participate, the clinic or Bar sponsored calendar call program director/coordinator must send a letter to the Chief Judge containing the information specified in section <strong><a href="/clinics_academic#SECTION1">1(e)</a></strong> of the Requirements for Academic Clinics (Law School), section <strong><a href="/clinics_academic_non_law_school#SECTION1">1(e)</a></strong> of the Requirements for Academic Clinics (Non Law School), section <strong><a href="/clinics_nonacademic#SECTION1">1(g)</a></strong> of the Requirements for Nonacademic Clinics, and section <strong><a href="/clinics_calendar_call#SECTION1">1(c)</a></strong> of the Requirements for Bar Sponsored Calendar call Programs by February 15 of each year. The Requirements include a sample of the letter the clinics and programs are requested to send to the Court. The Court will send a reminder of this requirement in January of each year to clinics and Bar sponsored calendar call programs already participating and will acknowledge receipt of the clinics’ and Bar sponsored calendar call programs’ letter requesting participation.',
                     },
                     {
-                        "type": "h3",
+                        "type": "h2",
                         "value": "Procedures for Programs Not Currently Participating",
                     },
                     {
