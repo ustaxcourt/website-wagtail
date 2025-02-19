@@ -132,18 +132,14 @@
 
           if (isSubdomain(href)) {
             window.open(href, "_blank");
-          } else{
-
+          } else {
             let newTab = window.open("/redirect/", "_blank");
-
             if (newTab) {
               newTab.sessionStorage.setItem("redirect_url", href);
             } else{
               alert("Pop-up blocked!  Please allow pop-ups for this site.");
-
             }
           }
-
 
         });
       });
@@ -165,6 +161,7 @@
 
       function isSamedomain(url){
         let currentDomain = window.location.hostname;
+        let s3StaticDomainPattern = /.*ustc-website-assets\.s3\.amazonaws\.com$/;
         let linkDomain;
 
         try{
@@ -173,7 +170,7 @@
           return true;
         }
 
-        return linkDomain === currentDomain;
+        return (linkDomain === currentDomain || s3StaticDomainPattern.test(linkDomain));
       }
 
       function isSubdomain(url) {
