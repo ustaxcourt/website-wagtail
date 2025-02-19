@@ -1,54 +1,51 @@
 {% extends 'base.html' %}
-
 {% load wagtailcore_tags %}
-
 {% load static %}
-
-{% block body_class %}
-  template-homepage
-{% endblock %}
-
+{% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
-  {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/home_page.css' %}" />
+    {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/home_page.css' %}" />
 {% endblock %}
-
 {% block extra_js %}
-  <script>
-    const rotationPeriod = 5000
+    <script>
+        const rotationPeriod = 5000
 
-    function rotateImages() {
-      const images = document.querySelectorAll('.hero-image')
-      let currentIndex = 0
+        function rotateImages() {
+            const images = document.querySelectorAll('.hero-image')
+            let currentIndex = 0
 
-      setInterval(() => {
-        images.forEach((img) => img.classList.remove('active'))
-        currentIndex = (currentIndex + 1) % images.length
-        images[currentIndex].classList.add('active')
-      }, rotationPeriod)
-    }
+            setInterval(() => {
+                images.forEach((img) => img.classList.remove('active'))
+                currentIndex = (currentIndex + 1) % images.length
+                images[currentIndex].classList.add('active')
+            }, rotationPeriod)
+        }
 
-    document.addEventListener('DOMContentLoaded', rotateImages)
-  </script>
+        document.addEventListener('DOMContentLoaded', rotateImages)
+    </script>
 {% endblock %}
-
 {% block content %}
-  <div class="carousel">
-    <img alt="image of the united states tax court building" class="hero-image active" src="{% static 'images/home/building_far.jpg' %}" />
-    <img alt="image of the united states tax court building" class="hero-image" src="{% static 'images/home/building_tree.jpg' %}" />
-    <img alt="image of the united states tax court building" class="hero-image" src="{% static 'images/home/building_front.jpg' %}" />
-  </div>
-
-  <div class="grid-container">
-    <div class="content">
-      <div class="entries-list">
-        {% for entry in page.entries.all %}
-          <div class="entry shadow-2">
-            <h3>{{ entry.title }}</h3>
-            <div>{{ entry.body|richtext }}</div>
-          </div>
-        {% endfor %}
-      </div>
+    <div class="carousel">
+        <img alt="image of the united states tax court building"
+             class="hero-image active"
+             src="{% static 'images/home/building_far.jpg' %}" />
+        <img alt="image of the united states tax court building"
+             class="hero-image"
+             src="{% static 'images/home/building_tree.jpg' %}" />
+        <img alt="image of the united states tax court building"
+             class="hero-image"
+             src="{% static 'images/home/building_front.jpg' %}" />
     </div>
-  </div>
+    <div class="grid-container">
+        <div class="content">
+            <div class="entries-list">
+                {% for entry in page.entries.all %}
+                    <div class="entry shadow-2">
+                        <h3>{{ entry.title }}</h3>
+                        <div>{{ entry.body|richtext }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
