@@ -37,6 +37,9 @@ from home.management.commands.pages.petitioners_start_page import (
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
+from home.management.commands.pages.employment_page import (
+    EmploymentPageInitializer,
+)
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
@@ -77,12 +80,15 @@ rules_and_guidance = [
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
 ]
-
+about_the_court = [
+    EmploymentPageInitializer,
+]
 pages_to_initialize = (
     other_pages_to_initialize
     + rules_and_guidance
     + efiling_pages_to_initialize
     + orders_opinions_pages_to_initialize
+    + about_the_court
 )
 
 snippets_to_initialize = [
