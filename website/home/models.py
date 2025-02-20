@@ -63,19 +63,20 @@ class IndentStyle(models.TextChoices):
 
 
 class IconCategories(models.TextChoices):
-    NONE = ("",)
-    INFO = "ti ti-info-circle"
-    PDF = "ti ti-file-type-pdf"
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
-    HAMMER = "ti ti-hammer"
-    SCALE = "ti ti-scale"
     CALENDAR_MONTH = "ti ti-calendar-month"
-    FILE = "ti ti-file"
-    INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
     CHEVRON_RIGHT = "ti ti-chevron-right"
-    VIDEO = "ti ti-video-filled"
+    FILE = "ti ti-file"
+    HAMMER = "ti ti-hammer"
+    INFO = "ti ti-info-circle"
+    INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
+    LINK = "ti ti-link"
+    NONE = ("",)
+    PDF = "ti ti-file-type-pdf"
+    SCALE = "ti ti-scale"
     USER = "ti ti-user-filled"
+    VIDEO = "ti ti-video-filled"
 
 
 class NavigationMixin(Page):
