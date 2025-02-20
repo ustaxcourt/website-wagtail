@@ -174,7 +174,6 @@ class EnhancedStandardPage(NavigationMixin):
 
     body = StreamField(
         [
-            ("heading", blocks.CharBlock()),
             ("h2", blocks.CharBlock()),
             ("h3", blocks.CharBlock()),
             ("h4", blocks.CharBlock()),
