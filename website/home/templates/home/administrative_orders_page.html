@@ -31,12 +31,12 @@
             <div class="pdf-section-wrapper">
                 {% for pdf_item in page.pdfs.all %}
                     {% if pdf_item.pdf %}
-                    <div>
-                       <a href="{{ pdf_item.pdf.url }}" target="_blank">
-                           <i class="ti ti-file-type-pdf margin-right-1"></i>
-                           {{ pdf_item.pdf.title }}
-                       </a>
-                    </div>
+                        <div>
+                            <a href="{{ pdf_item.pdf.url }}" target="_blank">
+                                <i class="ti ti-file-type-pdf margin-right-1"></i>
+                                {{ pdf_item.pdf.title }}
+                            </a>
+                        </div>
                     {% endif %}
                 {% endfor %}
             </div>
