@@ -73,7 +73,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": "Please <a href='mailto:litc@ustaxcourt.gov'>contact us</a> with any questions concerning the Court’s program or requirements, or call 202-521-3366.",
+                        "value": 'Please <a href="mailto:litc@ustaxcourt.gov">contact us</a> with any questions concerning the Court’s program or requirements, or call <a href="tel:+12025213366">202-521-3366</a>.',
                     },
                 ],
             )
