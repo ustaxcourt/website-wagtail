@@ -334,7 +334,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="Guidance for Petitioners - Glossary",
                 body=[
-                    {"type": "heading", "value": "Glossary"},
+                    {"type": "h2", "value": "Glossary"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,
