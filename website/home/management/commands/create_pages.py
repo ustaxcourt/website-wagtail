@@ -36,6 +36,7 @@ from home.management.commands.pages.petitioners_start_page import (
 )
 from home.management.commands.pages.petitioners_during_page import (
     PetitionersDuringPageInitializer,
+)
 from home.management.commands.pages.petitioners_before_trial_page import (
     PetitionersBeforeTrialInitializer,
 )
@@ -91,6 +92,7 @@ rules_and_guidance = [
     ZoomgovProceedingPageInitializer,
     ClinicsProBonoProgramsPageInitializer,
 ]
+
 about_the_court = [
     EmploymentPageInitializer,
 ]
