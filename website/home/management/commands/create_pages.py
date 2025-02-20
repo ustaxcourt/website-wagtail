@@ -87,6 +87,7 @@ rules_and_guidance = [
     PetitionersStartPageInitializer,
     PetitionersBeforeTrialInitializer,
     PetitionersAfterTrialInitializer,
+    PetitionersBeforeTrialInitializer,
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
