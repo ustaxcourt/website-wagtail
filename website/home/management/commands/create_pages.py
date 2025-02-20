@@ -37,6 +37,9 @@ from home.management.commands.pages.petitioners_start_page import (
 from home.management.commands.pages.petitioners_before_trial_page import (
     PetitionersBeforeTrialInitializer,
 )
+from home.management.commands.pages.petitioners_after_trial_page import (
+    PetitionersAfterTrialInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
@@ -45,9 +48,6 @@ from home.management.commands.pages.employment_page import (
 )
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
-)
-from home.management.commands.pages.petitioners_after_trial_page import (
-    PetitionersAfterTrialInitializer,
 )
 from home.management.commands.pages.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
