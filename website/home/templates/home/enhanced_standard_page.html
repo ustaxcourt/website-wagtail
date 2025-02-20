@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
 {% load filters %}
-{% comment %} {% load custom_icons %} {% endcomment %}
 {% load static %}
 {% block extra_css %}
     <style>
@@ -75,11 +74,15 @@
             {% for link in block.value.links %}
                 {% if link.document %}
                     <li>
-                        <a href="{{ link.document.url }}" data-testid="document-link" title="{{link.title}}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                        <a href="{{ link.document.url }}"
+                           data-testid="document-link"
+                           title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
                     </li>
                 {% else %}
                     <li>
-                        {% if link.url %}<a href="{{ link.url }}" title="{{link.title}}" ><i class="{{ link.icon }}"></i> {{ link.title }}</a>{% endif %}
+                        {% if link.url %}
+                            <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                        {% endif %}
                     </li>
                 {% endif %}
             {% endfor %}
