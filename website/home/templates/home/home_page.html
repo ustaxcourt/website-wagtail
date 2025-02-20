@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 {% load static %}
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
@@ -26,15 +26,13 @@
 {% endblock %}
 {% block content %}
     <div class="carousel">
-        <img alt="image of the united states tax court building"
-             class="hero-image active"
-             src="{% static 'images/home/building_far.jpg' %}" />
-        <img alt="image of the united states tax court building"
-             class="hero-image"
-             src="{% static 'images/home/building_tree.jpg' %}" />
-        <img alt="image of the united states tax court building"
-             class="hero-image"
-             src="{% static 'images/home/building_front.jpg' %}" />
+        {% for picture in page.images.all %}
+            {% image picture.image fill-2000x400-c80  as myrendition %}
+            <img src="{{ myrendition.url }}"
+                 alt="{{ myrendition.title }}"
+                 class="hero-image {% if forloop.first %}active{% endif %}"
+                 {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
+        {% endfor %}
     </div>
     <div class="grid-container">
         <div class="content">
