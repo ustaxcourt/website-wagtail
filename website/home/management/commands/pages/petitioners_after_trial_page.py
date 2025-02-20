@@ -95,7 +95,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             {
                 "question": "How do I file an appeal from the Judge’s decision? Can I appeal my case?",
                 "answer": f"""If you chose, and the Tax Court granted you, small tax case status, there is no appeal from the decision of the Tax Court.
-                <strong><a href="/petitioners_start#before12" target="_blank" title="">See the discussion above about choosing S case status</a></strong>
+                <strong><a href="/petitioners_start#START12" target="_blank" title="">See the discussion above about choosing S case status</a></strong>
                 . In an S case, neither the IRS nor the petitioner can appeal. The Judge's decision is final.
                             <br>
                             <br>
