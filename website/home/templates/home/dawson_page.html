@@ -1,210 +1,202 @@
 {% extends 'base.html' %}
-
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load static %}
-
 {% block extra_css %}
-<style>
-  #dawson-page {
-    body {
-      font-size: 1rem;
-    }
-    .card-related-pages-list {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .card-icon {
-      text-align: center;
-      font-size: 50px;
-      padding-top: 5px;
-      color: var(--light-blue);
-    }
-
-    .usa-card-group {
-      justify-content: center;
-
-      .usa-card {
-        margin-bottom: 1 !important;
-
-        .usa-card__container {
-          border-width: 1px;
-          border-radius: 0;
-          box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.17);
-          transition: box-shadow 0.2s;
-          background-color: rgba(255, 255, 255, 1.00);
-
-          .usa-card__header {
-            text-align: center;
-            padding: 1.5rem .5rem .5rem;
-
-            p {
-              font-size: 17px;
-              line-height: 24px;
-              font-family: var(--heading-font);
-              font-weight: 700;
+    <style>
+        #dawson-page {
+            body {
+                font-size: 1rem;
             }
-          }
+
+            .card-related-pages-list {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .card-icon {
+                text-align: center;
+                font-size: 50px;
+                padding-top: 5px;
+                color: var(--light-blue);
+            }
+
+            .usa-card-group {
+                justify-content: center;
+
+                .usa-card {
+                    margin-bottom: 1 !important;
+
+                    .usa-card__container {
+                        border-width: 1px;
+                        border-radius: 0;
+                        box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.17);
+                        transition: box-shadow 0.2s;
+                        background-color: rgba(255, 255, 255, 1.00);
+
+                        .usa-card__header {
+                            text-align: center;
+                            padding: 1.5rem .5rem .5rem;
+
+                            p {
+                                font-size: 17px;
+                                line-height: 24px;
+                                font-family: var(--heading-font);
+                                font-weight: 700;
+                            }
+                        }
+                    }
+
+                    .usa-card__container:hover {
+                        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+                    }
+                }
+            }
+
+            .dedication {
+                padding-bottom: 2em;
+                gap: 1rem;
+
+                .dedication-image {
+                    float: left;
+                    flex-shrink: 0;
+                    padding-top: 1em;
+                    padding-right: 1em;
+                    padding-left: 1em;
+                    padding-bottom: 1em;
+
+                    img {
+                        border-style: none;
+                        margin: 0;
+                        border: 1px solid rgba(0, 0, 0, 1.00);
+                        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.33);
+                    }
+                }
+
+                .dedication-text {
+                    flex: 1;
+
+                    p {
+                        font-size: 24px;
+                        ;
+                        line-height: 32px;
+                        font-family: var(--heading-font);
+                        font-weight: 700;
+                    }
+                }
+            }
+
+            .usa-card-group.fancy-card-group {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .usa-card-group.fancy-card-group .usa-card {
+                margin: 0 !important;
+                padding: 0;
+            }
+
+            .usa-card-group.fancy-card-group .usa-card__container {
+                margin: 0;
+                border: none;
+                box-shadow: none;
+            }
+
+            .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
+                background-color: #07294D !important;
+                color: #fff !important;
+            }
+
+            .fancy-card-group .light-blue-card.usa-card .usa-card__container {
+                background-color: #E1F3F8 !important;
+                color: #000 !important;
+            }
+
+            .dark-blue-card .usa-card__container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 80px;
+                text-align: center;
+            }
         }
-
-        .usa-card__container:hover {
-          box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-        }
-      }
-    }
-
-    .dedication {
-      padding-bottom: 2em;
-      gap: 1rem;
-
-      .dedication-image {
-        float: left;
-        flex-shrink: 0;
-        padding-top: 1em;
-        padding-right: 1em;
-        padding-left: 1em;
-        padding-bottom: 1em;
-
-        img {
-          border-style: none;
-          margin: 0;
-          border: 1px solid rgba(0, 0, 0, 1.00);
-          box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.33);
-        }
-      }
-
-      .dedication-text {
-        flex: 1;
-        p{
-          font-size: 24px;;
-          line-height: 32px;
-          font-family: var(--heading-font);
-          font-weight: 700;
-        }
-      }
-    }
-
-    .usa-card-group.fancy-card-group {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .usa-card-group.fancy-card-group .usa-card {
-      margin: 0 !important;
-      padding: 0;
-    }
-
-    .usa-card-group.fancy-card-group .usa-card__container {
-      margin: 0;
-      border: none;
-      box-shadow: none;
-    }
-
-    .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
-      background-color: #07294D !important;
-      color: #fff !important;
-    }
-
-    .fancy-card-group .light-blue-card.usa-card .usa-card__container {
-      background-color: #E1F3F8 !important;
-      color: #000 !important;
-    }
-
-    .dark-blue-card .usa-card__container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 80px;
-      text-align: center;
-    }
-  }
-</style>
+    </style>
 {% endblock %}
-
 {% block content %}
-<div id="dawson-page" class="grid-container usa-prose margin-top-5">
-  <div class="content">
-    <h1 class="margin-bottom-3">{{ page.title }}</h1>
-    <hr />
-    <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
-
-    {% for fancy_card in page.fancy_card.all %}
-    <hr />
-    <ul class="usa-card-group grid-row fancy-card-group">
-      <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-4 desktop:grid-col-3 dark-blue-card">
-        <div class="usa-card__container">
-          <a data-testid="dawson-logo" aria-label="Dawson Home" href="{{ fancy_card.url }}" target="_blank">
-            {% image fancy_card.photo max-160x80 %}
-          </a>
-        </div>
-      </li>
-
-      <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-8 desktop:grid-col-9 light-blue-card">
-        <div class="usa-card__container">
-          <div>
-            <strong style="color:#990000;">IMPORTANT:</strong>
-            <span>{{ fancy_card.text }}</span>
-          </div>
-        </div>
-      </li>
-    </ul>
-    {% endfor %}
-    {% for group in page.card_groups.all %}
-    <hr />
-    <ul class="usa-card-group">
-      {% for card in group.cards.all %}
-          {% if card.card_title %}
-            <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-3">
-              <div class="usa-card__container">
-                <div class="usa-card__header">
-                  <p>{{card.card_title}}</p>
+    <div id="dawson-page" class="grid-container usa-prose margin-top-5">
+        <div class="content">
+            <h1 class="margin-bottom-3">{{ page.title }}</h1>
+            <hr />
+            <div class="page-body margin-bottom-5">{{ page.body | richtext }}</div>
+            {% for fancy_card in page.fancy_card.all %}
+                <hr />
+                <ul class="usa-card-group grid-row fancy-card-group">
+                    <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-4 desktop:grid-col-3 dark-blue-card">
+                        <div class="usa-card__container">
+                            <a data-testid="dawson-logo"
+                               aria-label="Dawson Home"
+                               href="{{ fancy_card.url }}"
+                               target="_blank">{% image fancy_card.photo max-160x80 %}</a>
+                        </div>
+                    </li>
+                    <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-8 desktop:grid-col-9 light-blue-card">
+                        <div class="usa-card__container">
+                            <div>
+                                <strong style="color:#990000;">IMPORTANT:</strong>
+                                <span>{{ fancy_card.text }}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            {% endfor %}
+            {% for group in page.card_groups.all %}
+                <hr />
+                <ul class="usa-card-group">
+                    {% for card in group.cards.all %}
+                        {% if card.card_title %}
+                            <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-3">
+                                <div class="usa-card__container">
+                                    <div class="usa-card__header">
+                                        <p>{{ card.card_title }}</p>
+                                    </div>
+                                {% else %}
+                                    <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-4">
+                                        <div class="usa-card__container">
+                                        {% endif %}
+                                        {% if card.card_icon %}<i class="fa-solid fa-{{ card.card_icon }} card-icon"></i>{% endif %}
+                                        <div class="usa-card__body">
+                                            <p>
+                                                {% if card.related_pages.all %}
+                                                    <ul class="card-related-pages-list">
+                                                        {% for related_page in card.related_pages.all %}
+                                                            <li>
+                                                                <i class="ti ti-chevron-right"></i>
+                                                                <a href="{{ related_page.related_page.url }}">{{ related_page.related_page.title }}</a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                    <hr />
+                    {% for dedication in page.photo_dedication.all %}
+                        <div class="dedication">
+                            {% if dedication.photo %}
+                                <div class="dedication-image">{% image dedication.photo width-200 %}</div>
+                            {% endif %}
+                            <div class="dedication-text">
+                                <p>{{ dedication.title }}</p>
+                                {{ dedication.paragraph_text | richtext }}
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-          {% else %}
-            <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-6 desktop:grid-col-4">
-             <div class="usa-card__container">
-          {% endif %}
-          {% if card.card_icon %}
-          <i class="fa-solid fa-{{ card.card_icon }} card-icon"></i>
-          {% endif %}
-          <div class="usa-card__body">
-            <p>
-              {% if card.related_pages.all %}
-            <ul class="card-related-pages-list">
-              {% for related_page in card.related_pages.all %}
-              <li>
-                <i class="ti ti-chevron-right"></i>
-                <a href="{{ related_page.related_page.url }}">{{ related_page.related_page.title }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-            </p>
-          </div>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-    {% endfor %}
-
-    <hr />
-
-    {% for dedication in page.photo_dedication.all %}
-    <div class="dedication">
-      {% if dedication.photo %}
-      <div class="dedication-image">
-        {% image dedication.photo width-200 %}
-      </div>
-      {% endif %}
-      <div class="dedication-text">
-        <p>{{ dedication.title }}</p>
-        {{ dedication.paragraph_text | richtext }}
-      </div>
-    </div>
-    {% endfor %}
-
-  </div>
-</div>
-{% endblock %}
+            </div>
+        {% endblock %}

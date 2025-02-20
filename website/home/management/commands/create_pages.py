@@ -36,9 +36,14 @@ from home.management.commands.pages.petitioners_start_page import (
 )
 from home.management.commands.pages.petitioners_during_page import (
     PetitionersDuringPageInitializer,
+from home.management.commands.pages.petitioners_before_trial_page import (
+    PetitionersBeforeTrialInitializer,
 )
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
+)
+from home.management.commands.pages.employment_page import (
+    EmploymentPageInitializer,
 )
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
@@ -47,6 +52,9 @@ from home.management.commands.pages.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
 )
 from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
+from home.management.commands.pages.clinics_pro_bono_page import (
+    ClinicsProBonoProgramsPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -77,16 +85,21 @@ rules_and_guidance = [
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
     PetitionersDuringPageInitializer,
+    PetitionersBeforeTrialInitializer,
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
+    ClinicsProBonoProgramsPageInitializer,
 ]
-
+about_the_court = [
+    EmploymentPageInitializer,
+]
 pages_to_initialize = (
     other_pages_to_initialize
     + rules_and_guidance
     + efiling_pages_to_initialize
     + orders_opinions_pages_to_initialize
+    + about_the_court
 )
 
 snippets_to_initialize = [
