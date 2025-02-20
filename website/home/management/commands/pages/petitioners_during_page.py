@@ -86,7 +86,7 @@ class PetitionersDuringPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description=title,
                 body=[
-                    {"type": "heading", "value": "Things That Occur During Trial"},
+                    {"type": "h2", "value": "Things That Occur During Trial"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,
