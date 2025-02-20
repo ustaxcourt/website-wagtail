@@ -88,7 +88,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                         "value": "This guide provides resources about the Court's Zoomgov remote proceedings.",
                     },
                     {"type": "hr", "value": True},
-                    {"type": "heading", "value": "Zoomgov Remote Proceedings FAQs"},
+                    {"type": "h2", "value": "Zoomgov Remote Proceedings FAQs"},
                     {
                         "type": "links",
                         "value": {
@@ -120,7 +120,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                         "value": "Recently had a Zoomgov proceeding before the Tax Court? Please share your thoughts on the experience by completing the <a href='https://forms.office.com/Pages/ResponsePage.aspx?id=ffQzvB8vfUKKwjrrqKsOvbIIXUQtrfJAgSED0uDb9B9UQzNKSDNIRVFCS1hIRzVVVzg4QkZEUUZTSC4u'>Zoomgov Proceeding Feedback</a> form.",
                     },
                     {"type": "hr", "value": True},
-                    {"type": "heading", "value": "Remote Proceeding Information"},
+                    {"type": "h2", "value": "Remote Proceeding Information"},
                     {
                         "type": "links",
                         "value": {
@@ -129,7 +129,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                     },
                     {"type": "hr", "value": True},
                     {
-                        "type": "heading",
+                        "type": "h2",
                         "value": "Examples of Zoomgov Remote Proceedings",
                     },
                     {

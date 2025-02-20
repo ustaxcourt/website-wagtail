@@ -303,7 +303,7 @@ class PetitionersStartPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="Guidance for Petitioners - Starting a Case",
                 body=[
-                    {"type": "heading", "value": "Starting A Case"},
+                    {"type": "h2", "value": "Starting A Case"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,

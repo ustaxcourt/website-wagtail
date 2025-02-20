@@ -190,7 +190,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="Guidance for Petitioners - Things That Occur Before Trial",
                 body=[
-                    {"type": "heading", "value": "Things That Occur Before Trial"},
+                    {"type": "h2", "value": "Things That Occur Before Trial"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,
