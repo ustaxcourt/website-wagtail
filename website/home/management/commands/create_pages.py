@@ -43,6 +43,9 @@ from home.management.commands.pages.employment_page import (
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
+from home.management.commands.pages.petitioners_after_trial_page import (
+    PetitionersAfterTrialInitializer,
+)
 from home.management.commands.pages.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
 )
@@ -76,6 +79,7 @@ rules_and_guidance = [
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
+    PetitionersAfterTrialInitializer,
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
