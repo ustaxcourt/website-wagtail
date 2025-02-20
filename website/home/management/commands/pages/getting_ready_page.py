@@ -117,7 +117,7 @@ class GettingReadyPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="Getting Ready",
                 body=[
-                    {"type": "heading", "value": "Zoomgov FAQs: Getting Ready"},
+                    {"type": "h2", "value": "Zoomgov FAQs: Getting Ready"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=True,
