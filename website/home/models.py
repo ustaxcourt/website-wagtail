@@ -205,12 +205,13 @@ class EnhancedStandardPage(NavigationMixin):
                                             "icon",
                                             blocks.ChoiceBlock(
                                                 choices=[
-                                                    ("ti ti-file-type-pdf", "PDF"),
                                                     (
-                                                        "ti ti-info-circle-filled",
-                                                        "Info",
-                                                    ),
-                                                    ("ti ti-link", "Link"),
+                                                        icon.value,
+                                                        icon.name.replace(
+                                                            "_", " "
+                                                        ).title(),
+                                                    )
+                                                    for icon in IconCategories
                                                 ]
                                             ),
                                         ),
