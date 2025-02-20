@@ -41,7 +41,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="Guidance for Petitioners",
                 body=[
-                    {"type": "heading", "value": "Introduction"},
+                    {"type": "h2", "value": "Introduction"},
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
@@ -88,7 +88,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                         "type": "paragraph",
                         "value": "A helpful <strong><a href='/petitioners_glossary'>Glossary</a></strong> (definition of terms) is available on the Court’s website. A <strong>User Guide</strong> for the Court’s electronic filing and case management system, is also available.",
                     },
-                    {"type": "heading", "value": "Additional Resources"},
+                    {"type": "h2", "value": "Additional Resources"},
                     {"type": "hr", "value": True},
                     {
                         "type": "links",
