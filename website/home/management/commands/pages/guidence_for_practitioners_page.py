@@ -93,6 +93,11 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     },
                     {"type": "hr", "value": True},
                     {"type": "heading", "value": "Tax Court Bar"},
+                    {"type": "h3", "value": "Rules of Practice and Procedure"},
+                    {
+                        "type": "paragraph",
+                        "value": "The Court's Rules of Practice and Procedure governing admission and discipline can be found in Title XX, Practice Before the Court:",
+                    },
                     {
                         "type": "links",
                         "value": {
