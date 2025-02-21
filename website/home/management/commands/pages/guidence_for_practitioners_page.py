@@ -140,7 +140,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h3", "value": "Admission of Nonattorneys"},
                     {
                         "type": "paragraph",
-                        "value": """A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
+                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
                         <br/><br/><strong>Resources</strong>""",
                     },
                     {
