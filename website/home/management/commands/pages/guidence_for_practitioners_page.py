@@ -118,14 +118,14 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h3", "value": "Admission of Nonattorneys"},
                     {
                         "type": "paragraph",
-                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"]}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
+                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
                         <br/><br/>
                         <strong>Resources:</strong>
                         <ul>
                             <li><a href="{practitioners_docs["05082023.pdf"].file.url}" title="Press Release announcing the 2023 Nonattorney Examination">Press Release announcing the 2023 Nonattorney Examination</a></li>
                             <li><a href="{practitioners_docs["NonAttorney_Exam_Statistics.pdf"].file.url}" title="Statistical Information Regarding the Nonattorney Examination">Statistical Information Regarding the Nonattorney Examination</a></li>
                             <li><a href="{practitioners_docs["Nonattorney_Examination_Procedures_050322.pdf"].file.url}" title="Procedures for the Preparation and Grading of the Nonattorney Examination">Procedures for the Preparation and Grading of the Nonattorney Examination</a></li>
-                            <li>Downloadable copies of the last three examinations can be found below. To order paper copies, please submit a request via <a href="pay.gov" title="Pay.gov">Pay.gov</a>.</li>
+                            <li>Downloadable copies of the last three examinations can be found below. To order paper copies, please submit a request via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a>.</li>
                             <ul>
                                 <li><a href="{practitioners_docs["2018_Nonattorney_Exam.pdf"].file.url}" title="Prior Year Exam 2018">Prior Year Exam 2018</a></li>
                                 <li><a href="{practitioners_docs["2021_Nonattorney_Exam.pdf"].file.url}" title="Prior Year Exam 2021">Prior Year Exam 2021</a></li>
@@ -142,7 +142,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "value": """<strong>Resources:</strong>
                         <ul>
                             <li>To request an electronic certificate of good standing free of charge, email your request to the <a href="mailto:Admissions@ustaxcourt.gov" title="Email Admissions@ustaxcourt.gov">Admissions Office</a> with your name and US Tax Court bar number.</li>
-                            <li>To request a paper certificate of good standing with the Court's raised seal, submit $15 payment via <a href="pay.gov" title="Pay.gov">Pay.gov</a> and it will be mailed directly to you.</li>
+                            <li>To request a paper certificate of good standing with the Court's raised seal, submit $15 payment via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a> and it will be mailed directly to you.</li>
                         </ul>""",
                     },
                     {"type": "hr", "value": True},
