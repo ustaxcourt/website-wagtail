@@ -221,6 +221,6 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
         )
 
         EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="GUIDANCE FOR PETITIONERS",
+            menu_item_name=title.upper(),
             navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
         )
