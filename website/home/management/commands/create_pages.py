@@ -34,6 +34,9 @@ from home.management.commands.snippets.navigation_ribbon import (
 from home.management.commands.pages.petitioners_start_page import (
     PetitionersStartPageInitializer,
 )
+from home.management.commands.pages.petitioners_during_page import (
+    PetitionersDuringPageInitializer,
+)
 from home.management.commands.pages.petitioners_before_trial_page import (
     PetitionersBeforeTrialInitializer,
 )
@@ -50,6 +53,9 @@ from home.management.commands.pages.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
 )
 from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
+from home.management.commands.pages.clinics_pro_bono_page import (
+    ClinicsProBonoProgramsPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -79,11 +85,14 @@ rules_and_guidance = [
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
     PetitionersStartPageInitializer,
+    PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
+    ClinicsProBonoProgramsPageInitializer,
 ]
+
 about_the_court = [
     EmploymentPageInitializer,
 ]
