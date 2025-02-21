@@ -132,7 +132,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "value": f"""On May 2, 2020, the Court announced that attorney applications for admission to practice before the Court may be emailed to the <a href="mailto:Admissions@ustaxcourt.gov" title="Email Admissions@ustaxcourt.gov">Admissions Office</a> and must include:
                         <ul>
                             <li><a href="{practitioners_docs["Application_for_Admission_to_Practice_Attorney_Form_30.pdf"].file.url}" title="Application for Admission to Practice, Form 30">Application for Admission to Practice, Form 30</a>. For instructions on completing the form, please see <a href="{practitioners_docs["Admissions_Information_Attorney_12212021.pdf"].file.url}" title="Admissions Information for Attorneys">Admissions Information for Attorneys</a>.</li>
-                            <li>Proof of payment of the $50 Application Fee (pay via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a>).</li>
+                            <li>Proof of payment of the $50 Application Fee (pay via <a href="https://www.pay.gov/public/form/start/16762207" title="Pay.gov">Pay.gov</a>).</li>
                             <li>A certificate of good standing from the Clerk of the appropriate court issued within 90 calendar days of the application filing date.</li>
                         </ul>""",
                     },
@@ -174,7 +174,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": """Downloadable copies of the last three examinations can be found below. To order paper copies, please submit a request via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a>.""",
+                        "value": """Downloadable copies of the last three examinations can be found below. To order paper copies, please submit a request via <a href="https://www.pay.gov/public/form/start/16749996" title="Pay.gov">Pay.gov</a>.""",
                     },
                     {
                         "type": "links",
@@ -220,7 +220,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "value": """
                         <ul>
                             <li>To request an electronic certificate of good standing free of charge, email your request to the <a href="mailto:Admissions@ustaxcourt.gov" title="Email Admissions@ustaxcourt.gov">Admissions Office</a> with your name and US Tax Court bar number.</li>
-                            <li>To request a paper certificate of good standing with the Court's raised seal, submit $15 payment via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a> and it will be mailed directly to you.</li>
+                            <li>To request a paper certificate of good standing with the Court's raised seal, submit $15 payment via <a href="https://www.pay.gov/public/form/start/802285219" title="Pay.gov">Pay.gov</a> and it will be mailed directly to you.</li>
                         </ul>""",
                     },
                     {"type": "hr", "value": True},
