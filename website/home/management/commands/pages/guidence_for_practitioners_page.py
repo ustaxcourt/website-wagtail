@@ -96,12 +96,34 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h3", "value": "Rules of Practice and Procedure"},
                     {
                         "type": "paragraph",
-                        "value": f"""The Court's Rules of Practice and Procedure governing admission and discipline can be found in Title XX, Practice Before the Court:
-                        <ul>
-                            <li><a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200. Admission to Practice and Periodic Registration Fee">Rule 200. Admission to Practice and Periodic Registration Fee</a></li>
-                            <li><a href="{practitioners_docs["Rule-201.pdf"].file.url}" title="Rule 201. Conduct of Practice Before the Court">Rule 201. Conduct of Practice Before the Court</a></li>
-                            <li><a href="{practitioners_docs["Rule-202.pdf"].file.url}" title="Rule 202. Disciplinary Matters">Rule 202. Disciplinary Matters</a></li>
-                        </ul>""",
+                        "value": """The Court's Rules of Practice and Procedure governing admission and discipline can be found in Title XX, Practice Before the Court:""",
+                    },
+                    {
+                        "type": "links",
+                        "value": {
+                            "links": [
+                                {
+                                    "title": "Rule 200. Admission to Practice and Periodic Registration Fee",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs[
+                                        "Rule-200(2nd-amended).pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Rule 201. Conduct of Practice Before the Court",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs["Rule-201.pdf"].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Rule 202. Disciplinary Matters",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs["Rule-202.pdf"].id,
+                                    "url": None,
+                                },
+                            ],
+                        },
                     },
                     {"type": "hr", "value": True},
                     {"type": "h3", "value": "Admission of Attorneys"},
@@ -118,28 +140,84 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h3", "value": "Admission of Nonattorneys"},
                     {
                         "type": "paragraph",
-                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
-                        <br/><br/>
-                        <strong>Resources:</strong>
-                        <ul>
-                            <li><a href="{practitioners_docs["05082023.pdf"].file.url}" title="Press Release announcing the 2023 Nonattorney Examination">Press Release announcing the 2023 Nonattorney Examination</a></li>
-                            <li><a href="{practitioners_docs["NonAttorney_Exam_Statistics.pdf"].file.url}" title="Statistical Information Regarding the Nonattorney Examination">Statistical Information Regarding the Nonattorney Examination</a></li>
-                            <li><a href="{practitioners_docs["Nonattorney_Examination_Procedures_050322.pdf"].file.url}" title="Procedures for the Preparation and Grading of the Nonattorney Examination">Procedures for the Preparation and Grading of the Nonattorney Examination</a></li>
-                            <li>Downloadable copies of the last three examinations can be found below. To order paper copies, please submit a request via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a>.</li>
-                            <ul>
-                                <li><a href="{practitioners_docs["2018_Nonattorney_Exam.pdf"].file.url}" title="Prior Year Exam 2018">Prior Year Exam 2018</a></li>
-                                <li><a href="{practitioners_docs["2021_Nonattorney_Exam.pdf"].file.url}" title="Prior Year Exam 2021">Prior Year Exam 2021</a></li>
-                                <li><a href="{practitioners_docs["2023_Nonattorney_Exam.pdf"].file.url}" title="Prior Year Exam 2023">Prior Year Exam 2023</a></li>
-                            </ul>
-                        </ul>
-                        <strong>Character and Fitness:</strong><br/><br/>
+                        "value": """A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
+                        <br/><br/><strong>Resources</strong>""",
+                    },
+                    {
+                        "type": "links",
+                        "value": {
+                            "links": [
+                                {
+                                    "title": "Press Release announcing the 2023 Nonattorney Examination",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs["05082023.pdf"].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Statistical Information Regarding the Nonattorney Examination",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs[
+                                        "NonAttorney_Exam_Statistics.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Procedures for the Preparation and Grading of the Nonattorney Examination",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs[
+                                        "Nonattorney_Examination_Procedures_050322.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": """Downloadable copies of the last three examinations can be found below. To order paper copies, please submit a request via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a>.""",
+                    },
+                    {
+                        "type": "links",
+                        "value": {
+                            "links": [
+                                {
+                                    "title": "Prior Year Exam 2018",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs[
+                                        "2018_Nonattorney_Exam.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Prior Year Exam 2021",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs[
+                                        "2021_Nonattorney_Exam.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Prior Year Exam 2023",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs[
+                                        "2023_Nonattorney_Exam.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": f"""
+                        <strong>Character and Fitness</strong><br/><br/>
                         An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
                     },
                     {"type": "hr", "value": True},
                     {"type": "h3", "value": "Certificates of Good Standing"},
                     {
                         "type": "paragraph",
-                        "value": """<strong>Resources:</strong>
+                        "value": """
                         <ul>
                             <li>To request an electronic certificate of good standing free of charge, email your request to the <a href="mailto:Admissions@ustaxcourt.gov" title="Email Admissions@ustaxcourt.gov">Admissions Office</a> with your name and US Tax Court bar number.</li>
                             <li>To request a paper certificate of good standing with the Court's raised seal, submit $15 payment via <a href="https://pay.gov" title="Pay.gov">Pay.gov</a> and it will be mailed directly to you.</li>
