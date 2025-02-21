@@ -133,7 +133,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                             </ul>
                         </ul>
                         <strong>Character and Fitness:</strong><br/><br/>
-                        An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
+                        An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
                     },
                     {"type": "hr", "value": True},
                     {"type": "h3", "value": "Certificates of Good Standing"},
