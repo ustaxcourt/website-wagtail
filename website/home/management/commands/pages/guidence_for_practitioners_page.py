@@ -61,7 +61,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                 navigation_ribbon=None,
                 search_description="Guidance for Practitioners",
                 body=[
-                    {"type": "heading", "value": "Electronic Case Access and Filing"},
+                    {"type": "h2", "value": "Electronic Case Access and Filing"},
                     {
                         "type": "links",
                         "value": {
