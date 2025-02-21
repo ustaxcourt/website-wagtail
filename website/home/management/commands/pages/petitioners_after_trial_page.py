@@ -60,10 +60,10 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                                A. <strong>Bench Opinion</strong> - As described above, the Judge may issue a Bench Opinion in a regular or S case during the trial session. In this situation, the Judge orally states the opinion in court during the trial session. The Tax Court will send you a copy of the transcript reflecting the Judge's opinion within a few weeks after the trial. A Bench Opinion cannot be relied on as precedent. All bench opinions delivered after March 1, 2008, are electronically viewable through the Tax Court's Docket Inquiry system.
                                <br>
                                <br>
-                               B.<strong>Summary Opinion</strong> - A Summary Opinion is issued in an S case. A Summary Opinion cannot be relied on as precedent, and the decision cannot be appealed.
+                               B. <strong>Summary Opinion</strong> - A Summary Opinion is issued in an S case. A Summary Opinion cannot be relied on as precedent, and the decision cannot be appealed.
                                <br>
                                <br>
-                               C.<strong>Tax Court Opinion or Memorandum Opinion</strong> - The Chief Judge decides whether an opinion in a regular case will be issued as a Memorandum Opinion or as a Tax Court Opinion.
+                               C. <strong>Tax Court Opinion or Memorandum Opinion</strong> - The Chief Judge decides whether an opinion in a regular case will be issued as a Memorandum Opinion or as a Tax Court Opinion.
                                <br>
                                Generally, a Memorandum Opinion is issued in a regular case that does not involve a novel legal issue. A Memorandum Opinion addresses cases where the law is settled or factually driven. A Memorandum Opinion can be cited as legal authority, and the decision can be appealed. A Memorandum Opinion is cited as [<u>Name of Petitioner</u>] v. Commissioner, T.C. Memo. [year issued - #].
                               <br>
@@ -95,8 +95,8 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             {
                 "question": "How do I file an appeal from the Judge’s decision? Can I appeal my case?",
                 "answer": f"""If you chose, and the Tax Court granted you, small tax case status, there is no appeal from the decision of the Tax Court.
-                <strong><a href="/petitioners_start#START12" target="_blank" title="">See the discussion above about choosing S case status</a></strong>
-                . In an S case, neither the IRS nor the petitioner can appeal. The Judge's decision is final.
+                <strong><a href="/petitioners_start#START12" target="_blank" title="">See the discussion above about choosing S case status</a></strong>.
+                In an S case, neither the IRS nor the petitioner can appeal. The Judge's decision is final.
                             <br>
                             <br>
                             If your case is a regular case, you may appeal the decision to one of the U.S. Courts of Appeals. You must wait for a decision (as opposed to the opinion) to be entered by the Tax Court before you file an appeal. A decision is a judicial determination that disposes of a case. An opinion is a statement explaining the Tax Court's decision. The notice of appeal must be filed with the Tax Court within 90 days after the decision is entered, or 120 days if the IRS appeals first. The cost for filing a notice of appeal depends on the Federal Circuit Court to which the appeal is being made but generally costs $600-$605.
@@ -108,7 +108,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             },
             {
                 "question": "Will my documents be returned to me when the case is over?",
-                "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at (202) 521-4688. There is a fee for copywork. See<strong><a href="/transcripts_and_copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a></strong>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <strong><a href="/dawson" target="_blank" title="DAWSON">DAWSON</a></strong>.',
+                "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at (202) 521-4688. There is a fee for copywork. See <strong><a href="/transcripts_and_copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a></strong>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <strong><a href="/dawson" target="_blank" title="DAWSON">DAWSON</a></strong>.',
                 "anchortag": "START7",
             },
             {
