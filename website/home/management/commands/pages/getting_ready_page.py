@@ -51,7 +51,7 @@ class GettingReadyPageInitializer(PageInitializer):
                 "answer": """<ul>
             <li>No. You can connect to a Zoomgov proceeding by smartphone or tablet, or by a regular telephone.</li>
             <li>Your computer will need a video camera, speakers, and a microphone to if you plan to participate by computer.</li>
-            <li>For more information on how to connect to a Zoomgov proceeding, visit <strong><a href="www.zoom.us">www.zoom.us</a></strong>.</li>
+            <li>For more information on how to connect to a Zoomgov proceeding, visit <strong><a href="https://zoom.us">www.zoom.us</a></strong>.</li>
             </ul>""",
                 "anchortag": "START3",
             },
