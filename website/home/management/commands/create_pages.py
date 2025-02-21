@@ -56,6 +56,9 @@ from home.management.commands.pages.remote_basics import RemoteBasicsPageInitial
 from home.management.commands.pages.clinics_pro_bono_page import (
     ClinicsProBonoProgramsPageInitializer,
 )
+from home.management.commands.pages.guidence_for_practitioners_page import (
+    GuidenceForPractitionersPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -91,11 +94,13 @@ rules_and_guidance = [
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
     ClinicsProBonoProgramsPageInitializer,
+    GuidenceForPractitionersPageInitializer,
 ]
 
 about_the_court = [
     EmploymentPageInitializer,
 ]
+
 pages_to_initialize = (
     other_pages_to_initialize
     + rules_and_guidance
