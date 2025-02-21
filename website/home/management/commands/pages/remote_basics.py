@@ -80,7 +80,7 @@ class RemoteBasicsPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="Zoomgov FAQs: The Basics",
                 body=[
-                    {"type": "heading", "value": "Zoomgov FAQs: The Basics"},
+                    {"type": "h2", "value": "Zoomgov FAQs: The Basics"},
                     {"type": "questionanswers", "value": questions},
                 ],
                 show_in_menus=False,
