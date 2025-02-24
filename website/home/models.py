@@ -171,6 +171,7 @@ class CommonBlock(blocks.StreamBlock):
         ]
     )
     h4 = blocks.CharBlock()
+    nameBadge = blocks.CharBlock()
     paragraph = blocks.RichTextBlock()
     hr = blocks.BooleanBlock()
     image = ImageBlock()

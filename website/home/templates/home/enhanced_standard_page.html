@@ -21,6 +21,12 @@
                     top: 24px;
                 }
             }
+
+            .usa-button {
+                width: 80%;
+                margin: 1em;
+                display: block;
+            }
         }
 
 
@@ -128,6 +134,8 @@
                                     <h3>{{ sub_block.value.text }}</h3>
                                 {% elif sub_block.block_type == 'paragraph' %}
                                     <p>{{ sub_block.value }}</p>
+                                {% elif sub_block.block_type == 'nameBadge' %}
+                                    <div class="usa-button">{{ sub_block.value }}</div>
                                 {% else %}
                                     <p>Block type not recognized: {{ block.block_type }}</p>
                                     {{ block.value }}
