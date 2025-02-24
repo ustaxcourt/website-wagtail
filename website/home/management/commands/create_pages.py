@@ -59,6 +59,9 @@ from home.management.commands.pages.clinics_pro_bono_page import (
 from home.management.commands.pages.guidence_for_practitioners_page import (
     GuidenceForPractitionersPageInitializer,
 )
+from home.management.commands.pages.getting_ready_page import (
+    GettingReadyPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -95,6 +98,7 @@ rules_and_guidance = [
     ZoomgovProceedingPageInitializer,
     ClinicsProBonoProgramsPageInitializer,
     GuidenceForPractitionersPageInitializer,
+    GettingReadyPageInitializer,
 ]
 
 about_the_court = [
