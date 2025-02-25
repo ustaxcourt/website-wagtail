@@ -43,7 +43,7 @@ class JudgesPageInitializer(PageInitializer):
                                         "type": "h3WithAnchorTag",
                                         "value": {
                                             "text": "Judges",
-                                            "anchortag": "judges",
+                                            "anchortag": "JUDGES",
                                         },
                                     },
                                     {
