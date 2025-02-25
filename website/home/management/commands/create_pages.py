@@ -63,6 +63,9 @@ from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
 )
 
+# Updates
+from home.management.commands.pages.update_home_page import HomePageUpdate
+
 other_pages_to_initialize = [
     HomePageInitializer,
     FooterInitializer,
@@ -118,6 +121,10 @@ snippets_to_initialize = [
     ZoomgovProceedingRibbonInitializer,
 ]
 
+pages_to_update = [
+    HomePageUpdate,
+]
+
 
 class Command(BaseCommand):
     help = "Create initial pages and form records if they don't already exist."
@@ -132,3 +139,9 @@ class Command(BaseCommand):
             page_instance.create()
 
         self.stdout.write(self.style.SUCCESS("All pages have been initialized."))
+
+        for page_class in pages_to_update:
+            page_instance = page_class(self.stdout)
+            page_instance.update()
+
+        self.stdout.write(self.style.SUCCESS("All pages have been updated."))
