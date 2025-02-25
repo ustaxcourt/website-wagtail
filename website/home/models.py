@@ -171,7 +171,12 @@ class CommonBlock(blocks.StreamBlock):
         ]
     )
     h4 = blocks.CharBlock()
-    nameBadge = blocks.CharBlock()
+    clickableButton = blocks.StructBlock(
+        [
+            ("text", blocks.CharBlock()),
+            ("url", blocks.CharBlock(required=False)),
+        ]
+    )
     paragraph = blocks.RichTextBlock()
     hr = blocks.BooleanBlock()
     image = ImageBlock()
@@ -225,7 +230,7 @@ class CommonBlock(blocks.StreamBlock):
 
 
 class ColumnBlock(blocks.StructBlock):
-    columns = blocks.ListBlock(CommonBlock())
+    column = blocks.ListBlock(CommonBlock())
 
 
 class EnhancedStandardPage(NavigationMixin):
@@ -306,7 +311,7 @@ class EnhancedStandardPage(NavigationMixin):
                     )
                 ),
             ),
-            ("column", ColumnBlock()),
+            ("columns", ColumnBlock()),
         ]
     )
     content_panels = Page.content_panels + [
