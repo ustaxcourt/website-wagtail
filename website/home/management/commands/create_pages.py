@@ -65,6 +65,7 @@ from home.management.commands.pages.getting_ready_page import (
 
 # Updates
 from home.management.commands.pages.update_home_page import HomePageUpdate
+from home.management.commands.pages.update_footer import FooterPageUpdate
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -121,9 +122,7 @@ snippets_to_initialize = [
     ZoomgovProceedingRibbonInitializer,
 ]
 
-pages_to_update = [
-    HomePageUpdate,
-]
+pages_to_update = [HomePageUpdate, FooterPageUpdate]
 
 
 class Command(BaseCommand):
