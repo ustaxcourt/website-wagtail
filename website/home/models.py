@@ -162,7 +162,7 @@ class NavigationRibbon(ClusterableModel):
 
 
 class CommonBlock(blocks.StreamBlock):
-    h3WithAnchorTag = blocks.StructBlock(
+    h2WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),

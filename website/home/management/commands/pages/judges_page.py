@@ -40,7 +40,7 @@ class JudgesPageInitializer(PageInitializer):
                             "column": [
                                 [  # First column
                                     {
-                                        "type": "h3WithAnchorTag",
+                                        "type": "h2WithAnchorTag",
                                         "value": {
                                             "text": "Judges",
                                             "anchortag": "JUDGES",
@@ -182,7 +182,7 @@ class JudgesPageInitializer(PageInitializer):
                                 ],
                                 [  # Second column
                                     {
-                                        "type": "h3WithAnchorTag",
+                                        "type": "h2WithAnchorTag",
                                         "value": {
                                             "text": "Senior Judges",
                                             "anchortag": "SENIOR",
@@ -268,7 +268,7 @@ class JudgesPageInitializer(PageInitializer):
                                 ],
                                 [  # Third column
                                     {
-                                        "type": "h3WithAnchorTag",
+                                        "type": "h2WithAnchorTag",
                                         "value": {
                                             "text": "Special Trial Judges",
                                             "anchortag": "SPECIAL",
