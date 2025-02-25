@@ -162,70 +162,17 @@ class NavigationRibbon(ClusterableModel):
 
 
 class CommonBlock(blocks.StreamBlock):
-    h2 = blocks.CharBlock()
-    h3 = blocks.CharBlock()
     h3WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
         ]
     )
-    h4 = blocks.CharBlock()
     clickableButton = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("url", blocks.CharBlock(required=False)),
         ]
-    )
-    paragraph = blocks.RichTextBlock()
-    hr = blocks.BooleanBlock()
-    image = ImageBlock()
-    links = blocks.StructBlock(
-        [
-            (
-                "class",
-                blocks.ChoiceBlock(
-                    choices=[
-                        ("indented", IndentStyle.INDENTED),
-                        ("unindented", IndentStyle.UNINDENTED),
-                    ],
-                    default=IndentStyle.INDENTED,
-                ),
-            ),
-            (
-                "links",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("title", blocks.CharBlock()),
-                            (
-                                "icon",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        (
-                                            icon.value,
-                                            icon.name.replace("_", " ").title(),
-                                        )
-                                        for icon in IconCategories
-                                    ]
-                                ),
-                            ),
-                            ("document", DocumentChooserBlock(required=False)),
-                            ("url", blocks.CharBlock(required=False)),
-                        ]
-                    )
-                ),
-            ),
-        ]
-    )
-    questionanswers = blocks.ListBlock(
-        blocks.StructBlock(
-            [
-                ("question", blocks.CharBlock(required=False)),
-                ("answer", blocks.RichTextBlock()),
-                ("anchortag", blocks.CharBlock()),
-            ]
-        )
     )
 
 

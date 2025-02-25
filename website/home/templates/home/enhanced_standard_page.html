@@ -121,21 +121,13 @@
                     {% for column in block.value.column %}
                         <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
                             {% for sub_block in column %}
-                                {% if sub_block.block_type == 'h2' %}
-                                    <h2>{{ sub_block.value }}</h2>
-                                {% elif sub_block.block_type == 'h3' %}
-                                    <h3>{{ sub_block.value }}</h3>
-                                {% elif sub_block.block_type == 'h3WithAnchorTag' %}
+                                {% if sub_block.block_type == 'h3WithAnchorTag' %}
                                     <a href="{{ page_url }}#{{ sub_block.value.anchortag }}"
                                        title="{{ sub_block.value.anchortag }}">
                                         <div class="ti ti-bookmark-filled bookmark"
                                              id="{{ sub_block.value.anchortag }}"></div>
                                     </a>
                                     <h3>{{ sub_block.value.text }}</h3>
-                                {% elif sub_block.block_type == 'paragraph' %}
-                                    <p>{{ sub_block.value }}</p>
-                                {% elif sub_block.block_type == 'nameBadge' %}
-                                    <div class="usa-button">{{ sub_block.value }}</div>
                                 {% elif sub_block.block_type == 'clickableButton' %}
                                     <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                                 {% endif %}
