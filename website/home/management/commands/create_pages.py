@@ -119,7 +119,7 @@ snippets_to_initialize = [
     ZoomgovProceedingRibbonInitializer,
 ]
 
-pages_to_update = [HomePageInitializer, FooterInitializer]
+pages_to_update = [HomePageInitializer]
 
 
 class Command(BaseCommand):
