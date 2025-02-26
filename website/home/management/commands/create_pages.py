@@ -62,6 +62,7 @@ from home.management.commands.pages.guidence_for_practitioners_page import (
 from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
 )
+from home.management.commands.pages.rules_page import RulesPageInitializer
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -87,6 +88,7 @@ efiling_pages_to_initialize = [
 ]
 
 rules_and_guidance = [
+    RulesPageInitializer,
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
