@@ -4,58 +4,87 @@ from home.models import EnhancedStandardPage, NavigationCategories
 
 
 body = [
+    {
+        "type": "paragraph",
+        "value": "On this page you will find the Court's current Rules of Practice and Procedure, forms, and fee schedule. You will also find information regarding past amendments to the Rules.",
+    },
+    {"type": "hr", "value": True},
+    # Add Rules of Practice and Procedure section
     {"type": "h2", "value": "Rules of Practice and Procedure"},
     {
         "type": "links",
         "value": {
+            "class": "with-bullets",
             "links": [
                 {
-                    "title": "Rule 1. Rulemaking Authority, Scope of Rules, Publication of Rules and Amendments, Construction",
+                    "title": "Complete Rules of Practice and Procedure (current through amendments of August 8, 2024)",
                     "icon": "PDF",
-                    "document": "Rule-1_Amended_03202023.pdf",
+                    "document": "Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf",
                     "url": None,
                 },
                 {
-                    "title": "Rule 2. Effective Date",
-                    "icon": "PDF",
-                    "document": "Rule-2.pdf",
-                    "url": None,
+                    "title": "Individual Rules by Title",
+                    "icon": None,
+                    "document": None,
+                    "url": "#ROPP",
                 },
                 {
-                    "title": "Rule 3. Definitions",
-                    "icon": "PDF",
-                    "document": "Rule-3_Amended_03202023.pdf",
-                    "url": None,
+                    "title": "Forms",
+                    "icon": None,
+                    "document": None,
+                    "url": "/case-related-forms",
                 },
-            ]
+                {
+                    "title": "Fee Schedule",
+                    "icon": None,
+                    "document": None,
+                    "url": "/fees-and-charges",
+                },
+                {
+                    "title": "Judicial Conduct and Disability Procedures",
+                    "icon": None,
+                    "document": None,
+                    "url": "/jcdp",
+                },
+            ],
         },
     },
-    {"type": "h2", "value": "Rules of Practice and Procedure"},
+    {"type": "hr", "value": True},
+    # Add Rules Amendments section
+    {"type": "h2", "value": "Rules Amendments"},
     {
         "type": "links",
         "value": {
+            "class": "with-bullets",
             "links": [
                 {
-                    "title": "Rule 1. Rulemaking Authority, Scope of Rules, Publication of Rules and Amendments, Construction",
+                    "title": "Guide to Rules Amendments and Notes",
                     "icon": "PDF",
-                    "document": "Rule-1_Amended_03202023.pdf",
+                    "document": "Guide_to_Rules_Amendments_and_Notes.pdf",
                     "url": None,
                 },
                 {
-                    "title": "Rule 2. Effective Date",
-                    "icon": "PDF",
-                    "document": "Rule-2.pdf",
-                    "url": None,
+                    "title": "Notices of Rule Amendments",
+                    "icon": None,
+                    "document": None,
+                    "url": "/notices-of-rule-amendments",
                 },
                 {
-                    "title": "Rule 3. Definitions",
-                    "icon": "PDF",
-                    "document": "Rule-3_Amended_03202023.pdf",
-                    "url": None,
+                    "title": "Comments and Suggestions",
+                    "icon": None,
+                    "document": None,
+                    "url": "/rules-comments",
                 },
-            ]
+            ],
         },
     },
+    {"type": "hr", "value": True},
+    {"type": "h2", "value": "Rules of Practice and Procedure"},
+    {
+        "type": "paragraph",
+        "value": 'NOTE: In order to reduce download time, each Rule has been stored as a separate PDF file. The Rules may be purchased in loose-leaf form from the Clerk\'s Office for $20.00 by writing to the United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217, and enclosing a check or money order for that amount payable to the "Clerk, United States Tax Court." Please do not send cash.<br><br>Adobe Acrobat Reader is required to view and print the Rules of Practice and Procedure. Adobe Acrobat Reader can be obtained free of charge from <a href="https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html" target="_blank">www.adobe.com</a>.',
+    },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title I. Rulemaking Authority, Scope of Rules, Publication, Construction, Effective Date, Definitions",
@@ -85,6 +114,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title II. The Court"},
     {
         "type": "links",
@@ -117,6 +147,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title III. Commencement of Case, Service and Filing of Papers, Form and Style of Papers, Appearance and Representation, Computation of Time",
@@ -176,6 +207,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title IV. Pleadings"},
     {
         "type": "links",
@@ -256,6 +288,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title V. Motions"},
     {
         "type": "links",
@@ -318,6 +351,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title VI. Parties"},
     {
         "type": "links",
@@ -356,6 +390,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title VII. Discovery"},
     {
         "type": "links",
@@ -394,6 +429,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title VIII. Depositions To Perpetuate Evidence"},
     {
         "type": "links",
@@ -438,6 +474,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title IX. Admissions and Stipulations"},
     {
         "type": "links",
@@ -470,6 +507,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title X. General Provisions Governing Discovery, Depositions and Requests for Admission",
@@ -511,6 +549,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XI. Pretrial Conferences"},
     {
         "type": "links",
@@ -525,6 +564,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XII. Decision Without Trial"},
     {
         "type": "links",
@@ -563,6 +603,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XIII. Calendars and Continuances"},
     {
         "type": "links",
@@ -595,6 +636,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XIV. Trials"},
     {
         "type": "links",
@@ -687,6 +729,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XV. Decision"},
     {
         "type": "links",
@@ -713,6 +756,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XVI. Posttrial Proceedings"},
     {
         "type": "links",
@@ -745,6 +789,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XVII. Small Tax Cases"},
     {
         "type": "links",
@@ -783,6 +828,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XVIII. Special Trial Judges"},
     {
         "type": "links",
@@ -815,6 +861,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XIX. Appeals"},
     {
         "type": "links",
@@ -847,6 +894,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XX. Practice Before the Court"},
     {
         "type": "links",
@@ -873,6 +921,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXI. Declaratory Judgments"},
     {
         "type": "links",
@@ -935,6 +984,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXII. Disclosure Actions"},
     {
         "type": "links",
@@ -1009,6 +1059,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title XXIII. Claims for Litigation and Administrative Costs",
@@ -1044,6 +1095,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXIV. TEFRA Partnership Actions"},
     {
         "type": "links",
@@ -1124,6 +1176,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXIV.A. Partnership Actions Under BBA Section 1101"},
     {
         "type": "links",
@@ -1174,6 +1227,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXV. Supplemental Proceedings"},
     {
         "type": "links",
@@ -1200,6 +1254,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXVI. Actions for Administrative Costs"},
     {
         "type": "links",
@@ -1238,6 +1293,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title XXVII. Actions for Review of Failure To Abate Interest",
@@ -1279,6 +1335,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title XXVIII. Actions for Redetermination of Employment Status",
@@ -1320,6 +1377,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXIX. Large Partnership Actions"},
     {
         "type": "links",
@@ -1364,6 +1422,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title XXX. Actions for Declaratory Judgment Relating to Treatment of Items Other Than Partnership Items With Respect to an Oversheltered Return",
@@ -1417,6 +1476,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title XXXI. Actions for Determination of Relief From Joint and Several Liability on a Joint Return",
@@ -1464,6 +1524,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXXII. Lien and Levy Actions"},
     {
         "type": "links",
@@ -1502,6 +1563,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {"type": "h2", "value": "Title XXXIII. Whistleblower Actions"},
     {
         "type": "links",
@@ -1546,6 +1608,7 @@ body = [
             ]
         },
     },
+    {"type": "hr", "value": True},
     {
         "type": "h2",
         "value": "Title XXXIV. Certification and Failure to Reverse Certification Action with Respect to Passports",
@@ -1582,6 +1645,134 @@ body = [
                     "title": "Rule 354. Joinder of Issue in Certification Action",
                     "icon": "PDF",
                     "document": "Rule-354.pdf",
+                    "url": None,
+                },
+            ]
+        },
+    },
+    {"type": "hr", "value": True},
+    {"type": "h2", "value": "Appendix"},
+    {
+        "type": "paragraph",
+        "value": 'The forms that comprise the appendix can also be found on the <a href="/case-related-forms">Case Related Forms</a> page.',
+    },
+    {
+        "type": "links",
+        "value": {
+            "links": [
+                {
+                    "title": "Form 1. Petition (Sample Format)",
+                    "icon": "PDF",
+                    "document": None,
+                    "url": None,
+                    "text_only": True,
+                },
+                {
+                    "title": "Form 2. Petition (Simplified Form)",
+                    "icon": "PDF",
+                    "document": "Petition_Simplified_Form_2.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 3. Petition for Administrative Costs",
+                    "icon": "PDF",
+                    "document": "Petition_for_Administrative_Costs_Form_3.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 4. Statement of Taxpayer Identification Number",
+                    "icon": "PDF",
+                    "document": "Form_4_Statement_of_Taxpayer_Identification_Number.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 5. Request for Place of Trial",
+                    "icon": "PDF",
+                    "document": "Form_5_Request_for_Place_of_Trial.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 6. Corporate Disclosure Statement",
+                    "icon": "PDF",
+                    "document": "Corporate_Disclosure_Statement_Form.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 7. Entry of Appearance",
+                    "icon": "PDF",
+                    "document": "EOA_Form_7.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 8. Substitution of Counsel",
+                    "icon": "PDF",
+                    "document": "SOC_Form_8.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 9. Certificate of Service",
+                    "icon": "PDF",
+                    "document": "Certificate_of_Service_Form_-9.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 10. Notice of Change of Address",
+                    "icon": "PDF",
+                    "document": "NOCOA_Form_10.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 11. Notice of Election to Intervene",
+                    "icon": "PDF",
+                    "document": "Notice_of_Election_to_Intervene_Form_11.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 12. Notice of Election to Participate",
+                    "icon": "PDF",
+                    "document": "Notice_of_Election_to_Participate_Form_12.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 13. Notice of Intervention",
+                    "icon": "PDF",
+                    "document": "Notice_of_Intervention_Form_13.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 14A. Subpoena to Appear and Testify at a Hearing or Trial",
+                    "icon": "PDF",
+                    "document": "Subpoena_Appear_Testify_Hearing_Or_Trial.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 14B. Subpoena to Testify at a Deposition",
+                    "icon": "PDF",
+                    "document": "Subpoena_To_Testify_Deposition.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 15. Application for Order To Take Deposition To Perpetuate Evidence",
+                    "icon": "PDF",
+                    "document": "AOTD_Form_15.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 16. Certificate on Return",
+                    "icon": "PDF",
+                    "document": "Certificate_on_Return_of_Deposition_Form_16.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 17. Notice of Appeal to Court of Appeals",
+                    "icon": "PDF",
+                    "document": "Notice_of_Appeal_Form_17.pdf",
+                    "url": None,
+                },
+                {
+                    "title": "Form 18. Unsworn Declaration Under Penalty of Perjury",
+                    "icon": "PDF",
+                    "document": "Unsworn_Declaration_Form_18.pdf",
                     "url": None,
                 },
             ]

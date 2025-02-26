@@ -88,10 +88,10 @@ efiling_pages_to_initialize = [
 ]
 
 rules_and_guidance = [
-    RulesPageInitializer,
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    RulesPageInitializer,
     PetitionersStartPageInitializer,
     PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
