@@ -102,13 +102,13 @@ module "alb" {
       target_type      = "ip"
 
       health_check = {
-        healthy_threshold   = 6
-        interval           = 60
+        healthy_threshold   = 3
+        interval           = 30
         path               = "/"
         port               = "traffic-port"
         protocol          = "HTTP"
-        timeout           = 15
-        unhealthy_threshold = 6
+        timeout           = 5
+        unhealthy_threshold = 3
       }
     }
   ]
