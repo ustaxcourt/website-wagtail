@@ -24,7 +24,10 @@ describe('Transcripts & Copies Page', () => {
 
     // Check internal link
     cy.get('a[href="/dawson"]')
+      .contains('Register for DAWSON instructions')
       .should('exist')
-      .and('have.text', 'Register for DAWSON instructions')
+      .then(($link) => {
+        expect($link.text().trim()).to.equal('Register for DAWSON instructions')
+      })
   })
 })

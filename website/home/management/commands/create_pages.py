@@ -43,6 +43,9 @@ from home.management.commands.pages.petitioners_about_page import (
 from home.management.commands.pages.petitioners_before_trial_page import (
     PetitionersBeforeTrialInitializer,
 )
+from home.management.commands.pages.petitioners_after_trial_page import (
+    PetitionersAfterTrialInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
@@ -66,6 +69,7 @@ from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
 )
 from home.management.commands.pages.judges_page import JudgesPageInitializer
+
 
 from home.management.commands.pages.judicial_conduct_and_disability_procedures_page import (
     JudicialConductAndDisabilityProceduresPageInitializer,
@@ -102,6 +106,8 @@ rules_and_guidance = [
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
+    PetitionersAfterTrialInitializer,
+    PetitionersBeforeTrialInitializer,
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
@@ -129,6 +135,8 @@ snippets_to_initialize = [
     ZoomgovProceedingRibbonInitializer,
 ]
 
+pages_to_update = [HomePageInitializer, FooterInitializer]
+
 
 class Command(BaseCommand):
     help = "Create initial pages and form records if they don't already exist."
@@ -143,3 +151,9 @@ class Command(BaseCommand):
             page_instance.create()
 
         self.stdout.write(self.style.SUCCESS("All pages have been initialized."))
+
+        for page_class in pages_to_update:
+            page_instance = page_class(self.stdout)
+            page_instance.update()
+
+        self.stdout.write(self.style.SUCCESS("All pages have been updated."))
