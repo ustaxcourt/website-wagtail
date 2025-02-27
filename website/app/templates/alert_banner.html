@@ -1,92 +1,91 @@
 {% load static %}
-
 <style>
-  .alert-banner {
-    background-color: #faf3cf;
-    color: #000;
-    font-weight: bold;
-
-    p {
-      margin-top: 0;
-      margin-bottom: 0;
-      line-height: 1.2;
-    }
-
-    a {
-      color: #000;
-      text-decoration: underline;
-    }
-
-    .close-btn {
-      cursor: pointer;
-      border: none;
-      background-color: #0000;
-
-      &:hover {
-        color: #333;
-      }
-    }
-
-    .alert-content {
-      display: flex;
-      justify-content: space-evenly;
-      min-height: 48px;
-      align-items: center;
-    }
-  }
-
-  @media(min-width:1025px) {
     .alert-banner {
-      p {
-        font-size: 17px;
-      }
+        background-color: #faf3cf;
+        color: #000;
+        font-weight: bold;
 
-      .alert-content {
-        padding-left: 2rem;
-        gap: 145px;
-      }
+        p {
+            margin-top: 0;
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+
+        a {
+            color: #000;
+            text-decoration: underline;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            border: none;
+            background-color: #0000;
+
+            &:hover {
+                color: #333;
+            }
+        }
+
+        .alert-content {
+            display: flex;
+            justify-content: space-evenly;
+            min-height: 48px;
+            align-items: center;
+        }
     }
-  }
 
-  @media(max-width:1024px) {
-    .alert-banner {
-      p {
-        font-size: 15px;
-      }
+    @media(min-width:1025px) {
+        .alert-banner {
+            p {
+                font-size: 17px;
+            }
 
-      .alert-content {
-        padding-left: 1rem;
-        gap: 145px;
-      }
+            .alert-content {
+                padding-left: 2rem;
+                gap: 145px;
+            }
+        }
     }
-  }
 
-  @media(max-width:768px) {
-    .alert-banner {
-      p {
-        font-size: 13px;
-      }
+    @media(max-width:1024px) {
+        .alert-banner {
+            p {
+                font-size: 15px;
+            }
 
-      .alert-content {
-        padding-left: 1rem;
-        gap: 0px;
-      }
+            .alert-content {
+                padding-left: 1rem;
+                gap: 145px;
+            }
+        }
     }
-  }
+
+    @media(max-width:768px) {
+        .alert-banner {
+            p {
+                font-size: 13px;
+            }
+
+            .alert-content {
+                padding-left: 1rem;
+                gap: 0px;
+            }
+        }
+    }
 </style>
-
 <div class="alert-banner" id="alertBanner">
-  <div class="alert-content">
-    <p>This is a testing site for the U.S. Tax Court and not intended for public use.  To learn more about starting a case, visit the <a href="https://www.ustaxcourt.gov/">U.S. Tax Court website.</a>
-    </p>
-    <button class="close-btn" onclick="closeBanner()">
-    <img src="data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot;><path d=&quot;M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z&quot;/></svg>" alt="close">
-    </button>
-  </div>
-</div>
-
-<script type="text/javascript">
-  function closeBanner() {
-    document.getElementById("alertBanner").style.display = "none";
-  };
-</script>
+    <div class="alert-content">
+        <p>
+            This is a testing site for the U.S. Tax Court and not intended for public use.  To learn more about starting a case, visit the <a href="https://www.ustaxcourt.gov/">U.S. Tax Court website.</a>
+        </p>
+        <button class="close-btn" onclick="closeBanner()">
+            <img src="data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot;><path d=&quot;M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z&quot;/></svg>"
+                 alt="close">
+            </button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function closeBanner() {
+            document.getElementById("alertBanner").style.display = "none";
+        };
+    </script>
