@@ -11,11 +11,11 @@ check:
 	. $(VENV) && python manage.py check --tag models --tag compatibility
 	. $(VENV) && python manage.py check --database default
 	. $(VENV) && ruff check
-	. $(VENV) && djlint ./home/ --lint --profile=django
+	. $(VENV) && djlint . --lint
 
 format:
 	. $(VENV) && ruff format
-	. $(VENV) && djlint ./home/ --reformat --format-css --format-js --profile=django
+	. $(VENV) && djlint . --reformat --format-css --format-js
 
 fix:
 	. $(VENV) && ruff check --fix
