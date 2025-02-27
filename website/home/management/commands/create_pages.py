@@ -69,6 +69,7 @@ from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
 )
 from home.management.commands.pages.judges_page import JudgesPageInitializer
+from home.management.commands.pages.misson_page import MissionPageInitializer
 
 
 other_pages_to_initialize = [
@@ -113,6 +114,7 @@ rules_and_guidance = [
 ]
 
 about_the_court = [
+    MissionPageInitializer,
     JudgesPageInitializer,
     EmploymentPageInitializer,
 ]
