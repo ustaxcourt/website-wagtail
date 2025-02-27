@@ -43,6 +43,9 @@ from home.management.commands.pages.petitioners_about_page import (
 from home.management.commands.pages.petitioners_before_trial_page import (
     PetitionersBeforeTrialInitializer,
 )
+from home.management.commands.pages.petitioners_after_trial_page import (
+    PetitionersAfterTrialInitializer,
+)
 from home.management.commands.pages.administrative_orders_page import (
     AdministrativeOrdersPageInitializer,
 )
@@ -98,6 +101,8 @@ rules_and_guidance = [
     PetitionersStartPageInitializer,
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
+    PetitionersBeforeTrialInitializer,
+    PetitionersAfterTrialInitializer,
     PetitionersBeforeTrialInitializer,
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
