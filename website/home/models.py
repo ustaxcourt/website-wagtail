@@ -160,7 +160,22 @@ class NavigationRibbon(ClusterableModel):
         return self.name
 
 
-class EnhancedStandardPage(NavigationMixin):
+class PhotoDedicationBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=255, required=True)
+    photo = ImageBlock(
+        required=False, help_text="Upload an image to display with this dedication"
+    )
+    paragraph_text = blocks.RichTextBlock(
+        required=False,
+        help_text="Add the main paragraph text for the dedication section",
+    )
+
+    class Meta:
+        icon = "image"
+        label = "Photo Dedication"
+
+
+class EnhancedStandardPage(NavigationMixin, Page):
     class Meta:
         abstract = False
 
@@ -172,6 +187,12 @@ class EnhancedStandardPage(NavigationMixin):
         related_name="+",
     )
 
+    title_text = models.CharField(
+        max_length=255, help_text="Title of the section", blank=True
+    )
+    description = RichTextField(blank=True, help_text="Description of the section")
+    video_url = models.URLField(blank=True, help_text="YouTube embed URL")
+
     body = StreamField(
         [
             ("h2", blocks.CharBlock()),
@@ -180,6 +201,7 @@ class EnhancedStandardPage(NavigationMixin):
             ("paragraph", blocks.RichTextBlock()),
             ("hr", blocks.BooleanBlock()),
             ("image", ImageBlock()),
+            ("photo_dedication", PhotoDedicationBlock()),
             (
                 "links",
                 blocks.StructBlock(
@@ -238,10 +260,23 @@ class EnhancedStandardPage(NavigationMixin):
                     )
                 ),
             ),
+            (
+                "embedded_video",
+                blocks.StructBlock(
+                    [
+                        ("title", blocks.CharBlock(required=False)),
+                        ("description", blocks.RichTextBlock(required=False)),
+                        ("video_url", blocks.URLBlock(required=False)),
+                    ]
+                ),
+            ),
         ]
     )
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
+        FieldPanel("title_text"),
+        FieldPanel("description"),
+        FieldPanel("video_url"),
         FieldPanel("body"),
     ]
 
@@ -424,8 +459,20 @@ class SimpleCardGroup(ClusterableModel):
 class PhotoDedication(models.Model):
     """Model to store data for a dedication."""
 
-    card = ParentalKey(
-        "DawsonPage", related_name="photo_dedication", on_delete=models.CASCADE
+    dawson_page = ParentalKey(
+        "DawsonPage",
+        related_name="photo_dedication",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
+    enhanced_standard_page = ParentalKey(
+        "EnhancedStandardPage",
+        related_name="photo_dedications",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     title = models.CharField(
@@ -452,6 +499,11 @@ class PhotoDedication(models.Model):
         FieldPanel("photo"),
         FieldPanel("paragraph_text"),
     ]
+
+
+class Meta:
+    verbose_name = "Photo Dedication"
+    verbose_name_plural = "Photo Dedication"
 
 
 class DawsonPage(StandardPage):

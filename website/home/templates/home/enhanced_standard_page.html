@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 {% load filters %}
 {% comment %} {% load custom_icons %} {% endcomment %}
 {% load static %}
@@ -20,6 +21,79 @@
                     position: absolute;
                     left: -22px;
                     top: 24px;
+                }
+            }
+
+            .dedication {
+                gap: 1rem;
+
+                .dedication-image {
+                    width: 480px;
+                    float: right;
+                    display: block;
+                    padding: 20px 10px 20px 10px;
+
+                    img {
+                        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
+                        width: 100%;
+                        height: auto;
+                        display: inline-block;
+                        margin-bottom: 21px;
+                    }
+                }
+
+                .dedication-text {
+                    flex: 1;
+                    font-size: 16px;
+
+                    .title {
+                        font-weight: bold;
+                    }
+                }
+            }
+
+            #video-container {
+
+                .video-desc-block {
+                    margin-top: 2em;
+                    padding: 40px;
+                    background-color: rgba(255, 255, 255, 1.00);
+                    border-radius: 0px;
+                    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.33);
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 20px;
+                }
+
+                .video-container iframe {
+                    border: none;
+                    width: 640px;
+                    height: 360px;
+                    border-width: 2px;
+                    border-style: inset;
+                }
+
+                .description-block {
+                    margin-top: -20px;
+
+                    p {
+                        margin-left: 40px;
+                    }
+
+                    blockquote {
+                        font-size: 18px;
+                        line-height: 1.45;
+                        padding: 0.5rem 1rem;
+                        margin-bottom: 1rem;
+                        border-left: 0.25rem solid #eceeef;
+
+                        cite {
+                            display: block;
+                            font-size: 17px;
+                            color: #818a91;
+                            font-style: italic;
+                        }
+                    }
                 }
             }
         }
@@ -84,6 +158,22 @@
                 {% endif %}
             {% endfor %}
         </ul>
+        <hr/>
+        {% for block in page.body %}
+        {% if block.block_type == "photo_dedication" %}
+        <div class="dedication">
+            {% if block.value.photo %}
+            <div class="dedication-image">
+                {% image block.value.photo width-200 alt="US Tax Court Building" %}
+            </div>
+            {% endif %}
+            <div class="dedication-text">
+                <p class="title">{{ block.value.title }}</p>
+                {{ block.value.paragraph_text | richtext }}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
     {% elif block.block_type == 'questionanswers' %}
         {% with page_url=page.url|strip_trailing_slash %}
             <ul class="links indented">
@@ -107,6 +197,22 @@
                 <hr />
             {% endfor %}
         {% endwith %}
+        <hr/>
+        {% elif block.block_type == 'embedded_video' %}
+        <hr/>
+        <div id="video-container">
+            <h2>{{ block.value.title }}</h2>
+            <div class="video-desc-block">
+                <div class="video-container">
+                    <iframe title="Victor Lundy:Sulptor of Space" src="{{ block.value.video_url }}"
+                            allowfullscreen></iframe>
+                </div>
+                <div class="description-block">
+                    <p>{{ block.value.description }}</p>
+                </div>
+            </div>
+        </div>
+        <hr/>
     {% endif %}
 {% endfor %}
 </div>
