@@ -65,6 +65,7 @@ from home.management.commands.pages.guidence_for_practitioners_page import (
 from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
 )
+from home.management.commands.pages.judges_page import JudgesPageInitializer
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -106,6 +107,7 @@ rules_and_guidance = [
 ]
 
 about_the_court = [
+    JudgesPageInitializer,
     EmploymentPageInitializer,
 ]
 
