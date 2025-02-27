@@ -67,6 +67,10 @@ from home.management.commands.pages.getting_ready_page import (
 )
 from home.management.commands.pages.judges_page import JudgesPageInitializer
 
+from home.management.commands.pages.judicial_conduct_and_disability_procedures_page import (
+    JudicialConductAndDisabilityProceduresPageInitializer,
+)
+
 other_pages_to_initialize = [
     HomePageInitializer,
     FooterInitializer,
@@ -104,6 +108,7 @@ rules_and_guidance = [
     ClinicsProBonoProgramsPageInitializer,
     GuidenceForPractitionersPageInitializer,
     GettingReadyPageInitializer,
+    JudicialConductAndDisabilityProceduresPageInitializer,
 ]
 
 about_the_court = [
