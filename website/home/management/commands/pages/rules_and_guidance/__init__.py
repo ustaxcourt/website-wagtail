@@ -15,7 +15,7 @@ from .zoomgov_proceedings_page import ZoomgovProceedingPageInitializer
 from .judicial_conduct_and_disability_procedures_page import (
     JudicialConductAndDisabilityProceduresPageInitializer,
 )
-
+from .rules_page import RulesPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
     RemoteProceedingsPageInitializer,
@@ -34,4 +34,5 @@ rules_and_guidance_pages_to_initialize = [
     GuidenceForPractitionersPageInitializer,
     GettingReadyPageInitializer,
     JudicialConductAndDisabilityProceduresPageInitializer,
+    RulesPageInitializer,
 ]
