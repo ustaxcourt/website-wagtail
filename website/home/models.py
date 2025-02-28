@@ -161,6 +161,25 @@ class NavigationRibbon(ClusterableModel):
         return self.name
 
 
+class CommonBlock(blocks.StreamBlock):
+    h2WithAnchorTag = blocks.StructBlock(
+        [
+            ("text", blocks.CharBlock()),
+            ("anchortag", blocks.CharBlock(required=False)),
+        ]
+    )
+    clickableButton = blocks.StructBlock(
+        [
+            ("text", blocks.CharBlock()),
+            ("url", blocks.CharBlock(required=False)),
+        ]
+    )
+
+
+class ColumnBlock(blocks.StructBlock):
+    column = blocks.ListBlock(CommonBlock())
+
+
 class EnhancedStandardPage(NavigationMixin):
     class Meta:
         abstract = False
@@ -243,6 +262,7 @@ class EnhancedStandardPage(NavigationMixin):
                     )
                 ),
             ),
+            ("columns", ColumnBlock()),
         ]
     )
     content_panels = Page.content_panels + [

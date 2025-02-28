@@ -1,102 +1,100 @@
 {% load static %}
-
 {% load wagtailcore_tags %}
-
 <style>
-  footer#app-footer {
-    .main {
-        background: var(--medium-gray);
-        padding: 20px 0px;
-        line-height: 1.6rem;
+    footer#app-footer {
+        .main {
+            background: var(--medium-gray);
+            padding: 20px 0px;
+            line-height: 1.6rem;
 
-        .title {
-            font-size: 1.4rem;
-            font-family: var(--heading-font);
-            font-weight: 600;
-            line-height: 2rem;
-            margin-bottom: 8px;
-            -webkit-font-smoothing: antialiased;
-        }
-    }
-
-    .footer-address {
-        background: var(--dark-gray);
-        color: #555;
-        font-family: var(--font-family);
-        text-align: center;
-        padding-bottom: 20px;
-        padding-top: 20px;
-
-        .content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            .title {
+                font-size: 1.4rem;
+                font-family: var(--heading-font);
+                font-weight: 600;
+                line-height: 2rem;
+                margin-bottom: 8px;
+                -webkit-font-smoothing: antialiased;
+            }
         }
 
-        .phone {
-            white-space: nowrap;
+        .footer-address {
+            background: var(--dark-gray);
+            color: #555;
+            font-family: var(--font-family);
+            text-align: center;
+            padding-bottom: 20px;
+            padding-top: 20px;
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .phone {
+                white-space: nowrap;
+            }
+
+            p {
+                margin-bottom: 0px;
+                margin-top: 4px;
+            }
+
+            hr {
+                width: 100%;
+                height: 1px;
+                margin: 10px;
+            }
+
+            .seal {
+                width: 100px;
+            }
+        }
+
+        h2 {
+            font-size: 20px;
+            line-height: normal;
         }
 
         p {
-            margin-bottom: 0px;
-            margin-top: 4px;
-        }
-
-        hr {
-            width: 100%;
-            height: 1px;
-            margin: 10px;
-        }
-
-        .seal {
-            width: 100px;
+            margin-top: 0px;
         }
     }
-    h2 {
-      font-size: 20px;
-      line-height: normal;
-    }
-    p {
-      margin-top: 0px;
-    }
-  }
 </style>
-
 <footer id="app-footer">
-  <div class="main">
-    <div class="grid-container">
-      <div class="grid-row grid-gap">
-        <div class="grid-col-12 desktop:grid-col">
-          <h2>Technical Questions?</h2>
-          <p>
-            {% with technicalQuestions=settings.home.Footer.technicalQuestions %}
-            {{ technicalQuestions|richtext }}
-            {% endwith %}
-          </p>
+    <div class="main">
+        <div class="grid-container">
+            <div class="grid-row grid-gap">
+                <div class="grid-col-12 desktop:grid-col">
+                    <h2>Technical Questions?</h2>
+                    <p>
+                        {% with technicalQuestions=settings.home.Footer.technicalQuestions %}{{ technicalQuestions|richtext }}{% endwith %}
+                    </p>
+                </div>
+                <div class="grid-col-12 desktop:grid-col">
+                    <h2>Other Questions?</h2>
+                    <p>
+                        {% with otherQuestions=settings.home.Footer.otherQuestions %}{{ otherQuestions|richtext }}{% endwith %}
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="grid-col-12 desktop:grid-col">
-          <h2>Other Questions?</h2>
-          <p>
-            {% with otherQuestions=settings.home.Footer.otherQuestions %}
-            {{ otherQuestions|richtext }}
-            {% endwith %}
-          </p>
+    </div>
+    <div class="footer-address">
+        <div class="grid-container">
+            <div class="content">
+                <a href="/">
+                    <img alt="US Tax Court Logo"
+                         class="seal"
+                         src="{% static 'images/footer/seal.png' %}" />
+                </a>
+                <hr />
+                <p class="font-heading">United States Tax Court</p>
+                <p>
+                    400 Second Street, NW, Washington, DC 20217 | <span class="phone">(202) 521-0700</span>
+                </p>
+                <p>All Rights Reserved</p>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-
-  <div class="footer-address">
-    <div class="grid-container">
-      <div class="content">
-        <a href="/"><img alt="US Tax Court Logo" class="seal" src="{% static 'images/footer/seal.png' %}" /></a>
-
-        <hr />
-
-        <p class="font-heading">United States Tax Court</p>
-        <p>400 Second Street, NW, Washington, DC 20217 | <span class="phone">(202) 521-0700</span></p>
-        <p>All Rights Reserved</p>
-      </div>
-    </div>
-  </div>
 </footer>
