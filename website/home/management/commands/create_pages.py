@@ -75,6 +75,10 @@ from home.management.commands.pages.judicial_conduct_and_disability_procedures_p
     JudicialConductAndDisabilityProceduresPageInitializer,
 )
 
+from home.management.commands.pages.notices_of_rule_amendments_page import (
+    NoticesOfRuleAmendmentsPageInitializer,
+)
+
 other_pages_to_initialize = [
     HomePageInitializer,
     FooterInitializer,
@@ -115,6 +119,7 @@ rules_and_guidance = [
     GuidenceForPractitionersPageInitializer,
     GettingReadyPageInitializer,
     JudicialConductAndDisabilityProceduresPageInitializer,
+    NoticesOfRuleAmendmentsPageInitializer,
 ]
 
 about_the_court = [
