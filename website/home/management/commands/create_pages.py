@@ -1,133 +1,44 @@
 from django.core.management.base import BaseCommand
-from home.management.commands.pages.case_related_forms_page import (
-    CaseRelatedFormPageInitializer,
+
+from home.management.commands.pages.about_the_court import (
+    about_the_court_pages_to_initialize,
 )
-from home.management.commands.pages.dawson_page import DawsonPageInitializer
-from home.management.commands.pages.dawson_search_page import (
-    DawsonSearchPageInitializer,
+
+from home.management.commands.pages.rules_and_guidance import (
+    rules_and_guidance_pages_to_initialize,
 )
+
+from home.management.commands.pages.efiling_and_case_maintenance import (
+    efiling_and_case_maintenance_pages_to_initialize,
+)
+
+from home.management.commands.pages.orders_and_opinions import (
+    orders_and_opinions_pages_to_initialize,
+)
+
 from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
-from home.management.commands.pages.transcripts_and_copies_page import (
-    TranscriptsAndCopiesPageInitializer,
-)
-from home.management.commands.pages.citation_style_manual_page import (
-    CitationStyleManualPageInitializer,
-)
-from home.management.commands.pages.search_page import SearchPageInitializer
-from home.management.commands.pages.todays_orders import TodaysOrdersPageInitializer
-from home.management.commands.pages.todays_opinions import TodaysOpinionsPageInitializer
-from home.management.commands.pages.remote_proceedings_page import (
-    RemoteProceedingsPageInitializer,
-)
-from home.management.commands.pages.zoomgov_proceedings_page import (
-    ZoomgovProceedingPageInitializer,
-)
-from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
-from home.management.commands.pages.guidence_for_petitioners import (
-    GuidenceForPetitionersPageInitializer,
-)
+
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
-)
-from home.management.commands.pages.petitioners_start_page import (
-    PetitionersStartPageInitializer,
-)
-from home.management.commands.pages.petitioners_during_page import (
-    PetitionersDuringPageInitializer,
-)
-from home.management.commands.pages.petitioners_about_page import (
-    PetitionersAboutInitializer,
-)
-from home.management.commands.pages.petitioners_before_trial_page import (
-    PetitionersBeforeTrialInitializer,
-)
-from home.management.commands.pages.petitioners_after_trial_page import (
-    PetitionersAfterTrialInitializer,
-)
-from home.management.commands.pages.administrative_orders_page import (
-    AdministrativeOrdersPageInitializer,
-)
-from home.management.commands.pages.employment_page import (
-    EmploymentPageInitializer,
 )
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
-from home.management.commands.pages.petitioners_glossary_page import (
-    PetitionersGlossaryPageInitializer,
-)
-from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
-from home.management.commands.pages.clinics_pro_bono_page import (
-    ClinicsProBonoProgramsPageInitializer,
-)
-from home.management.commands.pages.guidence_for_practitioners_page import (
-    GuidenceForPractitionersPageInitializer,
-)
-from home.management.commands.pages.getting_ready_page import (
-    GettingReadyPageInitializer,
-)
-from home.management.commands.pages.rules_page import RulesPageInitializer
-from home.management.commands.pages.judges_page import JudgesPageInitializer
-from home.management.commands.pages.judicial_conduct_and_disability_procedures_page import (
-    JudicialConductAndDisabilityProceduresPageInitializer,
-)
 
-other_pages_to_initialize = [
+home_page_initialize = [
     HomePageInitializer,
     FooterInitializer,
     RedirectPageInitializer,
 ]
 
-# NOTE, the order of these dictates the order in the dropdowns.
-orders_opinions_pages_to_initialize = [
-    TodaysOrdersPageInitializer,
-    TodaysOpinionsPageInitializer,
-    SearchPageInitializer,
-    CitationStyleManualPageInitializer,
-    TranscriptsAndCopiesPageInitializer,
-    PamphletsPageInitializer,
-]
-
-# NOTE, the order of these dictates the order in the dropdowns.
-efiling_pages_to_initialize = [
-    DawsonSearchPageInitializer,
-    DawsonPageInitializer,
-    CaseRelatedFormPageInitializer,
-]
-
-rules_and_guidance = [
-    RemoteProceedingsPageInitializer,
-    GuidenceForPetitionersPageInitializer,
-    AdministrativeOrdersPageInitializer,
-    RulesPageInitializer,
-    PetitionersStartPageInitializer,
-    PetitionersAboutInitializer,
-    PetitionersDuringPageInitializer,
-    PetitionersBeforeTrialInitializer,
-    PetitionersAfterTrialInitializer,
-    PetitionersBeforeTrialInitializer,
-    PetitionersGlossaryPageInitializer,
-    RemoteBasicsPageInitializer,
-    ZoomgovProceedingPageInitializer,
-    ClinicsProBonoProgramsPageInitializer,
-    GuidenceForPractitionersPageInitializer,
-    GettingReadyPageInitializer,
-    JudicialConductAndDisabilityProceduresPageInitializer,
-]
-
-about_the_court = [
-    JudgesPageInitializer,
-    EmploymentPageInitializer,
-]
-
-pages_to_initialize = (
-    other_pages_to_initialize
-    + rules_and_guidance
-    + efiling_pages_to_initialize
-    + orders_opinions_pages_to_initialize
-    + about_the_court
+# Ensure Home Page is initialized first
+pages_to_initialize = home_page_initialize + (
+    about_the_court_pages_to_initialize
+    + rules_and_guidance_pages_to_initialize
+    + orders_and_opinions_pages_to_initialize
+    + efiling_and_case_maintenance_pages_to_initialize
 )
 
 snippets_to_initialize = [
