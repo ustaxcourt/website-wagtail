@@ -27,17 +27,14 @@ from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
 
-from home.management.commands.pages.judicial_conduct_and_disability_procedures_page import (
-    JudicialConductAndDisabilityProceduresPageInitializer,
-)
-
-other_pages_to_initialize = [
+home_page_initialize = [
     HomePageInitializer,
     FooterInitializer,
     RedirectPageInitializer,
 ]
 
-pages_to_initialize = (
+# Ensure Home Page is initialized first
+pages_to_initialize = home_page_initialize + (
     about_the_court_pages_to_initialize
     + rules_and_guidance_pages_to_initialize
     + orders_and_opinions_pages_to_initialize
@@ -59,10 +56,6 @@ class Command(BaseCommand):
         for snippet_class in snippets_to_initialize:
             snippet_instance = snippet_class(self.stdout)
             snippet_instance.create()
-
-        for page_class in other_pages_to_initialize:
-            page_instance = page_class(self.stdout)
-            page_instance.create()
 
         for page_class in pages_to_initialize:
             page_instance = page_class(self.stdout)

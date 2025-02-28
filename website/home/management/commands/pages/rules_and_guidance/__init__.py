@@ -12,6 +12,9 @@ from .petitioners_start_page import PetitionersStartPageInitializer
 from .remote_basics import RemoteBasicsPageInitializer
 from .remote_proceedings_page import RemoteProceedingsPageInitializer
 from .zoomgov_proceedings_page import ZoomgovProceedingPageInitializer
+from .judicial_conduct_and_disability_procedures_page import (
+    JudicialConductAndDisabilityProceduresPageInitializer,
+)
 
 
 rules_and_guidance_pages_to_initialize = [
@@ -30,4 +33,5 @@ rules_and_guidance_pages_to_initialize = [
     ClinicsProBonoProgramsPageInitializer,
     GuidenceForPractitionersPageInitializer,
     GettingReadyPageInitializer,
+    JudicialConductAndDisabilityProceduresPageInitializer,
 ]
