@@ -1,7 +1,7 @@
-VENV=~/.venv/website-wagtail/bin/activate
+VENV=../.venv/bin/activate
 
 init:
-	python -m venv ~/.venv/website-wagtail
+	python -m venv ../.venv
 
 cmd:
 	. $(VENV) && $(c)

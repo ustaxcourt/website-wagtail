@@ -266,6 +266,10 @@ class EnhancedStandardPage(NavigationMixin, Page):
                                             DocumentChooserBlock(required=False),
                                         ),
                                         ("url", blocks.CharBlock(required=False)),
+                                        (
+                                            "text_only",
+                                            blocks.BooleanBlock(required=False),
+                                        ),
                                     ]
                                 )
                             ),

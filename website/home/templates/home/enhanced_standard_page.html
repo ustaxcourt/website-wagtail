@@ -10,6 +10,11 @@
                 i {
                     padding-right: .4em
                 }
+
+                &.with-bullets {
+                    list-style-type: disc;
+                    padding-left: 40px;
+                }
             }
 
             .question-answer-block {
@@ -182,6 +187,10 @@
                             <a href="{{ link.document.url }}"
                                data-testid="document-link"
                                title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                        </li>
+                    {% elif link.text_only %}
+                        <li>
+                            <i class="{{ link.icon }}"></i> {{ link.title }}
                         </li>
                     {% else %}
                         <li>

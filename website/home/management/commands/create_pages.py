@@ -71,8 +71,11 @@ from home.management.commands.pages.guidence_for_practitioners_page import (
 from home.management.commands.pages.getting_ready_page import (
     GettingReadyPageInitializer,
 )
+from home.management.commands.pages.rules_page import RulesPageInitializer
 from home.management.commands.pages.judges_page import JudgesPageInitializer
-
+from home.management.commands.pages.judicial_conduct_and_disability_procedures_page import (
+    JudicialConductAndDisabilityProceduresPageInitializer,
+)
 
 other_pages_to_initialize = [
     HomePageInitializer,
@@ -101,6 +104,7 @@ rules_and_guidance = [
     RemoteProceedingsPageInitializer,
     GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    RulesPageInitializer,
     PetitionersStartPageInitializer,
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
@@ -112,6 +116,7 @@ rules_and_guidance = [
     ClinicsProBonoProgramsPageInitializer,
     GuidenceForPractitionersPageInitializer,
     GettingReadyPageInitializer,
+    JudicialConductAndDisabilityProceduresPageInitializer,
 ]
 
 about_the_court = [
