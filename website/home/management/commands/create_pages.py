@@ -27,6 +27,10 @@ from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
 
+from home.management.commands.pages.judicial_conduct_and_disability_procedures_page import (
+    JudicialConductAndDisabilityProceduresPageInitializer,
+)
+
 other_pages_to_initialize = [
     HomePageInitializer,
     FooterInitializer,
