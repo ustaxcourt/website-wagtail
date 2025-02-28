@@ -26,32 +26,34 @@ from home.management.commands.pages.orders_and_opinions.todays_orders import (
 from home.management.commands.pages.orders_and_opinions.todays_opinions import (
     TodaysOpinionsPageInitializer,
 )
-from home.management.commands.pages.remote_proceedings_page import (
+from home.management.commands.pages.rules_and_guidance.remote_proceedings_page import (
     RemoteProceedingsPageInitializer,
 )
-from home.management.commands.pages.zoomgov_proceedings_page import (
+from home.management.commands.pages.rules_and_guidance.zoomgov_proceedings_page import (
     ZoomgovProceedingPageInitializer,
 )
-from home.management.commands.pages.pamphlets_page import PamphletsPageInitializer
+from home.management.commands.pages.orders_and_opinions.pamphlets_page import (
+    PamphletsPageInitializer,
+)
 from home.management.commands.pages.rules_and_guidance.guidence_for_petitioners import (
     GuidenceForPetitionersPageInitializer,
 )
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
-from home.management.commands.pages.petitioners_start_page import (
+from home.management.commands.pages.rules_and_guidance.petitioners_start_page import (
     PetitionersStartPageInitializer,
 )
-from home.management.commands.pages.petitioners_during_page import (
+from home.management.commands.pages.rules_and_guidance.petitioners_during_page import (
     PetitionersDuringPageInitializer,
 )
-from home.management.commands.pages.petitioners_about_page import (
+from home.management.commands.pages.rules_and_guidance.petitioners_about_page import (
     PetitionersAboutInitializer,
 )
-from home.management.commands.pages.petitioners_before_trial_page import (
+from home.management.commands.pages.rules_and_guidance.petitioners_before_trial_page import (
     PetitionersBeforeTrialInitializer,
 )
-from home.management.commands.pages.petitioners_after_trial_page import (
+from home.management.commands.pages.rules_and_guidance.petitioners_after_trial_page import (
     PetitionersAfterTrialInitializer,
 )
 from home.management.commands.pages.rules_and_guidance.administrative_orders_page import (
@@ -63,17 +65,19 @@ from home.management.commands.pages.about_the_court.employment_page import (
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
-from home.management.commands.pages.petitioners_glossary_page import (
+from home.management.commands.pages.rules_and_guidance.petitioners_glossary_page import (
     PetitionersGlossaryPageInitializer,
 )
-from home.management.commands.pages.remote_basics import RemoteBasicsPageInitializer
+from home.management.commands.pages.rules_and_guidance.remote_basics import (
+    RemoteBasicsPageInitializer,
+)
 from home.management.commands.pages.rules_and_guidance.clinics_pro_bono_page import (
     ClinicsProBonoProgramsPageInitializer,
 )
 from home.management.commands.pages.rules_and_guidance.guidence_for_practitioners_page import (
     GuidenceForPractitionersPageInitializer,
 )
-from home.management.commands.pages.getting_ready_page import (
+from home.management.commands.pages.rules_and_guidance.getting_ready_page import (
     GettingReadyPageInitializer,
 )
 from home.management.commands.pages.about_the_court.judges_page import (
