@@ -2,7 +2,6 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load filters %}
-{% comment %} {% load custom_icons %} {% endcomment %}
 {% load static %}
 {% block extra_css %}
     <style>
@@ -22,6 +21,15 @@
                     left: -22px;
                     top: 24px;
                 }
+            }
+            .usa-button {
+                width: 95%;
+                margin-top: 0.5em;
+                margin-bottom: 0.5em;
+                display: block;
+                font-weight: normal;
+                font-size: 17px;
+                line-height: 24px;
             }
 
             .dedication {
@@ -113,6 +121,27 @@
                 }
             }
         }
+        @media (max-width: 768px) {
+            #video-container {
+                .video-desc-block {
+                    flex-direction: column;
+                    padding: 20px;
+                    gap: 10px;
+                }
+
+                .video-container iframe {
+                    width: 295PX !important;
+                    height: 250px;
+                }
+
+                .description-block {
+                    margin-top: 10px;
+                    p {
+                        margin-left: 0;
+                    }
+                }
+            }
+        }
     </style>
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
@@ -130,52 +159,40 @@
     </div>
 {% endif %}
 {% for block in page.body %}
-    {% if block.block_type == 'heading' %}
-        <h2>{{ block.value }}</h2>
-    {% elif block.block_type == 'h2' %}
-        <h2>{{ block.value }}</h2>
-    {% elif block.block_type == 'h3' %}
-        <h3>{{ block.value }}</h3>
-    {% elif block.block_type == 'h4' %}
-        <h4>{{ block.value }}</h4>
-    {% elif block.block_type == 'paragraph' %}
-        <p data-testid="page-body-paragraph">{{ block.value }}</p>
-    {% elif block.block_type == 'image' %}
-        <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
-    {% elif block.block_type == 'hr' %}
-        <hr />
-    {% elif block.block_type == 'links' %}
-        <ul class="links {{ block.value.class }}">
-            {% for link in block.value.links %}
-                {% if link.document %}
-                    <li>
-                        <a href="{{ link.document.url }}" data-testid="document-link"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
-                    </li>
-                {% else %}
-                    <li>
-                        {% if link.url %}<a href="{{ link.url }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>{% endif %}
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-        <hr/>
-        {% for block in page.body %}
-        {% if block.block_type == "photo_dedication" %}
-        <div class="dedication">
-            {% if block.value.photo %}
-            <div class="dedication-image">
-                {% image block.value.photo width-200 alt="US Tax Court Building" %}
-            </div>
-            {% endif %}
-            <div class="dedication-text">
-                <p class="title">{{ block.value.title }}</p>
-                {{ block.value.paragraph_text | richtext }}
-            </div>
-        </div>
-        {% endif %}
-        {% endfor %}
-    {% elif block.block_type == 'questionanswers' %}
-        {% with page_url=page.url|strip_trailing_slash %}
+    {% with page_url=page.url|strip_trailing_slash %}
+        {% if block.block_type == 'heading' %}
+            <h2>{{ block.value }}</h2>
+        {% elif block.block_type == 'h2' %}
+            <h2>{{ block.value }}</h2>
+        {% elif block.block_type == 'h3' %}
+            <h3>{{ block.value }}</h3>
+        {% elif block.block_type == 'h4' %}
+            <h4>{{ block.value }}</h4>
+        {% elif block.block_type == 'paragraph' %}
+            <p data-testid="page-body-paragraph">{{ block.value }}</p>
+        {% elif block.block_type == 'image' %}
+            <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
+        {% elif block.block_type == 'hr' %}
+            <hr />
+        {% elif block.block_type == 'links' %}
+            <ul class="links {{ block.value.class }}">
+                {% for link in block.value.links %}
+                    {% if link.document %}
+                        <li>
+                            <a href="{{ link.document.url }}"
+                               data-testid="document-link"
+                               title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            {% if link.url %}
+                                <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% elif block.block_type == 'questionanswers' %}
             <ul class="links indented">
                 {% for q in block.value %}
                     <li>
@@ -196,24 +213,54 @@
                 <div>{{ q.answer|richtext }}</div>
                 <hr />
             {% endfor %}
-        {% endwith %}
-        <hr/>
-        {% elif block.block_type == 'embedded_video' %}
-        <hr/>
-        <div id="video-container">
-            <h2>{{ block.value.title }}</h2>
-            <div class="video-desc-block">
-                <div class="video-container">
-                    <iframe title="Victor Lundy:Sulptor of Space" src="{{ block.value.video_url }}"
-                            allowfullscreen></iframe>
-                </div>
-                <div class="description-block">
-                    <p>{{ block.value.description }}</p>
-                </div>
+        {% elif block.block_type == "photo_dedication" %}
+        <div class="dedication">
+            {% if block.value.photo %}
+            <div class="dedication-image">
+                {% image block.value.photo width-200 alt=block.value.alt_text %}
+            </div>
+            {% endif %}
+            <div class="dedication-text">
+                <p class="title">{{ block.value.title }}</p>
+                {{ block.value.paragraph_text | richtext }}
             </div>
         </div>
-        <hr/>
-    {% endif %}
+        {% elif block.block_type == 'embedded_video' %}
+            <hr />
+            <div id="video-container">
+                <h2>{{ block.value.title }}</h2>
+                <div class="video-desc-block">
+                    <div class="video-container">
+                        <iframe title="Victor Lundy:Sulptor of Space"
+                                src="{{ block.value.video_url }}"
+                                allowfullscreen></iframe>
+                    </div>
+                    <div class="description-block">
+                        <p>{{ block.value.description }}</p>
+                    </div>
+                </div>
+            </div>
+        {% elif block.block_type == 'columns' %}
+            {% with column_count=block.value.column|length %}
+                <div class="grid-row">
+                    {% for column in block.value.column %}
+                        <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
+                            {% for sub_block in column %}
+                                {% if sub_block.block_type == 'h2WithAnchorTag' %}
+                                    <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
+                                {% elif sub_block.block_type == 'clickableButton' %}
+                                    <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endwith %}
+        {% else %}
+            <p>Block type not recognized: {{ block.block_type }}</p>
+            {{ block.value }}
+        {% endif %}
+    {% endwith %}
 {% endfor %}
 </div>
 {% endblock content %}
