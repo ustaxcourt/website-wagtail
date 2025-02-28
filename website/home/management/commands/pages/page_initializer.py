@@ -29,9 +29,14 @@ class PageInitializer(ABC):
         Returns:
             Document: The created document instance or None if file not found or already exists
         """
-        file_path = os.path.join(
-            settings.BASE_DIR, self.DOCUMENTS_BASE_PATH, subdirectory, filename
-        )
+        if subdirectory:
+            file_path = os.path.join(
+                settings.BASE_DIR, self.DOCUMENTS_BASE_PATH, subdirectory, filename
+            )
+        else:
+            file_path = os.path.join(
+                settings.BASE_DIR, self.DOCUMENTS_BASE_PATH, filename
+            )
 
         if not os.path.exists(file_path):
             self.logger.write(f"Document file not found at {file_path}")
