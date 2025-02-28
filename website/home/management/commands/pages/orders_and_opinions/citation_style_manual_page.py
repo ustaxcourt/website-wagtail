@@ -24,7 +24,7 @@ class CitationStyleManualPageInitializer(PageInitializer):
 
         # Load the PDF document
         document = self.load_document_from_documents_dir(
-            "citation_style_manual",
+            None,
             "USTC_Citation_and_Style_Manual_modified_2024.09.pdf",
             "USTC Citation and Style Manual",
         )

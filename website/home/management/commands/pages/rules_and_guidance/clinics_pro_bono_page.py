@@ -30,9 +30,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
         self.logger.write(f"Creating the '{title}' page.")
 
         for document in docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
-                "pro_bono", document
-            )
+            uploaded_document = self.load_document_from_documents_dir(None, document)
             docs[document] = uploaded_document.file.url
 
         new_page = home_page.add_child(

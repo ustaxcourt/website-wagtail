@@ -61,7 +61,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
 
         for info in info:
             document = self.load_document_from_documents_dir(
-                "remote_proceedings",
+                None,
                 info["document"],
                 info["title"],
             )

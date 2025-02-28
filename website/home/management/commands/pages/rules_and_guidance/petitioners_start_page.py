@@ -47,9 +47,7 @@ class PetitionersStartPageInitializer(PageInitializer):
         ).first()
 
         for document in petitioners_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
-                "petitioners_start", document
-            )
+            uploaded_document = self.load_document_from_documents_dir(None, document)
             petitioners_docs[document] = uploaded_document.file.url
 
         questions = [

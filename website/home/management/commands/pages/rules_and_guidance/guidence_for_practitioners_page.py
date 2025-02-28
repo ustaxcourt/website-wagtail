@@ -47,7 +47,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
 
         for doc_name in practitioners_docs.keys():
             document = self.load_document_from_documents_dir(
-                subdirectory="guidence_for_practitioners",
+                subdirectory=None,
                 filename=doc_name,
                 title=doc_name,
             )

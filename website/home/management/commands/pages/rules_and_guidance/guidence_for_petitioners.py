@@ -24,7 +24,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
         self.logger.write(f"Creating the '{title}' page.")
 
         document = self.load_document_from_documents_dir(
-            subdirectory="guidence_for_petitioners",
+            subdirectory=None,
             filename="DAWSON_Petitioner_Training_Guide.pdf",
             title="DAWSON Self-Represented (Pro Se) Training Guide",
         )

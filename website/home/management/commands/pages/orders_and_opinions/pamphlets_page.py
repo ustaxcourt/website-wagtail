@@ -193,7 +193,7 @@ class PamphletsPageInitializer(PageInitializer):
                 return
 
             document = self.load_document_from_documents_dir(
-                subdirectory="pamphlets",
+                subdirectory=None,
                 filename=pamphlet_data["pdf"],
                 title=pamphlet_data["title"],
             )

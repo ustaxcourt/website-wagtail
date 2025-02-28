@@ -257,7 +257,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
             return
 
         document = self.load_document_from_documents_dir(
-            subdirectory="case_related_forms",
+            subdirectory=None,
             filename=formData["pdf_filename"],
             title=formData["formName"],
         )

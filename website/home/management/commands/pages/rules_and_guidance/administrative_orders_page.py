@@ -99,7 +99,7 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
 
         for file_detail in ADMIN_ORDERS_DATA:
             document = self.load_document_from_documents_dir(
-                subdirectory="administrative_orders",
+                subdirectory=None,
                 filename=file_detail["name"],
                 title=file_detail["title"],
             )
