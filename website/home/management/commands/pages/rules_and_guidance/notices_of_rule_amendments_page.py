@@ -43,7 +43,7 @@ class NoticesOfRuleAmendmentsPageInitializer(PageInitializer):
 
         for doc_name in notice_docs.keys():
             document = self.load_document_from_documents_dir(
-                subdirectory="notices_of_rule_amendments",
+                subdirectory=None,
                 filename=doc_name,
                 title=doc_name,
             )
