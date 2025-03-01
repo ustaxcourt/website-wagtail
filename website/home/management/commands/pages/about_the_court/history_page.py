@@ -80,7 +80,8 @@ class HistoryPageInitializer(PageInitializer):
                                              </blockquote>
                                              <p>
                                                  The Tax Court is a court of law with nationwide jurisdiction exercising judicial power independent of the Executive and Legislative Branches. The Tax Court is one of the courts in which taxpayers can bring suit to contest IRS determinations, and it is the primary court in which taxpayers can do so without prepaying any portion of the disputed taxes.
-                                             </p>"""
+                                             </p>""",
+            alt_text="US Tax Court Building",
         )
 
         photo_dedication.photo = history_image
@@ -100,12 +101,14 @@ class HistoryPageInitializer(PageInitializer):
                             "links": info_links,
                         },
                     },
+                    {"type": "hr", "value": True},
                     {
                         "type": "photo_dedication",
                         "value": {
                             "title": "Historical Overview",
                             "paragraph_text": photo_dedication.paragraph_text,
                             "photo": photo_dedication.photo.id,
+                            "alt_text": photo_dedication.alt_text,
                         },
                     },
                     {

@@ -524,6 +524,12 @@ class PhotoDedication(models.Model):
         help_text="Add the main paragraph text for the dedication section",
     )
 
+    alt_text = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Enter alternative text for the image",
+    )
+
     panels = [
         FieldPanel("title"),
         FieldPanel("photo"),
