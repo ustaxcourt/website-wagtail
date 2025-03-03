@@ -62,9 +62,7 @@ class PageInitializer(ABC):
             self.logger.write(f"Document created: {document}")
             return document
 
-    def load_image_from_images_dir(
-        self, subdirectory, filename, title=None, alt_text=None
-    ):
+    def load_image_from_images_dir(self, subdirectory, filename, title=None):
         """
         Load an image from the images directory and create a Wagtail Image instance.
 
@@ -72,17 +70,14 @@ class PageInitializer(ABC):
             subdirectory (str): Subdirectory under IMAGES_BASE_PATH
             filename (str): Name of the file to load
             title (str, optional): Title for the image. If None, uses filename without extension
-            alt_text (str, optional): Alternative text for accessibility. Uses default if None.
 
         Returns:
             Image: The created image instance or None if file not found
         """
-        if subdirectory:
-            file_path = os.path.join(
-                settings.BASE_DIR, self.IMAGES_BASE_PATH, subdirectory, filename
-            )
-        else:
-            file_path = os.path.join(settings.BASE_DIR, self.IMAGES_BASE_PATH, filename)
+        file_path = os.path.join(
+            settings.BASE_DIR, self.IMAGES_BASE_PATH, subdirectory, filename
+        )
+
         if not os.path.exists(file_path):
             self.logger.write(f"Image file not found at {file_path}")
             return None
