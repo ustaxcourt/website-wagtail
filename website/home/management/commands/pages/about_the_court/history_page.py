@@ -39,7 +39,7 @@ class HistoryPageInitializer(PageInitializer):
         self.logger.write(f"Creating the '{title}' page.")
 
         history_image = self.load_image_from_images_dir(
-            "history", "us_tax_court_building.jpg", "US Tax Court Building"
+            None, "us_tax_court_building.jpg", "US Tax"
         )
 
         if not history_image:
