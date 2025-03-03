@@ -32,7 +32,7 @@ class HolidaysPageInitializer(PageInitializer):
                 slug=self.slug,
                 seo_title=title,
                 search_description=title,
-                show_in_menus=True,
+                show_in_menus=False,
                 body=[
                     {
                         "type": "paragraph",
