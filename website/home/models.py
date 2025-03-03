@@ -256,8 +256,10 @@ class EnhancedStandardPage(NavigationMixin):
                     blocks.StructBlock(
                         [
                             ("question", blocks.CharBlock(required=False)),
-                            ("answer", blocks.RichTextBlock()),
-                            ("anchortag", blocks.CharBlock()),
+                            ("answer", blocks.RichTextBlock(required=False)),
+                            ("anchortag", blocks.CharBlock(required=False)),
+                            ("type", blocks.CharBlock(required=False)),
+                            ("value", blocks.BooleanBlock(required=False)),
                         ]
                     )
                 ),

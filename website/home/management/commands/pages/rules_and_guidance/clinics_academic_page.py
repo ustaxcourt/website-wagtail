@@ -102,9 +102,19 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                 "anchortag": "SEC5",
             },
             {
+                "question": "Format for Stuffer Notice",
+                "type": "link",
+                "value": docs["stuffer_notice.pdf"],
+            },
+            {
+                "question": "Letter to Chief Judge (sample)",
+                "type": "link",
+                "value": docs["2021_letter_to_CJ_academic_law_and_nonlaw.pdf"],
+            },
+            {
                 "question": "Contact Us",
-                "answer": """Please <a href="mailto:litc@ustaxcourt.gov" title="LITC Contact us">contact us</a> with any questions concerning the Court’s program or requirements, or call <a href="tel:+12025213366">202-521-3366</a>.""",
-                "anchortag": "CONTACT",
+                "type": "link",
+                "value": "mailto:litc@ustaxcourt.gov",
             },
         ]
 
