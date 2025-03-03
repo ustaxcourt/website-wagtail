@@ -19,8 +19,11 @@ from .rules_page import RulesPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
     RemoteProceedingsPageInitializer,
-    GuidenceForPetitionersPageInitializer,
     AdministrativeOrdersPageInitializer,
+    RulesPageInitializer,
+    GuidenceForPetitionersPageInitializer,
+    ClinicsProBonoProgramsPageInitializer,
+    GuidenceForPractitionersPageInitializer,
     PetitionersStartPageInitializer,
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
@@ -30,9 +33,6 @@ rules_and_guidance_pages_to_initialize = [
     PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
-    ClinicsProBonoProgramsPageInitializer,
-    GuidenceForPractitionersPageInitializer,
     GettingReadyPageInitializer,
     JudicialConductAndDisabilityProceduresPageInitializer,
-    RulesPageInitializer,
 ]

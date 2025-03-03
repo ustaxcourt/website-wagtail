@@ -7,8 +7,8 @@ from .transcripts_and_copies_page import TranscriptsAndCopiesPageInitializer
 
 
 orders_and_opinions_pages_to_initialize = [
-    TodaysOrdersPageInitializer,
     TodaysOpinionsPageInitializer,
+    TodaysOrdersPageInitializer,
     SearchPageInitializer,
     CitationStyleManualPageInitializer,
     TranscriptsAndCopiesPageInitializer,
