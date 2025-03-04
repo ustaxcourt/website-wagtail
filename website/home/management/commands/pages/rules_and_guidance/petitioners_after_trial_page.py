@@ -46,33 +46,28 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             {
                 "question": "When will the Judge decide my case? (When will I find out whether I’ve won or lost my case?)",
                 "answer": """<ol>
-                               <li>There is no fixed time within which a Judge will decide your case. The Judge might issue an oral opinion (called a Bench Opinion) during the trial session. If a Bench Opinion is not issued, the Judge will return to Washington, D.C., to review the testimony and exhibits in the case and issue an opinion as quickly as practicable.
-                               <br>
-                               <br>
-                               </li>
-                               <li>Does the Tax Court issue different types of opinions?</li>
-                               <br>
-                               Yes. The different kinds of opinions are set forth below.
-                               <br>
-                               <br>
-                               A. <strong>Bench Opinion</strong> - As described above, the Judge may issue a Bench Opinion in a regular or S case during the trial session. In this situation, the Judge orally states the opinion in court during the trial session. The Tax Court will send you a copy of the transcript reflecting the Judge's opinion within a few weeks after the trial. A Bench Opinion cannot be relied on as precedent. All bench opinions delivered after March 1, 2008, are electronically viewable through the Tax Court's Docket Inquiry system.
-                               <br>
-                               <br>
-                               B. <strong>Summary Opinion</strong> - A Summary Opinion is issued in an S case. A Summary Opinion cannot be relied on as precedent, and the decision cannot be appealed.
-                               <br>
-                               <br>
-                               C. <strong>Tax Court Opinion or Memorandum Opinion</strong> - The Chief Judge decides whether an opinion in a regular case will be issued as a Memorandum Opinion or as a Tax Court Opinion.
-                               <br>
-                               Generally, a Memorandum Opinion is issued in a regular case that does not involve a novel legal issue. A Memorandum Opinion addresses cases where the law is settled or factually driven. A Memorandum Opinion can be cited as legal authority, and the decision can be appealed. A Memorandum Opinion is cited as [<u>Name of Petitioner</u>] v. Commissioner, T.C. Memo. [year issued - #].
-                              <br>
-                              <br>
-                               Generally, a Tax Court Opinion is issued in a regular case when the Tax Court believes it involves a sufficiently important legal issue or principle. A Tax Court Opinion can be cited as legal authority, and the decision can be appealed. A Tax Court Opinion is cited as [Name of Petitioner] v. Commissioner, [Volume of Tax Court Reports] T.C. [page of the volume] (year issued).
+                                 <li>
+                                     There is no fixed time within which a Judge will decide your case. The Judge might issue an oral opinion (called a Bench Opinion) during the trial session. If a Bench Opinion is not issued, the Judge will return to Washington, D.C., to review the testimony and exhibits in the case and issue an opinion as quickly as practicable.
+                                 </li>
+                                 <li style="margin-top: 20px;">
+                                     Does the Tax Court issue different types of opinions?
+                                     <p style="margin-top: 20px;">Yes. The different kinds of opinions are set forth below.</p>
+                                    <p>A. <strong>Bench Opinion</strong> - As described above, the Judge may issue a Bench Opinion in a regular or S case during the trial session. In this situation, the Judge orally states the opinion in court during the trial session. The Tax Court will send you a copy of the transcript reflecting the Judge's opinion within a few weeks after the trial. A Bench Opinion cannot be relied on as precedent. All bench opinions delivered after March 1, 2008, are electronically viewable through the Tax Court's Docket Inquiry system.</p>
 
+                                    <p  style="margin-top: 20px;">B. <strong>Summary Opinion</strong> - A Summary Opinion is issued in an S case. A Summary Opinion cannot be relied on as precedent, and the decision cannot be appealed.</p>
+
+                                    <p  style="margin-top: 20px;">C. <strong>Tax Court Opinion or Memorandum Opinion</strong> - The Chief Judge decides whether an opinion in a regular case will be issued as a Memorandum Opinion or as a Tax Court Opinion.</p>
+
+                                    <p style="margin-top: 20px;">Generally, a Memorandum Opinion is issued in a regular case that does not involve a novel legal issue. A Memorandum Opinion addresses cases where the law is settled or factually driven. A Memorandum Opinion can be cited as legal authority, and the decision can be appealed. A Memorandum Opinion is cited as [<u>Name of Petitioner</u>]<u>v. Commissioner</u>, T.C. Memo. [year issued - #].</p>
+
+                                   <p style="margin-top: 20px;">Generally, a Tax Court Opinion is issued in a regular case when the Tax Court believes it involves a sufficiently important legal issue or principle. A Tax Court Opinion can be cited as legal authority, and the decision can be appealed. A Tax Court Opinion is cited as [Name of Petitioner] v. Commissioner, [Volume of Tax Court Reports] T.C. [page of the volume] (year issued).</p>
+
+                                 </li>
                              </ol>
-                             <br>
-                             The opinions of the Tax Court are posted daily on the Tax Court's website after 3:30 p.m. (Eastern time) under
-                            <strong><a href="/todays-opinion" target="_blank" title="Today's Opinions">Today's Opinions</a></strong>
-                             and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.""",
+                             <p>
+                                 The opinions of the Tax Court are posted daily on the Tax Court's website after 3:30 p.m. (Eastern time) under
+                                 <strong><a href="/todays-opinion" target="_blank" title="Today's Opinions">Today's Opinions</a></strong> and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.
+                             </p>""",
                 "anchortag": "START2",
             },
             {
@@ -106,7 +101,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             },
             {
                 "question": "Will my documents be returned to me when the case is over?",
-                "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at (202) 521-4688. There is a fee for copywork. See <strong><a href="/transcripts_and_copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a></strong>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <strong><a href="/dawson" target="_blank" title="DAWSON">DAWSON</a></strong>.',
+                "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at <a href="tel:+12025214688">(202) 521-4688</a>. There is a fee for copywork. See <strong><a href="/transcripts_and_copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a></strong>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <strong><a href="/dawson" target="_blank" title="DAWSON">DAWSON</a></strong>.',
                 "anchortag": "START7",
             },
             {
