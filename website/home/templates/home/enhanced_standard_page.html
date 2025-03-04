@@ -113,48 +113,50 @@
                     <li>
                         {% if q.type == "link" %}
                             <a href="{{ q.value }}" title="{{ q.question }}">
-                            {% else %}
-                                <a href="{{ page_url }}#{{ q.anchortag }}">
-                                {% endif %}
                                 <i class="ti ti-info-circle-filled"></i>{{ q.question }}
                             </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <hr />
-                {% for q in block.value %}
-                    {% if q.type != "link" %}
-                        <div class="question-answer-block">
-                            <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
-                                <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
+                        {% else %}
+                            <a href="{{ page_url }}#{{ q.anchortag }}">
+                                <i class="ti ti-info-circle-filled"></i>{{ q.question }}
                             </a>
-                            <h3>{{ q.question }}</h3>
-                        </div>
-                        <div>{{ q.answer|richtext }}</div>
-                        <hr />
-                    {% endif %}
+                        {% endif %}
+                    </li>
                 {% endfor %}
-            {% elif block.block_type == 'columns' %}
-                {% with column_count=block.value.column|length %}
-                    <div class="grid-row">
-                        {% for column in block.value.column %}
-                            <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
-                                {% for sub_block in column %}
-                                    {% if sub_block.block_type == 'h2WithAnchorTag' %}
-                                        <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
-                                    {% elif sub_block.block_type == 'clickableButton' %}
-                                        <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
+            </ul>
+            <hr />
+            {% for q in block.value %}
+                {% if q.type != "link" %}
+                    <div class="question-answer-block">
+                        <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
+                            <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
+                        </a>
+                        <h3>{{ q.question }}</h3>
                     </div>
-                {% endwith %}
-            {% else %}
-                <p>Block type not recognized: {{ block.block_type }}</p>
-                {{ block.value }}
-            {% endif %}
-        {% endwith %}
-    {% endfor %}
+                    <div>{{ q.answer|richtext }}</div>
+                    <hr />
+                {% endif %}
+            {% endfor %}
+        {% elif block.block_type == 'columns' %}
+            {% with column_count=block.value.column|length %}
+                <div class="grid-row">
+                    {% for column in block.value.column %}
+                        <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
+                            {% for sub_block in column %}
+                                {% if sub_block.block_type == 'h2WithAnchorTag' %}
+                                    <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
+                                {% elif sub_block.block_type == 'clickableButton' %}
+                                    <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endwith %}
+        {% else %}
+            <p>Block type not recognized: {{ block.block_type }}</p>
+            {{ block.value }}
+        {% endif %}
+    {% endwith %}
+{% endfor %}
 </div>
 {% endblock content %}

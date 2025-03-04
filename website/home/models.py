@@ -258,8 +258,18 @@ class EnhancedStandardPage(NavigationMixin):
                             ("question", blocks.CharBlock(required=False)),
                             ("answer", blocks.RichTextBlock(required=False)),
                             ("anchortag", blocks.CharBlock(required=False)),
-                            ("type", blocks.CharBlock(required=False)),
-                            ("value", blocks.BooleanBlock(required=False)),
+                            (
+                                "type",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("link", "Link"),
+                                        ("question", "Question"),
+                                    ],
+                                    required=False,
+                                    default="question",
+                                ),
+                            ),
+                            ("value", blocks.CharBlock(required=False)),
                         ]
                     )
                 ),
