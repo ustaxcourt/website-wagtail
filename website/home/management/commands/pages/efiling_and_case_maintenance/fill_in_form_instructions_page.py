@@ -38,17 +38,14 @@ class FillInFormsInstructionsPageInitializer(PageInitializer):
                         "type": "paragraph",
                         "value": """Tax Court forms can be filled-in and saved/printed directly from Adobe Reader 3.0 (or later). However, the information entered on a form cannot be saved to your device unless you are using the full Adobe Acrobat software suite.""",
                     },
-                    {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
                         "value": """Clicking on a form link will launch the Adobe Reader plug-in and display the form within your browser window. From the browser window, be sure to save the form to a location on your device.""",
                     },
-                    {"type": "hr", "value": True},
                     {
                         "type": "h4",
                         "value": """Filling-in the Form:""",
                     },
-                    {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
                         "value": """
