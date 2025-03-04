@@ -113,16 +113,14 @@ class HistoryPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": """<strong>Judges</strong>
-                                <br>
+                        "value": """<h2>Judges</h2>
                                 <br>
                                 The Tax Court is composed of 19 presidentially appointed members. Trial sessions are conducted and other work of the Court is performed by those
-                                <strong><a href='/judges' title='Judges'>judges</a></strong>, by <strong><a href='/judges' title='Judges'>senior judges</a></strong> serving on recall, and by <strong><a href='/judges' title='Judges'>special trial judges</a></strong>. Although the Court is physically located in Washington, D.C., <strong><a href='/judges' title='Judges'>the judges</a></strong> travel nationwide to conduct trials in various <strong><a href='/dpt_cities' title='Judges'>designated places of trial</a></strong>.""",
+                                <strong><a href='/judges' title='Judges'>judges</a></strong>, by <strong><a href='/judges/#SENIOR' title='Senior Judges'>senior judges</a></strong> serving on recall, and by <strong><a href='/judges/#SPECIAL' title='Special Trial Judges'>special trial judges</a></strong>. Although the Court is physically located in Washington, D.C., <strong><a href='/judges' title='Judges'>the judges</a></strong> travel nationwide to conduct trials in various <strong><a href='/dpt_cities' title='Places of Trial'>designated places of trial</a></strong>.""",
                     },
                     {
                         "type": "paragraph",
-                        "value": """<strong>Washington, D.C. Courthouse</strong>
-                                <br>
+                        "value": """<h2>Washington, D.C. Courthouse</h2>
                                 <br>
                                 Designed for the Tax Court and dedicated on November 22, 1974, the courthouse is a landmark work by architect Victor Lundy. It is held out as a prominent example of the "formalist modern" style of architecture in Washington, D.C. The U. S. Tax Court Courthouse was added to the National Register of Historic Places in August 2008.
                                 <br>

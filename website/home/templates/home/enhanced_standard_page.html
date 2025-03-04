@@ -27,6 +27,7 @@
                     top: 24px;
                 }
             }
+
             .usa-button {
                 width: 95%;
                 margin-top: 0.5em;
@@ -57,7 +58,7 @@
 
                 .dedication-text {
                     flex: 1;
-                    font-size: 16px;
+                    font-size: 17px;
 
                     .title {
                         font-weight: bold;
@@ -94,8 +95,8 @@
                     }
 
                     blockquote {
-                        font-size: 18px;
-                        line-height: 1.45;
+                        font-size: 17px;
+                        line-height: 24px;
                         padding: 0.5rem 1rem;
                         margin-bottom: 1rem;
                         border-left: 0.25rem solid #eceeef;
@@ -103,7 +104,7 @@
                         cite {
                             display: block;
                             font-size: 17px;
-                            color: #818a91;
+                            color: #1b1b1b;
                             font-style: italic;
                         }
                     }
@@ -126,6 +127,7 @@
                 }
             }
         }
+
         @media (max-width: 768px) {
             #video-container {
                 .video-desc-block {
@@ -140,7 +142,8 @@
                 }
 
                 .description-block {
-                    margin-top: 10px;
+                    margin-left: -38px;
+
                     p {
                         margin-left: 0;
                     }
@@ -223,17 +226,15 @@
                 <hr />
             {% endfor %}
         {% elif block.block_type == "photo_dedication" %}
-        <div class="dedication">
-            {% if block.value.photo %}
-            <div class="dedication-image">
-                {% image block.value.photo width-600 alt=block.value.alt_text %}
+            <div class="dedication">
+                {% if block.value.photo %}
+                    <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+                {% endif %}
+                <div class="dedication-text">
+                    <h2 class="title">{{ block.value.title }}</h2>
+                    {{ block.value.paragraph_text | richtext }}
+                </div>
             </div>
-            {% endif %}
-            <div class="dedication-text">
-                <p class="title">{{ block.value.title }}</p>
-                {{ block.value.paragraph_text | richtext }}
-            </div>
-        </div>
         {% elif block.block_type == 'embedded_video' %}
             <hr />
             <div id="video-container">
