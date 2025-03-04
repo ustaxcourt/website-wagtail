@@ -2,10 +2,6 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage
 
-holiday_docs = {
-    "Rule-25_Amended_03202023.pdf": "",
-}
-
 
 class HolidaysPageInitializer(PageInitializer):
     def __init__(self, logger):
@@ -29,14 +25,6 @@ class HolidaysPageInitializer(PageInitializer):
             return
 
         self.logger.write(f"Creating the '{title}' page.")
-
-        for doc_name in holiday_docs.keys():
-            document = self.load_document_from_documents_dir(
-                subdirectory=None,
-                filename=doc_name,
-                title=doc_name,
-            )
-            holiday_docs[doc_name] = document
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
@@ -68,7 +56,7 @@ class HolidaysPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
-                        "value": f"""*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a href="{holiday_docs["Rule-25_Amended_03202023.pdf"]}" target="_blank" title="Rule 25" >See Rule 25</a></strong>.""",
+                        "value": '*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a href="/media/documents/Rule-25.pdf" target="_blank" title="Rule 25" >See Rule 25</a></strong>.',
                     },
                 ],
             )
