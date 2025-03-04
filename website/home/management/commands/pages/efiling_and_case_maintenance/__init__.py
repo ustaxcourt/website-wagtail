@@ -4,7 +4,7 @@ from .dawson_search_page import DawsonSearchPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
-    CaseRelatedFormPageInitializer,
-    DawsonPageInitializer,
     DawsonSearchPageInitializer,
+    DawsonPageInitializer,
+    CaseRelatedFormPageInitializer,
 ]
