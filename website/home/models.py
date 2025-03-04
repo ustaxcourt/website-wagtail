@@ -194,12 +194,12 @@ class EnhancedStandardPage(NavigationMixin):
 
     body = StreamField(
         [
-            ("h2", blocks.CharBlock()),
-            ("h3", blocks.CharBlock()),
-            ("h4", blocks.CharBlock()),
-            ("paragraph", blocks.RichTextBlock()),
-            ("hr", blocks.BooleanBlock()),
-            ("image", ImageBlock()),
+            ("h2", blocks.CharBlock(label="Header 2")),
+            ("h3", blocks.CharBlock(label="Header 3")),
+            ("h4", blocks.CharBlock(label="Header 4")),
+            ("paragraph", blocks.RichTextBlock(label="Paragraph")),
+            ("hr", blocks.BooleanBlock(label="Horizontal Rule", default=True)),
+            ("image", ImageBlock(label="Image")),
             (
                 "links",
                 blocks.StructBlock(
@@ -271,10 +271,11 @@ class EnhancedStandardPage(NavigationMixin):
                             ),
                             ("value", blocks.CharBlock(required=False)),
                         ]
-                    )
+                    ),
+                    label="Question and Answer",
                 ),
             ),
-            ("columns", ColumnBlock()),
+            ("columns", ColumnBlock(label="Columns")),
         ]
     )
     content_panels = Page.content_panels + [
