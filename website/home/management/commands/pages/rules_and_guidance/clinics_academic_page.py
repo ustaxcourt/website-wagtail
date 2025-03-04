@@ -131,6 +131,11 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                         "value": "Requirements for Participation in the United States Tax Court Clinical, Student Practice & Calendar Call Program by Academic Clinics (Law School)",
                     },
                     {"type": "questionanswers", "value": questions},
+                    {"type": "hr", "value": True},
+                    {
+                        "type": "paragraph",
+                        "value": """Please <a href="mailto:litc@ustaxcourt.gov" title="email: litc@ustaxcourt.gov">contact us</a> with any questions concerning the Court’s program or requirements, or call <a href="tel:202-521-3366" title="call: 202-521-3366">202-521-3366</a>.""",
+                    },
                 ],
             )
         )
