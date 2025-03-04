@@ -197,9 +197,9 @@ class EnhancedStandardPage(NavigationMixin):
 
     body = StreamField(
         [
-            ("h2", blocks.CharBlock(label="Header 2")),
-            ("h3", blocks.CharBlock(label="Header 3")),
-            ("h4", blocks.CharBlock(label="Header 4")),
+            ("h2", blocks.CharBlock(label="Heading 2")),
+            ("h3", blocks.CharBlock(label="Heading 3")),
+            ("h4", blocks.CharBlock(label="Heading 4")),
             ("paragraph", blocks.RichTextBlock(label="Paragraph")),
             ("hr", blocks.BooleanBlock(label="Horizontal Rule", default=True)),
             ("image", ImageBlock(label="Image")),
