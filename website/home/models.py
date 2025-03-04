@@ -77,6 +77,9 @@ class IconCategories(models.TextChoices):
     SCALE = "ti ti-scale"
     USER = "ti ti-user-filled"
     VIDEO = "ti ti-video-filled"
+    SETTINGS = "ti ti-settings-filled"
+    BRIEFCASE = "ti ti-briefcase-filled"
+    SEARCH = "ti ti-search"
 
 
 class NavigationMixin(Page):
