@@ -4,7 +4,13 @@
 {% load static %}
 {% block extra_css %}
     <style>
+
         .enhanced-page {
+
+            .None {
+                display: none;
+            }
+
             .links {
                 i {
                     padding-right: .4em
@@ -13,6 +19,18 @@
                 &.with-bullets {
                     list-style-type: disc;
                     padding-left: 40px;
+                }
+            }
+
+            .heading-wrapper {
+                gap: 4px;
+                position: relative;
+
+                .bookmark {
+                    position: absolute;
+                    left: -30px;
+                    flex-shrink: 0;
+                    top: 4px;
                 }
             }
 
@@ -47,7 +65,17 @@
                         left: -4px;
                     }
 
-                    h3 {
+                    h3, h4, h5, h6 {
+                        padding-left: 16px;
+                    }
+                }
+
+                .heading-wrapper {
+                    .bookmark {
+                        left: -12px;
+                    }
+
+                    h2, h3, h4, h5, h6 {
                         padding-left: 16px;
                     }
                 }
@@ -71,14 +99,23 @@
 {% endif %}
 {% for block in page.body %}
     {% with page_url=page.url|strip_trailing_slash %}
-        {% if block.block_type == 'heading' %}
-            <h2>{{ block.value }}</h2>
-        {% elif block.block_type == 'h2' %}
+        {% if block.block_type == 'h2' %}
             <h2>{{ block.value }}</h2>
         {% elif block.block_type == 'h3' %}
             <h3>{{ block.value }}</h3>
         {% elif block.block_type == 'h4' %}
             <h4>{{ block.value }}</h4>
+        {% elif block.block_type == 'heading' %}
+            <div class="heading-wrapper">
+            <{{ block.value.level }} {% if block.value.id %}id="{{ block.value.id }}"{% endif %}>
+                {% if block.value.id %}
+                    <a href="{{ page_url }}#{{ block.value.id }}" title="{{ block.value.text }}">
+                        <div class="ti ti-bookmark-filled bookmark" id="{{ block.value.id }}"></div>
+                    </a>
+                {% endif %}
+                {{ block.value.text }}
+            </{{ block.value.level }}>
+            </div>
         {% elif block.block_type == 'paragraph' %}
             <p data-testid="page-body-paragraph">{{ block.value }}</p>
         {% elif block.block_type == 'image' %}
