@@ -197,6 +197,32 @@ class EnhancedStandardPage(NavigationMixin):
 
     body = StreamField(
         [
+            (
+                "heading",
+                blocks.StructBlock(
+                    [
+                        ("text", blocks.CharBlock()),
+                        (
+                            "level",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("h2", "Heading 2"),
+                                    ("h3", "Heading 3"),
+                                    ("h4", "Heading 4"),
+                                    ("h5", "Heading 5"),
+                                ]
+                            ),
+                        ),
+                        (
+                            "id",
+                            blocks.CharBlock(
+                                required=False,
+                                help_text="Optional ID for linking to this heading",
+                            ),
+                        ),
+                    ]
+                ),
+            ),
             ("h2", blocks.CharBlock()),
             ("h3", blocks.CharBlock()),
             ("h4", blocks.CharBlock()),
@@ -234,7 +260,8 @@ class EnhancedStandardPage(NavigationMixin):
                                                         ).title(),
                                                     )
                                                     for icon in IconCategories
-                                                ]
+                                                ],
+                                                required=False,
                                             ),
                                         ),
                                         (
