@@ -129,7 +129,13 @@
         }
 
         @media (max-width: 768px) {
-            #video-container {
+            .enhanced-page .dedication .dedication-text {
+                blockquote {
+                    margin: 15px;
+                }
+            }
+
+            .enhanced-page #video-container {
                 .video-desc-block {
                     flex-direction: column;
                     padding: 20px;
@@ -137,15 +143,20 @@
                 }
 
                 .video-container iframe {
-                    width: 295PX !important;
+                    width: 280px;
                     height: 250px;
+                    margin-left: -15px;
                 }
 
                 .description-block {
                     margin-left: -38px;
 
                     p {
-                        margin-left: 0;
+                        margin-left: 28px;
+                    }
+
+                    blockquote {
+                        margin: 15px;
                     }
                 }
             }
