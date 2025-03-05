@@ -26,6 +26,9 @@ from home.management.commands.snippets.navigation_ribbon import (
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
+from home.management.commands.snippets.dawson_faqs_ribbon import (
+    DawsonFAQsRibbonInitializer,
+)
 
 home_page_initialize = [
     HomePageInitializer,
@@ -44,6 +47,7 @@ pages_to_initialize = home_page_initialize + (
 snippets_to_initialize = [
     NavigationRibbonInitializer,
     ZoomgovProceedingRibbonInitializer,
+    DawsonFAQsRibbonInitializer,
 ]
 
 pages_to_update = [HomePageInitializer, FooterInitializer]
