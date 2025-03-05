@@ -122,8 +122,8 @@ class ClinicsAcademicPageInitializer(PageInitializer):
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
-                seo_title="Clinical, Student Practice & Bar Sponsored Calendar Call Program",
-                search_description="Clinical, Student Practice & Bar Sponsored Calendar Call Program",
+                seo_title=title,
+                search_description=title,
                 show_in_menus=False,
                 body=[
                     {
