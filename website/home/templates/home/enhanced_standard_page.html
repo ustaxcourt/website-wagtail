@@ -148,30 +148,22 @@
             <ul class="links indented">
                 {% for q in block.value %}
                     <li>
-                        {% if q.type == "link" %}
-                            <a href="{{ q.value }}" title="{{ q.question }}">
-                                <i class="ti ti-info-circle-filled"></i>{{ q.question }}
-                            </a>
-                        {% else %}
-                            <a href="{{ page_url }}#{{ q.anchortag }}">
-                                <i class="ti ti-info-circle-filled"></i>{{ q.question }}
-                            </a>
-                        {% endif %}
+                        <a href="{{ page_url }}#{{ q.anchortag }}">
+                            <i class="ti ti-info-circle-filled"></i>{{ q.question }}
+                        </a>
                     </li>
                 {% endfor %}
             </ul>
             <hr />
             {% for q in block.value %}
-                {% if q.type != "link" %}
-                    <div class="question-answer-block">
-                        <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
-                            <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
-                        </a>
-                        <h3>{{ q.question }}</h3>
-                    </div>
-                    <div>{{ q.answer|richtext }}</div>
-                    <hr />
-                {% endif %}
+                <div class="question-answer-block">
+                    <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
+                        <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
+                    </a>
+                    <h3>{{ q.question }}</h3>
+                </div>
+                <div>{{ q.answer|richtext }}</div>
+                <hr />
             {% endfor %}
         {% elif block.block_type == 'columns' %}
             {% with column_count=block.value.column|length %}
