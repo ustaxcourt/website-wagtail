@@ -130,7 +130,7 @@ class HistoryPageInitializer(PageInitializer):
                     {
                         "type": "embedded_video",
                         "value": {
-                            "title": "Victory Lundy: Sculptor of Space",
+                            "title": "Victor Lundy: Sculptor of Space",
                             "description": """<p>We are excited to include here <strong><em>Victor Lundy: Sculptor of Space.</em></strong> This informative and entertaining documentary was produced by the GSA (General Services Administration) as part of <strong><em><a href="https://www.youtube.com/playlist?list=PLvdwyPgXnxxU_f2Ee8FnuBdflb6pEtF_Z"  target="_blank" title="The Historic Building Film Series">The Historic Building Film Series</a></em></strong>.</p>
                                             <blockquote><i>Victor Lundy: Sculptor of Space captures the recollections of the modern American master architect and artist who designed GSA's historic U.S. Tax Court Building in Washington, DC.</i>
                                             <cite title="Source Title">- GSA YouTube Channel</cite>
