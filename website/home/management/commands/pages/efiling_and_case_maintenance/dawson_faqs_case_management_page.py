@@ -84,22 +84,48 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                               </ul>""",
                 "anchortag": "FAQS5",
             },
-            #             {
-            #                 "question": "How do I change my contact information?",
-            #                 "answer": """<ul>
-            #                               <li>Practitioners can update their contact information by clicking on the “Person Icon” and then “My Account” in the upper right corner of the DAWSON screen.</li>
-            #                                  <ul>
-            #                                  <li>Changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
-            #                                  <li>NOTE: IRS Practitioners should contact <strong><a href="mailto:admissions@ustaxcourt.gov" title="admissions@ustaxcourt.gov">admissions@ustaxcourt.gov</a></strong> for updates to contact information</li>
-            #                                  <li>Petitioners can update their email address by clicking on the “Person Icon” and then “My Account” in the upper right corner of the DAWSON screen.</li>
-            #                                  <li>NOTE that changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
-            #                                 </ul>
-            #                                  <li>Petitioners can update their mailing address and phone number by updating the Case Information in each of their cases.</li>
-            #                                  <li>Please refer to the <strong><a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
-            #                                  </ul>
-            #                               </ul>""",
-            #                 "anchortag": "FAQS7",
-            #             },
+            {
+                "question": "Why did I receive an error when I uploaded a file in DAWSON?",
+                "answer": """<ol>
+                             <li><strong>Error Message: File size too big</strong>
+
+                             <ul>
+                             <li>If your document is larger than 250MB, you should upload the information in separate documents. Each document must be 250MB or less.</li>
+                             </ul></li>
+                             <li><strong>Error Message: The file is corrupt or in an unsupported PDF format</strong>
+
+                             <ul>
+                             <li>There are a few options:
+
+                             <ul>
+                             <li>Resave the file, ensuring that it opens without error in Adobe.</li>
+                             <li>When saving the file, select “Print to PDF”.</li>
+                             <li>Print the document and use a scanner to create and save a new PDF document.</li>
+                             </ul></li>
+                             </ul></li>
+                             <li><strong>Error Message: Your firewall or network may be preventing submission</strong>.
+
+                             <ul>
+                             <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network’s firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
+                             </ul></li>
+                             <li><strong>Error Message: There is a problem with this file</strong>
+
+                             <ul>
+                             <li>Your internet browser may be outdated. Please update your browser to the current version and try the upload again.</li>
+                             </ul></li>
+                             <li><strong>Error Message: The file is encrypted or password protected</strong>
+
+                             <ul>
+                             <li>If you signed your document electronically with an application like Adobe, it may have asked you to save the document as a read-only copy that cannot be modified. If you saved your document as a read-only copy, it may have been password protected by Adobe automatically (unbeknownst to you). </li>
+                             <li>To troubleshoot, review your document(s).
+
+                             <ul>
+                             <li>When viewing your document(s), are you seeing a blue banner and "(SECURED)" at the top of the document?</li>
+                             </ul></li>
+                             </ul></li>
+                             </ol>""",
+                "anchortag": "FAQS7",
+            },
         ]
 
         new_page = home_page.add_child(
