@@ -43,7 +43,7 @@ class FillInFormsInstructionsPageInitializer(PageInitializer):
                         "value": """Clicking on a form link will launch the Adobe Reader plug-in and display the form within your browser window. From the browser window, be sure to save the form to a location on your device.""",
                     },
                     {
-                        "type": "h4",
+                        "type": "h2",
                         "value": """Filling-in the Form:""",
                     },
                     {
