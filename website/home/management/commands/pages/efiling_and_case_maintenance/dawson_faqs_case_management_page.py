@@ -1,10 +1,25 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon
-from home.models import EnhancedStandardPage
+from home.models import EnhancedStandardPage, DawsonFaqsPageImage
 from home.management.commands.snippets.dawson_faqs_ribbon import (
     dawson_faqs_ribbon_name,
 )
+
+dawson_faqs_case_management_images = [
+    {
+        "title": "image of the Dawson faqs case management secured",
+        "filename": "dawson_faqs_case_management_secured.jpg",
+    },
+    {
+        "title": "image of the Dawson faqs case management banner",
+        "filename": "dawson_faqs_case_management_banner.jpg",
+    },
+    {
+        "title": "image of the Dawson faqs case management document properties",
+        "filename": "dawson_faqs_case_management_doc_properties.jpg",
+    },
+]
 
 
 class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
@@ -28,6 +43,19 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
         navigation_ribbon = NavigationRibbon.objects.filter(
             name=dawson_faqs_ribbon_name
         ).first()
+
+        uploaded_images = {}  # Store image URLs for template use
+        loaded_images = []
+
+        for image in dawson_faqs_case_management_images:
+            image_uploaded = self.load_image_from_images_dir(
+                "dawson", image["filename"], image["title"]
+            )
+
+            if image_uploaded:
+                uploaded_images[image["filename"]] = image_uploaded.file.url
+
+                loaded_images.append(DawsonFaqsPageImage(image=image_uploaded))
 
         questions = [
             {
@@ -86,45 +114,101 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
             },
             {
                 "question": "Why did I receive an error when I uploaded a file in DAWSON?",
-                "answer": """<ol>
-                             <li><strong>Error Message: File size too big</strong>
-
-                             <ul>
-                             <li>If your document is larger than 250MB, you should upload the information in separate documents. Each document must be 250MB or less.</li>
-                             </ul></li>
-                             <li><strong>Error Message: The file is corrupt or in an unsupported PDF format</strong>
-
-                             <ul>
-                             <li>There are a few options:
-
-                             <ul>
-                             <li>Resave the file, ensuring that it opens without error in Adobe.</li>
-                             <li>When saving the file, select “Print to PDF”.</li>
-                             <li>Print the document and use a scanner to create and save a new PDF document.</li>
-                             </ul></li>
-                             </ul></li>
-                             <li><strong>Error Message: Your firewall or network may be preventing submission</strong>.
-
-                             <ul>
-                             <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network’s firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
-                             </ul></li>
-                             <li><strong>Error Message: There is a problem with this file</strong>
-
-                             <ul>
-                             <li>Your internet browser may be outdated. Please update your browser to the current version and try the upload again.</li>
-                             </ul></li>
-                             <li><strong>Error Message: The file is encrypted or password protected</strong>
-
-                             <ul>
-                             <li>If you signed your document electronically with an application like Adobe, it may have asked you to save the document as a read-only copy that cannot be modified. If you saved your document as a read-only copy, it may have been password protected by Adobe automatically (unbeknownst to you). </li>
-                             <li>To troubleshoot, review your document(s).
-
-                             <ul>
-                             <li>When viewing your document(s), are you seeing a blue banner and "(SECURED)" at the top of the document?</li>
-                             </ul></li>
-                             </ul></li>
-                             </ol>""",
+                "answer": f"""
+                            <p>
+                                <ol>
+                                 <li>
+                                    <strong>Error Message: File size too big</strong>
+                                    <ul>
+                                       <li>If your document is larger than 250MB, you should upload the information in separate documents. Each document must be 250MB or less.</li>
+                                    </ul>
+                                 </li>
+                                 <li>
+                                    <strong>Error Message: The file is corrupt or in an unsupported PDF format</strong>
+                                    <ul>
+                                       <li>
+                                          There are a few options:
+                                          <ul>
+                                             <li>Resave the file, ensuring that it opens without error in Adobe.</li>
+                                             <li>When saving the file, select “Print to PDF”.</li>
+                                             <li>Print the document and use a scanner to create and save a new PDF document.</li>
+                                          </ul>
+                                       </li>
+                                    </ul>
+                                 </li>
+                                 <li>
+                                    <strong>Error Message: Your firewall or network may be preventing submission</strong>.
+                                    <ul>
+                                       <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network’s firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
+                                    </ul>
+                                 </li>
+                                 <li>
+                                    <strong>Error Message: There is a problem with this file</strong>
+                                    <ul>
+                                       <li>Your internet browser may be outdated. Please update your browser to the current version and try the upload again.</li>
+                                    </ul>
+                                 </li>
+                                 <li>
+                                    <strong>Error Message: The file is encrypted or password protected</strong>
+                                    <ul>
+                                       <li>If you signed your document electronically with an application like Adobe, it may have asked you to save the document as a read-only copy that cannot be modified. If you saved your document as a read-only copy, it may have been password protected by Adobe automatically (unbeknownst to you). </li>
+                                       <li>
+                                          To troubleshoot, review your document(s).
+                                          <ul>
+                                             <li>When viewing your document(s), are you seeing a blue banner and "(SECURED)" at the top of the document?</li>
+                                          </ul>
+                                       </li>
+                                    </ul>
+                                 </li>
+                              </ol>
+                            </p>
+                            <p style="display: block;
+                                      height: auto;
+                                      max-width: 100%;
+                                      position: relative;
+                                      text-align: center;
+                                      width: auto;">
+                                <img src="{uploaded_images.get('dawson_faqs_case_management_secured.jpg', '')}" alt="Dawson FAQs Case Management Banner">
+                            </figure>
+                            <p>
+                                <ol>
+                                    <ul>
+                                        <ul>
+                                            <ul>
+                                                <li><strong>YES</strong> - Do ONE of the following steps below to create a new unsecured document file for your submission:</li>
+                                                    <ol>
+                                                        <li>Create a new document file, and when signing it, decline Adobe's prompt to save a read-only copy by clicking "Cancel" on the screen when prompted. This will prevent Adobe from automatically applying security measures to the file.</li>
+                                                        <p style="text-align:center">
+                                                            <img src="{uploaded_images.get('dawson_faqs_case_management_banner.jpg', '')}" alt="Dawson FAQs Case Management Banner">
+                                                        </p>
+                                                        <li>Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</li>
+                                                    </ol>
+                                                    <li>
+                                                    <strong>NO</strong>- If you do NOT see the above banner or "(SECURED)" in the document window, follow these steps.
+                                                    <ol>
+                                                    <li>Right click in the document.</li>
+                                                    <li>Choose Document Properties from the options.</li>
+                                                    <li>Click on the Security tab.</li>
+                                                    <li>In the dropdown menu labeled Security Method, select "No Security".</li>
+                                                    <li>Click OK</li>
+                                                    <p style="text-align:center">
+                                                        <img src="{uploaded_images.get('dawson_faqs_case_management_doc_properties.jpg', '')}" alt="Dawson FAQs Case Management Document Properties">
+                                                    </p>
+                                                    <li>Save the document. You should now be able to upload the document to DAWSON without error.</li>
+                                                    </ol>
+                                                    </li>
+                                            </ul>
+                                        </ul>
+                                    </ul>
+                                </ol>
+                            </p>""",
                 "anchortag": "FAQS7",
+            },
+            {
+                "question": "What digital signatures are accepted in DAWSON?",
+                "answer": """<ul class="disc"><li>Acceptable digital signatures in DAWSON:  </li><ul class="dashed"><li>Parties may submit a high-resolution or PDF document bearing either imaged or digitized signatures in satisfaction of the requirements of Rule 23(a)(3), Tax Court Rules of Practice and Procedure.  </li><li>PDFs of documents bearing an actual signature are acceptable.  (Print and sign before turning into a PDF.) </li><li>Documents signed using an authentication program (e.g., Adobe or DocuSign) are acceptable. Be sure to remove encryption or password protection prior to uploading into DAWSON. </li><li>Stylized signatures (e.g., signing with “/s” or using cursive font) are only acceptable when paired with the DAWSON username (email address) and password or with authorization.  See Rule 23(a)(3).   </li><li>Stylized signatures on paper submitted forms are not acceptable.  </li></ul><li>Documents that require a signature in addition to that of the eFiler, e.g., both spouses are petitioners: </li><ul class="dashed"><li>Documents uploaded to DAWSON should be signed by the additional party, using the guidance above, before being uploaded.  </li><li>If you chose to auto-generate a Petition in DAWSON and your spouse has authorized you to file an electronic petition, then the signature block on the petition auto-generated by DAWSON will serve as your spouse’s signature. </li></ul></ul>
+                 """,
+                "anchortag": "FAQS8",
             },
         ]
 
@@ -142,5 +226,9 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                 show_in_menus=False,
             )
         )
+
+        if loaded_images:
+            new_page.images = loaded_images
+
         new_page.save_revision().publish()
         self.logger.write(f"Created the '{title}' page.")
