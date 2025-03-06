@@ -32,7 +32,7 @@ class NoticesOfRuleAmendmentsPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "notices_of_rule_amendments"
+        slug = "notices-of-rule-amendments"
         title = "Notices of Rule Amendments"
 
         if Page.objects.filter(slug=slug).exists():
