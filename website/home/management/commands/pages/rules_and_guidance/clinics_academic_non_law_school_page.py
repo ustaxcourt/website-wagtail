@@ -90,7 +90,7 @@ class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
                 "question": "Reference Documents",
                 "answer": f"""<ul>
                     <li><a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter">Letter to Chief Judge (Sample): 2021_letter_to_CJ_academic_law_and_nonlaw.pdf</a><br/></li>
-                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for stuffer notice">Stuffer notice: stuffer_notice.pdf</a></li>
+                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for Stuffer Notice">Format for Stuffer Notice: stuffer_notice.pdf</a></li>
                     </ul>
                 """,
                 "anchortag": "REFDOCS",
