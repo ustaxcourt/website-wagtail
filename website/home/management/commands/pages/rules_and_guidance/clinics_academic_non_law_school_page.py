@@ -39,12 +39,12 @@ class ClinicsAcademicPageInitializer(PageInitializer):
             {
                 "question": "Preamble",
                 "answer": """Accredited colleges and universities operate academic tax clinics (academic clinics) that provide free assistance to low income and self-represented petitioners. Some academic clinics are supervised by practitioners who are admitted to practice before the Court while other clinics may provide a referral to outside attorneys who provide free legal assistance to low income petitioners or who operate a calendar call program.
-                            <br />
-                            Academic clinics help self-represented petitioners to comply with the Internal Revenue Code and to deal appropriately with the Internal Revenue Service and the Federal courts. The United States Tax Court (the Court) acknowledges the important assistance that academic clinics provide to self-represented petitioners.
-                            <br />
-                            For academic clinics operated by a college or university which agree to abide by the requirements stated herein, the Court includes information about the clinic in mailings to self-represented petitioners. In addition, in 25 cities in which the Tax Court holds trial sessions, petitioners’ counsel room is reserved for persons admitted to practice before the Court, including attorneys associated with tax clinics and Bar sponsored calendar call programs. The Tax Court does not endorse or recommend any particular clinic or Bar sponsored calendar call program.
-                            <br />
-                            The Court applies the following requirements with regard to academic clinics operated by a college or university.""",
+                <br />
+                Academic clinics help self-represented petitioners to comply with the Internal Revenue Code and to deal appropriately with the Internal Revenue Service and the Federal courts. The United States Tax Court (the Court) acknowledges the important assistance that academic clinics provide to self-represented petitioners.
+                <br />
+                For academic clinics operated by a college or university which agree to abide by the requirements stated herein, the Court includes information about the clinic in mailings to self-represented petitioners. In addition, in 25 cities in which the Tax Court holds trial sessions, petitioners’ counsel room is reserved for persons admitted to practice before the Court, including attorneys associated with tax clinics and Bar sponsored calendar call programs. The Tax Court does not endorse or recommend any particular clinic or Bar sponsored calendar call program.
+                <br />
+                The Court applies the following requirements with regard to academic clinics operated by a college or university.""",
                 "anchortag": "PREAMBLE",
             },
             {
@@ -77,46 +77,23 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                 "anchortag": "SEC2",
             },
             {
-                "question": "Sec. 3. Student Participation in Court Proceedings",
-                "answer": """If the requirements set forth above are satisfied, the Court will permit students who are enrolled in an academic clinic for credit and who are in good standing with the academic institution and law school graduates who are participating in intern/fellowship programs sponsored by an academic institution to participate in proceedings before the Court pursuant to the following procedures:
-                <ol type="a">
-                <li>Lead counsel who intends to request permission for a student/fellow to participate in proceedings before the Court shall obtain from the petitioner advance written consent for the student/fellow to participate in the case. Although academic clinics should retain a copy of the written consent in each case file, there is no need to submit the consent to the Court.</li>
-                <li>When a case described in these requirements is called for hearing or trial, lead counsel shall answer the calendar call, advise the Court whether the case is ready for hearing or trial, and introduce any student/fellow enrolled in the academic clinic who seeks permission to participate in the proceedings.</li>
-                <li>If the Court permits a student/fellow to participate in a case upon compliance with subsections (a) and (b), lead counsel shall remain in the courtroom at petitioner’s counsel table at all times during the hearing or trial of the case. A student/fellow who is permitted to participate in a case may, at the discretion of the presiding Judge or Special Trial Judge, present all or any part of a petitioner’s case at a hearing or trial. However, the presiding Judge or Special Trial Judge may at any time exercise the discretion to require the student/fellow to step aside and to require lead counsel to complete the hearing or trial.</li>
-                <li>An academic clinic submitting a pleading, motion, stipulation, or other paper to the Court for filing may include a statement in the body of the document including the name of any student/fellow enrolled in the academic clinic who participated in preparation of the document. However, a student/fellow may not sign a document submitted to the Court for filing.</li>
-                </ol>
-                If the requirements set forth above are satisfied, the Court will permit students who are enrolled in an academic clinic for credit and who are in good standing with the academic institution and law school graduates who are participating in intern/fellowship programs sponsored by an academic institution to participate in proceedings before the Court pursuant to the following procedures: <br/>
-                Lead counsel who intends to request permission for a student/fellow to participate in proceedings before the Court shall obtain from the petitioner advance written consent for the student/fellow to participate in the case. Although academic clinics should retain a copy of the written consent in each case file, there is no need to submit the consent to the Court.<br/>
-                When a case described in these requirements is called for hearing or trial, lead counsel shall answer the calendar call, advise the Court whether the case is ready for hearing or trial, and introduce any student/fellow enrolled in the academic clinic who seeks permission to participate in the proceedings.<br/>
-                If the Court permits a student/fellow to participate in a case upon compliance with subsections (a) and (b), lead counsel shall remain in the courtroom at petitioner’s counsel table at all times during the hearing or trial of the case. A student/fellow who is permitted to participate in a case may, at the discretion of the presiding Judge or Special Trial Judge, present all or any part of a petitioner’s case at a hearing or trial. However, the presiding Judge or Special Trial Judge may at any time exercise the discretion to require the student/fellow to step aside and to require lead counsel to complete the hearing or trial.<br/>
-                An academic clinic submitting a pleading, motion, stipulation, or other paper to the Court for filing may include a statement in the body of the document including the name of any student/fellow enrolled in the academic clinic who participated in preparation of the document. However, a student/fellow may not sign a document submitted to the Court for filing.
-                """,
+                "question": "Sec. 3. Academic Clinic Contact Information",
+                "answer": """If these requirements are satisfied and the Court permits an academic clinic to participate in this program, the Court will use stuffer notices to provide self-represented petitioners with specific contact information for the academic clinic. It is important that the academic clinic immediately notify the Court of any change in director, address or telephone number.""",
                 "anchortag": "SEC3",
             },
             {
-                "question": "Sec. 4. Academic Clinic Contact Information",
-                "answer": """If these requirements are satisfied and the Court permits an academic clinic to participate in this program, the Court will use stuffer notices to provide self-represented petitioners with specific contact information for the academic clinic. It is important that the academic clinic immediately notify the Court of any change in director, address or telephone number.""",
+                "question": "Sec. 4. Termination of Participation",
+                "answer": """The Court, in its discretion, may terminate participation in the program by an academic clinic at any time, provided notice stating the cause for the termination is furnished to the academic clinic director. In such a case, counsel of record would be required to file a motion to withdraw, pursuant to Rule 24(c), Tax Court Rules of Practice and Procedure.""",
                 "anchortag": "SEC4",
             },
             {
-                "question": "Sec. 5. Termination of Participation",
-                "answer": """The Court, in its discretion, may terminate participation in the program by an academic clinic at any time, provided notice stating the cause for the termination is furnished to the academic clinic director. In such a case, counsel of record would be required to file a motion to withdraw, pursuant to Rule 24(c), Tax Court Rules of Practice and Procedure.""",
-                "anchortag": "SEC5",
-            },
-            {
-                "question": "Format for Stuffer Notice",
-                "type": "link",
-                "value": docs["stuffer_notice.pdf"],
-            },
-            {
-                "question": "Letter to Chief Judge (sample)",
-                "type": "link",
-                "value": docs["2021_letter_to_CJ_academic_law_and_nonlaw.pdf"],
-            },
-            {
-                "question": "Contact Us",
-                "type": "link",
-                "value": "mailto:litc@ustaxcourt.gov",
+                "question": "Reference Documents",
+                "answer": f"""<ul>
+                    <li><a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter">Letter to Chief Judge (Sample): 2021_letter_to_CJ_academic_law_and_nonlaw.pdf</a><br/></li>
+                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for stuffer notice">Stuffer notice: stuffer_notice.pdf</a></li>
+                    </ul>
+                """,
+                "anchortag": "REFDOCS",
             },
         ]
 
@@ -124,8 +101,8 @@ class ClinicsAcademicPageInitializer(PageInitializer):
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
-                seo_title="Clinical, Student Practice & Bar Sponsored Calendar Call Program",
-                search_description="Clinical, Student Practice & Bar Sponsored Calendar Call Program",
+                seo_title=title,
+                search_description=title,
                 show_in_menus=False,
                 body=[
                     {

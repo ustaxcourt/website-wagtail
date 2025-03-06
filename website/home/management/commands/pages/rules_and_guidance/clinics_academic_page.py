@@ -102,13 +102,13 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                 "anchortag": "SEC5",
             },
             {
-                "question": "Sec. 6. Reference Documents",
+                "question": "Reference Documents",
                 "answer": f"""<ul>
                     <li><a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter">Letter to Chief Judge (Sample): 2021_letter_to_CJ_academic_law_and_nonlaw.pdf</a><br/></li>
                     <li><a href="{docs['stuffer_notice.pdf']}" title="Format for stuffer notice">Stuffer notice: stuffer_notice.pdf</a></li>
                     </ul>
                 """,
-                "anchortag": "SEC6",
+                "anchortag": "REFDOCS",
             },
         ]
 
