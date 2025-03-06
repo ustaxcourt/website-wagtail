@@ -102,19 +102,13 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                 "anchortag": "SEC5",
             },
             {
-                "question": "Format for Stuffer Notice",
-                "type": "link",
-                "value": docs["stuffer_notice.pdf"],
-            },
-            {
-                "question": "Letter to Chief Judge (sample)",
-                "type": "link",
-                "value": docs["2021_letter_to_CJ_academic_law_and_nonlaw.pdf"],
-            },
-            {
-                "question": "Contact Us",
-                "type": "link",
-                "value": "mailto:litc@ustaxcourt.gov",
+                "question": "Sec. 6. Reference Documents",
+                "answer": f"""<ul>
+                    <li><a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter">Letter to Chief Judge (Sample): 2021_letter_to_CJ_academic_law_and_nonlaw.pdf</a><br/></li>
+                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for stuffer notice">Stuffer notice: stuffer_notice.pdf</a></li>
+                    </ul>
+                """,
+                "anchortag": "SEC6",
             },
         ]
 

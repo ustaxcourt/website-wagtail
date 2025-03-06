@@ -197,12 +197,45 @@ class EnhancedStandardPage(NavigationMixin):
 
     body = StreamField(
         [
+            (
+                "heading",
+                blocks.StructBlock(
+                    [
+                        ("text", blocks.CharBlock()),
+                        (
+                            "level",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("h2", "Heading 2"),
+                                    ("h3", "Heading 3"),
+                                    ("h4", "Heading 4"),
+                                    ("h5", "Heading 5"),
+                                ]
+                            ),
+                        ),
+                        (
+                            "id",
+                            blocks.CharBlock(
+                                required=False,
+                                help_text="Optional ID for linking to this heading",
+                            ),
+                        ),
+                    ]
+                ),
+            ),
             ("h2", blocks.CharBlock(label="Heading 2")),
             ("h3", blocks.CharBlock(label="Heading 3")),
             ("h4", blocks.CharBlock(label="Heading 4")),
-            ("paragraph", blocks.RichTextBlock(label="Paragraph")),
-            ("hr", blocks.BooleanBlock(label="Horizontal Rule", default=True)),
-            ("image", ImageBlock(label="Image")),
+            ("paragraph", blocks.RichTextBlock()),
+            (
+                "hr",
+                blocks.BooleanBlock(
+                    label="Horizontal Rule",
+                    default=True,
+                    help_text="Add 'Horizontal Rule'.",
+                ),
+            ),
+            ("image", ImageBlock()),
             (
                 "links",
                 blocks.StructBlock(
@@ -234,7 +267,8 @@ class EnhancedStandardPage(NavigationMixin):
                                                         ).title(),
                                                     )
                                                     for icon in IconCategories
-                                                ]
+                                                ],
+                                                required=False,
                                             ),
                                         ),
                                         (
@@ -259,26 +293,13 @@ class EnhancedStandardPage(NavigationMixin):
                     blocks.StructBlock(
                         [
                             ("question", blocks.CharBlock(required=False)),
-                            ("answer", blocks.RichTextBlock(required=False)),
-                            ("anchortag", blocks.CharBlock(required=False)),
-                            (
-                                "type",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        ("link", "Link"),
-                                        ("question", "Question"),
-                                    ],
-                                    required=False,
-                                    default="question",
-                                ),
-                            ),
-                            ("value", blocks.CharBlock(required=False)),
+                            ("answer", blocks.RichTextBlock()),
+                            ("anchortag", blocks.CharBlock()),
                         ]
-                    ),
-                    label="Question and Answer",
+                    )
                 ),
             ),
-            ("columns", ColumnBlock(label="Columns")),
+            ("columns", ColumnBlock()),
         ]
     )
     content_panels = Page.content_panels + [

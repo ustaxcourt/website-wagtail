@@ -227,7 +227,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=CaseRelatedFormsPage(
                 title=title,
-                body='Forms can be filled in and printed directly from <a href="https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html" target="_blank">Adobe Acrobat Reader</a> 3.0 or later. For assistance, see the <a href="https://ustaxcourt.gov/forms_instructions.html">Fill-in Forms Instructions</a>.',
+                body='Forms can be filled in and printed directly from <a href="https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html" target="_blank">Adobe Acrobat Reader</a> 3.0 or later. For assistance, see the <a href="/forms_instructions">Fill-in Forms Instructions</a>.',
                 slug=slug,
                 seo_title=title,
                 search_description="Case Related Forms",
