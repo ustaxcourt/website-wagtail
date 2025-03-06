@@ -23,6 +23,7 @@ from .clinics_academic_page import ClinicsAcademicPageInitializer
 from .clinics_academic_non_law_school_page import (
     ClinicsAcademicNonLawSchoolPageInitializer,
 )
+from .clinics_nonacademic_page import ClinicsNonAcademicPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -46,5 +47,6 @@ rules_and_guidance_pages_to_initialize = [
     JudicialConductAndDisabilityProceduresPageInitializer,
     ClinicsAcademicPageInitializer,
     ClinicsAcademicNonLawSchoolPageInitializer,
+    ClinicsNonAcademicPageInitializer,
     NoticesOfRuleAmendmentsPageInitializer,
 ]
