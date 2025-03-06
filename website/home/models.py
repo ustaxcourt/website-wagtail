@@ -223,11 +223,18 @@ class EnhancedStandardPage(NavigationMixin):
                     ]
                 ),
             ),
-            ("h2", blocks.CharBlock()),
-            ("h3", blocks.CharBlock()),
-            ("h4", blocks.CharBlock()),
+            ("h2", blocks.CharBlock(label="Heading 2")),
+            ("h3", blocks.CharBlock(label="Heading 3")),
+            ("h4", blocks.CharBlock(label="Heading 4")),
             ("paragraph", blocks.RichTextBlock()),
-            ("hr", blocks.BooleanBlock()),
+            (
+                "hr",
+                blocks.BooleanBlock(
+                    label="Horizontal Rule",
+                    default=True,
+                    help_text="Add 'Horizontal Rule'.",
+                ),
+            ),
             ("image", ImageBlock()),
             (
                 "links",
