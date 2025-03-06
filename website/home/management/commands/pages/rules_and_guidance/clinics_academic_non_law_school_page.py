@@ -11,7 +11,7 @@ docs = {
 }
 
 
-class ClinicsAcademicPageInitializer(PageInitializer):
+class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
     def __init__(self, logger):
         super().__init__(logger)
 
