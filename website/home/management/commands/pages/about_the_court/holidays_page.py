@@ -56,7 +56,7 @@ class HolidaysPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
-                        "value": """*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. See Rule 25.""",
+                        "value": '*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a href="/media/documents/Rule-25.pdf" target="_blank" title="Rule 25" >See Rule 25</a></strong>.',
                     },
                 ],
             )
