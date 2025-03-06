@@ -277,7 +277,10 @@ make tag tag=sandbox-destroy
 ## The Workflow
 1. Pick up a story on the main board,
 2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
-    - `type`: the value of the **Type** column in Monday.com
+    - `type`: the type of change.
+      - `page`: code that adds a new wagtail page to the repo, e.g. `page/about-us-1234`
+      - `fix`: code that fixes a bug or adds/clarifies documentation, e.g. `fix/broken-dropdown-1234`
+      - `feature`: code that adds or enhances functionality of the app, e.g. `feature/new-disco-theme-1234`
     - `brief-description`: a few words to describe the purpose of the branch
     - `monday-id`: the valu of the **Item ID** in Monday.com
 3. Develop and test locally
