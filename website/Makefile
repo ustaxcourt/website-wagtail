@@ -58,9 +58,12 @@ migrate:
 rmdb:
 	rm ./db.sqlite3 || echo "Local DB file already deleted"
 
-reset: rmdb setup makemigrations migrate superuser createpages
+rmmedia:
+	rm -rf ./media || echo "Media folder already deleted"
 
-resetdb: rmdb makemigrations migrate superuser createpages
+resetdb: rmdb rmmedia makemigrations migrate superuser createpages
+
+reset: setup resetdb
 
 run:
 	. $(VENV) && python manage.py runserver

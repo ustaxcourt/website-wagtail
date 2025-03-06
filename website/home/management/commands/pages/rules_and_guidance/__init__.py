@@ -15,15 +15,21 @@ from .zoomgov_proceedings_page import ZoomgovProceedingPageInitializer
 from .judicial_conduct_and_disability_procedures_page import (
     JudicialConductAndDisabilityProceduresPageInitializer,
 )
+from .notices_of_rule_amendments_page import (
+    NoticesOfRuleAmendmentsPageInitializer,
+)
 from .rules_page import RulesPageInitializer
+from .clinics_academic_page import ClinicsAcademicPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
+    # TOP LEVEL PAGES. Order matters.
     RemoteProceedingsPageInitializer,
     AdministrativeOrdersPageInitializer,
     RulesPageInitializer,
     GuidenceForPetitionersPageInitializer,
     ClinicsProBonoProgramsPageInitializer,
     GuidenceForPractitionersPageInitializer,
+    # NON-TOP LEVEL PAGES. Order does not matter.
     PetitionersStartPageInitializer,
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
@@ -35,4 +41,6 @@ rules_and_guidance_pages_to_initialize = [
     ZoomgovProceedingPageInitializer,
     GettingReadyPageInitializer,
     JudicialConductAndDisabilityProceduresPageInitializer,
+    ClinicsAcademicPageInitializer,
+    NoticesOfRuleAmendmentsPageInitializer,
 ]
