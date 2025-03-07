@@ -184,24 +184,17 @@ hr {
     }
 }
 
-@media (max-width: 29.99em) {
+@media (max-width: 768px) {
     .usa-table--stacked {
         tr, td {
             .display-none {
                 display: none;
+                padding: 10px 0px;
             }
         }
     }
 }
 
-/* Table Responsive Styles */
-@media (max-width: 480px) {
-    .usa-table--stacked {
-        tr, td {
-            padding: 10px 0px;
-        }
-    }
-}
 
 /* ==========================================================================
    Utility Classes
