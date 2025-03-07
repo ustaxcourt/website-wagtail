@@ -40,9 +40,12 @@ class ClinicsNonAcademicPageInitializer(PageInitializer):
                 "answer": """
 Many nonacademic tax clinics and attorney referral programs (nonacademic clinics) provide free legal assistance to low income and self-represented petitioners. The two most common nonacademic clinic models are: (1) Clinics that assign cases to practitioners who are employees of the clinic, and (2) clinics that have a relationship with outside practitioners who have agreed to provide pro bono legal services and also participate in a calendar call program.
 <br/>
+<br/>
 Nonacademic clinics help self-represented petitioners comply with the Internal Revenue Code and to deal appropriately with the Internal Revenue Service and the Federal courts. The United States Tax Court (the Court) recognizes the important assistance that nonacademic clinics provide to self-represented petitioners.
 <br/>
+<br/>
 For nonacademic clinics which agree to abide by the requirements stated herein, the Court includes standard information about the clinic in mailings to petitioners and permits students/fellows to participate in Court hearings and trials. In addition, in 25 cities in which the Tax Court holds trial sessions, petitioners' counsel room is reserved for persons admitted to practice before the Court, including attorneys associated with tax clinics and Bar sponsored calendar call programs. The Tax Court does not endorse or recommend any particular clinic or Bar sponsored calendar call program.
+<br/>
 <br/>
 The Court applies the following requirements with regard to participation in the Court’s nonacademic clinic program.
 """,
@@ -50,17 +53,37 @@ The Court applies the following requirements with regard to participation in the
             },
             {
                 "question": "Sec. 1. Requirements for Participation by Nonacademic Clinics",
-                "answer": """A nonacademic clinic participating in the Court’s nonacademic clinical program shall not charge any fee for legal services to petitioners. An nonacademic clinic may ask petitioners using its services to reimburse the clinic for incidental costs such as filing fees, copying costs, and postage charges. To participate in the Court’s nonacademic clinical program, a nonacademic clinic shall:
-
+                "answer": f"""A nonacademic clinic participating in the Court’s nonacademic clinical program shall not charge any fee for legal services to petitioners. An nonacademic clinic may ask petitioners using its services to reimburse the clinic for incidental costs such as filing fees, copying costs, and postage charges. To participate in the Court’s nonacademic clinical program, a nonacademic clinic shall:
+<ol type="a">
+<li>
 Designate a clinic director/coordinator who shall be responsible for overseeing program operations and serve as a point of contact for communications to and from the Court.
+</li>
+<li>
 Restrict its assignment or referral of Tax Court cases to practitioners who are members in good standing of the Bar of the Court.
+</li>
+<li>
 Be operated by an exempt organization as described in I.R.C. sec. 501(c)(3) and exempt from tax under I.R.C. sec. 501(a).
+</li>
+<li>
 Establish guidelines for screening cases, including therein the objectives of public service and judicial and administrative economy. These guidelines should be interpreted so that assistance is offered, as appropriate, to low income petitioners who have filed a petition with the Court or who expect to do so.
+</li>
+<li>
 Establish guidelines and procedures for case progress reporting to the nonacademic clinic director/coordinator by practitioners accepting assignments or referrals of Tax Court cases. Nonacademic clinics also shall require all practitioners and clients to sign a Representation Agreement which clearly states the terms and limitations of the representation.
+</li>
+<li>
 Comply with the U.S. Tax Court Requirements for Academic Clinical Programs if the nonacademic clinic is associated with a clinic operated by an accredited law school.
-Submit to the Chief Judge, on or before February 15 of each year, a letter signed by the clinic director/coordinator (sample format attached) which includes (1) the name, address, Tax Court Bar number (if applicable) and contact information (including the e-mail address) of the nonacademic clinic director/coordinator. If the nonacademic clinic director/coordinator does not have a Tax Court Bar number, the name, address and Tax Court Bar number of a practitioner associated with the clinic who is admitted to the Court should also be listed; (2) the place(s) of trial served by the nonacademic clinic; (3) a statement that the nonacademic clinic will comply with these requirements and that the nonacademic clinic is operated by an exempt organization as described in I.R.C. sec. 501(c)(3) and exempt from tax under I.R.C. sec. 501(a); (4) a copy of or electronic link to the nonacademic clinic’s guidelines as described in sections 1.d. and 1.e., above; (5)(a) during the calendar year preceding submission of the letter, an approximate number of petitioners with cases pending in the Court for whom the nonacademic clinic entered an appearance pursuant to Tax Court Rule 24; (b) an approximate number of petitioners who were represented (e.g., through a Power of Attorney) but for whom the nonacademic clinic did not enter an appearance; and (c) an approximate number of petitioners for whom the nonacademic clinic provided consultation, assistance and/or advice (e.g., at the Calendar Call), but did not represent the taxpayer; (6) whether the nonacademic clinic has a relationship with outside attorneys for referral of cases or operation of a calendar call program; (7) any suggestions that the nonacademic clinic may offer for better assisting low income petitioners in their interactions with the Court; (8) an updated one page stuffer notice that the Court can use to notify petitioners of the availability of the nonacademic clinic’s services for the coming year (format for stuffer notice attached); and (9) whether the nonacademic clinic would like its stuffer notice to be sent to petitioners in regular tax cases, small tax cases, or both; A version of the stuffer notice written in Spanish may be submitted on the reverse side of the English version. Information about clinics that do not offer assistance in Spanish should not be included in a Spanish language stuffer notice. The Spanish version should include a translation of the following sentence: "Please be advised that all proceedings in the Tax Court are in English." The letter to the Chief Judge and updated stuffer notice referred to in this provision may be submitted to the Court in paper form or, if in PDF format, as an attachment to an e-mail using the Contact Us link.
+</li>
+<li>
+Submit to the Chief Judge, on or before February 15 of each year, a letter signed by the clinic director/coordinator (<a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter" >sample</a> format attached) which includes (1) the name, address, Tax Court Bar number (if applicable) and contact information (including the e-mail address) of the nonacademic clinic director/coordinator. If the nonacademic clinic director/coordinator does not have a Tax Court Bar number, the name, address and Tax Court Bar number of a practitioner associated with the clinic who is admitted to the Court should also be listed; (2) the place(s) of trial served by the nonacademic clinic; (3) a statement that the nonacademic clinic will comply with these requirements and that the nonacademic clinic is operated by an exempt organization as described in I.R.C. sec. 501(c)(3) and exempt from tax under I.R.C. sec. 501(a); (4) a copy of or electronic link to the nonacademic clinic’s guidelines as described in sections 1.d. and 1.e., above; (5)(a) during the calendar year preceding submission of the letter, an approximate number of petitioners with cases pending in the Court for whom the nonacademic clinic entered an appearance pursuant to Tax Court Rule 24; (b) an approximate number of petitioners who were represented (e.g., through a Power of Attorney) but for whom the nonacademic clinic did not enter an appearance; and (c) an approximate number of petitioners for whom the nonacademic clinic provided consultation, assistance and/or advice (e.g., at the Calendar Call), but did not represent the taxpayer; (6) whether the nonacademic clinic has a relationship with outside attorneys for referral of cases or operation of a calendar call program; (7) any suggestions that the nonacademic clinic may offer for better assisting low income petitioners in their interactions with the Court; (8) an updated one page stuffer notice that the Court can use to notify petitioners of the availability of the nonacademic clinic’s services for the coming year (<a href="{docs['stuffer_notice.pdf']}" title="Format for Stuffer Notice" >format for stuffer notice</a> attached); and (9) whether the nonacademic clinic would like its stuffer notice to be sent to petitioners in regular tax cases, small tax cases, or both; A version of the stuffer notice written in Spanish may be submitted on the reverse side of the English version. Information about clinics that do not offer assistance in Spanish should not be included in a Spanish language stuffer notice. The Spanish version should include a translation of the following sentence: <strong>"Please be advised that all proceedings in the Tax Court are in English."</strong> The letter to the Chief Judge and updated stuffer notice referred to in this provision may be submitted to the Court in paper form or, if in PDF format, as an attachment to an e-mail using the <a href="mailto:litc@ustaxcourt.gov" title="Email litc@ustaxcourt.gov">Contact Us</a> link.
+</li>
+<li>
 If the nonacademic clinic participates in, or coordinates a calendar call program, the provisions of Section 2 of the Court’s Requirements for Bar Sponsored Calendar Call Programs apply.
-Immediately inform the Chief Judge of any material changes in the information submitted to the Court pursuant to section 1.g., above.""",
+</li>
+<li>
+Immediately inform the Chief Judge of any material changes in the information submitted to the Court pursuant to section 1.g., above.
+</li>
+</ol>
+""",
                 "anchortag": "SEC1",
             },
             {
