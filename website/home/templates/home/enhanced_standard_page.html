@@ -6,6 +6,11 @@
 {% block extra_css %}
     <style>
         .enhanced-page {
+
+            .None {
+                display: none;
+            }
+
             .links {
                 i {
                     padding-right: .4em
@@ -14,6 +19,18 @@
                 &.with-bullets {
                     list-style-type: disc;
                     padding-left: 40px;
+                }
+            }
+
+            .heading-wrapper {
+                gap: 4px;
+                position: relative;
+
+                .bookmark {
+                    position: absolute;
+                    left: -30px;
+                    flex-shrink: 0;
+                    top: 4px;
                 }
             }
 
@@ -121,7 +138,24 @@
                         left: -4px;
                     }
 
-                    h3 {
+                    h3,
+                    h4,
+                    h5,
+                    h6 {
+                        padding-left: 16px;
+                    }
+                }
+
+                .heading-wrapper {
+                    .bookmark {
+                        left: -12px;
+                    }
+
+                    h2,
+                    h3,
+                    h4,
+                    h5,
+                    h6 {
                         padding-left: 16px;
                     }
                 }
@@ -171,117 +205,130 @@
         {% if page.navigation_ribbon %}
             <div class="blue-page-links-bar">
                 {% for link in page.navigation_ribbon.links.all %}
-                <a href="{{ link.url }}"><i class="{{ link.icon }}"></i>
-                <div class="title">{{ link.title }}</div>
-            </a>
-        {% endfor %}
-    </div>
-{% endif %}
-{% for block in page.body %}
-    {% with page_url=page.url|strip_trailing_slash %}
-        {% if block.block_type == 'heading' %}
-            <h2>{{ block.value }}</h2>
-        {% elif block.block_type == 'h2' %}
-            <h2>{{ block.value }}</h2>
-        {% elif block.block_type == 'h3' %}
-            <h3>{{ block.value }}</h3>
-        {% elif block.block_type == 'h4' %}
-            <h4>{{ block.value }}</h4>
-        {% elif block.block_type == 'paragraph' %}
-            <p data-testid="page-body-paragraph">{{ block.value }}</p>
-        {% elif block.block_type == 'image' %}
-            <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
-        {% elif block.block_type == 'hr' %}
-            <hr />
-        {% elif block.block_type == 'links' %}
-            <ul class="links {{ block.value.class }}">
-                {% for link in block.value.links %}
-                    {% if link.document %}
-                        <li>
-                            <a href="{{ link.document.url }}"
-                               data-testid="document-link"
-                               title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
-                        </li>
-                    {% elif link.text_only %}
-                        <li>
-                            <i class="{{ link.icon }}"></i> {{ link.title }}
-                        </li>
-                    {% else %}
-                        <li>
-                            {% if link.url %}
-                                <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
-                            {% endif %}
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        {% elif block.block_type == 'questionanswers' %}
-            <ul class="links indented">
-                {% for q in block.value %}
-                    <li>
-                        <a href="{{ page_url }}#{{ q.anchortag }}">
-                            <i class="ti ti-info-circle-filled"></i>{{ q.question }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-            <hr />
-            {% for q in block.value %}
-                <div class="question-answer-block">
-                    <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
-                        <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
+                    <a href="{{ link.url }}" aria-label="{{ link.title }}">
+                        <i class="{{ link.icon }}" aria-hidden="true"></i>
+                        <div class="title">{{ link.title }}</div>
                     </a>
-                    <h3>{{ q.question }}</h3>
-                </div>
-                <div>{{ q.answer|richtext }}</div>
-                <hr />
-            {% endfor %}
-        {% elif block.block_type == "photo_dedication" %}
-            <div class="dedication">
-                {% if block.value.photo %}
-                    <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
-                {% endif %}
-                <div class="dedication-text">
-                    <h2 class="title">{{ block.value.title }}</h2>
-                    {{ block.value.paragraph_text | richtext }}
-                </div>
+                {% endfor %}
             </div>
-        {% elif block.block_type == 'embedded_video' %}
-            <hr />
-            <div id="video-container">
-                <h2>{{ block.value.title }}</h2>
-                <div class="video-desc-block">
-                    <div class="video-container">
-                        <iframe title="Victor Lundy:Sulptor of Space"
-                                src="{{ block.value.video_url }}"
-                                allowfullscreen></iframe>
+        {% endif %}
+        {% for block in page.body %}
+            {% with page_url=page.url|strip_trailing_slash %}
+                {% if block.block_type == 'h2' %}
+                    <h2>{{ block.value }}</h2>
+                {% elif block.block_type == 'h3' %}
+                    <h3>{{ block.value }}</h3>
+                {% elif block.block_type == 'h4' %}
+                    <h4>{{ block.value }}</h4>
+                {% elif block.block_type == 'heading' %}
+                    <div class="heading-wrapper">
+                        <{{ block.value.level }}
+                        {% if block.value.id %}id="{{ block.value.id }}"{% endif %}
+                        >
+                        {% if block.value.id %}
+                            <a href="{{ page_url }}#{{ block.value.id }}"
+                               title="{{ block.value.text }}">
+                                <div class="ti ti-bookmark-filled bookmark" id="{{ block.value.id }}"></div>
+                            </a>
+                        {% endif %}
+                        {{ block.value.text }}
+                        </{{ block.value.level }}>
                     </div>
-                    <div class="description-block">
-                        <p>{{ block.value.description }}</p>
+                {% elif block.block_type == 'paragraph' %}
+                    <p data-testid="page-body-paragraph">{{ block.value }}</p>
+                {% elif block.block_type == 'image' %}
+                    <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
+                {% elif block.block_type == 'hr' %}
+                    <hr />
+                {% elif block.block_type == 'links' %}
+                    <ul class="links {{ block.value.class }}">
+                        {% for link in block.value.links %}
+                            {% if link.document %}
+                                <li>
+                                    <a href="{{ link.document.url }}"
+                                       data-testid="document-link"
+                                       title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                                </li>
+                            {% elif link.text_only %}
+                                <li>
+                                    <i class="{{ link.icon }}"></i> {{ link.title }}
+                                </li>
+                            {% else %}
+                                <li>
+                                    {% if link.url %}
+                                        <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% elif block.block_type == 'questionanswers' %}
+                    <ul class="links indented">
+                        {% for q in block.value %}
+                            <li>
+                                <a href="{{ page_url }}#{{ q.anchortag }}">
+                                    <i class="ti ti-info-circle-filled"></i>{{ q.question }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <hr />
+                    {% for q in block.value %}
+                        <div class="question-answer-block">
+                            <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
+                                <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
+                            </a>
+                            <h3>{{ q.question }}</h3>
+                        </div>
+                        <div>{{ q.answer|richtext }}</div>
+                        <hr />
+                    {% endfor %}
+                {% elif block.block_type == "photo_dedication" %}
+                    <div class="dedication">
+                        {% if block.value.photo %}
+                            <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+                        {% endif %}
+                        <div class="dedication-text">
+                            <h2 class="title">{{ block.value.title }}</h2>
+                            {{ block.value.paragraph_text | richtext }}
+                        </div>
                     </div>
-                </div>
-            </div>
-        {% elif block.block_type == 'columns' %}
-            {% with column_count=block.value.column|length %}
-                <div class="grid-row">
-                    {% for column in block.value.column %}
-                        <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
-                            {% for sub_block in column %}
-                                {% if sub_block.block_type == 'h2WithAnchorTag' %}
-                                    <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
-                                {% elif sub_block.block_type == 'clickableButton' %}
-                                    <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
-                                {% endif %}
+                {% elif block.block_type == 'embedded_video' %}
+                    <hr />
+                    <div id="video-container">
+                        <h2>{{ block.value.title }}</h2>
+                        <div class="video-desc-block">
+                            <div class="video-container">
+                                <iframe title="Victor Lundy:Sulptor of Space"
+                                        src="{{ block.value.video_url }}"
+                                        allowfullscreen></iframe>
+                            </div>
+                            <div class="description-block">
+                                <p>{{ block.value.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% elif block.block_type == 'columns' %}
+                    {% with column_count=block.value.column|length %}
+                        <div class="grid-row">
+                            {% for column in block.value.column %}
+                                <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
+                                    {% for sub_block in column %}
+                                        {% if sub_block.block_type == 'h2WithAnchorTag' %}
+                                            <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
+                                        {% elif sub_block.block_type == 'clickableButton' %}
+                                            <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
+                    {% endwith %}
+                {% else %}
+                    <p>Block type not recognized: {{ block.block_type }}</p>
+                    {{ block.value }}
+                {% endif %}
             {% endwith %}
-        {% else %}
-            <p>Block type not recognized: {{ block.block_type }}</p>
-            {{ block.value }}
-        {% endif %}
-    {% endwith %}
-{% endfor %}
-</div>
+        {% endfor %}
+        </div>
 {% endblock content %}
