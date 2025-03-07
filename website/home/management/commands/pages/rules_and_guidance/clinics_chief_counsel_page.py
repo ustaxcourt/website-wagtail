@@ -6,9 +6,7 @@ from home.models import (
 
 
 docs = {
-    "2021_letter_to_CJ_academic_law_and_nonlaw.pdf": "",
-    "clinics_counsel_rooms.pdf": "",
-    "stuffer_notice.pdf": "",
+    "letter_to_cj_occ_student_practice.pdf": "",
 }
 
 
@@ -46,7 +44,7 @@ The Court will apply the requirements set forth below with regard to participati
             },
             {
                 "question": "Sec. 1. Requirements for Participation by Office of Chief Counsel Student Practice Program",
-                "answer": """To participate in the Court’s student practice program, the student shall:
+                "answer": f"""To participate in the Court’s student practice program, the student shall:
 <ol type="a">
 <li>
 Be supervised and directed by a Chief Counsel attorney (the director) who is a member in good standing of the Bar of the Court and who shall serve as a point of contact for communications to and from the Court.
@@ -58,7 +56,7 @@ Establish guidelines for screening cases that are appropriate for the student pr
 Inform all persons associated with the student practice program that the Chief Counsel trial attorney assigned to the case (lead counsel), who shall be a member in good standing of the Bar of the Court, is personally responsible at all times to the Court for meeting deadlines, monitoring case preparation, ensuring full compliance with the Court’s Rules of Practice and Procedure and with orders issued by the Court, and in general, with properly preparing a case for hearing, trial, or other disposition.
 </li>
 <li>
-Submit to the Chief Judge, on or before February 15 of each year, a letter which includes (1) the name, address, and contact information (including the e-mail address) of the student practice program director (sample format attached); (2) a statement that the student practice program will comply with these requirements; (3) a general description of the student practice program guidelines as described in section 1.b., above; and (4) any suggestions that the student practice program may offer for enhancing student interactions with the Court. The letter to the Chief Judge referred to in this provision may be submitted to the Court in paper form or, if in PDF format, as an attachment to an e-mail using the Contact Us link.
+Submit to the Chief Judge, on or before February 15 of each year, a letter which includes (1) the name, address, and contact information (including the e-mail address) of the student practice program director (<a href="{docs['letter_to_cj_occ_student_practice.pdf']}" title="Suggested Form Letter to Chief Judge">sample</a> format attached); (2) a statement that the student practice program will comply with these requirements; (3) a general description of the student practice program guidelines as described in section 1.b., above; and (4) any suggestions that the student practice program may offer for enhancing student interactions with the Court. The letter to the Chief Judge referred to in this provision may be submitted to the Court in paper form or, if in PDF format, as an attachment to an e-mail using the <a href="mailto:litc@ustaxcourt.gov" title="Email: litc@ustaxcourt.gov">Contact Us</a> link.
 </li>
 <li>
 Immediately inform the Chief Judge of any material changes in the information submitted to the Court pursuant to section 1.d., above.
@@ -109,8 +107,7 @@ A student practice program submitting a pleading, motion, stipulation, or other 
             {
                 "question": "Reference Documents",
                 "answer": f"""<ul>
-                    <li><a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter">Letter to Chief Judge (Sample): 2021_letter_to_CJ_academic_law_and_nonlaw.pdf</a><br/></li>
-                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for Stuffer Notice">Format for Stuffer Notice: stuffer_notice.pdf</a></li>
+                    <li><a href="{docs['letter_to_cj_occ_student_practice.pdf']}" title="Suggested Form Letter to Chief Judge">Letter to Chief Judge (sample): letter_to_cj_occ_student_practice.pdf</a><br/></li>
                     </ul>
                 """,
                 "anchortag": "REFDOCS",
@@ -127,7 +124,7 @@ A student practice program submitting a pleading, motion, stipulation, or other 
                 body=[
                     {
                         "type": "h2",
-                        "value": "Requirements For Participation in the United States Tax Court Clinical, Student Practice & Calendar Call Program by Bar Sponsored Calendar Call Programs",
+                        "value": "Requirements for Participation in the United States Tax Court Clinical, Student Practice & Calendar call Program by the Office of Chief Counsel Student Practice Program",
                     },
                     {"type": "questionanswers", "value": questions},
                     {
