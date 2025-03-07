@@ -1,9 +1,8 @@
-
-/* .entries-list {
+.entries-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
-} */
+}
 
 .entries-list .entry {
     border: 1px solid #BBB;
