@@ -92,122 +92,141 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
             {
                 "question": "How are sealed cases and sealed documents handled in DAWSON?",
                 "answer": """<ul>
-                                  <li>Sealed Cases</li>
+                                  <li>Sealed Cases
                                       <ul>
                                          <li>Parties wishing to file a Petition under seal must file the Petition on paper along with a Motion to Seal. The Motion should specify whether it seeks to seal the entire case or only the Petition.</li>
                                          <li>Parties wishing to seal a case that is already docketed must file a Motion to Seal.</li>
                                          <li>With the exception of an initial pleading or entry of appearance, parties may file documents in a sealed case in the same manner as filing documents in a case that is not sealed (including eFiling in DAWSON).</li>
                                       </ul>
-                                  <li>Sealed Documents</li>
+                                  </li>
+                                  <li>Sealed Documents
                                       <ul>
-                                      <li>Specific documents on the docket record can be sealed in two ways.</li>
+                                      <li>Specific documents on the docket record can be sealed in two ways.
                                           <ul>
-                                          <li>A document may be sealed from the public.</li>
-                                          <li>A document may be sealed from the public and from the parties to the case.</li>
+                                              <li>A document may be sealed from the public.</li>
+                                              <li>A document may be sealed from the public and from the parties to the case.</li>
                                           </ul>
+                                      </li>
                                       <li>Parties wishing to file a new document under seal must file the document in paper along with a Motion to Seal specifying whether it is to be sealed from the public or the public and the parties.</li>
                                       <li>Parties wishing to seal a document that has previously been filed (e.g., after discovering missed redactions) may electronically file a Motion to Seal specifying whether it is to be sealed from the public or the public and the parties.</li>
-                                      </ul>
-                                     <li>For more information, see the <strong><a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a></strong>.</li>
+                                    </ul>
+                                  </li>
+                                    <li>For more information, see the <strong><a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a></strong>.</li>
                               </ul>""",
                 "anchortag": "FAQS5",
             },
             {
                 "question": "Why did I receive an error when I uploaded a file in DAWSON?",
                 "answer": f"""
-                            <p>
-                                <ol>
-                                 <li>
+                            <ol>
+                                <li>
                                     <strong>Error Message: File size too big</strong>
                                     <ul>
-                                       <li>If your document is larger than 250MB, you should upload the information in separate documents. Each document must be 250MB or less.</li>
+                                        <li>If your document is larger than 250MB, you should upload the information in separate documents. Each document must be 250MB or less.</li>
                                     </ul>
-                                 </li>
-                                 <li>
+                                </li>
+                                <li>
                                     <strong>Error Message: The file is corrupt or in an unsupported PDF format</strong>
                                     <ul>
-                                       <li>
-                                          There are a few options:
-                                          <ul>
-                                             <li>Resave the file, ensuring that it opens without error in Adobe.</li>
-                                             <li>When saving the file, select “Print to PDF”.</li>
-                                             <li>Print the document and use a scanner to create and save a new PDF document.</li>
-                                          </ul>
-                                       </li>
+                                        <li>
+                                            There are a few options:
+                                            <ul>
+                                                <li>Resave the file, ensuring that it opens without error in Adobe.</li>
+                                                <li>When saving the file, select “Print to PDF”.</li>
+                                                <li>Print the document and use a scanner to create and save a new PDF document.</li>
+                                            </ul>
+                                        </li>
                                     </ul>
-                                 </li>
-                                 <li>
-                                    <strong>Error Message: Your firewall or network may be preventing submission</strong>.
+                                </li>
+                                <li>
+                                    <strong>Error Message: Your firewall or network may be preventing submission.</strong>
                                     <ul>
-                                       <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network’s firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
+                                        <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network’s firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
                                     </ul>
-                                 </li>
-                                 <li>
+                                </li>
+                                <li>
                                     <strong>Error Message: There is a problem with this file</strong>
                                     <ul>
-                                       <li>Your internet browser may be outdated. Please update your browser to the current version and try the upload again.</li>
+                                        <li>Your internet browser may be outdated. Please update your browser to the current version and try the upload again.</li>
                                     </ul>
-                                 </li>
-                                 <li>
+                                </li>
+                                <li>
                                     <strong>Error Message: The file is encrypted or password protected</strong>
                                     <ul>
-                                       <li>If you signed your document electronically with an application like Adobe, it may have asked you to save the document as a read-only copy that cannot be modified. If you saved your document as a read-only copy, it may have been password protected by Adobe automatically (unbeknownst to you). </li>
-                                       <li>
-                                          To troubleshoot, review your document(s).
-                                          <ul>
-                                             <li>When viewing your document(s), are you seeing a blue banner and "(SECURED)" at the top of the document?</li>
-                                          </ul>
-                                       </li>
-                                    </ul>
-                                 </li>
-                              </ol>
-                            </p>
-                            <p style="display: block;
-                                      height: auto;
-                                      max-width: 100%;
-                                      position: relative;
-                                      text-align: center;
-                                      width: auto;">
-                                <img src="{uploaded_images.get('dawson_faqs_case_management_secured.jpg', '')}" alt="Dawson FAQs Case Management Banner">
-                            </figure>
-                            <p>
-                                <ol>
-                                    <ul>
-                                        <ul>
+                                        <li>If you signed your document electronically with an application like Adobe, it may have asked you to save the document as a read-only copy that cannot be modified. If you saved your document as a read-only copy, it may have been password protected by Adobe automatically (unbeknownst to you).</li>
+                                        <li>To troubleshoot, review your document(s).
                                             <ul>
-                                                <li><strong>YES</strong> - Do ONE of the following steps below to create a new unsecured document file for your submission:</li>
-                                                    <ol>
-                                                        <li>Create a new document file, and when signing it, decline Adobe's prompt to save a read-only copy by clicking "Cancel" on the screen when prompted. This will prevent Adobe from automatically applying security measures to the file.</li>
-                                                        <p style="text-align:center">
-                                                            <img src="{uploaded_images.get('dawson_faqs_case_management_banner.jpg', '')}" alt="Dawson FAQs Case Management Banner">
-                                                        </p>
-                                                        <li>Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</li>
-                                                    </ol>
-                                                    <li>
-                                                    <strong>NO</strong>- If you do NOT see the above banner or "(SECURED)" in the document window, follow these steps.
-                                                    <ol>
-                                                    <li>Right click in the document.</li>
-                                                    <li>Choose Document Properties from the options.</li>
-                                                    <li>Click on the Security tab.</li>
-                                                    <li>In the dropdown menu labeled Security Method, select "No Security".</li>
-                                                    <li>Click OK</li>
-                                                    <p style="text-align:center">
-                                                        <img src="{uploaded_images.get('dawson_faqs_case_management_doc_properties.jpg', '')}" alt="Dawson FAQs Case Management Document Properties">
-                                                    </p>
-                                                    <li>Save the document. You should now be able to upload the document to DAWSON without error.</li>
-                                                    </ol>
-                                                    </li>
+                                                <li>When viewing your document(s), are you seeing a blue banner and "(SECURED)" at the top of the document?</li>
                                             </ul>
-                                        </ul>
+                                        </li>
                                     </ul>
-                                </ol>
-                            </p>""",
+                                </li>
+
+                            </ol>
+                            <div style="text-align: center;">
+                                <img src="{uploaded_images.get('dawson_faqs_case_management_secured.jpg', '')}" alt="Example of a secured PDF document with a blue banner.">
+                            </div>
+
+                            <ul>
+                                <li style="margin-left: 7rem;">
+                                    <strong>YES</strong> - Do ONE of the following steps below to create a new unsecured document file for your submission:
+                                        <ol>
+                                            <li>Create a new document file, and when signing it, decline Adobe's prompt to save a read-only copy by clicking "Cancel" on the screen when prompted. This will prevent Adobe from automatically applying security measures to the file.</li>
+                                        </ol>
+                                </li>
+                            </ul>
+                            <div style="text-align: center;">
+                                <img src="{uploaded_images.get('dawson_faqs_case_management_banner.jpg', '')}" alt="Dawson FAQs Case Management Banner">
+                            </div>
+                            <p style="margin-left: 1.2rem;">2. Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</p>
+
+
+                            <ul>
+                                <li style="margin-left: 7rem;">
+                                <strong>NO</strong> - If you do NOT see the above banner or "(SECURED)" in the document window, follow these steps.
+                                </li>
+                            </ul>
+
+                            <ol style="margin-top: 0.2rem;">
+                                <li>Right-click in the document.</li>
+                                <li>Choose Document Properties from the options.</li>
+                                <li>Click on the Security tab.</li>
+                                <li>In the dropdown menu labeled Security Method, select "No Security".</li>
+                                <li>Click OK</li>
+                            </ol>
+
+                            <div style="text-align: center;">
+                                <img src="{uploaded_images.get('dawson_faqs_case_management_doc_properties.jpg', '')}" alt="Steps to remove security in Adobe Document Properties">
+                            </div>
+                            <p style="margin-left: 1.2rem;">6. Save the document. You should now be able to upload the document to DAWSON without error.</p>
+                            """,
                 "anchortag": "FAQS7",
+                #                 "image": "{uploaded_images}"
             },
             {
                 "question": "What digital signatures are accepted in DAWSON?",
-                "answer": """<ul class="disc"><li>Acceptable digital signatures in DAWSON:  </li><ul class="dashed"><li>Parties may submit a high-resolution or PDF document bearing either imaged or digitized signatures in satisfaction of the requirements of Rule 23(a)(3), Tax Court Rules of Practice and Procedure.  </li><li>PDFs of documents bearing an actual signature are acceptable.  (Print and sign before turning into a PDF.) </li><li>Documents signed using an authentication program (e.g., Adobe or DocuSign) are acceptable. Be sure to remove encryption or password protection prior to uploading into DAWSON. </li><li>Stylized signatures (e.g., signing with “/s” or using cursive font) are only acceptable when paired with the DAWSON username (email address) and password or with authorization.  See Rule 23(a)(3).   </li><li>Stylized signatures on paper submitted forms are not acceptable.  </li></ul><li>Documents that require a signature in addition to that of the eFiler, e.g., both spouses are petitioners: </li><ul class="dashed"><li>Documents uploaded to DAWSON should be signed by the additional party, using the guidance above, before being uploaded.  </li><li>If you chose to auto-generate a Petition in DAWSON and your spouse has authorized you to file an electronic petition, then the signature block on the petition auto-generated by DAWSON will serve as your spouse’s signature. </li></ul></ul>
-                 """,
+                "answer": """
+                        <ul>
+                            <li>
+                                Acceptable digital signatures in DAWSON:
+                                <ul>
+                                    <li>Parties may submit a high-resolution or PDF document bearing either imaged or digitized signatures in satisfaction of the requirements of Rule 23(a)(3), Tax Court Rules of Practice and Procedure.</li>
+                                    <li>PDFs of documents bearing an actual signature are acceptable. (Print and sign before turning into a PDF.)</li>
+                                    <li>Documents signed using an authentication program (e.g., Adobe or DocuSign) are acceptable. Be sure to remove encryption or password protection prior to uploading into DAWSON.</li>
+                                    <li>Stylized signatures (e.g., signing with “/s” or using cursive font) are only acceptable when paired with the DAWSON username (email address) and password or with authorization. See Rule 23(a)(3).</li>
+                                    <li>Stylized signatures on paper submitted forms are not acceptable.</li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                Documents that require a signature in addition to that of the eFiler, e.g., both spouses are petitioners:
+                                <ul>
+                                    <li>Documents uploaded to DAWSON should be signed by the additional party, using the guidance above, before being uploaded.</li>
+                                    <li>If you chose to auto-generate a Petition in DAWSON and your spouse has authorized you to file an electronic petition, then the signature block on the petition auto-generated by DAWSON will serve as your spouse’s signature.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                         """,
                 "anchortag": "FAQS8",
             },
         ]
