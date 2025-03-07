@@ -39,11 +39,11 @@ class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
             {
                 "question": "Preamble",
                 "answer": """Accredited colleges and universities operate academic tax clinics (academic clinics) that provide free assistance to low income and self-represented petitioners. Some academic clinics are supervised by practitioners who are admitted to practice before the Court while other clinics may provide a referral to outside attorneys who provide free legal assistance to low income petitioners or who operate a calendar call program.
-                <br />
+                <br /><br />
                 Academic clinics help self-represented petitioners to comply with the Internal Revenue Code and to deal appropriately with the Internal Revenue Service and the Federal courts. The United States Tax Court (the Court) acknowledges the important assistance that academic clinics provide to self-represented petitioners.
-                <br />
+                <br /><br />
                 For academic clinics operated by a college or university which agree to abide by the requirements stated herein, the Court includes information about the clinic in mailings to self-represented petitioners. In addition, in 25 cities in which the Tax Court holds trial sessions, petitioners’ counsel room is reserved for persons admitted to practice before the Court, including attorneys associated with tax clinics and Bar sponsored calendar call programs. The Tax Court does not endorse or recommend any particular clinic or Bar sponsored calendar call program.
-                <br />
+                <br /><br />
                 The Court applies the following requirements with regard to academic clinics operated by a college or university.""",
                 "anchortag": "PREAMBLE",
             },
