@@ -46,7 +46,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
             {
                 "question": "Where do I find the opinions released today?",
                 "answer": """<ul>
-            <li>Opinions will be posted to the Court’s website on days they are released. See <strong><a href="/todays_opinions" title="Today’s Opinions">Today’s Opinions.</a></strong></li>
+            <li>Opinions will be posted to the Court’s website on days they are released. See <strong><a href="https://dawson.ustaxcourt.gov/todays-opinions" title="Today’s Opinions">Today’s Opinions.</a></strong></li>
             <li>Cases consolidated for trial, briefing, and opinion will show the opinions listed separately by each docket number.</li>
             </ul>""",
                 "anchortag": "START2",
@@ -54,7 +54,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
             {
                 "question": "Where do I find the orders released today?",
                 "answer": """<ul>
-            <li>Orders will be posted to the Court’s website on days they are released. See <strong><a href="/todays_orders" title="Today’s Orders">Today’s Orders</a></strong>.</li>
+            <li>Orders will be posted to the Court’s website on days they are released. See <strong><a href="https://dawson.ustaxcourt.gov/todays-orders" title="Today’s Orders">Today’s Orders</a></strong>.</li>
             <li>All orders issued by the Court on a particular day will be made available as they are served.</li>
             <li>The “Today’s Orders” listing will be populated with the most recent orders at the top.</li>
             </ul>""",
