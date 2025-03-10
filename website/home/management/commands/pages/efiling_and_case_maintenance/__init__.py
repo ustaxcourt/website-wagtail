@@ -3,6 +3,9 @@ from .dawson_page import DawsonPageInitializer
 from .dawson_search_page import DawsonSearchPageInitializer
 from .dawson_faqs_basics_page import DawsonFaqsBasicsPageInitializer
 from .fill_in_form_instructions_page import FillInFormsInstructionsPageInitializer
+from .dawson_faqs_training_and_support import (
+    DawsonFaqsTrainingAndSupportPageInitializer,
+)
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
@@ -11,4 +14,5 @@ efiling_and_case_maintenance_pages_to_initialize = [
     CaseRelatedFormPageInitializer,
     FillInFormsInstructionsPageInitializer,
     DawsonFaqsBasicsPageInitializer,
+    DawsonFaqsTrainingAndSupportPageInitializer,
 ]
