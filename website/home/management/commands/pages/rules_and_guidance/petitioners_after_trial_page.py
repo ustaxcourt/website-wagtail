@@ -58,7 +58,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
 
                                     <p  style="margin-top: 20px;">C. <strong>Tax Court Opinion or Memorandum Opinion</strong> - The Chief Judge decides whether an opinion in a regular case will be issued as a Memorandum Opinion or as a Tax Court Opinion.</p>
 
-                                    <p style="margin-top: 20px;">Generally, a Memorandum Opinion is issued in a regular case that does not involve a novel legal issue. A Memorandum Opinion addresses cases where the law is settled or factually driven. A Memorandum Opinion can be cited as legal authority, and the decision can be appealed. A Memorandum Opinion is cited as [<u>Name of Petitioner</u>]<u>v. Commissioner</u>, T.C. Memo. [year issued - #].</p>
+                                    <p style="margin-top: 20px;">Generally, a Memorandum Opinion is issued in a regular case that does not involve a novel legal issue. A Memorandum Opinion addresses cases where the law is settled or factually driven. A Memorandum Opinion can be cited as legal authority, and the decision can be appealed. A Memorandum Opinion is cited as [<u>Name of Petitioner</u>]<u> v. Commissioner</u>, T.C. Memo. [year issued - #].</p>
 
                                    <p style="margin-top: 20px;">Generally, a Tax Court Opinion is issued in a regular case when the Tax Court believes it involves a sufficiently important legal issue or principle. A Tax Court Opinion can be cited as legal authority, and the decision can be appealed. A Tax Court Opinion is cited as [Name of Petitioner] v. Commissioner, [Volume of Tax Court Reports] T.C. [page of the volume] (year issued).</p>
 

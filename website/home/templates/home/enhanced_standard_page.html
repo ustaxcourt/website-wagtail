@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 {% load filters %}
 {% load static %}
 {% block extra_css %}
@@ -53,6 +54,79 @@
                 font-size: 17px;
                 line-height: 24px;
             }
+
+            .dedication {
+                gap: 1rem;
+
+                .dedication-image {
+                    width: 480px;
+                    float: right;
+                    display: block;
+                    padding: 20px 10px 20px 10px;
+
+                    img {
+                        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
+                        width: 100%;
+                        height: auto;
+                        display: inline-block;
+                        margin-bottom: 21px;
+                    }
+                }
+
+                .dedication-text {
+                    flex: 1;
+                    font-size: 17px;
+
+                    .title {
+                        font-weight: bold;
+                    }
+                }
+            }
+
+            #video-container {
+
+                .video-desc-block {
+                    margin-top: 2em;
+                    padding: 40px;
+                    background-color: rgba(255, 255, 255, 1.00);
+                    border-radius: 0px;
+                    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.33);
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 20px;
+                }
+
+                .video-container iframe {
+                    border: none;
+                    width: 640px;
+                    height: 360px;
+                    border-width: 2px;
+                    border-style: inset;
+                }
+
+                .description-block {
+                    margin-top: -20px;
+
+                    p {
+                        margin-left: 40px;
+                    }
+
+                    blockquote {
+                        font-size: 17px;
+                        line-height: 24px;
+                        padding: 0.5rem 1rem;
+                        margin-bottom: 1rem;
+                        border-left: 0.25rem solid #eceeef;
+
+                        cite {
+                            display: block;
+                            font-size: 17px;
+                            color: #1b1b1b;
+                            font-style: italic;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -83,6 +157,40 @@
                     h5,
                     h6 {
                         padding-left: 16px;
+                    }
+                }
+            }
+        }
+
+        @media (max-width: 768px) {
+            .enhanced-page .dedication .dedication-text {
+                blockquote {
+                    margin: 15px;
+                }
+            }
+
+            .enhanced-page #video-container {
+                .video-desc-block {
+                    flex-direction: column;
+                    padding: 20px;
+                    gap: 10px;
+                }
+
+                .video-container iframe {
+                    width: 280px;
+                    height: 250px;
+                    margin-left: -15px;
+                }
+
+                .description-block {
+                    margin-left: -38px;
+
+                    p {
+                        margin-left: 28px;
+                    }
+
+                    blockquote {
+                        margin: 15px;
                     }
                 }
             }
@@ -175,6 +283,31 @@
                         <div>{{ q.answer|richtext }}</div>
                         <hr />
                     {% endfor %}
+                {% elif block.block_type == "photo_dedication" %}
+                    <div class="dedication">
+                        {% if block.value.photo %}
+                            <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+                        {% endif %}
+                        <div class="dedication-text">
+                            <h2 class="title">{{ block.value.title }}</h2>
+                            {{ block.value.paragraph_text | richtext }}
+                        </div>
+                    </div>
+                {% elif block.block_type == 'embedded_video' %}
+                    <hr />
+                    <div id="video-container">
+                        <h2>{{ block.value.title }}</h2>
+                        <div class="video-desc-block">
+                            <div class="video-container">
+                                <iframe title="Victor Lundy:Sulptor of Space"
+                                        src="{{ block.value.video_url }}"
+                                        allowfullscreen></iframe>
+                            </div>
+                            <div class="description-block">
+                                <p>{{ block.value.description }}</p>
+                            </div>
+                        </div>
+                    </div>
                 {% elif block.block_type == 'columns' %}
                     {% with column_count=block.value.column|length %}
                         <div class="grid-row">
@@ -197,5 +330,5 @@
                 {% endif %}
             {% endwith %}
         {% endfor %}
-    </div>
+        </div>
 {% endblock content %}
