@@ -1,9 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import (
-    NavigationCategories,
-    EnhancedStandardPage,
-)
+from home.models import NavigationCategories, EnhancedStandardPage, CommonText
 
 
 docs = {
@@ -70,8 +67,10 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                         "value": 'The Court invites academic and nonacademic tax clinics and Bar sponsored calendar call programs which do not currently participate to review the Court’s Requirements for participation and to consider submitting a request to participate in the Court’s program at anytime. Those clinics and programs should send a letter containing the information specified in section <strong><a href="/clinics_academic.html#SEC1">1(e)</a></strong> of the Requirements for Academic Clinics, section <strong><a href="/clinics_academic_non_law_school#SEC1">1(e)</a></strong> of the Requirements for Academic Clinics (Non Law School), section <strong><a href="/clinics_nonacademic#SEC1">1(g)</a></strong> of the Requirements for Nonacademic Clinics, and section <strong><a href="/clinics_calendar_call#SEC1">1(c)</a></strong> of the Requirements for Bar Sponsored Calendar Call Programs, except that academic clinics, academic clinics (non law school), nonacademic clinics, and Bar sponsored calendar call programs which are not currently participating need not provide the information requested in section <strong><a href="/clinics_academic#SEC1">1(e)(6)</a></strong>,<strong><a href="/clinics_academic_non_law_school#SEC1">1(e)(6)</a></strong>, <strong><a href="/clinics_nonacademic#SEC1">1(g)(5)</a></strong>, and <strong><a href="/clinics_calendar_call#SEC1">1(c)(6)</a></strong> of those Requirements, respectively. The Court will acknowledge receipt of the information.',
                     },
                     {
-                        "type": "paragraph",
-                        "value": 'Please <a href="mailto:litc@ustaxcourt.gov">contact us</a> with any questions concerning the Court’s program or requirements, or call <a href="tel:+12025213366">202-521-3366</a>.',
+                        "type": "snippet",
+                        "value": CommonText.objects.get(
+                            name="Clinics Contact Details"
+                        ).id,
                     },
                 ],
             )
