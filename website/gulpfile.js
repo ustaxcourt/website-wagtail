@@ -29,3 +29,4 @@ uswds.paths.dist.theme = './app/static/uswds/sass';
 exports.init = uswds.init;
 exports.compile = uswds.compile;
 exports.watch = uswds.watch;
+exports.copyAssets = uswds.copyAssets
