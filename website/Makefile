@@ -72,7 +72,7 @@ setup: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
 	npm install
-	npx gulp init
+	npx gulp copyAssets
 	npx gulp compile
 
 superuser:
