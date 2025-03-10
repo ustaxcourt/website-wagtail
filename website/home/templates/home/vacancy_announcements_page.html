@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<style>
+    .closing-date {
+        color: #b50909;  /* USWDS red */
+    }
+</style>
+
+<div class="grid-container usa-prose margin-top-5">
+    <div class="content">
+        <h1 class="margin-bottom-3">{{ page.title }}</h1>
+        <hr />
+
+        {% if page.vacancies.all %}
+            <table class="usa-table usa-table--stacked usa-table--borderless width-full">
+                <thead>
+                    <tr>
+                        <th scope="col">Number</th>
+                        <th scope="col">Position & Title/Series/Grade</th>
+                        <th scope="col">Closing Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vacancy in page.vacancies.all %}
+                        <tr>
+                            <td data-label="Number">
+                                {% if vacancy.url %}
+                                    <a href="{{ vacancy.url }}" target="_blank" class="usa-link">{{ vacancy.number }}</a>
+                                {% else %}
+                                    {{ vacancy.number }}
+                                {% endif %}
+                            </td>
+                            <td data-label="Position">{{ vacancy.position_title }}</td>
+                            <td data-label="Closing Date" class="closing-date">{{ vacancy.closing_date|date:"F j, Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No Vacancy Announcements</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
