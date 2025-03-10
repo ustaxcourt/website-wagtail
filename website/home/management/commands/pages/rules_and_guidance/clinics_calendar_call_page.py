@@ -1,8 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import (
-    EnhancedStandardPage,
-)
+from home.models import EnhancedStandardPage, CommonText
 
 
 docs = {
@@ -123,8 +121,10 @@ Immediately inform the Chief Judge of any material changes in the information su
                     },
                     {"type": "questionanswers", "value": questions},
                     {
-                        "type": "paragraph",
-                        "value": """Please <a href="mailto:litc@ustaxcourt.gov" title="email: litc@ustaxcourt.gov">contact us</a> with any questions concerning the Court’s program or requirements, or call <a href="tel:202-521-3366" title="call: 202-521-3366">202-521-3366</a>.""",
+                        "type": "snippet",
+                        "value": CommonText.objects.get(
+                            name="Clinics Contact Details"
+                        ).id,
                     },
                 ],
             )
