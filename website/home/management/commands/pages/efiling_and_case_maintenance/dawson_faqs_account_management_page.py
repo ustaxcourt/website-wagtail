@@ -7,7 +7,7 @@ from home.management.commands.snippets.dawson_faqs_ribbon import (
 )
 
 dawson_faqs_docs = {
-    "Rule-26.pdf": "",
+    "Rule-26_Amended_03202023.pdf": "",
 }
 
 
@@ -54,7 +54,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                                  <li>If you do not have a DAWSON account, you will receive case documents from the Court by U.S. mail instead of being able to access them electronically.</li>
                                  </ul>
                               <li>If you are admitted to practice before the Court, you are generally required to file documents and receive service electronically. See
-                              <strong><a href="{dawson_faqs_docs["Rule-26.pdf"]}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.</li>
+                              <strong><a href="{dawson_faqs_docs["Rule-26_Amended_03202023.pdf"]}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.</li>
                                 <ul>
                                  <li>Petitions may, but are not required to be, filed electronically.</li>
                                  </ul>
