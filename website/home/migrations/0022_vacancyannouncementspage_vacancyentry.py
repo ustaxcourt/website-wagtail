@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0020_remove_photodedication_card_and_more"),
+        ("home", "0021_commontext_alter_enhancedstandardpage_body"),
     ]
 
     operations = [
