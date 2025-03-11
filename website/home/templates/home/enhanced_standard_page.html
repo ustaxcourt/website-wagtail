@@ -127,36 +127,174 @@
                     }
                 }
             }
-        }
 
+            #enhanced-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1rem 0;
 
-        @media (max-width: 1024px) {
-            .enhanced-page {
-                .question-answer-block {
-                    .bookmark {
-                        top: 24px;
-                        left: -4px;
+                th:not([scope="row"]) {  /* Only apply blue to header cells that aren't in the first column */
+                    background-color: #005EA2;  /* USWDS dark blue */
+                    color: white;
+                }
+
+                th, td {
+                    padding: 1rem;
+                    text-align: left;
+                    border: 1px solid #dfe1e2;
+                    vertical-align: top;
+                }
+
+                tr:nth-child(even) {
+                    background-color: #f0f0f0;
+                }
+
+                tr:nth-child(odd) {
+                    background-color: white;
+                }
+            }
+
+            .table-container {
+                width: 100%;
+                margin: 1rem 0;
+            }
+
+            @media (max-width: 442px) {
+                .table-container {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                #enhanced-table {
+                    margin: 0;
+                    min-width: 442px;
+                }
+            }
+
+            .info-cards {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1rem;
+                margin: 1rem 0;
+            }
+
+            .info-card {
+                padding: 1.5rem;
+                border-radius: 4px;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                position: relative;
+                border: none;
+
+                &.green {
+                    background-color: #ecf3ec;
+                }
+
+                &.yellow {
+                    background-color: #fef0c8;
+                }
+
+                .card-header {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    margin-bottom: 0.5rem;
+                    position: relative;
+
+                    i {
+                        background: #1b1b1b;
+                        color: white;
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1.25rem;
+                        margin: 0 auto;
                     }
 
-                    h3,
-                    h4,
-                    h5,
-                    h6 {
-                        padding-left: 16px;
+                    .title {
+                        font-size: 1.25rem;
+                        font-weight: bold;
+                        text-align: left;
                     }
                 }
 
-                .heading-wrapper {
-                    .bookmark {
-                        left: -12px;
+                .description {
+                    font-size: 1rem;
+                    line-height: 1.4;
+                    text-align: left;
+                }
+            }
+
+            @media (max-width: 1024px) {
+                .enhanced-page {
+                    .question-answer-block {
+                        .bookmark {
+                            top: 24px;
+                            left: -4px;
+                        }
+
+                        h3,
+                        h4,
+                        h5,
+                        h6 {
+                            padding-left: 16px;
+                        }
                     }
 
-                    h2,
-                    h3,
-                    h4,
-                    h5,
-                    h6 {
-                        padding-left: 16px;
+                    .heading-wrapper {
+                        .bookmark {
+                            left: -12px;
+                        }
+
+                        h2,
+                        h3,
+                        h4,
+                        h5,
+                        h6 {
+                            padding-left: 16px;
+                        }
+                    }
+                }
+            }
+
+            @media (max-width: 768px) {
+                .info-cards {
+                    grid-template-columns: 1fr;
+                }
+
+                .enhanced-page .dedication .dedication-text {
+                    blockquote {
+                        margin: 15px;
+                    }
+                }
+
+                .enhanced-page #video-container {
+                    .video-desc-block {
+                        flex-direction: column;
+                        padding: 20px;
+                        gap: 10px;
+                    }
+
+                    .video-container iframe {
+                        width: 280px;
+                        height: 250px;
+                        margin-left: -15px;
+                    }
+
+                    .description-block {
+                        margin-left: -38px;
+
+                        p {
+                            margin-left: 28px;
+                        }
+
+                        blockquote {
+                            margin: 15px;
+                        }
                     }
                 }
             }
@@ -166,32 +304,6 @@
             .enhanced-page .dedication .dedication-text {
                 blockquote {
                     margin: 15px;
-                }
-            }
-
-            .enhanced-page #video-container {
-                .video-desc-block {
-                    flex-direction: column;
-                    padding: 20px;
-                    gap: 10px;
-                }
-
-                .video-container iframe {
-                    width: 280px;
-                    height: 250px;
-                    margin-left: -15px;
-                }
-
-                .description-block {
-                    margin-left: -38px;
-
-                    p {
-                        margin-left: 28px;
-                    }
-
-                    blockquote {
-                        margin: 15px;
-                    }
                 }
             }
         }
@@ -324,6 +436,52 @@
                             {% endfor %}
                         </div>
                     {% endwith %}
+                {% elif block.block_type == 'table' %}
+                    <div class="table-container">
+                        <table id="enhanced-table" class="usa-table {% if block.value.is_striped %}usa-table--striped{% endif %} {% if block.value.is_borderless %}usa-table--borderless{% endif %}">
+                            {% if block.value.caption %}
+                                <caption>{{ block.value.caption }}</caption>
+                            {% endif %}
+                            <thead>
+                                <tr>
+                                    {% for header in block.value.header_row %}
+                                        <th scope="col">{{ header }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in block.value.rows %}
+                                    <tr>
+                                        {% for cell in row %}
+                                            {% if forloop.first %}
+                                                <th scope="row">{{ cell }}</th>
+                                            {% else %}
+                                                {% if cell.colspan %}
+                                                    <td colspan="{{ cell.colspan }}">{{ cell.text }}</td>
+                                                {% else %}
+                                                    <td>{{ cell }}</td>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% elif block.block_type == 'card' %}
+                    <div class="info-cards">
+                        {% for card in block.value %}
+                            <div class="info-card {{ card.color }}">
+                                <div class="card-header">
+                                    <i class="{{ card.icon }}" aria-hidden="true"></i>
+                                    <div class="title">{{ card.title }}</div>
+                                </div>
+                                <div class="description">
+                                    {{ card.description|richtext }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
                     <p>Block type not recognized: {{ block.block_type }}</p>
                     {{ block.value }}

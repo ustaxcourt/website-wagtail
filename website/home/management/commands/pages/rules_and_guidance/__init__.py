@@ -1,3 +1,4 @@
+from .case_procedure_page import CaseProcedurePageInitializer
 from .administrative_orders_page import AdministrativeOrdersPageInitializer
 from .clinics_pro_bono_page import ClinicsProBonoProgramsPageInitializer
 from .getting_ready_page import GettingReadyPageInitializer
@@ -43,4 +44,5 @@ rules_and_guidance_pages_to_initialize = [
     JudicialConductAndDisabilityProceduresPageInitializer,
     ClinicsAcademicPageInitializer,
     NoticesOfRuleAmendmentsPageInitializer,
+    CaseProcedurePageInitializer,
 ]

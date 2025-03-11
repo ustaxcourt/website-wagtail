@@ -203,6 +203,23 @@ class ColumnBlock(blocks.StructBlock):
     column = blocks.ListBlock(CommonBlock())
 
 
+class TableBlock(blocks.StructBlock):
+    caption = blocks.CharBlock(required=False, help_text="Optional table caption")
+    header_row = blocks.ListBlock(
+        blocks.CharBlock(), help_text="Header cells for the table"
+    )
+    rows = blocks.ListBlock(
+        blocks.ListBlock(blocks.CharBlock(), help_text="Cells for this row"),
+        help_text="Add rows to the table",
+    )
+    is_striped = blocks.BooleanBlock(
+        required=False, help_text="Add stripes to table rows"
+    )
+    is_borderless = blocks.BooleanBlock(
+        required=False, help_text="Remove table borders"
+    )
+
+
 class EnhancedStandardPage(NavigationMixin, Page):
     class Meta:
         abstract = False
@@ -335,6 +352,41 @@ class EnhancedStandardPage(NavigationMixin, Page):
                         ("description", blocks.RichTextBlock(required=False)),
                         ("video_url", blocks.URLBlock(required=False)),
                     ]
+                ),
+            ),
+            ("table", TableBlock()),
+            (
+                "card",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        (
+                                            icon.value,
+                                            icon.name.replace("_", " ").title(),
+                                        )
+                                        for icon in IconCategories
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                            ("title", blocks.CharBlock(required=True)),
+                            ("description", blocks.RichTextBlock(required=True)),
+                            (
+                                "color",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("green", "Green"),
+                                        ("yellow", "Yellow"),
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                        ]
+                    )
                 ),
             ),
         ]
