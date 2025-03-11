@@ -10,11 +10,11 @@ from .searches_and_public_access_page import SearchesAndPublicAccessPageInitiali
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
+    DawsonFaqsBasicsPageInitializer,
+    DawsonFaqsAccountManagementPageInitializer,
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
-    DawsonFaqsBasicsPageInitializer,
-    DawsonFaqsAccountManagementPageInitializer,
     FillInFormsInstructionsPageInitializer,
     SearchesAndPublicAccessPageInitializer,
 ]

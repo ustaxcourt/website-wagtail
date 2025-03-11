@@ -448,7 +448,7 @@ class RelatedPage(models.Model):
         "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
     related_page = models.ForeignKey(
-        "StandardPage",
+        "EnhancedStandardPage",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
