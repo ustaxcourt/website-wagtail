@@ -81,6 +81,11 @@ superuser:
 users:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_users --group_name $${group:-"Editors"}
 
+upgrade:
+	. $(VENV) && pip install --upgrade -r requirements.txt
+	. $(VENV) && PYTHONWARNINGS=always pytest tests --capture=no
+	. $(VENV) && python ./manage.py collectstatic
+
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py reset_admin_password
 
