@@ -19,6 +19,7 @@ from wagtail.fields import StreamField
 from wagtail import blocks
 from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.snippets.blocks import SnippetChooserBlock
 
 
 @register_setting
@@ -165,6 +166,22 @@ class NavigationRibbon(ClusterableModel):
         return self.name
 
 
+@register_snippet
+class CommonText(models.Model):
+    name = models.CharField(
+        max_length=255, help_text="Name of the text snippet", blank=False
+    )
+    text = RichTextField(help_text="HTML Rich text content", blank=False)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("text"),
+    ]
+
+    def __str__(self):
+        return self.name
+
+
 class PhotoDedicationBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=255, required=True)
     photo = ImageBlock(
@@ -254,6 +271,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
             ("h3", blocks.CharBlock(label="Heading 3")),
             ("h4", blocks.CharBlock(label="Heading 4")),
             ("paragraph", blocks.RichTextBlock()),
+            ("snippet", SnippetChooserBlock("home.CommonText")),
             (
                 "hr",
                 blocks.BooleanBlock(

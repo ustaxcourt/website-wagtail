@@ -20,15 +20,7 @@ from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 
-from home.management.commands.snippets.navigation_ribbon import (
-    NavigationRibbonInitializer,
-)
-from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
-    ZoomgovProceedingRibbonInitializer,
-)
-from home.management.commands.snippets.dawson_faqs_ribbon import (
-    DawsonFAQsRibbonInitializer,
-)
+from home.management.commands.snippets import snippets_to_initialize
 
 home_page_initialize = [
     HomePageInitializer,
@@ -43,12 +35,6 @@ pages_to_initialize = home_page_initialize + (
     + orders_and_opinions_pages_to_initialize
     + efiling_and_case_maintenance_pages_to_initialize
 )
-
-snippets_to_initialize = [
-    NavigationRibbonInitializer,
-    ZoomgovProceedingRibbonInitializer,
-    DawsonFAQsRibbonInitializer,
-]
 
 pages_to_update = [HomePageInitializer, FooterInitializer]
 
