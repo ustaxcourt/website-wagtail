@@ -38,7 +38,7 @@
                                 {% endif %}
                             </td>
                             <td data-label="Position">{{ vacancy.position_title }}</td>
-                            <td data-label="Closing Date" class="closing-date">{{ vacancy.closing_date|date:"F j, Y" }}</td>
+                            <td data-label="Closing Date"><span class="closing-date">{{ vacancy.closing_date|date:"F j, Y" }}</span></td>
                         </tr>
                     {% endfor %}
                 </tbody>
