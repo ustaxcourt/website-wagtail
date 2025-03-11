@@ -9,6 +9,7 @@ from .fill_in_form_instructions_page import FillInFormsInstructionsPageInitializ
 from .dawson_faqs_training_and_support import (
     DawsonFaqsTrainingAndSupportPageInitializer,
 )
+from .searches_and_public_access_page import SearchesAndPublicAccessPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
@@ -19,4 +20,5 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFaqsTrainingAndSupportPageInitializer,
     DawsonFaqsAccountManagementPageInitializer,
     FillInFormsInstructionsPageInitializer,
+    SearchesAndPublicAccessPageInitializer,
 ]
