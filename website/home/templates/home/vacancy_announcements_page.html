@@ -28,7 +28,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for vacancy in page.vacancies.all %}
+                    {% for vacancy in active_vacancies.all %}
                         <tr>
                             <td data-label="Number">
                                 {% if vacancy.url %}
