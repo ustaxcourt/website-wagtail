@@ -13,6 +13,7 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 from wagtail.models import Orderable
+from datetime import date
 
 from wagtail.fields import StreamField
 from wagtail import blocks
@@ -664,6 +665,15 @@ class VacancyAnnouncementsPage(StandardPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        today = date.today()
+        active_vacancies = VacancyEntry.objects.filter(
+            parentpage=self, closing_date__gte=today
+        ).order_by("closing_date")
+        context["active_vacancies"] = active_vacancies
+        return context
+
     content_panels = Page.content_panels + [
         InlinePanel("vacancies", label="Vacancies"),
     ]
@@ -690,3 +700,6 @@ class VacancyEntry(Orderable):
 
     class Meta:
         ordering = ["closing_date"]
+
+    def is_active(self):
+        return self.closing_date >= date.today()
