@@ -439,9 +439,6 @@
                 {% elif block.block_type == 'table' %}
                     <div class="table-container">
                         <table id="enhanced-table" class="usa-table {% if block.value.is_striped %}usa-table--striped{% endif %} {% if block.value.is_borderless %}usa-table--borderless{% endif %}">
-                            {% if block.value.caption %}
-                                <caption>{{ block.value.caption }}</caption>
-                            {% endif %}
                             <thead>
                                 <tr>
                                     {% for header in block.value.header_row %}

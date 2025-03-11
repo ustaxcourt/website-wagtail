@@ -63,6 +63,7 @@ class IndentStyle(models.TextChoices):
 
 
 class IconCategories(models.TextChoices):
+    NONE = ("",)
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
     CALENDAR_MONTH = "ti ti-calendar-month"
@@ -71,8 +72,9 @@ class IconCategories(models.TextChoices):
     HAMMER = "ti ti-hammer"
     INFO = "ti ti-info-circle"
     INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
+    CHECK = "ti ti-check"
     LINK = "ti ti-link"
-    NONE = ("",)
+    EXCLAMATION_MARK = "ti ti-exclamation-mark"
     PDF = "ti ti-file-type-pdf"
     SCALE = "ti ti-scale"
     USER = "ti ti-user-filled"
@@ -204,7 +206,6 @@ class ColumnBlock(blocks.StructBlock):
 
 
 class TableBlock(blocks.StructBlock):
-    caption = blocks.CharBlock(required=False, help_text="Optional table caption")
     header_row = blocks.ListBlock(
         blocks.CharBlock(), help_text="Header cells for the table"
     )

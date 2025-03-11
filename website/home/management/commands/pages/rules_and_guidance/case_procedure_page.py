@@ -2,6 +2,7 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import (
     EnhancedStandardPage,
+    IconCategories,
 )
 
 
@@ -191,25 +192,25 @@ class CaseProcedurePageInitializer(PageInitializer):
                         "type": "card",
                         "value": [
                             {
-                                "icon": "ti ti-check",
+                                "icon": IconCategories.CHECK,
                                 "title": "More trial location options",
                                 "description": "Small tax case trials are held in 15 more locations than regular cases.",
                                 "color": "green",
                             },
                             {
-                                "icon": "ti ti-check",
+                                "icon": IconCategories.CHECK,
                                 "title": "Less formal procedures",
                                 "description": "Small case pre-trial and trial procedures are less formal than regular cases.",
                                 "color": "green",
                             },
                             {
-                                "icon": "ti ti-check",
+                                "icon": IconCategories.CHECK,
                                 "title": "Relaxed evidence rules",
                                 "description": "Judges can consider any evidence that's relevant.",
                                 "color": "green",
                             },
                             {
-                                "icon": "ti ti-exclamation-mark",
+                                "icon": IconCategories.EXCLAMATION_MARK,
                                 "title": "No appeals process",
                                 "description": "If you lose your case or lose some issues in your case, you can't appeal the decision.",
                                 "color": "yellow",
