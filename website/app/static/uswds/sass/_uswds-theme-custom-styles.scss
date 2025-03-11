@@ -1,0 +1,37 @@
+/*
+* * * * * ==============================
+* * * * * ==============================
+* * * * * ==============================
+* * * * * ==============================
+========================================
+========================================
+========================================
+----------------------------------------
+USWDS THEME CUSTOM STYLES
+----------------------------------------
+!! Copy this file to your project's
+   sass root. Don't edit the version
+   in node_modules.
+----------------------------------------
+Custom project SASS goes here.
+
+i.e.
+@include u-padding-right('05');
+----------------------------------------
+*/
+
+@use "uswds-theme" as *;
+@use "uswds-core" as *;
+
+.usa-table--stacked {
+    @include at-media-max("tablet-md") {
+        @include table-stacked-styles;
+    }
+}
+
+.usa-table--stacked-header {
+    @include at-media-max("tablet-md") {
+        @include table-stacked-styles;
+        @include table-stacked-header-styles;
+    }
+}
