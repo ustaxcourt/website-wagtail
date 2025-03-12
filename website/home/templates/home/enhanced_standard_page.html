@@ -236,6 +236,8 @@
                     </div>
                 {% elif block.block_type == 'paragraph' %}
                     <p data-testid="page-body-paragraph">{{ block.value }}</p>
+                {% elif block.block_type == 'snippet' %}
+                    {{ block.value.text |safe }}
                 {% elif block.block_type == 'image' %}
                     <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
                 {% elif block.block_type == 'hr' %}
@@ -330,5 +332,5 @@
                 {% endif %}
             {% endwith %}
         {% endfor %}
-        </div>
+    </div>
 {% endblock content %}
