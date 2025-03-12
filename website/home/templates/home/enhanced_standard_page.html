@@ -354,6 +354,30 @@
                     <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
                 {% elif block.block_type == 'hr' %}
                     <hr />
+                {% elif block.block_type == 'table' %}
+                    <div class="table-container">
+                        <table id="enhanced-table">
+                            {% if block.value.caption %}
+                                <caption>{{ block.value.caption }}</caption>
+                            {% endif %}
+                            <thead>
+                                <tr>
+                                    {% for col in block.value.columns %}
+                                        <th scope="col">{{ col.heading }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in block.value.rows %}
+                                    <tr>
+                                        {% for value in row %}
+                                            <td>{{ value }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% elif block.block_type == 'links' %}
                     <ul class="links {{ block.value.class }}">
                         {% for link in block.value.links %}
@@ -438,35 +462,6 @@
                             {% endfor %}
                         </div>
                     {% endwith %}
-                {% elif block.block_type == 'table' %}
-                    <div class="table-container">
-                        <table id="enhanced-table" class="usa-table {% if block.value.is_striped %}usa-table--striped{% endif %} {% if block.value.is_borderless %}usa-table--borderless{% endif %}">
-                            <thead>
-                                <tr>
-                                    {% for header in block.value.header_row %}
-                                        <th scope="col">{{ header }}</th>
-                                    {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in block.value.rows %}
-                                    <tr>
-                                        {% for cell in row %}
-                                            {% if forloop.first %}
-                                                <th scope="row">{{ cell }}</th>
-                                            {% else %}
-                                                {% if cell.colspan %}
-                                                    <td colspan="{{ cell.colspan }}">{{ cell.text }}</td>
-                                                {% else %}
-                                                    <td>{{ cell }}</td>
-                                                {% endif %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
                 {% elif block.block_type == 'card' %}
                     <div class="info-cards">
                         {% for card in block.value %}

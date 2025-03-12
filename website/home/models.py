@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.db import models
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
@@ -222,22 +223,6 @@ class ColumnBlock(blocks.StructBlock):
     column = blocks.ListBlock(CommonBlock())
 
 
-class TableBlock(blocks.StructBlock):
-    header_row = blocks.ListBlock(
-        blocks.CharBlock(), help_text="Header cells for the table"
-    )
-    rows = blocks.ListBlock(
-        blocks.ListBlock(blocks.CharBlock(), help_text="Cells for this row"),
-        help_text="Add rows to the table",
-    )
-    is_striped = blocks.BooleanBlock(
-        required=False, help_text="Add stripes to table rows"
-    )
-    is_borderless = blocks.BooleanBlock(
-        required=False, help_text="Remove table borders"
-    )
-
-
 class EnhancedStandardPage(NavigationMixin, Page):
     class Meta:
         abstract = False
@@ -298,7 +283,14 @@ class EnhancedStandardPage(NavigationMixin, Page):
                 ),
             ),
             ("image", ImageBlock()),
-            ("photo_dedication", PhotoDedicationBlock()),
+            (
+                "table",
+                TypedTableBlock(
+                    [
+                        ("text", blocks.CharBlock()),
+                    ]
+                ),
+            ),
             (
                 "links",
                 blocks.StructBlock(
@@ -373,7 +365,6 @@ class EnhancedStandardPage(NavigationMixin, Page):
                     ]
                 ),
             ),
-            ("table", TableBlock()),
             (
                 "card",
                 blocks.ListBlock(

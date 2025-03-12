@@ -41,41 +41,49 @@ class CaseProcedurePageInitializer(PageInitializer):
                     {
                         "type": "table",
                         "value": {
-                            "header_row": [
-                                "Case Type",
-                                "Type of Notice/Complaint",
-                                "Amount",
+                            "columns": [
+                                {"type": "text", "heading": "Case Type"},
+                                {"type": "text", "heading": "Type of Notice/Complaint"},
+                                {"type": "text", "heading": "Amount"},
                             ],
                             "rows": [
-                                [
-                                    "CDP (Lien/Levy)",
-                                    "Notice of Determination Concerning Collection Action/CDP (Lien/Levy)",
-                                    "Total amount of unpaid tax is $50,000 or less for all years combined",
-                                ],
-                                [
-                                    "Deficiency",
-                                    "Notice of Deficiency",
-                                    "Deficiency in dispute (including any additions to tax and penalties) is $50,000 or less for any one year",
-                                ],
-                                [
-                                    "Innocent Spouse",
-                                    "Notice of Determination Concerning Relief From Joint and Several Liability Under Section 6015/Innocent Spouse",
-                                    "Amount of spousal relief sought is $50,000 or less for all years at issue",
-                                ],
-                                [
-                                    "Interest Abatement",
-                                    "Notice of Final Determination for Full or Partial Disallowance of Interest Abatement Claim/Interest Abatement - Failure of IRS to Make Final Determination Within 180 Days After Claim for Abatement",
-                                    "Amount of the abatement sought is $50,000 or less",
-                                ],
-                                ["Other", "Other", ""],
-                                [
-                                    "Worker Classification",
-                                    "Notice of Determination of Worker Classification/Worker Classification",
-                                    "Amount in dispute is $50,000 or less for any calendar quarter",
-                                ],
+                                {
+                                    "values": [
+                                        "CDP (Lien/Levy)",
+                                        "Notice of Determination Concerning Collection Action/CDP (Lien/Levy)",
+                                        "Total amount of unpaid tax is $50,000 or less for all years combined",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Deficiency",
+                                        "Notice of Deficiency",
+                                        "Deficiency in dispute (including any additions to tax and penalties) is $50,000 or less for any one year",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Innocent Spouse",
+                                        "Notice of Determination Concerning Relief From Joint and Several Liability Under Section 6015/Innocent Spouse",
+                                        "Amount of spousal relief sought is $50,000 or less for all years at issue",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Interest Abatement",
+                                        "Notice of Final Determination for Full or Partial Disallowance of Interest Abatement Claim/Interest Abatement - Failure of IRS to Make Final Determination Within 180 Days After Claim for Abatement",
+                                        "Amount of the abatement sought is $50,000 or less",
+                                    ]
+                                },
+                                {"values": ["Other", "Other", ""]},
+                                {
+                                    "values": [
+                                        "Worker Classification",
+                                        "Notice of Determination of Worker Classification/Worker Classification",
+                                        "Amount in dispute is $50,000 or less for any calendar quarter",
+                                    ]
+                                },
                             ],
-                            "is_striped": True,
-                            "is_borderless": False,
                         },
                     },
                     {
@@ -85,103 +93,111 @@ class CaseProcedurePageInitializer(PageInitializer):
                     {
                         "type": "table",
                         "value": {
-                            "header_row": [
-                                "Case Type",
-                                "Type of Notice/Complaint",
-                                "Amount",
+                            "columns": [
+                                {"type": "text", "heading": "Case Type"},
+                                {"type": "text", "heading": "Type of Notice/Complaint"},
+                                {"type": "text", "heading": "Amount"},
                             ],
                             "rows": [
-                                [
-                                    "CDP (Lien/Levy)",
-                                    "Notice of Determination Concerning Collection Action/CDP (Lien/Levy)",
-                                    "Total amount of unpaid tax is greater than $50,000 for all years combined",
-                                ],
-                                [
-                                    "Deficiency",
-                                    "Notice of Deficiency",
-                                    "Deficiency in dispute (including any additions to tax and penalties) is greater than $50,000 for any one year",
-                                ],
-                                [
-                                    "Innocent Spouse",
-                                    "Notice of Determination Concerning Relief From Joint and Several Liability Under Section 6015/Innocent Spouse",
-                                    "Amount of spousal relief sought is greater than $50,000 for all years at issue",
-                                ],
-                                [
-                                    "Interest Abatement",
-                                    "Notice of Final Determination for Full or Partial Disallowance of Interest Abatement Claim/Interest Abatement - Failure of IRS to Make Final Determination Within 180 Days After Claim for Abatement",
-                                    "Amount of the abatement sought is greater than $50,000",
-                                ],
-                                [
-                                    "Worker Classification",
-                                    "Notice of Determination of Worker Classification/Worker Classification",
-                                    "Amount in dispute is greater than $50,000 for any calendar quarter",
-                                ],
-                                [
-                                    "Declaratory Judgment (Exempt Organization)",
-                                    {
-                                        "text": "Adverse Determination Concerning a Tax Exempt Status",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Declaratory Judgment (Retirement Plan)",
-                                    {
-                                        "text": "Revocation Letter Concerning a Retirement Plan",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Disclosure",
-                                    {
-                                        "text": "Notice - We Are Going To Make Your Determination Letter Available for Public Inspection",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Disclosure",
-                                    {
-                                        "text": "Notice of Intention to Disclose/Disclosure",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Partnership (BBA Section 1101)",
-                                    {
-                                        "text": "Partnership Action Under BBA Section 1101",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Partnership (Section 6226)",
-                                    {
-                                        "text": "Readjustment of Partnership Items Code Section 6226",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Partnership (Section 6228)",
-                                    {
-                                        "text": "Adjustment of Partnership Items Code Section 6228",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Passport",
-                                    {
-                                        "text": "Notice of Certification of Your Seriously Delinquent Federal Tax Debt to the Department of State/Passport",
-                                        "colspan": 2,
-                                    },
-                                ],
-                                [
-                                    "Whistleblower",
-                                    {
-                                        "text": "Notice of Determination Under Section 7623 Concerning Whistleblower Action/Whistleblower",
-                                        "colspan": 2,
-                                    },
-                                ],
+                                {
+                                    "values": [
+                                        "CDP (Lien/Levy)",
+                                        "Notice of Determination Concerning Collection Action/CDP (Lien/Levy)",
+                                        "Total amount of unpaid tax is greater than $50,000 for all years combined",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Deficiency",
+                                        "Notice of Deficiency",
+                                        "Deficiency in dispute (including any additions to tax and penalties) is greater than $50,000 for any one year",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Innocent Spouse",
+                                        "Notice of Determination Concerning Relief From Joint and Several Liability Under Section 6015/Innocent Spouse",
+                                        "Amount of spousal relief sought is greater than $50,000 for all years at issue",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Interest Abatement",
+                                        "Notice of Final Determination for Full or Partial Disallowance of Interest Abatement Claim/Interest Abatement - Failure of IRS to Make Final Determination Within 180 Days After Claim for Abatement",
+                                        "Amount of the abatement sought is greater than $50,000",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Worker Classification",
+                                        "Notice of Determination of Worker Classification/Worker Classification",
+                                        "Amount in dispute is greater than $50,000 for any calendar quarter",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Declaratory Judgment (Exempt Organization)",
+                                        "Adverse Determination Concerning a Tax Exempt Status",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Declaratory Judgment (Retirement Plan)",
+                                        "Revocation Letter Concerning a Retirement Plan",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Disclosure",
+                                        "Notice - We Are Going To Make Your Determination Letter Available for Public Inspection",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Disclosure",
+                                        "Notice of Intention to Disclose/Disclosure",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Partnership (BBA Section 1101)",
+                                        "Partnership Action Under BBA Section 1101",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Partnership (Section 6226)",
+                                        "Readjustment of Partnership Items Code Section 6226",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Partnership (Section 6228)",
+                                        "Adjustment of Partnership Items Code Section 6228",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Passport",
+                                        "Notice of Certification of Your Seriously Delinquent Federal Tax Debt to the Department of State/Passport",
+                                        "",
+                                    ]
+                                },
+                                {
+                                    "values": [
+                                        "Whistleblower",
+                                        "Notice of Determination Under Section 7623 Concerning Whistleblower Action/Whistleblower",
+                                        "",
+                                    ]
+                                },
                             ],
-                            "is_striped": True,
-                            "is_borderless": False,
                         },
                     },
                     {
