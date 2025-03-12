@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.contrib import admin
+from django.views.generic.base import RedirectView
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -10,8 +11,8 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    re_path(r'^(?P<url>.*)\.html/?$', RedirectView.as_view(url='/%(url)s', permanent=True)),
 ]
-
 
 if settings.DEBUG:
     from django.conf.urls.static import static
@@ -19,7 +20,7 @@ if settings.DEBUG:
 
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, image_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
     # For anything not caught by a more specific rule above, hand over to
