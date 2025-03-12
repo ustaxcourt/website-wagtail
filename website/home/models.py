@@ -14,6 +14,7 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 from wagtail.models import Orderable
+from datetime import date
 
 from wagtail.fields import StreamField
 from wagtail import blocks
@@ -720,3 +721,47 @@ class AdministrativeOrdersPage(StandardPage):
     content_panels = StandardPage.content_panels + [
         InlinePanel("pdfs", label="PDFs"),
     ]
+
+
+class VacancyAnnouncementsPage(StandardPage):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        today = date.today()
+        active_vacancies = VacancyEntry.objects.filter(
+            parentpage=self, closing_date__gte=today
+        ).order_by("closing_date")
+        context["active_vacancies"] = active_vacancies
+        return context
+
+    content_panels = Page.content_panels + [
+        InlinePanel("vacancies", label="Vacancies"),
+    ]
+
+
+class VacancyEntry(Orderable):
+    parentpage = ParentalKey(
+        "VacancyAnnouncementsPage", related_name="vacancies", on_delete=models.CASCADE
+    )
+
+    number = models.CharField(max_length=50, help_text="Vacancy announcement number")
+    position_title = models.CharField(
+        max_length=255, help_text="Position title, series, and grade"
+    )
+    closing_date = models.DateField(help_text="Closing date for the vacancy")
+    url = models.URLField(max_length=255, help_text="Link to the vacancy announcement")
+
+    panels = [
+        FieldPanel("number"),
+        FieldPanel("position_title"),
+        FieldPanel("closing_date"),
+        FieldPanel("url"),
+    ]
+
+    class Meta:
+        ordering = ["closing_date"]
+
+    def is_active(self):
+        return self.closing_date >= date.today()
