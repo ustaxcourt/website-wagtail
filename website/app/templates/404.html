@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
-
-{% block extra_css %}
-{% endblock %}
+{% block extra_css %}{% endblock %}
 {% block title %}Page not found{% endblock %}
-
 {% block content %}
-<div class="grid-container">
-    <div class="content">
-    <h2>We're sorry but we cannot find the page you're looking for.</h2>
-    <hr />
-    <p>Please check the URL and try again or <a href="/" title="United States Tax Court">return to the home page</a>. If you continue to receive this error, please submit a support ticket to <a href="mailto:support@ustaxcourt.gov" title="Email: support@ustaxcourt.gov">support@ustaxcourt.gov</a> and let us know what you are attempting to access.</p>
+    <div class="grid-container">
+        <div class="content">
+            <h1>We're sorry but we cannot find the page you're looking for.</h1>
+            <hr />
+            <p>
+                Please check the URL and try again or <a href="/" title="United States Tax Court">return to the home page</a>. If you continue to receive this error, please submit a support ticket to <a href="mailto:support@ustaxcourt.gov"
+    title="Email: support@ustaxcourt.gov">support@ustaxcourt.gov</a> and let us know what you are attempting to access.
+            </p>
+        </div>
     </div>
-</div>
 {% endblock %}
