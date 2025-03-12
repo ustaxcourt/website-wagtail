@@ -1,9 +1,6 @@
 from .base import *  # noqa: F403
 import os
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ["*"]
 
@@ -26,6 +23,6 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-DEBUG = True
+DEBUG = False
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "sandbox"
