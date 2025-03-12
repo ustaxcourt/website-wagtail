@@ -287,7 +287,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
                 "table",
                 TypedTableBlock(
                     [
-                        ("text", blocks.CharBlock()),
+                        ("text", blocks.RichTextBlock()),
                     ]
                 ),
             ),
