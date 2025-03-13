@@ -396,9 +396,11 @@ class EnhancedStandardPage(NavigationMixin, Page):
                                     required=True,
                                 ),
                             ),
-                        ], label="Card"
-                    )
-                ,label="Card Set"),
+                        ],
+                        label="Card",
+                    ),
+                    label="Card Set",
+                ),
             ),
         ]
     )
