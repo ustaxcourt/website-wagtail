@@ -117,7 +117,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
             },
             {
                 "question": "Why did I receive an error when I uploaded a file in DAWSON?",
-                "answer": f"""
+                "answer": """
                             <ol>
                                 <li>
                                     <strong>Error Message: File size too big</strong>
@@ -163,10 +163,11 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                 </li>
 
                             </ol>
-                            <div style="text-align: center;">
-                                <img src="{uploaded_images.get('dawson_faqs_case_management_secured.jpg', '')}" alt="Example of a secured PDF document with a blue banner.">
-                            </div>
-
+                            <ul style="list-style: none; text-align: center; ">
+                            <li>
+                            <embed embedtype="image" format="fullwidth" id="7" alt="image of the Dawson faqs case management secured" class="centered-embed"/>
+                            </li>
+                            </ul>
                             <ul>
                                 <li style="margin-left: 7rem;">
                                     <strong>YES</strong> - Do ONE of the following steps below to create a new unsecured document file for your submission:
@@ -175,33 +176,32 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                         </ol>
                                 </li>
                             </ul>
-                            <div style="text-align: center;">
-                                <img src="{uploaded_images.get('dawson_faqs_case_management_banner.jpg', '')}" alt="Dawson FAQs Case Management Banner">
-                            </div>
-                            <p style="margin-left: 1.2rem;">2. Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</p>
-
-
-                            <ul>
-                                <li style="margin-left: 7rem;">
+                            <ul style="list-style: none; text-align: center; ">
+                            <li >
+                            <embed embedtype="image" format="fullwidth" id="8" alt="image of the Dawson faqs case management banner" style="display: block; margin: 0 auto; width: 80%;" />
+                            </li>
+                            <li>2. Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</li>
+                            </ul>
+                            <ul style="margin-left: 14rem;">
+                                <li >
                                 <strong>NO</strong> - If you do NOT see the above banner or "(SECURED)" in the document window, follow these steps.
                                 </li>
                             </ul>
 
-                            <ol style="margin-top: 0.2rem;">
+                            <ol style="margin-top: 0.2rem; margin-left: 14rem;">
                                 <li>Right-click in the document.</li>
                                 <li>Choose Document Properties from the options.</li>
                                 <li>Click on the Security tab.</li>
                                 <li>In the dropdown menu labeled Security Method, select "No Security".</li>
                                 <li>Click OK</li>
                             </ol>
-
-                            <div style="text-align: center;">
-                                <img src="{uploaded_images.get('dawson_faqs_case_management_doc_properties.jpg', '')}" alt="Steps to remove security in Adobe Document Properties">
-                            </div>
-                            <p style="margin-left: 1.2rem;">6. Save the document. You should now be able to upload the document to DAWSON without error.</p>
-                            """,
+                            <ul style="list-style: none; text-align: center; ">
+                            <li >
+                            <embed embedtype="image" format="fullwidth" id="9" alt="image of the Dawson faqs case management document properties"/>
+                            </li>
+                            <li>6. Save the document. You should now be able to upload the document to DAWSON without error.</li>
+                            </ul>""",
                 "anchortag": "FAQS7",
-                #                 "image": "{uploaded_images}"
             },
             {
                 "question": "What digital signatures are accepted in DAWSON?",
