@@ -12,5 +12,5 @@ about_the_court_pages_to_initialize = [
     EmploymentPageInitializer,
     HistoryPageInitializer,
     HolidaysPageInitializer,
-    VacancyAnnouncementsPageInitializer,
+    VacancyAnnouncementsPageInitializer,  # this must come after employment page
 ]

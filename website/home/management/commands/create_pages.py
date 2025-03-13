@@ -21,6 +21,7 @@ from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 
 from home.management.commands.snippets import snippets_to_initialize
+from home.management.commands.redirects.redirect_initializer import RedirectInitializer
 
 home_page_initialize = [
     HomePageInitializer,
@@ -43,6 +44,25 @@ class Command(BaseCommand):
     help = "Create initial pages and form records if they don't already exist."
 
     def handle(self, *args, **options):
+        # Initialize redirects first
+        initializer = RedirectInitializer(self.stdout)
+
+        redirects = [
+            {
+                "old_path": "/vacancy_announcements",
+                "new_path": "/employment/vacancy_announcements",
+                "is_permanent": True,
+            },
+        ]
+
+        self.stdout.write("Initializing redirects...")
+        for redirect in redirects:
+            initializer.create_redirect(
+                redirect["old_path"], redirect["new_path"], redirect["is_permanent"]
+            )
+        self.stdout.write(self.style.SUCCESS("All redirects have been initialized."))
+
+        # Continue with existing initialization
         for snippet_class in snippets_to_initialize:
             snippet_instance = snippet_class(self.stdout)
             snippet_instance.create()
