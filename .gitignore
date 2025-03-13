@@ -246,6 +246,7 @@ web_modules/
 
 website/cypress/screenshots/*
 website/media
+website/static
 website_secrets
 
 .cursorrules
