@@ -37,7 +37,7 @@ class CaseProcedurePageInitializer(PageInitializer):
                         "value": "For specific case types, the amount of the tax in dispute will affect whether or not you qualify for small tax case procedures.",
                     },
                     {"type": "hr", "value": True},
-                    {"type": "h3", "value": "Eligible for small tax case procedure"},
+                    {"type": "h2", "value": "Eligible for small tax case procedure"},
                     {
                         "type": "table",
                         "value": {
@@ -87,7 +87,7 @@ class CaseProcedurePageInitializer(PageInitializer):
                         },
                     },
                     {
-                        "type": "h3",
+                        "type": "h2",
                         "value": "Not eligible for small tax case procedure",
                     },
                     {
