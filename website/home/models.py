@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.db import models
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
@@ -65,6 +66,7 @@ class IndentStyle(models.TextChoices):
 
 
 class IconCategories(models.TextChoices):
+    NONE = ("",)
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
     CALENDAR_MONTH = "ti ti-calendar-month"
@@ -73,8 +75,9 @@ class IconCategories(models.TextChoices):
     HAMMER = "ti ti-hammer"
     INFO = "ti ti-info-circle"
     INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
+    CHECK = "ti ti-check"
     LINK = "ti ti-link"
-    NONE = ("",)
+    EXCLAMATION_MARK = "ti ti-exclamation-mark"
     PDF = "ti ti-file-type-pdf"
     SCALE = "ti ti-scale"
     USER = "ti ti-user-filled"
@@ -281,7 +284,14 @@ class EnhancedStandardPage(NavigationMixin, Page):
                 ),
             ),
             ("image", ImageBlock()),
-            ("photo_dedication", PhotoDedicationBlock()),
+            (
+                "table",
+                TypedTableBlock(
+                    [
+                        ("text", blocks.RichTextBlock()),
+                    ]
+                ),
+            ),
             (
                 "links",
                 blocks.StructBlock(
@@ -354,6 +364,42 @@ class EnhancedStandardPage(NavigationMixin, Page):
                         ("description", blocks.RichTextBlock(required=False)),
                         ("video_url", blocks.URLBlock(required=False)),
                     ]
+                ),
+            ),
+            (
+                "card",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        (
+                                            icon.value,
+                                            icon.name.replace("_", " ").title(),
+                                        )
+                                        for icon in IconCategories
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                            ("title", blocks.CharBlock(required=True)),
+                            ("description", blocks.RichTextBlock(required=True)),
+                            (
+                                "color",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("green", "Green"),
+                                        ("yellow", "Yellow"),
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                        ],
+                        label="Card",
+                    ),
+                    label="Card Set",
                 ),
             ),
         ]
