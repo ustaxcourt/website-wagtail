@@ -151,57 +151,6 @@ hr {
     height: 0;
 }
 
-/* ==========================================================================
-   Tables
-   ========================================================================== */
-.usa-table {
-    td, tr {
-        padding: 20px 0px;
-    }
-}
-
-.usa-table--borderless {
-    td {
-        border: none;
-    }
-
-    thead th {
-        border-color: var(--faint-gray);
-    }
-}
-
-.usa-table--stacked {
-    tr:first-child td:first-child {
-        border-color: var(--faint-gray);
-    }
-
-    th {
-        padding: 20px 16px;
-    }
-    tr, td {
-        padding: 20px 16px;
-        border-color: var(--faint-gray);
-    }
-}
-
-@media (max-width: 29.99em) {
-    .usa-table--stacked {
-        tr, td {
-            .display-none {
-                display: none;
-            }
-        }
-    }
-}
-
-/* Table Responsive Styles */
-@media (max-width: 480px) {
-    .usa-table--stacked {
-        tr, td {
-            padding: 10px 0px;
-        }
-    }
-}
 
 /* ==========================================================================
    Utility Classes
@@ -239,11 +188,7 @@ button.link:hover {
     display: flex;
     background-color: var(--light-blue);
     border-radius: 5px;
-
-    .title {
-        white-space: normal;
-        word-break: keep-all;
-    }
+    gap: 10px;
 
     a {
         flex-grow: 1;
@@ -252,14 +197,12 @@ button.link:hover {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: start;
+        justify-content: center;
         gap: 10px;
         font-weight: normal;
         font-size: .9rem;
         padding: 16px;
-        font-size: 16px;
-        line-height: 20px;
-        text-align: center;
+
     }
 
     a:hover {
@@ -270,34 +213,4 @@ button.link:hover {
         color: white;
         font-size: 2.5rem;
     }
-}
-
-@media(max-width: 850px) {
-    .blue-page-links-bar {
-
-      a {
-          font-size: 14px;
-      }
-
-      .ti {
-          font-size: 1.9rem;
-      }
-    }
-  }
-
-
-@media(max-width: 650px) {
-  .blue-page-links-bar {
-    .title {
-        display: none;
-    }
-
-    a {
-        padding: 10px 0px;
-    }
-
-    .ti {
-        font-size: 1.7rem;
-    }
-  }
 }

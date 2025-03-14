@@ -1,8 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import (
-    EnhancedStandardPage,
-)
+from home.models import EnhancedStandardPage, CommonText
 
 
 docs = {
@@ -102,13 +100,13 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                 "anchortag": "SEC5",
             },
             {
-                "question": "Sec. 6. Reference Documents",
+                "question": "Reference Documents",
                 "answer": f"""<ul>
                     <li><a href="{docs['2021_letter_to_CJ_academic_law_and_nonlaw.pdf']}" title="Sample Letter">Letter to Chief Judge (Sample): 2021_letter_to_CJ_academic_law_and_nonlaw.pdf</a><br/></li>
-                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for stuffer notice">Stuffer notice: stuffer_notice.pdf</a></li>
+                    <li><a href="{docs['stuffer_notice.pdf']}" title="Format for Stuffer Notice">Format for Stuffer Notice: stuffer_notice.pdf</a></li>
                     </ul>
                 """,
-                "anchortag": "SEC6",
+                "anchortag": "REFDOCS",
             },
         ]
 
@@ -126,8 +124,10 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                     },
                     {"type": "questionanswers", "value": questions},
                     {
-                        "type": "paragraph",
-                        "value": """Please <a href="mailto:litc@ustaxcourt.gov" title="email: litc@ustaxcourt.gov">contact us</a> with any questions concerning the Court’s program or requirements, or call <a href="tel:202-521-3366" title="call: 202-521-3366">202-521-3366</a>.""",
+                        "type": "snippet",
+                        "value": CommonText.objects.get(
+                            name="Clinics Contact Details"
+                        ).id,
                     },
                 ],
             )

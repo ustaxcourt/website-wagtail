@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.db import models
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
@@ -13,11 +14,13 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 from wagtail.models import Orderable
+from datetime import date
 
 from wagtail.fields import StreamField
 from wagtail import blocks
 from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.snippets.blocks import SnippetChooserBlock
 
 
 @register_setting
@@ -63,6 +66,7 @@ class IndentStyle(models.TextChoices):
 
 
 class IconCategories(models.TextChoices):
+    NONE = ("",)
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
     CALENDAR_MONTH = "ti ti-calendar-month"
@@ -71,8 +75,9 @@ class IconCategories(models.TextChoices):
     HAMMER = "ti ti-hammer"
     INFO = "ti ti-info-circle"
     INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
+    CHECK = "ti ti-check"
     LINK = "ti ti-link"
-    NONE = ("",)
+    EXCLAMATION_MARK = "ti ti-exclamation-mark"
     PDF = "ti ti-file-type-pdf"
     SCALE = "ti ti-scale"
     USER = "ti ti-user-filled"
@@ -158,6 +163,22 @@ class NavigationRibbon(ClusterableModel):
 
     panels = [
         InlinePanel("links", label="Links"),  # Now properly references the ParentalKey
+    ]
+
+    def __str__(self):
+        return self.name
+
+
+@register_snippet
+class CommonText(models.Model):
+    name = models.CharField(
+        max_length=255, help_text="Name of the text snippet", blank=False
+    )
+    text = RichTextField(help_text="HTML Rich text content", blank=False)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("text"),
     ]
 
     def __str__(self):
@@ -253,6 +274,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
             ("h3", blocks.CharBlock(label="Heading 3")),
             ("h4", blocks.CharBlock(label="Heading 4")),
             ("paragraph", blocks.RichTextBlock()),
+            ("snippet", SnippetChooserBlock("home.CommonText")),
             (
                 "hr",
                 blocks.BooleanBlock(
@@ -262,7 +284,14 @@ class EnhancedStandardPage(NavigationMixin, Page):
                 ),
             ),
             ("image", ImageBlock()),
-            ("photo_dedication", PhotoDedicationBlock()),
+            (
+                "table",
+                TypedTableBlock(
+                    [
+                        ("text", blocks.RichTextBlock()),
+                    ]
+                ),
+            ),
             (
                 "links",
                 blocks.StructBlock(
@@ -335,6 +364,42 @@ class EnhancedStandardPage(NavigationMixin, Page):
                         ("description", blocks.RichTextBlock(required=False)),
                         ("video_url", blocks.URLBlock(required=False)),
                     ]
+                ),
+            ),
+            (
+                "card",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        (
+                                            icon.value,
+                                            icon.name.replace("_", " ").title(),
+                                        )
+                                        for icon in IconCategories
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                            ("title", blocks.CharBlock(required=True)),
+                            ("description", blocks.RichTextBlock(required=True)),
+                            (
+                                "color",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("green", "Green"),
+                                        ("yellow", "Yellow"),
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                        ],
+                        label="Card",
+                    ),
+                    label="Card Set",
                 ),
             ),
         ]
@@ -658,3 +723,47 @@ class AdministrativeOrdersPage(StandardPage):
     content_panels = StandardPage.content_panels + [
         InlinePanel("pdfs", label="PDFs"),
     ]
+
+
+class VacancyAnnouncementsPage(StandardPage):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        today = date.today()
+        active_vacancies = VacancyEntry.objects.filter(
+            parentpage=self, closing_date__gte=today
+        ).order_by("closing_date")
+        context["active_vacancies"] = active_vacancies
+        return context
+
+    content_panels = Page.content_panels + [
+        InlinePanel("vacancies", label="Vacancies"),
+    ]
+
+
+class VacancyEntry(Orderable):
+    parentpage = ParentalKey(
+        "VacancyAnnouncementsPage", related_name="vacancies", on_delete=models.CASCADE
+    )
+
+    number = models.CharField(max_length=50, help_text="Vacancy announcement number")
+    position_title = models.CharField(
+        max_length=255, help_text="Position title, series, and grade"
+    )
+    closing_date = models.DateField(help_text="Closing date for the vacancy")
+    url = models.URLField(max_length=255, help_text="Link to the vacancy announcement")
+
+    panels = [
+        FieldPanel("number"),
+        FieldPanel("position_title"),
+        FieldPanel("closing_date"),
+        FieldPanel("url"),
+    ]
+
+    class Meta:
+        ordering = ["closing_date"]
+
+    def is_active(self):
+        return self.closing_date >= date.today()

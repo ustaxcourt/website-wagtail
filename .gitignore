@@ -180,7 +180,10 @@ infra/destructive-plan
 infra/iam/*generated-deployer-access-key.json
 
 website/node_modules
-website/app/static/uswds/*
+website/app/static/uswds/css
+website/app/static/uswds/fonts
+website/app/static/uswds/img
+website/app/static/uswds/js
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
@@ -243,6 +246,7 @@ web_modules/
 
 website/cypress/screenshots/*
 website/media
+website/static
 website_secrets
 
 .cursorrules
