@@ -762,6 +762,14 @@ class VacancyEntry(Orderable):
         FieldPanel("url"),
     ]
 
+    def clean(self):
+        super().clean()
+        # Check if closing_date is before today
+        if self.closing_date and self.closing_date < date.today():
+            raise ValidationError(
+                {"closing_date": "Closing date cannot be in the past."}
+            )
+
     class Meta:
         ordering = ["closing_date"]
 

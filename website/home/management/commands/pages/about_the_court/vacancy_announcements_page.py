@@ -8,7 +8,14 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
         super().__init__(logger)
 
     def create(self):
-        home_page = Page.objects.get(slug="home")
+        # Find the Employment page instead of home page
+        try:
+            employment_page = Page.objects.get(slug="employment")
+        except Page.DoesNotExist:
+            self.logger.write(
+                "Error: Employment page does not exist. Please create it first."
+            )
+            return
 
         slug = "vacancy_announcements"
         title = "Vacancy Announcements"
@@ -19,7 +26,8 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        home_page.add_child(
+        # Add as child of employment_page instead of home_page
+        employment_page.add_child(
             instance=VacancyAnnouncementsPage(
                 title=title,
                 body="Current vacancy announcements for the United States Tax Court are listed below.",
