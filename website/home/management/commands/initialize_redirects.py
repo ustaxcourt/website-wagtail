@@ -11,7 +11,7 @@ class Command(BaseCommand):
         redirects = [
             {
                 "old_path": "/vacancy_announcements",
-                "new_path": "/employment/vacancy-announcements",
+                "new_path": "/employment/vacancy_announcements",
                 "is_permanent": True,
             },
         ]

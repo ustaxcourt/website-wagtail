@@ -42,7 +42,7 @@ class EmploymentPageInitializer(PageInitializer):
                                     "title": "Vacancy Announcements",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/employment/vacancy-announcements",
+                                    "url": "/employment/vacancy_announcements",
                                 },
                                 {
                                     "title": "Internship Programs",

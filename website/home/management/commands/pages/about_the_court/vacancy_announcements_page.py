@@ -17,7 +17,7 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
             )
             return
 
-        slug = "vacancy-announcements"
+        slug = "vacancy_announcements"
         title = "Vacancy Announcements"
 
         if Page.objects.filter(slug=slug).exists():
