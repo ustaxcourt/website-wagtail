@@ -8,7 +8,7 @@ from .trial_sessions_page import TrialSessionsPageInitializer
 
 
 about_the_court_pages_to_initialize = [
-    #  Order matters
+    #  Order matters for menu
     MissionPageInitializer,
     HistoryPageInitializer,
     JudgesPageInitializer,
