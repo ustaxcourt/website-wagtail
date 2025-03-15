@@ -3,7 +3,7 @@ from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage
 
 
-petitioners_docs = {
+order_docs = {
     "TC-16-90001.pdf": None,
     "TC-16-90002.pdf": None,
     "TC-16-90002_2017-08-16_Council-Order.pdf": None,
@@ -75,9 +75,9 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        for document in petitioners_docs.keys():
+        for document in order_docs.keys():
             uploaded_document = self.load_document_from_documents_dir(None, document)
-            petitioners_docs[document] = uploaded_document.file.url
+            order_docs[document] = uploaded_document.file.url
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
