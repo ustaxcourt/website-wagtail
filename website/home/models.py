@@ -205,19 +205,74 @@ class PhotoDedicationBlock(blocks.StructBlock):
         label = "Photo Dedication"
 
 
+link_obj = (
+    "links",
+    blocks.StructBlock(
+        [
+            (
+                "class",
+                blocks.ChoiceBlock(
+                    choices=[
+                        ("indented", IndentStyle.INDENTED),
+                        ("unindented", IndentStyle.UNINDENTED),
+                    ],
+                    default=IndentStyle.INDENTED,
+                ),
+            ),
+            (
+                "links",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("title", blocks.CharBlock()),
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        (
+                                            icon.value,
+                                            icon.name.replace("_", " ").title(),
+                                        )
+                                        for icon in IconCategories
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                            (
+                                "document",
+                                DocumentChooserBlock(required=False),
+                            ),
+                            ("url", blocks.CharBlock(required=False)),
+                            (
+                                "text_only",
+                                blocks.BooleanBlock(required=False),
+                            ),
+                        ]
+                    )
+                ),
+            ),
+        ]
+    ),
+)
+
+
 class CommonBlock(blocks.StreamBlock):
     h2WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
-        ]
+        ],
+        label="Heading 2",
+        help_text="Heading 2 with optional anchor tag for linking",
     )
     clickableButton = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("url", blocks.CharBlock(required=False)),
-        ]
+        ],
+        label="Clickable Button",
     )
+    links = link_obj
 
 
 class ColumnBlock(blocks.StructBlock):
@@ -292,57 +347,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
                     ]
                 ),
             ),
-            (
-                "links",
-                blocks.StructBlock(
-                    [
-                        (
-                            "class",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("indented", IndentStyle.INDENTED),
-                                    ("unindented", IndentStyle.UNINDENTED),
-                                ],
-                                default=IndentStyle.INDENTED,
-                            ),
-                        ),
-                        (
-                            "links",
-                            blocks.ListBlock(
-                                blocks.StructBlock(
-                                    [
-                                        ("title", blocks.CharBlock()),
-                                        (
-                                            "icon",
-                                            blocks.ChoiceBlock(
-                                                choices=[
-                                                    (
-                                                        icon.value,
-                                                        icon.name.replace(
-                                                            "_", " "
-                                                        ).title(),
-                                                    )
-                                                    for icon in IconCategories
-                                                ],
-                                                required=False,
-                                            ),
-                                        ),
-                                        (
-                                            "document",
-                                            DocumentChooserBlock(required=False),
-                                        ),
-                                        ("url", blocks.CharBlock(required=False)),
-                                        (
-                                            "text_only",
-                                            blocks.BooleanBlock(required=False),
-                                        ),
-                                    ]
-                                )
-                            ),
-                        ),
-                    ]
-                ),
-            ),
+            link_obj,
             (
                 "questionanswers",
                 blocks.ListBlock(
