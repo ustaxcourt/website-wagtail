@@ -102,8 +102,8 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
         for name in order_docs:
             uploaded_document = self.load_document_from_documents_dir(
                 subdirectory=None,
-                filename=order_docs[name],
-                title=order_docs[name][title],
+                filename=name,
+                title=order_docs[name]["title"],
             )
             order_docs[name]["file"] = uploaded_document.file
 
