@@ -205,54 +205,34 @@ class PhotoDedicationBlock(blocks.StructBlock):
         label = "Photo Dedication"
 
 
-link_obj = (
-    "links",
+link_obj = blocks.ListBlock(
     blocks.StructBlock(
         [
+            ("title", blocks.CharBlock()),
             (
-                "class",
+                "icon",
                 blocks.ChoiceBlock(
                     choices=[
-                        ("indented", IndentStyle.INDENTED),
-                        ("unindented", IndentStyle.UNINDENTED),
+                        (
+                            icon.value,
+                            icon.name.replace("_", " ").title(),
+                        )
+                        for icon in IconCategories
                     ],
-                    default=IndentStyle.INDENTED,
+                    required=False,
                 ),
             ),
             (
-                "links",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("title", blocks.CharBlock()),
-                            (
-                                "icon",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        (
-                                            icon.value,
-                                            icon.name.replace("_", " ").title(),
-                                        )
-                                        for icon in IconCategories
-                                    ],
-                                    required=False,
-                                ),
-                            ),
-                            (
-                                "document",
-                                DocumentChooserBlock(required=False),
-                            ),
-                            ("url", blocks.CharBlock(required=False)),
-                            (
-                                "text_only",
-                                blocks.BooleanBlock(required=False),
-                            ),
-                        ]
-                    )
-                ),
+                "document",
+                DocumentChooserBlock(required=False),
+            ),
+            ("url", blocks.CharBlock(required=False)),
+            (
+                "text_only",
+                blocks.BooleanBlock(required=False),
             ),
         ]
-    ),
+    )
 )
 
 
@@ -272,7 +252,23 @@ class CommonBlock(blocks.StreamBlock):
         ],
         label="Clickable Button",
     )
-    links = link_obj
+    links = blocks.StructBlock(
+        [
+            (
+                "class",
+                blocks.ChoiceBlock(
+                    choices=[
+                        ("indented", "Indented"),
+                        ("unindented", "Unindented"),
+                    ],
+                    default="indented",
+                ),
+            ),
+            # Reuse your link_obj here
+            ("links", link_obj),
+        ],
+        label="Links",
+    )
 
 
 class ColumnBlock(blocks.StructBlock):
@@ -347,7 +343,24 @@ class EnhancedStandardPage(NavigationMixin, Page):
                     ]
                 ),
             ),
-            link_obj,
+            (
+                "links",
+                blocks.StructBlock(
+                    [
+                        (
+                            "class",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("indented", IndentStyle.INDENTED),
+                                    ("unindented", IndentStyle.UNINDENTED),
+                                ],
+                                default=IndentStyle.INDENTED,
+                            ),
+                        ),
+                        ("links", link_obj),
+                    ]
+                ),
+            ),
             (
                 "questionanswers",
                 blocks.ListBlock(
@@ -357,7 +370,9 @@ class EnhancedStandardPage(NavigationMixin, Page):
                             ("answer", blocks.RichTextBlock()),
                             ("anchortag", blocks.CharBlock()),
                         ]
-                    )
+                    ),
+                    label="Question and Answer",
+                    help_text="Add a question and answer with anchor tag for linking",
                 ),
             ),
             ("columns", ColumnBlock()),
