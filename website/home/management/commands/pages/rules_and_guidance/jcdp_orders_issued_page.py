@@ -112,9 +112,12 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
-                search_description="Guidance for Petitioners - Starting a Case",
+                search_description=title,
                 body=[
-                    {"type": "h2", "value": "Starting A Case"},
+                    {
+                        "type": "paragraph",
+                        "value": "The effective date of the Tax Court’s Judicial Conduct and Disability Procedures was June 15, 2016. Links to orders issued pursuant to these procedures will be added to this page when they are issued.",
+                    },
                 ],
                 show_in_menus=False,
             )
