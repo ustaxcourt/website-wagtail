@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import os
 from wagtail.documents import get_document_model
+from wagtail.models import Collection, CollectionViewRestriction
 from wagtail.images import get_image_model
 from django.core.files import File
 from django.conf import settings
@@ -17,7 +18,43 @@ class PageInitializer(ABC):
     def create(self):
         pass
 
-    def load_document_from_documents_dir(self, subdirectory, filename, title=None):
+    def get_or_create_collection_with_login_restriction(
+        self,
+        collection_name: str,
+    ) -> Collection:
+        """
+        Ensures a collection with the given name exists, and that it is restricted
+        to logged-in users. Returns the collection instance.
+        """
+        # Get the root collection (top-level)
+        root_collection = Collection.get_first_root_node()
+
+        if not collection_name:
+            return root_collection
+
+        # See if there's an existing collection by that name
+        collection = Collection.objects.filter(name=collection_name).first()
+        if not collection:
+            # Create a new child collection under the root
+            collection = root_collection.add_child(name=collection_name)
+
+        # Ensure it has a "login" restriction
+        # (i.e. "Private, accessible to any logged-in user")
+        restriction = CollectionViewRestriction.objects.filter(
+            collection=collection, restriction_type="login"
+        )
+        if not restriction.exists():
+            # If there's no existing "login" restriction, create one
+            CollectionViewRestriction.objects.create(
+                collection=collection,
+                restriction_type="login",
+            )
+
+        return collection
+
+    def load_document_from_documents_dir(
+        self, subdirectory, filename, title=None, collection=None
+    ):
         """
         Load a document from the documents directory and create a Wagtail Document instance.
 
@@ -53,10 +90,15 @@ class PageInitializer(ABC):
             self.logger.write(f"Document with title '{title}' already exists.")
             return Document.objects.get(title=title)
 
+        collection_obj = self.get_or_create_collection_with_login_restriction(
+            collection
+        )
+
         with open(file_path, "rb") as doc_file:
             document = Document(
                 title=title,
                 file=File(doc_file, name=filename),
+                collection=collection_obj,
             )
             document.save()
             self.logger.write(f"Document created: {document}")

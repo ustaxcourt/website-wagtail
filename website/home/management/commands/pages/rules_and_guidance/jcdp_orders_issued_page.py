@@ -54,8 +54,8 @@ order_docs = {
         "title": "12/17/2018 - TC-18-90001",
         "file": None,
     },
-    "TC-19-90001.pdf": {"title": "02/22/2019 - TC-19-90001", "file": None},
-    "TC-19-90002.pdf": {"title": "06/25/2019 - TC-19-90002", "file": None},
+    # "TC-19-90001.pdf": {"title": "02/22/2019 - TC-19-90001", "file": None},
+    # "TC-19-90002.pdf": {"title": "06/25/2019 - TC-19-90002", "file": None},
     "TC-19-90003.pdf": {"title": "01/27/2020 - TC-19-90003", "file": None},
     "TC-20-90001.pdf": {"title": "11/16/2020 - TC-20-90001", "file": None},
     "TC-20-90002.pdf": {"title": "05/13/2021 - TC-20-90002", "file": None},
@@ -106,6 +106,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                 subdirectory=None,
                 filename=name,
                 title=order_docs[name]["title"],
+                collection="Judicial Conduct and Disability Procedures",
             )
             order_docs[name]["file"] = uploaded_document.file
 
