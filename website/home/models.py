@@ -237,12 +237,14 @@ link_obj = blocks.ListBlock(
 
 
 class CommonBlock(blocks.StreamBlock):
+    h2 = blocks.CharBlock(label="Heading 2")
+    h3 = blocks.CharBlock(label="Heading 3")
     h2WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
         ],
-        label="Heading 2",
+        label="Heading 2 with Anchor Tag",
         help_text="Heading 2 with optional anchor tag for linking",
     )
     clickableButton = blocks.StructBlock(
