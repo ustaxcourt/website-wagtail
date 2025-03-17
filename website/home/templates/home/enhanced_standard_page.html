@@ -133,12 +133,15 @@
                 border-collapse: collapse;
                 margin: 1rem 0;
 
-                th:not([scope="row"]) {  /* Only apply blue to header cells that aren't in the first column */
-                    background-color: #005EA2;  /* USWDS dark blue */
+                th:not([scope="row"]) {
+                    /* Only apply blue to header cells that aren't in the first column */
+                    background-color: #005EA2;
+                    /* USWDS dark blue */
                     color: white;
                 }
 
-                th, td {
+                th,
+                td {
                     padding: 1rem;
                     text-align: left;
                     border: 1px solid #dfe1e2;
@@ -357,22 +360,16 @@
                 {% elif block.block_type == 'table' %}
                     <div class="table-container">
                         <table id="enhanced-table">
-                            {% if block.value.caption %}
-                                <caption>{{ block.value.caption }}</caption>
-                            {% endif %}
+                            {% if block.value.caption %}<caption>{{ block.value.caption }}</caption>{% endif %}
                             <thead>
                                 <tr>
-                                    {% for col in block.value.columns %}
-                                        <th scope="col">{{ col.heading }}</th>
-                                    {% endfor %}
+                                    {% for col in block.value.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for row in block.value.rows %}
                                     <tr>
-                                        {% for value in row %}
-                                            <td>{{ value }}</td>
-                                        {% endfor %}
+                                        {% for value in row %}<td>{{ value }}</td>{% endfor %}
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -454,8 +451,15 @@
                                     {% for sub_block in column %}
                                         {% if sub_block.block_type == 'h2WithAnchorTag' %}
                                             <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
+                                        {% elif sub_block.block_type == 'h2' %}
+                                            <h2>{{ sub_block.value.text }}</h2>
+                                        {% elif sub_block.block_type == 'h3' %}
+                                            <h3>{{ sub_block.value.text }}</h3>
                                         {% elif sub_block.block_type == 'clickableButton' %}
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
+                                        {% else %}
+                                            <p>Column type not recognized: {{ block.block_type }}</p>
+                                            {{ block.value }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -470,9 +474,7 @@
                                     <i class="{{ card.icon }}" aria-hidden="true"></i>
                                     <div class="title">{{ card.title }}</div>
                                 </div>
-                                <div class="description">
-                                    {{ card.description|richtext }}
-                                </div>
+                                <div class="description">{{ card.description|richtext }}</div>
                             </div>
                         {% endfor %}
                     </div>
