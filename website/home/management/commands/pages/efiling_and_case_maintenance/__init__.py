@@ -10,11 +10,13 @@ from .searches_and_public_access_page import SearchesAndPublicAccessPageInitiali
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
-    DawsonFaqsBasicsPageInitializer,
-    DawsonFaqsAccountManagementPageInitializer,
+    # Order of initialization matters
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
+    # Other pages, order does not matter
     FillInFormsInstructionsPageInitializer,
     SearchesAndPublicAccessPageInitializer,
+    DawsonFaqsBasicsPageInitializer,
+    DawsonFaqsAccountManagementPageInitializer,
 ]
