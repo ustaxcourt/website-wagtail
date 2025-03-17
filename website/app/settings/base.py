@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail.contrib.settings",
+    "wagtail.contrib.typed_table_block",
     "wagtail",
     "modelcluster",
     "taggit",
@@ -66,7 +67,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = "app.urls"
 
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 TEMPLATES = [
     {
