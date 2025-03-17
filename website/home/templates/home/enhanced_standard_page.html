@@ -452,14 +452,14 @@
                                         {% if sub_block.block_type == 'h2WithAnchorTag' %}
                                             <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
                                         {% elif sub_block.block_type == 'h2' %}
-                                            <h2>{{ sub_block.value.text }}</h2>
+                                            <h2>{{ sub_block.value}}</h2>
                                         {% elif sub_block.block_type == 'h3' %}
-                                            <h3>{{ sub_block.value.text }}</h3>
+                                            <h3>{{ sub_block.value }}</h3>
                                         {% elif sub_block.block_type == 'clickableButton' %}
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                                         {% else %}
-                                            <p>Column type not recognized: {{ block.block_type }}</p>
-                                            {{ block.value }}
+                                            <p>Column type not recognized: {{ sub_block.block_type }}</p>
+                                            {{ sub_block.value }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
