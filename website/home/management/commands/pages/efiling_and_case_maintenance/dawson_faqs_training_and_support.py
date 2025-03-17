@@ -46,7 +46,7 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
                     "value": [
                         {
                             "question": "Where do I find DAWSON training and user guides?",
-                            "answer": f"""The <strong><a target="_blank" href="https://ustaxcourt.gov/dawson.html" title="DAWSON">DAWSON</a></strong>
+                            "answer": f"""The <strong><a target="_blank" href="/dawson" title="DAWSON">DAWSON</a></strong>
                             page has helpful information, including this <strong><a href="https://us02web.zoom.us/rec/play/EZTpkvLfDeXoLeW2YzhdTgpBcKoC10NumGESfgR2Aorw_E85V6vwwpCCmQOEzW9GI9M-0fvLZTxMPr_T.wWcxq5k6tZ3GI8OP" title="DAWSON Training Video">training video</a></strong>.
                             <ul>
                                 <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Public_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Public Training Guide: DAWSON_Public_Training_Guide.pdf</a></strong></li>
