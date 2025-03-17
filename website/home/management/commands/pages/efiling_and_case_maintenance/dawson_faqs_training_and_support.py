@@ -58,7 +58,7 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
                         {
                             "question": "Who do I contact for help with DAWSON?",
                             "answer": """<ul>
-                                          <li>If you need DAWSON assistance, email <strong><a href=\"mailto:dawson.support@ustaxcourt.gov\" title=\"Contact DAWSON Support\">dawson.support@ustaxcourt.gov</a></strong>. (Documents sent to that email address cannot be filed on your behalf).</li>
+                                          <li>If you need DAWSON assistance, email <a href=\"mailto:dawson.support@ustaxcourt.gov\" title=\"Contact DAWSON Support\">dawson.support@ustaxcourt.gov</a>. (Documents sent to that email address cannot be filed on your behalf).</li>
                                           <li>User feedback and error reporting can also be submitted to <strong><a href=\"mailto:dawson.support@ustaxcourt.gov\" title=\"Contact DAWSON Support\">dawson.support@ustaxcourt.gov</a></strong>.</li>
                                           <li>The Court’s main number is <a href=\"tel:+12025210700\">(202) 521-0700</a>.</li>
                                           </ul>""",
