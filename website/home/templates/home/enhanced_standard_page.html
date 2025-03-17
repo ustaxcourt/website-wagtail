@@ -322,7 +322,7 @@
                 {% for link in page.navigation_ribbon.links.all %}
                     <a href="{{ link.url }}" aria-label="{{ link.title }}">
                         <i class="{{ link.icon }}" aria-hidden="true"></i>
-                        <div class="title">{{ link.title }}</div>
+                        <div class="title" style="display: block;">{{ link.title }}</div>
                     </a>
                 {% endfor %}
             </div>

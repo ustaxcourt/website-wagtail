@@ -214,3 +214,23 @@ button.link:hover {
         font-size: 2.5rem;
     }
 }
+@media (min-width: 320px) and (max-width: 768px) {
+    .blue-page-links-bar {
+        gap: 5px;
+        border-radius: 3px;
+    }
+
+    .blue-page-links-bar a .title {
+        display: none !important;
+    }
+
+    .blue-page-links-bar a {
+        gap: 5px;
+        font-size: 0.8rem;
+        padding: 12px 6px;
+    }
+
+    .blue-page-links-bar .ti {
+        font-size: 20px;
+    }
+}
