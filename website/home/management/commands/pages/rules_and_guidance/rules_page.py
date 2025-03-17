@@ -72,7 +72,7 @@ body = [
                     "title": "Comments and Suggestions",
                     "icon": None,
                     "document": None,
-                    "url": "/rules-comments",
+                    "url": "/rules_comments",
                 },
             ],
         },
