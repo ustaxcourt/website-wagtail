@@ -28,6 +28,7 @@ from .clinics_academic_non_law_school_page import (
 from .clinics_nonacademic_page import ClinicsNonAcademicPageInitializer
 from .clinics_calendar_call_page import ClinicsCalendarCallPageInitializer
 from .clinics_chief_counsel_page import ClinicsChiefCounselPageInitializer
+from .comments_and_suggestions_page import CommentsAndSuggestionsPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -57,4 +58,5 @@ rules_and_guidance_pages_to_initialize = [
     NoticesOfRuleAmendmentsPageInitializer,
     CaseProcedurePageInitializer,
     JCDPOrdersIssuedStartPageInitializer,
+    CommentsAndSuggestionsPageInitializer,
 ]
