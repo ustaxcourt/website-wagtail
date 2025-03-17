@@ -284,31 +284,41 @@ class DawsonPageInitializer(PageInitializer):
 
         for registration_std_page in all_new_std_pages["registration"]:
             RelatedPage.objects.create(
-                card=register_card, related_page=registration_std_page
+                display_title=registration_std_page.title,
+                card=register_card,
+                related_page=registration_std_page,
             )
         register_card.save()
 
         for petition_std_page in all_new_std_pages["petition"]:
             RelatedPage.objects.create(
-                card=petition_simple_card, related_page=petition_std_page
+                display_title=petition_std_page.title,
+                card=petition_simple_card,
+                related_page=petition_std_page,
             )
         petition_simple_card.save()
 
         for managing_case_std_page in all_new_std_pages["managing_case"]:
             RelatedPage.objects.create(
-                card=managing_case_card, related_page=managing_case_std_page
+                display_title=managing_case_std_page.title,
+                card=managing_case_card,
+                related_page=managing_case_std_page,
             )
         managing_case_card.save()
 
         for searching_case_std_page in all_new_std_pages["searching_case"]:
             RelatedPage.objects.create(
-                card=searching_case_card, related_page=searching_case_std_page
+                display_title=searching_case_std_page.title,
+                card=searching_case_card,
+                related_page=searching_case_std_page,
             )
         searching_case_card.save()
 
         for reference_materials_std_page in all_new_std_pages["reference_materials"]:
             RelatedPage.objects.create(
-                card=reference_materials_card, related_page=reference_materials_std_page
+                display_title=reference_materials_std_page.title,
+                card=reference_materials_card,
+                related_page=reference_materials_std_page,
             )
         reference_materials_card.save()
 

@@ -494,6 +494,11 @@ class RelatedPage(models.Model):
     card = ParentalKey(
         "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
+    display_title = models.CharField(
+        max_length=255,
+        help_text="Optional title to display in link",
+        blank=True,
+    )
     related_page = models.ForeignKey(
         "EnhancedStandardPage",
         null=True,
@@ -503,6 +508,7 @@ class RelatedPage(models.Model):
     )
 
     panels = [
+        FieldPanel("display_title"),
         PageChooserPanel("related_page"),
     ]
 
@@ -534,6 +540,13 @@ class SimpleCard(ClusterableModel):
         FieldPanel("card_icon"),
         InlinePanel("related_pages", label="Related Pages"),
     ]
+
+    def __str__(self):
+        return (
+            self.card_title
+            if self.card_title
+            else f"Simple Card {self.parent_page.group_label}"
+        )
 
 
 @register_snippet
