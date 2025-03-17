@@ -376,27 +376,7 @@
                         </table>
                     </div>
                 {% elif block.block_type == 'links' %}
-                    <ul class="links {{ block.value.class }}">
-                        {% for link in block.value.links %}
-                            {% if link.document %}
-                                <li>
-                                    <a href="{{ link.document.url }}"
-                                       data-testid="document-link"
-                                       title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
-                                </li>
-                            {% elif link.text_only %}
-                                <li>
-                                    <i class="{{ link.icon }}"></i> {{ link.title }}
-                                </li>
-                            {% else %}
-                                <li>
-                                    {% if link.url %}
-                                        <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
-                                    {% endif %}
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+                    {% include "home/links_block.html" with block=block %}
                 {% elif block.block_type == 'questionanswers' %}
                     <ul class="links indented">
                         {% for q in block.value %}
@@ -457,6 +437,8 @@
                                             <h3>{{ sub_block.value }}</h3>
                                         {% elif sub_block.block_type == 'clickableButton' %}
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
+                                        {% elif sub_block.block_type == 'links' %}
+                                            {% include "home/links_block.html" with block=sub_block %}
                                         {% else %}
                                             <p>Column type not recognized: {{ sub_block.block_type }}</p>
                                             {{ sub_block.value }}

@@ -1,0 +1,21 @@
+<ul class="links {{ block.value.class }}">
+    {% for link in block.value.links %}
+        {% if link.document %}
+            <li>
+                <a href="{{ link.document.url }}"
+                   data-testid="document-link"
+                   title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+            </li>
+        {% elif link.text_only %}
+            <li>
+                <i class="{{ link.icon }}"></i> {{ link.title }}
+            </li>
+        {% else %}
+            <li>
+                {% if link.url %}
+                    <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
