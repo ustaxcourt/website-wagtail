@@ -428,9 +428,6 @@ class EnhancedStandardPage(NavigationMixin, Page):
     )
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
-        FieldPanel("title_text"),
-        FieldPanel("description"),
-        FieldPanel("video_url"),
         FieldPanel("body"),
     ]
 
