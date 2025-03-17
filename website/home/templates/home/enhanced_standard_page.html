@@ -45,6 +45,14 @@
                 }
             }
 
+            .answer {
+                img {
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+            }
+
             .usa-button {
                 width: 95%;
                 margin-top: 0.5em;
@@ -282,7 +290,7 @@
                             </a>
                             <h3>{{ q.question }}</h3>
                         </div>
-                        <div>{{ q.answer|richtext }}</div>
+                        <div class="answer">{{ q.answer|richtext }}</div>
                         <hr />
                     {% endfor %}
                 {% elif block.block_type == "photo_dedication" %}

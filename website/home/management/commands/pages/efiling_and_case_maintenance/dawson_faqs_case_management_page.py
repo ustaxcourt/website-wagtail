@@ -1,7 +1,7 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon
-from home.models import EnhancedStandardPage, DawsonFaqsPageImage
+from home.models import EnhancedStandardPage
 from home.management.commands.snippets.dawson_faqs_ribbon import (
     dawson_faqs_ribbon_name,
 )
@@ -44,8 +44,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
             name=dawson_faqs_ribbon_name
         ).first()
 
-        uploaded_images = {}  # Store image URLs for template use
-        loaded_images = []
+        uploaded_images = {}  # Store image IDs and URLs for template use
 
         for image in dawson_faqs_case_management_images:
             image_uploaded = self.load_image_from_images_dir(
@@ -53,9 +52,10 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
             )
 
             if image_uploaded:
-                uploaded_images[image["filename"]] = image_uploaded.file.url
-
-                loaded_images.append(DawsonFaqsPageImage(image=image_uploaded))
+                uploaded_images[image["filename"]] = {
+                    "id": image_uploaded.id,
+                    "url": image_uploaded.file.url,
+                }
 
         questions = [
             {
@@ -132,7 +132,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                             There are a few options:
                                             <ul>
                                                 <li>Resave the file, ensuring that it opens without error in Adobe.</li>
-                                                <li>When saving the file, select “Print to PDF”.</li>
+                                                <li>When saving the file, select "Print to PDF".</li>
                                                 <li>Print the document and use a scanner to create and save a new PDF document.</li>
                                             </ul>
                                         </li>
@@ -141,7 +141,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                 <li>
                                     <strong>Error Message: Your firewall or network may be preventing submission.</strong>
                                     <ul>
-                                        <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network’s firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
+                                        <li>Try submitting again while on a different network/Wi-Fi. If you have success on a different network, you may need to have your network administrator adjust your network's firewall settings to allow document submissions to <a href="https://dawson.ustaxcourt.gov" data-original-title="" title="">https://dawson.ustaxcourt.gov</a>.</li>
                                     </ul>
                                 </li>
                                 <li>
@@ -161,46 +161,65 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                         </li>
                                     </ul>
                                 </li>
-
                             </ol>
-                            <ul style="list-style: none; text-align: center; ">
-                            <li>
-                            <embed embedtype="image" format="fullwidth" id="7" alt="image of the Dawson faqs case management secured" class="centered-embed"/>
-                            </li>
-                            </ul>
+
+                            <embed embedtype="image"
+                                id="{secured_image_id}"
+                                alt="image of the Dawson faqs case management secured"
+                                format="fullwidth" />
+
                             <ul>
-                                <li style="margin-left: 7rem;">
+                                <li>
                                     <strong>YES</strong> - Do ONE of the following steps below to create a new unsecured document file for your submission:
                                         <ol>
                                             <li>Create a new document file, and when signing it, decline Adobe's prompt to save a read-only copy by clicking "Cancel" on the screen when prompted. This will prevent Adobe from automatically applying security measures to the file.</li>
                                         </ol>
                                 </li>
                             </ul>
-                            <ul style="list-style: none; text-align: center; ">
-                            <li >
-                            <embed embedtype="image" format="fullwidth" id="8" alt="image of the Dawson faqs case management banner" style="display: block; margin: 0 auto; width: 80%;" />
-                            </li>
-                            <li>2. Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</li>
+
+
+                            <embed embedtype="image"
+                                id="{banner_image_id}"
+                                alt="image of the Dawson faqs case management banner"
+                                format="fullwidth" />
+
+                            <ul>
+                                <li>2. Print the document and scan it back in as a new document file. The new file will not have the security measures applied.</li>
                             </ul>
-                            <ul style="margin-left: 14rem;">
+
+                            <ul>
                                 <li >
                                 <strong>NO</strong> - If you do NOT see the above banner or "(SECURED)" in the document window, follow these steps.
                                 </li>
                             </ul>
 
-                            <ol style="margin-top: 0.2rem; margin-left: 14rem;">
+                            <ol>
                                 <li>Right-click in the document.</li>
                                 <li>Choose Document Properties from the options.</li>
                                 <li>Click on the Security tab.</li>
                                 <li>In the dropdown menu labeled Security Method, select "No Security".</li>
                                 <li>Click OK</li>
                             </ol>
-                            <ul style="list-style: none; text-align: center; ">
-                            <li >
-                            <embed embedtype="image" format="fullwidth" id="9" alt="image of the Dawson faqs case management document properties"/>
-                            </li>
-                            <li>6. Save the document. You should now be able to upload the document to DAWSON without error.</li>
-                            </ul>""",
+
+                            <embed
+                                embedtype="image"
+                                format="fullwidth"
+                                id="{document_properties_image_id}"
+                                alt="image of the Dawson faqs case management document properties"/>
+
+                            <ul>
+                                <li>6. Save the document. You should now be able to upload the document to DAWSON without error.</li>
+                            </ul>""".format(
+                    secured_image_id=uploaded_images[
+                        "dawson_faqs_case_management_secured.jpg"
+                    ]["id"],
+                    banner_image_id=uploaded_images[
+                        "dawson_faqs_case_management_banner.jpg"
+                    ]["id"],
+                    document_properties_image_id=uploaded_images[
+                        "dawson_faqs_case_management_doc_properties.jpg"
+                    ]["id"],
+                ),
                 "anchortag": "FAQS7",
             },
             {
@@ -213,7 +232,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                     <li>Parties may submit a high-resolution or PDF document bearing either imaged or digitized signatures in satisfaction of the requirements of Rule 23(a)(3), Tax Court Rules of Practice and Procedure.</li>
                                     <li>PDFs of documents bearing an actual signature are acceptable. (Print and sign before turning into a PDF.)</li>
                                     <li>Documents signed using an authentication program (e.g., Adobe or DocuSign) are acceptable. Be sure to remove encryption or password protection prior to uploading into DAWSON.</li>
-                                    <li>Stylized signatures (e.g., signing with “/s” or using cursive font) are only acceptable when paired with the DAWSON username (email address) and password or with authorization. See Rule 23(a)(3).</li>
+                                    <li>Stylized signatures (e.g., signing with "/" or using cursive font) are only acceptable when paired with the DAWSON username (email address) and password or with authorization. See Rule 23(a)(3).</li>
                                     <li>Stylized signatures on paper submitted forms are not acceptable.</li>
                                 </ul>
                             </li>
@@ -222,7 +241,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                 Documents that require a signature in addition to that of the eFiler, e.g., both spouses are petitioners:
                                 <ul>
                                     <li>Documents uploaded to DAWSON should be signed by the additional party, using the guidance above, before being uploaded.</li>
-                                    <li>If you chose to auto-generate a Petition in DAWSON and your spouse has authorized you to file an electronic petition, then the signature block on the petition auto-generated by DAWSON will serve as your spouse’s signature.</li>
+                                    <li>If you chose to auto-generate a Petition in DAWSON and your spouse has authorized you to file an electronic petition, then the signature block on the petition auto-generated by DAWSON will serve as your spouse's signature.</li>
                                 </ul>
                             </li>
                         </ul>
@@ -245,9 +264,6 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                 show_in_menus=False,
             )
         )
-
-        if loaded_images:
-            new_page.images = loaded_images
 
         new_page.save_revision().publish()
         self.logger.write(f"Created the '{title}' page.")

@@ -608,21 +608,6 @@ class DawsonPage(StandardPage):
     ]
 
 
-class DawsonFaqsPageImage(Orderable):
-    page = ParentalKey("DawsonPage", related_name="images", on_delete=models.CASCADE)
-    image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    panels = [
-        FieldPanel("image"),
-    ]
-
-
 class RedirectPage(StandardPage):
     content_panels = StandardPage.content_panels
 
