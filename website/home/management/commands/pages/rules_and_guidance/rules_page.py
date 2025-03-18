@@ -1660,7 +1660,7 @@ body = [
     {"type": "h3", "value": "Appendix"},
     {
         "type": "paragraph",
-        "value": 'The forms that comprise the appendix can also be found on the <a href="/case_related_forms">Case Related Forms</a> page.',
+        "value": 'The forms that comprise the appendix can also be found on the <a href="/case-related-forms">Case Related Forms</a> page.',
     },
     {
         "type": "links",

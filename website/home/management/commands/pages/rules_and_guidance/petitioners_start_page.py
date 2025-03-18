@@ -33,7 +33,7 @@ class PetitionersStartPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "petitioners_start"
+        slug = "petitioners-start"
         title = "Guidance for Petitioners: Starting A Case"
 
         if Page.objects.filter(slug=slug).exists():
@@ -108,7 +108,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "How do I decide whether to elect regular or small tax case procedures?",
-                "answer": 'The tax laws provide for small tax case procedures for resolving disputes between taxpayers and the IRS. To have your case tried as a small tax case procedure, you must qualify and choose to have small tax case procedures applied to your case and the Tax Court must agree with your choice. Generally, the Tax Court will agree with your request if you qualify. For more information, see the <strong><a href="/case_procedure" title="Case Procedure Information">Case Procedure Information</a></strong> page.',
+                "answer": 'The tax laws provide for small tax case procedures for resolving disputes between taxpayers and the IRS. To have your case tried as a small tax case procedure, you must qualify and choose to have small tax case procedures applied to your case and the Tax Court must agree with your choice. Generally, the Tax Court will agree with your request if you qualify. For more information, see the <strong><a href="/case-procedure" title="Case Procedure Information">Case Procedure Information</a></strong> page.',
                 "anchortag": "START12",
             },
             {
@@ -168,12 +168,12 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "Does it cost anything to file a petition?",
-                "answer": 'Yes. The filing fee is $60. You may pay by check, money order, or using Pay.gov.  <strong><a href="/pay_filing_fee" title="How to Pay the Filing Fee">See https://ustaxcourt.gov/pay_filing_fee</a></strong> for more information. ',
+                "answer": 'Yes. The filing fee is $60. You may pay by check, money order, or using Pay.gov.  <strong><a href="/pay-filing-fee" title="How to Pay the Filing Fee">See https://ustaxcourt.gov/pay-filing-fee</a></strong> for more information. ',
                 "anchortag": "START24",
             },
             {
                 "question": "How do I pay by check or money order?",
-                "answer": 'Checks and money orders should be made payable to "Clerk, United States Tax Court". Please review our check policy and additional information on our <a href="/fees_and_charges">fees and charges page</a>.',
+                "answer": 'Checks and money orders should be made payable to "Clerk, United States Tax Court". Please review our check policy and additional information on our <a href="/fees-and-charges">fees and charges page</a>.',
                 "anchortag": "START25",
             },
             {
@@ -193,7 +193,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "Should I send anything else to the Tax Court when I file my petition?",
-                "answer": f'Yes. You should also submit a <strong><a href="{petitioners_docs["Form_4_Statement_of_Taxpayer_Identification_Number.pdf"]}" target="_blank" title="Statement of Taxpayer Identification Number">Statement of Taxpayer Identification Number </a></strong>(Form 4) and a <strong><a href="{petitioners_docs["Form_5_Request_for_Place_of_Trial.pdf"]}" target="_blank" title="Request for Place of Trial">Request for Place of Trial</a></strong> (Form 5), which tells the Tax Court where you would like to have your trial held. Select from the list of <strong><a href="/dpt_cities" title="Places of Trial">cities</a></strong> in which the Tax Court holds trial sessions. <a href="https://www.ustaxcourt.gov/resources/images/city_map.gif" title="Places of trial map">A map displaying the cities in which the Tax Court holds trial sessions</a> is also available.',
+                "answer": f'Yes. You should also submit a <strong><a href="{petitioners_docs["Form_4_Statement_of_Taxpayer_Identification_Number.pdf"]}" target="_blank" title="Statement of Taxpayer Identification Number">Statement of Taxpayer Identification Number </a></strong>(Form 4) and a <strong><a href="{petitioners_docs["Form_5_Request_for_Place_of_Trial.pdf"]}" target="_blank" title="Request for Place of Trial">Request for Place of Trial</a></strong> (Form 5), which tells the Tax Court where you would like to have your trial held. Select from the list of <strong><a href="/dpt-cities" title="Places of Trial">cities</a></strong> in which the Tax Court holds trial sessions. <a href="https://www.ustaxcourt.gov/resources/images/city_map.gif" title="Places of trial map">A map displaying the cities in which the Tax Court holds trial sessions</a> is also available.',
                 "anchortag": "START29",
             },
             {
@@ -218,7 +218,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "How can I be sure that I have done everything correctly?",
-                "answer": f'A checklist for Filing a paper <strong><a href="{petitioners_docs["Petition_Kit.pdf"]}" target="_blank" title="Petition Kit">Petition</a></strong> is below. If you are eFiling a petition, see instead <strong><a href="/efile_a_petition" title="How to eFile a Petition">How to eFile a Petition</a></strong>.<br/><br/>Have I:<br/><br/><ul class="disc"><li>Printed my full name on the petition, signed the petition, and included my mailing address and telephone number?</li><li>If it is a joint petition, printed the name of my spouse and included my spouse\'s signature?</li><li>Included a check or money order for $60 made out to "Clerk, United States Tax Court"?</li><li>Filled in all information required on the petition form?</li><li>Completed the Statement of Taxpayer Identification Number (Form 4)?</li><li>Omitted or removed from the petition, from any enclosed notice of deficiency or notice of determination, and from any other document (other than Form 4) my Social Security number and certain other confidential personal and financial information as specified in the <strong><a href="{petitioners_docs["Privacy-_Notice.pdf"]}" target="_blank" title="Privacy Notice">Notice Regarding Privacy and Public Access to Case Files</a></strong>?</li><li>Completed Form 5 (Request for Place of Trial) to indicate where I want to have my trial held?</li><li>Placed in an envelope the (1) original signed petition, (2) Statement of Taxpayer Identification Number, (3) Request for Place of Trial, and (4) check or money order for $60 for mailing to: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217?</li><li>Either hand delivered the petition or mailed the petition using the U.S. Postal Service or a designated private delivery service and kept some evidence of the date I mailed the petition to the Tax Court (U.S. Postal Service postmarked certified or registered mail receipt or receipt from the designated private delivery service)?</li><li>Retained a copy of the petition for my records?</li></ul>The Court will send you a Notice of Receipt of Petition once your petition is received.',
+                "answer": f'A checklist for Filing a paper <strong><a href="{petitioners_docs["Petition_Kit.pdf"]}" target="_blank" title="Petition Kit">Petition</a></strong> is below. If you are eFiling a petition, see instead <strong><a href="/efile-a-petition" title="How to eFile a Petition">How to eFile a Petition</a></strong>.<br/><br/>Have I:<br/><br/><ul class="disc"><li>Printed my full name on the petition, signed the petition, and included my mailing address and telephone number?</li><li>If it is a joint petition, printed the name of my spouse and included my spouse\'s signature?</li><li>Included a check or money order for $60 made out to "Clerk, United States Tax Court"?</li><li>Filled in all information required on the petition form?</li><li>Completed the Statement of Taxpayer Identification Number (Form 4)?</li><li>Omitted or removed from the petition, from any enclosed notice of deficiency or notice of determination, and from any other document (other than Form 4) my Social Security number and certain other confidential personal and financial information as specified in the <strong><a href="{petitioners_docs["Privacy-_Notice.pdf"]}" target="_blank" title="Privacy Notice">Notice Regarding Privacy and Public Access to Case Files</a></strong>?</li><li>Completed Form 5 (Request for Place of Trial) to indicate where I want to have my trial held?</li><li>Placed in an envelope the (1) original signed petition, (2) Statement of Taxpayer Identification Number, (3) Request for Place of Trial, and (4) check or money order for $60 for mailing to: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217?</li><li>Either hand delivered the petition or mailed the petition using the U.S. Postal Service or a designated private delivery service and kept some evidence of the date I mailed the petition to the Tax Court (U.S. Postal Service postmarked certified or registered mail receipt or receipt from the designated private delivery service)?</li><li>Retained a copy of the petition for my records?</li></ul>The Court will send you a Notice of Receipt of Petition once your petition is received.',
                 "anchortag": "START34",
             },
             {
@@ -268,7 +268,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "Where do I send responses to motions?",
-                "answer": 'A response to a motion should be sent both to the Court and to respondent\'s counsel (and the other parties, if any, in the case). Attach a Certificate of Service to the copy you send to the Court. If you are filing a response to a motion electronically, see the <strong><a href="/dawson_user_guides" title="DAWSON User Guides">DAWSON User Guides</a></strong>.',
+                "answer": 'A response to a motion should be sent both to the Court and to respondent\'s counsel (and the other parties, if any, in the case). Attach a Certificate of Service to the copy you send to the Court. If you are filing a response to a motion electronically, see the <strong><a href="/dawson-user-guides" title="DAWSON User Guides">DAWSON User Guides</a></strong>.',
                 "anchortag": "START44",
             },
             {
@@ -288,7 +288,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "What if I move or change my address after I file a petition?",
-                "answer": f'You should file a <strong><a href="{petitioners_docs["NOCOA_Form_10.pdf"]}" target="_blank" title="Notice of Change of Address">Notice of Change of Address</a></strong> (Form 10) with the Tax Court. You should send a copy to the attorney representing the IRS. If you have moved to a new geographic area, you may want to change the place of trial to a city closer to your new address. If you want a different <strong><a href="/dpt_cities" title="Places of Trial">place of trial</a></strong>, you should send a Motion To Change Place of Trial to the Tax Court and send a copy to the IRS attorney. Please identify the city in which you now want your trial to be held.',
+                "answer": f'You should file a <strong><a href="{petitioners_docs["NOCOA_Form_10.pdf"]}" target="_blank" title="Notice of Change of Address">Notice of Change of Address</a></strong> (Form 10) with the Tax Court. You should send a copy to the attorney representing the IRS. If you have moved to a new geographic area, you may want to change the place of trial to a city closer to your new address. If you want a different <strong><a href="/dpt-cities" title="Places of Trial">place of trial</a></strong>, you should send a Motion To Change Place of Trial to the Tax Court and send a copy to the IRS attorney. Please identify the city in which you now want your trial to be held.',
                 "anchortag": "START48",
             },
         ]

@@ -2,7 +2,7 @@ const { checkA11y } = require("../../support/commands")
 
 describe('Transcripts & Copies Page', () => {
   it('displays correct content, has working links, and passes accessibility', () => {
-    cy.visit('/transcripts_and_copies')
+    cy.visit('/transcripts-and-copies')
     cy.get('h1').should('be.visible')
     checkA11y()
 

@@ -20,7 +20,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "dawson_faqs_account_management"
+        slug = "dawson-faqs-account-management"
         title = "Frequently Asked Questions About DAWSON"
 
         if Page.objects.filter(slug=slug).exists():
@@ -42,7 +42,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                 "question": "Who can register for a DAWSON account?",
                 "answer": """<ul>
                               <li>Only parties with active cases and practitioners admitted to the Tax Court Bar may register for a DAWSON account.</li>
-                              <li>Anyone can access the Court’s daily opinions, as well as orders search, through the Court’s website without a DAWSON account. See Searches and Public Access, below.</li>
+                              <li>Anyone can access the Court's daily opinions, as well as orders search, through the Court's website without a DAWSON account. See Searches and Public Access, below.</li>
                               </ul>""",
                 "anchortag": "FAQS1",
             },
@@ -93,21 +93,21 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
             },
             {
                 "question": "Can I reset my DAWSON password?",
-                "answer": """Yes. On the DAWSON log-in screen, click on “Forgot your password?” and follow the instructions to reset your password. For more information, see the <strong><a href="/dawson_user_guides" target="_blank" title="User Guides">User Guides</a></strong>.""",
+                "answer": """Yes. On the DAWSON log-in screen, click on "Forgot your password?" and follow the instructions to reset your password. For more information, see the <strong><a href="/dawson-user-guides" target="_blank" title="User Guides">User Guides</a></strong>.""",
                 "anchortag": "FAQS6",
             },
             {
                 "question": "How do I change my contact information?",
                 "answer": """<ul>
-                              <li>Practitioners can update their contact information by clicking on the “Person Icon” and then “My Account” in the upper right corner of the DAWSON screen.</li>
+                              <li>Practitioners can update their contact information by clicking on the "Person Icon" and then "My Account" in the upper right corner of the DAWSON screen.</li>
                                  <ul>
                                  <li>Changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
                                  <li>NOTE: IRS Practitioners should contact <strong><a href="mailto:admissions@ustaxcourt.gov" title="admissions@ustaxcourt.gov">admissions@ustaxcourt.gov</a></strong> for updates to contact information</li>
-                                 <li>Petitioners can update their email address by clicking on the “Person Icon” and then “My Account” in the upper right corner of the DAWSON screen.</li>
+                                 <li>Petitioners can update their email address by clicking on the "Person Icon" and then "My Account" in the upper right corner of the DAWSON screen.</li>
                                  <li>NOTE that changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
                                 </ul>
                                  <li>Petitioners can update their mailing address and phone number by updating the Case Information in each of their cases.</li>
-                                 <li>Please refer to the <strong><a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
+                                 <li>Please refer to the <strong><a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
                                  </ul>
                               </ul>""",
                 "anchortag": "FAQS7",

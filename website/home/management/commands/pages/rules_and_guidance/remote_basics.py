@@ -16,7 +16,7 @@ class RemoteBasicsPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "zoomgov_the_basics"
+        slug = "zoomgov-the-basics"
         title = "Zoomgov Proceedings"
 
         if Page.objects.filter(slug=slug).exists():

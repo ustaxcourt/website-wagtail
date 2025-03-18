@@ -16,7 +16,7 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "dawson_faqs_basics"
+        slug = "dawson-faqs-basics"
         title = "Frequently Asked Questions About DAWSON"
 
         page = Page.objects.filter(slug=slug).first()
@@ -41,7 +41,7 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
         questions = [
             {
                 "question": "What is DAWSON?",
-                "answer": "The U.S. Tax Court’s case management system, DAWSON (Docket Access Within a Secure Online Network), is an electronic filing and case management system designed to make it easier for parties and the Court to start a Tax Court case, file and process documents, and manage cases.",
+                "answer": "The U.S. Tax Court's case management system, DAWSON (Docket Access Within a Secure Online Network), is an electronic filing and case management system designed to make it easier for parties and the Court to start a Tax Court case, file and process documents, and manage cases.",
                 "anchortag": "FAQS1",
             },
             {
@@ -49,7 +49,7 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
                 "answer": """ <ul>
                               <li>Additional features and system enhancements to DAWSON will be rolled out on an ongoing basis.</li>
                               <li>The version of DAWSON launched on December 28, 2020, prioritized functionality necessary for parties to manage their cases and for the Court to operate efficiently.</li>
-                              <li>Check the Court’s website for up-to-date information, including release notes.</li>
+                              <li>Check the Court's website for up-to-date information, including release notes.</li>
                               </ul>""",
                 "anchortag": "FAQS2",
             },
@@ -64,7 +64,7 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
             },
             {
                 "question": "How do I access DAWSON?",
-                "answer": """DAWSON can be accessed from a computer, smartphone, or tablet by going to the Court’s
+                "answer": """DAWSON can be accessed from a computer, smartphone, or tablet by going to the Court's
                  <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">website</a></strong>
                   or to <strong><a href="https://dawson.ustaxcourt.gov" target="_blank" title="DAWSON">https://dawson.ustaxcourt.gov/</a></strong>.""",
                 "anchortag": "FAQS4",

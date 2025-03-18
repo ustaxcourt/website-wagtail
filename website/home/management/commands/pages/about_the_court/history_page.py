@@ -116,7 +116,7 @@ class HistoryPageInitializer(PageInitializer):
                         "value": """<h2>Judges</h2>
                                 <br>
                                 The Tax Court is composed of 19 presidentially appointed members. Trial sessions are conducted and other work of the Court is performed by those
-                                <strong><a href='/judges' title='Judges'>judges</a></strong>, by <strong><a href='/judges/#SENIOR' title='Senior Judges'>senior judges</a></strong> serving on recall, and by <strong><a href='/judges/#SPECIAL' title='Special Trial Judges'>special trial judges</a></strong>. Although the Court is physically located in Washington, D.C., <strong><a href='/judges' title='Judges'>the judges</a></strong> travel nationwide to conduct trials in various <strong><a href='/dpt_cities' title='Places of Trial'>designated places of trial</a></strong>.""",
+                                <strong><a href='/judges' title='Judges'>judges</a></strong>, by <strong><a href='/judges/#SENIOR' title='Senior Judges'>senior judges</a></strong> serving on recall, and by <strong><a href='/judges/#SPECIAL' title='Special Trial Judges'>special trial judges</a></strong>. Although the Court is physically located in Washington, D.C., <strong><a href='/judges' title='Judges'>the judges</a></strong> travel nationwide to conduct trials in various <strong><a href='/dpt-cities' title='Places of Trial'>designated places of trial</a></strong>.""",
                     },
                     {
                         "type": "paragraph",

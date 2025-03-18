@@ -17,7 +17,7 @@ class ClinicsCalendarCallPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "clinics_calendar_call"
+        slug = "clinics-calendar-call"
         title = "Clinics & Pro Bono Programs: Bar Sponsored Calendar Call Programs"
 
         if Page.objects.filter(slug=slug).exists():

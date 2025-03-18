@@ -13,7 +13,7 @@ class PetitionersDuringPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "petitioners_during"
+        slug = "petitioners-during"
         title = "Guidance for Petitioners: Things That Occur During Trial"
 
         if Page.objects.filter(slug=slug).exists():
@@ -54,7 +54,7 @@ class PetitionersDuringPageInitializer(PageInitializer):
             },
             {
                 "question": "What if I have difficulty speaking and understanding English?",
-                "answer": 'It is generally the responsibility of each petitioner to bring someone to court who can help in communicating in English with the Judge and the IRS attorney. In some cities, the Tax Court may have an interpreter available to help the Judge on the first day of the trial session. You should let the Judge and the IRS know as early as possible that you will require help with English. Sometimes the IRS will also have someone who can help.<br/><br/>See the related questions and answers in the "<strong><a href="/petitioners_start#START6" title="Starting A Case">Starting a Case</a></strong>" section.',
+                "answer": 'It is generally the responsibility of each petitioner to bring someone to court who can help in communicating in English with the Judge and the IRS attorney. In some cities, the Tax Court may have an interpreter available to help the Judge on the first day of the trial session. You should let the Judge and the IRS know as early as possible that you will require help with English. Sometimes the IRS will also have someone who can help.<br/><br/>See the related questions and answers in the "<strong><a href="/petitioners-start#START6" title="Starting A Case">Starting a Case</a></strong>" section.',
                 "anchortag": "DURING6",
             },
             {
@@ -74,7 +74,7 @@ class PetitionersDuringPageInitializer(PageInitializer):
             },
             {
                 "question": "Is there a stenographer or a recording of the trial?",
-                "answer": 'Yes. The Tax Court is a court of record. This means that everything that happens in court will be recorded. The Tax Court contracts with an independent reporting company who records the entire trial. Because the reporter recording the trial is not a Tax Court employee, you should not leave any documents with the reporter. You can obtain more information about the typewritten record of the trial (<strong><a href="/petitioners_after#AFTER7">Transcript</a></strong>) under the section "<strong><a href="/petitioners_after" title="After Trial">After Trial</a></strong>".',
+                "answer": 'Yes. The Tax Court is a court of record. This means that everything that happens in court will be recorded. The Tax Court contracts with an independent reporting company who records the entire trial. Because the reporter recording the trial is not a Tax Court employee, you should not leave any documents with the reporter. You can obtain more information about the typewritten record of the trial (<strong><a href="/petitioners-after#AFTER7">Transcript</a></strong>) under the section "<strong><a href="/petitioners-after" title="After Trial">After Trial</a></strong>".',
                 "anchortag": "DURING10",
             },
         ]

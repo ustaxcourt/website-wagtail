@@ -23,27 +23,27 @@ class DawsonFAQsRibbonInitializer:
             {
                 "title": "The Basics",
                 "icon": IconCategories.INFO_CIRCLE_FILLED,
-                "url": "/dawson_faqs_basics",
+                "url": "/dawson-faqs-basics",
             },
             {
                 "title": "Account Management",
                 "icon": IconCategories.SETTINGS,
-                "url": "/dawson_faqs_account_management",
+                "url": "/dawson-faqs-account-management",
             },
             {
                 "title": "Case Management",
                 "icon": IconCategories.BRIEFCASE,
-                "url": "/dawson_faqs_case_management",
+                "url": "/dawson-faqs-case-management",
             },
             {
                 "title": "Training and Support",
                 "icon": IconCategories.USER,
-                "url": "/dawson_faqs_training_and_support",
+                "url": "/dawson-faqs-training-and-support",
             },
             {
                 "title": "Search and Public Access",
                 "icon": IconCategories.SEARCH,
-                "url": "/dawson_faqs_searches_public_access",
+                "url": "/dawson-faqs-searches-public-access",
             },
         ]
 

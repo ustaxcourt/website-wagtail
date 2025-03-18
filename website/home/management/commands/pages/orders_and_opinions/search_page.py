@@ -14,7 +14,7 @@ class SearchPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "order_opinion_search"
+        slug = "order-opinion-search"
         title = "Order Opinions Search"
 
         if Page.objects.filter(slug=slug).exists():
