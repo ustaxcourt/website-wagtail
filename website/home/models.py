@@ -239,6 +239,11 @@ link_obj = blocks.ListBlock(
 class CommonBlock(blocks.StreamBlock):
     h2 = blocks.CharBlock(label="Heading 2")
     h3 = blocks.CharBlock(label="Heading 3")
+    hr = blocks.BooleanBlock(
+        label="Horizontal Rule",
+        default=True,
+        help_text="Add Horizontal Rule.",
+    )
     h2WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),

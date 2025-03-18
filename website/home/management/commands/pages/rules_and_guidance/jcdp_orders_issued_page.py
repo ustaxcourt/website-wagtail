@@ -143,6 +143,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                 "type": "h2",
                 "value": "Chief Judge:",
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2024",
@@ -153,6 +154,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2024_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2023",
@@ -163,6 +165,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2023_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2022",
@@ -173,6 +176,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2022_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2021",
@@ -183,6 +187,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2021_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2020",
@@ -193,6 +198,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2020_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2019",
@@ -203,6 +209,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2019_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2018",
@@ -213,6 +220,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                     "links": self.load_order_docs(chief_judge_2018_docs),
                 },
             },
+            {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2017",
@@ -225,7 +233,37 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
             },
         ]
 
-        council_column = []
+        council_column = [
+            {
+                "type": "h2",
+                "value": "Judicial Conduct and Disability Council:",
+            },
+            {"type": "hr", "value": True},
+            {
+                "type": "h3",
+                "value": "2024",
+            },
+            {"type": "hr", "value": True},
+            {
+                "type": "h3",
+                "value": "2020",
+            },
+            {"type": "hr", "value": True},
+            {
+                "type": "h3",
+                "value": "2019",
+            },
+            {"type": "hr", "value": True},
+            {
+                "type": "h3",
+                "value": "2018",
+            },
+            {"type": "hr", "value": True},
+            {
+                "type": "h3",
+                "value": "2017",
+            },
+        ]
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
