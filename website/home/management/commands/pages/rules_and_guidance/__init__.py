@@ -1,3 +1,4 @@
+from .case_procedure_page import CaseProcedurePageInitializer
 from .administrative_orders_page import AdministrativeOrdersPageInitializer
 from .clinics_pro_bono_page import ClinicsProBonoProgramsPageInitializer
 from .getting_ready_page import GettingReadyPageInitializer
@@ -15,6 +16,7 @@ from .zoomgov_proceedings_page import ZoomgovProceedingPageInitializer
 from .judicial_conduct_and_disability_procedures_page import (
     JudicialConductAndDisabilityProceduresPageInitializer,
 )
+from .jcdp_orders_issued_page import JCDPOrdersIssuedStartPageInitializer
 from .notices_of_rule_amendments_page import (
     NoticesOfRuleAmendmentsPageInitializer,
 )
@@ -26,6 +28,7 @@ from .clinics_academic_non_law_school_page import (
 from .clinics_nonacademic_page import ClinicsNonAcademicPageInitializer
 from .clinics_calendar_call_page import ClinicsCalendarCallPageInitializer
 from .clinics_chief_counsel_page import ClinicsChiefCounselPageInitializer
+from .comments_and_suggestions_page import CommentsAndSuggestionsPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -53,4 +56,7 @@ rules_and_guidance_pages_to_initialize = [
     ClinicsCalendarCallPageInitializer,
     ClinicsChiefCounselPageInitializer,
     NoticesOfRuleAmendmentsPageInitializer,
+    CaseProcedurePageInitializer,
+    JCDPOrdersIssuedStartPageInitializer,
+    CommentsAndSuggestionsPageInitializer,
 ]

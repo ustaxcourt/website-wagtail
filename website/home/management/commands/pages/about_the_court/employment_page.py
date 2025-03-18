@@ -42,7 +42,7 @@ class EmploymentPageInitializer(PageInitializer):
                                     "title": "Vacancy Announcements",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/vacancy_announcements",
+                                    "url": "/employment/vacancy_announcements",
                                 },
                                 {
                                     "title": "Internship Programs",
@@ -54,7 +54,7 @@ class EmploymentPageInitializer(PageInitializer):
                                     "title": "Law Clerk Program",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/law_clerk_program",
+                                    "url": "/employment/law_clerk_program",
                                 },
                             ],
                         },

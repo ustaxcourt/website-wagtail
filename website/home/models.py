@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.db import models
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
@@ -65,6 +66,7 @@ class IndentStyle(models.TextChoices):
 
 
 class IconCategories(models.TextChoices):
+    NONE = ("",)
     BOOK_2 = "ti ti-book-2"
     BUILDING_BANK = "ti ti-building-bank"
     CALENDAR_MONTH = "ti ti-calendar-month"
@@ -73,8 +75,9 @@ class IconCategories(models.TextChoices):
     HAMMER = "ti ti-hammer"
     INFO = "ti ti-info-circle"
     INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
+    CHECK = "ti ti-check"
     LINK = "ti ti-link"
-    NONE = ("",)
+    EXCLAMATION_MARK = "ti ti-exclamation-mark"
     PDF = "ti ti-file-type-pdf"
     SCALE = "ti ti-scale"
     USER = "ti ti-user-filled"
@@ -202,18 +205,76 @@ class PhotoDedicationBlock(blocks.StructBlock):
         label = "Photo Dedication"
 
 
+link_obj = blocks.ListBlock(
+    blocks.StructBlock(
+        [
+            ("title", blocks.CharBlock()),
+            (
+                "icon",
+                blocks.ChoiceBlock(
+                    choices=[
+                        (
+                            icon.value,
+                            icon.name.replace("_", " ").title(),
+                        )
+                        for icon in IconCategories
+                    ],
+                    required=False,
+                ),
+            ),
+            (
+                "document",
+                DocumentChooserBlock(required=False),
+            ),
+            ("url", blocks.CharBlock(required=False)),
+            (
+                "text_only",
+                blocks.BooleanBlock(required=False),
+            ),
+        ]
+    )
+)
+
+
 class CommonBlock(blocks.StreamBlock):
+    h2 = blocks.CharBlock(label="Heading 2")
+    h3 = blocks.CharBlock(label="Heading 3")
+    hr = blocks.BooleanBlock(
+        label="Horizontal Rule",
+        default=True,
+        help_text="Add Horizontal Rule.",
+    )
     h2WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
-        ]
+        ],
+        label="Heading 2 with Anchor Tag",
+        help_text="Heading 2 with optional anchor tag for linking",
     )
     clickableButton = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("url", blocks.CharBlock(required=False)),
-        ]
+        ],
+        label="Clickable Button",
+    )
+    links = blocks.StructBlock(
+        [
+            (
+                "class",
+                blocks.ChoiceBlock(
+                    choices=[
+                        ("indented", "Indented"),
+                        ("unindented", "Unindented"),
+                    ],
+                    default="indented",
+                ),
+            ),
+            # Reuse your link_obj here
+            ("links", link_obj),
+        ],
+        label="Links",
     )
 
 
@@ -281,7 +342,14 @@ class EnhancedStandardPage(NavigationMixin, Page):
                 ),
             ),
             ("image", ImageBlock()),
-            ("photo_dedication", PhotoDedicationBlock()),
+            (
+                "table",
+                TypedTableBlock(
+                    [
+                        ("text", blocks.RichTextBlock()),
+                    ]
+                ),
+            ),
             (
                 "links",
                 blocks.StructBlock(
@@ -296,40 +364,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
                                 default=IndentStyle.INDENTED,
                             ),
                         ),
-                        (
-                            "links",
-                            blocks.ListBlock(
-                                blocks.StructBlock(
-                                    [
-                                        ("title", blocks.CharBlock()),
-                                        (
-                                            "icon",
-                                            blocks.ChoiceBlock(
-                                                choices=[
-                                                    (
-                                                        icon.value,
-                                                        icon.name.replace(
-                                                            "_", " "
-                                                        ).title(),
-                                                    )
-                                                    for icon in IconCategories
-                                                ],
-                                                required=False,
-                                            ),
-                                        ),
-                                        (
-                                            "document",
-                                            DocumentChooserBlock(required=False),
-                                        ),
-                                        ("url", blocks.CharBlock(required=False)),
-                                        (
-                                            "text_only",
-                                            blocks.BooleanBlock(required=False),
-                                        ),
-                                    ]
-                                )
-                            ),
-                        ),
+                        ("links", link_obj),
                     ]
                 ),
             ),
@@ -342,7 +377,9 @@ class EnhancedStandardPage(NavigationMixin, Page):
                             ("answer", blocks.RichTextBlock()),
                             ("anchortag", blocks.CharBlock()),
                         ]
-                    )
+                    ),
+                    label="Question and Answer",
+                    help_text="Add a question and answer with anchor tag for linking",
                 ),
             ),
             ("columns", ColumnBlock()),
@@ -356,13 +393,46 @@ class EnhancedStandardPage(NavigationMixin, Page):
                     ]
                 ),
             ),
+            (
+                "card",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            (
+                                "icon",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        (
+                                            icon.value,
+                                            icon.name.replace("_", " ").title(),
+                                        )
+                                        for icon in IconCategories
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                            ("title", blocks.CharBlock(required=True)),
+                            ("description", blocks.RichTextBlock(required=True)),
+                            (
+                                "color",
+                                blocks.ChoiceBlock(
+                                    choices=[
+                                        ("green", "Green"),
+                                        ("yellow", "Yellow"),
+                                    ],
+                                    required=True,
+                                ),
+                            ),
+                        ],
+                        label="Card",
+                    ),
+                    label="Card Set",
+                ),
+            ),
         ]
     )
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
-        FieldPanel("title_text"),
-        FieldPanel("description"),
-        FieldPanel("video_url"),
         FieldPanel("body"),
     ]
 
@@ -448,8 +518,13 @@ class RelatedPage(models.Model):
     card = ParentalKey(
         "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
+    display_title = models.CharField(
+        max_length=255,
+        help_text="Optional title to display in link",
+        blank=True,
+    )
     related_page = models.ForeignKey(
-        "StandardPage",
+        "EnhancedStandardPage",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -457,6 +532,7 @@ class RelatedPage(models.Model):
     )
 
     panels = [
+        FieldPanel("display_title"),
         PageChooserPanel("related_page"),
     ]
 
@@ -488,6 +564,13 @@ class SimpleCard(ClusterableModel):
         FieldPanel("card_icon"),
         InlinePanel("related_pages", label="Related Pages"),
     ]
+
+    def __str__(self):
+        return (
+            self.card_title
+            if self.card_title
+            else f"Simple Card {self.parent_page.group_label}"
+        )
 
 
 @register_snippet
@@ -715,6 +798,14 @@ class VacancyEntry(Orderable):
         FieldPanel("closing_date"),
         FieldPanel("url"),
     ]
+
+    def clean(self):
+        super().clean()
+        # Check if closing_date is before today
+        if self.closing_date and self.closing_date < date.today():
+            raise ValidationError(
+                {"closing_date": "Closing date cannot be in the past."}
+            )
 
     class Meta:
         ordering = ["closing_date"]

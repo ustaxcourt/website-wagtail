@@ -1,51 +1,50 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
-
 {% block content %}
-<style>
-    #vacany-page {
-        min-height: 40vh;
+    <style>
+        #vacany-page {
+            min-height: 40vh;
 
-        .closing-date {
-            color: #b50909;
-            font-weight: bold;
+            .closing-date {
+                color: #b50909;
+                font-weight: bold;
+            }
         }
-    }
-</style>
-
-<div id="vacany-page" class="grid-container usa-prose margin-top-5">
-    <div class="content">
-        <h1 class="margin-bottom-3">{{ page.title }}</h1>
-        <hr />
-
-        {% if active_vacancies.all %}
-            <table class="usa-table usa-table--stacked usa-table--borderless width-full">
-                <thead>
-                    <tr>
-                        <th scope="col">Number</th>
-                        <th scope="col">Position & Title/Series/Grade</th>
-                        <th scope="col">Closing Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for vacancy in active_vacancies.all %}
+    </style>
+    <div id="vacany-page" class="grid-container usa-prose margin-top-5">
+        <div class="content">
+            <h1 class="margin-bottom-3">{{ page.title }}</h1>
+            <hr />
+            {% if active_vacancies.all %}
+                <table class="usa-table usa-table--stacked usa-table--borderless width-full">
+                    <thead>
                         <tr>
-                            <td data-label="Number">
-                                {% if vacancy.url %}
-                                    <a href="{{ vacancy.url }}" target="_blank" class="usa-link">{{ vacancy.number }}</a>
-                                {% else %}
-                                    {{ vacancy.number }}
-                                {% endif %}
-                            </td>
-                            <td data-label="Position">{{ vacancy.position_title }}</td>
-                            <td data-label="Closing Date"><span class="closing-date">{{ vacancy.closing_date|date:"F j, Y" }}</span></td>
+                            <th scope="col">Number</th>
+                            <th scope="col">Position & Title/Series/Grade</th>
+                            <th scope="col">Closing Date</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No Vacancy Announcements</p>
-        {% endif %}
+                    </thead>
+                    <tbody>
+                        {% for vacancy in active_vacancies.all %}
+                            <tr>
+                                <td data-label="Number">
+                                    {% if vacancy.url %}
+                                        <a href="{{ vacancy.url }}" target="_blank" class="usa-link">{{ vacancy.number }}</a>
+                                    {% else %}
+                                        {{ vacancy.number }}
+                                    {% endif %}
+                                </td>
+                                <td data-label="Position">{{ vacancy.position_title }}</td>
+                                <td data-label="Closing Date">
+                                    <span class="closing-date">{{ vacancy.closing_date|date:"F j, Y" }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No Vacancy Announcements</p>
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}
