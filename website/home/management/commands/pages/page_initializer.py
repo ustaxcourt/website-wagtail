@@ -21,10 +21,11 @@ class PageInitializer(ABC):
     def get_or_create_collection_with_login_restriction(
         self,
         collection_name: str,
+        restriction_type: str = "none",  # Add restriction_type parameter
     ) -> Collection:
         """
         Ensures a collection with the given name exists, and that it is restricted
-        to logged-in users. Returns the collection instance.
+        based on the restriction_type. Returns the collection instance.
         """
         # Get the root collection (top-level)
         root_collection = Collection.get_first_root_node()
@@ -38,22 +39,24 @@ class PageInitializer(ABC):
             # Create a new child collection under the root
             collection = root_collection.add_child(name=collection_name)
 
-        # Ensure it has a "login" restriction
-        # (i.e. "Private, accessible to any logged-in user")
+        # Ensure it has the specified restriction
+        if restriction_type is None:
+            restriction_type = "none"  # Set default restriction type if None
+
         restriction = CollectionViewRestriction.objects.filter(
-            collection=collection, restriction_type="login"
+            collection=collection, restriction_type=restriction_type
         )
         if not restriction.exists():
-            # If there's no existing "login" restriction, create one
+            # If there's no existing restriction, create one
             CollectionViewRestriction.objects.create(
                 collection=collection,
-                restriction_type="login",
+                restriction_type=restriction_type,
             )
 
         return collection
 
     def load_document_from_documents_dir(
-        self, subdirectory, filename, title=None, collection=None
+        self, subdirectory, filename, title=None, collection=None, restriction_type=None
     ):
         """
         Load a document from the documents directory and create a Wagtail Document instance.
@@ -91,7 +94,7 @@ class PageInitializer(ABC):
             return Document.objects.get(title=title)
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
-            collection
+            collection, restriction_type
         )
 
         with open(file_path, "rb") as doc_file:
