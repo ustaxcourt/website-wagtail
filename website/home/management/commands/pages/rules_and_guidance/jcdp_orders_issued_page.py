@@ -267,25 +267,55 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                 "type": "h3",
                 "value": "2024",
             },
+            {
+                "type": "links",
+                "value": {
+                    "links": self.load_order_docs(council_2024_docs),
+                },
+            },
             {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2020",
+            },
+            {
+                "type": "links",
+                "value": {
+                    "links": self.load_order_docs(council_2020_docs),
+                },
             },
             {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2019",
             },
+            {
+                "type": "links",
+                "value": {
+                    "links": self.load_order_docs(council_2019_docs),
+                },
+            },
             {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2018",
             },
+            {
+                "type": "links",
+                "value": {
+                    "links": self.load_order_docs(council_2018_docs),
+                },
+            },
             {"type": "hr", "value": True},
             {
                 "type": "h3",
                 "value": "2017",
+            },
+            {
+                "type": "links",
+                "value": {
+                    "links": self.load_order_docs(council_2017_docs),
+                },
             },
         ]
 
