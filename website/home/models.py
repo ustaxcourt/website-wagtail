@@ -205,18 +205,76 @@ class PhotoDedicationBlock(blocks.StructBlock):
         label = "Photo Dedication"
 
 
+link_obj = blocks.ListBlock(
+    blocks.StructBlock(
+        [
+            ("title", blocks.CharBlock()),
+            (
+                "icon",
+                blocks.ChoiceBlock(
+                    choices=[
+                        (
+                            icon.value,
+                            icon.name.replace("_", " ").title(),
+                        )
+                        for icon in IconCategories
+                    ],
+                    required=False,
+                ),
+            ),
+            (
+                "document",
+                DocumentChooserBlock(required=False),
+            ),
+            ("url", blocks.CharBlock(required=False)),
+            (
+                "text_only",
+                blocks.BooleanBlock(required=False),
+            ),
+        ]
+    )
+)
+
+
 class CommonBlock(blocks.StreamBlock):
+    h2 = blocks.CharBlock(label="Heading 2")
+    h3 = blocks.CharBlock(label="Heading 3")
+    hr = blocks.BooleanBlock(
+        label="Horizontal Rule",
+        default=True,
+        help_text="Add Horizontal Rule.",
+    )
     h2WithAnchorTag = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
-        ]
+        ],
+        label="Heading 2 with Anchor Tag",
+        help_text="Heading 2 with optional anchor tag for linking",
     )
     clickableButton = blocks.StructBlock(
         [
             ("text", blocks.CharBlock()),
             ("url", blocks.CharBlock(required=False)),
-        ]
+        ],
+        label="Clickable Button",
+    )
+    links = blocks.StructBlock(
+        [
+            (
+                "class",
+                blocks.ChoiceBlock(
+                    choices=[
+                        ("indented", "Indented"),
+                        ("unindented", "Unindented"),
+                    ],
+                    default="indented",
+                ),
+            ),
+            # Reuse your link_obj here
+            ("links", link_obj),
+        ],
+        label="Links",
     )
 
 
@@ -306,40 +364,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
                                 default=IndentStyle.INDENTED,
                             ),
                         ),
-                        (
-                            "links",
-                            blocks.ListBlock(
-                                blocks.StructBlock(
-                                    [
-                                        ("title", blocks.CharBlock()),
-                                        (
-                                            "icon",
-                                            blocks.ChoiceBlock(
-                                                choices=[
-                                                    (
-                                                        icon.value,
-                                                        icon.name.replace(
-                                                            "_", " "
-                                                        ).title(),
-                                                    )
-                                                    for icon in IconCategories
-                                                ],
-                                                required=False,
-                                            ),
-                                        ),
-                                        (
-                                            "document",
-                                            DocumentChooserBlock(required=False),
-                                        ),
-                                        ("url", blocks.CharBlock(required=False)),
-                                        (
-                                            "text_only",
-                                            blocks.BooleanBlock(required=False),
-                                        ),
-                                    ]
-                                )
-                            ),
-                        ),
+                        ("links", link_obj),
                     ]
                 ),
             ),
@@ -352,7 +377,9 @@ class EnhancedStandardPage(NavigationMixin, Page):
                             ("answer", blocks.RichTextBlock()),
                             ("anchortag", blocks.CharBlock()),
                         ]
-                    )
+                    ),
+                    label="Question and Answer",
+                    help_text="Add a question and answer with anchor tag for linking",
                 ),
             ),
             ("columns", ColumnBlock()),
@@ -491,8 +518,13 @@ class RelatedPage(models.Model):
     card = ParentalKey(
         "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
+    display_title = models.CharField(
+        max_length=255,
+        help_text="Optional title to display in link",
+        blank=True,
+    )
     related_page = models.ForeignKey(
-        "StandardPage",
+        "EnhancedStandardPage",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -500,6 +532,7 @@ class RelatedPage(models.Model):
     )
 
     panels = [
+        FieldPanel("display_title"),
         PageChooserPanel("related_page"),
     ]
 
@@ -531,6 +564,13 @@ class SimpleCard(ClusterableModel):
         FieldPanel("card_icon"),
         InlinePanel("related_pages", label="Related Pages"),
     ]
+
+    def __str__(self):
+        return (
+            self.card_title
+            if self.card_title
+            else f"Simple Card {self.parent_page.group_label}"
+        )
 
 
 @register_snippet
