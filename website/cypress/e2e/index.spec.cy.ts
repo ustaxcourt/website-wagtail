@@ -37,6 +37,6 @@ describe('index page', () => {
       .should('be.visible')
       .click();
 
-    cy.url().should('include', '/case_related_forms/')
+    cy.url().should('include', '/case-related-forms/')
   })
 })
