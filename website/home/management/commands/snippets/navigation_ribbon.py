@@ -28,32 +28,32 @@ class NavigationRibbonInitializer:
             {
                 "title": "About the Court",
                 "icon": IconCategories.BUILDING_BANK,
-                "url": "/petitioners_about",
+                "url": "/petitioners-about",
             },
             {
                 "title": "Starting A Case",
                 "icon": IconCategories.FILE,
-                "url": "/petitioners_start",
+                "url": "/petitioners-start",
             },
             {
                 "title": "Things That Occur Before Trial",
                 "icon": IconCategories.CALENDAR_MONTH,
-                "url": "/petitioners_before",
+                "url": "/petitioners-before",
             },
             {
                 "title": "Things That Occur During Trial",
                 "icon": IconCategories.HAMMER,
-                "url": "/petitioners_during",
+                "url": "/petitioners-during",
             },
             {
                 "title": "Things That Occur After Trial",
                 "icon": IconCategories.SCALE,
-                "url": "/petitioners_after",
+                "url": "/petitioners-after",
             },
             {
                 "title": "Glossary",
                 "icon": IconCategories.BOOK_2,
-                "url": "/petitioners_glossary",
+                "url": "/petitioners-glossary",
             },
         ]
 

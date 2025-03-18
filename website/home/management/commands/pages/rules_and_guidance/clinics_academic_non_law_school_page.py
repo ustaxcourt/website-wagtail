@@ -18,7 +18,7 @@ class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "clinics_academic_non_law_school"
+        slug = "clinics-academic-non-law-school"
         title = (
             "Clinics & Pro Bono Programs: Academic Clinical Programs (Non Law School)"
         )

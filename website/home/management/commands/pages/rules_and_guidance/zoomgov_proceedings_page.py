@@ -18,7 +18,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "zoomgov_zoomgov_proceedings"
+        slug = "zoomgov-zoomgov-proceedings"
         title = "Zoomgov Proceedings"
 
         if Page.objects.filter(slug=slug).exists():

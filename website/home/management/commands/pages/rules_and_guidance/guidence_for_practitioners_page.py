@@ -86,7 +86,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                                     "title": "Case Procedure Information",
                                     "icon": IconCategories.LINK,
                                     "document": None,
-                                    "url": "/case_procedure",
+                                    "url": "/case-procedure",
                                 },
                             ],
                         },
@@ -264,7 +264,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": """For additional disciplinary action, refer to previous <a href="/press_releases" title="Press Releases">Press Releases</a>.""",
+                        "value": """For additional disciplinary action, refer to previous <a href="/press-releases" title="Press Releases">Press Releases</a>.""",
                     },
                     {"type": "hr", "value": True},
                     {"type": "h2", "value": "Limited Entries of Appearance"},

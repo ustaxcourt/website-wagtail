@@ -18,7 +18,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "dawson_faqs_searches_public_access"
+        slug = "dawson-faqs-searches-public-access"
         title = "Frequently Asked Questions About DAWSON"
 
         if Page.objects.filter(slug=slug).exists():
@@ -36,7 +36,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
                 "question": "What search functionality does DAWSON have?",
                 "answer": """<ul>
             <li>The ability to search for cases by first, last, or full name or docket number is available.</li>
-            <li>The ability to search by part of a name (e.g., entering “Ron” for Ronald) is expected to be available in the future.</li>
+            <li>The ability to search by part of a name (e.g., entering "Ron" for Ronald) is expected to be available in the future.</li>
             <li>The ability to search for orders by keyword or phrase, docket number, case title/petitioner name, judge, or date is available in DAWSON.</li>
             <li>The ability to search for opinions by keyword or phrase, docket number, case title/petitioner name, judge, type of opinion, or date is available in DAWSON.</li>
             <li>The ability to search for practitioners by name or U.S. Tax Court bar number.</li>
@@ -46,7 +46,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
             {
                 "question": "Where do I find the opinions released today?",
                 "answer": """<ul>
-            <li>Opinions will be posted to the Court’s website on days they are released. See <strong><a href="https://dawson.ustaxcourt.gov/todays-opinions" title="Today’s Opinions">Today’s Opinions.</a></strong></li>
+            <li>Opinions will be posted to the Court's website on days they are released. See <strong><a href="https://dawson.ustaxcourt.gov/todays-opinions" title="Today's Opinions">Today's Opinions.</a></strong></li>
             <li>Cases consolidated for trial, briefing, and opinion will show the opinions listed separately by each docket number.</li>
             </ul>""",
                 "anchortag": "START2",
@@ -54,9 +54,9 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
             {
                 "question": "Where do I find the orders released today?",
                 "answer": """<ul>
-            <li>Orders will be posted to the Court’s website on days they are released. See <strong><a href="https://dawson.ustaxcourt.gov/todays-orders" title="Today’s Orders">Today’s Orders</a></strong>.</li>
+            <li>Orders will be posted to the Court's website on days they are released. See <strong><a href="https://dawson.ustaxcourt.gov/todays-orders" title="Today's Orders">Today's Orders</a></strong>.</li>
             <li>All orders issued by the Court on a particular day will be made available as they are served.</li>
-            <li>The “Today’s Orders” listing will be populated with the most recent orders at the top.</li>
+            <li>The "Today's Orders" listing will be populated with the most recent orders at the top.</li>
             </ul>""",
                 "anchortag": "START3",
             },

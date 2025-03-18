@@ -14,7 +14,7 @@ class TodaysOrdersPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "todays_orders"
+        slug = "todays-orders"
         title = "Todays Orders"
 
         if Page.objects.filter(slug=slug).exists():

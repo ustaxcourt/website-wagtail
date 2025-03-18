@@ -6,7 +6,7 @@ from home.models import EnhancedStandardPage
 class FillInFormsInstructionsPageInitializer(PageInitializer):
     def __init__(self, logger):
         super().__init__(logger)
-        self.slug = "forms_instructions"
+        self.slug = "forms-instructions"
 
     def create(self):
         try:

@@ -2,7 +2,7 @@ import {checkA11y, checkHeaderOrder, checkHeaderStyles} from "../../support/comm
 
 describe('Case Related Forms Page', () => {
     it('Verify the documents are displayed, clickable, and check accessibility & header consistency', function () {
-        cy.visit('/case_related_forms/');
+        cy.visit('/case-related-forms/');
 
         checkA11y();
         checkHeaderOrder();

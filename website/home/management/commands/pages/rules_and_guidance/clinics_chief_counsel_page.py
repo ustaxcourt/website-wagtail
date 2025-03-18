@@ -17,7 +17,7 @@ class ClinicsChiefCounselPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "clinics_chief_counsel"
+        slug = "clinics-chief-counsel"
         title = "Clinics & Pro Bono Programs: Office of Chief Counsel Student Practice Program"
 
         if Page.objects.filter(slug=slug).exists():

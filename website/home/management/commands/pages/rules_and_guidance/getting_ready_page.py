@@ -15,7 +15,7 @@ class GettingReadyPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "zoomgov_getting_ready"
+        slug = "zoomgov-getting-ready"
         title = "Zoomgov Proceedings"
 
         if Page.objects.filter(slug=slug).exists():

@@ -97,19 +97,19 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                                     "title": "The Basics",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/zoomgov_the_basics",
+                                    "url": "/zoomgov-the-basics",
                                 },
                                 {
                                     "title": "Getting Ready",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/zoomgov_getting_ready",
+                                    "url": "/zoomgov-getting-ready",
                                 },
                                 {
                                     "title": "Zoomgov Proceedings",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/zoomgov_zoomgov_proceedings",
+                                    "url": "/zoomgov-zoomgov-proceedings",
                                 },
                             ],
                         },
@@ -237,70 +237,5 @@ class RemoteProceedingsPageInitializer(PageInitializer):
             menu_item_name="REMOTE PROCEEDINGS",
             navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
         )
-
-        # links = [
-        #     {
-        #         "title": "The Basics",
-        #         "link": "https://ustaxcourt.gov/zoomgov_the_basics.html",
-        #     },
-        #     {
-        #         "title": "Getting Ready",
-        #         "link": "https://ustaxcourt.gov/zoomgov_getting_ready.html",
-        #     },
-        #     {
-        #         "title": "Zoomgov Proceedings",
-        #         "link": "https://ustaxcourt.gov/zoomgov_zoomgov_proceedings.html",
-        #     },
-        # ]
-
-        # for link in links:
-        #     entry = RemoteProceedingsFAQLinks(
-        #         link=link["link"],
-        #         title=link["title"],
-        #         parentpage=new_page,
-        #     )
-        #     entry.save()
-
-        # examples = [
-        #     {
-        #         "title": "Pre-Calendar Call: Trial Clerk Recognizes Participants",
-        #         "speaker_title": "Pre-Calendar Call (Speaker View)",
-        #         "speaker_url": "https://www.zoomgov.com/rec/play/7pJ-JuCurzg3HNaR5gSDAv4rW429Lq-s0Hcb8_YKy0myUiFRY1LwNbYQMefqMqaX-dQY9AnaOUhUsr2z",
-        #         "gallery_title": "Pre-Calendar Call (Gallery View)",
-        #         "gallery_url": "https://www.zoomgov.com/rec/play/ucIkJeCoqTg3E9bH5QSDUaJxW9W8Lvms1yIX-KEOy0vgV3lWMVWhNLZHMOQBvv_6k5lqDN-gJndD3J78",
-        #     },
-        #     {
-        #         "title": "Clinic Breakout Room: Clinics Arrange Assistance for a Self-represented Taxpayer",
-        #         "speaker_title": "Clinic Breakout Room (Speaker View)",
-        #         "speaker_url": "https://www.zoomgov.com/rec/play/6ccoceD6_W03GoWX5gSDAfV9W465fKusg3BP__pfnRq0VCEDO1avNLESYOAbTabklbv0yiWi66n5kSov",
-        #         "gallery_title": "Clinic Breakout Room (Gallery View)",
-        #         "gallery_url": "https://www.zoomgov.com/rec/play/vJZ4cLyhqTM3E9yW4wSDCvEsW43sLams0XNMr_RZnUfnV3NWOwWuMrYQNOGlcdk8kfHJoxKiMQj7Tpnh",
-        #     },
-        #     {
-        #         "title": "Calendar Call: Judge Calls the Calendar and Schedules Trials",
-        #         "speaker_title": "Calendar Call (Speaker View)",
-        #         "speaker_url": "https://www.zoomgov.com/rec/play/7MZ_Ib39-Gg3GtHG4QSDB_IrW9W9LqOs0iBIrPcJmEixBXQHO1aibrYRYeb8-AOwY7azVe501K-jLlNW",
-        #         "gallery_title": "Calendar Call (Gallery View)",
-        #         "gallery_url": "https://www.zoomgov.com/rec/play/6cd-Juz9rW83SdyV5gSDB6UoW469K_is0yVM8vIMnh3hVXFXNgKvbrdANOuhsffnej1FlzyLFf5yXorg",
-        #     },
-        #     {
-        #         "title": "Trial: Judge Conducts a Trial",
-        #         "speaker_title": "Trial (Speaker View)",
-        #         "speaker_url": "https://www.zoomgov.com/rec/play/vJ15Iu37rDI3SNWRsASDVqQsW9W4f6qshykW_6ENmUy8BXgDNVT3Y-cUNOtJy1Csd5uM_q_l1h92qJyk",
-        #         "gallery_title": "Trial (Gallery View)",
-        #         "gallery_url": "https://www.zoomgov.com/rec/play/vZV_c-us-DM3E9zGuQSDU6UtW466fK-s1SJPr6AMyUrmWiYBZ1unZ-RAJhhPJ3q-2_gTftw65Yr0Lg",
-        #     },
-        # ]
-
-        # for example in examples:
-        #     entry = RemoteProceedingsExample(
-        #         title=example["title"],
-        #         speaker_title=example["speaker_title"],
-        #         speaker_url=example["speaker_url"],
-        #         gallery_title=example["gallery_title"],
-        #         gallery_url=example["gallery_url"],
-        #         parentpage=new_page,
-        #     )
-        #     entry.save()
 
         self.logger.write(f"Successfully created the '{title}' page.")

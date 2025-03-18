@@ -25,17 +25,17 @@ class ZoomgovProceedingRibbonInitializer:
             {
                 "title": "The Basics FAQs",
                 "icon": IconCategories.INFO_CIRCLE_FILLED,
-                "url": "/zoomgov_the_basics",
+                "url": "/zoomgov-the-basics",
             },
             {
                 "title": "Getting Ready FAQs",
                 "icon": IconCategories.USER,
-                "url": "/zoomgov_getting_ready",
+                "url": "/zoomgov-getting-ready",
             },
             {
                 "title": "Zoomgov Proceedings FAQs",
                 "icon": IconCategories.VIDEO,
-                "url": "/zoomgov_zoomgov_proceedings",
+                "url": "/zoomgov-zoomgov-proceedings",
             },
         ]
 

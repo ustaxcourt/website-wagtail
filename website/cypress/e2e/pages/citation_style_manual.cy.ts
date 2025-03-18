@@ -2,7 +2,7 @@ import {checkA11y, checkHeaderOrder, checkHeaderStyles} from "../../support/comm
 
 describe('citation style manual page', () => {
   beforeEach(() => {
-    cy.visit('/citation_and_style_manual/')
+    cy.visit('/citation-and-style-manual/')
   })
 
   it('verify page content and document is downloadable  and check accessibility & header consistency', () => {

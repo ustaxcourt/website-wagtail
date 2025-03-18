@@ -29,7 +29,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "petitioners_glossary"
+        slug = "petitioners-glossary"
         title = "Guidance for Petitioners: Glossary"
 
         if Page.objects.filter(slug=slug).exists():
@@ -259,7 +259,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Regular Tax Case",
-                "answer": "A case in which the taxpayer elects not to be heard under the Small Tax Case procedures. The differences between a regular tax case and small tax case are described in the <a href='/petitioners_start#START12'>Guidance for Petitioners</a> section of the Tax Court Web site and in the informational packet available from the Court.",
+                "answer": "A case in which the taxpayer elects not to be heard under the Small Tax Case procedures. The differences between a regular tax case and small tax case are described in the <a href='/petitioners-start#START12'>Guidance for Petitioners</a> section of the Tax Court Web site and in the informational packet available from the Court.",
                 "anchortag": "REGULAR_TAX_CASE",
             },
             {
@@ -284,7 +284,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Small Tax Case (S Case)",
-                "answer": "An “S” case is heard under less formal procedures and there is no right of appeal. Cases may not exceed certain monetary thresholds (generally $50,000 per year in issue) in order to be heard as a small tax case. For more information, please refer to the <a href='/petitioners_start#START12'>Guidance for Petitioners</a> section of the Tax Court Website.",
+                "answer": "An “S” case is heard under less formal procedures and there is no right of appeal. Cases may not exceed certain monetary thresholds (generally $50,000 per year in issue) in order to be heard as a small tax case. For more information, please refer to the <a href='/petitioners-start#START12'>Guidance for Petitioners</a> section of the Tax Court Website.",
                 "anchortag": "SMALL_TAX_CASE",
             },
             {
