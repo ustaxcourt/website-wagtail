@@ -19,11 +19,20 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
         slug = "dawson_faqs_basics"
         title = "Frequently Asked Questions About DAWSON"
 
-        if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
-            return
-
-        self.logger.write(f"Creating the '{title}' page.")
+        page = Page.objects.filter(slug=slug).first()
+        if page:
+            self.logger.write(f"- {title} page already exists. Updating...")
+            page = page.specific
+        else:
+            self.logger.write(f"Creating the '{title}' page.")
+            page = EnhancedStandardPage(
+                title=title,
+                slug=slug,
+                seo_title=title,
+                search_description="DAWSON: The Basics",
+                show_in_menus=False,
+            )
+            home_page.add_child(instance=page)
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name=dawson_faqs_ribbon_name
@@ -77,19 +86,13 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
             },
         ]
 
-        new_page = home_page.add_child(
-            instance=EnhancedStandardPage(
-                title=title,
-                slug=slug,
-                seo_title=title,
-                navigation_ribbon=navigation_ribbon,
-                search_description="DAWSON: The Basics",
-                body=[
-                    {"type": "h2", "value": "DAWSON: The Basics"},
-                    {"type": "questionanswers", "value": questions},
-                ],
-                show_in_menus=False,
-            )
-        )
-        new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        page.title = title
+        page.seo_title = title
+        page.navigation_ribbon = navigation_ribbon
+        page.search_description = "DAWSON: The Basics"
+        page.body = [
+            {"type": "h2", "value": "DAWSON: The Basics"},
+            {"type": "questionanswers", "value": questions},
+        ]
+        page.save_revision().publish()
+        self.logger.write(f"Updated the '{title}' page.")
