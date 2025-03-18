@@ -435,6 +435,8 @@
                                             <h2>{{ sub_block.value}}</h2>
                                         {% elif sub_block.block_type == 'h3' %}
                                             <h3>{{ sub_block.value }}</h3>
+                                        {% elif sub_block.block_type ==  'hr' %}
+                                            <hr />
                                         {% elif sub_block.block_type == 'clickableButton' %}
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                                         {% elif sub_block.block_type == 'links' %}
