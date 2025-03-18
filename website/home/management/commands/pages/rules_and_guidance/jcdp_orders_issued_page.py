@@ -71,8 +71,8 @@ chief_judge_2017_docs = [
 ]
 
 council_2024_docs = [
-    {"title": "08/16/2024 - TC-24-90001-1", "document": "TC-24-90001-1.pdf"},
-    {"title": "08/16/2024 - TC-24-90001-2", "document": "TC-24-90001-2.pdf"},
+    {"title": "08/16/2024 - TC-24-90001-1", "document": "TC-24-90001-JCDC-1.pdf"},
+    {"title": "08/16/2024 - TC-24-90001-2", "document": "TC-24-90001-JCDC-2.pdf"},
 ]
 
 council_2020_docs = [
@@ -80,22 +80,46 @@ council_2020_docs = [
 ]
 
 council_2019_docs = [
-    {"title": "12/18/2019 - TC-17-90014", "document": "TC-17-90014.pdf"},
-    {"title": "07/02/2019 - TC-17-90002", "document": "TC-17-90002.pdf"},
+    {"title": "12/18/2019 - TC-17-90014", "document": "TC-19-90003.pdf"},
+    {"title": "07/02/2019 - TC-17-90002", "document": "TC-19-90003.pdf"},
 ]
 
 council_2018_docs = [
-    {"title": "12/17/2018 - TC-18-90001", "document": "TC-18-90001.pdf"},
-    {"title": "08/06/2018 - TC-17-90005", "document": "TC-17-90005.pdf"},
-    {"title": "08/06/2018 - TC-17-90006", "document": "TC-17-90006.pdf"},
-    {"title": "08/06/2018 - TC-17-90011", "document": "TC-17-90011.pdf"},
-    {"title": "08/06/2018 - TC-17-90015", "document": "TC-17-90015.pdf"},
+    {
+        "title": "12/17/2018 - TC-18-90001",
+        "document": "TC-18-90001_2018-12.17_Council_Order.pdf",
+    },
+    {
+        "title": "08/06/2018 - TC-17-90005",
+        "document": "TC-17-90005_2018-08.06_Council_Order.pdf",
+    },
+    {
+        "title": "08/06/2018 - TC-17-90006",
+        "document": "TC-17-90006_2018-08.06_Council_Order.pdf",
+    },
+    {
+        "title": "08/06/2018 - TC-17-90011",
+        "document": "TC-17-90011_2018-08.06_Council_Order.pdf",
+    },
+    {
+        "title": "08/06/2018 - TC-17-90015",
+        "document": "TC-17-90015_2018-08.06_Council_Order.pdf",
+    },
 ]
 
 council_2017_docs = [
-    {"title": "08/17/2017 - TC-16-90002", "document": "TC-16-90002.pdf"},
-    {"title": "08/17/2017 - TC-16-90003", "document": "TC-16-90003.pdf"},
-    {"title": "08/17/2017 - TC-17-90003", "document": "TC-17-90003.pdf"},
+    {
+        "title": "08/17/2017 - TC-16-90002",
+        "document": "TC-16-90002_2017-08-16_Council-Order.pdf",
+    },
+    {
+        "title": "08/17/2017 - TC-16-90003",
+        "document": "TC-16-90003_2017-08-16_Council-Order.pdf",
+    },
+    {
+        "title": "08/17/2017 - TC-17-90003",
+        "document": "TC-17-90003_2017-08-16_Council_Order.pdf",
+    },
 ]
 
 
