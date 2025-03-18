@@ -153,7 +153,7 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
         return info_links
 
     def create_page_info(self, home_page):
-        slug = "jcdp_orders_issued"
+        slug = "jcdp-orders-issued"
         title = "Orders Issued in Judicial Conduct and Disability Cases"
 
         if Page.objects.filter(slug=slug).exists():
