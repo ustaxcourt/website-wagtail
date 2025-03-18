@@ -51,7 +51,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                         "value": {
                             "links": [
                                 {
-                                    "title": "Final Amendments adopted to the Rules of Practice and Procedure on August 8, 2024",
+                                    "title": "DAWSON Public Training Guide",
                                     "icon": IconCategories.PDF,
                                     "document": docs[
                                         "DAWSON_Public_Training_Guide.pdf"
@@ -59,7 +59,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
-                                    "title": "Final Amendments adopted to the Rules of Practice and Procedure on March 20, 2023",
+                                    "title": "DAWSON Self-Represented (Pro Se) Training Guide",
                                     "icon": IconCategories.PDF,
                                     "document": docs[
                                         "DAWSON_Petitioner_Training_Guide.pdf"
@@ -67,7 +67,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
-                                    "title": "Final Amendments adopted to the Rules of Practice and Procedure on October 6, 2020",
+                                    "title": "DAWSON Practitioner Training Guide",
                                     "icon": IconCategories.PDF,
                                     "document": docs[
                                         "DAWSON_Practitioner_Training_Guide.pdf"
@@ -75,7 +75,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
-                                    "title": "Final Amendments adopted to the Rules of Practice and Procedure on January 15, 2020",
+                                    "title": "DAWSON Training Video",
                                     "icon": IconCategories.VIDEO,
                                     "document": docs[
                                         "GMT20201013-122947_Jessica-Ma_1600x900.mp4"
@@ -83,7 +83,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
-                                    "title": "Final Amendments adopted to the Rules of Practice and Procedure on July 15, 2019",
+                                    "title": "DAWSON Training: Simultaneously eFile Documents in Consolidated Cases",
                                     "icon": IconCategories.VIDEO,
                                     "document": docs[
                                         "efiling_in_consolidated_cases.mp4"
