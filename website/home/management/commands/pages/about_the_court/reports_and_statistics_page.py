@@ -646,6 +646,6 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
         )
 
         EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="Reports & Statistics",
+            menu_item_name="REPORTS & STATISTICS",
             navigation_category=NavigationCategories.ABOUT_THE_COURT,
         )
