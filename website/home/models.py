@@ -21,6 +21,7 @@ from wagtail import blocks
 from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.blocks import PageChooserBlock
 
 
 @register_setting
@@ -812,3 +813,56 @@ class VacancyEntry(Orderable):
 
     def is_active(self):
         return self.closing_date >= date.today()
+
+
+class SubNavigationLinkBlock(blocks.StructBlock):
+    """Represents a sub-navigation link that can point to internal or external pages"""
+
+    title = blocks.CharBlock(
+        required=True, help_text="Display text for the navigation link"
+    )
+    page = PageChooserBlock(required=False, help_text="Select a page to link to")
+    external_url = blocks.URLBlock(required=False, help_text="Or enter an external URL")
+
+    class Meta:
+        icon = "link"
+
+
+@register_setting
+class NavigationMenu(BaseGenericSetting):
+    """Represents the main navigation menu structure"""
+
+    menu_items = StreamField(
+        [
+            (
+                "section",
+                blocks.StructBlock(
+                    [
+                        (
+                            "title",
+                            blocks.CharBlock(
+                                required=True, help_text="Top level navigation title"
+                            ),
+                        ),
+                        (
+                            "key",
+                            blocks.CharBlock(
+                                required=True,
+                                help_text="Unique identifier for this section",
+                            ),
+                        ),
+                        ("sub_links", blocks.ListBlock(SubNavigationLinkBlock())),
+                    ]
+                ),
+            )
+        ],
+        use_json_field=True,
+        blank=True,
+    )
+
+    panels = [
+        FieldPanel("menu_items"),
+    ]
+
+    class Meta:
+        verbose_name = "Navigation Menu"
