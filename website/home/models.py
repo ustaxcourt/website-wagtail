@@ -531,7 +531,9 @@ class JudgeIndexPage(RoutablePageMixin, Page):
 
         # Render using a different template
         return self.render(
-            request, context_overrides=context, template="enhanced_standard_page.html"
+            request,
+            context_overrides=context,
+            template="home/enhanced_standard_page.html",
         )
 
 
