@@ -22,7 +22,7 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "dawson_faqs_training_and_support"
+        slug = "dawson-faqs-training-and-support"
         title = "Frequently Asked Questions About DAWSON"
 
         if Page.objects.filter(slug=slug).exists():
