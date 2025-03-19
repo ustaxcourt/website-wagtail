@@ -538,6 +538,50 @@ class RelatedPage(models.Model):
 
 
 @register_snippet
+class JudgeProfile(models.Model):
+    first_name = models.CharField(max_length=255)
+    middle_initial = models.CharField(max_length=3, blank=True)
+    last_name = models.CharField(max_length=255)
+    suffix = models.CharField(max_length=3, blank=True)
+    display_name = models.CharField(
+        max_length=255,
+        help_text="Full name to display (e.g., 'John A. Smith')",
+        blank=True,
+    )
+    title = models.CharField(
+        max_length=255,
+        choices=[
+            ("Judge", "Judge"),
+            ("Senior Judge", "Senior Judge"),
+            ("Special Trial Judge", "Special Trial Judge"),
+        ],
+    )
+
+    bio = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel("first_name"),
+        FieldPanel("middle_initial"),
+        FieldPanel("last_name"),
+        FieldPanel("suffix"),
+        FieldPanel("display_name"),
+        FieldPanel("title"),
+        FieldPanel("bio"),
+    ]
+
+    def save(self, *args, **kwargs):
+        # Only generate a default if display_name is blank
+        if not self.display_name.strip():
+            parts = [self.first_name, self.middle_initial, self.last_name, self.suffix]
+            # Filter out empty parts and join them with spaces
+            self.display_name = " ".join(part for part in parts if part)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.display_name
+
+
+@register_snippet
 class SimpleCard(ClusterableModel):
     """A Simple Card that contains optional title, icon, and related pages."""
 
