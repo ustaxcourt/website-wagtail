@@ -258,7 +258,6 @@ class CaseProcedurePageInitializer(PageInitializer):
                         "value": "Yes. You may request a case procedure change before the trial of your case begins. The Tax Court has 15 more trial locations for small cases than for regular cases so a new trial location may need to be selected if your case changes from small to regular.",
                     },
                 ],
-                show_in_menus=False,
             )
         )
 

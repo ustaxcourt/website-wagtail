@@ -3,7 +3,6 @@ from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import (
     IconCategories,
     IndentStyle,
-    NavigationCategories,
     EnhancedStandardPage,
 )
 
@@ -75,13 +74,12 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                 }
             )
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
                 seo_title=title,
                 search_description="Resources about the Court's Zoomgov remote proceedings",
-                show_in_menus=True,
                 body=[
                     {
                         "type": "paragraph",
@@ -231,11 +229,6 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                     },
                 ],
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="REMOTE PROCEEDINGS",
-            navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
         )
 
         self.logger.write(f"Successfully created the '{title}' page.")

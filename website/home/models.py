@@ -88,52 +88,7 @@ class IconCategories(models.TextChoices):
     SEARCH = "ti ti-search"
 
 
-class NavigationMixin(Page):
-    class Meta:
-        abstract = True
-
-    no_index = models.BooleanField(default=False)
-
-    navigation_category = models.TextField(
-        max_length=45,
-        choices=NavigationCategories.choices,
-        default=NavigationCategories.NONE,
-    )
-
-    redirectLink = models.CharField(
-        blank=True, help_text="Insert link here.", max_length=250
-    )
-
-    menu_item_name = models.CharField(
-        max_length=255,
-        default="*NOT SET*",
-        help_text="Enter the name of the page for the navigation bar link.",
-    )
-
-    promote_panels = Page.promote_panels + [
-        FieldPanel("navigation_category", widget=forms.Select),
-        FieldPanel("menu_item_name"),
-        FieldPanel("redirectLink"),
-    ]
-
-    def clean(self):
-        # Ensure 'search_description' is not empty
-        super().clean()
-        if not self.search_description:
-            raise ValidationError({"search_description": "This field cannot be blank."})
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        navigation_sections = [
-            {"title": label.upper(), "key": value}
-            for value, label in NavigationCategories.choices
-            if value != NavigationCategories.NONE
-        ]
-        context["navigation_sections"] = navigation_sections
-        return context
-
-
-class StandardPage(NavigationMixin):
+class StandardPage(Page):
     class Meta:
         abstract = False
 
@@ -283,7 +238,7 @@ class ColumnBlock(blocks.StructBlock):
     column = blocks.ListBlock(CommonBlock())
 
 
-class EnhancedStandardPage(NavigationMixin, Page):
+class EnhancedStandardPage(Page):
     class Meta:
         abstract = False
 
@@ -438,7 +393,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
     ]
 
 
-class HomePage(NavigationMixin):
+class HomePage(Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
     content_panels = Page.content_panels + [
@@ -508,7 +463,7 @@ class CaseRelatedFormsEntry(models.Model):
     ]
 
 
-class ExternalRedirectPage(NavigationMixin):
+class ExternalRedirectPage(Page):
     class Meta:
         abstract = False
 

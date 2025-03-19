@@ -116,7 +116,6 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 search_description=title,
-                show_in_menus=False,
                 body=[
                     {
                         "type": "h2",

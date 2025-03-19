@@ -4,7 +4,6 @@ from home.models import (
     CaseRelatedFormsEntry,
 )
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories
 
 forms_data = [
     {
@@ -224,20 +223,14 @@ class CaseRelatedFormPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=CaseRelatedFormsPage(
                 title=title,
                 body='Forms can be filled in and printed directly from <a href="https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html" target="_blank">Adobe Acrobat Reader</a> 3.0 or later. For assistance, see the <a href="/forms-instructions">Fill-in Forms Instructions</a>.',
                 slug=slug,
                 seo_title=title,
                 search_description="Case Related Forms",
-                show_in_menus=True,
             )
-        )
-
-        CaseRelatedFormsPage.objects.filter(id=new_page.id).update(
-            menu_item_name="CASE RELATED FORMS",
-            navigation_category=NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
         )
 
         self.logger.write(f"Successfully created the '{title}' page.")

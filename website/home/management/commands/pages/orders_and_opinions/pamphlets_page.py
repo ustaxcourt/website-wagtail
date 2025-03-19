@@ -1,5 +1,5 @@
 from wagtail.models import Page
-from home.models import PamphletsPage, PamphletEntry, NavigationCategories
+from home.models import PamphletsPage, PamphletEntry
 from home.management.commands.pages.page_initializer import PageInitializer
 from django.contrib.contenttypes.models import ContentType
 
@@ -169,15 +169,9 @@ class PamphletsPageInitializer(PageInitializer):
                 body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner, 159 T.C. 33 (2022)</i></blockquote>",
                 slug=self.slug,
                 seo_title="Tax Court Reports Pamphlets",
-                show_in_menus=True,
                 content_type=content_type,
                 search_description="Tax Court Reports Pamphlets",
             )
-        )
-
-        PamphletsPage.objects.filter(id=new_page.id).update(
-            menu_item_name="TAX COURT REPORTS: PAMPHLETS",
-            navigation_category=NavigationCategories.ORDERS_AND_OPINIONS,
         )
 
         self.logger.write(f"Successfully created the '{title}' page.")
