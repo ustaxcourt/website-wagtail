@@ -48,7 +48,7 @@ class EmploymentPageInitializer(PageInitializer):
                                     "title": "Internship Programs",
                                     "icon": IconCategories.CHEVRON_RIGHT,
                                     "document": None,
-                                    "url": "/internship-programs",
+                                    "url": "/employment/internship-programs",
                                 },
                                 {
                                     "title": "Law Clerk Program",

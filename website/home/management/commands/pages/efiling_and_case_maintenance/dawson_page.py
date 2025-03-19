@@ -148,7 +148,7 @@ class DawsonPageInitializer(PageInitializer):
                     "title": "FAQs",
                     "slug": "dawson-faqs-basics",
                     "show_in_menus": False,
-                    "path": "dawson_faqs_basics",
+                    "path": "dawson-faqs-basics",
                     "depth": 4,
                     "search_description": "FAQs",
                 },
