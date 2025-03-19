@@ -157,6 +157,11 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                         },
                     },
                     {"type": "hr", "value": True},
+                    {
+                        "type": "h2",
+                        "value": "Appellate Reports",
+                    },
+                    {"type": "h3", "value": "2025"},
                 ],
                 show_in_menus=True,
             )
