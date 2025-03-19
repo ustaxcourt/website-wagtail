@@ -159,9 +159,13 @@ class NavigationInitializer(PageInitializer):
         ]
 
     def create(self):
-        # Delete existing navigation menu if it exists
-        NavigationMenu.objects.all().delete()
+        # Create a single navigation menu
+        menu = NavigationMenu.objects.create(
+            name="Main Navigation", menu_items=self.get_default_menu_items()
+        )
 
-        # Create fresh navigation menu with default items
-        NavigationMenu.objects.create(menu_items=self.get_default_menu_items())
-        self.logger.write("Successfully created Navigation menu settings.")
+        # Create an initial revision and publish it
+        revision = menu.save_revision()
+        revision.publish()
+
+        self.logger.write("Successfully created Navigation menu.")

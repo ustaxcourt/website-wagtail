@@ -316,8 +316,15 @@
             <i class="ti ti-menu-2"></i>
         </button>
         <ul class="navigation">
-            {% with nav=settings.home.NavigationMenu %}
+            {% get_navigation_menu as nav %}
+            {% if not nav %}
+                <div style="display:none">No navigation menu found</div>
+            {% else %}
+                {% if not nav.menu_items %}
+                    <div style="display:none">Menu exists but no items</div>
+                {% endif %}
                 {% for section in nav.menu_items %}
+                    <div style="display:none">Section: {{ section.value.title }}</div>
                     <li class="navigation-header">
                         <button aria-expanded="false"
                                 class="link"
@@ -331,6 +338,7 @@
                         <ul class="navigation-list"
                             data-testid="nav-list-{{ section.value.title|slugify }}">
                             {% for sub_link in section.value.sub_links %}
+                                <div style="display:none">Sublink: {{ sub_link.title }}</div>
                                 <li class="nav-link">
                                     {% if sub_link.external_url %}
                                         <a target="_blank"
@@ -339,7 +347,7 @@
                                             <i class="ti ti-chevron-right"></i>
                                             {{ sub_link.title }}
                                         </a>
-                                    {% else %}
+                                    {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
                                             <i class="ti ti-chevron-right"></i>
@@ -351,7 +359,7 @@
                         </ul>
                     </li>
                 {% endfor %}
-            {% endwith %}
+            {% endif %}
         </ul>
     </div>
 </header>

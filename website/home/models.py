@@ -22,6 +22,8 @@ from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.blocks import PageChooserBlock
+from django.contrib.contenttypes.fields import GenericRelation
+from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
 
 
 @register_setting
@@ -783,9 +785,14 @@ class SubNavigationLinkBlock(blocks.StructBlock):
         icon = "link"
 
 
-@register_setting
-class NavigationMenu(BaseGenericSetting):
-    """Represents the main navigation menu structure"""
+@register_snippet
+class NavigationMenu(DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel):
+    name = models.CharField(
+        max_length=255,
+        help_text="Name this menu for reference (e.g. 'Main Navigation')",
+        unique=True,
+        default="Main Navigation",
+    )
 
     menu_items = StreamField(
         [
@@ -815,9 +822,28 @@ class NavigationMenu(BaseGenericSetting):
         blank=True,
     )
 
+    # Required for RevisionMixin
+    _revisions = GenericRelation(
+        "wagtailcore.Revision", related_query_name="navigation_menu"
+    )
+
     panels = [
+        FieldPanel("name"),
         FieldPanel("menu_items"),
     ]
 
+    @property
+    def revisions(self):
+        return self._revisions
+
     class Meta:
         verbose_name = "Navigation Menu"
+        verbose_name_plural = "Navigation Menus"
+
+    def __str__(self):
+        status = "draft" if not self.live else "live"
+        return f"{self.name} ({status})"
+
+    @classmethod
+    def get_active_menu(cls):
+        return cls.objects.filter(live=True).first()
