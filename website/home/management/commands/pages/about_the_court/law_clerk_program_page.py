@@ -17,7 +17,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
             )
             return
 
-        slug = "law_clerk_program"
+        slug = "law-clerk-program"
         title = "Law Clerk Program"
 
         if Page.objects.filter(slug=slug).exists():
