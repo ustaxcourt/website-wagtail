@@ -22,6 +22,10 @@ from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from django.shortcuts import get_object_or_404
+from django.http import Http404
+
 
 @register_setting
 class Footer(BaseGenericSetting):
@@ -437,6 +441,100 @@ class EnhancedStandardPage(NavigationMixin, Page):
     ]
 
 
+@register_snippet
+class JudgeProfile(models.Model):
+    first_name = models.CharField(max_length=255)
+    middle_initial = models.CharField(max_length=3, blank=True)
+    last_name = models.CharField(max_length=255)
+    suffix = models.CharField(max_length=3, blank=True)
+    display_name = models.CharField(
+        max_length=255,
+        help_text="Optional full name to display (e.g., 'John A. Smith')",
+        blank=True,
+    )
+    title = models.CharField(
+        max_length=255,
+        choices=[
+            ("Judge", "Judge"),
+            ("Senior Judge", "Senior Judge"),
+            ("Special Trial Judge", "Special Trial Judge"),
+        ],
+    )
+
+    bio = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel("first_name"),
+        FieldPanel("middle_initial"),
+        FieldPanel("last_name"),
+        FieldPanel("suffix"),
+        FieldPanel("display_name"),
+        FieldPanel("title"),
+        FieldPanel("bio"),
+    ]
+
+    def save(self, *args, **kwargs):
+        # Only generate a default if display_name is blank
+        if not self.display_name.strip():
+            parts = [self.first_name, self.middle_initial, self.last_name, self.suffix]
+            # Filter out empty parts and join them with spaces
+            self.display_name = " ".join(part for part in parts if part)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.display_name
+
+
+class JudgeIndexPage(RoutablePageMixin, Page):
+    """
+    A container page that holds all profile information and handles
+    the routing for individual profile display
+    """
+
+    # Remove the proxy = True setting
+    # Remove the intro field as it conflicts with the proxy model setup
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        # Add all profiles to the context
+        context["profiles"] = JudgeProfile.objects.all()
+        return context
+
+    @route(r"^$")
+    def all_profiles(self, request):
+        """
+        Main view that lists all profiles
+        """
+        return self.render(request)
+
+    @route(r"^(?P<profile_name>[\w-]+)/$")
+    def profile_detail(self, request, profile_name):
+        """
+        View that displays a single profile by name
+        Example: /profiles/adam/
+        """
+        try:
+            # Try to find the profile by name (case insensitive)
+            profile = get_object_or_404(JudgeProfile, last_name__iexact=profile_name)
+        except Http404:
+            # If not found by exact match, try partial match
+            profiles = JudgeProfile.objects.filter(last_name__icontains=profile_name)
+            if profiles.count() == 1:
+                profile = profiles.first()
+            else:
+                raise Http404("Profile not found")
+
+        # Add the profile to the context
+        context = self.get_context(request)
+        context["profile"] = profile
+        context["page_title"] = profile.last_name
+
+        # Render using a different template
+        return self.render(
+            request, context_overrides=context, template="enhanced_standard_page.html"
+        )
+
+
 class HomePage(NavigationMixin):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
@@ -535,50 +633,6 @@ class RelatedPage(models.Model):
         FieldPanel("display_title"),
         PageChooserPanel("related_page"),
     ]
-
-
-@register_snippet
-class JudgeProfile(models.Model):
-    first_name = models.CharField(max_length=255)
-    middle_initial = models.CharField(max_length=3, blank=True)
-    last_name = models.CharField(max_length=255)
-    suffix = models.CharField(max_length=3, blank=True)
-    display_name = models.CharField(
-        max_length=255,
-        help_text="Full name to display (e.g., 'John A. Smith')",
-        blank=True,
-    )
-    title = models.CharField(
-        max_length=255,
-        choices=[
-            ("Judge", "Judge"),
-            ("Senior Judge", "Senior Judge"),
-            ("Special Trial Judge", "Special Trial Judge"),
-        ],
-    )
-
-    bio = RichTextField(blank=True)
-
-    panels = [
-        FieldPanel("first_name"),
-        FieldPanel("middle_initial"),
-        FieldPanel("last_name"),
-        FieldPanel("suffix"),
-        FieldPanel("display_name"),
-        FieldPanel("title"),
-        FieldPanel("bio"),
-    ]
-
-    def save(self, *args, **kwargs):
-        # Only generate a default if display_name is blank
-        if not self.display_name.strip():
-            parts = [self.first_name, self.middle_initial, self.last_name, self.suffix]
-            # Filter out empty parts and join them with spaces
-            self.display_name = " ".join(part for part in parts if part)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.display_name
 
 
 @register_snippet
