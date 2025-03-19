@@ -13,7 +13,7 @@ class TranscriptsAndCopiesPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "transcripts_and_copies"
+        slug = "transcripts-and-copies"
         title = "Transcripts & Copies"
 
         if Page.objects.filter(slug=slug).exists():

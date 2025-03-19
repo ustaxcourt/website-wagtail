@@ -32,7 +32,7 @@ class DawsonPageInitializer(PageInitializer):
 
         body_content = (
             "DAWSON (Docket Access Within a Secure Online Network) is the U.S. Tax Court's electronic filing and "
-            'case management system. See the <a href="https://ustaxcourt.gov/dawson_user_guides.html">user guides</a> '
+            'case management system. See the <a href="https://ustaxcourt.gov/dawson-user-guides.html">user guides</a> '
             "for more information and instructions.<br/><br/> Technical questions about DAWSON? Please contact "
             '<a href="mailto:dawson.support@ustaxcourt.gov">dawson.support@ustaxcourt.gov</a>. No documents can be '
             "filed with the Court at this email address. Any documents received via email will NOT be filed in your case."
@@ -76,25 +76,25 @@ class DawsonPageInitializer(PageInitializer):
             "petition": [
                 {
                     "title": "How to eFile a Petition",
-                    "slug": "efile_a_petition",
+                    "slug": "efile-a-petition",
                     "show_in_menus": False,
-                    "path": "efile_a_petition",
+                    "path": "efile-a-petition",
                     "depth": 4,
                     "search_description": "How to eFile a Petition",
                 },
                 {
                     "title": "How to Pay the Filing Fee",
-                    "slug": "pay_filing_fee",
+                    "slug": "pay-filing-fee",
                     "show_in_menus": False,
-                    "path": "pay_filing_fee",
+                    "path": "pay-filing-fee",
                     "depth": 4,
                     "search_description": "How to Pay the Filing Fee",
                 },
                 {
                     "title": "How to Merge PDFs",
-                    "slug": "merging_files",
+                    "slug": "merging-files",
                     "show_in_menus": False,
-                    "path": "merge-pdfs",
+                    "path": "merging-files",
                     "depth": 4,
                     "search_description": "How to Merge PDFs",
                 },
@@ -110,9 +110,9 @@ class DawsonPageInitializer(PageInitializer):
                 },
                 {
                     "title": "How to Update Your Contact Information",
-                    "slug": "update_contact_information",
+                    "slug": "update-contact-information",
                     "show_in_menus": False,
-                    "path": "update_contact_information",
+                    "path": "update-contact-information",
                     "depth": 4,
                     "search_description": "How to Update Your Contact Information",
                 },
@@ -120,25 +120,25 @@ class DawsonPageInitializer(PageInitializer):
             "searching_case": [
                 {
                     "title": "How to Search for a Case",
-                    "slug": "find_a_case",
+                    "slug": "find-a-case",
                     "show_in_menus": False,
-                    "path": "find_a_case",
+                    "path": "find-a-case",
                     "depth": 4,
                     "search_description": "How to Search for a Case",
                 },
                 {
                     "title": "How to Search for an Order",
-                    "slug": "find_an_order",
+                    "slug": "find-an-order",
                     "show_in_menus": False,
-                    "path": "find_an_order",
+                    "path": "find-an-order",
                     "depth": 4,
                     "search_description": "How to Search for an Order",
                 },
                 {
                     "title": "How to Search for an Opinion",
-                    "slug": "find_an_opinion",
+                    "slug": "find-an-opinion",
                     "show_in_menus": False,
-                    "path": "find_an_opinion",
+                    "path": "find-an-opinion",
                     "depth": 4,
                     "search_description": "How to Search for an Opinion",
                 },
@@ -146,7 +146,7 @@ class DawsonPageInitializer(PageInitializer):
             "reference_materials": [
                 {
                     "title": "FAQs",
-                    "slug": "dawson_faqs_basics",
+                    "slug": "dawson-faqs-basics",
                     "show_in_menus": False,
                     "path": "dawson_faqs_basics",
                     "depth": 4,
@@ -154,9 +154,9 @@ class DawsonPageInitializer(PageInitializer):
                 },
                 {
                     "title": "Terms of Use",
-                    "slug": "dawson_tou",
+                    "slug": "dawson-tou",
                     "show_in_menus": False,
-                    "path": "dawson_tou",
+                    "path": "dawson-tou",
                     "depth": 4,
                     "search_description": "Terms of Use",
                 },
@@ -170,39 +170,39 @@ class DawsonPageInitializer(PageInitializer):
                 },
                 {
                     "title": "What Documents Can Be eFiled",
-                    "slug": "documents_eligible_for_efiling",
+                    "slug": "documents-eligible-for-efiling",
                     "show_in_menus": False,
-                    "path": "documents_eligible_for_efiling",
+                    "path": "documents-eligible-for-efiling",
                     "depth": 4,
                     "search_description": "What Documents Can Be eFiled",
                 },
                 {
                     "title": "Privacy and Public Access to Case Files",
-                    "slug": "notice_regarding_privacy",
+                    "slug": "notice-regarding-privacy",
                     "show_in_menus": False,
-                    "path": "notice_regarding_privacy",
+                    "path": "notice-regarding-privacy",
                     "depth": 4,
                     "search_description": "Privacy and Public Access to Case Files",
                 },
                 {
                     "title": "Release Notes",
-                    "slug": "release_notes",
+                    "slug": "release-notes",
                     "show_in_menus": False,
-                    "path": "release_notes",
+                    "path": "release-notes",
                     "depth": 4,
                     "search_description": "Release Notes",
                 },
                 {
                     "title": "User Guides",
-                    "slug": "dawson_user_guides",
+                    "slug": "dawson-user-guides",
                     "show_in_menus": False,
-                    "path": "dawson_user_guides",
+                    "path": "dawson-user-guides",
                     "depth": 4,
                     "search_description": "User Guides",
                 },
                 {
                     "title": "DAWSON Status",
-                    "slug": "dawson_status",
+                    "slug": "dawson-status",
                     "show_in_menus": False,
                     "path": "https://status.ustaxcourt.gov/",
                     "depth": 4,
@@ -212,7 +212,7 @@ class DawsonPageInitializer(PageInitializer):
             "registration": [
                 {
                     "title": "Petitioner Registration",
-                    "slug": "dawson_petitioner_registration",
+                    "slug": "dawson-petitioner-registration",
                     "show_in_menus": False,
                     "path": "https://app.dawson.ustaxcourt.gov/create-account/petitioner",
                     "depth": 4,
@@ -220,9 +220,9 @@ class DawsonPageInitializer(PageInitializer):
                 },
                 {
                     "title": "Practitioner Registration",
-                    "slug": "dawson_account_practitioner",
+                    "slug": "dawson-account-practitioner",
                     "show_in_menus": False,
-                    "path": "dawson_account_practitioner",
+                    "path": "dawson-account-practitioner",
                     "depth": 4,
                     "search_description": "Practitioner Registration",
                 },

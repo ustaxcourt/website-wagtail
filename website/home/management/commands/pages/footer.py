@@ -17,7 +17,7 @@ class FooterInitializer(PageInitializer):
             Footer.objects.create(
                 technicalQuestions=(
                     "For assistance with DAWSON, view the FAQs and other materials "
-                    '<a href="https://www.ustaxcourt.gov/faqs" target="_blank">here</a>. '
+                    '<a href="/faqs" target="_blank">here</a>. '
                     "To contact the Webmaster for technical issues or problems with the website, "
                     'send an email to <a href="mailto:webmaster@ustaxcourt.gov">webmaster@ustaxcourt.gov</a>. '
                     "No documents can be filed with the Court at this email address."

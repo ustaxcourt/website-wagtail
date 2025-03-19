@@ -26,7 +26,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "petitioners_before"
+        slug = "petitioners-before"
         title = "Guidance for Petitioners: Things That Occur Before Trial"
 
         if Page.objects.filter(slug=slug).exists():
@@ -101,7 +101,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                 "question": "How do I obtain and serve a Tax Court subpoena?",
                 "answer": f"""You may obtain a form for a <strong><a href="{petitioners_docs["Subpoena_Appear_Testify_Hearing_Or_Trial.pdf"]}" target="_blank" title="Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)">Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)
                             </a></strong> or a <strong><a href="{petitioners_docs["Subpoena_To_Testify_Deposition.pdf"]}" target="_blank" title="Subpoena to Testify at a Deposition (Form 14B)">Subpoena to Testify at a Deposition (Form 14B)</a>
-                           </strong> under the <strong><a href="/case_related_forms" title="Case Related Forms">“Forms”</a>
+                           </strong> under the <strong><a href="/case-related-forms" title="Case Related Forms">“Forms”</a>
                            </strong> tab on the Court’s internet website.You may also obtain a copy of subpoena form 14A from a trial clerk at a trial session.
                            <br>
                            <br>
@@ -115,7 +115,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "Is there a cost related to a subpoena?",
-                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day’s attendance and mileage. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a href="{petitioners_docs["Rule-148.pdf"]}" title="Rule 148">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners_glossary" title="Glossary">Glossary</a></strong>.',
+                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day’s attendance and mileage. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a href="{petitioners_docs["Rule-148.pdf"]}" title="Rule 148">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
                 "anchortag": "START7",
             },
             {

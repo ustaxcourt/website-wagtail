@@ -15,7 +15,7 @@ class CaseProcedurePageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "case_procedure"
+        slug = "case-procedure"
         title = "Which Case Procedure Should I Choose?"
 
         if Page.objects.filter(slug=slug).exists():

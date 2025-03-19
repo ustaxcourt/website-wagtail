@@ -14,7 +14,7 @@ class TrialSessionsPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "trial_sessions"
+        slug = "trial-sessions"
         title = "Trial Sessions"
 
         if Page.objects.filter(slug=slug).exists():

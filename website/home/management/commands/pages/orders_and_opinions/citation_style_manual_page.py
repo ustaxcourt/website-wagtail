@@ -13,7 +13,7 @@ class CitationStyleManualPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "citation_and_style_manual"
+        slug = "citation-and-style-manual"
         title = "Citation and Style Manual"
 
         if Page.objects.filter(slug=slug).exists():

@@ -18,7 +18,7 @@ class PetitionersAboutInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "petitioners_about"
+        slug = "petitioners-about"
         title = "Guidance for Petitioners: About the Court"
 
         if Page.objects.filter(slug=slug).exists():
@@ -38,7 +38,7 @@ class PetitionersAboutInitializer(PageInitializer):
         questions = [
             {
                 "question": "What is the United States Tax Court?",
-                "answer": "The United States Tax Court is a Federal trial court. Because it is a court of record, a record is made of all its proceedings. It is an independent judicial forum. It is not controlled by or connected with the Internal Revenue Service (IRS). Congress created the Tax Court as an independent judicial authority for taxpayers disputing certain IRS determinations. The Tax Court’s authority to resolve these disputes is called its jurisdiction. Generally, a taxpayer may file a petition in the Tax Court in response to certain IRS determinations. A taxpayer who begins such a proceeding is known as the “petitioner”, and the Commissioner of Internal Revenue is the “respondent”. <br><br>The Tax Court is based in Washington, D.C. Its <strong><a href='/judges' title='Judges'>Judges</a></strong> and <strong><a href='/judges' title='Judges'>Special Trial Judges</a></strong> preside at trials in 74 U.S. <strong><a href='/dpt_cities' title='Places of Trial'>cities</a></strong>.",
+                "answer": "The United States Tax Court is a Federal trial court. Because it is a court of record, a record is made of all its proceedings. It is an independent judicial forum. It is not controlled by or connected with the Internal Revenue Service (IRS). Congress created the Tax Court as an independent judicial authority for taxpayers disputing certain IRS determinations. The Tax Court’s authority to resolve these disputes is called its jurisdiction. Generally, a taxpayer may file a petition in the Tax Court in response to certain IRS determinations. A taxpayer who begins such a proceeding is known as the “petitioner”, and the Commissioner of Internal Revenue is the “respondent”. <br><br>The Tax Court is based in Washington, D.C. Its <strong><a href='/judges' title='Judges'>Judges</a></strong> and <strong><a href='/judges' title='Judges'>Special Trial Judges</a></strong> preside at trials in 74 U.S. <strong><a href='/dpt-cities' title='Places of Trial'>cities</a></strong>.",
                 "anchortag": "START1",
             },
             {

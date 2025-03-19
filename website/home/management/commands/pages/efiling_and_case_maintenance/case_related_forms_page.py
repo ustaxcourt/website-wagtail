@@ -215,7 +215,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
             self.create_form_entry(form)
 
     def create_page_info(self, home_page):
-        slug = "case_related_forms"
+        slug = "case-related-forms"
         title = "Case Related Forms"
 
         if Page.objects.filter(slug=slug).exists():
@@ -227,7 +227,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=CaseRelatedFormsPage(
                 title=title,
-                body='Forms can be filled in and printed directly from <a href="https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html" target="_blank">Adobe Acrobat Reader</a> 3.0 or later. For assistance, see the <a href="/forms_instructions">Fill-in Forms Instructions</a>.',
+                body='Forms can be filled in and printed directly from <a href="https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html" target="_blank">Adobe Acrobat Reader</a> 3.0 or later. For assistance, see the <a href="/forms-instructions">Fill-in Forms Instructions</a>.',
                 slug=slug,
                 seo_title=title,
                 search_description="Case Related Forms",
@@ -244,7 +244,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
 
     def create_form_entry(self, formData):
         try:
-            parent_page = CaseRelatedFormsPage.objects.get(slug="case_related_forms")
+            parent_page = CaseRelatedFormsPage.objects.get(slug="case-related-forms")
         except CaseRelatedFormsPage.DoesNotExist:
             self.logger.write("Parent page 'Case Related Forms' does not exist.")
             return
