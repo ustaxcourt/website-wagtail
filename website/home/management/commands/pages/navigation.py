@@ -51,6 +51,11 @@ class NavigationInitializer(PageInitializer):
                             "page": self.get_page("employment"),
                             "external_url": "",
                         },
+                        {
+                            "title": "REPORTS & STATISTICS",
+                            "page": self.get_page("reports-and-statistics"),
+                            "external_url": "",
+                        },
                     ],
                 },
             ),
