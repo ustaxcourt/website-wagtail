@@ -790,6 +790,12 @@ class SubNavigationLinkBlock(blocks.StructBlock):
 class NavigationMenu(
     PreviewableMixin, DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel
 ):
+    def clean(self):
+        super().clean()
+        # Check if another menu already exists during creation
+        if not self.pk and NavigationMenu.objects.exists():
+            raise ValidationError("Only one Navigation Menu can exist in the system.")
+
     menu_items = StreamField(
         [
             (
