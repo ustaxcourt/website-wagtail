@@ -22,10 +22,6 @@ from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 
-from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from django.shortcuts import get_object_or_404
-from django.http import Http404
-
 
 @register_setting
 class Footer(BaseGenericSetting):
@@ -489,56 +485,43 @@ class JudgeProfile(models.Model):
         return self.display_name
 
 
-class JudgeIndexPage(RoutablePageMixin, Page):
+class JudgeIndex(EnhancedStandardPage):
     """
-    A container page that holds all profile information and handles
-    the routing for individual profile display
+    A specialized page for displaying judges categorized by their titles.
+    Only one instance of this page can exist in the site.
     """
 
-    # Remove the proxy = True setting
-    # Remove the intro field as it conflicts with the proxy model setup
+    template = "home/enhanced_standard_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        # Add all profiles to the context
-        context["profiles"] = JudgeProfile.objects.all()
+
+        # Fetch judges by their title categories
+        context["regular_judges"] = JudgeProfile.objects.filter(title="Judge")
+        context["senior_judges"] = JudgeProfile.objects.filter(title="Senior Judge")
+        context["special_trial_judges"] = JudgeProfile.objects.filter(
+            title="Special Trial Judge"
+        )
+
         return context
 
-    @route(r"^$")
-    def all_profiles(self, request):
-        """
-        Main view that lists all profiles
-        """
-        return self.render(request)
+    def clean(self):
+        super().clean()
 
-    @route(r"^(?P<profile_name>[\w-]+)/$")
-    def profile_detail(self, request, profile_name):
-        """
-        View that displays a single profile by name
-        Example: /profiles/adam/
-        """
-        try:
-            # Try to find the profile by name (case insensitive)
-            profile = get_object_or_404(JudgeProfile, last_name__iexact=profile_name)
-        except Http404:
-            # If not found by exact match, try partial match
-            profiles = JudgeProfile.objects.filter(last_name__icontains=profile_name)
-            if profiles.count() == 1:
-                profile = profiles.first()
-            else:
-                raise Http404("Profile not found")
+        # Check if another JudgeIndex page already exists
+        # Exclude the current page (if it exists) from the check
+        existing_pages = JudgeIndex.objects.all()
 
-        # Add the profile to the context
-        context = self.get_context(request)
-        context["profile"] = profile
-        context["page_title"] = profile.last_name
+        if self.pk:  # If the page already exists (being edited)
+            existing_pages = existing_pages.exclude(pk=self.pk)
 
-        # Render using a different template
-        return self.render(
-            request,
-            context_overrides=context,
-            template="home/enhanced_standard_page.html",
-        )
+        if existing_pages.exists():
+            raise ValidationError(
+                "There can only be one Judges Index page in the site. Another one already exists."
+            )
+
+    class Meta:
+        verbose_name = "Judges Index Page"
 
 
 class HomePage(NavigationMixin):

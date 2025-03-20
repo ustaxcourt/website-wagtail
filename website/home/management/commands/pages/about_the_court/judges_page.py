@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories, EnhancedStandardPage
+from home.models import NavigationCategories, JudgeIndex
 
 
 class JudgesPageInitializer(PageInitializer):
@@ -27,7 +27,7 @@ class JudgesPageInitializer(PageInitializer):
         self.logger.write(f"Creating the '{title}' page.")
 
         new_page = home_page.add_child(
-            instance=EnhancedStandardPage(
+            instance=JudgeIndex(
                 title=title,
                 slug=self.slug,
                 seo_title=title,
@@ -317,7 +317,7 @@ class JudgesPageInitializer(PageInitializer):
             )
         )
 
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
+        JudgeIndex.objects.filter(id=new_page.id).update(
             menu_item_name=title.upper(),
             navigation_category=NavigationCategories.ABOUT_THE_COURT,
         )
