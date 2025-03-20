@@ -30,27 +30,6 @@
 
             // Add the button to the admin dashboard
             document.body.appendChild(scrollButton);
-
-            // Check if we're on the navigation menu page
-            if (window.location.pathname.includes('/admin/snippets/home/navigationmenu/')) {
-                // Create the preview button
-                const previewButton = document.createElement("button");
-                previewButton.innerText = "Preview Draft Navigation";
-                previewButton.className = "button button-secondary";
-                previewButton.style.marginRight = "10px";
-
-                // Add click handler to open preview in new tab
-                previewButton.addEventListener("click", function() {
-                    window.open('/?preview=true', '_blank');
-                });
-
-                // Find the Collapse all button and insert preview button before it
-                const collapseButton = document.querySelector('#header-title');
-
-                if (collapseButton) {
-                    collapseButton.parentNode.insertBefore(previewButton, collapseButton);
-                }
-            }
         });
     </script>
 {% endblock %}

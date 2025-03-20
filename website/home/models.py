@@ -24,6 +24,7 @@ from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.blocks import PageChooserBlock
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
+from wagtail.models import PreviewableMixin
 
 
 @register_setting
@@ -786,7 +787,9 @@ class SubNavigationLinkBlock(blocks.StructBlock):
 
 
 @register_snippet
-class NavigationMenu(DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel):
+class NavigationMenu(
+    PreviewableMixin, DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel
+):
     menu_items = StreamField(
         [
             (
@@ -814,6 +817,14 @@ class NavigationMenu(DraftStateMixin, LockableMixin, RevisionMixin, ClusterableM
         use_json_field=True,
         blank=True,
     )
+
+    def get_preview_template(self, request, mode_name):
+        return "previews/header_preview.html"
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        context["self"] = self
+        return context
 
     # Required for RevisionMixin
     _revisions = GenericRelation(
