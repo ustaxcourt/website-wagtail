@@ -15,21 +15,7 @@ fi
 
 echo "Found bucket: ${bucket_name}"
 
-# Get object keys, handle empty buckets
-objectKeys=$(aws s3api list-objects \
-    --bucket "${bucket_name}" \
-    --output json \
-    --region us-east-1 | jq -r '.Contents[]?.Key // empty')
-
-if [ -z "$objectKeys" ]; then
-    echo "No objects found in the bucket"
-    return 0
-fi
-
-# Delete each object concurrently
-echo "$objectKeys" | xargs -P 10 -I {} bash -c '
-    echo "Deleting: {}"
-    aws s3api delete-object --bucket "'"$bucket_name"'" --key "{}" --region us-east-1
-'
+# Delete all objects recursively
+aws s3 rm "s3://${bucket_name}" --recursive
 
 echo "Bucket cleanup complete"
