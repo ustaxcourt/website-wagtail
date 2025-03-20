@@ -787,13 +787,6 @@ class SubNavigationLinkBlock(blocks.StructBlock):
 
 @register_snippet
 class NavigationMenu(DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel):
-    name = models.CharField(
-        max_length=255,
-        help_text="Name this menu for reference (e.g. 'Main Navigation')",
-        unique=True,
-        default="Main Navigation",
-    )
-
     menu_items = StreamField(
         [
             (
@@ -828,7 +821,6 @@ class NavigationMenu(DraftStateMixin, LockableMixin, RevisionMixin, ClusterableM
     )
 
     panels = [
-        FieldPanel("name"),
         FieldPanel("menu_items"),
     ]
 
@@ -841,8 +833,7 @@ class NavigationMenu(DraftStateMixin, LockableMixin, RevisionMixin, ClusterableM
         verbose_name_plural = "Navigation Menus"
 
     def __str__(self):
-        status = "draft" if not self.live else "live"
-        return f"{self.name} ({status})"
+        return "Navigation Menu"
 
     @classmethod
     def get_active_menu(cls):

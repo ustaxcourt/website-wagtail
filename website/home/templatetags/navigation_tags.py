@@ -33,7 +33,7 @@ def get_navigation_menu(context):
         menu = NavigationMenu.objects.filter(live=True).first()
 
     if menu:
-        print(f"Found menu: {menu.name} (preview mode: {is_preview})")
+        print(f"Found menu: Navigation Menu (preview mode: {is_preview})")
         print(f"Menu is live: {menu.live}")
         print(f"Menu items count: {len(menu.menu_items)}")
         for section in menu.menu_items:
@@ -45,5 +45,5 @@ def get_navigation_menu(context):
         all_menus = NavigationMenu.objects.all()
         print(f"Total menus: {all_menus.count()}")
         for m in all_menus:
-            print(f"Menu: {m.name} (live: {m.live})")
+            print(f"Menu: Navigation Menu (live: {m.live})")
     return menu
