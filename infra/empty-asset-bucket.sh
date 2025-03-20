@@ -15,7 +15,7 @@ fi
 
 echo "Found bucket: ${bucket_name}"
 
-# Delete all objects recursively
+# Delete all objects recursively !
 aws s3 rm "s3://${bucket_name}" --recursive
 
 echo "Bucket cleanup complete"
