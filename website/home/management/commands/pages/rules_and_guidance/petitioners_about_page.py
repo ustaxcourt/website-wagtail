@@ -53,7 +53,7 @@ class PetitionersAboutInitializer(PageInitializer):
             },
             {
                 "question": "How can I obtain information about the history of the Tax Court?",
-                "answer": f'The revised and expanded <strong><em><a href="{petitioners_docs["Dubroff_Hellwig.pdf"]}" target="_blank" title="The United States Tax Court: An Historical Analysis (Second Edition)">The United States Tax Court: An Historical Analysis (Second Edition)</em></a></strong> by Professors Harold Dubroff and Brant J. Hellwig is available as a <a href="{petitioners_docs["Dubroff_Hellwig.pdf"]}" target="_blank"> PDF download</a> (6MB) or at the <a href="https://bookstore.gpo.gov/user/login?destination=node/10107" target="_blank" title="Government Printing Office bookstore">Government Printing Office bookstore</a> in print and other e-pub formats.',
+                "answer": f'The revised and expanded <em><a href="{petitioners_docs["Dubroff_Hellwig.pdf"]}" target="_blank" title="The United States Tax Court: An Historical Analysis (Second Edition)">The United States Tax Court: An Historical Analysis (Second Edition)</em></a> by Professors Harold Dubroff and Brant J. Hellwig is available as a <a href="{petitioners_docs["Dubroff_Hellwig.pdf"]}" target="_blank"> PDF download</a> (6MB) or at the <a href="https://bookstore.gpo.gov/user/login?destination=node/10107" target="_blank" title="Government Printing Office bookstore">Government Printing Office bookstore</a> in print and other e-pub formats.',
                 "anchortag": "START4",
             },
         ]
