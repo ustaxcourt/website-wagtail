@@ -116,7 +116,7 @@ class HistoryPageInitializer(PageInitializer):
                         "value": """<h2>Judges</h2>
                                 <br>
                                 The Tax Court is composed of 19 presidentially appointed members. Trial sessions are conducted and other work of the Court is performed by those
-                                <strong><a href='/judges' title='Judges'>judges</a></strong>, by <strong><a href='/judges/#SENIOR' title='Senior Judges'>senior judges</a></strong> serving on recall, and by <strong><a href='/judges/#SPECIAL' title='Special Trial Judges'>special trial judges</a></strong>. Although the Court is physically located in Washington, D.C., <strong><a href='/judges' title='Judges'>the judges</a></strong> travel nationwide to conduct trials in various <strong><a href='/dpt-cities' title='Places of Trial'>designated places of trial</a></strong>.""",
+                                <a href='/judges' title='Judges'>judges</a>, by <a href='/judges/#SENIOR' title='Senior Judges'>senior judges</a> serving on recall, and by <a href='/judges/#SPECIAL' title='Special Trial Judges'>special trial judges</a>. Although the Court is physically located in Washington, D.C., <a href='/judges' title='Judges'>the judges</a> travel nationwide to conduct trials in various <a href='/dpt-cities' title='Places of Trial'>designated places of trial</a>.""",
                     },
                     {
                         "type": "paragraph",
@@ -125,13 +125,13 @@ class HistoryPageInitializer(PageInitializer):
                                 Designed for the Tax Court and dedicated on November 22, 1974, the courthouse is a landmark work by architect Victor Lundy. It is held out as a prominent example of the "formalist modern" style of architecture in Washington, D.C. The U. S. Tax Court Courthouse was added to the National Register of Historic Places in August 2008.
                                 <br>
                                 <br>
-                                Learn more about the courthouse by visiting <strong><a href='https://www.gsa.gov/real-estate/gsa-properties/visiting-public-buildings/united-states-tax-court' title='gsa.gov'>GSA’s website</a></strong>, or more about <strong><em>Victor Lundy by watching Victor Lundy: Sculptor of Space</em></strong>.""",
+                                Learn more about the courthouse by visiting <a href='https://www.gsa.gov/real-estate/gsa-properties/visiting-public-buildings/united-states-tax-court' title='gsa.gov'>GSA’s website</a>, or more about <strong><em>Victor Lundy by watching Victor Lundy: Sculptor of Space</em></strong>.""",
                     },
                     {
                         "type": "embedded_video",
                         "value": {
                             "title": "Victor Lundy: Sculptor of Space",
-                            "description": """<p>We are excited to include here <strong><em>Victor Lundy: Sculptor of Space.</em></strong> This informative and entertaining documentary was produced by the GSA (General Services Administration) as part of <strong><em><a href="https://www.youtube.com/playlist?list=PLvdwyPgXnxxU_f2Ee8FnuBdflb6pEtF_Z"  target="_blank" title="The Historic Building Film Series">The Historic Building Film Series</a></em></strong>.</p>
+                            "description": """<p>We are excited to include here <strong><em>Victor Lundy: Sculptor of Space.</em></strong> This informative and entertaining documentary was produced by the GSA (General Services Administration) as part of <em><a href="https://www.youtube.com/playlist?list=PLvdwyPgXnxxU_f2Ee8FnuBdflb6pEtF_Z"  target="_blank" title="The Historic Building Film Series">The Historic Building Film Series</a></em>.</p>
                                             <blockquote><i>Victor Lundy: Sculptor of Space captures the recollections of the modern American master architect and artist who designed GSA's historic U.S. Tax Court Building in Washington, DC.</i>
                                             <cite title="Source Title">- GSA YouTube Channel</cite>
                                             </blockquote>""",
@@ -146,8 +146,5 @@ class HistoryPageInitializer(PageInitializer):
             menu_item_name="HISTORY",
             navigation_category=NavigationCategories.ABOUT_THE_COURT,
         )
-
-        #             new_page.save()
-        #             EnhancedStandardPage.objects.filter(id=new_page.id).save()
 
         self.logger.write(f"Created the '{title}' page.")

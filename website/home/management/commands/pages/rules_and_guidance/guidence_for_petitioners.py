@@ -86,7 +86,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": "A helpful <strong><a href='/petitioners-glossary'>Glossary</a></strong> (definition of terms) is available on the Court’s website. A <strong>User Guide</strong> for the Court’s electronic filing and case management system, is also available.",
+                        "value": "A helpful <a href='/petitioners-glossary'>Glossary</a> (definition of terms) is available on the Court’s website. A <strong>User Guide</strong> for the Court’s electronic filing and case management system, is also available.",
                     },
                     {"type": "h2", "value": "Additional Resources"},
                     {"type": "hr", "value": True},

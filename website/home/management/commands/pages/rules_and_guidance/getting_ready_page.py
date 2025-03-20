@@ -32,16 +32,16 @@ class GettingReadyPageInitializer(PageInitializer):
             {
                 "question": "I just got my notice. Should I do anything ahead of time to get ready?",
                 "answer": """<ul>
-            <li>Make sure you have the Zoom “client” installed on your computer. It’s a small, free application file to run the program. You can download it here: <strong><a href="https://zoom.us/download" title="Zoom Download">https://zoom.us/download</a></strong>.</li>
+            <li>Make sure you have the Zoom "client" installed on your computer. It's a small, free application file to run the program. You can download it here: <a href="https://zoom.us/download" title="Zoom Download">https://zoom.us/download</a>.</li>
             <li>If you plan to use a smartphone or tablet, you will need to install the latest version of the Zoom Cloud Meetings app. The app is available for free on both the iTunes and Google Play stores.</li>
-            <li>You can test the Zoomgov audio and video on your device before your trial or hearing date. Visit <strong><a href="https://zoom.us/test" title="Zoom Test">https://zoom.us/test</a></strong> for more information.</li>
+            <li>You can test the Zoomgov audio and video on your device before your trial or hearing date. Visit <a href="https://zoom.us/test" title="Zoom Test">https://zoom.us/test</a> for more information.</li>
             </ul>""",
                 "anchortag": "START1",
             },
             {
                 "question": "Is there a way to do a test before my actual hearing?",
                 "answer": """<ul>
-            <li>Yes. We strongly encourage you to test the Zoomgov audio and video on your computer, smartphone, or tablet before your trial or hearing date. Visit <strong><a href="https://zoom.us/test" title="Zoom Test">https://zoom.us/test</a></strong> for more information.</li>
+            <li>Yes. We strongly encourage you to test the Zoomgov audio and video on your computer, smartphone, or tablet before your trial or hearing date. Visit <a href="https://zoom.us/test" title="Zoom Test">https://zoom.us/test</a> for more information.</li>
             <li>Please join your proceeding at least 30 minutes prior to its scheduled start time so you can address any last-minute technical issues.</li>
             </ul>""",
                 "anchortag": "START2",
@@ -51,14 +51,14 @@ class GettingReadyPageInitializer(PageInitializer):
                 "answer": """<ul>
             <li>No. You can connect to a Zoomgov proceeding by smartphone or tablet, or by a regular telephone.</li>
             <li>Your computer will need a video camera, speakers, and a microphone to if you plan to participate by computer.</li>
-            <li>For more information on how to connect to a Zoomgov proceeding, visit <strong><a href="https://zoom.us" title="Zoom">www.zoom.us</a></strong>.</li>
+            <li>For more information on how to connect to a Zoomgov proceeding, visit <a href="https://zoom.us" title="Zoom">www.zoom.us</a>.</li>
             </ul>""",
                 "anchortag": "START3",
             },
             {
                 "question": "Do I need special software to participate in a Zoomgov proceeding?",
                 "answer": """<ul>
-            <li>The first time you use Zoomgov from a computer, you will be asked to download a small, free application file to run the program. You can download it here: <strong><a href="https://zoom.us/download" title="Zoom Download">https://zoom.us/download</a></strong>.</li>
+            <li>The first time you use Zoomgov from a computer, you will be asked to download a small, free application file to run the program. You can download it here: <a href="https://zoom.us/download" title="Zoom Download">https://zoom.us/download</a>.</li>
             <li>If you are using a smartphone or tablet, you will need the latest version of the Zoom Cloud Meetings app. The app is available for free on both the iTunes and Google Play stores.</li>
             </ul>""",
                 "anchortag": "START4",
@@ -66,8 +66,8 @@ class GettingReadyPageInitializer(PageInitializer):
             {
                 "question": "Do I need special technology to participate in a Zoomgov proceeding?",
                 "answer": """<ul>
-             <li>No, but it’s helpful if you make the most of the technology you do have.</li>
-             <li>If you use WiFi, make sure you’re in close range and that you are not sharing bandwidth with too many other devices.</li>
+             <li>No, but it's helpful if you make the most of the technology you do have.</li>
+             <li>If you use WiFi, make sure you're in close range and that you are not sharing bandwidth with too many other devices.</li>
              <li>If you can, use a good quality headset (headphones with mic) to help ensure you can be heard, and that you can hear others as clearly as possible.</li>
              <li>Know how to manage the volume so you can hear all of the participants.</li>
              <li>Know how to adjust the brightness of your screen so you can see well.</li>
@@ -90,10 +90,10 @@ class GettingReadyPageInitializer(PageInitializer):
                 "question": "How do I connect to a Zoomgov proceeding if I am a participant?",
                 "answer": """<ul>
              <li>You can connect by computer, by smartphone or tablet, or by regular telephone.</li>
-             <li>On a computer, go to <strong><a href="https://zoomgov.com/" title="Zoomgov">https://zoomgov.com/</a></strong> and click “Join a Meeting”, and enter the Meeting ID and Passcode.</li>
-             <li>On a smartphone or tablet, use the Zoom Cloud Meetings app and click “Join”, and enter the Meeting ID and Passcode.</li>
+             <li>On a computer, go to <a href="https://zoomgov.com/" title="Zoomgov">https://zoomgov.com/</a> and click "Join a Meeting", and enter the Meeting ID and Passcode.</li>
+             <li>On a smartphone or tablet, use the Zoom Cloud Meetings app and click "Join", and enter the Meeting ID and Passcode.</li>
              <li>If you do not have access to a computer or smartphone, use a telephone to dial the number provided and enter the Meeting ID and Passcode when prompted.</li>
-             <li>For more information on how Zoomgov and Zoom work, visit www.zoom.us and the quickstart guide at <strong><a href="https://support.zoom.us/hc/en-us/articles/360034967471- Quick-start-guide-for-new-users" title="Zoom Quick Start">https://support.zoom.us/hc/en-us/articles/360034967471- Quick-start-guide-for-new-users</a></strong>.</li>
+             <li>For more information on how Zoomgov and Zoom work, visit www.zoom.us and the quickstart guide at <a href="https://support.zoom.us/hc/en-us/articles/360034967471- Quick-start-guide-for-new-users" title="Zoom Quick Start">https://support.zoom.us/hc/en-us/articles/360034967471- Quick-start-guide-for-new-users</a>.</li>
              </ul>""",
                 "anchortag": "START7",
             },
@@ -104,7 +104,7 @@ class GettingReadyPageInitializer(PageInitializer):
             },
             {
                 "question": "What if I lost my notice setting the case for trial?",
-                "answer": "If you cannot find your Zoomgov information, please contact the Clerk’s Office at (202) 521-0700.",
+                "answer": "If you cannot find your Zoomgov information, please contact the Clerk's Office at (202) 521-0700.",
                 "anchortag": "START9",
             },
         ]

@@ -55,7 +55,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                                         <br/><br/>
                                         The Judges of the United States Tax Court are primarily interested in the superior law school graduate who has completed Federal tax law courses and plans to practice in this specialized field. There is particular interest in a graduate who has worked on a law review and graduated in the upper one-third of his/her law school class. Some Judges, but not all, prefer candidates with an LL.M. degree in taxation or who have completed one year of professional experience in the Federal tax field.
                                         <br/><br/>
-                                        Appointments typically begin at the Grade GS-11 level on the <strong><a href="https://www.opm.gov/policy-data-oversight/pay-leave/salaries-wages" title="Government Pay Scale">Government pay scale</a></strong>, but may be higher depending on the education level and professional experience of a candidate. Utilize the "General Schedule Salary Calculator" to determine the compensation for GS-11 in your locality.
+                                        Appointments typically begin at the Grade GS-11 level on the <a href="https://www.opm.gov/policy-data-oversight/pay-leave/salaries-wages" title="Government Pay Scale">Government pay scale</a>, but may be higher depending on the education level and professional experience of a candidate. Utilize the "General Schedule Salary Calculator" to determine the compensation for GS-11 in your locality.
                                         <br/><br/>
                                         The decision to make an offer, and the terms of the offer, are left to the discretion of each Judge.""",
                     },
@@ -91,7 +91,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                     {
                         "type": "paragraph",
                         "value": """
-                                        Please review the list of <strong><a href="/judges_recruiting" title="Judges Currently Recruiting">Judges and Special Trial Judges currently recruiting</a></strong> for Law Clerks prior to submitting your application. Click each Judge's name to view Additional Information or Requirements for Law Clerk Applicants.
+                                        Please review the list of <a href="/judges-recruiting" title="Judges Currently Recruiting">Judges and Special Trial Judges currently recruiting</a> for Law Clerks prior to submitting your application. Click each Judge's name to view Additional Information or Requirements for Law Clerk Applicants.
                                         <br/><br/>
                                         To apply, send a cover letter, a complete resume, and a copy of your law school transcript. A legal writing sample, preferably in the tax field, should also accompany the application materials. All documents should be submitted in PDF format.
                                         <br/><br/>

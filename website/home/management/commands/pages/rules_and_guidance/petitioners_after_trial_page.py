@@ -66,7 +66,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                              </ol>
                              <p>
                                  The opinions of the Tax Court are posted daily on the Tax Court's website after 3:30 p.m. (Eastern time) under
-                                 <strong><a href="/todays-opinion" target="_blank" title="Today's Opinions">Today's Opinions</a></strong> and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.
+                                 <a href="/todays-opinion" target="_blank" title="Today's Opinions">Today's Opinions</a> and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.
                              </p>""",
                 "anchortag": "START2",
             },
@@ -88,25 +88,25 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             {
                 "question": "How do I file an appeal from the Judge’s decision? Can I appeal my case?",
                 "answer": f"""If you chose, and the Tax Court granted you, small tax case status, there is no appeal from the decision of the Tax Court.
-                <strong><a href="/petitioners-start#START12" target="_blank" title="">See the discussion above about choosing S case status</a></strong>.
+                <a href="/petitioners-start#START12" target="_blank" title="">See the discussion above about choosing S case status</a>.
                 In an S case, neither the IRS nor the petitioner can appeal. The Judge's decision is final.
                             <br>
                             <br>
                             If your case is a regular case, you may appeal the decision to one of the U.S. Courts of Appeals. You must wait for a decision (as opposed to the opinion) to be entered by the Tax Court before you file an appeal. A decision is a judicial determination that disposes of a case. An opinion is a statement explaining the Tax Court's decision. The notice of appeal must be filed with the Tax Court within 90 days after the decision is entered, or 120 days if the IRS appeals first. The cost for filing a notice of appeal depends on the Federal Circuit Court to which the appeal is being made but generally costs $600-$605.
-                            See <strong><a href="{petitioners_docs["Rule-190.pdf"]}" target="_blank" title="Rule 190">Tax Court Rules 190</a></strong>,
-                            <strong><a href="{petitioners_docs["Rule-191.pdf"]}" target="_blank" title="Rule 191">191</a></strong>,
-                            <strong><a href="{petitioners_docs["Rule-192.pdf"]}" target="_blank" title="Rule 192">192</a></strong>, and
-                            <strong><a href="{petitioners_docs["Rule-193.pdf"]}" target="_blank" title="Rule 193">193</a></strong>.""",
+                            See <a href="{petitioners_docs["Rule-190.pdf"]}" target="_blank" title="Rule 190">Tax Court Rules 190</a>,
+                            <a href="{petitioners_docs["Rule-191.pdf"]}" target="_blank" title="Rule 191">191</a>,
+                            <a href="{petitioners_docs["Rule-192.pdf"]}" target="_blank" title="Rule 192">192</a>, and
+                            <a href="{petitioners_docs["Rule-193.pdf"]}" target="_blank" title="Rule 193">193</a>.""",
                 "anchortag": "START6",
             },
             {
                 "question": "Will my documents be returned to me when the case is over?",
-                "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at <a href="tel:+12025214688">(202) 521-4688</a>. There is a fee for copywork. See <strong><a href="/transcripts-and-copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a></strong>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <strong><a href="/dawson" target="_blank" title="DAWSON">DAWSON</a></strong>.',
+                "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at <a href="tel:+12025214688">(202) 521-4688</a>. There is a fee for copywork. See <a href="/transcripts-and-copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <a href="/dawson" target="_blank" title="DAWSON">DAWSON</a>.',
                 "anchortag": "START7",
             },
             {
                 "question": "Do I need a transcript of the trial and how can I get a transcript?",
-                "answer": 'A transcript of the trial is the typewritten record prepared by the reporting company reflecting everything that is said in court. A transcript is usually required if posttrial briefs are ordered by the Court and/or if your case is being appealed to the U.S. Court of Appeals. Each of the parties (petitioner and respondent) is responsible for ordering and paying for a copy of their own transcript. The reporting company is a private company and is not part of the Tax Court. You should talk with the reporter during the trial session or see <strong><a href="/transcripts-and-copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a></strong> for more information. <br> <br>Transcripts are not viewable even to the parties through <strong><a href="/dawson" target="_blank" title="DAWSON">DAWSON</a></strong> until 90 days after the date of the trial (or hearing).',
+                "answer": 'A transcript of the trial is the typewritten record prepared by the reporting company reflecting everything that is said in court. A transcript is usually required if posttrial briefs are ordered by the Court and/or if your case is being appealed to the U.S. Court of Appeals. Each of the parties (petitioner and respondent) is responsible for ordering and paying for a copy of their own transcript. The reporting company is a private company and is not part of the Tax Court. You should talk with the reporter during the trial session or see <a href="/transcripts-and-copies" target="_blank" title="Transcripts & Copies">Transcripts & Copies</a> for more information. <br> <br>Transcripts are not viewable even to the parties through <a href="/dawson" target="_blank" title="DAWSON">DAWSON</a> until 90 days after the date of the trial (or hearing).',
                 "anchortag": "START8",
             },
             {
