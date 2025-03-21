@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import EnhancedStandardPage, NavigationCategories
+from home.models import EnhancedStandardPage
 
 
 body = [
@@ -1821,9 +1821,6 @@ class RulesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description="Rules of Practice and Procedure for the United States Tax Court",
                 body=body,
-                show_in_menus=True,
-                navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
-                menu_item_name="TAX COURT RULES",
             )
         )
         new_page.save_revision().publish()

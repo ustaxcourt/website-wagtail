@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from wagtail.models import Page
-from home.models import AdministrativeOrdersPage, NavigationCategories, PDFs
+from home.models import AdministrativeOrdersPage, PDFs
 from home.management.commands.pages.page_initializer import PageInitializer
 
 # Example PDF data
@@ -90,7 +90,6 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
                 title=title,
                 slug=self.slug,
                 seo_title="Administrative Orders",
-                show_in_menus=True,
                 content_type=content_type,
                 body="",
                 search_description="Administrative Orders from 2020 through 2024.",
@@ -111,9 +110,6 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
                 self.logger.write(
                     f"   - **Failed** to load document: {file_detail['name']}"
                 )
-
-        new_page.menu_item_name = "ADMINISTRATIVE ORDERS"
-        new_page.navigation_category = NavigationCategories.RULES_AND_GUIDANCE
 
         self.logger.write(f"Successfully created the '{title}' page.")
         new_page.save()

@@ -17,7 +17,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
             )
             return
 
-        slug = "law_clerk_program"
+        slug = "law-clerk-program"
         title = "Law Clerk Program"
 
         if Page.objects.filter(slug=slug).exists():
@@ -32,7 +32,6 @@ class LawClerkProgramPageInitializer(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
-                show_in_menus=True,
                 search_description="Vacancy Announcements for the United States Tax Court",
                 body=[
                     {

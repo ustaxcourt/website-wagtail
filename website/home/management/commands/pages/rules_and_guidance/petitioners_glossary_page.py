@@ -335,7 +335,6 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Glossary"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

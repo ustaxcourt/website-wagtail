@@ -158,7 +158,6 @@ If a practitioner who is employed by a nonacademic clinic or who accepts a case 
                 slug=slug,
                 seo_title=title,
                 search_description=title,
-                show_in_menus=False,
                 body=[
                     {
                         "type": "h2",

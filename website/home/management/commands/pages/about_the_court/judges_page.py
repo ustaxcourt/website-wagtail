@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories, JudgeIndex, JudgeProfile, JudgeCollection
+from home.models import JudgeIndex, JudgeProfile, JudgeCollection
 
 all_judges = [
     {
@@ -419,7 +419,6 @@ class JudgesPageInitializer(PageInitializer):
                 slug=self.slug,
                 seo_title=title,
                 search_description=title,
-                show_in_menus=True,
                 body=[
                     {
                         "type": "columns",
@@ -457,12 +456,6 @@ class JudgesPageInitializer(PageInitializer):
                     }
                 ],
             )
-        )
-
-        # Update page with navigation settings
-        JudgeIndex.objects.filter(id=new_page.id).update(
-            menu_item_name=title.upper(),
-            navigation_category=NavigationCategories.ABOUT_THE_COURT,
         )
 
         # Now add the collections to the page

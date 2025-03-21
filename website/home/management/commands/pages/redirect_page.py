@@ -33,7 +33,6 @@ class RedirectPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description="redirect",
                 content_type=content_type,
-                show_in_menus=True,
             )
         )
 

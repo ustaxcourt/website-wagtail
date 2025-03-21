@@ -6,12 +6,13 @@ from .holidays_page import HolidaysPageInitializer
 from .vacancy_announcements_page import VacancyAnnouncementsPageInitializer
 from .law_clerk_program_page import LawClerkProgramPageInitializer
 from .trial_sessions_page import TrialSessionsPageInitializer
-
+from .reports_and_statistics_page import ReportsAndStatisticsPageInitializer
 
 about_the_court_pages_to_initialize = [
     #  Order matters for menu
     MissionPageInitializer,
     HistoryPageInitializer,
+    ReportsAndStatisticsPageInitializer,
     JudgesPageInitializer,
     TrialSessionsPageInitializer,
     EmploymentPageInitializer,
