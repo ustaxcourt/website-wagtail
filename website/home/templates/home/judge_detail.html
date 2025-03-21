@@ -3,40 +3,18 @@
 {% load wagtailimages_tags %}
 {% load filters %}
 {% load static %}
-
 {% block body_class %}template-judge-detail{% endblock %}
-
 {% block content %}
-<div class="grid-container padding-bottom-2 padding-top-2">
-    <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
-        <ol class="usa-breadcrumb__list">
-            <li class="usa-breadcrumb__list-item">
-                <a href="{{ page.url }}" class="usa-breadcrumb__link">
-                    <span>{{ page.title }}</span>
-                </a>
-            </li>
-            <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
-                <span>{{ judge.display_name }}</span>
-            </li>
-        </ol>
-    </nav>
-
-    <h1>{{ judge.title }} {{ judge.display_name }}</h1>
-
-    {% if judge.chambders_telephone %}
-    <div class="contact-info margin-bottom-2">
-        <p><strong>Chambers Telephone:</strong> {{ judge.chambders_telephone }}</p>
+    <div class="grid-container padding-bottom-2 padding-top-2">
+        <h1>{{ judge.title }} {{ judge.display_name }}</h1>
+        {% if judge.chambders_telephone %}
+            <div class="contact-info margin-bottom-2">
+                <p>
+                    <strong>Chambers Telephone:</strong> {{ judge.chambders_telephone }}
+                </p>
+            </div>
+        {% endif %}
+        <h2>Biography</h2>
+        <div class="judge-bio">{{ judge.bio|richtext }}</div>
     </div>
-    {% endif %}
-
-    <div class="judge-bio">
-        {{ judge.bio|richtext }}
-    </div>
-
-    <div class="margin-top-3">
-        <a href="{{ page.url }}" class="usa-button usa-button--outline">
-            <i class="ti ti-arrow-left margin-right-1" aria-hidden="true"></i>Back to Judges
-        </a>
-    </div>
-</div>
 {% endblock %}

@@ -519,6 +519,7 @@ class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
     """
 
     template = "home/enhanced_standard_page.html"
+    max_count = 1
 
     # Add collections field to reference JudgeCollection snippets
     judge_collections = models.ManyToManyField(
@@ -555,21 +556,6 @@ class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
                     "page": self,
                     "last_name": last_name,
                 },
-            )
-
-    def clean(self):
-        super().clean()
-
-        # Check if another JudgeIndex page already exists
-        # Exclude the current page (if it exists) from the check
-        existing_pages = JudgeIndex.objects.all()
-
-        if self.pk:  # If the page already exists (being edited)
-            existing_pages = existing_pages.exclude(pk=self.pk)
-
-        if existing_pages.exists():
-            raise ValidationError(
-                "There can only be one Judges Index page in the site. Another one already exists."
             )
 
     class Meta:
