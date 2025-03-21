@@ -22,6 +22,7 @@ from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from django.shortcuts import render
 
 
 @register_setting
@@ -542,14 +543,9 @@ class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
             # Convert to lowercase for case-insensitive comparison
             judge = JudgeProfile.objects.get(last_name__iexact=last_name)
             print(f"Judge found: {judge.display_name}")  # Debugging line
-            return self.render(
-                request,
-                "home/judge_detail.html",
-                {
-                    "page": self,
-                    "judge": judge,
-                },
-            )
+            context = self.get_context(request)
+            context["judge"] = judge
+            return render(request, "home/judge_detail.html", context)
         except JudgeProfile.DoesNotExist:
             # Handle case where judge doesn't exist
             return self.render(
