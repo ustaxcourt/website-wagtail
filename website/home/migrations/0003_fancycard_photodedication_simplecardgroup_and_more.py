@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
                     "card_icon",
                     models.CharField(
                         blank="True",
-                        help_text="Icon Name",
+                        help_text='Icon Name - see https://tabler.io/icons and enter the name of the icon (i.e. "accessible")',
                         max_length=200,
                         null=True,
                     ),
