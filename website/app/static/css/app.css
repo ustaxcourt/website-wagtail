@@ -202,16 +202,15 @@ button.link:hover {
         font-weight: normal;
         font-size: .9rem;
         padding: 16px;
-
     }
 
     a:hover {
         background: rgba(255, 255, 255, 0.1);
     }
 
-    .ti {
+    i {
         color: white;
-        font-size: 2.5rem;
+        font-size: 2rem;
     }
 }
 @media (min-width: 320px) and (max-width: 768px) {
@@ -230,7 +229,7 @@ button.link:hover {
         padding: 12px 6px;
     }
 
-    .blue-page-links-bar .ti {
+    .blue-page-links-bar i {
         font-size: 20px;
     }
 }
