@@ -21,6 +21,7 @@ from wagtail import blocks
 from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 
 @register_setting
@@ -510,7 +511,7 @@ class JudgeCollection(ClusterableModel):
         return self.name
 
 
-class JudgeIndex(EnhancedStandardPage):
+class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
     """
     A specialized page for displaying judges categorized by their titles.
     Only one instance of this page can exist in the site.
@@ -532,34 +533,32 @@ class JudgeIndex(EnhancedStandardPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
-        # # Use the selected judges if they exist, otherwise fetch all judges by title
-        # if self.judge_snippets.exists():
-        #     context["regular_judges"] = self.judge_snippets.all()
-        # else:
-        #     context["regular_judges"] = JudgeProfile.objects.filter(title="Judge")
-
-        # if self.senior_judge_snippets.exists():
-        #     context["senior_judges"] = self.senior_judge_snippets.all()
-        # else:
-        #     context["senior_judges"] = JudgeProfile.objects.filter(title="Senior Judge")
-
-        # if self.special_trial_judge_snippets.exists():
-        #     context["special_trial_judges"] = self.special_trial_judge_snippets.all()
-        # else:
-        #     context["special_trial_judges"] = JudgeProfile.objects.filter(
-        #         title="Special Trial Judge"
-        #     )
-
-        # Add judge collections to the context
         context["judge_collections"] = self.judge_collections.all()
-        for collection in context["judge_collections"]:
-            print(f"Collection: {collection.name}")
-            for judge in collection.judges.all():
-                print(f"Judge: {judge.display_name}")
-        print("Judge Collections:", context["judge_collections"])
-
         return context
+
+    @route(r"^judges/(?P<last_name>[\w-]+)/$")
+    def judge_detail(self, request, last_name):
+        try:
+            # Convert to lowercase for case-insensitive comparison
+            judge = JudgeProfile.objects.get(last_name__iexact=last_name)
+            return self.render(
+                request,
+                "home/judge_detail.html",
+                {
+                    "page": self,
+                    "judge": judge,
+                },
+            )
+        except JudgeProfile.DoesNotExist:
+            # Handle case where judge doesn't exist
+            return self.render(
+                request,
+                "home/judge_not_found.html",
+                {
+                    "page": self,
+                    "last_name": last_name,
+                },
+            )
 
     def clean(self):
         super().clean()
