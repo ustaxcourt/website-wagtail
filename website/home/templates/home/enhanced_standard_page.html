@@ -472,7 +472,9 @@
             <h2>{{ judge_group.name }}</h2>
             {% for judge in judge_group.judges.all %}
                 <div class="judge-profile">
-                    <h3>{{ judge.display_name }}</h3>
+                    <h3>
+                        <a href="/judges/{{ judge.last_name|lower }}">{{ judge.display_name }}</a>
+                    </h3>
                 </div>
             {% endfor %}
         {% endfor %}
