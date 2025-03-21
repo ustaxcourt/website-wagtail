@@ -468,5 +468,14 @@
                 {% endif %}
             {% endwith %}
         {% endfor %}
+        {% for judge_group in judge_collections %}
+        <h2>{{ judge_group.name }}</h2>
+        {% for judge in judge_group.judges.all %}
+        <div class="judge-profile">
+            <h3>{{ judge.display_name }}</h3>
+            <p>{{ judge.bio }}</p>
+        </div>
+        {% endfor %}
+        {% endfor %}
     </div>
 {% endblock content %}

@@ -485,6 +485,31 @@ class JudgeProfile(models.Model):
         return self.display_name
 
 
+@register_snippet
+class JudgeCollection(ClusterableModel):
+    """A collection of judge profiles for easy management and display."""
+
+    name = models.CharField(
+        max_length=255,
+        help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
+    )
+
+    judges = models.ManyToManyField(
+        "JudgeProfile",
+        blank=True,
+        related_name="collections",
+        help_text="Select judges to include in this collection",
+    )
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("judges", widget=forms.CheckboxSelectMultiple),
+    ]
+
+    def __str__(self):
+        return self.name
+
+
 class JudgeIndex(EnhancedStandardPage):
     """
     A specialized page for displaying judges categorized by their titles.
@@ -493,15 +518,46 @@ class JudgeIndex(EnhancedStandardPage):
 
     template = "home/enhanced_standard_page.html"
 
+    # Add collections field to reference JudgeCollection snippets
+    judge_collections = models.ManyToManyField(
+        "JudgeCollection",
+        blank=True,
+        related_name="judge_index_pages",
+        help_text="Select judge collections to display on this page",
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("judge_collections", widget=forms.CheckboxSelectMultiple),
+    ]
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        # Fetch judges by their title categories
-        context["regular_judges"] = JudgeProfile.objects.filter(title="Judge")
-        context["senior_judges"] = JudgeProfile.objects.filter(title="Senior Judge")
-        context["special_trial_judges"] = JudgeProfile.objects.filter(
-            title="Special Trial Judge"
-        )
+        # # Use the selected judges if they exist, otherwise fetch all judges by title
+        # if self.judge_snippets.exists():
+        #     context["regular_judges"] = self.judge_snippets.all()
+        # else:
+        #     context["regular_judges"] = JudgeProfile.objects.filter(title="Judge")
+
+        # if self.senior_judge_snippets.exists():
+        #     context["senior_judges"] = self.senior_judge_snippets.all()
+        # else:
+        #     context["senior_judges"] = JudgeProfile.objects.filter(title="Senior Judge")
+
+        # if self.special_trial_judge_snippets.exists():
+        #     context["special_trial_judges"] = self.special_trial_judge_snippets.all()
+        # else:
+        #     context["special_trial_judges"] = JudgeProfile.objects.filter(
+        #         title="Special Trial Judge"
+        #     )
+
+        # Add judge collections to the context
+        context["judge_collections"] = self.judge_collections.all()
+        for collection in context["judge_collections"]:
+            print(f"Collection: {collection.name}")
+            for judge in collection.judges.all():
+                print(f"Judge: {judge.display_name}")
+        print("Judge Collections:", context["judge_collections"])
 
         return context
 

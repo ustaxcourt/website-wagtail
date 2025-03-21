@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories, JudgeIndex, JudgeProfile
+from home.models import NavigationCategories, JudgeIndex, JudgeProfile, JudgeCollection
 
 all_judges = [
     {
@@ -393,6 +393,26 @@ class JudgesPageInitializer(PageInitializer):
                 },
             )
 
+        judge_collection = JudgeCollection.objects.create(name="Judges")
+        senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
+        special_trial_judge_collection = JudgeCollection.objects.create(
+            name="Special Trial Judges"
+        )
+
+        # Add judges to the collections based on their titles
+        judges = JudgeProfile.objects.filter(title="Judge")
+        for judge in judges:
+            judge_collection.judges.add(judge)
+
+        senior_judges = JudgeProfile.objects.filter(title="Senior Judge")
+        for judge in senior_judges:
+            senior_judge_collection.judges.add(judge)
+
+        special_trial_judges = JudgeProfile.objects.filter(title="Special Trial Judge")
+        for judge in special_trial_judges:
+            special_trial_judge_collection.judges.add(judge)
+
+        # Create the page first
         new_page = home_page.add_child(
             instance=JudgeIndex(
                 title=title,
@@ -439,9 +459,16 @@ class JudgesPageInitializer(PageInitializer):
             )
         )
 
+        # Update page with navigation settings
         JudgeIndex.objects.filter(id=new_page.id).update(
             menu_item_name=title.upper(),
             navigation_category=NavigationCategories.ABOUT_THE_COURT,
         )
 
-        self.logger.write(f"Created the '{title}' page.")
+        # Now add the collections to the page
+        judge_page = JudgeIndex.objects.get(id=new_page.id)
+        judge_page.judge_collections.add(judge_collection)
+        judge_page.judge_collections.add(senior_judge_collection)
+        judge_page.judge_collections.add(special_trial_judge_collection)
+
+        self.logger.write(f"Created the '{title}' page with judge collections.")
