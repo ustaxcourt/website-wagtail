@@ -58,14 +58,6 @@ class GoogleAnalyticsSettings(BaseGenericSetting):
     ]
 
 
-class NavigationCategories(models.TextChoices):
-    NONE = "NONE", "None"
-    ABOUT_THE_COURT = "ABOUT", "About the Court"
-    RULES_AND_GUIDANCE = "RULES", "Rules & Guidance"
-    ORDERS_AND_OPINIONS = "ORDERS", "Orders & Opinions"
-    eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
-
-
 class IndentStyle(models.TextChoices):
     INDENTED = "indented"
     UNINDENTED = "unindented"
