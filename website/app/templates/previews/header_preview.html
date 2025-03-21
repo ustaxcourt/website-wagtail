@@ -1,0 +1,38 @@
+{% load static wagtailcore_tags wagtailuserbar env_tags %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Navigation Preview</title>
+        {# Global stylesheets #}
+        <link rel="stylesheet"
+              type="text/css"
+              href="{% static 'uswds/css/styles.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
+        {# Icons #}
+        <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/dist/tabler-icons.min.css"
+              rel="stylesheet">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
+              rel="stylesheet"
+              type="text/css">
+        <link href="{% static 'fontawesomefree/css/brands.css' %}"
+              rel="stylesheet"
+              type="text/css">
+        <link href="{% static 'fontawesomefree/css/solid.css' %}"
+              rel="stylesheet"
+              type="text/css">
+        {# Web Fonts #}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css?family=Noto Serif JP:400,700,"
+              rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Source Sans Pro:400,700,"
+              rel="stylesheet" />
+    </head>
+    <body class="{% block body_class %}  {% endblock %}">
+        {% include 'header.html' %}
+        <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+    </body>
+</html>

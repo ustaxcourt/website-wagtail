@@ -34,7 +34,6 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 search_description="Vacancy Announcements for the United States Tax Court",
-                show_in_menus=True,
             )
         )
 

@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import IconCategories, NavigationCategories
+from home.models import IconCategories
 from home.models import EnhancedStandardPage
 
 practitioners_docs = {
@@ -53,7 +53,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
             )
             practitioners_docs[doc_name] = document
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
@@ -294,11 +294,5 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         },
                     },
                 ],
-                show_in_menus=True,
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name=title.upper(),
-            navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
         )
