@@ -113,7 +113,6 @@ Immediately inform the Chief Judge of any material changes in the information su
                 slug=slug,
                 seo_title=title,
                 search_description=title,
-                show_in_menus=False,
                 body=[
                     {
                         "type": "h2",

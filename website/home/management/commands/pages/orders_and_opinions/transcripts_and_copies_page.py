@@ -1,7 +1,6 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories
 
 
 class TranscriptsAndCopiesPageInitializer(PageInitializer):
@@ -37,22 +36,16 @@ class TranscriptsAndCopiesPageInitializer(PageInitializer):
             'Register for DAWSON by following the <a href="/dawson">Register for DAWSON instructions</a>.</p>'
         )
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
                 seo_title=title,
                 search_description="Information about obtaining transcripts and copies of Tax Court documents",
-                show_in_menus=True,
                 body=[
                     {"type": "paragraph", "value": body_text},
                 ],
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="TRANSCRIPTS & COPIES",
-            navigation_category=NavigationCategories.ORDERS_AND_OPINIONS,
         )
 
         self.logger.write(f"Successfully created the '{title}' page.")

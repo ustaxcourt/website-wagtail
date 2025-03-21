@@ -10,7 +10,6 @@ from home.models import (
     EnhancedStandardPage,
 )
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories
 
 
 class DawsonPageInitializer(PageInitializer):
@@ -77,7 +76,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to eFile a Petition",
                     "slug": "efile-a-petition",
-                    "show_in_menus": False,
                     "path": "efile-a-petition",
                     "depth": 4,
                     "search_description": "How to eFile a Petition",
@@ -85,7 +83,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to Pay the Filing Fee",
                     "slug": "pay-filing-fee",
-                    "show_in_menus": False,
                     "path": "pay-filing-fee",
                     "depth": 4,
                     "search_description": "How to Pay the Filing Fee",
@@ -93,7 +90,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to Merge PDFs",
                     "slug": "merging-files",
-                    "show_in_menus": False,
                     "path": "merging-files",
                     "depth": 4,
                     "search_description": "How to Merge PDFs",
@@ -103,7 +99,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to View Your Dashboard",
                     "slug": "dashboard",
-                    "show_in_menus": False,
                     "path": "dashboard",
                     "depth": 4,
                     "search_description": "How to View Your Dashboard",
@@ -111,7 +106,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to Update Your Contact Information",
                     "slug": "update-contact-information",
-                    "show_in_menus": False,
                     "path": "update-contact-information",
                     "depth": 4,
                     "search_description": "How to Update Your Contact Information",
@@ -121,7 +115,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to Search for a Case",
                     "slug": "find-a-case",
-                    "show_in_menus": False,
                     "path": "find-a-case",
                     "depth": 4,
                     "search_description": "How to Search for a Case",
@@ -129,7 +122,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to Search for an Order",
                     "slug": "find-an-order",
-                    "show_in_menus": False,
                     "path": "find-an-order",
                     "depth": 4,
                     "search_description": "How to Search for an Order",
@@ -137,7 +129,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "How to Search for an Opinion",
                     "slug": "find-an-opinion",
-                    "show_in_menus": False,
                     "path": "find-an-opinion",
                     "depth": 4,
                     "search_description": "How to Search for an Opinion",
@@ -147,7 +138,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "FAQs",
                     "slug": "dawson-faqs-basics",
-                    "show_in_menus": False,
                     "path": "dawson-faqs-basics",
                     "depth": 4,
                     "search_description": "FAQs",
@@ -155,7 +145,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Terms of Use",
                     "slug": "dawson-tou",
-                    "show_in_menus": False,
                     "path": "dawson-tou",
                     "depth": 4,
                     "search_description": "Terms of Use",
@@ -163,7 +152,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Definitions",
                     "slug": "definitions",
-                    "show_in_menus": False,
                     "path": "definitions",
                     "depth": 4,
                     "search_description": "Definitions",
@@ -171,7 +159,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "What Documents Can Be eFiled",
                     "slug": "documents-eligible-for-efiling",
-                    "show_in_menus": False,
                     "path": "documents-eligible-for-efiling",
                     "depth": 4,
                     "search_description": "What Documents Can Be eFiled",
@@ -179,7 +166,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Privacy and Public Access to Case Files",
                     "slug": "notice-regarding-privacy",
-                    "show_in_menus": False,
                     "path": "notice-regarding-privacy",
                     "depth": 4,
                     "search_description": "Privacy and Public Access to Case Files",
@@ -187,7 +173,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Release Notes",
                     "slug": "release-notes",
-                    "show_in_menus": False,
                     "path": "release-notes",
                     "depth": 4,
                     "search_description": "Release Notes",
@@ -195,7 +180,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "User Guides",
                     "slug": "dawson-user-guides",
-                    "show_in_menus": False,
                     "path": "dawson-user-guides",
                     "depth": 4,
                     "search_description": "User Guides",
@@ -203,7 +187,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "DAWSON Status",
                     "slug": "dawson-status",
-                    "show_in_menus": False,
                     "path": "https://status.ustaxcourt.gov/",
                     "depth": 4,
                     "search_description": "DAWSON Status",
@@ -213,7 +196,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Petitioner Registration",
                     "slug": "dawson-petitioner-registration",
-                    "show_in_menus": False,
                     "path": "https://app.dawson.ustaxcourt.gov/create-account/petitioner",
                     "depth": 4,
                     "search_description": "Petitioner Registration",
@@ -221,7 +203,6 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Practitioner Registration",
                     "slug": "dawson-account-practitioner",
-                    "show_in_menus": False,
                     "path": "dawson-account-practitioner",
                     "depth": 4,
                     "search_description": "Practitioner Registration",
@@ -345,9 +326,6 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "seo_title": title,
             "search_description": "Dawson",
             "content_type": dawson_content_type,
-            "show_in_menus": True,
-            "menu_item_name": "DAWSON (eFILING SYSTEM)",
-            "navigation_category": NavigationCategories.eFILING_AND_CASE_MAINTENANCE,
             "fancy_card": [dawson_fancy_card],
             "card_groups": [dawson_petition_card_group, dawson_card_group],
             "photo_dedication": [photo_dedication],

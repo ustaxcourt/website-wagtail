@@ -19,10 +19,12 @@ from home.management.commands.pages.orders_and_opinions import (
 from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
+from home.management.commands.pages.navigation import NavigationInitializer
 
 from home.management.commands.snippets import snippets_to_initialize
 from home.management.commands.redirects.redirect_initializer import RedirectInitializer
 
+# Initialize home and footer first
 home_page_initialize = [
     HomePageInitializer,
     FooterInitializer,
@@ -73,8 +75,14 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("All pages have been initialized."))
 
+        # Update pages
         for page_class in pages_to_update:
             page_instance = page_class(self.stdout)
             page_instance.update()
 
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
+
+        # Initialize navigation last
+        nav_initializer = NavigationInitializer(self.stdout)
+        nav_initializer.create()
+        self.stdout.write(self.style.SUCCESS("Navigation has been initialized."))

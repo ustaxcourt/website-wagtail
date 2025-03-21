@@ -304,7 +304,6 @@ class PetitionersStartPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Starting A Case"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

@@ -1,7 +1,6 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage, IconCategories, IndentStyle
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories
 
 
 class CitationStyleManualPageInitializer(PageInitializer):
@@ -32,13 +31,12 @@ class CitationStyleManualPageInitializer(PageInitializer):
         if not document:
             return
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
                 seo_title=title,
                 search_description="Citation and Style Manual for the United States Tax Court",
-                show_in_menus=True,
                 body=[
                     {
                         "type": "paragraph",
@@ -69,11 +67,6 @@ class CitationStyleManualPageInitializer(PageInitializer):
                     },
                 ],
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="CITATION & STYLE MANUAL",
-            navigation_category=NavigationCategories.ORDERS_AND_OPINIONS,
         )
 
         self.logger.write(f"Successfully created the '{title}' page.")

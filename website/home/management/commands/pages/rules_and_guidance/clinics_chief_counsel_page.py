@@ -118,7 +118,6 @@ A student practice program submitting a pleading, motion, stipulation, or other 
                 slug=slug,
                 seo_title=title,
                 search_description=title,
-                show_in_menus=False,
                 body=[
                     {
                         "type": "h2",
