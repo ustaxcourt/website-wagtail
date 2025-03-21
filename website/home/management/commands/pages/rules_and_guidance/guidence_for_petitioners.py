@@ -53,31 +53,31 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                             "links": [
                                 {
                                     "title": "Starting A Case",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-start",
                                 },
                                 {
                                     "title": "Things that occur before trial",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-before",
                                 },
                                 {
                                     "title": "Things that occur during trial",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-during",
                                 },
                                 {
                                     "title": "Things that occur after trial",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-after",
                                 },
                                 {
                                     "title": "Definition of terms (Glossary)",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-glossary",
                                 },
@@ -102,13 +102,13 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                 },
                                 {
                                     "title": " Clinic Program Information",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/clinics",
                                 },
                                 {
                                     "title": "Case Procedure Information",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/case-procedure",
                                 },

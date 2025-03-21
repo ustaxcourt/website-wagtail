@@ -24,7 +24,7 @@ class ZoomgovProceedingRibbonInitializer:
         links = [
             {
                 "title": "The Basics FAQs",
-                "icon": IconCategories.INFO_CIRCLE_FILLED,
+                "icon": IconCategories.INFO,
                 "url": "/zoomgov-the-basics",
             },
             {
