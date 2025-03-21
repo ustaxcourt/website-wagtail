@@ -808,13 +808,6 @@ class NavigationMenu(
                                 required=True, help_text="Top level navigation title"
                             ),
                         ),
-                        (
-                            "key",
-                            blocks.CharBlock(
-                                required=True,
-                                help_text="Unique identifier for this section",
-                            ),
-                        ),
                         ("sub_links", blocks.ListBlock(SubNavigationLinkBlock())),
                     ]
                 ),

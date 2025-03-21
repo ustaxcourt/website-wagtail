@@ -24,7 +24,6 @@ class NavigationInitializer(PageInitializer):
                 "section",
                 {
                     "title": "ABOUT THE COURT",
-                    "key": "ABOUT",
                     "sub_links": [
                         {
                             "title": "MISSION",
@@ -63,7 +62,6 @@ class NavigationInitializer(PageInitializer):
                 "section",
                 {
                     "title": "RULES & GUIDANCE",
-                    "key": "RULES",
                     "sub_links": [
                         {
                             "title": "REMOTE PROCEEDINGS",
@@ -102,7 +100,6 @@ class NavigationInitializer(PageInitializer):
                 "section",
                 {
                     "title": "ORDERS & OPINIONS",
-                    "key": "ORDERS",
                     "sub_links": [
                         {
                             "title": "TODAY'S OPINIONS",
@@ -141,7 +138,6 @@ class NavigationInitializer(PageInitializer):
                 "section",
                 {
                     "title": "EFILING & CASE MAINTENANCE",
-                    "key": "eFILING",
                     "sub_links": [
                         {
                             "title": "DAWSON (EFILING SYSTEM)",
