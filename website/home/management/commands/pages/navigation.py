@@ -42,7 +42,7 @@ class NavigationInitializer(PageInitializer):
                         },
                         {
                             "title": "TRIAL SESSIONS",
-                            "page": self.get_page("trial-sessions"),
+                            "page": None,
                             "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                         },
                         {
