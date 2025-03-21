@@ -817,7 +817,7 @@ class NavigationMenu(
         blank=True,
     )
 
-    def get_preview_template(self, request, mode_name):
+    def get_preview_template(self):
         return "previews/header_preview.html"
 
     def get_preview_context(self, request, mode_name):

@@ -13,6 +13,8 @@ def get_site_root(context):
 
 @register.simple_tag(takes_context=True)
 def get_navigation_menu(context):
-    if hasattr(context.get("self"), "menu_items"):
+    isPreviewRender = hasattr(context.get("self"), "menu_items")
+    if isPreviewRender:
         return context["self"]
-    return NavigationMenu.objects.filter(live=True).first()
+    else:
+        return NavigationMenu.objects.filter(live=True).first()
