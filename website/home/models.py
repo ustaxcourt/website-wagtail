@@ -536,11 +536,12 @@ class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
         context["judge_collections"] = self.judge_collections.all()
         return context
 
-    @route(r"^judges/(?P<last_name>[\w-]+)/$")
+    @route(r"^(?P<last_name>[\w-]+)/$")
     def judge_detail(self, request, last_name):
         try:
             # Convert to lowercase for case-insensitive comparison
             judge = JudgeProfile.objects.get(last_name__iexact=last_name)
+            print(f"Judge found: {judge.display_name}")  # Debugging line
             return self.render(
                 request,
                 "home/judge_detail.html",
