@@ -413,7 +413,7 @@ class JudgesPageInitializer(PageInitializer):
             special_trial_judge_collection.judges.add(judge)
 
         # Create the page first
-        new_page = home_page.add_child(
+        _ = home_page.add_child(
             instance=JudgeIndex(
                 title=title,
                 slug=self.slug,
@@ -432,6 +432,10 @@ class JudgesPageInitializer(PageInitializer):
                                             "anchortag": "JUDGES",
                                         },
                                     },
+                                    {
+                                        "type": "judgeCollection",
+                                        "value": judge_collection.id,
+                                    },
                                 ],
                                 [  # Second column
                                     {
@@ -440,6 +444,10 @@ class JudgesPageInitializer(PageInitializer):
                                             "text": "Senior Judges",
                                             "anchortag": "SENIOR",
                                         },
+                                    },
+                                    {
+                                        "type": "judgeCollection",
+                                        "value": senior_judge_collection.id,
                                     },
                                 ],
                                 [  # Third column
@@ -450,6 +458,10 @@ class JudgesPageInitializer(PageInitializer):
                                             "anchortag": "SPECIAL",
                                         },
                                     },
+                                    {
+                                        "type": "judgeCollection",
+                                        "value": special_trial_judge_collection.id,
+                                    },
                                 ],
                             ]
                         },
@@ -457,11 +469,5 @@ class JudgesPageInitializer(PageInitializer):
                 ],
             )
         )
-
-        # Now add the collections to the page
-        judge_page = JudgeIndex.objects.get(id=new_page.id)
-        judge_page.judge_collections.add(judge_collection)
-        judge_page.judge_collections.add(senior_judge_collection)
-        judge_page.judge_collections.add(special_trial_judge_collection)
 
         self.logger.write(f"Created the '{title}' page with judge collections.")

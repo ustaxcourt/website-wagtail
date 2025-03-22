@@ -27,6 +27,7 @@ from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
 from wagtail.models import PreviewableMixin
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
+from django.http import Http404
 
 
 @register_setting
@@ -463,7 +464,20 @@ class JudgeCollection(ClusterableModel):
         return self.name
 
 
-class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
+class JudgeColumnBlock(CommonBlock):
+    judgeCollection = SnippetChooserBlock(
+        target_model="home.JudgeCollection",
+        required=False,
+        help_text="Optionally pick a JudgeCollection snippet",
+        label="Judge Collection",
+    )
+
+
+class JudgeColumns(blocks.StructBlock):
+    column = blocks.ListBlock(JudgeColumnBlock())
+
+
+class JudgeIndex(RoutablePageMixin, Page):
     """
     A specialized page for displaying judges categorized by their titles.
     Only one instance of this page can exist in the site.
@@ -472,22 +486,19 @@ class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
     template = "home/enhanced_standard_page.html"
     max_count = 1
 
-    # Add collections field to reference JudgeCollection snippets
-    judge_collections = models.ManyToManyField(
-        "JudgeCollection",
+    body = StreamField(
+        [
+            ("columns", JudgeColumns()),
+        ],
         blank=True,
-        related_name="judge_index_pages",
-        help_text="Select judge collections to display on this page",
+        use_json_field=True,
+        help_text="Add judge profiles or collections to display on this page",
     )
 
-    content_panels = EnhancedStandardPage.content_panels + [
-        FieldPanel("judge_collections", widget=forms.CheckboxSelectMultiple),
+    content_panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
     ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["judge_collections"] = self.judge_collections.all()
-        return context
 
     @route(r"^(?P<last_name>[\w-]+)/$")
     def judge_detail(self, request, last_name):
@@ -500,17 +511,11 @@ class JudgeIndex(RoutablePageMixin, EnhancedStandardPage):
             return render(request, "home/judge_detail.html", context)
         except JudgeProfile.DoesNotExist:
             # Handle case where judge doesn't exist
-            return self.render(
-                request,
-                "home/judge_not_found.html",
-                {
-                    "page": self,
-                    "last_name": last_name,
-                },
-            )
+            raise Http404("Judge not found")
 
     class Meta:
         verbose_name = "Judges Index Page"
+        abstract = False
 
 
 class HomePage(Page):
