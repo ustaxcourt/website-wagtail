@@ -16,5 +16,8 @@
         {% endif %}
         <h2>Biography</h2>
         <div class="judge-bio">{{ judge.bio|richtext }}</div>
+        <p>
+            <strong>Last updated:</strong> {{ judge.last_updated_date|date:"F j, Y" }}.
+        </p>
     </div>
 {% endblock %}

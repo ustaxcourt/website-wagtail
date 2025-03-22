@@ -28,6 +28,7 @@ from wagtail.models import PreviewableMixin
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
 from django.http import Http404
+from django.utils import timezone
 
 
 @register_setting
@@ -415,6 +416,7 @@ class JudgeProfile(models.Model):
     )
 
     bio = RichTextField(blank=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
 
     panels = [
         FieldPanel("first_name"),
@@ -428,6 +430,7 @@ class JudgeProfile(models.Model):
     ]
 
     def save(self, *args, **kwargs):
+        self.last_updated_date = timezone.now()
         # Only generate a default if display_name is blank
         if not self.display_name.strip():
             parts = [self.first_name, self.middle_initial, self.last_name, self.suffix]
