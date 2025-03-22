@@ -343,7 +343,7 @@
                         {% if block.value.id %}
                             <a href="{{ page_url }}#{{ block.value.id }}"
                                title="{{ block.value.text }}">
-                                <div class="ti ti-bookmark-filled bookmark" id="{{ block.value.id }}"></div>
+                                <div class="fa-solid fa-bookmark bookmark" id="{{ block.value.id }}"></div>
                             </a>
                         {% endif %}
                         {{ block.value.text }}
@@ -382,7 +382,7 @@
                         {% for q in block.value %}
                             <li>
                                 <a href="{{ page_url }}#{{ q.anchortag }}">
-                                    <i class="ti ti-info-circle-filled"></i>{{ q.question }}
+                                    <i class="fa-solid fa-circle-info"></i>{{ q.question }}
                                 </a>
                             </li>
                         {% endfor %}
@@ -391,7 +391,7 @@
                     {% for q in block.value %}
                         <div class="question-answer-block">
                             <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
-                                <div class="ti ti-bookmark-filled bookmark" id="{{ q.anchortag }}"></div>
+                                <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
                             </a>
                             <h3>{{ q.question }}</h3>
                         </div>

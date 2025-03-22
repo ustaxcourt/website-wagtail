@@ -57,7 +57,7 @@
                 {% for faq in page.faq_links.all %}
                     <div>
                         <a href="{{ faq.link }}">
-                            <i class="ti ti-chevron-right"></i>
+                            <i class="fa-solid fa-chevron-right"></i>
                             {{ faq.title }}
                         </a>
                     </div>
@@ -73,7 +73,7 @@
                 {% for info in page.info.all %}
                     <div>
                         <a href="{{ info.pdf.url }}">
-                            <i class="ti ti-file-type-pdf margin-right-1"></i>
+                            <i class="fa-solid fa-file-pdf margin-right-1"></i>
                             {{ info.pdf.title }}
                         </a>
                     </div>
@@ -87,11 +87,11 @@
                     <h3>{{ example.title }}</h3>
                     <div class="links">
                         <a href="{{ example.speaker_url }}">
-                            <i class="ti ti-video-filled margin-right-1"></i>
+                            <i class="fa-solid fa-video margin-right-1"></i>
                             {{ example.speaker_title }}
                         </a>
                         <a href="{{ example.gallery_url }}">
-                            <i class="ti ti-video-filled margin-right-1"></i>
+                            <i class="fa-solid fa-video margin-right-1"></i>
                             {{ example.gallery_title }}
                         </a>
                     </div>

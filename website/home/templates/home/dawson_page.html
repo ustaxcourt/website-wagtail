@@ -179,7 +179,7 @@
                                                     <ul class="card-related-pages-list">
                                                         {% for related_page in card.related_pages.all %}
                                                             <li>
-                                                                <i class="ti ti-chevron-right"></i>
+                                                                <i class="fa-solid fa-chevron-right"></i>
                                                                 <a href="{{ related_page.related_page.url }}">{{ related_page.display_title|default:related_page.related_page.title }}</a>
                                                             </li>
                                                         {% endfor %}

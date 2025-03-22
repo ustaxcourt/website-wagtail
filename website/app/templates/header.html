@@ -26,6 +26,10 @@
             display: flex;
             justify-content: center;
             min-height: 52px;
+
+            i {
+                font-size: 0.7rem;
+            }
         }
 
         .navigation-header {
@@ -288,7 +292,6 @@
         }
     }
 </style>
-
 <header id="top-navigation">
     <div class="blue-banner">
         <div class="grid-container padding-1">
@@ -313,55 +316,46 @@
         <button class="nav-hamburger"
                 aria-label="Toggle mobile menu"
                 onclick="toggleHeaders()">
-            <i class="ti ti-menu-2"></i>
+            <i class="fa-solid fa-bars"></i>
         </button>
         <ul class="navigation">
             {% get_navigation_menu as nav %}
-            {% if not nav %}
-                <div style="display:none">No navigation menu found</div>
-            {% else %}
-                {% if not nav.menu_items %}
-                    <div style="display:none">Menu exists but no items</div>
-                {% endif %}
-                {% for section in nav.menu_items %}
-                    <div style="display:none">Section: {{ section.value.title }}</div>
-                    <li class="navigation-header">
-                        <button aria-expanded="false"
-                                class="link"
-                                data-testid="nav-button-{{ section.value.title|slugify }}"
-                                onclick="toggleMenuItems(this)">
-                            <div>
-                                {{ section.value.title }}
-                                <i class="ti ti-chevron-right"></i>
-                            </div>
-                        </button>
-                        <ul class="navigation-list"
-                            data-testid="nav-list-{{ section.value.title|slugify }}">
-                            {% for sub_link in section.value.sub_links %}
-                                <div style="display:none">Sublink: {{ sub_link.title }}</div>
-                                <li class="nav-link">
-                                    {% if sub_link.external_url %}
-                                        <a target="_blank"
-                                           href="{{ sub_link.external_url }}"
-                                           data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            <i class="ti ti-chevron-right"></i>
-                                            {{ sub_link.title }}
-                                        </a>
-                                    {% elif sub_link.page %}
-                                        <a href="{% pageurl sub_link.page %}"
-                                           data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            <i class="ti ti-chevron-right"></i>
-                                            {{ sub_link.title }}
-                                        </a>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-    </div>
+            {% for section in nav.menu_items %}
+                <li class="navigation-header">
+                    <button aria-expanded="false"
+                            class="link"
+                            data-testid="nav-button-{{ section.value.title|slugify }}"
+                            onclick="toggleMenuItems(this)">
+                        <div>
+                            {{ section.value.title }}
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+                    </button>
+                    <ul class="navigation-list"
+                        data-testid="nav-list-{{ section.value.title|slugify }}">
+                        {% for sub_link in section.value.sub_links %}
+                            <li class="nav-link">
+                                {% if sub_link.external_url %}
+                                    <a target="_blank"
+                                       href="{{ sub_link.external_url }}"
+                                       data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                       <i class="fa-solid fa-chevron-right"></i>
+                                        {{ sub_link.title }}
+                                    </a>
+                                {% elif sub_link.page %}
+                                    <a href="{% pageurl sub_link.page %}"
+                                       data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                        {{ sub_link.title }}
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+    </ul>
+</div>
 </header>
 <script>
     function toggleHeaders() {
