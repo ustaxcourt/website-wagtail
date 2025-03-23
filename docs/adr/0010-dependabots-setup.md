@@ -21,10 +21,10 @@ The Wagtail CMS project uses Python (pip) and Node.js (NPM) dependencies. GitHub
 
 - Manually review all Dependabot pull requests.
 - (For non-Django, non-Wagtail dependencies) No major version updates will be merged without proper testing on Admin interface.
-- For Django and Wagtail dependencies: minor updates (e.g. 1.1 -> 1.2) should not be done without consulting & abiding by the [Wagtail upgrade documentation](https://docs.wagtail.org/en/stable/releases/upgrading.html).
+- For Django and Wagtail dependencies: minor updates (e.g. 1.1 -> 1.2) should not be done without consulting & abiding by the [Wagtail upgrade documentation](https://docs.wagtail.org/en/stable/releases/upgrading.html). Also, see [0009-wagtail-upgrades.md](./0009-wagtail-upgrades.md).
 - For Django and Wagtail dependencies: Major updates (e.g. 1.0 -> 2.0 ) should be undertaken as separate user stories and refined, planned, and tracked as such.
 - Dependabot pull requests for *point* releases (e.g. 1.0.0 -> 1.0.1) may be accepted so long as they pass all automatic tests.
-- Security updates are prioritized but also require a review. We prohibit automerging to ensure a human checks compatibility and safety.
+- Security updates are prioritized but also require a review. We prohibit automerge to ensure a human checks compatibility and safety.
 
 These guidelines reduce risks while keeping dependencies current.
 

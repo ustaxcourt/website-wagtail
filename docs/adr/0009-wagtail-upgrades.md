@@ -14,7 +14,7 @@ We need a reliable, low-risk process for upgrading Wagtail. This ADR summarizes 
 
 1. **Backups**: Always back up the database before upgrade.
 2. **Dependency Review**: Check Wagtail’s compatibility with your Python/Django versions. Upgrade those separately if needed.
-3. **Deprecation Warnings**: Consider resolving existing warnings to avoid surprise depcrecations/error.
+3. **Deprecation Warnings**: Consider resolving existing warnings to avoid surprise deprecations/error.
 4. **Third-Party Plugins**: Confirm that plugins are compatible with the target Wagtail release or have updated versions.
 5. **Environment Setup**: Follow the usual deployment to test/staging environment that mirrors production as closely as possible. Use a dedicated Github branch.
 6. **Test Coverage**: Ensure the unit test suite is passing on the current version before upgrading.

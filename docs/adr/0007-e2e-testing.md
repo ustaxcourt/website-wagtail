@@ -14,7 +14,7 @@ We want to establish an E2E testing strategy that considers:
 - Test framework setup and maintenance overhead.
 - Long-term maintainability and developer productivity.
 
-The main consideration is whether to leverage our existing Cypress expertise or transition to Playwright, which is often recommended for end to end tesing on Python projects.
+The main consideration is whether to leverage our existing Cypress expertise or transition to Playwright, which is often recommended for end to end testing on Python projects.
 
 ## Decision
 

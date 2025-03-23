@@ -16,7 +16,7 @@ USWDS is not mandated for this project. If we decided we'd rather use Tailwind o
 
 ## Decision
 
-We decided to move forward using the default USWDS configuration with SASS.  We avoided the django frameworks because both of those projects are not maintained.  Overall, we feel that just using USWDS has described in their documentation will make for a more maintainble project in the long run.  We've used SASS before and we think it's a very powerful abstraction on top of css that provides a lot of useful utility functions.
+We decided to move forward using the default USWDS configuration with SASS.  We avoided the django frameworks because both of those projects are not maintained.  Overall, we feel that just using USWDS has described in their documentation will make for a more maintainable project in the long run.  We've used SASS before and we think it's a very powerful abstraction on top of css that provides a lot of useful utility functions.
 
 Using USWDS over rolling our own is recommended because USWDS is actively maintained which is a healthy sign for using it as a dependency for our project.
 
