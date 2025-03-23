@@ -89,7 +89,6 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
                     {"type": "h2", "value": "DAWSON: Searches and Public Access"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=True,
             )
         )
 

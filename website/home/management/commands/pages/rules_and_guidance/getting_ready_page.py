@@ -120,7 +120,6 @@ class GettingReadyPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Zoomgov FAQs: Getting Ready"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=True,
             )
         )
 

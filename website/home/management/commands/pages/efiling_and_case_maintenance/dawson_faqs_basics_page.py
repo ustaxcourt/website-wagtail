@@ -30,7 +30,6 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 search_description="DAWSON: The Basics",
-                show_in_menus=False,
             )
             home_page.add_child(instance=page)
 

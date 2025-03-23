@@ -22,7 +22,7 @@ class NavigationRibbonInitializer:
         links = [
             {
                 "title": "Introduction",
-                "icon": IconCategories.INFO_CIRCLE_FILLED,
+                "icon": IconCategories.INFO,
                 "url": "/petitioners",
             },
             {
@@ -52,7 +52,7 @@ class NavigationRibbonInitializer:
             },
             {
                 "title": "Glossary",
-                "icon": IconCategories.BOOK_2,
+                "icon": IconCategories.BOOK,
                 "url": "/petitioners-glossary",
             },
         ]

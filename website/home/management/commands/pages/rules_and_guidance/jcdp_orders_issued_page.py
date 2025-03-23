@@ -335,7 +335,6 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
                         "value": {"column": [chief_judge_column, council_column]},
                     },
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

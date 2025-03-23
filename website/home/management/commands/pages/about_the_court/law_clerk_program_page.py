@@ -32,7 +32,6 @@ class LawClerkProgramPageInitializer(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
-                show_in_menus=True,
                 search_description="Vacancy Announcements for the United States Tax Court",
                 body=[
                     {

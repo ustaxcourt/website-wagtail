@@ -147,7 +147,6 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Zoomgov FAQs: Zoomgov Proceedings"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
 

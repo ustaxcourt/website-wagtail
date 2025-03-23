@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories, EnhancedStandardPage, CommonText
+from home.models import EnhancedStandardPage, CommonText
 
 
 docs = {
@@ -30,13 +30,12 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
             uploaded_document = self.load_document_from_documents_dir(None, document)
             docs[document] = uploaded_document.file.url
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
                 seo_title="Clinical, Student Practice & Bar Sponsored Calendar Call Program",
                 search_description="Clinical, Student Practice & Bar Sponsored Calendar Call Program",
-                show_in_menus=True,
                 body=[
                     {
                         "type": "h2",
@@ -74,11 +73,6 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                     },
                 ],
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="CLINICS & PRO BONO PROGRAMS",
-            navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
         )
 
         self.logger.write(f"Successfully created the '{title}' page.")

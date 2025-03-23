@@ -135,7 +135,6 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                     {"type": "h2", "value": "DAWSON: Account Management"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

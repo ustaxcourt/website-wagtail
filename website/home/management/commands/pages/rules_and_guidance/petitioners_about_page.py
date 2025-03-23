@@ -69,7 +69,6 @@ class PetitionersAboutInitializer(PageInitializer):
                     {"type": "h2", "value": "About the Court"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

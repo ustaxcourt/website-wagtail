@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationCategories, EnhancedStandardPage, IconCategories
+from home.models import EnhancedStandardPage, IconCategories
 
 
 class EmploymentPageInitializer(PageInitializer):
@@ -26,13 +26,12 @@ class EmploymentPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=self.slug,
                 seo_title=title,
                 search_description="Employment",
-                show_in_menus=True,
                 body=[
                     {
                         "type": "links",
@@ -61,11 +60,6 @@ class EmploymentPageInitializer(PageInitializer):
                     },
                 ],
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="EMPLOYMENT",
-            navigation_category=NavigationCategories.ABOUT_THE_COURT,
         )
 
         self.logger.write(f"Created the '{title}' page.")

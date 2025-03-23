@@ -89,7 +89,6 @@ class PetitionersDuringPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Things That Occur During Trial"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

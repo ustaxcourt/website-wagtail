@@ -46,7 +46,6 @@ class JudicialConductAndDisabilityProceduresPageInitializer(PageInitializer):
                 body=[
                     {"type": "paragraph", "value": body_text},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()
