@@ -308,7 +308,7 @@ all_judges = [
         "middle_initial": "R.",
         "last_name": "Carluzzo",
         "suffix": "",
-        "display_name": "Lewis R. Carluzzo, Chief Special Trial Judge",
+        "display_name": "Lewis R. Carluzzo, Chief ST Judge",
         "title": "Special Trial Judge",
         "chambders_telephone": "(202) 521-3339",
         "bio": "Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Appointed Chief Special Trial Judge effective September 1, 2017.",
