@@ -205,7 +205,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "chambders_telephone",
+                    "chambers_telephone",
                     models.CharField(
                         blank=True, help_text="Chambers Telephone Number", max_length=20
                     ),

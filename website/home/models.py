@@ -410,7 +410,7 @@ class JudgeProfile(models.Model):
             ("Special Trial Judge", "Special Trial Judge"),
         ],
     )
-    chambders_telephone = models.CharField(
+    chambers_telephone = models.CharField(
         max_length=20, blank=True, help_text="Chambers Telephone Number"
     )
 
@@ -424,7 +424,7 @@ class JudgeProfile(models.Model):
         FieldPanel("suffix"),
         FieldPanel("display_name"),
         FieldPanel("title"),
-        FieldPanel("chambders_telephone"),
+        FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
     ]
 
