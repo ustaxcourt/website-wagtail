@@ -31,7 +31,7 @@ class DawsonPageInitializer(PageInitializer):
 
         body_content = (
             "DAWSON (Docket Access Within a Secure Online Network) is the U.S. Tax Court's electronic filing and "
-            'case management system. See the <a href="https://ustaxcourt.gov/dawson-user-guides.html">user guides</a> '
+            'case management system. See the <a href="/dawson-user-guides">user guides</a> '
             "for more information and instructions.<br/><br/> Technical questions about DAWSON? Please contact "
             '<a href="mailto:dawson.support@ustaxcourt.gov">dawson.support@ustaxcourt.gov</a>. No documents can be '
             "filed with the Court at this email address. Any documents received via email will NOT be filed in your case."
