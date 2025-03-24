@@ -394,7 +394,7 @@ class EnhancedStandardPage(Page):
 @register_snippet
 class JudgeProfile(models.Model):
     first_name = models.CharField(max_length=255)
-    middle_initial = models.CharField(max_length=3, blank=True)
+    middle_initial = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255)
     suffix = models.CharField(max_length=3, blank=True)
     display_name = models.CharField(
