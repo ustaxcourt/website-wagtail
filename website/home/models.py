@@ -226,6 +226,10 @@ link_obj = blocks.ListBlock(
                 "document",
                 DocumentChooserBlock(required=False),
             ),
+            (
+                "video",
+                DocumentChooserBlock(required=False),
+            ),
             ("url", blocks.CharBlock(required=False)),
             (
                 "text_only",

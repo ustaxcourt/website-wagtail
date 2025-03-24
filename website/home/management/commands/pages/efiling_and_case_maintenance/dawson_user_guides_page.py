@@ -26,7 +26,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
 
         if Page.objects.filter(slug=slug).exists():
             self.logger.write(f"- {title} page already exists.")
-            return
+            Page.objects.filter(slug=slug).delete()
 
         self.logger.write(f"Creating the '{title}' page.")
 
@@ -77,7 +77,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 {
                                     "title": "DAWSON Training Video",
                                     "icon": IconCategories.VIDEO,
-                                    "document": docs[
+                                    "video": docs[
                                         "GMT20201013-122947_Jessica-Ma_1600x900.mp4"
                                     ].id,
                                     "url": None,
@@ -85,7 +85,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 {
                                     "title": "DAWSON Training: Simultaneously eFile Documents in Consolidated Cases",
                                     "icon": IconCategories.VIDEO,
-                                    "document": docs[
+                                    "video": docs[
                                         "efiling_in_consolidated_cases.mp4"
                                     ].id,
                                     "url": None,
