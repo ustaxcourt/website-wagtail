@@ -5,7 +5,7 @@ from home.models import EnhancedStandardPage
 from home.management.commands.snippets.navigation_ribbon import ribbon_snippet_name
 
 
-class GuidenceForPetitionersPageInitializer(PageInitializer):
+class GuidanceForPetitionersPageInitializer(PageInitializer):
     def __init__(self, logger):
         super().__init__(logger)
 

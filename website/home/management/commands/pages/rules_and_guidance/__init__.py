@@ -2,8 +2,8 @@ from .case_procedure_page import CaseProcedurePageInitializer
 from .administrative_orders_page import AdministrativeOrdersPageInitializer
 from .clinics_pro_bono_page import ClinicsProBonoProgramsPageInitializer
 from .getting_ready_page import GettingReadyPageInitializer
-from .guidence_for_petitioners import GuidenceForPetitionersPageInitializer
-from .guidence_for_practitioners_page import GuidenceForPractitionersPageInitializer
+from .guidance_for_petitioners import GuidanceForPetitionersPageInitializer
+from .guidance_for_practitioners_page import GuidanceForPractitionersPageInitializer
 from .petitioners_about_page import PetitionersAboutInitializer
 from .petitioners_after_trial_page import PetitionersAfterTrialInitializer
 from .petitioners_before_trial_page import PetitionersBeforeTrialInitializer
@@ -35,9 +35,9 @@ rules_and_guidance_pages_to_initialize = [
     RemoteProceedingsPageInitializer,
     AdministrativeOrdersPageInitializer,
     RulesPageInitializer,
-    GuidenceForPetitionersPageInitializer,
+    GuidanceForPetitionersPageInitializer,
     ClinicsProBonoProgramsPageInitializer,
-    GuidenceForPractitionersPageInitializer,
+    GuidanceForPractitionersPageInitializer,
     # NON-TOP LEVEL PAGES. Order does not matter.
     PetitionersStartPageInitializer,
     PetitionersAboutInitializer,

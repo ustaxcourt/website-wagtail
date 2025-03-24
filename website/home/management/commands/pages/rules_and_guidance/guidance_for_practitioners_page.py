@@ -27,7 +27,7 @@ practitioners_docs = {
 }
 
 
-class GuidenceForPractitionersPageInitializer(PageInitializer):
+class GuidanceForPractitionersPageInitializer(PageInitializer):
     def __init__(self, logger):
         super().__init__(logger)
 
