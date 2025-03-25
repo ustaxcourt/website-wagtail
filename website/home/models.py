@@ -980,3 +980,66 @@ class NavigationMenu(
     @classmethod
     def get_active_menu(cls):
         return cls.objects.filter(live=True).first()
+
+
+@register_snippet
+class DirectoryEntry(Orderable):
+    """Represents an entry in the directory with title, detail, and phone number."""
+
+    directory = ParentalKey(
+        "Directory", related_name="entries", on_delete=models.CASCADE
+    )
+    title = models.CharField(max_length=255, help_text="Title")
+    detail = RichTextField(blank=True, help_text="Additional details")
+    phone_number = models.CharField(max_length=20, blank=True, help_text="Phone number")
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("detail"),
+        FieldPanel("phone_number"),
+    ]
+
+
+@register_snippet
+class Directory(ClusterableModel):
+    """A directory containing a list of orderable entries."""
+
+    name = models.CharField(
+        max_length=255, help_text="Name of the directory (e.g., 'Contact Directory')"
+    )
+
+    panels = [
+        FieldPanel("name"),
+        InlinePanel("entries", label="Directory Entries"),
+    ]
+
+    def __str__(self):
+        return self.name
+
+
+class DirectoryColumnBlock(CommonBlock):
+    judgeCollection = SnippetChooserBlock(
+        target_model="home.Directory",
+        required=False,
+        help_text="Directory Entry snippet",
+        label="Directory Entry",
+    )
+
+
+class DirectoryIndex(Page):
+    template = "home/enhanced_standard_page.html"
+    max_count = 1
+
+    body = StreamField(
+        [
+            ("columns", DirectoryColumnBlock()),
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Add judge profiles or collections to display on this page",
+    )
+
+    content_panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
+    ]
