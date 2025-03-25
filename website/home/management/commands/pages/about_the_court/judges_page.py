@@ -1,6 +1,11 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import JudgeIndex, JudgeProfile, JudgeCollection
+from home.models import (
+    JudgeIndex,
+    JudgeProfile,
+    JudgeCollection,
+    JudgeCollectionOrderable,
+)
 
 all_judges = [
     {
@@ -393,6 +398,7 @@ class JudgesPageInitializer(PageInitializer):
                 },
             )
 
+        # Create judge collections
         judge_collection = JudgeCollection.objects.create(name="Judges")
         senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
         special_trial_judge_collection = JudgeCollection.objects.create(
@@ -401,16 +407,22 @@ class JudgesPageInitializer(PageInitializer):
 
         # Add judges to the collections based on their titles
         judges = JudgeProfile.objects.filter(title="Judge")
-        for judge in judges:
-            judge_collection.judges.add(judge)
+        for index, judge in enumerate(judges):
+            JudgeCollectionOrderable.objects.create(
+                collection=judge_collection, judge=judge, sort_order=index
+            )
 
         senior_judges = JudgeProfile.objects.filter(title="Senior Judge")
-        for judge in senior_judges:
-            senior_judge_collection.judges.add(judge)
+        for index, judge in enumerate(senior_judges):
+            JudgeCollectionOrderable.objects.create(
+                collection=senior_judge_collection, judge=judge, sort_order=index
+            )
 
         special_trial_judges = JudgeProfile.objects.filter(title="Special Trial Judge")
-        for judge in special_trial_judges:
-            special_trial_judge_collection.judges.add(judge)
+        for index, judge in enumerate(special_trial_judges):
+            JudgeCollectionOrderable.objects.create(
+                collection=special_trial_judge_collection, judge=judge, sort_order=index
+            )
 
         # Create the page first
         _ = home_page.add_child(

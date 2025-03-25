@@ -441,6 +441,21 @@ class JudgeProfile(models.Model):
         return self.display_name
 
 
+class JudgeCollectionOrderable(Orderable):
+    """Intermediate model to make JudgeProfile orderable in JudgeCollection."""
+
+    collection = ParentalKey(
+        "JudgeCollection", related_name="ordered_judges", on_delete=models.CASCADE
+    )
+    judge = models.ForeignKey(
+        "JudgeProfile", on_delete=models.CASCADE, related_name="+"
+    )
+
+    panels = [
+        FieldPanel("judge"),
+    ]
+
+
 @register_snippet
 class JudgeCollection(ClusterableModel):
     """A collection of judge profiles for easy management and display."""
@@ -450,16 +465,9 @@ class JudgeCollection(ClusterableModel):
         help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
     )
 
-    judges = models.ManyToManyField(
-        "JudgeProfile",
-        blank=True,
-        related_name="collections",
-        help_text="Select judges to include in this collection",
-    )
-
     panels = [
         FieldPanel("name"),
-        FieldPanel("judges", widget=forms.CheckboxSelectMultiple),
+        InlinePanel("ordered_judges", label="Judges"),
     ]
 
     def __str__(self):
