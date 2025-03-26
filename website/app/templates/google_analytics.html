@@ -1,5 +1,6 @@
 {% with ga4_id=settings.home.googleanalyticssettings.tracking_id|default:settings.GOOGLE_ANALYTICS_ID %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id }}"></script>
+    <!-- setupLinkHandlers is a global method that should be called after GA is setup. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id }}" onload="setupLinkHandlers()"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() {

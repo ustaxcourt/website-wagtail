@@ -121,18 +121,28 @@
     </body>
 </html>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    /**
+     * This function overrides the default behavior of links on the site
+     * so that external links will always navigate the user to a redirect page
+     * and then open the link in a new tab.
+     *
+     * This must be called after the GA script has loaded or else tracking
+     * for clicked links will not work.
+     */
+    function setupLinkHandlers() {
         document.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", function(event) {
-                let href = this.getAttribute("href")
+                let href = this.getAttribute("href");
 
                 if (!href) {
                     return;
                 }
 
+                // For same-domain PDFs, let GA4's automatic measurement handle it
                 if (isSamedomain(href) && isPdf(href)) {
+                    // Let GA4 track first, then open in new tab
                     window.open(href, "_blank");
-                    // event.preventDefault();
+                    event.preventDefault();
                     return;
                 }
 
@@ -140,7 +150,8 @@
                     return;
                 }
 
-                // event.preventDefault();
+                // For external links, prevent default and handle with our custom logic
+                event.preventDefault();
 
                 if (isSubdomain(href)) {
                     window.open(href, "_blank");
@@ -149,13 +160,12 @@
                     if (newTab) {
                         newTab.sessionStorage.setItem("redirect_url", href);
                     } else {
-                        alert("Pop-up blocked!  Please allow pop-ups for this site.");
+                        alert("Pop-up blocked! Please allow pop-ups for this site.");
                     }
                 }
-
-            });
+            }, { passive: false }); // Explicitly set passive to false for preventDefault
         });
-    });
+    }
 
     function getRootDomain(url) {
         try {
@@ -195,4 +205,9 @@
     function isPdf(url) {
         return url.toLowerCase().endsWith('.pdf')
     }
+
+    // Add this callback before the GA script loads
+    window.gtagReadyCallback = function() {
+        setupLinkHandlers();
+    };
 </script>
