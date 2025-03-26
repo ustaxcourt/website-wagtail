@@ -992,15 +992,18 @@ class DirectoryEntry(Orderable):
     directory = ParentalKey(
         "Directory", related_name="entries", on_delete=models.CASCADE
     )
-    title = models.CharField(max_length=255, help_text="Title")
+    title = models.CharField(max_length=255)
     detail = RichTextField(blank=True, help_text="Additional details")
-    phone_number = models.CharField(max_length=20, blank=True, help_text="Phone number")
+    phone_number = models.CharField(max_length=20, blank=True)
 
     panels = [
         FieldPanel("title"),
         FieldPanel("detail"),
         FieldPanel("phone_number"),
     ]
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         verbose_name = "Directory Entry"
@@ -1030,11 +1033,10 @@ class Directory(ClusterableModel):
 
 class DirectoryColumnBlock(CommonBlock):
     JudgeCollection = judge_snippet
-    DirectoryEntry = SnippetChooserBlock(
+    Directory = SnippetChooserBlock(
         target_model="home.Directory",
         required=False,
-        help_text="Directory Entry snippet",
-        label="Directory Entry",
+        label="Directory",
     )
 
 

@@ -423,6 +423,37 @@
                             </div>
                         </div>
                     </div>
+                {% elif block.block_type == 'Entries' %}
+                    {% comment %}
+                      block.value is a dictionary containing the fields defined in DirectoryColumnBlock:
+                      {
+                        'JudgeCollection': <some snippet or empty>,
+                        'Directory': <directory snippet primary key or snippet object>
+                      }
+                    {% endcomment %}
+
+                    {# Access the snippet (i.e., Directory snippet) #}
+                    {% with directory=block.value.Directory %}
+                        {% if directory %}
+                            <ul>
+                                {% for entry in directory.entries.all %}
+                                    <li>
+                                        <strong>{{ entry.title }}</strong><br />
+                                        <div>{{ entry.detail|richtext }}</div>
+                                        <div>{{ entry.phone_number }}</div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                    {{ block.value }}
+                    <pre>
+                        Test
+                        {% for key, val in block.value.items %}
+                          {{ key }}: {{ val }}
+                        {% endfor %}
+                    </pre>
+
                 {% elif block.block_type == 'columns' %}
                     {% with column_count=block.value.column|length %}
                         <div class="grid-row">
@@ -441,7 +472,7 @@
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                                         {% elif sub_block.block_type == 'links' %}
                                             {% include "home/links_block.html" with block=sub_block %}
-                                        {% elif sub_block.block_type == 'judgeCollection' %}
+                                        {% elif sub_block.block_type == 'JudgeCollection' %}
                                             {% with judge_collection=sub_block.value %}
                                                 {% for ordered_judge in judge_collection.ordered_judges.all %}
                                                     <a href="{{ page.url }}{{ ordered_judge.judge.last_name|lower }}"
