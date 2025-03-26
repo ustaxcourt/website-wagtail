@@ -21,7 +21,7 @@ on:
 
 jobs:
   create-pages:
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.event.inputs.environment == 'dev' && 'development' || github.event.inputs.environment == 'sandbox' && 'sandbox' ||'' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
