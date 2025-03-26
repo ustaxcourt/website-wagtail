@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
+        type: choice
         description: "Environment to run migrations against (e.g. dev or sandbox)"
         options:
           - dev
@@ -20,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Use the branch passed in via the workflow_dispatch input
           ref: ${{ github.event.inputs.branch }}
