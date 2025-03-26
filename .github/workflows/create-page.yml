@@ -49,17 +49,15 @@ jobs:
           node-version: '20.x'
 
       - name: Apply (or Refresh) Terraform to get outputs
-        # If you still need the Terraform outputs (bastion IP, database endpoint, etc.)
         id: tf_outputs
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
-          # If all you need is the outputs (bastion, DB endpoint, bucket):
-          #  - This will initialize TF and pull down existing state without a full deploy
-          terraform init
-          terraform refresh
+          ./setup-tf-buckets.sh
+          ./deploy.sh
+
           bastion_ip=$(terraform output -raw bastion_public_ip)
           echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
 
@@ -78,13 +76,12 @@ jobs:
           . ./load-secrets.sh
           cd ..
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
-          echo "::add-mask::${DATABASE_PASSWORD}"
+          echo "::add-mask::${DATABASE_PASSWORD}" # prevent the password from logging out
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
-          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}" # prevent the password from logging out
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
-
       - name: Run Migrations / Create Pages
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
