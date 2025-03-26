@@ -1,6 +1,9 @@
 name: Create Pages
 
 on:
+  push:
+    branches:
+      - fix/create-page-workflow
   workflow_dispatch:
     inputs:
       environment:
