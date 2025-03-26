@@ -510,11 +510,11 @@ class JudgeIndex(RoutablePageMixin, Page):
         FieldPanel("body"),
     ]
 
-    @route(r"^(?P<last_name>[\w-]+)/$")
-    def judge_detail(self, request, last_name):
+    @route(r"^(?P<id>\d+)/(?P<last_name>[\w-]+)/$")
+    def judge_detail(self, request, id, last_name):
         try:
-            # Convert to lowercase for case-insensitive comparison
-            judge = JudgeProfile.objects.get(last_name__iexact=last_name)
+            # Use the ID to find the judge
+            judge = JudgeProfile.objects.get(id=id)
             print(f"Judge found: {judge.display_name}")  # Debugging line
             context = self.get_context(request)
             context["judge"] = judge
