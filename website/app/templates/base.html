@@ -132,7 +132,7 @@
 
                 if (isSamedomain(href) && isPdf(href)) {
                     window.open(href, "_blank");
-                    event.preventDefault();
+                    // event.preventDefault();
                     return;
                 }
 
@@ -140,7 +140,7 @@
                     return;
                 }
 
-                event.preventDefault();
+                // event.preventDefault();
 
                 if (isSubdomain(href)) {
                     window.open(href, "_blank");
