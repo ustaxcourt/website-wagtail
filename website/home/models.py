@@ -515,7 +515,6 @@ class JudgeIndex(RoutablePageMixin, Page):
         try:
             # Use the ID to find the judge
             judge = JudgeProfile.objects.get(id=id)
-            print(f"Judge found: {judge.display_name}")  # Debugging line
             context = self.get_context(request)
             context["judge"] = judge
             return render(request, "home/judge_detail.html", context)
