@@ -21,7 +21,7 @@ on:
 
 jobs:
   create-pages:
-    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || '' }}
+    environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
