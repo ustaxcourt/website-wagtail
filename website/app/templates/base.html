@@ -122,48 +122,40 @@
 </html>
 <script>
     /**
-     * This function overrides the default behavior of links on the site
-     * so that external links will always navigate the user to a redirect page
-     * and then open the link in a new tab.
-     *
-     * This must be called after the GA script has loaded or else tracking
-     * for clicked links will not work.
+     * Register our link handlers after GA is fully loaded
      */
     function setupLinkHandlers() {
-        document.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", function(event) {
-                let href = this.getAttribute("href");
+        // Use event delegation instead of querySelectorAll
+        document.addEventListener('click', function(event) {
+            const link = event.target.closest('a');
+            if (!link) return;
 
-                if (!href) {
-                    return;
-                }
+            const href = link.getAttribute('href');
+            if (!href) return;
 
-                // For same-domain PDFs, let GA4's automatic measurement handle it
-                if (isSamedomain(href) && isPdf(href)) {
-                    // Let GA4 track first, then open in new tab
-                    window.open(href, "_blank");
-                    event.preventDefault();
-                    return;
-                }
+            if (href.startsWith('mailto:') || href.startsWith('tel:') || isSamedomain(href)) {
+                return; // Let default behavior and GA handle these
+            }
 
-                if (href.startsWith("mailto:") || href.startsWith("tel:") || isSamedomain(href)) {
-                    return;
-                }
-
-                // For external links, prevent default and handle with our custom logic
+            // For same-domain PDFs, let GA track first
+            if (isSamedomain(href) && isPdf(href)) {
+                window.open(href, '_blank');
                 event.preventDefault();
+                return;
+            }
 
-                if (isSubdomain(href)) {
-                    window.open(href, "_blank");
+            // Handle external links
+            event.preventDefault();
+            if (isSubdomain(href)) {
+                window.open(href, '_blank');
+            } else {
+                const newTab = window.open('/redirect/', '_blank');
+                if (newTab) {
+                    newTab.sessionStorage.setItem('redirect_url', href);
                 } else {
-                    let newTab = window.open("/redirect/", "_blank");
-                    if (newTab) {
-                        newTab.sessionStorage.setItem("redirect_url", href);
-                    } else {
-                        alert("Pop-up blocked! Please allow pop-ups for this site.");
-                    }
+                    alert('Pop-up blocked! Please allow pop-ups for this site.');
                 }
-            }, { passive: false }); // Explicitly set passive to false for preventDefault
+            }
         });
     }
 
@@ -206,8 +198,7 @@
         return url.toLowerCase().endsWith('.pdf')
     }
 
-    // Add this callback before the GA script loads
-    window.gtagReadyCallback = function() {
-        setupLinkHandlers();
-    };
+    // Queue the setup to run after GA loads
+    window.gaCallbacks = window.gaCallbacks || [];
+    window.gaCallbacks.push(setupLinkHandlers);
 </script>
