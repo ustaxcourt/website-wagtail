@@ -1,0 +1,103 @@
+name: Create Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to run migrations against (e.g. dev or sandbox)"
+        options:
+          - dev
+          - sandbox
+        default: dev
+        required: true
+      branch:
+        description: "Branch to check out and run these steps on"
+        required: true
+        default: "main"
+
+jobs:
+  create-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Use the branch passed in via the workflow_dispatch input
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set Environment
+        run: |
+          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          echo "BRANCH=${{ github.event.inputs.branch }}" >> $GITHUB_ENV
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.6
+          terraform_wrapper: false
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Apply (or Refresh) Terraform to get outputs
+        # If you still need the Terraform outputs (bastion IP, database endpoint, etc.)
+        id: tf_outputs
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          # If all you need is the outputs (bastion, DB endpoint, bucket):
+          #  - This will initialize TF and pull down existing state without a full deploy
+          terraform init
+          terraform refresh
+          bastion_ip=$(terraform output -raw bastion_public_ip)
+          echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
+
+          db_endpoint=$(terraform output -raw database_endpoint)
+          echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
+
+          bucket_name=$(terraform output -raw bucket_name)
+          echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}"
+          echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations / Create Pages
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME}:5432 -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+
+          # Adjust commands as needed. Example:
+          make migrate settings="app.settings.${ENVIRONMENT}"
+          make superuser settings="app.settings.${ENVIRONMENT}" || echo "User already exists."
+          make resetadminpassword settings="app.settings.${ENVIRONMENT}"
+          make createpages settings="app.settings.${ENVIRONMENT}"
+          make users group="Editors" settings="app.settings.${ENVIRONMENT}"
+          make users group="Moderators" settings="app.settings.${ENVIRONMENT}"
