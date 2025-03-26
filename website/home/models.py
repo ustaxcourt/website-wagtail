@@ -474,13 +474,16 @@ class JudgeCollection(ClusterableModel):
         return self.name
 
 
+judge_snippet = SnippetChooserBlock(
+    target_model="home.JudgeCollection",
+    required=False,
+    help_text="Optionally pick a JudgeCollection snippet",
+    label="Judge Collection",
+)
+
+
 class JudgeColumnBlock(CommonBlock):
-    judgeCollection = SnippetChooserBlock(
-        target_model="home.JudgeCollection",
-        required=False,
-        help_text="Optionally pick a JudgeCollection snippet",
-        label="Judge Collection",
-    )
+    judgeCollection = judge_snippet
 
 
 class JudgeColumns(blocks.StructBlock):
@@ -999,6 +1002,10 @@ class DirectoryEntry(Orderable):
         FieldPanel("phone_number"),
     ]
 
+    class Meta:
+        verbose_name = "Directory Entry"
+        verbose_name_plural = "Directory Entries"
+
 
 @register_snippet
 class Directory(ClusterableModel):
@@ -1016,9 +1023,14 @@ class Directory(ClusterableModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Directory"
+        verbose_name_plural = "Directory"
+
 
 class DirectoryColumnBlock(CommonBlock):
-    judgeCollection = SnippetChooserBlock(
+    JudgeCollection = judge_snippet
+    DirectoryEntry = SnippetChooserBlock(
         target_model="home.Directory",
         required=False,
         help_text="Directory Entry snippet",
@@ -1032,11 +1044,11 @@ class DirectoryIndex(Page):
 
     body = StreamField(
         [
-            ("columns", DirectoryColumnBlock()),
+            ("Entries", DirectoryColumnBlock()),
         ],
         blank=True,
         use_json_field=True,
-        help_text="Add judge profiles or collections to display on this page",
+        help_text="Add directory entries or judge profiles",
     )
 
     content_panels = [
