@@ -92,6 +92,9 @@
               rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Source Sans Pro:400,700,"
               rel="stylesheet" />
+        <script defer type="text/javascript" src="{% static 'js/app.js' %}"></script>
+        <script defer type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
+        {% include 'google_analytics.html' %}
         {% block extra_css %}{# Override this in templates to add extra stylesheets #}{% endblock %}
     </head>
     <body class="{% block body_class %}  {% endblock %}">
@@ -114,9 +117,6 @@
                  aria-hidden="true" />
         </button>
         {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
-        <script type="text/javascript" src="{% static 'uswds/js/uswds.min.js' %}"></script>
-        {% include 'google_analytics.html' %}
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
     </body>
 </html>
