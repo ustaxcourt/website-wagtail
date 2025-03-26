@@ -8,63 +8,63 @@
         }
 
         // Check if we're on localhost
-        const isLocalhost = window.location.hostname === 'localhost' ||
-                          window.location.hostname === '127.0.0.1';
+        // const isLocalhost = window.location.hostname === 'localhost' ||
+        //                   window.location.hostname === '127.0.0.1';
 
         // Initialize GA4 with recommended settings!
         gtag('js', new Date());
         gtag('config', '{{ ga4_id }}');
 
         // Enhanced click event tracking!
-        document.addEventListener('click', function(event) {
-            const link = event.target.closest('a');
-            if (link) {
-                const href = link.href || '';
-                const isPDF = href.toLowerCase().endsWith('.pdf');
+        // document.addEventListener('click', function(event) {
+        //     const link = event.target.closest('a');
+        //     if (link) {
+        //         const href = link.href || '';
+        //         const isPDF = href.toLowerCase().endsWith('.pdf');
 
-                // Base event data for all clicks
-                const eventData = {
-                    item_id: link.id || null,
-                    item_name: link.innerText?.trim() || 'No text',
-                    item_url: href || 'No href',
-                    item_type: 'link',
-                    content_type: link.getAttribute('data-type') || 'link',
-                    location_id: window.location.pathname,
-                    outbound: link.hostname !== window.location.hostname,
-                    engagement_time_msec: Date.now() - window.performance.timing.navigationStart
-                };
+        //         // Base event data for all clicks
+        //         const eventData = {
+        //             item_id: link.id || null,
+        //             item_name: link.innerText?.trim() || 'No text',
+        //             item_url: href || 'No href',
+        //             item_type: 'link',
+        //             content_type: link.getAttribute('data-type') || 'link',
+        //             location_id: window.location.pathname,
+        //             outbound: link.hostname !== window.location.hostname,
+        //             engagement_time_msec: Date.now() - window.performance.timing.navigationStart
+        //         };
 
-                if (isPDF) {
-                    // Additional data for PDF downloads
-                    const pdfEventData = {
-                        page_title: document.title,
-                        file_name: href.split('/').pop(),
-                        file_extension: 'pdf',
-                        link_text: link.innerText?.trim() || 'No text',
-                        link_url: href
-                    };
+        //         if (isPDF) {
+        //             // Additional data for PDF downloads
+        //             const pdfEventData = {
+        //                 page_title: document.title,
+        //                 file_name: href.split('/').pop(),
+        //                 file_extension: 'pdf',
+        //                 link_text: link.innerText?.trim() || 'No text',
+        //                 link_url: href
+        //             };
 
-                    // Log PDF downloads in development
-                    if (isLocalhost) {
-                        console.log('GA4 Event (Development):', {
-                            event_name: 'file_download',
-                            ...pdfEventData
-                        });
-                    }
+        //             // Log PDF downloads in development
+        //             if (isLocalhost) {
+        //                 console.log('GA4 Event (Development):', {
+        //                     event_name: 'file_download',
+        //                     ...pdfEventData
+        //                 });
+        //             }
 
-                    gtag('event', 'file_download', pdfEventData);
-                } else {
-                    // Log regular clicks in development
-                    if (isLocalhost) {
-                        console.log('GA4 Event (Development):', {
-                            event_name: 'click',
-                            ...eventData
-                        });
-                    }
+        //             gtag('event', 'file_download', pdfEventData);
+        //         } else {
+        //             // Log regular clicks in development
+        //             if (isLocalhost) {
+        //                 console.log('GA4 Event (Development):', {
+        //                     event_name: 'click',
+        //                     ...eventData
+        //                 });
+        //             }
 
-                    gtag('event', 'click', eventData);
-                }
-            }
-        });
+        //             gtag('event', 'click', eventData);
+        //         }
+        //     }
+        // });
     </script>
 {% endwith %}
