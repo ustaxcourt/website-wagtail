@@ -521,7 +521,7 @@ class JudgeRole(models.Model):
     ]
 
     def __str__(self):
-        return f"{self.role_name}, {self.judge}" if self.judge else self.role_name
+        return f"{self.role_name}, {self.judge or '** Selection Pending **'}"
 
 
 class JudgeColumnBlock(CommonBlock):
@@ -559,6 +559,13 @@ class JudgeIndex(RoutablePageMixin, Page):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        # Get all judge collections
+        roles = JudgeRole.objects.all()
+        context["roles"] = roles
+        return context
 
     @route(r"^(?P<id>\d+)/(?P<last_name>[\w-]+)/$")
     def judge_detail(self, request, id, last_name):
