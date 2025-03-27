@@ -8,23 +8,16 @@
             </li>
         {% elif link.video %}
             <li>
-                <a href="{{ link.document.url }}" target="_blank"  onclick="openVideoWindow(event, '{{ link.document.url}}')"
+                <a href="{{ link.video.url }}" onclick="openVideoWindow(event, '{{ link.video.url}}')"
                    data-testid="document-link"
                    title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
             </li>
-            <!-- <div>
-                <div id="video-container-{{ link.document.id }}" style="display: none;">
-                    <video width="560" height="315" controls id="video-{{ link.document.id }}">
-                        <source src="video-{{ link.document.url }}" type="video/mp4">
-                    </video>
-                </div>
-            </div> -->
-
             <script>
                 function openVideoWindow(event, videoUrl){
                     event.preventDefault();
-                    var videoWindow = window.open(videoUrl, '_blank', 'width=800,height=450,resizable=yes,scrollbars=no');
-                    videoWindow.document.write(`
+                    const videoTab = window.open('', '_blank');
+
+                    videoTab.document.write(`
                         <html>
                         <head>
                             <title>Video Player</title>
@@ -41,7 +34,7 @@
                         </body>
                         </html>
                     `);
-                    videoWindow.document.close();
+                    videoTab.document.close();
                     // var videoContainer = document.getElementById(containerId);
                     // videoContainer.style.display = "block";
                     // var video = videoContainer.querySelector("video");
