@@ -255,6 +255,8 @@ WAGTAILDOCS_EXTENSIONS = [
     "zip",
 ]
 
+WAGTAILDOCS_INLINE_CONTENT_TYPES = ["application/pdf", "text/plain", "video/mp4"]
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Add this setting to store your GA tracking ID

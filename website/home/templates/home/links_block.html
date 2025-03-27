@@ -8,35 +8,11 @@
             </li>
         {% elif link.video %}
             <li>
-                <a href="{{ link.video.url }}" onclick="openVideoWindow(event, '{{ link.video.url}}', '{{ link.title }}')"
+                <a href="{{ link.video.url }}"
                    data-testid="document-link"
+                   target="_blank"
                    title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
             </li>
-            <script>
-                function openVideoWindow(event, videoUrl, videoTitle) {
-                    event.preventDefault();
-                    const videoTab = window.open('', '_blank');
-
-                    videoTab.document.write(`
-                        <html>
-                        <head>
-                            <title>${videoTitle}</title>
-                            <style>
-                                body {margin:0; background: black; display: flex; justify-content: center; height: 100vh;}
-                                video { max-width: 100%; max-height: 100%;}
-                            </style>
-                        </head>
-                        <body>
-                            <video controls autoplay>
-                                <source src="${videoUrl}" type="video/mp4">
-                                Your browser does not support the video tag
-                            </video>
-                        </body>
-                        </html>
-                    `);
-                    videoTab.document.close();
-                }
-            </script>
         {% elif link.text_only %}
             <li>
                 <i class="{{ link.icon }}"></i> {{ link.title }}
