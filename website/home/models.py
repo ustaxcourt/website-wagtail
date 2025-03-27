@@ -563,7 +563,9 @@ class JudgeIndex(RoutablePageMixin, Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         # Get all judge collections
-        roles = JudgeRole.objects.all()
+        roles = JudgeRole.objects.filter(
+            role_name__in=["Chief Judge", "Chief Special Trial Judge"]
+        )
         context["roles"] = roles
         return context
 
