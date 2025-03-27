@@ -391,6 +391,9 @@ class EnhancedStandardPage(Page):
     ]
 
 
+AUTO_MANAGED_COLLECTIONS = ["Judges", "Senior Judges", "Special Trial Judges"]
+
+
 @register_snippet
 class JudgeProfile(models.Model):
     first_name = models.CharField(max_length=255)
@@ -436,6 +439,24 @@ class JudgeProfile(models.Model):
             # Filter out empty parts and join them with spaces
             self.display_name = " ".join(part for part in parts if part)
         super().save(*args, **kwargs)
+
+        TARGET_COLLECTION = self.title + "s"
+
+        OTHER_COLLECTIONS = set(AUTO_MANAGED_COLLECTIONS) - {TARGET_COLLECTION}
+        # Remove the judge from all other collections
+        for collection_name in OTHER_COLLECTIONS:
+            try:
+                collection = JudgeCollection.objects.get(name=collection_name)
+                collection.ordered_judges.filter(judge=self).delete()
+            except JudgeCollection.DoesNotExist:
+                pass
+
+        # Add the judge to the target collection
+        try:
+            collection = JudgeCollection.objects.get(name=TARGET_COLLECTION)
+            JudgeCollectionOrderable.objects.create(collection=collection, judge=self)
+        except JudgeCollection.DoesNotExist:
+            pass
 
     def __str__(self):
         return self.display_name
