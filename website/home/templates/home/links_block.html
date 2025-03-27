@@ -8,19 +8,19 @@
             </li>
         {% elif link.video %}
             <li>
-                <a href="{{ link.video.url }}" onclick="openVideoWindow(event, '{{ link.video.url}}')"
+                <a href="{{ link.video.url }}" onclick="openVideoWindow(event, '{{ link.video.url}}', '{{ link.title }}')"
                    data-testid="document-link"
                    title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
             </li>
             <script>
-                function openVideoWindow(event, videoUrl){
+                function openVideoWindow(event, videoUrl, videoTitle) {
                     event.preventDefault();
                     const videoTab = window.open('', '_blank');
 
                     videoTab.document.write(`
                         <html>
                         <head>
-                            <title>Video Player</title>
+                            <title>${videoTitle}</title>
                             <style>
                                 body {margin:0; background: black; display: flex; justify-content: center; height: 100vh;}
                                 video { max-width: 100%; max-height: 100%;}
@@ -35,10 +35,6 @@
                         </html>
                     `);
                     videoTab.document.close();
-                    // var videoContainer = document.getElementById(containerId);
-                    // videoContainer.style.display = "block";
-                    // var video = videoContainer.querySelector("video");
-                    // video.play();
                 }
             </script>
         {% elif link.text_only %}
