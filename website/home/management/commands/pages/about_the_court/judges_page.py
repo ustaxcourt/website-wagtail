@@ -4,7 +4,7 @@ from home.models import (
     JudgeIndex,
     JudgeProfile,
     JudgeCollection,
-    JudgeCollectionOrderable,
+    JudgeRole,
 )
 
 all_judges = [
@@ -13,7 +13,7 @@ all_judges = [
         "middle_initial": "",
         "last_name": "Kerrigan",
         "suffix": "",
-        "display_name": "Kathleen Kerrigan, Chief Judge",
+        "display_name": "Kathleen Kerrigan",
         "title": "Judge",
         "chambers_telephone": "(202) 521-0777",
         "bio": "Chief Judge. B.S., Boston College 1985; J.D., University of Notre Dame Law School, 1990. Admitted to Massachusetts Bar, 1991 and District Columbia Bar, 1992. Legislative Director for Congressman Richard E. Neal, Member of the Ways and Means Committee, 1990 to 1998. Associate and partner at Baker & Hostetler LLP, Washington, D.C. 1998-2005. Tax Counsel for Senator John F. Kerry, Member of Senate Finance Committee, 2005-2012. Appointed by President Obama as Judge of the United States Tax Court; sworn in on May 4, 2012, for a term ending on May 3, 2027. Elected as Chief Judge for a two-year term effective June 1, 2022. Re-elected as Chief Judge for a two-year term effective June 1, 2024.",
@@ -313,7 +313,7 @@ all_judges = [
         "middle_initial": "R.",
         "last_name": "Carluzzo",
         "suffix": "",
-        "display_name": "Lewis R. Carluzzo, Chief ST Judge",
+        "display_name": "Lewis R. Carluzzo",
         "title": "Special Trial Judge",
         "chambers_telephone": "(202) 521-3339",
         "bio": "Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Appointed Chief Special Trial Judge effective September 1, 2017.",
@@ -384,6 +384,12 @@ class JudgesPageInitializer(PageInitializer):
 
         self.logger.write(f"Creating the '{title}' page.")
 
+        judge_collection = JudgeCollection.objects.create(name="Judges")
+        senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
+        special_trial_judge_collection = JudgeCollection.objects.create(
+            name="Special Trial Judges"
+        )
+
         for judge in all_judges:
             JudgeProfile.objects.update_or_create(
                 first_name=judge["first_name"],
@@ -398,31 +404,24 @@ class JudgesPageInitializer(PageInitializer):
                 },
             )
 
-        # Create judge collections
-        judge_collection = JudgeCollection.objects.create(name="Judges")
-        senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
-        special_trial_judge_collection = JudgeCollection.objects.create(
-            name="Special Trial Judges"
+        # Create judge role
+        JudgeRole.objects.update_or_create(
+            role_name="Chief Judge",
+            defaults={
+                "judge": JudgeProfile.objects.filter(
+                    last_name__iexact="Kerrigan"
+                ).first()
+            },
         )
 
-        # Add judges to the collections based on their titles
-        judges = JudgeProfile.objects.filter(title="Judge")
-        for index, judge in enumerate(judges):
-            JudgeCollectionOrderable.objects.create(
-                collection=judge_collection, judge=judge, sort_order=index
-            )
-
-        senior_judges = JudgeProfile.objects.filter(title="Senior Judge")
-        for index, judge in enumerate(senior_judges):
-            JudgeCollectionOrderable.objects.create(
-                collection=senior_judge_collection, judge=judge, sort_order=index
-            )
-
-        special_trial_judges = JudgeProfile.objects.filter(title="Special Trial Judge")
-        for index, judge in enumerate(special_trial_judges):
-            JudgeCollectionOrderable.objects.create(
-                collection=special_trial_judge_collection, judge=judge, sort_order=index
-            )
+        JudgeRole.objects.update_or_create(
+            role_name="Chief Special Trial Judge",
+            defaults={
+                "judge": JudgeProfile.objects.filter(
+                    last_name__iexact="Carluzzo"
+                ).first()
+            },
+        )
 
         # Create the page first
         _ = home_page.add_child(

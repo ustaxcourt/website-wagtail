@@ -499,6 +499,31 @@ class JudgeCollection(ClusterableModel):
         return self.name
 
 
+@register_snippet
+class JudgeRole(models.Model):
+    role_name = models.CharField(
+        max_length=255,
+        unique=True,  # Added unique constraint to ensure no duplicate role names
+        help_text="Name of the role (e.g., 'Chief Judge', 'Assistant Judge')",
+    )
+    judge = models.ForeignKey(
+        "JudgeProfile",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="roles",
+        help_text="Assign a judge to this role",
+    )
+
+    panels = [
+        FieldPanel("role_name"),
+        FieldPanel("judge"),
+    ]
+
+    def __str__(self):
+        return f"{self.role_name}, {self.judge}" if self.judge else self.role_name
+
+
 class JudgeColumnBlock(CommonBlock):
     judgeCollection = SnippetChooserBlock(
         target_model="home.JudgeCollection",
