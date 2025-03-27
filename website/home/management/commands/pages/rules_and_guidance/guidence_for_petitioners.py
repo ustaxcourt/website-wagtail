@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationRibbon, IconCategories, NavigationCategories
+from home.models import NavigationRibbon, IconCategories
 from home.models import EnhancedStandardPage
 from home.management.commands.snippets.navigation_ribbon import ribbon_snippet_name
 
@@ -33,7 +33,7 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
             name=ribbon_snippet_name
         ).first()
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=slug,
@@ -53,31 +53,31 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                             "links": [
                                 {
                                     "title": "Starting A Case",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-start",
                                 },
                                 {
                                     "title": "Things that occur before trial",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-before",
                                 },
                                 {
                                     "title": "Things that occur during trial",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-during",
                                 },
                                 {
                                     "title": "Things that occur after trial",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-after",
                                 },
                                 {
                                     "title": "Definition of terms (Glossary)",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/petitioners-glossary",
                                 },
@@ -102,13 +102,13 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                 },
                                 {
                                     "title": " Clinic Program Information",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/clinics",
                                 },
                                 {
                                     "title": "Case Procedure Information",
-                                    "icon": IconCategories.INFO_CIRCLE_FILLED,
+                                    "icon": IconCategories.INFO,
                                     "document": None,
                                     "url": "/case-procedure",
                                 },
@@ -121,11 +121,5 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                         "value": "For more detailed information, consult the Tax Court <a href='/rules'>Rules of Practice and Procedure</a>.",
                     },
                 ],
-                show_in_menus=True,
             )
-        )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="GUIDANCE FOR PETITIONERS",
-            navigation_category=NavigationCategories.RULES_AND_GUIDANCE,
         )

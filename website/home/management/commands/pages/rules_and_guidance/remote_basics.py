@@ -83,7 +83,6 @@ class RemoteBasicsPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Zoomgov FAQs: The Basics"},
                     {"type": "questionanswers", "value": questions},
                 ],
-                show_in_menus=False,
             )
         )
         new_page.save_revision().publish()

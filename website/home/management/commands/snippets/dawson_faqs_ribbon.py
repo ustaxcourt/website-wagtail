@@ -22,7 +22,7 @@ class DawsonFAQsRibbonInitializer:
         links = [
             {
                 "title": "The Basics",
-                "icon": IconCategories.INFO_CIRCLE_FILLED,
+                "icon": IconCategories.INFO,
                 "url": "/dawson-faqs-basics",
             },
             {

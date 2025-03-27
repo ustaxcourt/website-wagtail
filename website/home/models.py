@@ -21,6 +21,10 @@ from wagtail import blocks
 from wagtail.images.blocks import ImageBlock
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.blocks import PageChooserBlock
+from django.contrib.contenttypes.fields import GenericRelation
+from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
+from wagtail.models import PreviewableMixin
 
 
 @register_setting
@@ -67,72 +71,26 @@ class IndentStyle(models.TextChoices):
 
 class IconCategories(models.TextChoices):
     NONE = ("",)
-    BOOK_2 = "ti ti-book-2"
-    BUILDING_BANK = "ti ti-building-bank"
-    CALENDAR_MONTH = "ti ti-calendar-month"
-    CHEVRON_RIGHT = "ti ti-chevron-right"
-    FILE = "ti ti-file"
-    HAMMER = "ti ti-hammer"
-    INFO = "ti ti-info-circle"
-    INFO_CIRCLE_FILLED = "ti ti-info-circle-filled"
-    CHECK = "ti ti-check"
-    LINK = "ti ti-link"
-    EXCLAMATION_MARK = "ti ti-exclamation-mark"
-    PDF = "ti ti-file-type-pdf"
-    SCALE = "ti ti-scale"
-    USER = "ti ti-user-filled"
-    VIDEO = "ti ti-video-filled"
-    SETTINGS = "ti ti-settings-filled"
-    BRIEFCASE = "ti ti-briefcase-filled"
-    SEARCH = "ti ti-search"
+    BOOK = "fa-solid fa-book"
+    BUILDING_BANK = "fa-solid fa-building-columns"
+    CALENDAR_MONTH = "fa-solid fa-calendar"
+    CHEVRON_RIGHT = "fa-solid fa-chevron-right"
+    FILE = "fa-solid fa-file"
+    HAMMER = "fa-solid fa-gavel"
+    INFO = "fa-solid fa-circle-info"
+    CHECK = "fa-solid fa-check"
+    LINK = "fa-solid fa-link"
+    EXCLAMATION_MARK = "fa-solid fa-exclamation"
+    PDF = "fa-solid fa-file-pdf"
+    SCALE = "fa-solid fa-scale-balanced"
+    USER = "fa-solid fa-user"
+    VIDEO = "fa-solid fa-video"
+    SETTINGS = "fa-solid fa-gear"
+    BRIEFCASE = "fa-solid fa-briefcase"
+    SEARCH = "fa-solid fa-magnifying-glass"
 
 
-class NavigationMixin(Page):
-    class Meta:
-        abstract = True
-
-    no_index = models.BooleanField(default=False)
-
-    navigation_category = models.TextField(
-        max_length=45,
-        choices=NavigationCategories.choices,
-        default=NavigationCategories.NONE,
-    )
-
-    redirectLink = models.CharField(
-        blank=True, help_text="Insert link here.", max_length=250
-    )
-
-    menu_item_name = models.CharField(
-        max_length=255,
-        default="*NOT SET*",
-        help_text="Enter the name of the page for the navigation bar link.",
-    )
-
-    promote_panels = Page.promote_panels + [
-        FieldPanel("navigation_category", widget=forms.Select),
-        FieldPanel("menu_item_name"),
-        FieldPanel("redirectLink"),
-    ]
-
-    def clean(self):
-        # Ensure 'search_description' is not empty
-        super().clean()
-        if not self.search_description:
-            raise ValidationError({"search_description": "This field cannot be blank."})
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        navigation_sections = [
-            {"title": label.upper(), "key": value}
-            for value, label in NavigationCategories.choices
-            if value != NavigationCategories.NONE
-        ]
-        context["navigation_sections"] = navigation_sections
-        return context
-
-
-class StandardPage(NavigationMixin):
+class StandardPage(Page):
     class Meta:
         abstract = False
 
@@ -286,7 +244,7 @@ class ColumnBlock(blocks.StructBlock):
     column = blocks.ListBlock(CommonBlock())
 
 
-class EnhancedStandardPage(NavigationMixin, Page):
+class EnhancedStandardPage(Page):
     class Meta:
         abstract = False
 
@@ -441,7 +399,7 @@ class EnhancedStandardPage(NavigationMixin, Page):
     ]
 
 
-class HomePage(NavigationMixin):
+class HomePage(Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
     content_panels = Page.content_panels + [
@@ -511,7 +469,7 @@ class CaseRelatedFormsEntry(models.Model):
     ]
 
 
-class ExternalRedirectPage(NavigationMixin):
+class ExternalRedirectPage(Page):
     class Meta:
         abstract = False
 
@@ -816,3 +774,80 @@ class VacancyEntry(Orderable):
 
     def is_active(self):
         return self.closing_date >= date.today()
+
+
+class SubNavigationLinkBlock(blocks.StructBlock):
+    """Represents a sub-navigation link that can point to internal or external pages"""
+
+    title = blocks.CharBlock(
+        required=True, help_text="Display text for the navigation link"
+    )
+    page = PageChooserBlock(required=False, help_text="Select a page to link to")
+    external_url = blocks.URLBlock(required=False, help_text="Or enter an external URL")
+
+    class Meta:
+        icon = "link"
+
+
+@register_snippet
+class NavigationMenu(
+    PreviewableMixin, DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel
+):
+    def clean(self):
+        super().clean()
+        # Check if another menu already exists during creation
+        if not self.pk and NavigationMenu.objects.exists():
+            raise ValidationError("Only one Navigation Menu can exist in the system.")
+
+    menu_items = StreamField(
+        [
+            (
+                "section",
+                blocks.StructBlock(
+                    [
+                        (
+                            "title",
+                            blocks.CharBlock(
+                                required=True, help_text="Top level navigation title"
+                            ),
+                        ),
+                        ("sub_links", blocks.ListBlock(SubNavigationLinkBlock())),
+                    ]
+                ),
+            )
+        ],
+        use_json_field=True,
+        blank=True,
+    )
+
+    def get_preview_template(self):
+        return "previews/header_preview.html"
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        context["self"] = self
+        return context
+
+    # Required for RevisionMixin
+    _revisions = GenericRelation(
+        "wagtailcore.Revision", related_query_name="navigation_menu"
+    )
+
+    panels = [
+        FieldPanel("menu_items"),
+    ]
+
+    @property
+    def revisions(self):
+        return self._revisions
+
+    class Meta:
+        verbose_name = "Navigation Menu"
+        verbose_name_plural = "Navigation Menus"
+
+    def __str__(self):
+        return "Navigation Menu"
+
+    @classmethod
+    def get_active_menu(cls):
+        return cls.objects.filter(live=True).first()

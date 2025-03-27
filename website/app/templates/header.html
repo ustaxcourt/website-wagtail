@@ -26,6 +26,10 @@
             display: flex;
             justify-content: center;
             min-height: 52px;
+
+            i {
+                font-size: 0.7rem;
+            }
         }
 
         .navigation-header {
@@ -308,54 +312,50 @@
             </div>
         </div>
     </div>
-    {% get_site_root as site_root %}
     <div class="navigation-bar" data-testid="navigation-bar">
         <button class="nav-hamburger"
                 aria-label="Toggle mobile menu"
                 onclick="toggleHeaders()">
-            <i class="ti ti-menu-2"></i>
+            <i class="fa-solid fa-bars"></i>
         </button>
         <ul class="navigation">
-            {% for section in navigation_sections %}
+            {% get_navigation_menu as nav %}
+            {% for section in nav.menu_items %}
                 <li class="navigation-header">
                     <button aria-expanded="false"
                             class="link"
-                            data-testid="nav-button-{{ section.title|slugify }}"
+                            data-testid="nav-button-{{ section.value.title|slugify }}"
                             onclick="toggleMenuItems(this)">
                         <div>
-                            {{ section.title }}
-                            <i class="ti ti-chevron-right"></i>
+                            {{ section.value.title }}
+                            <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </button>
                     <ul class="navigation-list"
-                        data-testid="nav-list-{{ section.title|slugify }}">
-                        {% for menuitem in site_root.get_children.live.in_menu %}
-                            {% if menuitem.specific.navigation_category == section.key %}
-                                {% if menuitem.specific.redirectLink %}
-                                    <li class="nav-link">
-                                        <a target="_blank"
-                                           href="{{ menuitem.specific.redirectLink }}"
-                                           data-testid="nav-link-{{ menuitem.specific.menu_item_name|slugify }}">
-                                            <i class="ti ti-chevron-right"></i>
-                                            {{ menuitem.specific.menu_item_name }}
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="nav-link">
-                                        <a href="{% pageurl menuitem %}"
-                                           data-testid="nav-link-{{ menuitem.specific.menu_item_name|slugify }}">
-                                            <i class="ti ti-chevron-right"></i>
-                                            {{ menuitem.specific.menu_item_name }}
-                                        </a>
-                                    </li>
+                        data-testid="nav-list-{{ section.value.title|slugify }}">
+                        {% for sub_link in section.value.sub_links %}
+                            <li class="nav-link">
+                                {% if sub_link.external_url %}
+                                    <a target="_blank"
+                                       href="{{ sub_link.external_url }}"
+                                       data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                       <i class="fa-solid fa-chevron-right"></i>
+                                        {{ sub_link.title }}
+                                    </a>
+                                {% elif sub_link.page %}
+                                    <a href="{% pageurl sub_link.page %}"
+                                       data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                        {{ sub_link.title }}
+                                    </a>
                                 {% endif %}
-                            {% endif %}
+                            </li>
                         {% endfor %}
                     </ul>
                 </li>
             {% endfor %}
-        </ul>
-    </div>
+    </ul>
+</div>
 </header>
 <script>
     function toggleHeaders() {

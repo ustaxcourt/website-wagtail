@@ -2,7 +2,6 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import (
     IconCategories,
-    NavigationCategories,
     EnhancedStandardPage,
     PhotoDedication,
 )
@@ -87,13 +86,12 @@ class HistoryPageInitializer(PageInitializer):
         photo_dedication.photo = history_image
         photo_dedication.save()
 
-        new_page = home_page.add_child(
+        home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=self.slug,
                 seo_title=title,
                 search_description="History",
-                show_in_menus=True,
                 body=[
                     {
                         "type": "links",
@@ -141,13 +139,5 @@ class HistoryPageInitializer(PageInitializer):
                 ],
             )
         )
-
-        EnhancedStandardPage.objects.filter(id=new_page.id).update(
-            menu_item_name="HISTORY",
-            navigation_category=NavigationCategories.ABOUT_THE_COURT,
-        )
-
-        #             new_page.save()
-        #             EnhancedStandardPage.objects.filter(id=new_page.id).save()
 
         self.logger.write(f"Created the '{title}' page.")
