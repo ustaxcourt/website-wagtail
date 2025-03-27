@@ -454,7 +454,11 @@ class JudgeProfile(models.Model):
         # Add the judge to the target collection
         try:
             collection = JudgeCollection.objects.get(name=TARGET_COLLECTION)
-            JudgeCollectionOrderable.objects.create(collection=collection, judge=self)
+            # Check if the judge is already in the collection
+            if not collection.ordered_judges.filter(judge=self).exists():
+                JudgeCollectionOrderable.objects.create(
+                    collection=collection, judge=self
+                )
         except JudgeCollection.DoesNotExist:
             pass
 
