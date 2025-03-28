@@ -520,7 +520,7 @@ class JudgeRole(models.Model):
         FieldPanel("judge"),
     ]
 
-    def save(self, *args, **kwargs):
+    def clean(self):
         # Restrict updates to role_name for specific roles
         if self.pk:  # Check if the object already exists
             original = JudgeRole.objects.get(pk=self.pk)
@@ -529,15 +529,15 @@ class JudgeRole(models.Model):
                 and original.role_name != self.role_name
             ):
                 raise ValidationError(
-                    {"role_name": "You cannot modify the role name for this role."}
+                    "You cannot modify the role name for 'Chief Judge' or 'Chief Special Trial Judge'.",
                 )
-        super().save(*args, **kwargs)
+        super().clean()
 
     def delete(self, *args, **kwargs):
         # Restrict deletion for specific roles
         if self.role_name in ["Chief Judge", "Chief Special Trial Judge"]:
             raise ValidationError(
-                "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge'."
+                "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge'.",
             )
         super().delete(*args, **kwargs)
 
