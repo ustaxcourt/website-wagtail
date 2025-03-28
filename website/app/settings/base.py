@@ -265,3 +265,6 @@ ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
 print(f"Finished base: BASE_URL: {BASE_URL}")
+
+# GitHub SHA for build version
+GITHUB_SHA = os.getenv("GITHUB_SHA", "development")

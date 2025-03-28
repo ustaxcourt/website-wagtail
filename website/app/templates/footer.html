@@ -49,6 +49,12 @@
             .seal {
                 width: 100px;
             }
+
+            .build-info {
+                font-size: 0.8rem;
+                color: #777;
+                margin-top: 8px;
+            }
         }
 
         h2 {
@@ -94,6 +100,7 @@
                     400 Second Street, NW, Washington, DC 20217 | <span class="phone">(202) 521-0700</span>
                 </p>
                 <p>All Rights Reserved</p>
+                <p class="build-info">Build: {{ settings.GITHUB_SHA }}</p>
             </div>
         </div>
     </div>

@@ -24,3 +24,4 @@ export TF_VAR_bastion_public_key=$BASTION_PUBLIC_KEY
 export TF_VAR_environment=$ENVIRONMENT
 export TF_VAR_secret_key=$SECRET_KEY
 export TF_VAR_domain_name=$DOMAIN_NAME
+export TF_VAR_github_sha=$GITHUB_SHA
