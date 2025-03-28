@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import DirectoryIndex, DirectoryEntry, Directory
+from home.models import DirectoryIndex
 
 
 class DirectoryPageInitializer(PageInitializer):
@@ -20,9 +20,7 @@ class DirectoryPageInitializer(PageInitializer):
     def create_page_info(self, home_page):
         title = "Directory"
 
-        new_directory = Directory.objects.create(name=title)
-
-        directory_entry = [
+        _ = [
             {
                 "title": "Office of the Clerk of the Court",
                 "detail": "The Clerk's Office is responsible for, among other things, the business management and operations of the Court. General procedure questions can be directed here.",
@@ -40,14 +38,6 @@ class DirectoryPageInitializer(PageInitializer):
             },
         ]
 
-        for entry in directory_entry:
-            DirectoryEntry.objects.create(
-                directory=new_directory,
-                title=entry["title"],
-                detail=entry["detail"],
-                phone_number=entry["phone_number"],
-            )
-
         if Page.objects.filter(slug=self.slug).exists():
             self.logger.write(f"- {title} page already exists.")
             return
@@ -61,8 +51,7 @@ class DirectoryPageInitializer(PageInitializer):
                 search_description=title,
                 body=[
                     {
-                        "type": "Entries",
-                        "value": new_directory.id,
+                        "type": "entries",
                     }
                 ],
             )

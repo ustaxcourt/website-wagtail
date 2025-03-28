@@ -1064,59 +1064,9 @@ class NavigationMenu(
         return cls.objects.filter(live=True).first()
 
 
-@register_snippet
-class DirectoryEntry(Orderable):
-    """Represents an entry in the directory with title, detail, and phone number."""
-
-    directory = ParentalKey(
-        "Directory", related_name="entries", on_delete=models.CASCADE
-    )
-    title = models.CharField(max_length=255)
-    detail = RichTextField(blank=True, help_text="Additional details")
-    phone_number = models.CharField(max_length=20, blank=True)
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("detail"),
-        FieldPanel("phone_number"),
-    ]
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = "Directory Entry"
-        verbose_name_plural = "Directory Entries"
-
-
-@register_snippet
-class Directory(ClusterableModel):
-    """A directory containing a list of orderable entries."""
-
-    name = models.CharField(
-        max_length=255, help_text="Name of the directory (e.g., 'Contact Directory')"
-    )
-
-    panels = [
-        FieldPanel("name"),
-        InlinePanel("entries", label="Directory Entries"),
-    ]
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = "Directory"
-        verbose_name_plural = "Directory"
-
-
 class DirectoryColumnBlock(CommonBlock):
     JudgeCollection = judge_snippet
-    Directory = SnippetChooserBlock(
-        target_model="home.Directory",
-        required=False,
-        label="Directory",
-    )
+    text = blocks.RichTextBlock(required=False, help_text="Optional description")
 
 
 class DirectoryIndex(Page):
@@ -1125,11 +1075,11 @@ class DirectoryIndex(Page):
 
     body = StreamField(
         [
-            ("Entries", DirectoryColumnBlock()),
+            ("entries", DirectoryColumnBlock()),
         ],
         blank=True,
         use_json_field=True,
-        help_text="Add directory entries or judge profiles",
+        help_text="Directory entries or judge profiles",
     )
 
     content_panels = [

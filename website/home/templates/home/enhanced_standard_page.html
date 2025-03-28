@@ -423,15 +423,13 @@
                             </div>
                         </div>
                     </div>
-                {% elif block.block_type == 'Entries' %}
-                    {% comment %}
-                      block.value is a dictionary containing the fields defined in DirectoryColumnBlock:
-                      {
-                        'JudgeCollection': <some snippet or empty>,
-                        'Directory': <directory snippet primary key or snippet object>
-                      }
-                    {% endcomment %}
-                    {# Access the snippet (i.e., Directory snippet) #}
+                {% elif block.block_type == 'entries' %}
+                    {{block.block_type}}
+                    {% with entry=block.value %}
+                        <h2>{{ entry.title }}</h2>
+                        <div>{{ entry.detail|richtext }}</div>
+                        <div>{{ entry.phone_number }}</div>
+                    {% endwith %}
                     {% with directory=block.value.Directory %}
                         {% if directory %}
                             <ul>
@@ -446,11 +444,6 @@
                             </ul>
                         {% endif %}
                     {% endwith %}
-                    {{ block.value }}
-                    <pre>
-                        Test
-                        {% for key, val in block.value.items %}{{ key }}: {{ val }}{% endfor %}
-</pre>
                 {% elif block.block_type == 'columns' %}
                     {% with column_count=block.value.column|length %}
                         <div class="grid-row">
