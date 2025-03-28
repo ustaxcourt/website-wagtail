@@ -1,7 +1,8 @@
 from wagtail import hooks
 from django.contrib import messages
 from .models import NavigationMenu, JudgeRole
-from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
+from django.urls import reverse
 
 
 @hooks.register("before_delete_snippet")
@@ -12,6 +13,8 @@ def prevent_navigation_menu_deletion(request, instances):
             request,
             "Navigation Menus cannot be deleted as they are required for site functionality.",
         )
+        from django.core.exceptions import PermissionDenied
+
         raise PermissionDenied()
 
 
@@ -25,4 +28,7 @@ def protect_special_judge_roles(request, snippets):
                     request,
                     f"You cannot delete the role '{snippet.role_name}' as they are required for site functionality.",
                 )
-                raise PermissionDenied()
+                referer = request.META.get("HTTP_REFERER")
+                if referer:
+                    return redirect(referer)
+                return redirect(reverse("wagtailsnippets:index"))
