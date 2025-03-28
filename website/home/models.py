@@ -597,6 +597,8 @@ class JudgeIndex(RoutablePageMixin, Page):
             judge = JudgeProfile.objects.get(id=id)
             context = self.get_context(request)
             context["judge"] = judge
+            if judge.last_name.lower() != last_name:
+                raise Http404("Judge not found")
             return render(request, "home/judge_detail.html", context)
         except JudgeProfile.DoesNotExist:
             # Handle case where judge doesn't exist
