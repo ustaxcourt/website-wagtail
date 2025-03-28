@@ -26,7 +26,7 @@ def protect_special_judge_roles(request, snippets):
             if snippet.role_name in ["Chief Judge", "Chief Special Trial Judge"]:
                 messages.error(
                     request,
-                    f"You cannot delete the role '{snippet.role_name}' as they are required for site functionality.",
+                    "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge' as they are required for site functionality.",
                 )
                 referer = request.META.get("HTTP_REFERER")
                 if referer:
