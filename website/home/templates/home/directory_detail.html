@@ -7,14 +7,12 @@
     {% elif subblock.block_type == 'hr' and subblock.value %}
         <hr />
     {% elif subblock.block_type == 'DirectoryEntry' %}
-        <ul>
-            {% for item in subblock.value %}
-                <li>
-                    <div>{{ item.description|richtext }}</div>
-                    <div>{{ item.phone_number }}</div>
-                </li>
-            {% endfor %}
-        </ul>
+        {% for item in subblock.value %}
+            <div class="grid-row">
+                <div class="col-12 col-md-6">{{ item.description|richtext }}</div>
+                <div class="col-12 col-md-6">{{ item.phone_number }}</div>
+            </div>
+        {% endfor %}
     {% elif subblock.block_type == 'JudgeCollection' %}
         {% with judge_collection=subblock.value %}
             {% for ordered_judge in judge_collection.ordered_judges.all %}
