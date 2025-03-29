@@ -9,21 +9,24 @@
     {% elif subblock.block_type == 'DirectoryEntry' %}
         {% for item in subblock.value %}
             <div class="grid-row">
-                <div class="col-12 col-md-6">{{ item.description|richtext }}</div>
-                <div class="col-12 col-md-6">{{ item.phone_number }}</div>
+                <div class="grid-col-6">{{ item.description|richtext }}</div>
+                <div class="grid-col-6">{{ item.phone_number }}</div>
             </div>
         {% endfor %}
     {% elif subblock.block_type == 'JudgeCollection' %}
         {% with judge_collection=subblock.value %}
             {% for ordered_judge in judge_collection.ordered_judges.all %}
                 {% with judge=ordered_judge.judge %}
-                    {% if judge.roles.exists %}
-                        {% with role=judge.roles.first %}{{ judge.display_name }}, {{ role.role_name }}{% endwith %}
-                    {% else %}
-                        {{ judge.display_name }}
-                    {% endif %}
-                    {{ judge.chambers_telephone }}
-                    <br />
+                    <div class="grid-row">
+                        <div class="grid-col-6">
+                            {% if judge.roles.exists %}
+                                {% with role=judge.roles.first %}{{ judge.display_name }}, {{ role.role_name }}{% endwith %}
+                            {% else %}
+                                {{ judge.display_name }}
+                            {% endif %}
+                        </div>
+                        <div class="grid-col-6">{{ judge.chambers_telephone }}</div>
+                    </div>
                 {% endwith %}
             {% endfor %}
         {% endwith %}
