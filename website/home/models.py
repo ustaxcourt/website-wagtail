@@ -1066,7 +1066,14 @@ class NavigationMenu(
 
 class DirectoryColumnBlock(CommonBlock):
     JudgeCollection = judge_snippet
-    text = blocks.RichTextBlock(required=False, help_text="Optional description")
+    DirectoryEntry = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("description", blocks.RichTextBlock()),
+                ("phone_number", blocks.CharBlock()),
+            ]
+        )
+    )
 
 
 class DirectoryIndex(Page):
@@ -1075,7 +1082,7 @@ class DirectoryIndex(Page):
 
     body = StreamField(
         [
-            ("entries", DirectoryColumnBlock()),
+            ("directory", DirectoryColumnBlock()),
         ],
         blank=True,
         use_json_field=True,
