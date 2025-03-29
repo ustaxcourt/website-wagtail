@@ -1,0 +1,36 @@
+{% load wagtailcore_tags %}
+{% for subblock in block.value %}
+    {% if subblock.block_type == 'h2' %}
+        <h2>{{ subblock.value }}</h2>
+    {% elif subblock.block_type == 'h3' %}
+        <h3>{{ subblock.value }}</h3>
+    {% elif subblock.block_type == 'hr' and subblock.value %}
+        <hr />
+    {% elif subblock.block_type == 'DirectoryEntry' %}
+        <ul>
+            {% for item in subblock.value %}
+                <li>
+                    <div>{{ item.description|richtext }}</div>
+                    <div>{{ item.phone_number }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif subblock.block_type == 'JudgeCollection' %}
+        {% with judge_collection=subblock.value %}
+            {% for ordered_judge in judge_collection.ordered_judges.all %}
+                {% with judge=ordered_judge.judge %}
+                    {% if judge.roles.exists %}
+                        {% with role=judge.roles.first %}{{ judge.display_name }}, {{ role.role_name }}{% endwith %}
+                    {% else %}
+                        {{ judge.display_name }}
+                    {% endif %}
+                    {{ judge.chambers_telephone }}
+                    <br />
+                {% endwith %}
+            {% endfor %}
+        {% endwith %}
+    {% else %}
+        <p>Directory subblock type not recognized: {{ subblock.block_type }}</p>
+        {{ subblock.value }}
+    {% endif %}
+{% endfor %}
