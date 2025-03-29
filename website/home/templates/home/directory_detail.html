@@ -9,8 +9,8 @@
     {% elif subblock.block_type == 'DirectoryEntry' %}
         {% for item in subblock.value %}
             <div class="grid-row">
-                <div class="grid-col-6">{{ item.description|richtext }}</div>
-                <div class="grid-col-6">{{ item.phone_number }}</div>
+                <div class="grid-col-12 tablet:grid-col-6">{{ item.description|richtext }}</div>
+                <div class="grid-col-12 tablet:grid-col-6">{{ item.phone_number }}</div>
             </div>
         {% endfor %}
     {% elif subblock.block_type == 'JudgeCollection' %}
