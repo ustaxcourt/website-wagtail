@@ -17,6 +17,7 @@
         {% with judge_collection=subblock.value %}
             {% for ordered_judge in judge_collection.ordered_judges.all %}
                 {% with judge=ordered_judge.judge %}
+                <p>
                     <div class="grid-row">
                         <div class="grid-col-6">
                             {% if judge.roles.exists %}
@@ -27,6 +28,7 @@
                         </div>
                         <div class="grid-col-6">{{ judge.chambers_telephone }}</div>
                     </div>
+                </p>
                 {% endwith %}
             {% endfor %}
         {% endwith %}
