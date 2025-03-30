@@ -1,4 +1,5 @@
 {% load wagtailcore_tags %}
+{% load custom_tags %}
 {% for subblock in block.value %}
     {% if subblock.block_type == 'h2' %}
         <h2>{{ subblock.value }}</h2>
@@ -10,7 +11,7 @@
         {% for item in subblock.value %}
             <div class="grid-row">
                 <div class="grid-col-12 tablet:grid-col-6">{{ item.description|richtext }}</div>
-                <div class="grid-col-12 tablet:grid-col-6">{{ item.phone_number }}</div>
+                <div class="grid-col-12 tablet:grid-col-6">{{ item.phone_number|phone_link|safe }}</div>
             </div>
         {% endfor %}
     {% elif subblock.block_type == 'JudgeCollection' %}
@@ -26,7 +27,7 @@
                                     {{ judge.display_name }}
                                 {% endif %}
                             </div>
-                            <div class="grid-col-6">{{ judge.chambers_telephone }}</div>
+                            <div class="grid-col-6">{{ judge.chambers_telephone|phone_link|safe }}</div>
                         </div>
                     </p>
                 {% endwith %}
