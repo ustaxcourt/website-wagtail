@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "fontawesomefree",
+    "wagtail_transfer",
 ]
 
 MIDDLEWARE = [
@@ -266,3 +267,15 @@ ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
 print(f"Finished base: BASE_URL: {BASE_URL}")
+
+WAGTAILTRANSFER_SOURCES = {
+    "staging": {
+        "BASE_URL": "https://dev-web.ustaxcourt.gov/wagtail-transfer/",
+        "SECRET_KEY": "your-secret-key",
+    },
+    "production": {
+        "BASE_URL": "https://cody-sandbox-web.ustaxcourt.gov/wagtail-transfer/",
+        "SECRET_KEY": "your-secret-key",
+    },
+}
+WAGTAILTRANSFER_SECRET_KEY = "your-secret-key"
