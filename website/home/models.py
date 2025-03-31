@@ -1069,12 +1069,11 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
     A specialized page type that allows embedding raw HTML.
     """
 
+    template = "home/enhanced_standard_page.html"
+
     raw_html_body = StreamField(
         [
             ("raw_html", RawHTMLBlock(label="Raw HTML")),
-            ("paragraph", blocks.RichTextBlock(label="Rich Text")),
-            ("h2", blocks.CharBlock(label="Heading 2")),
-            ("h3", blocks.CharBlock(label="Heading 3")),
             (
                 "questionanswers",
                 blocks.ListBlock(
