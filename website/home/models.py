@@ -30,7 +30,6 @@ from django.shortcuts import render
 from django.http import Http404
 from django.utils import timezone
 from wagtail.blocks import RawHTMLBlock
-from wagtail.images.blocks import ImageChooserBlock
 
 
 @register_setting
@@ -1076,7 +1075,6 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
             ("paragraph", blocks.RichTextBlock(label="Rich Text")),
             ("h2", blocks.CharBlock(label="Heading 2")),
             ("h3", blocks.CharBlock(label="Heading 3")),
-            ("image", ImageChooserBlock(required=False)),
             (
                 "questionanswers",
                 blocks.ListBlock(
