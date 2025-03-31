@@ -1021,6 +1021,12 @@ class NavigationMenu(
                                 required=True, help_text="Top level navigation title"
                             ),
                         ),
+                        (
+                            "external_url",
+                            blocks.URLBlock(
+                                required=False, help_text="Or enter an external URL"
+                            ),
+                        ),
                         ("sub_links", blocks.ListBlock(SubNavigationLinkBlock())),
                     ]
                 ),
