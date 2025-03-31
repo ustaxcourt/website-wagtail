@@ -1,5 +1,6 @@
 from .base import *  # noqa: F403
 import os
+import subprocess
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -14,3 +15,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 os.environ.setdefault("DJANGO_SUPERUSER_PASSWORD", "ustcAdminPW!")
 ENVIRONMENT = "local"
+
+if not os.getenv("GITHUB_SHA"):
+    GITHUB_SHA = (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        or "development"
+    )

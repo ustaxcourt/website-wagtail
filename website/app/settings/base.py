@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import dj_database_url
-import subprocess
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -271,9 +270,3 @@ print(f"Finished base: BASE_URL: {BASE_URL}")
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
-
-if not GITHUB_SHA:
-    GITHUB_SHA = (
-        subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        or "development"
-    )
