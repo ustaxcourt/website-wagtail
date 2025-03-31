@@ -29,6 +29,7 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
 from django.http import Http404
 from django.utils import timezone
+from wagtail.blocks import RawHTMLBlock
 
 
 @register_setting
@@ -1070,6 +1071,58 @@ class NavigationMenu(
     @classmethod
     def get_active_menu(cls):
         return cls.objects.filter(live=True).first()
+
+
+class EnhancedRawHTMLPage(EnhancedStandardPage):
+    """
+    A specialized page type that allows embedding raw HTML.
+    """
+
+    template = "home/enhanced_standard_page.html"
+
+    raw_html_body = StreamField(
+        [
+            ("raw_html", RawHTMLBlock(label="Raw HTML")),
+            (
+                "questionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            (
+                                "answer",
+                                blocks.StructBlock(
+                                    [
+                                        (
+                                            "rich_text",
+                                            blocks.RichTextBlock(required=False),
+                                        ),
+                                        (
+                                            "html_block",
+                                            blocks.RawHTMLBlock(required=False),
+                                        ),
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                            ("anchortag", blocks.CharBlock(required=False)),
+                        ]
+                    ),
+                    label="Question and Answer",
+                    help_text="Add a question and answer with anchor tag for linking",
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("raw_html_body"),
+    ]
+
+    class Meta:
+        verbose_name = "Enhanced Raw HTML Page"
 
 
 class DirectoryColumnBlock(CommonBlock):

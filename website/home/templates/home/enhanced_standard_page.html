@@ -485,5 +485,8 @@
                 {% endif %}
             {% endwith %}
         {% endfor %}
+        {% for sub_block in page.raw_html_body %}
+            {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
+        {% endfor %}
     </div>
 {% endblock content %}

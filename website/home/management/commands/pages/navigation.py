@@ -32,6 +32,12 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "HISTORY",
                             "page": self.get_page("history"),
+                            "external_url": "",
+                        },
+                        {
+                            "title": "REPORTS & STATISTICS",
+                            "page": self.get_page("reports-and-statistics"),
+                            "external_url": "",
                         },
                         {
                             "title": "JUDGES",
@@ -146,7 +152,7 @@ class NavigationInitializer(PageInitializer):
                 "section",
                 {
                     "title": "GIVE FEEDBACK",
-                    "external_url": "https://forms.office.com/Pages/DesignPageV2.aspx?analysis=false&id=ffQzvB8vfUKKwjrrqKsOvUitNEvbvcNNs4zV-Fsf4WFURExMSjY5V1lCN0wwNDJDSFJSTUVNWDQxRiQlQCN0PWcu&origin=NeoPortalPage&subpage=design",
+                    "external_url": "https://forms.office.com/r/45R5iAguPG",
                     "sub_links": [],
                 },
             ),

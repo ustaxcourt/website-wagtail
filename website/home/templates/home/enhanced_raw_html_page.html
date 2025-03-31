@@ -1,0 +1,26 @@
+{% if block.block_type == "raw_html" %}
+    {{ block.value|safe }}
+{% elif block.block_type == "questionanswers" %}
+    <ul class="links indented">
+        {% for qa in block.value %}
+            <li>
+                <a href="{{ page_url }}#{{ qa.anchortag }}">
+                    <i class="fa-solid fa-circle-info"></i>{{ qa.question }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <hr />
+    {% for qa in block.value %}
+        <div class="question-answer-block">
+            <a href="{{ page_url }}#{{ qa.anchortag }}" title="{{ qa.question }}">
+                <div class="fa-solid fa-bookmark bookmark" id="{{ qa.anchortag }}"></div>
+            </a>
+            <h3>{{ qa.question }}</h3>
+        </div>
+        <div>
+            {% if qa.answer.rich_text %}<p>{{ qa.answer.rich_text|safe }}</p>{% endif %}
+            {% if qa.answer.html_block %}{{ qa.answer.html_block|safe }}{% endif %}
+        </div>
+    {% endfor %}
+{% endif %}
