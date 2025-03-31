@@ -273,4 +273,7 @@ print(f"Finished base: BASE_URL: {BASE_URL}")
 GITHUB_SHA = os.getenv("GITHUB_SHA")
 
 if not GITHUB_SHA:
-    GITHUB_SHA = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() or 'development'
+    GITHUB_SHA = (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        or "development"
+    )
