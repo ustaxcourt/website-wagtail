@@ -18,11 +18,7 @@ urlpatterns = [
     re_path(
         r"^resources/ropp/tc-reports/(?P<path>.*)$",
         serve,
-        {
-            "document_root": os.path.join(
-                settings.MEDIA_ROOT, "resources/ropp/tc-reports"
-            )
-        },
+        {"document_root": os.path.join(settings.MEDIA_ROOT, "documents")},
     ),
     path("documents/", include(wagtaildocs_urls)),
 ]
