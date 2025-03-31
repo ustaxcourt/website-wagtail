@@ -5,11 +5,25 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from django.views.static import serve
+import os
+from django.urls import re_path
+
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
+    # Special pattern for resources/ropp/tc-reports
+    re_path(
+        r"^resources/ropp/tc-reports/(?P<path>.*)$",
+        serve,
+        {
+            "document_root": os.path.join(
+                settings.MEDIA_ROOT, "resources/ropp/tc-reports"
+            )
+        },
+    ),
     path("documents/", include(wagtaildocs_urls)),
 ]
 
