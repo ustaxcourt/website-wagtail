@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
+    "wagtail.contrib.routable_page",
     "wagtail.contrib.settings",
     "wagtail.contrib.typed_table_block",
     "wagtail",
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "fontawesomefree",
 ]
