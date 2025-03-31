@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load filters %}
+{% load static %}
+{% block body_class %}template-judge-detail{% endblock %}
+{% block content %}
+    <div class="grid-container padding-bottom-2 padding-top-2">
+        <h1>
+            {% if judge.roles.exists %}
+                {% with role=judge.roles.first %}{{ role.role_name }} {{ judge.display_name }}{% endwith %}
+            {% else %}
+                {{ judge.title }} {{ judge.display_name }}
+            {% endif %}
+        </h1>
+        {% if judge.chambers_telephone %}
+            <div class="contact-info margin-bottom-2">
+                <p>
+                    <strong>Chambers Telephone Number:</strong> {{ judge.chambers_telephone }}
+                </p>
+            </div>
+        {% endif %}
+        <h2>Biography</h2>
+        <div class="judge-bio">{{ judge.bio|richtext }}</div>
+        <p>
+            <strong>Last updated:</strong> {{ judge.last_updated_date|date:"F j, Y" }}.
+        </p>
+    </div>
+{% endblock %}
