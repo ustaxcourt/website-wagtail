@@ -44,7 +44,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
             name=dawson_faqs_ribbon_name
         ).first()
 
-        uploaded_images = {}  # Store image IDs and URLs for template use
+        uploaded_images = {}
 
         for image in dawson_faqs_case_management_images:
             image_uploaded = self.load_image_from_images_dir(
