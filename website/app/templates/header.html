@@ -322,15 +322,26 @@
             {% get_navigation_menu as nav %}
             {% for section in nav.menu_items %}
                 <li class="navigation-header">
-                    <button aria-expanded="false"
-                            class="link"
-                            data-testid="nav-button-{{ section.value.title|slugify }}"
-                            onclick="toggleMenuItems(this)">
-                        <div>
-                            {{ section.value.title }}
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </button>
+                    {% if section.value.external_url %}
+                        <a href="{{ section.value.external_url }}"
+                           target="_blank"
+                           class="link"
+                           data-testid="nav-button-{{ section.value.title|slugify }}">
+                            <div>
+                                {{ section.value.title }}
+                            </div>
+                        </a>
+                    {% else %}
+                        <button aria-expanded="false"
+                                class="link"
+                                data-testid="nav-button-{{ section.value.title|slugify }}"
+                                onclick="toggleMenuItems(this)">
+                            <div>
+                                {{ section.value.title }}
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+                        </button>
+                    {% endif %}
                     <ul class="navigation-list"
                         data-testid="nav-list-{{ section.value.title|slugify }}">
                         {% for sub_link in section.value.sub_links %}
