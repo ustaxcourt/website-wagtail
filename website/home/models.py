@@ -25,6 +25,8 @@ from wagtail.blocks import PageChooserBlock
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
 from wagtail.models import PreviewableMixin
+from wagtail.blocks import RawHTMLBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 
 @register_setting
@@ -847,3 +849,57 @@ class NavigationMenu(
     @classmethod
     def get_active_menu(cls):
         return cls.objects.filter(live=True).first()
+
+
+class EnhancedRawHTMLPage(EnhancedStandardPage):
+    """
+    A specialized page type that allows embedding raw HTML.
+    """
+
+    raw_html_body = StreamField(
+        [
+            ("raw_html", RawHTMLBlock(label="Raw HTML")),
+            ("paragraph", blocks.RichTextBlock(label="Rich Text")),
+            ("h2", blocks.CharBlock(label="Heading 2")),
+            ("h3", blocks.CharBlock(label="Heading 3")),
+            ("image", ImageChooserBlock(required=False)),
+            (
+                "questionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            (
+                                "answer",
+                                blocks.StructBlock(
+                                    [
+                                        (
+                                            "rich_text",
+                                            blocks.RichTextBlock(required=False),
+                                        ),
+                                        (
+                                            "html_block",
+                                            blocks.RawHTMLBlock(required=False),
+                                        ),
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                            ("anchortag", blocks.CharBlock(required=False)),
+                        ]
+                    ),
+                    label="Question and Answer",
+                    help_text="Add a question and answer with anchor tag for linking",
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("raw_html_body"),
+    ]
+
+    class Meta:
+        verbose_name = "Enhanced Raw HTML Page"

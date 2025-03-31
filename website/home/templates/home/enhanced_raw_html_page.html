@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+    {% block extra_css %}
+        <style>
+            .enhanced-page {
+                .links {
+                    i {
+                        padding-right: .4em
+                    }
+                }
+
+                .question-answer-block {
+                    display: flex;
+                    position: relative;
+
+                    .bookmark {
+                        position: absolute;
+                        left: -22px;
+                        top: 24px;
+                    }
+                }
+            }
+        </style>
+    {% endblock %}
+    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
+        <h1>{{ page.title }}</h1>
+        <hr />
+        {% if page.navigation_ribbon %}
+            <div class="blue-page-links-bar">
+                {% for link in page.navigation_ribbon.links.all %}
+                    <a href="{{ link.url }}" aria-label="{{ link.title }}">
+                        <i class="{{ link.icon }}" aria-hidden="true"></i>
+                        <div class="title" style="display: block;">{{ link.title }}</div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <!-- Main Content -->
+        {% for block in page.body %}
+            {% if block.block_type == "h2" %}<h2>{{ block.value }}</h2>{% endif %}
+        {% endfor %}
+        {% for block in page.raw_html_body %}
+            {% if block.block_type == "h2" %}
+                <h2>{{ block.value }}</h2>
+            {% elif block.block_type == "h3" %}
+                <h3>{{ block.value }}</h3>
+            {% elif block.block_type == "paragraph" %}
+                <p>{{ block.value }}</p>
+            {% elif block.block_type == "raw_html" %}
+                {{ block.value|safe }}
+            {% elif block.block_type == "questionanswers" %}
+                <ul class="links indented">
+                    {% for qa in block.value %}
+                        <li>
+                            <a href="{{ page_url }}#{{ qa.anchortag }}">
+                                <i class="fa-solid fa-circle-info"></i>{{ qa.question }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <hr />
+                {% for qa in block.value %}
+                    <div class="question-answer-block">
+                        <a href="{{ page_url }}#{{ qa.anchortag }}" title="{{ qa.question }}">
+                            <div class="fa-solid fa-bookmark bookmark" id="{{ qa.anchortag }}"></div>
+                        </a>
+                        <h3>{{ qa.question }}</h3>
+                    </div>
+                    <div>
+                        {% if qa.answer.rich_text %}<p>{{ qa.answer.rich_text|safe }}</p>{% endif %}
+                        {% if qa.answer.html_block %}{{ qa.answer.html_block|safe }}{% endif %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
