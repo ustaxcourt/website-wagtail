@@ -10,7 +10,7 @@
     {% elif subblock.block_type == 'DirectoryEntry' %}
         {% for item in subblock.value %}
             <div class="grid-row">
-                <div class="grid-col-12 tablet:grid-col-6">{{ item.description|richtext }}</div>
+                <div class="grid-col-12 tablet:grid-col-6" style="padding-right: 1rem;">{{ item.description|richtext }}</div>
                 <div class="grid-col-12 tablet:grid-col-6">{{ item.phone_number|phone_link|safe }}</div>
             </div>
         {% endfor %}
