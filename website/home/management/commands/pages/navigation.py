@@ -55,10 +55,6 @@ class NavigationInitializer(PageInitializer):
                             "title": "EMPLOYMENT",
                             "page": self.get_page("employment"),
                         },
-                        {
-                            "title": "REPORTS & STATISTICS",
-                            "page": self.get_page("reports-and-statistics"),
-                        },
                     ],
                 },
             ),
