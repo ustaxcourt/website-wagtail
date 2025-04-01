@@ -90,7 +90,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                 "answer": {
                     "rich_text": """<ul>
                                 <li>Parties to consolidated cases have the ability to electronically file documents simultaneously in all of the consolidated cases.</li>
-                                <li>Entries of Appearance for petitioner representatives and Decisions must still be filed in each case separately.</li>
+                                <li>Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately.</li>
                                 <li>Refer to the <a href="https://www.ustaxcourt.gov/release_notes.html" title="DAWSON Release Notes">DAWSON Release Notes</a> for more information, or the <a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a>.
                                   for detailed instructions on how to electronically file documents in consolidated cases.</li>
                                  </ul>"""
@@ -130,7 +130,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                 "answer": {
                     "html_block": """<ol>
                                          <li>
-                                             Error Message: File size too big
+                                             <strong>Error Message: File size too big</strong>
                                              <ul>
                                                  <li>If your document is larger than 250MB, you should upload the information in separate documents. Each document must be 250MB or less.</li>
                                              </ul>
@@ -260,7 +260,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                 navigation_ribbon=navigation_ribbon,
                 search_description="DAWSON: Case Management",
                 body=[
-                    {"type": "h2", "value": "DAWSON: Account Management"},
+                    {"type": "h2", "value": "DAWSON: Case Management"},
                 ],
                 raw_html_body=[
                     {"type": "questionanswers", "value": questions},
