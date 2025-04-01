@@ -1,6 +1,10 @@
 # Use an official Python runtime based on Debian 12 "bookworm" as a parent image.
 FROM --platform=linux/amd64 python:3.12-slim-bookworm
 
+# Add build argument for GitHub SHA
+ARG GITHUB_SHA
+ENV GITHUB_SHA=${GITHUB_SHA}
+
 # Add user that will be used in the container.
 RUN useradd wagtail
 

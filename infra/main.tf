@@ -10,7 +10,7 @@ module "app" {
   secret_key = var.secret_key
   environment = var.environment
   domain_name = var.domain_name
-
+  github_sha = var.github_sha
   providers = {
     docker = docker
   }

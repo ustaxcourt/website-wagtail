@@ -67,6 +67,10 @@ jobs:
         run: |
           cd infra
           ./setup-tf-buckets.sh
+
+          # Pass GitHub SHA to Terraform
+          export TF_VAR_github_sha=$GITHUB_SHA
+
           ./deploy.sh
 
           bastion_ip=$(terraform output -raw bastion_public_ip)
