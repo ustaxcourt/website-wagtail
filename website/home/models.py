@@ -181,6 +181,10 @@ link_obj = blocks.ListBlock(
                 "document",
                 DocumentChooserBlock(required=False),
             ),
+            (
+                "video",
+                DocumentChooserBlock(required=False),
+            ),
             ("url", blocks.CharBlock(required=False)),
             (
                 "text_only",
@@ -248,12 +252,6 @@ class EnhancedStandardPage(Page):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
-    title_text = models.CharField(
-        max_length=255, help_text="Title of the section", blank=True
-    )
-    description = RichTextField(blank=True, help_text="Description of the section")
-    video_url = models.URLField(blank=True, help_text="YouTube embed URL")
 
     body = StreamField(
         [
@@ -546,13 +544,16 @@ class JudgeRole(models.Model):
         return f"{self.role_name}, {self.judge or '** Selection Pending **'}"
 
 
+judge_snippet = SnippetChooserBlock(
+    target_model="home.JudgeCollection",
+    required=False,
+    help_text="Optionally pick a JudgeCollection snippet",
+    label="Judge Collection",
+)
+
+
 class JudgeColumnBlock(CommonBlock):
-    judgeCollection = SnippetChooserBlock(
-        target_model="home.JudgeCollection",
-        required=False,
-        help_text="Optionally pick a JudgeCollection snippet",
-        label="Judge Collection",
-    )
+    judgeCollection = judge_snippet
 
 
 class JudgeColumns(blocks.StructBlock):
@@ -1120,3 +1121,34 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
 
     class Meta:
         verbose_name = "Enhanced Raw HTML Page"
+
+
+class DirectoryColumnBlock(CommonBlock):
+    JudgeCollection = judge_snippet
+    DirectoryEntry = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("description", blocks.RichTextBlock()),
+                ("phone_number", blocks.CharBlock()),
+            ]
+        )
+    )
+
+
+class DirectoryIndex(Page):
+    template = "home/enhanced_standard_page.html"
+    max_count = 1
+
+    body = StreamField(
+        [
+            ("directory", DirectoryColumnBlock()),
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Directory entries or judge profiles",
+    )
+
+    content_panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
+    ]

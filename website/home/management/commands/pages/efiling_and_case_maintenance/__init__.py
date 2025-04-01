@@ -11,9 +11,12 @@ from .dawson_faqs_training_and_support import (
 )
 from .searches_and_public_access_page import SearchesAndPublicAccessPageInitializer
 from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitializer
+from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
+    # DAWSON page depends on the user guides page
+    DawsonUserGuidesPageInitializer,
     # Order of initialization matters
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
