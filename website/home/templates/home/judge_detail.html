@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load filters %}
-{% load static %}
-{% block body_class %}template-judge-detail{% endblock %}
+{% load custom_tags %}
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1>
@@ -16,7 +13,7 @@
         {% if judge.chambers_telephone %}
             <div class="contact-info margin-bottom-2">
                 <p>
-                    <strong>Chambers Telephone Number:</strong> {{ judge.chambers_telephone }}
+                    <strong>Chambers Telephone Number:</strong> {{ judge.chambers_telephone |phone_link|safe }}
                 </p>
             </div>
         {% endif %}
