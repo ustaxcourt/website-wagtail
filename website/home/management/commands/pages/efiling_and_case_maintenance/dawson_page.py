@@ -218,7 +218,7 @@ class DawsonPageInitializer(PageInitializer):
                     home_page.get_children().live().filter(slug=page["slug"]).first()
                 )
                 if std_page:
-                    new_std_pages.append(std_page)
+                    new_std_pages.append(std_page.specific)
                 else:
                     new_std_page = EnhancedStandardPage(**page)
                     home_page.add_child(instance=new_std_page)

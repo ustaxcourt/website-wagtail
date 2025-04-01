@@ -44,7 +44,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                 slug=slug,
                 seo_title=title,
                 navigation_ribbon=None,
-                search_description="DAWSON user guides",
+                search_description=title,
                 body=[
                     {
                         "type": "links",

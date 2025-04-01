@@ -15,6 +15,8 @@ from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
+    # DAWSON page depends on the user guides page
+    DawsonUserGuidesPageInitializer,
     # Order of initialization matters
     DawsonSearchPageInitializer,
     DawsonPageInitializer,
@@ -26,5 +28,4 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFaqsAccountManagementPageInitializer,
     DawsonFaqsTrainingAndSupportPageInitializer,
     DawsonFaqsCaseManagementPageInitializer,
-    DawsonUserGuidesPageInitializer,
 ]
