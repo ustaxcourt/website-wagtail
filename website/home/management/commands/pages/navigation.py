@@ -36,6 +36,11 @@ class NavigationInitializer(PageInitializer):
                             "external_url": "",
                         },
                         {
+                            "title": "REPORTS & STATISTICS",
+                            "page": self.get_page("reports-and-statistics"),
+                            "external_url": "",
+                        },
+                        {
                             "title": "JUDGES",
                             "page": self.get_page("judges"),
                             "external_url": "",
@@ -48,11 +53,6 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "EMPLOYMENT",
                             "page": self.get_page("employment"),
-                            "external_url": "",
-                        },
-                        {
-                            "title": "REPORTS & STATISTICS",
-                            "page": self.get_page("reports-and-statistics"),
                             "external_url": "",
                         },
                     ],
@@ -155,6 +155,14 @@ class NavigationInitializer(PageInitializer):
                             "external_url": "",
                         },
                     ],
+                },
+            ),
+            (
+                "section",
+                {
+                    "title": "GIVE FEEDBACK",
+                    "external_url": "https://forms.office.com/r/45R5iAguPG",
+                    "sub_links": [],
                 },
             ),
         ]
