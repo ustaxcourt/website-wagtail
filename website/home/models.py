@@ -249,12 +249,6 @@ class EnhancedStandardPage(Page):
         related_name="+",
     )
 
-    title_text = models.CharField(
-        max_length=255, help_text="Title of the section", blank=True
-    )
-    description = RichTextField(blank=True, help_text="Description of the section")
-    video_url = models.URLField(blank=True, help_text="YouTube embed URL")
-
     body = StreamField(
         [
             (
