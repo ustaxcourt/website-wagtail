@@ -150,13 +150,6 @@ class DawsonPageInitializer(PageInitializer):
                     "search_description": "Terms of Use",
                 },
                 {
-                    "title": "Definitions",
-                    "slug": "definitions",
-                    "path": "definitions",
-                    "depth": 4,
-                    "search_description": "Definitions",
-                },
-                {
                     "title": "What Documents Can Be eFiled",
                     "slug": "documents-eligible-for-efiling",
                     "path": "documents-eligible-for-efiling",
