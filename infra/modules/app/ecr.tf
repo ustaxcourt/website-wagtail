@@ -1,5 +1,3 @@
-
-
 module "ecr" {
   source  = "terraform-aws-modules/ecr/aws"
   version = "~> 1.6.0"
@@ -23,9 +21,14 @@ module "ecr" {
 # * Build our Image locally with the appropriate name to push our Image
 # * to our Repository in AWS.
 resource "docker_image" "this" {
-  name = format("%v:%v", module.ecr.repository_url, formatdate("YYYY-MM-DD'T'hh-mm-ss", timestamp()))
+  name = format("%v:%v", module.ecr.repository_url, var.github_sha)
 
-  build { context = "../website" }
+  build {
+    context = "../website"
+    build_args = {
+      GITHUB_SHA = var.github_sha
+    }
+  }
 }
 
 # * Push our Image to our Repository.

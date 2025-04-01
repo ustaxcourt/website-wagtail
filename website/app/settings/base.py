@@ -85,6 +85,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
+                "app.context_processors.build_info",
             ],
         },
     },
@@ -266,3 +267,7 @@ ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
 print(f"Finished base: BASE_URL: {BASE_URL}")
+
+
+# GitHub SHA for build version
+GITHUB_SHA = os.getenv("GITHUB_SHA")

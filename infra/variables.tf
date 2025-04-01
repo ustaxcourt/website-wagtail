@@ -18,3 +18,8 @@ variable "secret_key" {
 variable "domain_name" {
   type = string
 }
+
+
+variable "github_sha" {
+  type = string
+}
