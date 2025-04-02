@@ -28,10 +28,16 @@
     <div class="carousel">
         {% for picture in page.images.all %}
             {% image picture.image fill-2000x400-c80  as myrendition %}
-            <img src="{{ myrendition.url }}"
-                 alt="{{ myrendition.title }}"
-                 class="hero-image {% if forloop.first %}active{% endif %}"
-                 {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
+            {% if myrendition %}
+                <img src="{{ myrendition.url }}"
+                     alt="{{ myrendition.title }}"
+                     class="hero-image {% if forloop.first %}active{% endif %}"
+                     {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
+            {% else %}
+                <img src="{% static picture.image.url %}"
+                     alt="{{ picture.image.title }}"
+                     class="hero-image {% if forloop.first %}active{% endif %}" />
+            {% endif %}
         {% endfor %}
     </div>
     <div class="grid-container">
