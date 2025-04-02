@@ -1,6 +1,6 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import EnhancedStandardPage
+from home.models import PressRelease
 
 press_releases_docs = {
     "01112021.pdf": "",
@@ -90,7 +90,7 @@ class PressReleasesPageInitializer(PageInitializer):
             press_releases_docs[doc_name] = document
 
         home_page.add_child(
-            instance=EnhancedStandardPage(
+            instance=PressRelease(
                 title=title,
                 slug=slug,
                 seo_title=title,
@@ -203,7 +203,7 @@ class PressReleasesPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
-                        "value": """<a role="button" tabindex="0" href="/press-release-archives" target="_blank" title="Press Release Archives">Archive</a>""",
+                        "value": """<a role="button" tabindex="0" href="/press-releases/archives" target="_blank" title="Press Release Archives">Archive</a>""",
                     },
                 ],
                 show_in_menus=True,

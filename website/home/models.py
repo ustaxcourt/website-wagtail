@@ -1152,3 +1152,15 @@ class DirectoryIndex(Page):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+
+class PressRelease(RoutablePageMixin, EnhancedStandardPage):
+    template = "home/enhanced_standard_page.html"
+
+    @route("archives/")
+    def press_release_detail(self, request):
+        try:
+            context = self.get_context(request)
+            return render(request, "home/enhanced_standard_page.html", context)
+        except PressRelease.DoesNotExist:
+            raise Http404("Press release not found")
