@@ -5,9 +5,15 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-from django.views.static import serve
-import os
+from django.shortcuts import redirect
 from django.urls import re_path
+
+
+def tc_report_redirect_view(request, path):
+    # path = "vol-060.pdf", etc.
+    # Figure out the S3 path for this file, then redirect.
+    s3_url = f"{settings.MEDIA_URL}documents/{path}"
+    return redirect(s3_url)
 
 
 urlpatterns = [
@@ -17,8 +23,8 @@ urlpatterns = [
     # Special pattern for resources/ropp/tc-reports
     re_path(
         r"^resources/ropp/tc-reports/(?P<path>.*)$",
-        serve,
-        {"document_root": os.path.join(settings.MEDIA_ROOT, "documents")},
+        tc_report_redirect_view,
+        name="tc_report_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
 ]
