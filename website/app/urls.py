@@ -9,9 +9,7 @@ from django.shortcuts import redirect
 from django.urls import re_path
 
 
-def tc_report_redirect_view(request, path):
-    # path = "vol-060.pdf", etc.
-    # Figure out the S3 path for this file, then redirect.
+def tc_report_redirect(request, path):
     s3_url = f"{settings.MEDIA_URL}documents/{path}"
     return redirect(s3_url)
 
@@ -23,7 +21,7 @@ urlpatterns = [
     # Special pattern for resources/ropp/tc-reports
     re_path(
         r"^resources/ropp/tc-reports/(?P<path>.*)$",
-        tc_report_redirect_view,
+        tc_report_redirect,
         name="tc_report_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
