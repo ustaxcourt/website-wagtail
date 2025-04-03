@@ -2,7 +2,7 @@
 {% load wagtailcore_tags %}
 {% block content %}
     <style>
-        #vacany-page {
+        #judge-recruiting-page {
             min-height: 40vh;
 
             .closing-date {
@@ -11,31 +11,41 @@
             }
         }
     </style>
-    <div id="vacany-page" class="grid-container usa-prose margin-top-5">
+
+    <div id="recruiting-recruiting-page" class="grid-container usa-prose margin-top-5">
         <div class="content">
-            <h1 class="margin-bottom-3">{{ page.title }}</h1>
-            <hr />
-            {% if judges_recruiting %}
-                <div class="usa-card-group">
-                    {% for judge in judges_recruiting %}
-                        <section class="usa-card">
-                            <div class="usa-card__container">
-                                <header class="usa-card__header" style="text-align: center;">
-                                    <h2 class="usa-card__heading">{{ judge.judge_name|richtext }}</h2>
-                                </header>
-                                <div class="usa-card__body">
-                                    <p>{{ judge.description|richtext }}</p>
-                                </div>
-                                <div class="usa-card__footer">
-                                    <a class="usa-button" href="mailto:{{ judge.apply_to_email }}">Apply</a>
-                                </div>
-                            </div>
-                        </section>
-                    {% endfor %}
+          <h1 class="margin-bottom-3">{{ page.title }}</h1>
+          <hr />
+          {% if judges_recruiting %}
+            <!-- 1) Make this row a flex container so all child columns share a common height -->
+            <div class="grid-row" style="display: flex; flex-wrap: wrap; align-items: stretch;">
+              {% for judge in judges_recruiting %}
+                <!-- 2) This sets each card column to ~40% width on tablet+ (5/12 columns) and 100% on mobile -->
+                <div class="tablet:grid-col-5 margin-x-auto margin-bottom-4"
+                     style="display: flex; flex-direction: column;">
+                  <!-- 3) Let the card be a flex container so footer is at the bottom if body is short -->
+                  <section class="usa-card" style="display: flex; flex-direction: column; width: 100%;">
+                    <!-- 4) Stretch the .usa-card__container to fill the entire card -->
+                    <div class="usa-card__container" style="display: flex; flex-direction: column; flex: 1;">
+                      <header class="usa-card__header usa-text-align--center">
+                        <h2 class="usa-card__heading">{{ judge.judge_name|richtext }}</h2>
+                      </header>
+                      <!-- 5) Make the body flex-grow so all cards match height even if text differs -->
+                      <div class="usa-card__body" style="flex: 1;">
+                        <p>{{ judge.description|richtext }}</p>
+                      </div>
+                      <div class="usa-card__footer">
+                        <a class="usa-button" href="mailto:{{ judge.apply_to_email }}">Apply</a>
+                      </div>
+                    </div>
+                  </section>
                 </div>
-            {% else %}
-                <p>{{ message }}</p>
-            {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>{{ message }}</p>
+          {% endif %}
         </div>
-    </div>
+      </div>
+
 {% endblock %}
