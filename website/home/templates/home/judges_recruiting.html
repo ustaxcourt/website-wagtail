@@ -16,12 +16,11 @@
             <h1 class="margin-bottom-3">{{ page.title }}</h1>
             <hr />
             {% if judges_recruiting %}
-                {% for judge in judges_recruiting.all %}
-                {{ judges_recruiting}}
+                {% for judge in judges_recruiting %}
                 <div class="judge-recruiting">
-                    <h3>{{ judge.judge_name }}</h3>
-                    <p>{{ judge.description }}</p>
-                    <p>Contact: {{ judge.apply_to_email }}</p>
+                    <h3>{{ judge.judge_name|richtext }}</h3>
+                    <p>{{ judge.description|richtext }}</p>
+                    <p>Contact: {{ judge.apply_to_email|richtext }}</p>
                     <p>Display from: {{ judge.display_from }}</p>
                     <p>Display to: {{ judge.display_to }}</p>
                 </div>
