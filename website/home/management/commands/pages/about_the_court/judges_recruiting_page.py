@@ -33,7 +33,7 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                 judges_recruiting=[
                     {
                         "type": "message",
-                        "value": "No judges are currently recruiting. Questions concerning the application process may be directed to the Court's Office of Human Resources at (202) 521-4700.",
+                        "value": "No judges are currently recruiting. <p>Questions concerning the application process may be directed to the Court's Office of Human Resources at <a href='tel:2025214700' title='Call (202) 521-4700'>(202) 521-4700</a>.</p>",
                     },
                     {
                         "type": "judge",
@@ -42,7 +42,7 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                                 "judge_name": "Judge John Doe",
                                 "description": "Currently recruiting for the position of Judge.",
                                 "apply_to_email": "(202) 555-0123",
-                                "display_from": "2025-10-01",
+                                "display_from": "2024-10-01",
                                 "display_to": "2025-12-31",
                             },
                         ],

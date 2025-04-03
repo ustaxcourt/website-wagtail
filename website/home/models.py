@@ -1157,8 +1157,6 @@ class DirectoryIndex(Page):
 
 
 class JudgesRecruiting(EnhancedStandardPage):
-    template = "home/enhanced_standard_page.html"
-
     judges_recruiting = StreamField(
         [
             (
@@ -1203,3 +1201,24 @@ class JudgesRecruiting(EnhancedStandardPage):
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("judges_recruiting"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        today = date.today()
+        # Filter the StreamField content for active judges
+        filtered_judges = []
+        for block in self.judges_recruiting:
+            if block.block_type == "judge":
+                for judge in block.value:
+                    display_from = judge.get("display_from")
+                    display_to = judge.get("display_to")
+                    if (not display_from or display_from <= today) and (
+                        not display_to or display_to >= today
+                    ):
+                        filtered_judges.append(judge)
+            elif block.block_type == "message":
+                message = block.value
+                context["message"] = message
+        context["judges_recruiting"] = filtered_judges
+        print("context", context)
+        return context
