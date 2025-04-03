@@ -16,15 +16,23 @@
             <h1 class="margin-bottom-3">{{ page.title }}</h1>
             <hr />
             {% if judges_recruiting %}
-                {% for judge in judges_recruiting %}
-                <div class="judge-recruiting">
-                    <h3>{{ judge.judge_name|richtext }}</h3>
-                    <p>{{ judge.description|richtext }}</p>
-                    <p>Contact: {{ judge.apply_to_email|richtext }}</p>
-                    <p>Display from: {{ judge.display_from }}</p>
-                    <p>Display to: {{ judge.display_to }}</p>
+                <div class="usa-card-group">
+                    {% for judge in judges_recruiting %}
+                        <section class="usa-card">
+                            <div class="usa-card__container">
+                                <header class="usa-card__header" style="text-align: center;">
+                                    <h2 class="usa-card__heading">{{ judge.judge_name|richtext }}</h2>
+                                </header>
+                                <div class="usa-card__body">
+                                    <p>{{ judge.description|richtext }}</p>
+                                </div>
+                                <div class="usa-card__footer">
+                                    <a class="usa-button" href="mailto:{{ judge.apply_to_email }}">Apply</a>
+                                </div>
+                            </div>
+                        </section>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             {% else %}
                 <p>{{ message }}</p>
             {% endif %}

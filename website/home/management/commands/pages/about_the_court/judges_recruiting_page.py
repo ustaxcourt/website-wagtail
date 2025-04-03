@@ -39,9 +39,50 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                         "type": "judge",
                         "value": [
                             {
-                                "judge_name": "Judge John Doe",
-                                "description": "Currently recruiting for the position of Judge.",
-                                "apply_to_email": "(202) 555-0123",
+                                "judge_name": "Judge Richard T. Morrison",
+                                "description": """<p>
+          Applicants should have an interest in taxation and possess strong academic credentials,
+          superior research and writing skills, and excellent communication skills. Applications
+          should include a cover letter, resume, unofficial undergraduate and law school transcripts,
+          at least one writing sample (10-15 pages), and a list of references or letters of recommendation.
+          Please submit your application materials to <strong>Morrison-LCApps@ustaxcourt.gov</strong>.
+        </p>
+        <p>
+          In lieu of applicants uploading letters of recommendation, recommenders may e-mail their
+          letter of recommendation to <strong>Morrison-LCApps@ustaxcourt.gov</strong>.
+        </p>
+        <p>
+          <strong>Employment to begin:</strong> Fall 2025<br>
+          <strong>Commitment:</strong> Two Years
+        </p>""",
+                                "apply_to_email": "Morrison-LCApps@ustaxcourt.gov",
+                                "display_from": "2024-10-01",
+                                "display_to": "2025-12-31",
+                            },
+                        ],
+                    },
+                    {
+                        "type": "judge",
+                        "value": [
+                            {
+                                "judge_name": "Judge Kashi Way",
+                                "description": """<p>
+          Judge Way intends to select one Fall 2024 Law Clerk for a one-year term and one Fall 2024 Law
+          Clerk for a two-year term. Candidates must indicate in their emails whether they are interested
+          in a one- or two-year term. Candidates may indicate interest in both term lengths. Judge Way
+          reserves the right to limit any candidate to a renewable one-year term.
+        </p>
+        <p>
+          Applicants should have an interest in taxation and possess strong academic credentials,
+          superior research and writing skills, and excellent communication skills. Applications
+          should include a cover letter, resume, unofficial law school transcript, at least one
+          writing sample (5-10 pages), and a list of references or letters of recommendation.
+        </p>
+        <p>
+          <strong>Employment to begin:</strong> Fall 2024<br>
+          <strong>Commitment:</strong> One or Two Years
+        </p>""",
+                                "apply_to_email": "Way-LCApps@ustaxcourt.gov",
                                 "display_from": "2024-10-01",
                                 "display_to": "2025-12-31",
                             },
