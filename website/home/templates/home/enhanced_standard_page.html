@@ -490,6 +490,20 @@
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
-        {% for sub_block in page.judges_recruiting %}{{ sub_block.value|safe }}{% endfor %}
+        {% for sub_block in page.judges_recruiting %}
+            {% if sub_block.block_type == "message" %}
+                {{ sub_block.value|safe }}
+            {% elif sub_block.block_type == "judge" %}
+                {% for judge in sub_block.value %}
+                    <div class="judge-recruiting">
+                        <h3>{{ judge.judge_name }}</h3>
+                        <p>{{ judge.description }}</p>
+                        <p>Contact: {{ judge.apply_to_email }}</p>
+                        <p>Contact: {{ judge.display_from }}</p>
+                        <p>Contact: {{ judge.display_to }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
     </div>
 {% endblock content %}
