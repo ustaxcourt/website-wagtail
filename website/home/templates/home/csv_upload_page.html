@@ -1,0 +1,25 @@
+{# In your app's templates directory: csv_table_page.html #}
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ page.title }}</h1>
+    {% if csv_data %}
+        <div class="csv-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% for header in csv_data.headers %}<th>{{ header }}</th>{% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in csv_data.rows %}
+                        <tr>
+                            {% for cell in row %}<td>{{ cell }}</td>{% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No CSV data available.</p>
+    {% endif %}
+{% endblock %}
