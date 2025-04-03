@@ -490,5 +490,6 @@
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
+        {% for sub_block in page.judges_recruiting %}{{ sub_block.value|safe }}{% endfor %}
     </div>
 {% endblock content %}

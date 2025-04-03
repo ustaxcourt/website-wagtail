@@ -1162,7 +1162,14 @@ class JudgesRecruiting(EnhancedStandardPage):
     judges_recruiting = StreamField(
         [
             (
-                "judges_recruiting_block",
+                "message",
+                blocks.RichTextBlock(
+                    required=False,
+                    help_text="Default message to display when no judges are recruiting.",
+                ),
+            ),
+            (
+                "judge",
                 blocks.ListBlock(
                     blocks.StructBlock(
                         [
@@ -1184,9 +1191,9 @@ class JudgesRecruiting(EnhancedStandardPage):
                                 ),
                             ),
                         ]
-                    )
+                    ),
                 ),
-            )
+            ),
         ],
         blank=True,
         use_json_field=True,
