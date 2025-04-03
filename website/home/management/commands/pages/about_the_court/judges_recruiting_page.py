@@ -45,15 +45,15 @@ class JudgesRecruitingPageInitializer(PageInitializer):
           superior research and writing skills, and excellent communication skills. Applications
           should include a cover letter, resume, unofficial undergraduate and law school transcripts,
           at least one writing sample (10-15 pages), and a list of references or letters of recommendation.
-          Please submit your application materials to <strong>Morrison-LCApps@ustaxcourt.gov</strong>.
+          Please submit your application materials to <a href="mailto:Morrison-LCApps@ustaxcourt.gov" title="Email: Morrison-LCApps@ustaxcourt.gov">Morrison-LCApps@ustaxcourt.gov</a>.
         </p>
         <p>
           In lieu of applicants uploading letters of recommendation, recommenders may e-mail their
-          letter of recommendation to <strong>Morrison-LCApps@ustaxcourt.gov</strong>.
+          letter of recommendation to <a href="mailto:Morrison-LCApps@ustaxcourt.gov" title="Email: Morrison-LCApps@ustaxcourt.gov">Morrison-LCApps@ustaxcourt.gov</a>.
         </p>
         <p>
-          <strong>Employment to begin:</strong> Fall 2025<br>
-          <strong>Commitment:</strong> Two Years
+        <strong>Employment to begin:</strong> Fall 2025<br/>
+        <strong>Commitment:</strong> Two Years
         </p>""",
                                 "apply_to_email": "Morrison-LCApps@ustaxcourt.gov",
                                 "display_from": "2024-10-01",
@@ -79,8 +79,8 @@ class JudgesRecruitingPageInitializer(PageInitializer):
           writing sample (5-10 pages), and a list of references or letters of recommendation.
         </p>
         <p>
-          <strong>Employment to begin:</strong> Fall 2024<br>
-          <strong>Commitment:</strong> One or Two Years
+        <strong>Employment to begin:</strong> Fall 2024<br/>
+        <strong>Commitment:</strong> One or Two Years
         </p>""",
                                 "apply_to_email": "Way-LCApps@ustaxcourt.gov",
                                 "display_from": "2024-10-01",
