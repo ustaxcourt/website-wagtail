@@ -135,15 +135,15 @@
             const href = link.getAttribute('href');
             if (!href) return;
 
-            if (href.startsWith('mailto:') || href.startsWith('tel:') || isSamedomain(href)) {
-                return; // Let default behavior and GA handle these
-            }
-
             // For same-domain PDFs, let GA track first
             if (isSamedomain(href) && isPdf(href)) {
                 window.open(href, '_blank');
                 event.preventDefault();
                 return;
+            }
+
+            if (href.startsWith('mailto:') || href.startsWith('tel:') || isSamedomain(href)) {
+                return; // Let default behavior and GA handle these
             }
 
             // Handle external links
