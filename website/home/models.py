@@ -383,7 +383,8 @@ class EnhancedStandardPage(Page):
                     label="Card Set",
                 ),
             ),
-        ]
+        ],
+        blank=True,
     )
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
