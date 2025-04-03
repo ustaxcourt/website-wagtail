@@ -30,6 +30,7 @@ from django.shortcuts import render
 from django.http import Http404
 from django.utils import timezone
 from wagtail.blocks import RawHTMLBlock
+from wagtail.blocks import DateBlock
 
 
 @register_setting
@@ -1151,4 +1152,46 @@ class DirectoryIndex(Page):
     content_panels = [
         FieldPanel("title"),
         FieldPanel("body"),
+    ]
+
+
+class JudgesRecruiting(EnhancedStandardPage):
+    template = "home/enhanced_standard_page.html"
+
+    judges_recruiting = StreamField(
+        [
+            (
+                "judges_recruiting_block",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("judge_name", blocks.RichTextBlock(blank=True)),
+                            ("description", blocks.RichTextBlock(blank=True)),
+                            ("apply_to_email", blocks.RichTextBlock(blank=True)),
+                            (
+                                "display_from",
+                                DateBlock(
+                                    required=False,
+                                    help_text="Start displaying from this date",
+                                ),
+                            ),
+                            (
+                                "display_to",
+                                DateBlock(
+                                    required=False,
+                                    help_text="Stop displaying after this date",
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+            )
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Add judges recruiting details",
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("judges_recruiting"),
     ]
