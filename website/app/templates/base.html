@@ -129,7 +129,6 @@
     function setupLinkHandlers() {
         // Use event delegation instead of querySelectorAll
         document.addEventListener('click', function(event) {
-            debugger
             const link = event.target.closest('a');
             if (!link) return;
 
