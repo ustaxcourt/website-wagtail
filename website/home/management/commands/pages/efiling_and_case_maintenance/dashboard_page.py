@@ -52,14 +52,18 @@ class DashboardPageInitializer(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
+                body=[
+                    {
+                        "type": "paragraph",
+                        "value": "Your dashboard is your main landing page once you are signed in to DAWSON.",
+                    }
+                ],
                 search_description="View and manage your DAWSON dashboard",
                 raw_html_body=[
                     {
                         "type": "raw_html",
                         "value": """
 <div id='dashboard-page'>
-<p>Your dashboard is your main landing page once you are signed in to DAWSON.</p>
-
 <h2>Viewing Your Dashboard</h2>
 
 <ol>
