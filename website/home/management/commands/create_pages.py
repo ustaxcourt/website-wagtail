@@ -24,6 +24,8 @@ from home.management.commands.pages.navigation import NavigationInitializer
 from home.management.commands.snippets import snippets_to_initialize
 from home.management.commands.redirects.redirect_initializer import RedirectInitializer
 
+from home.management.commands.pages.documents import UnlistedFiles
+
 # Initialize home and footer first
 home_page_initialize = [
     HomePageInitializer,
@@ -86,3 +88,8 @@ class Command(BaseCommand):
         nav_initializer = NavigationInitializer(self.stdout)
         nav_initializer.create()
         self.stdout.write(self.style.SUCCESS("Navigation has been initialized."))
+
+        # Initialize unlisted files
+        unlisted_files_initializer = UnlistedFiles(self.stdout)
+        unlisted_files_initializer.create()
+        self.stdout.write(self.style.SUCCESS("Unlisted files have been initialized."))
