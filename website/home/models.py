@@ -432,6 +432,9 @@ class JudgeProfile(models.Model):
         FieldPanel("bio"),
     ]
 
+    class Meta:
+        ordering = ["last_name"]
+
     def save(self, *args, **kwargs):
         self.last_updated_date = timezone.now()
         # Only generate a default if display_name is blank
