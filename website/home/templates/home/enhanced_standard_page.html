@@ -357,6 +357,9 @@
                     <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
                 {% elif block.block_type == 'hr' %}
                     <hr />
+                {% elif block.block_type == 'button' %}
+                    <a href="{{ block.value.href }}"
+                       class="usa-button btn-{{ block.value.style }}">{{ block.value.text }}</a>
                 {% elif block.block_type == 'table' %}
                     <div class="table-container">
                         <table id="enhanced-table">

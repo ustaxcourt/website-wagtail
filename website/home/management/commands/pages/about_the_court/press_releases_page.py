@@ -366,8 +366,12 @@ class PressReleasesPageInitializer(PageInitializer):
                     },
                     {"type": "hr", "value": True},
                     {
-                        "type": "paragraph",
-                        "value": """<a role="button" tabindex="0" href="/press-releases/archives" target="_blank" title="Press Release Archives">Archive</a>""",
+                        "type": "button",
+                        "value": {
+                            "text": "Archive",
+                            "href": "/press-releases/archives",
+                            "style": "primary",
+                        },
                     },
                     {"type": "h2", "value": "Press Release Archives "},
                     {"type": "hr", "value": True},
