@@ -58,7 +58,7 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
             " website (www.adobe.com). Electronic documents may be converted to PDF"
             " through a word processor, third party PDF creation software such as"
             " Adobe Acrobat, or online PDF creation services from Adobe (<a"
-            ' href="http://createpdf.adobe.com/)">http://createpdf.adobe.com/)</a> and'
+            ' href="https://createpdf.adobe.com/">https://createpdf.adobe.com/)</a> and'
             " others. Documents in paper form may be scanned into PDF.<br/></p><p"
             ' data-block-key="8bdcg">“Pro Se” means a petitioner who represents'
             " themselves without a lawyer or an entity appearing through an authorized"
