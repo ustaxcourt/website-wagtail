@@ -1173,7 +1173,13 @@ class JudgesRecruiting(EnhancedStandardPage):
                         [
                             ("judge_name", blocks.RichTextBlock(blank=True)),
                             ("description", blocks.RichTextBlock(blank=True)),
-                            ("apply_to_email", blocks.RichTextBlock(blank=True)),
+                            (
+                                "apply_to_email",
+                                blocks.CharBlock(
+                                    required=False,
+                                    help_text="Enter a valid email.",
+                                ),
+                            ),
                             (
                                 "display_from",
                                 DateBlock(
@@ -1220,5 +1226,4 @@ class JudgesRecruiting(EnhancedStandardPage):
                 message = block.value
                 context["message"] = message
         context["judges_recruiting"] = filtered_judges
-        print("context", context)
         return context
