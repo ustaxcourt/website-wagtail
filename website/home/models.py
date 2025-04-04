@@ -1180,8 +1180,8 @@ class CSVUploadPage(EnhancedStandardPage):
         csv_data = {"headers": [], "rows": []}
 
         # Open the file and read it
-        self.csv_file.open("r")
-        content = self.csv_file.read()
+        with self.csv_file.open("r") as file:
+            content = file.read()
         if isinstance(content, bytes):  # Check if data is in bytes
             content = content.decode("utf-8")  # Decode bytes to string
         csv_file = StringIO(content)
