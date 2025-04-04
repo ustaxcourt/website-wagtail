@@ -1,5 +1,5 @@
 from wagtail.models import Page
-from home.models import JudgesRecruiting
+from home.models import JudgesRecruiting, JudgeProfile
 from home.management.commands.pages.page_initializer import PageInitializer
 
 
@@ -39,7 +39,10 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                         "type": "judge",
                         "value": [
                             {
-                                "judge_name": "Judge Richard T. Morrison",
+                                "judge_name": JudgeProfile.objects.get(
+                                    first_name="Richard", last_name="Morrison"
+                                ).id,
+                                # "Judge Richard T. Morrison",
                                 "description": """<p>
           Applicants should have an interest in taxation and possess strong academic credentials,
           superior research and writing skills, and excellent communication skills. Applications
@@ -65,7 +68,10 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                         "type": "judge",
                         "value": [
                             {
-                                "judge_name": "Judge Kashi Way",
+                                "judge_name": JudgeProfile.objects.get(
+                                    first_name="Kashi", last_name="Way"
+                                ).id,
+                                # "Judge Kashi Way",
                                 "description": """<p>
           Judge Way intends to select one Fall 2024 Law Clerk for a one-year term and one Fall 2024 Law
           Clerk for a two-year term. Candidates must indicate in their emails whether they are interested

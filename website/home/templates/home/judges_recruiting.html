@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
+{% load custom_tags %}
 {% block content %}
     <style>
         #judge-recruiting-page {
@@ -24,9 +25,9 @@
                             gap: 1rem">
                     {% for judge in judges_recruiting %}
                         <section class="usa-card"
-                                 style="flex: 1 1 350px; /* Minimum width of 300px */
-                                        max-width: 450px; /* Maximum width of 400px */
-                                        display: flex;
+                                 style="flex: 1 1 350px;
+                                        /* Minimum width of 300px */ max-width: 450px;
+                                        /* Maximum width of 400px */ display: flex;
                                         flex-direction: column">
                             <div class="usa-card__container"
                                  style="flex: 1;
@@ -34,7 +35,7 @@
                                         flex-direction: column">
                                 <header class="usa-card__header usa-text-align--center"
                                         style="text-align: center">
-                                    <h2 class="usa-card__heading">{{ judge.judge_name|richtext }}</h2>
+                                    <h2 class="usa-card__heading">{{ judge.judge_name|judge_display_name }}</h2>
                                     <i class="fa-solid fa-file-pen"
                                        style="font-size: 1.5rem;
                                               margin: 1em;

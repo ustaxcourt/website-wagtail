@@ -1171,7 +1171,12 @@ class JudgesRecruiting(EnhancedStandardPage):
                 blocks.ListBlock(
                     blocks.StructBlock(
                         [
-                            ("judge_name", blocks.RichTextBlock(blank=True)),
+                            (
+                                "judge_name",
+                                SnippetChooserBlock(
+                                    "home.JudgeProfile", required=False
+                                ),
+                            ),
                             ("description", blocks.RichTextBlock(blank=True)),
                             (
                                 "apply_to_email",
