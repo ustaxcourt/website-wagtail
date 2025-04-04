@@ -10,7 +10,10 @@
             .None {
                 display: none;
             }
-
+            .custom-button{
+                text-align: left;
+                width: 7% !important;
+            }
             .links {
                 i {
                     padding-right: .4em
@@ -359,7 +362,7 @@
                     <hr />
                 {% elif block.block_type == 'button' %}
                     <a href="{{ block.value.href }}"
-                       class="usa-button btn-{{ block.value.style }}">{{ block.value.text }}</a>
+                       class="custom-button usa-button btn-{{ block.value.style }}">{{ block.value.text }}</a>
                 {% elif block.block_type == 'table' %}
                     <div class="table-container">
                         <table id="enhanced-table">
