@@ -98,6 +98,7 @@ class DawsonPageInitializer(PageInitializer):
             "managing_case": [
                 {
                     "title": "How to View Your Dashboard",
+                    "display_title": "How to View Your Dashboard",
                     "slug": "dashboard",
                     "path": "dashboard",
                     "depth": 4,
@@ -211,6 +212,7 @@ class DawsonPageInitializer(PageInitializer):
         }
 
         all_new_std_pages = {}
+        title_map = {}
         for card_name in standard_pages.keys():
             new_std_pages = []
             for page in standard_pages[card_name]:
@@ -218,6 +220,8 @@ class DawsonPageInitializer(PageInitializer):
                     home_page.get_children().live().filter(slug=page["slug"]).first()
                 )
                 if std_page:
+                    if page.get("display_title"):
+                        title_map[page["slug"]] = page["display_title"]
                     new_std_pages.append(std_page.specific)
                 else:
                     new_std_page = EnhancedStandardPage(**page)
@@ -281,7 +285,9 @@ class DawsonPageInitializer(PageInitializer):
 
         for managing_case_std_page in all_new_std_pages["managing_case"]:
             RelatedPage.objects.create(
-                display_title=managing_case_std_page.title,
+                display_title=title_map.get(
+                    managing_case_std_page.slug, managing_case_std_page.title
+                ),
                 card=managing_case_card,
                 related_page=managing_case_std_page,
             )
