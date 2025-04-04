@@ -1154,10 +1154,10 @@ class DirectoryIndex(Page):
     ]
 
 
-class CSVUploadPage(Page):
+class CSVUploadPage(EnhancedStandardPage):
     csv_file = models.FileField(upload_to="csv_files/")
 
-    content_panels = Page.content_panels + [
+    content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("csv_file"),
     ]
 
