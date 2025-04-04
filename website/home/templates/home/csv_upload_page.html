@@ -1,19 +1,25 @@
 {# In your app's templates directory: csv_table_page.html #}
 {% extends "base.html" %}
 {% block content %}
+<div class="grid-container">
+    <div class="content">
     <h1>{{ page.title }}</h1>
     {% if csv_data %}
-        <div class="csv-table-container">
-            <table class="bordered-table">
-                <thead>
+        <div class="usa-table-container--scrollable" tabindex="0">
+            <table class="usa-table usa-table--striped">
+                <thead class="bg-primary text-white">
                     <tr>
-                        {% for header in csv_data.headers %}<th>{{ header }}</th>{% endfor %}
+                        {% for header in csv_data.headers %}
+                            <th data-sortable scope="col" role="columnheader">{{ header }}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for row in csv_data.rows %}
-                        <tr class="bordered-row">
-                            {% for cell in row %}<td>{{ cell }}</td>{% endfor %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -22,4 +28,6 @@
     {% else %}
         <p>No CSV data available.</p>
     {% endif %}
+    </div>
+    </div>
 {% endblock %}
