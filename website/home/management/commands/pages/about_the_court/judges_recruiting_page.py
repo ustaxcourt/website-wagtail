@@ -42,7 +42,6 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                                 "judge_name": JudgeProfile.objects.get(
                                     first_name="Richard", last_name="Morrison"
                                 ).id,
-                                # "Judge Richard T. Morrison",
                                 "description": """<p>
           Applicants should have an interest in taxation and possess strong academic credentials,
           superior research and writing skills, and excellent communication skills. Applications
@@ -71,7 +70,6 @@ class JudgesRecruitingPageInitializer(PageInitializer):
                                 "judge_name": JudgeProfile.objects.get(
                                     first_name="Kashi", last_name="Way"
                                 ).id,
-                                # "Judge Kashi Way",
                                 "description": """<p>
           Judge Way intends to select one Fall 2024 Law Clerk for a one-year term and one Fall 2024 Law
           Clerk for a two-year term. Candidates must indicate in their emails whether they are interested
