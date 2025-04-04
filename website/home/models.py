@@ -1197,6 +1197,5 @@ class CSVUploadPage(EnhancedStandardPage):
             # Handle empty CSV
             pass
         finally:
-            self.csv_file.close()
-
+            pass
         return csv_data
