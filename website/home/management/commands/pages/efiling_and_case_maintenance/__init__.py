@@ -19,6 +19,11 @@ from .definitions_page import DawsonFaqsDefinitionsPageInitializer
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the user guides page
     DawsonUserGuidesPageInitializer,
+    DawsonFaqsBasicsPageInitializer,
+    DawsonFaqsAccountManagementPageInitializer,
+    DawsonFaqsTrainingAndSupportPageInitializer,
+    DawsonFaqsCaseManagementPageInitializer,
+    DawsonFaqsDefinitionsPageInitializer,
     # Order of initialization matters
     DashboardPageInitializer,
     DawsonSearchPageInitializer,
@@ -27,9 +32,4 @@ efiling_and_case_maintenance_pages_to_initialize = [
     # Other pages, order does not matter
     FillInFormsInstructionsPageInitializer,
     SearchesAndPublicAccessPageInitializer,
-    DawsonFaqsBasicsPageInitializer,
-    DawsonFaqsAccountManagementPageInitializer,
-    DawsonFaqsTrainingAndSupportPageInitializer,
-    DawsonFaqsCaseManagementPageInitializer,
-    DawsonFaqsDefinitionsPageInitializer,
 ]
