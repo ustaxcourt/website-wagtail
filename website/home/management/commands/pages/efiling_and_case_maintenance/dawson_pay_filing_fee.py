@@ -55,6 +55,24 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
                     },
                     {
                         "type": "h2",
+                        "value": "Tips & Tricks",
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": """
+<ul>
+<li>Accepted payment methods include bank account/electronic check, Amazon or PayPal account, debit card, or credit card.</li>
+<li>Be sure to have the Docket Number(s) handy for reference during the payment process.</li>
+<li>You can also access the <a href="https://www.pay.gov/" title="pay.gov">pay.gov</a> site directly from DAWSON, if you have a DAWSON account.</li>
+</ul>
+""",
+                    },
+                    {
+                        "type": "hr",
+                        "value": True,
+                    },
+                    {
+                        "type": "h2",
                         "value": "How to Pay the Filing Fee by Mail",
                     },
                     {
