@@ -63,8 +63,7 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
             ' data-block-key="8bdcg">“Pro Se” means a petitioner who represents'
             " themselves without a lawyer or an entity appearing through an authorized"
             ' fiduciary or officer.<br/></p><p data-block-key="8h41i">For additional'
-            ' terms, please visit the <a linktype="page"'
-            ' id="26"><b>glossary</b></a>.</p>'
+            ' terms, please visit the <a href="/petitioners-glossary" title="Guidance for Petitioners: Glossary">glossary</a>.</p>'
         )
 
         content_type = ContentType.objects.get_for_model(EnhancedStandardPage)
