@@ -7,6 +7,10 @@ docs = {
     "Application_for_Waiver_of_Filing_Fee.pdf": "",
 }
 
+images = {
+    "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png": "",
+}
+
 
 class DawsonPayFilingFeeInitializer(PageInitializer):
     def __init__(self, logger):
@@ -34,6 +38,12 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
                 title=doc_name,
             )
             docs[doc_name] = document
+
+        for image_name in images.keys():
+            image_uploaded = self.load_image_from_images_dir(
+                "dawson", image_name, images[image_name]
+            )
+            images[image_name] = image_uploaded
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
@@ -66,6 +76,12 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
 <li>You can also access the <a href="https://www.pay.gov/" title="pay.gov">pay.gov</a> site directly from DAWSON, if you have a DAWSON account.</li>
 </ul>
 """,
+                    },
+                    {
+                        "type": "image",
+                        "value": images[
+                            "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png"
+                        ].id,
                     },
                     {
                         "type": "hr",
