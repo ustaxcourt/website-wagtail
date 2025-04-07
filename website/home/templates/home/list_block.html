@@ -2,53 +2,6 @@
 {% load filters %}
 {% load wagtailimages_tags %}
 
-
 <div class="list-block">
-{% with list_type=block.value.list_type %}
-    {% if list_type == 'ordered' %}
-        <ol class="nested-list">
-        {% else %}
-            <ul class="nested-list">
-            {% endif %}
-            {% for item in block.value.items %}
-                <li>
-                    {% if item.text %}
-                        {{ item.text|richtext }}
-                    {% endif %}
-                    {% if item.image %}
-                        {% picture item.image format-{webp,jpeg} width-1000 loading="lazy" %}
-                    {% endif %}
-                    {% if item.nested_list %}
-
-                        {% for nested in item.nested_list %}
-                            {% if nested.list_type == 'ordered' %}
-                                <ol class="nested-list">
-                            {% else %}
-                            <ul class="nested-list">
-                            {% endif %}
-                            {% for nested_item in nested.items %}
-                                <li>
-                                    {% if nested_item.text %}
-                                        {{ nested_item.text|richtext }}
-                                    {% endif %}
-                                    {% if nested_item.image %}
-                                        {% picture nested_item.image format-{webp,jpeg} width-1000 loading="lazy" %}
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                            {% if nested.list_type == 'ordered' %}
-                            </ol>
-                            {% else %}
-                            </ul>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </li>
-            {% endfor %}
-            {% if list_type == 'ordered' %}
-            </ol>
-        {% else %}
-        </ul>
-    {% endif %}
-{% endwith %}
+    {% include "home/_recursive_list.html" with list_type=block.value.list_type items=block.value.items %}
 </div>

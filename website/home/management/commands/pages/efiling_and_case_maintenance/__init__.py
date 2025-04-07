@@ -13,11 +13,13 @@ from .searches_and_public_access_page import SearchesAndPublicAccessPageInitiali
 from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitializer
 from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 from .dashboard_page import DashboardPageInitializer
+from .find_order_page import DawsonFindAnOrderPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the user guides page
     DawsonUserGuidesPageInitializer,
+    DawsonFindAnOrderPageInitializer,
     # Order of initialization matters
     DashboardPageInitializer,
     DawsonSearchPageInitializer,
