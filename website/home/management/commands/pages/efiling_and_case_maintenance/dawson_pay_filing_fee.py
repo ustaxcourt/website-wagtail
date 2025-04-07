@@ -140,7 +140,7 @@ Include petitioner(s)' name(s) and Docket Number(s) on the check.
                     {
                         "type": "paragraph",
                         "value": f"""
-Can't afford to pay the filing fee? Submit an <a href="{docs['Application_for_Waiver_of_Filing_Fee.pdf'].file.url}", title='Application for Waiver of Filing Fee'>Application for Waiver of Filing Fee</a>. This form is a fillable PDF.
+Can't afford to pay the filing fee? Submit an <a href="{docs['Application_for_Waiver_of_Filing_Fee.pdf'].file.url}" title='Application for Waiver of Filing Fee'>Application for Waiver of Filing Fee</a>. This form is a fillable PDF.
 
 <ol>
 <li>Fill in the form.</li>
