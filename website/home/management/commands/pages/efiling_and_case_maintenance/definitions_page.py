@@ -1,7 +1,7 @@
 from wagtail.models import Page
 from django.contrib.contenttypes.models import ContentType
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import StandardPage
+from home.models import EnhancedStandardPage
 import logging
 
 
@@ -67,11 +67,16 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
             ' id="26"><b>glossary</b></a>.</p>'
         )
 
-        content_type = ContentType.objects.get_for_model(StandardPage)
+        content_type = ContentType.objects.get_for_model(EnhancedStandardPage)
         home_page.add_child(
-            instance=StandardPage(
+            instance=EnhancedStandardPage(
                 title=title,
-                body=page_body,
+                body=[
+                    {
+                        "type": "paragraph",
+                        "value": page_body,
+                    }
+                ],
                 slug=slug,
                 seo_title=title,
                 search_description=title,
