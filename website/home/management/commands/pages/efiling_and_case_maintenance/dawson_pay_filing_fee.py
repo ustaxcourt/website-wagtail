@@ -139,14 +139,14 @@ Can't afford to pay the filing fee? Submit an <a href="{docs['Application_for_Wa
 <ol>
 <li>Fill in the form.</li>
 <li>Print the form, or save the file to your computer.</li>
-<li>File the form to your case:
+<li>File the form to your case:</li>
 <ul>
 <li>If you filed your petition electronically in DAWSON, you may upload the application to your case.</li>
-<li>If you filed your petition by paper, <strong>hand deliver</strong> or <strong>mail the application</strong> to the address below:
+<li>If you filed your petition by paper, <strong>hand deliver</strong> or <strong>mail the application</strong> to the address below:</li>
 <p>Clerk, United States Tax Court <br/>
 400 Second Street, NW<br/>
 Washington, DC 20217</p>
-</li> </ul>
+</ul>
 </ol>
                         """,
                     },
