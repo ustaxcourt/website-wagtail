@@ -233,3 +233,12 @@ button.link:hover {
         font-size: 20px;
     }
 }
+
+
+#dashboard-page {
+    img {
+        display: block;
+        margin: 0 auto;
+        width: 70%;
+    }
+}
