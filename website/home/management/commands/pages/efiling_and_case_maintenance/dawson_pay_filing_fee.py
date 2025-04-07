@@ -43,7 +43,12 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
                 navigation_ribbon=None,
                 search_description=title,
                 body=[
-                    {},
+                    {
+                        "type": "paragraph",
+                        "value": f"""
+                            Filing fees are required to submit a petition. The Court’s filing fee is $60 and may be paid online, by mail, or in person. The fee may be waived by filing an <a href="{docs['Application_for_Waiver_of_Filing_Fee.pdf'].file.url}">Application for Waiver of Filing Fee</a>. Your petition must be processed by the Court before the Application for Waiver of Filing fee can be filed electronically.
+                        """,
+                    },
                 ],
             ),
         )
