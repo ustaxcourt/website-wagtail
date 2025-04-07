@@ -82,9 +82,12 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
                     },
                     {
                         "type": "image",
-                        "value": images[
-                            "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png"
-                        ].id,
+                        "value": {
+                            "image": images[
+                                "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png"
+                            ].id,
+                            "alt_text": "Pay filing fee option using debit or credit card",
+                        },
                     },
                     {
                         "type": "hr",
