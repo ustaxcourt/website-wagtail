@@ -20,19 +20,19 @@ class DawsonPageInitializer(PageInitializer):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
-    def create_related_pages(self, card, std_pages, category, standard_pages):
-        for std_page in std_pages:
+    def create_related_pages(self, card, related_std_pages, category, standard_pages):
+        for a_page in related_std_pages:
             RelatedPage.objects.create(
                 display_title=next(
                     (
                         p["title"]
                         for p in standard_pages[category]
-                        if p["slug"] == std_page.slug
+                        if p["slug"] == a_page.slug
                     ),
-                    std_page.title,
+                    a_page.title,
                 ),
                 card=card,
-                related_page=std_page,
+                related_page=a_page,
             )
         card.save()
 
