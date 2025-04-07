@@ -9,6 +9,9 @@ docs = {
 
 images = {
     "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png": "",
+    "dawson_pay_gov.jpg": "",
+    "dawson_us_tax_court_fees_petitions_agency_form.png": "",
+    "dawson_us_tax_court_fees_petitions_enter_payment_info.png": "",
 }
 
 
