@@ -18,7 +18,6 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
     def create(self):
         home_page = Page.objects.get(slug="home")
         if Page.objects.filter(slug=slug).exists():
-            # logger.warning(f"- {title} page already exists)")
             self.logger.write(f"- {title} page already exists)")
             return
         self.create_page_info(home_page)
@@ -82,5 +81,4 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
                 content_type=content_type,
             )
         )
-        # logger.info(f"Successfully created the '{title}' page.")
         self.logger.write(f"Successfully created the '{title}' page.")
