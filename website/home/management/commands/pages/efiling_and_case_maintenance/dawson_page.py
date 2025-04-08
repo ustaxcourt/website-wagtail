@@ -43,7 +43,16 @@ class DawsonPageInitializer(PageInitializer):
         existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
         if existing_dawson_page:
             self.logger.write(f"- {title} page already exists.")
-            return
+            dawson_page = existing_dawson_page.specific
+        else:
+            dawson_page = DawsonPage(
+                title=title,
+                slug=slug,
+                search_description="Dawson eFiling main page",
+                body="Placeholder body text.",
+            )
+            home_page.add_child(instance=dawson_page)
+            self.logger.write(f"Created {title} page stub.")
 
         body_content = (
             "DAWSON (Docket Access Within a Secure Online Network) is the U.S. Tax Court's electronic filing and "
@@ -52,16 +61,6 @@ class DawsonPageInitializer(PageInitializer):
             '<a href="mailto:dawson.support@ustaxcourt.gov">dawson.support@ustaxcourt.gov</a>. No documents can be '
             "filed with the Court at this email address. Any documents received via email will NOT be filed in your case."
         )
-
-        dawson_page = DawsonPage(
-            title=title,
-            slug=slug,
-            search_description="Dawson eFiling main page",
-            body="Placeholder body text.",
-        )
-
-        home_page.add_child(instance=dawson_page)
-        self.logger.write(f"Created {title} page stub.")
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
 
@@ -226,22 +225,6 @@ class DawsonPageInitializer(PageInitializer):
             ],
         }
 
-        all_new_std_pages = {}
-        for card_name, pages in standard_pages.items():
-            new_std_pages = []
-            for page in pages:
-                std_page = (
-                    home_page.get_children().live().filter(slug=page["slug"]).first()
-                )
-                if std_page:
-                    new_std_pages.append(std_page.specific)
-                else:
-                    new_std_page = EnhancedStandardPage(**page)
-                    home_page.add_child(instance=new_std_page)
-                    self.logger.write(f"Created {new_std_page.title} page.")
-                    new_std_pages.append(new_std_page)
-            all_new_std_pages[card_name] = new_std_pages
-
         register_card = SimpleCard(
             card_title="",
             card_icon="",
@@ -279,6 +262,22 @@ class DawsonPageInitializer(PageInitializer):
 
         self.logger.write("Created cards.")
 
+        all_new_std_pages = {}
+        for card_name, pages in standard_pages.items():
+            new_std_pages = []
+            for page in pages:
+                std_page = (
+                    home_page.get_children().live().filter(slug=page["slug"]).first()
+                )
+                if std_page:
+                    new_std_pages.append(std_page.specific)
+                else:
+                    new_std_page = EnhancedStandardPage(**page)
+                    home_page.add_child(instance=new_std_page)
+                    self.logger.write(f"Created {new_std_page.title} page.")
+                    new_std_pages.append(new_std_page)
+            all_new_std_pages[card_name] = new_std_pages
+
         self.create_related_pages(
             register_card,
             all_new_std_pages["registration"],
@@ -309,6 +308,9 @@ class DawsonPageInitializer(PageInitializer):
             "reference_materials",
             standard_pages,
         )
+
+        if existing_dawson_page:
+            return
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
