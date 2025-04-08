@@ -494,5 +494,8 @@
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
+        {% for sub_block in page.press_release_body %}
+            {% include "home/press_releases_page.html" with block=sub_block %}
+        {% endfor %}
     </div>
 {% endblock content %}

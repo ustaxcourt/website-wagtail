@@ -30,6 +30,9 @@ from django.shortcuts import render
 from django.http import Http404
 from django.utils import timezone
 from wagtail.blocks import RawHTMLBlock
+from collections import defaultdict
+from operator import itemgetter
+from django.template.response import TemplateResponse
 
 
 @register_setting
@@ -1173,13 +1176,89 @@ class DirectoryIndex(Page):
     ]
 
 
-class PressRelease(RoutablePageMixin, EnhancedStandardPage):
+class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
+    """
+    A specialized page for managing press releases with grouping and archive routing.
+    """
+
     template = "home/enhanced_standard_page.html"
 
+    press_release_body = StreamField(
+        [
+            ("button", ButtonBlock()),
+            (
+                "press_releases",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("release_date", blocks.DateBlock(required=False)),
+                            (
+                                "details",
+                                blocks.StructBlock(
+                                    [
+                                        (
+                                            "description",
+                                            blocks.TextBlock(required=False),
+                                        ),
+                                        ("file", DocumentChooserBlock(required=False)),
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+        null=True,
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("press_release_body"),
+    ]
+
     @route("archives/")
-    def press_release_detail(self, request):
-        try:
-            context = self.get_context(request)
-            return render(request, "home/enhanced_standard_page.html", context)
-        except PressRelease.DoesNotExist:
-            raise Http404("Press release not found")
+    def archive_view(self, request):
+        grouped = self.group_press_releases_by_year
+        all_years = list(grouped.keys())
+        archived_years = all_years[5:]  # After first 5 years
+        archived_releases = {year: grouped[year] for year in archived_years}
+
+        context = self.get_context(request)
+        context["press_releases_by_year"] = archived_releases
+        context["is_archive"] = True
+
+        return TemplateResponse(request, self.template, context)
+
+    @property
+    def group_press_releases_by_year(self):
+        grouped = defaultdict(list)
+        for block in self.press_release_body:
+            if block.block_type == "press_releases":
+                for release in block.value:
+                    release_date = release.get("release_date")
+                    if release_date:
+                        year = release_date.year
+                        grouped[year].append(release)
+        # Sort releases in each year by descending date
+        sorted_grouped = {
+            year: sorted(releases, key=itemgetter("release_date"), reverse=True)
+            for year, releases in grouped.items()
+        }
+        # Sort the years descending
+        return dict(sorted(sorted_grouped.items(), reverse=True))
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        grouped = self.group_press_releases_by_year
+        all_years = list(grouped.keys())
+        first_five_years = all_years[:5]
+        main_page_releases = {year: grouped[year] for year in first_five_years}
+        context["press_releases_by_year"] = main_page_releases
+        context["is_archive"] = False
+        return context
+
+    class Meta:
+        verbose_name = "Press Release Page"
