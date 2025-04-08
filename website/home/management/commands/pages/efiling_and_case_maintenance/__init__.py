@@ -16,10 +16,12 @@ from .dashboard_page import DashboardPageInitializer
 from .find_order_page import DawsonFindAnOrderPageInitializer
 from .dawson_find_a_case import FindACasePageInitializer
 from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
+from .merging_files_page import MergingFilesPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
     DocumentsEligibleEfilingPageInitializer,
+    MergingFilesPageInitializer,
     # DAWSON page depends on the user guides page
     DawsonUserGuidesPageInitializer,
     DawsonFindAnOrderPageInitializer,
