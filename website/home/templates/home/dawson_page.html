@@ -180,7 +180,11 @@
                                                         {% for related_page in card.related_pages.all %}
                                                             <li>
                                                                 <i class="fa-solid fa-chevron-right"></i>
-                                                                <a href="{{ related_page.related_page.url }}">{{ related_page.display_title|default:related_page.related_page.title }}</a>
+                                                                {% if related_page.related_page %}
+                                                                    <a href="{{ related_page.related_page.url }}">{{ related_page.display_title|default:related_page.related_page.title }}</a>
+                                                                {% else %}
+                                                                    <a href="/page-deleted">{{ related_page.display_title }}</a>
+                                                                {% endif %}
                                                             </li>
                                                         {% endfor %}
                                                     </ul>
