@@ -8,6 +8,7 @@ from .law_clerk_program_page import LawClerkProgramPageInitializer
 from .trial_sessions_page import TrialSessionsPageInitializer
 from .reports_and_statistics_page import ReportsAndStatisticsPageInitializer
 from .directory_page import DirectoryPageInitializer
+from .judges_recruiting_page import JudgesRecruitingPageInitializer
 from .press_releases_page import PressReleasesPageInitializer
 
 about_the_court_pages_to_initialize = [
@@ -22,5 +23,6 @@ about_the_court_pages_to_initialize = [
     VacancyAnnouncementsPageInitializer,  # this must come after employment page
     LawClerkProgramPageInitializer,
     DirectoryPageInitializer,
+    JudgesRecruitingPageInitializer,
     PressReleasesPageInitializer,
 ]

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load custom_tags %}
+{% block content %}
+    <style>
+        #judge-recruiting-page {
+            min-height: 40vh;
+
+            .closing-date {
+                color: #b50909;
+                font-weight: bold;
+            }
+        }
+    </style>
+    <div id="judge-recruiting-page"
+         class="grid-container usa-prose margin-top-5">
+        <div class="content">
+            <h1 class="margin-bottom-3">{{ page.title }}</h1>
+            <hr />
+            {% if judges_recruiting %}
+                <div class="usa-card-group"
+                     style="display: flex;
+                            flex-wrap: wrap;
+                            align-items: stretch;
+                            gap: 1rem">
+                    {% for judge in judges_recruiting %}
+                        <section class="usa-card"
+                                 style="flex: 1 1 350px;
+                                        /* Minimum width of 300px */ max-width: 450px;
+                                        /* Maximum width of 400px */ display: flex;
+                                        flex-direction: column">
+                            <div class="usa-card__container"
+                                 style="flex: 1;
+                                        display: flex;
+                                        flex-direction: column">
+                                <header class="usa-card__header usa-text-align--center"
+                                        style="text-align: center">
+                                    <h2 class="usa-card__heading">{{ judge.judge_name|judge_display_name }}</h2>
+                                    <i class="fa-solid fa-file-pen"
+                                       style="font-size: 1.5rem;
+                                              margin: 1em;
+                                              color: var(--link-blue)"></i>
+                                </header>
+                                <div class="usa-card__body" style="flex: 1;">
+                                    <p>{{ judge.description|richtext }}</p>
+                                </div>
+                                <hr />
+                                <div class="usa-card__footer">
+                                    <a class="usa-button"
+                                       href="mailto:{{ judge.apply_to_email }}"
+                                       style="width: 100%">Apply</a>
+                                </div>
+                            </div>
+                        </section>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>{{ message }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

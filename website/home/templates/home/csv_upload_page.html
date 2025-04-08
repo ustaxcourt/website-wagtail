@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="grid-container">
+        <div class="content">
+            <h1>{{ page.title }}</h1>
+            <hr />
+            {% if csv_data %}
+                <div class="usa-table-container" tabindex="0">
+                    <table class="usa-table usa-table--striped"
+                           style="border-spacing: 0;
+                                  border-collapse: collapse">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                {% for header in csv_data.headers %}
+                                    <th data-sortable
+                                        scope="col"
+                                        role="columnheader"
+                                        style="padding-right: 2rem">{{ header }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in csv_data.rows %}
+                                <tr scope="row">
+                                    {% for cell in row %}<td style="padding: 0.5rem; padding-left: 0.5rem;">{{ cell }}</td>{% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No data available.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

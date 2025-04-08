@@ -30,6 +30,7 @@ from django.shortcuts import render
 from django.http import Http404
 from django.utils import timezone
 from wagtail.blocks import RawHTMLBlock
+from wagtail.blocks import DateBlock
 from collections import defaultdict
 from operator import itemgetter
 from django.template.response import TemplateResponse
@@ -67,6 +68,16 @@ class GoogleAnalyticsSettings(BaseGenericSetting):
 class IndentStyle(models.TextChoices):
     INDENTED = "indented"
     UNINDENTED = "unindented"
+
+
+LIST_TYPE_CHOICES = [
+    ("ordered", "Ordered List"),
+    ("unordered", "Unordered List"),
+]
+
+LIST_TYPE_BLOCK = blocks.ChoiceBlock(
+    choices=LIST_TYPE_CHOICES, required=False, default="ordered"
+)
 
 
 class IconCategories(models.TextChoices):
@@ -244,6 +255,50 @@ class ColumnBlock(blocks.StructBlock):
     column = blocks.ListBlock(CommonBlock())
 
 
+def create_nested_list_block(max_depth=5, current_depth=1):
+    """
+    Creates a nested list block structure with configurable depth.
+
+    Args:
+        max_depth (int): Maximum nesting depth allowed (default: 4)
+        current_depth (int): Current depth in the recursion (used internally)
+
+    Returns:
+        blocks.StructBlock: A Wagtail block structure for nested lists
+    """
+    # Base structure that's common at all levels
+    list_item_blocks = [
+        ("text", blocks.RichTextBlock(required=False)),
+        ("image", ImageBlock(required=False)),
+    ]
+
+    # Add nested_list field if we haven't reached max depth
+    if current_depth < max_depth:
+        list_item_blocks.append(
+            (
+                "nested_list",
+                blocks.ListBlock(
+                    create_nested_list_block(max_depth, current_depth + 1),
+                    default=[],
+                ),
+            )
+        )
+
+    return blocks.StructBlock(
+        [
+            ("list_type", LIST_TYPE_BLOCK),
+            (
+                "items",
+                blocks.ListBlock(
+                    blocks.StructBlock(list_item_blocks, required=False),
+                    default=[],
+                ),
+            ),
+        ],
+        required=False,
+    )
+
+
 class ButtonBlock(blocks.StructBlock):
     text = blocks.CharBlock(required=True, help_text="Button text")
     href = blocks.CharBlock(
@@ -325,6 +380,7 @@ class EnhancedStandardPage(Page):
                     ]
                 ),
             ),
+            ("list", create_nested_list_block(max_depth=4)),
             (
                 "links",
                 blocks.StructBlock(
@@ -404,7 +460,8 @@ class EnhancedStandardPage(Page):
                     label="Card Set",
                 ),
             ),
-        ]
+        ],
+        blank=True,
     )
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
@@ -451,6 +508,9 @@ class JudgeProfile(models.Model):
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
     ]
+
+    class Meta:
+        ordering = ["last_name"]
 
     def save(self, *args, **kwargs):
         self.last_updated_date = timezone.now()
@@ -1174,6 +1234,131 @@ class DirectoryIndex(Page):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+
+class JudgesRecruiting(EnhancedStandardPage):
+    judges_recruiting = StreamField(
+        [
+            (
+                "message",
+                blocks.RichTextBlock(
+                    required=False,
+                    help_text="Default message to display when no judges are recruiting.",
+                ),
+            ),
+            (
+                "judge",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            (
+                                "judge_name",
+                                SnippetChooserBlock(
+                                    "home.JudgeProfile", required=False
+                                ),
+                            ),
+                            ("description", blocks.RichTextBlock(blank=True)),
+                            (
+                                "apply_to_email",
+                                blocks.CharBlock(
+                                    required=False,
+                                    help_text="Enter a valid email.",
+                                ),
+                            ),
+                            (
+                                "display_from",
+                                DateBlock(
+                                    required=False,
+                                    help_text="Start displaying from this date",
+                                ),
+                            ),
+                            (
+                                "display_to",
+                                DateBlock(
+                                    required=False,
+                                    help_text="Stop displaying after this date",
+                                ),
+                            ),
+                        ]
+                    ),
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Add judges recruiting details",
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("judges_recruiting"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        today = date.today()
+        # Filter the StreamField content for active judges
+        filtered_judges = []
+        for block in self.judges_recruiting:
+            if block.block_type == "judge":
+                for judge in block.value:
+                    display_from = judge.get("display_from")
+                    display_to = judge.get("display_to")
+                    if (not display_from or display_from <= today) and (
+                        not display_to or display_to >= today
+                    ):
+                        filtered_judges.append(judge)
+            elif block.block_type == "message":
+                message = block.value
+                context["message"] = message
+        context["judges_recruiting"] = filtered_judges
+        return context
+
+
+class CSVUploadPage(EnhancedStandardPage):
+    csv_file = models.FileField(upload_to="csv_files/")
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("csv_file"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        if self.csv_file:
+            csv_data = self.get_csv_data()
+            if csv_data["headers"] and csv_data["rows"]:
+                context["csv_data"] = csv_data
+            else:
+                context["csv_data"] = None  # Explicitly set to None if no data
+        else:
+            context["csv_data"] = None
+        return context
+
+    def get_csv_data(self):
+        import csv
+        from io import StringIO
+
+        csv_data = {"headers": [], "rows": []}
+
+        # Open the file and read it
+        with self.csv_file.open("r") as file:
+            content = file.read()
+        if isinstance(content, bytes):  # Check if data is in bytes
+            content = content.decode("utf-8")  # Decode bytes to string
+        csv_file = StringIO(content)
+
+        # Parse the CSV
+        csv_reader = csv.reader(csv_file)
+
+        # Get headers from the first row
+        try:
+            csv_data["headers"] = next(csv_reader)
+            csv_data["rows"] = [row for row in csv_reader]
+        except StopIteration:
+            # Handle empty CSV
+            pass
+        finally:
+            pass
+        return csv_data
 
 
 class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
