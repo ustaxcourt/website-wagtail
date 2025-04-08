@@ -11,6 +11,19 @@
                 display: none;
             }
 
+            .nested-list {
+                li {
+                    margin-bottom: 1rem;
+                }
+
+                img {
+                    padding-top: 1rem;
+                    display: block;
+                    margin: 0 auto;
+                    width: 70%;
+                }
+            }
+
             .links {
                 i {
                     padding-right: .4em
@@ -398,6 +411,8 @@
                         <div>{{ q.answer|richtext }}</div>
                         <hr />
                     {% endfor %}
+                {% elif block.block_type == 'list' %}
+                    {% include "home/list_block.html" with block=block %}
                 {% elif block.block_type == "photo_dedication" %}
                     <div class="dedication">
                         {% if block.value.photo %}
