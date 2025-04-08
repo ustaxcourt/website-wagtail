@@ -14,9 +14,12 @@ from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitia
 from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 from .dashboard_page import DashboardPageInitializer
 from .definitions_page import DawsonFaqsDefinitionsPageInitializer
+from .dawson_find_a_case import FindACasePageInitializer
+from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
+    DocumentsEligibleEfilingPageInitializer,
     # DAWSON page depends on the user guides page
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
@@ -24,6 +27,7 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFaqsTrainingAndSupportPageInitializer,
     DawsonFaqsCaseManagementPageInitializer,
     DawsonFaqsDefinitionsPageInitializer,
+    FindACasePageInitializer,
     # Order of initialization matters
     DashboardPageInitializer,
     DawsonSearchPageInitializer,
