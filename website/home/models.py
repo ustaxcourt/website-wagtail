@@ -67,6 +67,16 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
+LIST_TYPE_CHOICES = [
+    ("ordered", "Ordered List"),
+    ("unordered", "Unordered List"),
+]
+
+LIST_TYPE_BLOCK = blocks.ChoiceBlock(
+    choices=LIST_TYPE_CHOICES, required=False, default="ordered"
+)
+
+
 class IconCategories(models.TextChoices):
     NONE = ("",)
     BOOK = "fa-solid fa-book"
@@ -302,6 +312,62 @@ class EnhancedStandardPage(Page):
                     [
                         ("text", blocks.RichTextBlock()),
                     ]
+                ),
+            ),
+            (
+                "list",
+                blocks.StructBlock(
+                    [
+                        ("list_type", LIST_TYPE_BLOCK),
+                        (
+                            "items",
+                            blocks.ListBlock(
+                                blocks.StructBlock(
+                                    [
+                                        ("text", blocks.RichTextBlock(required=False)),
+                                        ("image", ImageBlock(required=False)),
+                                        (
+                                            "nested_list",
+                                            blocks.ListBlock(
+                                                blocks.StructBlock(
+                                                    [
+                                                        ("list_type", LIST_TYPE_BLOCK),
+                                                        (
+                                                            "items",
+                                                            blocks.ListBlock(
+                                                                blocks.StructBlock(
+                                                                    [
+                                                                        (
+                                                                            "text",
+                                                                            blocks.RichTextBlock(
+                                                                                required=False
+                                                                            ),
+                                                                        ),
+                                                                        (
+                                                                            "image",
+                                                                            ImageBlock(
+                                                                                required=False
+                                                                            ),
+                                                                        ),
+                                                                    ]
+                                                                ),
+                                                                default=[],
+                                                            ),
+                                                        ),
+                                                    ],
+                                                    required=False,
+                                                ),
+                                                default=[],
+                                            ),
+                                        ),
+                                    ],
+                                    required=False,
+                                ),
+                                default=[],
+                            ),
+                        ),
+                    ],
+                    label="Nested List",
                 ),
             ),
             (

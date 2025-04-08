@@ -20,6 +20,22 @@ class DawsonPageInitializer(PageInitializer):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
+    def create_related_pages(self, card, related_std_pages, category, standard_pages):
+        for a_page in related_std_pages:
+            RelatedPage.objects.create(
+                display_title=next(
+                    (
+                        p["title"]
+                        for p in standard_pages[category]
+                        if p["slug"] == a_page.slug
+                    ),
+                    a_page.title,
+                ),
+                card=card,
+                related_page=a_page,
+            )
+        card.save()
+
     def create_page_info(self, home_page):
         slug = "dawson"
         title = "DAWSON"
@@ -98,7 +114,6 @@ class DawsonPageInitializer(PageInitializer):
             "managing_case": [
                 {
                     "title": "How to View Your Dashboard",
-                    "display_title": "How to View Your Dashboard",
                     "slug": "dashboard",
                     "path": "dashboard",
                     "depth": 4,
@@ -212,16 +227,13 @@ class DawsonPageInitializer(PageInitializer):
         }
 
         all_new_std_pages = {}
-        title_map = {}
-        for card_name in standard_pages.keys():
+        for card_name, pages in standard_pages.items():
             new_std_pages = []
-            for page in standard_pages[card_name]:
+            for page in pages:
                 std_page = (
                     home_page.get_children().live().filter(slug=page["slug"]).first()
                 )
                 if std_page:
-                    if page.get("display_title"):
-                        title_map[page["slug"]] = page["display_title"]
                     new_std_pages.append(std_page.specific)
                 else:
                     new_std_page = EnhancedStandardPage(**page)
@@ -267,47 +279,36 @@ class DawsonPageInitializer(PageInitializer):
 
         self.logger.write("Created cards.")
 
-        for registration_std_page in all_new_std_pages["registration"]:
-            RelatedPage.objects.create(
-                display_title=registration_std_page.title,
-                card=register_card,
-                related_page=registration_std_page,
-            )
-        register_card.save()
-
-        for petition_std_page in all_new_std_pages["petition"]:
-            RelatedPage.objects.create(
-                display_title=petition_std_page.title,
-                card=petition_simple_card,
-                related_page=petition_std_page,
-            )
-        petition_simple_card.save()
-
-        for managing_case_std_page in all_new_std_pages["managing_case"]:
-            RelatedPage.objects.create(
-                display_title=title_map.get(
-                    managing_case_std_page.slug, managing_case_std_page.title
-                ),
-                card=managing_case_card,
-                related_page=managing_case_std_page,
-            )
-        managing_case_card.save()
-
-        for searching_case_std_page in all_new_std_pages["searching_case"]:
-            RelatedPage.objects.create(
-                display_title=searching_case_std_page.title,
-                card=searching_case_card,
-                related_page=searching_case_std_page,
-            )
-        searching_case_card.save()
-
-        for reference_materials_std_page in all_new_std_pages["reference_materials"]:
-            RelatedPage.objects.create(
-                display_title=reference_materials_std_page.title,
-                card=reference_materials_card,
-                related_page=reference_materials_std_page,
-            )
-        reference_materials_card.save()
+        self.create_related_pages(
+            register_card,
+            all_new_std_pages["registration"],
+            "registration",
+            standard_pages,
+        )
+        self.create_related_pages(
+            petition_simple_card,
+            all_new_std_pages["petition"],
+            "petition",
+            standard_pages,
+        )
+        self.create_related_pages(
+            managing_case_card,
+            all_new_std_pages["managing_case"],
+            "managing_case",
+            standard_pages,
+        )
+        self.create_related_pages(
+            searching_case_card,
+            all_new_std_pages["searching_case"],
+            "searching_case",
+            standard_pages,
+        )
+        self.create_related_pages(
+            reference_materials_card,
+            all_new_std_pages["reference_materials"],
+            "reference_materials",
+            standard_pages,
+        )
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
