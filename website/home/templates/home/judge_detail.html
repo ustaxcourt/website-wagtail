@@ -3,13 +3,7 @@
 {% load custom_tags %}
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
-        <h1>
-            {% if judge.roles.exists %}
-                {% with role=judge.roles.first %}{{ role.role_name }} {{ judge.display_name }}{% endwith %}
-            {% else %}
-                {{ judge.title }} {{ judge.display_name }}
-            {% endif %}
-        </h1>
+        <h1>{{ judge|judge_display_name }}</h1>
         {% if judge.chambers_telephone %}
             <div class="contact-info margin-bottom-2">
                 <p>
