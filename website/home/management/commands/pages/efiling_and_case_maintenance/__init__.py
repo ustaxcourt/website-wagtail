@@ -15,8 +15,11 @@ from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 from .dashboard_page import DashboardPageInitializer
 from .find_order_page import DawsonFindAnOrderPageInitializer
 from .dawson_find_a_case import FindACasePageInitializer
+from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
+
 
 efiling_and_case_maintenance_pages_to_initialize = [
+    DocumentsEligibleEfilingPageInitializer,
     # DAWSON page depends on the user guides page
     DawsonUserGuidesPageInitializer,
     DawsonFindAnOrderPageInitializer,
