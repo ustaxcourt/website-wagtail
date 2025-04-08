@@ -13,11 +13,15 @@ from .searches_and_public_access_page import SearchesAndPublicAccessPageInitiali
 from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitializer
 from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 from .dashboard_page import DashboardPageInitializer
+from .dawson_find_a_case import FindACasePageInitializer
+from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
 from .dawson_pay_filing_fee import DawsonPayFilingFeeInitializer
 
 efiling_and_case_maintenance_pages_to_initialize = [
+    DocumentsEligibleEfilingPageInitializer,
     # DAWSON page depends on the user guides page
     DawsonUserGuidesPageInitializer,
+    FindACasePageInitializer,
     DawsonPayFilingFeeInitializer,
     # Order of initialization matters
     DashboardPageInitializer,
