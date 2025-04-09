@@ -178,10 +178,12 @@
                                                 {% if card.related_pages.all %}
                                                     <ul class="card-related-pages-list">
                                                         {% for related_page in card.related_pages.all %}
-                                                            <li>
-                                                                <i class="fa-solid fa-chevron-right"></i>
-                                                                <a href="{{ related_page.related_page.url }}">{{ related_page.display_title|default:related_page.related_page.title }}</a>
-                                                            </li>
+                                                            {% if related_page.related_page %}
+                                                                <li>
+                                                                    <i class="fa-solid fa-chevron-right"></i>
+                                                                    <a href="{{ related_page.related_page.url }}">{{ related_page.display_title|default:related_page.related_page.title }}</a>
+                                                                </li>
+                                                            {% endif %}
                                                         {% endfor %}
                                                     </ul>
                                                 {% endif %}
