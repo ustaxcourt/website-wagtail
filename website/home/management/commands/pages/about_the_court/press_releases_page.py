@@ -1166,7 +1166,7 @@ class PressReleasesPageInitializer(PageInitializer):
                             {
                                 "release_date": datetime(2016, 2, 29).date(),
                                 "details": {
-                                    "description": "Diana L. Leyden to be sworn in as a Special Trial Judge.",
+                                    "description": "Judge L. Paige Marvel will become Chief Judge June 1, 2016.",
                                     "file": press_releases_docs["022916.pdf"],
                                 },
                             },
