@@ -210,11 +210,11 @@ Can't afford to pay the filing fee? Submit an <a href="{docs['Application_for_Wa
 <ul>
 <li>If you filed your petition electronically in DAWSON, you may upload the application to your case.</li>
 <li>If you filed your petition by paper, <strong>hand deliver</strong> or <strong>mail the application</strong> to the address below:</li>
+</ul>
+</ol>
 <p>Clerk, United States Tax Court <br/>
 400 Second Street, NW<br/>
 Washington, DC 20217</p>
-</ul>
-</ol>
                         """,
                     },
                     {
