@@ -4,10 +4,24 @@ from home.management.commands.pages.page_initializer import PageInitializer
 
 efile_a_petition_images = [
     {
-        "title": "Combine Files Dropdown",
-        "filename": "combine-files.jpg",
+        "title": "Start A Case",
+        "filename": "start-a-case.jpg",
+    },
+    {
+        "title": "Create A Case Process",
+        "filename": "create-a-case-process.jpg",
+    },
+    {
+        "title": "Petition Submitted",
+        "filename": "petition-submitted.jpg",
     },
 ]
+
+efile_a_petition_docs = {
+    "Petition_Simplified_Form_2.pdf": "",
+    "Corporate_Disclosure_Statement_Form.pdf": "",
+    "Form_4_Statement_of_Taxpayer_Identification_Number.pdf": "",
+}
 
 
 class EfileAPetitionPageInitializer(PageInitializer):
@@ -41,6 +55,14 @@ class EfileAPetitionPageInitializer(PageInitializer):
                     "id": image_uploaded.id,
                     "url": image_uploaded.file.url,
                 }
+
+        for doc_name in efile_a_petition_docs.keys():
+            document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=doc_name,
+                title=doc_name,
+            )
+            efile_a_petition_docs[doc_name] = document
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
@@ -91,7 +113,11 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                                                     "text": "Answer some questions online and have DAWSON create a Petition document for filing with the Court.",
                                                                 },
                                                                 {
-                                                                    "text": "Complete and upload the Court's standard Petition form. Petition form (T.C. Form 2)",
+                                                                    "text": (
+                                                                        "Complete and upload the Court's standard Petition form. "
+                                                                        f"<a href=\"{efile_a_petition_docs['Petition_Simplified_Form_2.pdf'].file.url}\" "
+                                                                        "target=\"_blank\" title=\"Petition\">Petition form (T.C. Form 2)</a>"
+                                                                    ),
                                                                 },
                                                                 {
                                                                     "text": """Upload your own Petition that complies with the requirements of the <a href="/rules" target="_blank" title="Tax Court Rules">Tax Court Rules of Practice and Procedure</a>.""",
@@ -124,7 +150,11 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                     ],
                                 },
                                 {
-                                    "text": "If you are filing on behalf of a business (this includes a corporation, partnership, or LLC), prepare the Corporate Disclosure Statement (Form 6).",
+                                    "text": (
+                                        "If you are filing on behalf of a business (this includes a corporation, partnership, or LLC), "
+                                        f"<a href=\"{efile_a_petition_docs['Corporate_Disclosure_Statement_Form.pdf'].file.url}\" "
+                                        "target=\"_blank\" title=\"Corporate Disclosure Statement Form\">Corporate Disclosure Statement</a> (Form 6)."
+                                    ),
                                 },
                                 {
                                     "text": "Upload IRS Notice(s)",
@@ -162,10 +192,14 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                             "list_type": "ordered",
                                             "items": [
                                                 {
-                                                    "text": "You'll be asked to complete and upload a Statement of Taxpayer Identification Number (STIN) form. This document is sent to the IRS to help them identify you, but it's never visible as part of the case record. <strong>This is the only document that should contain your Social Security Number (SSN), Taxpayer Identification Number (TIN), or Employee Identification Number (EIN)</strong>.",
+                                                    "text": """You'll be asked to complete and upload a Statement of Taxpayer Identification Number (STIN) form. This document is sent to the IRS to help them identify you, but it's never visible as part of the case record. <strong>This is the only document that should contain your Social Security Number (SSN), Taxpayer Identification Number (TIN), or Employee Identification Number (EIN)</strong>.""",
                                                 },
                                                 {
-                                                    "text": "Download the form and fill it out to submit it.",
+                                                    "text": (
+                                                        "Download and complete the Statement of Taxpayer Identification Number. "
+                                                        f"<a href=\"{efile_a_petition_docs['Form_4_Statement_of_Taxpayer_Identification_Number.pdf'].file.url}\" "
+                                                        "target=\"_blank\" title=\"Statement of Taxpayer Identification Number\">Download the form</a> and fill it out to submit it."
+                                                    ),
                                                 },
                                             ],
                                         }
@@ -212,7 +246,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                             "list_type": "ordered",
                             "items": [
                                 {
-                                    "text": """Go to <a href="/dawson" target="_blank" title="DAWSON">DAWSON</a>.""",
+                                    "text": """Go to <a href="https://dawson.ustaxcourt.gov" target="_blank" title="DAWSON">DAWSON</a>.""",
                                 },
                                 {
                                     "text": "Click Log In at the top right.",
@@ -229,8 +263,56 @@ class EfileAPetitionPageInitializer(PageInitializer):
                             ],
                         },
                     },
+                    {"type": "hr", "value": True},
+                    {
+                        "type": "h2",
+                        "value": "Start a Case",
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": "Once you have created your account, you can file the petition electronically in DAWSON.",
+                    },
+                    {
+                        "type": "list",
+                        "value": {
+                            "list_type": "ordered",
+                            "items": [
+                                {
+                                    "text": "Review the information provided in the <strong>What to Expect When Filing a Case Online</strong> section.",
+                                },
+                                {
+                                    "text": "Select the Start a Case button at the bottom of the page.",
+                                    "image": uploaded_images["start-a-case.jpg"]["id"],
+                                },
+                                {
+                                    "text": "Follow the prompts. There will be 7 steps to complete the Create a Case Process. All fields are required unless noted as optional.",
+                                    "image": uploaded_images[
+                                        "create-a-case-process.jpg"
+                                    ]["id"],
+                                },
+                                {
+                                    "text": "Once your Petition is submitted, you will be assigned a Docket Number and given some information about what to expect next.",
+                                    "image": uploaded_images["petition-submitted.jpg"][
+                                        "id"
+                                    ],
+                                },
+                                {
+                                    "text": """For more detailed information on filing a Petition electronically, refer to the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">DAWSON user guides</a>.""",
+                                },
+                            ],
+                        },
+                    },
+                    {"type": "hr", "value": True},
+                    {
+                        "type": "h2",
+                        "value": "Electronically File Documents and Other Actions in DAWSON",
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": """You will be able to log in to DAWSON at any time and view your case. In addition, you can file other documents, update your contact information, and view documents in your case that are filed by the Court or other parties. Refer to the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">DAWSON user guides</a> for more detailed instructions.""",
+                    },
                 ],
-                search_description="Learn how to merge multiple PDF files into a single PDF document using Adobe Acrobat",
+                search_description="Learn how to eFile a Petition",
             )
         )
 
