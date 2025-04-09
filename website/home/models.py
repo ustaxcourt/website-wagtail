@@ -1366,8 +1366,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     A specialized page for managing press releases with grouping and archive routing.
     """
 
-    template = "home/enhanced_standard_page.html"
-
     press_release_body = StreamField(
         [
             ("button", ButtonBlock()),
