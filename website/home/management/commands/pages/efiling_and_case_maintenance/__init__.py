@@ -18,11 +18,14 @@ from .find_order_page import DawsonFindAnOrderPageInitializer
 from .find_an_opinion import DawsonFindAnOpinionPageInitializer
 from .dawson_find_a_case import FindACasePageInitializer
 from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
+from .merging_files_page import MergingFilesPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
     DocumentsEligibleEfilingPageInitializer,
+    # DAWSON page depends on the user guides page
+    MergingFilesPageInitializer,
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
     DawsonFaqsAccountManagementPageInitializer,
