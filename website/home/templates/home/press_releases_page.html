@@ -1,8 +1,11 @@
 {% block extra_css %}
     <style>
-        .custom-button {
-            text-align: left;
-            width: 7% !important;
+        .custom-button-archive {
+            margin-bottom: 50px;
+            a{
+                text-align: left;
+                width: 7% !important;
+            }
         }
     </style>
 {% endblock %}
@@ -24,9 +27,14 @@
             {% endif %}
         {% endfor %}
     </ul>
+    {% if not forloop.last %}
     <hr>
+    {% endif %}
 {% endfor %}
 {% if not is_archive %}
+    <hr>
+<div class="custom-button-archive">
     <a href="{{ page.url }}archives/"
        class="custom-button usa-button btn-primary">Archive</a>
+</div>
 {% endif %}

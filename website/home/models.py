@@ -1414,7 +1414,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
         context = self.get_context(request)
         context["press_releases_by_year"] = archived_releases
         context["is_archive"] = True
-
+        self.title = "Press Release Archive"
         return TemplateResponse(request, self.template, context)
 
     @property
