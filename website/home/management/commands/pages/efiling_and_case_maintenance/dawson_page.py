@@ -42,8 +42,17 @@ class DawsonPageInitializer(PageInitializer):
 
         existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
         if existing_dawson_page:
-            self.logger.write(f"- {title} page already exists.")
-            return
+            self.logger.write(f"- {title} page already exists. Updating cards...")
+            dawson_page = existing_dawson_page.specific
+        else:
+            dawson_page = DawsonPage(
+                title=title,
+                slug=slug,
+                search_description="Dawson eFiling main page",
+                body="Placeholder body text.",
+            )
+            home_page.add_child(instance=dawson_page)
+            self.logger.write(f"Created {title} page stub.")
 
         body_content = (
             "DAWSON (Docket Access Within a Secure Online Network) is the U.S. Tax Court's electronic filing and "
@@ -53,17 +62,10 @@ class DawsonPageInitializer(PageInitializer):
             "filed with the Court at this email address. Any documents received via email will NOT be filed in your case."
         )
 
-        dawson_page = DawsonPage(
-            title=title,
-            slug=slug,
-            search_description="Dawson eFiling main page",
-            body="Placeholder body text.",
-        )
-
-        home_page.add_child(instance=dawson_page)
-        self.logger.write(f"Created {title} page stub.")
-
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
+
+        FancyCard.objects.filter(parent_page=dawson_page).delete()
+        SimpleCardGroup.objects.filter(parent_page=dawson_page).delete()
 
         dawson_fancy_card = FancyCard(
             url="https://dawson.ustaxcourt.gov/",
@@ -226,22 +228,6 @@ class DawsonPageInitializer(PageInitializer):
             ],
         }
 
-        all_new_std_pages = {}
-        for card_name, pages in standard_pages.items():
-            new_std_pages = []
-            for page in pages:
-                std_page = (
-                    home_page.get_children().live().filter(slug=page["slug"]).first()
-                )
-                if std_page:
-                    new_std_pages.append(std_page.specific)
-                else:
-                    new_std_page = EnhancedStandardPage(**page)
-                    home_page.add_child(instance=new_std_page)
-                    self.logger.write(f"Created {new_std_page.title} page.")
-                    new_std_pages.append(new_std_page)
-            all_new_std_pages[card_name] = new_std_pages
-
         register_card = SimpleCard(
             card_title="",
             card_icon="",
@@ -278,6 +264,22 @@ class DawsonPageInitializer(PageInitializer):
         reference_materials_card.save()
 
         self.logger.write("Created cards.")
+
+        all_new_std_pages = {}
+        for card_name, pages in standard_pages.items():
+            new_std_pages = []
+            for page in pages:
+                std_page = (
+                    home_page.get_children().live().filter(slug=page["slug"]).first()
+                )
+                if std_page:
+                    new_std_pages.append(std_page.specific)
+                else:
+                    new_std_page = EnhancedStandardPage(**page)
+                    home_page.add_child(instance=new_std_page)
+                    self.logger.write(f"Created {new_std_page.title} page.")
+                    new_std_pages.append(new_std_page)
+            all_new_std_pages[card_name] = new_std_pages
 
         self.create_related_pages(
             register_card,
@@ -338,26 +340,11 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "photo_dedication": [photo_dedication],
         }
 
-        # Check if a DawsonPage with the given slug already exists
-        existing_page = DawsonPage.objects.filter(slug=slug).first()
+        self.logger.write(f"- {title} page already exists. Updating content.")
 
-        if existing_page:
-            # Update
-            self.logger.write(f"- {title} page already exists. Updating content.")
+        for field_name, field_value in page_fields.items():
+            setattr(dawson_page, field_name, field_value)
 
-            for field_name, field_value in page_fields.items():
-                setattr(existing_page, field_name, field_value)
+        dawson_page.save()
 
-            existing_page.save()
-
-            self.logger.write(f"Successfully updated the '{title}' page.")
-
-        else:
-            # Create
-            self.logger.write(f"Creating the '{title}' page.")
-            new_page = DawsonPage(**page_fields)
-
-            # Add the new page under home_page
-            home_page.add_child(instance=new_page)
-
-            self.logger.write(f"Successfully created the '{title}' page.")
+        self.logger.write(f"Successfully updated the '{title}' page.")
