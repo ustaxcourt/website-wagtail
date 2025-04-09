@@ -1,5 +1,9 @@
 VENV=../.venv/bin/activate
 
+%:
+	@echo "Falling back to ./website-wagtail/ for '$@'"
+	@$(MAKE) -C ../. $@
+
 init:
 	python -m venv ../.venv
 
