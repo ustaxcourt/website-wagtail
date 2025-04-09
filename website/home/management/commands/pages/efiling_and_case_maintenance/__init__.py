@@ -25,7 +25,6 @@ from .merging_files_page import MergingFilesPageInitializer
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
     DocumentsEligibleEfilingPageInitializer,
-    # DAWSON page depends on the user guides page
     MergingFilesPageInitializer,
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
