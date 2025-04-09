@@ -76,7 +76,7 @@ class DashboardPageInitializer(PageInitializer):
                                             "list_type": "unordered",
                                             "items": [
                                                 {
-                                                    "text": "<a href='/petitioners-start'>How to eFile a Petition</a>",
+                                                    "text": "<a href='/efile-a-petition'>How to eFile a Petition</a>",
                                                 },
                                                 {
                                                     "text": "<a href='/dpt_cities.html'>Find a Court Location</a>",
