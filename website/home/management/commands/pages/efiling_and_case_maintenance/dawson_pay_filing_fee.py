@@ -67,8 +67,12 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
                         "value": True,
                     },
                     {
-                        "type": "h2",
-                        "value": "How to Pay the Filing Fee Online",
+                        "type": "heading",
+                        "value": {
+                            "text": "How to Pay the Filing Fee Online",
+                            "level": "h2",
+                            "id": "#PRACTITIONERS",
+                        },
                     },
                     {
                         "type": "list",
