@@ -10,6 +10,9 @@
                 text-align: left;
             }
         }
+        h2{
+            font-size: 20px;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -23,7 +26,7 @@
             <hr>
         </h1>
         {% for year, releases in press_releases_by_year.items %}
-            <h3 class="title">{{ year }}</h3>
+            <h2 class="title">{{ year }}</h2>
             <ul class="press-release-list">
                 {% for release in releases %}
                     {% if release.details %}
