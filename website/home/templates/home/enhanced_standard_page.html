@@ -165,7 +165,21 @@
                 }
             }
 
-            #enhanced-table {
+            .enhanced-table.unstyled {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1rem 0;
+                table-layout: fixed;
+
+                td,
+                th {
+                    width: 50%;
+                    padding: 1rem;
+                    vertical-align: top;
+                }
+            }
+
+            .enhanced-table:not(.unstyled) {
                 width: 100%;
                 border-collapse: collapse;
                 margin: 1rem 0;
@@ -205,7 +219,7 @@
                     -webkit-overflow-scrolling: touch;
                 }
 
-                #enhanced-table {
+                .enhanced-table {
                     margin: 0;
                     min-width: 740px;
                 }
@@ -338,6 +352,39 @@
                     }
                 }
             }
+
+            .alert {
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 4px;
+
+                &.success {
+                    color: #2e8540;
+                    border: none;
+                    background-color: #ecf3ce;
+                    border-color: #e4eeba;
+                }
+
+                &.info {
+                    background-color: #f1f9fc;
+                    border-color: #d4ecf6;
+                    color: #0288d1;
+                    border: none;
+                }
+
+                p {
+                    margin: 0;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+
+                a {
+                    color: inherit;
+                    text-decoration: underline;
+                }
+            }
         }
 
         @media (max-width: 768px) {
@@ -394,24 +441,12 @@
                     <div class="centered-image">{% picture block.value format-{webp,jpeg} width-1000 loading="lazy" %}</div>
                 {% elif block.block_type == 'hr' %}
                     <hr />
+                {% elif block.block_type == 'alert' %}
+                    <div class="alert {{ block.value.alert_type }}">{{ block.value.content | richtext }}</div>
                 {% elif block.block_type == 'table' %}
-                    <div class="table-container">
-                        <table id="enhanced-table">
-                            {% if block.value.caption %}<caption>{{ block.value.caption }}</caption>{% endif %}
-                            <thead>
-                                <tr>
-                                    {% for col in block.value.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in block.value.rows %}
-                                    <tr>
-                                        {% for value in row %}<td>{{ value }}</td>{% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% include "home/styled_table.html" with block=block %}
+                {% elif block.block_type == 'unstyled_table' %}
+                    {% include "home/unstyled_table.html" with block=block %}
                 {% elif block.block_type == 'links' %}
                     {% include "home/links_block.html" with block=block %}
                 {% elif block.block_type == 'questionanswers' %}

@@ -296,6 +296,11 @@ def create_nested_list_block(max_depth=5, current_depth=1):
     )
 
 
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
+
+
 class EnhancedStandardPage(Page):
     class Meta:
         abstract = False
@@ -349,14 +354,34 @@ class EnhancedStandardPage(Page):
                     help_text="Add 'Horizontal Rule'.",
                 ),
             ),
+            (
+                "alert",
+                blocks.StructBlock(
+                    [
+                        (
+                            "alert_type",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("info", "Info"),
+                                    ("success", "Success"),
+                                ],
+                                default="info",
+                            ),
+                        ),
+                        ("content", blocks.RichTextBlock()),
+                    ],
+                ),
+            ),
             ("image", ImageBlock()),
             (
                 "table",
                 TypedTableBlock(
-                    [
-                        ("text", blocks.RichTextBlock()),
-                    ]
+                    table_value_types,
                 ),
+            ),
+            (
+                "unstyled_table",
+                TypedTableBlock(table_value_types),
             ),
             ("list", create_nested_list_block(max_depth=4)),
             (
