@@ -825,7 +825,7 @@ class SimpleCard(ClusterableModel):
         return (
             self.card_title
             if self.card_title
-            else f"Simple Card {self.parent_page.group_label}"
+            else f"Simple Card - {self.parent_page.group_label or self.parent_page.parent_page.title}"
         )
 
 
@@ -858,6 +858,9 @@ class FancyCard(ClusterableModel):
         help_text="The text to appear next to the image in the light blue card.",
     )
 
+    def __str__(self):
+        return f"Fancy Card - {self.parent_page.title}"
+
 
 class SimpleCardGroup(ClusterableModel):
     """Group model for dynamically grouping Simple Cards."""
@@ -878,7 +881,11 @@ class SimpleCardGroup(ClusterableModel):
     ]
 
     def __str__(self):
-        return self.group_label
+        return (
+            self.group_label
+            if self.group_label
+            else f"Simple Card -{self.parent_page.title}"
+        )
 
 
 class PhotoDedication(models.Model):
