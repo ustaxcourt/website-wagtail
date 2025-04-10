@@ -22,12 +22,14 @@ from .dawson_pay_filing_fee import DawsonPayFilingFeeInitializer
 from .merging_files_page import MergingFilesPageInitializer
 from .notice_regarding_privacy_page import NoticeRegardingPrivacyPageInitializer
 from .efile_a_petition_page import EfileAPetitionPageInitializer
+from .update_contact_information_page import UpdateContactInformationPageInitializer
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
     DocumentsEligibleEfilingPageInitializer,
     MergingFilesPageInitializer,
     EfileAPetitionPageInitializer,
+    UpdateContactInformationPageInitializer,
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
     DawsonFaqsAccountManagementPageInitializer,
