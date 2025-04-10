@@ -20,12 +20,14 @@ from .dawson_find_a_case import FindACasePageInitializer
 from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
 from .dawson_pay_filing_fee import DawsonPayFilingFeeInitializer
 from .merging_files_page import MergingFilesPageInitializer
+from .efile_a_petition_page import EfileAPetitionPageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
     DocumentsEligibleEfilingPageInitializer,
     MergingFilesPageInitializer,
+    EfileAPetitionPageInitializer,
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
     DawsonFaqsAccountManagementPageInitializer,

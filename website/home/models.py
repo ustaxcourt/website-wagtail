@@ -31,6 +31,14 @@ from django.http import Http404
 from django.utils import timezone
 from wagtail.blocks import RawHTMLBlock
 from wagtail.blocks import DateBlock
+from collections import defaultdict
+from operator import itemgetter
+from django.template.response import TemplateResponse
+
+
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
 
 
 @register_setting
@@ -296,9 +304,22 @@ def create_nested_list_block(max_depth=5, current_depth=1):
     )
 
 
-table_value_types = [
-    ("text", blocks.RichTextBlock()),
-]
+class ButtonBlock(blocks.StructBlock):
+    text = blocks.CharBlock(required=True, help_text="Button text")
+    href = blocks.CharBlock(
+        required=True, help_text="Button link  (Can be relative or absolute)"
+    )
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("primary", "Primary"),
+        ],
+        default="primary",
+        help_text="Choose the button style",
+    )
+
+    class Meta:
+        icon = "placeholder"
+        label = "Button"
 
 
 class EnhancedStandardPage(Page):
@@ -346,6 +367,7 @@ class EnhancedStandardPage(Page):
             ("h4", blocks.CharBlock(label="Heading 4")),
             ("paragraph", blocks.RichTextBlock()),
             ("snippet", SnippetChooserBlock("home.CommonText")),
+            ("button", ButtonBlock()),
             (
                 "hr",
                 blocks.BooleanBlock(
@@ -1369,3 +1391,89 @@ class CSVUploadPage(EnhancedStandardPage):
         finally:
             pass
         return csv_data
+
+
+class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
+    """
+    A specialized page for managing press releases with grouping and archive routing.
+    """
+
+    press_release_body = StreamField(
+        [
+            ("button", ButtonBlock()),
+            (
+                "press_releases",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("release_date", blocks.DateBlock(required=False)),
+                            (
+                                "details",
+                                blocks.StructBlock(
+                                    [
+                                        (
+                                            "description",
+                                            blocks.TextBlock(required=False),
+                                        ),
+                                        ("file", DocumentChooserBlock(required=False)),
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+        null=True,
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("press_release_body"),
+    ]
+
+    @route("archives/")
+    def archive_view(self, request):
+        grouped = self.group_press_releases_by_year
+        all_years = list(grouped.keys())
+        archived_years = all_years[5:]  # After first 5 years
+        archived_releases = {year: grouped[year] for year in archived_years}
+
+        context = self.get_context(request)
+        context["press_releases_by_year"] = archived_releases
+        context["is_archive"] = True
+        self.title = "Press Release Archive"
+        return TemplateResponse(request, self.template, context)
+
+    @property
+    def group_press_releases_by_year(self):
+        grouped = defaultdict(list)
+        for block in self.press_release_body:
+            if block.block_type == "press_releases":
+                for release in block.value:
+                    release_date = release.get("release_date")
+                    if release_date:
+                        year = release_date.year
+                        grouped[year].append(release)
+        # Sort releases in each year by descending date
+        sorted_grouped = {
+            year: sorted(releases, key=itemgetter("release_date"), reverse=True)
+            for year, releases in grouped.items()
+        }
+        # Sort the years descending
+        return dict(sorted(sorted_grouped.items(), reverse=True))
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        grouped = self.group_press_releases_by_year
+        all_years = list(grouped.keys())
+        first_five_years = all_years[:5]
+        main_page_releases = {year: grouped[year] for year in first_five_years}
+        context["press_releases_by_year"] = main_page_releases
+        context["is_archive"] = False
+        return context
+
+    class Meta:
+        verbose_name = "Press Release Page"

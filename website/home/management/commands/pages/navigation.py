@@ -59,6 +59,11 @@ class NavigationInitializer(PageInitializer):
                             "title": "EMPLOYMENT",
                             "page": self.get_page("employment"),
                         },
+                        {
+                            "title": "PRESS RELEASES",
+                            "page": self.get_page("press-releases"),
+                            "external_url": "",
+                        },
                     ],
                 },
             ),
