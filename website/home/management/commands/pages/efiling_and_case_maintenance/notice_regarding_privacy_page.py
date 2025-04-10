@@ -3,34 +3,6 @@ from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
 
 
-merging_files_images = [
-    {
-        "title": "Combine Files Dropdown",
-        "filename": "combine-files.jpg",
-    },
-    {
-        "title": "Add Files",
-        "filename": "add-files.jpg",
-    },
-    {
-        "title": "Select Files",
-        "filename": "select-files.jpg",
-    },
-    {
-        "title": "Order Files",
-        "filename": "order-files.jpg",
-    },
-    {
-        "title": "Combine All Files",
-        "filename": "combine-all-files.jpg",
-    },
-    {
-        "title": "Final Files",
-        "filename": "final-files.jpg",
-    },
-]
-
-
 class NoticeRegardingPrivacyPageInitializer(PageInitializer):
     def __init__(self, logger):
         super().__init__(logger)
@@ -49,19 +21,6 @@ class NoticeRegardingPrivacyPageInitializer(PageInitializer):
             return
 
         self.logger.write(f"Creating the '{title}' page.")
-
-        uploaded_images = {}
-
-        for image in merging_files_images:
-            image_uploaded = self.load_image_from_images_dir(
-                "dawson", image["filename"], image["title"]
-            )
-
-            if image_uploaded:
-                uploaded_images[image["filename"]] = {
-                    "id": image_uploaded.id,
-                    "url": image_uploaded.file.url,
-                }
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
@@ -102,7 +61,7 @@ class NoticeRegardingPrivacyPageInitializer(PageInitializer):
                         "value": "A person waives protection as to the person’s own information by filing it without redaction and not under seal. The Clerk of the Court is not required to review documents filed with the Court for compliance with this Notice. The responsibility to redact filings rests with the party or nonparty making the filing. The Court expects the parties to exercise good faith in their efforts to redact.",
                     },
                 ],
-                search_description="Learn how to merge multiple PDF files into a single PDF document using Adobe Acrobat",
+                search_description="Notice regarding privacy and public access to case file",
             )
         )
 
