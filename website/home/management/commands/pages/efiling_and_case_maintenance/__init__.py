@@ -18,14 +18,16 @@ from .find_order_page import DawsonFindAnOrderPageInitializer
 from .find_an_opinion import DawsonFindAnOpinionPageInitializer
 from .dawson_find_a_case import FindACasePageInitializer
 from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
+from .dawson_pay_filing_fee import DawsonPayFilingFeeInitializer
 from .merging_files_page import MergingFilesPageInitializer
 from .notice_regarding_privacy_page import NoticeRegardingPrivacyPageInitializer
+from .efile_a_petition_page import EfileAPetitionPageInitializer
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
     DocumentsEligibleEfilingPageInitializer,
-    # DAWSON page depends on the user guides page
     MergingFilesPageInitializer,
+    EfileAPetitionPageInitializer,
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
     DawsonFaqsAccountManagementPageInitializer,
@@ -36,6 +38,7 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFindAnOrderPageInitializer,
     DawsonFindAnOpinionPageInitializer,
     FindACasePageInitializer,
+    DawsonPayFilingFeeInitializer,
     # Order of initialization matters
     DashboardPageInitializer,
     DawsonSearchPageInitializer,

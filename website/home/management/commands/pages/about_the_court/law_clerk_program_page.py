@@ -90,7 +90,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                     {
                         "type": "paragraph",
                         "value": """
-                                        Please review the list of <strong><a href="/judges_recruiting" title="Judges Currently Recruiting">Judges and Special Trial Judges currently recruiting</a></strong> for Law Clerks prior to submitting your application. Click each Judge's name to view Additional Information or Requirements for Law Clerk Applicants.
+                                        Please review the list of <strong><a href="/employment/judges-recruiting" title="Judges Currently Recruiting">Judges and Special Trial Judges currently recruiting</a></strong> for Law Clerks prior to submitting your application. Click each Judge's name to view Additional Information or Requirements for Law Clerk Applicants.
                                         <br/><br/>
                                         To apply, send a cover letter, a complete resume, and a copy of your law school transcript. A legal writing sample, preferably in the tax field, should also accompany the application materials. All documents should be submitted in PDF format.
                                         <br/><br/>
