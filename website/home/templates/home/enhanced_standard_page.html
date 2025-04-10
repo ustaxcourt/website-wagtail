@@ -8,14 +8,27 @@
         .enhanced-page {
 
             .centered-image {
+                width: 100%;
+                max-width: 1000px;
+                margin: 0 auto;
+
                 img {
                     display: block;
                     margin: 0 auto;
+                    max-width: 100%;
+                    height: auto;
+                    object-fit: contain;
                 }
             }
 
             .None {
                 display: none;
+            }
+
+            .list-block {
+                p {
+                    margin: 0;
+                }
             }
 
             .nested-list {
@@ -27,15 +40,14 @@
                     padding-top: 1rem;
                     display: block;
                     margin: 0 auto;
-                    width: 70%;
+                    width: 50%;
                     max-width: 100%;
                     height: auto;
+                    margin-bottom: 2rem;
+                    margin-top: 1rem;
                 }
             }
 
-            .custom-button{
-                text-align: left;
-            }
             .links {
                 i {
                     padding-right: .4em
@@ -382,9 +394,6 @@
                     <div class="centered-image">{% picture block.value format-{webp,jpeg} width-1000 loading="lazy" %}</div>
                 {% elif block.block_type == 'hr' %}
                     <hr />
-                {% elif block.block_type == 'button' %}
-                    <a href="{{ block.value.href }}"
-                       class="custom-button usa-button btn-{{ block.value.style }}">{{ block.value.text }}</a>
                 {% elif block.block_type == 'table' %}
                     <div class="table-container">
                         <table id="enhanced-table">
@@ -517,9 +526,6 @@
         {% endfor %}
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
-        {% endfor %}
-        {% for sub_block in page.press_release_body %}
-            {% include "home/press_releases_page.html" with block=sub_block %}
         {% endfor %}
     </div>
 {% endblock content %}
