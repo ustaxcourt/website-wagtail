@@ -20,7 +20,9 @@ from .dawson_find_a_case import FindACasePageInitializer
 from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageInitializer
 from .dawson_pay_filing_fee import DawsonPayFilingFeeInitializer
 from .merging_files_page import MergingFilesPageInitializer
+from .notice_regarding_privacy_page import NoticeRegardingPrivacyPageInitializer
 from .efile_a_petition_page import EfileAPetitionPageInitializer
+from .update_contact_information_page import UpdateContactInformationPageInitializer
 from .dawson_release_notes import DawsonReleaseNotesInitializer
 
 
@@ -29,12 +31,14 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DocumentsEligibleEfilingPageInitializer,
     MergingFilesPageInitializer,
     EfileAPetitionPageInitializer,
+    UpdateContactInformationPageInitializer,
     DawsonUserGuidesPageInitializer,
     DawsonFaqsBasicsPageInitializer,
     DawsonFaqsAccountManagementPageInitializer,
     DawsonFaqsTrainingAndSupportPageInitializer,
     DawsonFaqsCaseManagementPageInitializer,
     DawsonFaqsDefinitionsPageInitializer,
+    NoticeRegardingPrivacyPageInitializer,
     DawsonFindAnOrderPageInitializer,
     DawsonFindAnOpinionPageInitializer,
     DawsonReleaseNotesInitializer,
