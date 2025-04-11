@@ -1516,7 +1516,7 @@ class ReleaseNotes(EnhancedStandardPage):
         help_text="List of release entries with date and description",
     )
 
-    content_panels = EnhancedStandardPage.content_panels + [
+    content_panels = [
         FieldPanel("title"),
         FieldPanel("paragraph"),
         FieldPanel("release_entries"),
