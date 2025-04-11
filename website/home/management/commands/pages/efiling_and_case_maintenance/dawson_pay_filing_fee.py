@@ -206,19 +206,44 @@ Include petitioner(s)' name(s) and Docket Number(s) on the check.
                         "type": "paragraph",
                         "value": f"""
 Can't afford to pay the filing fee? Submit an <a href="{docs['Application_for_Waiver_of_Filing_Fee.pdf'].file.url}" title='Application for Waiver of Filing Fee'>Application for Waiver of Filing Fee</a>. This form is a fillable PDF.
-
-<ol>
-<li>Fill in the form.</li>
-<li>Print the form, or save the file to your computer.</li>
-<li>File the form to your case:</li>
-<ul>
-<li>If you filed your petition electronically in DAWSON, you may upload the application to your case.</li>
-<li>If you filed your petition by paper, <strong>hand deliver</strong> or <strong>mail the application</strong> to the address below:</li>
-</ul>
-</ol>
-<p>Clerk, United States Tax Court <br/>
+""",
+                    },
+                    {
+                        "type": "list",
+                        "value": {
+                            "list_type": "ordered",
+                            "items": [
+                                {
+                                    "text": "Fill in the form.",
+                                },
+                                {
+                                    "text": "Print the form, or save the file to your computer.",
+                                },
+                                {
+                                    "text": "File the form to your case:",
+                                    "nested_list": [
+                                        {
+                                            "list_type": "unordered",
+                                            "items": [
+                                                {
+                                                    "text": "If you filed your petition electronically in DAWSON, you may upload the application to your case."
+                                                },
+                                                {
+                                                    "text": "If you filed your petition by paper, <strong>hand deliver</strong> or <strong>mail the application</strong> to the address below:",
+                                                },
+                                            ],
+                                        }
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": """
+Clerk, United States Tax Court <br/>
 400 Second Street, NW<br/>
-Washington, DC 20217</p>
+Washington, DC 20217
                         """,
                     },
                     {
