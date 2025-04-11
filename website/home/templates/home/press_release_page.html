@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% block extra_css %}
+    <style>
+        .custom-button-archive {
+            margin-bottom: 50px;
+            width: 110px;
+
+            a {
+                text-align: left;
+            }
+        }
+        h2{
+            font-size: 20px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="grid-container padding-bottom-2 padding-top-2">
+        <h1 class="page-title">
+            {% if is_archive %}
+                Press Release Archive
+            {% else %}
+                Press Releases
+            {% endif %}
+            <hr>
+        </h1>
+        {% for year, releases in press_releases_by_year.items %}
+            <h2 class="title">{{ year }}</h2>
+            <ul class="press-release-list">
+                {% for release in releases %}
+                    {% if release.details %}
+                        <li>
+                            {% if release.details.file %}
+                                <a href="{{ release.details.file.url }}">
+                                    <strong>{{ release.release_date|date:"m/d/Y" }}</strong>
+                                </a>
+                            {% else %}
+                                <strong>{{ release.release_date|date:"m/d/Y" }}</strong>
+                            {% endif %}
+                            — {{ release.details.description }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% if not forloop.last %}<hr>{% endif %}
+        {% endfor %}
+        {% if not is_archive %}
+            <hr>
+            <div class="custom-button-archive">
+                <a href="{{ page.url }}archives/"
+                   class="custom-button usa-button btn-primary">Archive</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

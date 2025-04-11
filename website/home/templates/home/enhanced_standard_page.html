@@ -7,8 +7,45 @@
     <style>
         .enhanced-page {
 
+            .centered-image {
+                width: 100%;
+                max-width: 1000px;
+                margin: 0 auto;
+
+                img {
+                    display: block;
+                    margin: 0 auto;
+                    max-width: 100%;
+                    height: auto;
+                    object-fit: contain;
+                }
+            }
+
             .None {
                 display: none;
+            }
+
+            .list-block {
+                p {
+                    margin: 0;
+                }
+            }
+
+            .nested-list {
+                li {
+                    /* margin-bottom: 1rem; */
+                }
+
+                img {
+                    padding-top: 1rem;
+                    display: block;
+                    margin: 0 auto;
+                    width: 50%;
+                    max-width: 100%;
+                    height: auto;
+                    margin-bottom: 2rem;
+                    margin-top: 1rem;
+                }
             }
 
             .links {
@@ -128,7 +165,21 @@
                 }
             }
 
-            #enhanced-table {
+            .enhanced-table.unstyled {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1rem 0;
+                table-layout: fixed;
+
+                td,
+                th {
+                    width: 50%;
+                    padding: 1rem;
+                    vertical-align: top;
+                }
+            }
+
+            .enhanced-table:not(.unstyled) {
                 width: 100%;
                 border-collapse: collapse;
                 margin: 1rem 0;
@@ -168,7 +219,7 @@
                     -webkit-overflow-scrolling: touch;
                 }
 
-                #enhanced-table {
+                .enhanced-table {
                     margin: 0;
                     min-width: 740px;
                 }
@@ -301,6 +352,39 @@
                     }
                 }
             }
+
+            .alert {
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 4px;
+
+                &.success {
+                    color: #2e8540;
+                    border: none;
+                    background-color: #ecf3ce;
+                    border-color: #e4eeba;
+                }
+
+                &.info {
+                    background-color: #f1f9fc;
+                    border-color: #d4ecf6;
+                    color: #0288d1;
+                    border: none;
+                }
+
+                p {
+                    margin: 0;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+
+                a {
+                    color: inherit;
+                    text-decoration: underline;
+                }
+            }
         }
 
         @media (max-width: 768px) {
@@ -354,27 +438,15 @@
                 {% elif block.block_type == 'snippet' %}
                     {{ block.value.text |safe }}
                 {% elif block.block_type == 'image' %}
-                    <img src="{{ block.value.url }}" alt="{{ block.value.alt }}">
+                    <div class="centered-image">{% picture block.value format-{webp,jpeg} width-1000 loading="lazy" %}</div>
                 {% elif block.block_type == 'hr' %}
                     <hr />
+                {% elif block.block_type == 'alert' %}
+                    <div class="alert {{ block.value.alert_type }}">{{ block.value.content | richtext }}</div>
                 {% elif block.block_type == 'table' %}
-                    <div class="table-container">
-                        <table id="enhanced-table">
-                            {% if block.value.caption %}<caption>{{ block.value.caption }}</caption>{% endif %}
-                            <thead>
-                                <tr>
-                                    {% for col in block.value.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in block.value.rows %}
-                                    <tr>
-                                        {% for value in row %}<td>{{ value }}</td>{% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% include "home/styled_table.html" with block=block %}
+                {% elif block.block_type == 'unstyled_table' %}
+                    {% include "home/unstyled_table.html" with block=block %}
                 {% elif block.block_type == 'links' %}
                     {% include "home/links_block.html" with block=block %}
                 {% elif block.block_type == 'questionanswers' %}
@@ -398,6 +470,8 @@
                         <div>{{ q.answer|richtext }}</div>
                         <hr />
                     {% endfor %}
+                {% elif block.block_type == 'list' %}
+                    {% include "home/list_block.html" with block=block %}
                 {% elif block.block_type == "photo_dedication" %}
                     <div class="dedication">
                         {% if block.value.photo %}
@@ -423,6 +497,8 @@
                             </div>
                         </div>
                     </div>
+                {% elif block.block_type == 'directory' %}
+                    {% include "home/directory_detail.html" with block=block %}
                 {% elif block.block_type == 'columns' %}
                     {% with column_count=block.value.column|length %}
                         <div class="grid-row">
@@ -441,6 +517,21 @@
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                                         {% elif sub_block.block_type == 'links' %}
                                             {% include "home/links_block.html" with block=sub_block %}
+                                        {% elif sub_block.block_type == 'JudgeCollection' %}
+                                            {% with judge_collection=sub_block.value %}
+                                                {% for ordered_judge in judge_collection.ordered_judges.all %}
+                                                    <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}"
+                                                       class="usa-button">
+                                                        {% with judge=ordered_judge.judge %}
+                                                            {% if judge.roles.exists %}
+                                                                {% with role=judge.roles.first %}{{ judge.display_name }}, {{ role.role_name }}{% endwith %}
+                                                            {% else %}
+                                                                {{ judge.display_name }}
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </a>
+                                                {% endfor %}
+                                            {% endwith %}
                                         {% else %}
                                             <p>Column type not recognized: {{ sub_block.block_type }}</p>
                                             {{ sub_block.value }}
@@ -467,6 +558,9 @@
                     {{ block.value }}
                 {% endif %}
             {% endwith %}
+        {% endfor %}
+        {% for sub_block in page.raw_html_body %}
+            {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
     </div>
 {% endblock content %}

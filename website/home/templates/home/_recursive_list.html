@@ -1,0 +1,26 @@
+{% load wagtailcore_tags %}
+{% load filters %}
+{% load wagtailimages_tags %}
+{% if list_type == 'ordered' %}
+    <ol class="nested-list">
+    {% else %}
+        <ul class="nested-list">
+        {% endif %}
+        {% for item in items %}
+            <li>
+                {% if item.text %}{{ item.text|richtext }}{% endif %}
+                {% if item.image %}
+                    {% picture item.image format-{webp,jpeg} width-1000 loading="lazy" %}
+                {% endif %}
+                {% if item.nested_list %}
+                    {% for nested in item.nested_list %}
+                        {% include "home/_recursive_list.html" with list_type=nested.list_type items=nested.items %}
+                    {% endfor %}
+                {% endif %}
+            </li>
+        {% endfor %}
+        {% if list_type == 'ordered' %}
+        </ol>
+    {% else %}
+    </ul>
+{% endif %}

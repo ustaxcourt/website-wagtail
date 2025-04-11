@@ -25,6 +25,20 @@ from wagtail.blocks import PageChooserBlock
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
 from wagtail.models import PreviewableMixin
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from django.shortcuts import render
+from django.http import Http404
+from django.utils import timezone
+from wagtail.blocks import RawHTMLBlock
+from wagtail.blocks import DateBlock
+from collections import defaultdict
+from operator import itemgetter
+from django.template.response import TemplateResponse
+
+
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
 
 
 @register_setting
@@ -56,17 +70,19 @@ class GoogleAnalyticsSettings(BaseGenericSetting):
     ]
 
 
-class NavigationCategories(models.TextChoices):
-    NONE = "NONE", "None"
-    ABOUT_THE_COURT = "ABOUT", "About the Court"
-    RULES_AND_GUIDANCE = "RULES", "Rules & Guidance"
-    ORDERS_AND_OPINIONS = "ORDERS", "Orders & Opinions"
-    eFILING_AND_CASE_MAINTENANCE = "eFILING", "eFiling & Case Maintenance"
-
-
 class IndentStyle(models.TextChoices):
     INDENTED = "indented"
     UNINDENTED = "unindented"
+
+
+LIST_TYPE_CHOICES = [
+    ("ordered", "Ordered List"),
+    ("unordered", "Unordered List"),
+]
+
+LIST_TYPE_BLOCK = blocks.ChoiceBlock(
+    choices=LIST_TYPE_CHOICES, required=False, default="ordered"
+)
 
 
 class IconCategories(models.TextChoices):
@@ -184,6 +200,10 @@ link_obj = blocks.ListBlock(
                 "document",
                 DocumentChooserBlock(required=False),
             ),
+            (
+                "video",
+                DocumentChooserBlock(required=False),
+            ),
             ("url", blocks.CharBlock(required=False)),
             (
                 "text_only",
@@ -240,6 +260,68 @@ class ColumnBlock(blocks.StructBlock):
     column = blocks.ListBlock(CommonBlock())
 
 
+def create_nested_list_block(max_depth=5, current_depth=1):
+    """
+    Creates a nested list block structure with configurable depth.
+
+    Args:
+        max_depth (int): Maximum nesting depth allowed (default: 4)
+        current_depth (int): Current depth in the recursion (used internally)
+
+    Returns:
+        blocks.StructBlock: A Wagtail block structure for nested lists
+    """
+    # Base structure that's common at all levels
+    list_item_blocks = [
+        ("text", blocks.RichTextBlock(required=False)),
+        ("image", ImageBlock(required=False)),
+    ]
+
+    # Add nested_list field if we haven't reached max depth
+    if current_depth < max_depth:
+        list_item_blocks.append(
+            (
+                "nested_list",
+                blocks.ListBlock(
+                    create_nested_list_block(max_depth, current_depth + 1),
+                    default=[],
+                ),
+            )
+        )
+
+    return blocks.StructBlock(
+        [
+            ("list_type", LIST_TYPE_BLOCK),
+            (
+                "items",
+                blocks.ListBlock(
+                    blocks.StructBlock(list_item_blocks, required=False),
+                    default=[],
+                ),
+            ),
+        ],
+        required=False,
+    )
+
+
+class ButtonBlock(blocks.StructBlock):
+    text = blocks.CharBlock(required=True, help_text="Button text")
+    href = blocks.CharBlock(
+        required=True, help_text="Button link  (Can be relative or absolute)"
+    )
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("primary", "Primary"),
+        ],
+        default="primary",
+        help_text="Choose the button style",
+    )
+
+    class Meta:
+        icon = "placeholder"
+        label = "Button"
+
+
 class EnhancedStandardPage(Page):
     class Meta:
         abstract = False
@@ -251,12 +333,6 @@ class EnhancedStandardPage(Page):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
-    title_text = models.CharField(
-        max_length=255, help_text="Title of the section", blank=True
-    )
-    description = RichTextField(blank=True, help_text="Description of the section")
-    video_url = models.URLField(blank=True, help_text="YouTube embed URL")
 
     body = StreamField(
         [
@@ -291,6 +367,7 @@ class EnhancedStandardPage(Page):
             ("h4", blocks.CharBlock(label="Heading 4")),
             ("paragraph", blocks.RichTextBlock()),
             ("snippet", SnippetChooserBlock("home.CommonText")),
+            ("button", ButtonBlock()),
             (
                 "hr",
                 blocks.BooleanBlock(
@@ -299,15 +376,36 @@ class EnhancedStandardPage(Page):
                     help_text="Add 'Horizontal Rule'.",
                 ),
             ),
+            (
+                "alert",
+                blocks.StructBlock(
+                    [
+                        (
+                            "alert_type",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("info", "Info"),
+                                    ("success", "Success"),
+                                ],
+                                default="info",
+                            ),
+                        ),
+                        ("content", blocks.RichTextBlock()),
+                    ],
+                ),
+            ),
             ("image", ImageBlock()),
             (
                 "table",
                 TypedTableBlock(
-                    [
-                        ("text", blocks.RichTextBlock()),
-                    ]
+                    table_value_types,
                 ),
             ),
+            (
+                "unstyled_table",
+                TypedTableBlock(table_value_types),
+            ),
+            ("list", create_nested_list_block(max_depth=4)),
             (
                 "links",
                 blocks.StructBlock(
@@ -387,12 +485,237 @@ class EnhancedStandardPage(Page):
                     label="Card Set",
                 ),
             ),
-        ]
+        ],
+        blank=True,
     )
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
     ]
+
+
+AUTO_MANAGED_COLLECTIONS = ["Judges", "Senior Judges", "Special Trial Judges"]
+
+
+@register_snippet
+class JudgeProfile(models.Model):
+    first_name = models.CharField(max_length=255)
+    middle_initial = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255)
+    suffix = models.CharField(max_length=3, blank=True)
+    display_name = models.CharField(
+        max_length=255,
+        help_text="Optional full name to display (e.g., 'John A. Smith')",
+        blank=True,
+    )
+    title = models.CharField(
+        max_length=255,
+        choices=[
+            ("Judge", "Judge"),
+            ("Senior Judge", "Senior Judge"),
+            ("Special Trial Judge", "Special Trial Judge"),
+        ],
+    )
+    chambers_telephone = models.CharField(
+        max_length=20, blank=True, help_text="Chambers Telephone Number"
+    )
+
+    bio = RichTextField(blank=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
+
+    panels = [
+        FieldPanel("first_name"),
+        FieldPanel("middle_initial"),
+        FieldPanel("last_name"),
+        FieldPanel("suffix"),
+        FieldPanel("display_name"),
+        FieldPanel("title"),
+        FieldPanel("chambers_telephone"),
+        FieldPanel("bio"),
+    ]
+
+    class Meta:
+        ordering = ["last_name"]
+
+    def save(self, *args, **kwargs):
+        self.last_updated_date = timezone.now()
+        # Only generate a default if display_name is blank
+        if not self.display_name.strip():
+            parts = [self.first_name, self.middle_initial, self.last_name, self.suffix]
+            # Filter out empty parts and join them with spaces
+            self.display_name = " ".join(part for part in parts if part)
+        super().save(*args, **kwargs)
+
+        TARGET_COLLECTION = self.title + "s"
+
+        OTHER_COLLECTIONS = set(AUTO_MANAGED_COLLECTIONS) - {TARGET_COLLECTION}
+        # Remove the judge from all other collections
+        for collection_name in OTHER_COLLECTIONS:
+            try:
+                collection = JudgeCollection.objects.get(name=collection_name)
+                collection.ordered_judges.filter(judge=self).delete()
+            except JudgeCollection.DoesNotExist:
+                pass
+
+        # Add the judge to the target collection
+        try:
+            collection = JudgeCollection.objects.get(name=TARGET_COLLECTION)
+            # Check if the judge is already in the collection
+            if not collection.ordered_judges.filter(judge=self).exists():
+                JudgeCollectionOrderable.objects.create(
+                    collection=collection, judge=self
+                )
+        except JudgeCollection.DoesNotExist:
+            pass
+
+    def __str__(self):
+        return self.display_name
+
+
+class JudgeCollectionOrderable(Orderable):
+    """Intermediate model to make JudgeProfile orderable in JudgeCollection."""
+
+    collection = ParentalKey(
+        "JudgeCollection", related_name="ordered_judges", on_delete=models.CASCADE
+    )
+    judge = models.ForeignKey(
+        "JudgeProfile", on_delete=models.CASCADE, related_name="+"
+    )
+
+    panels = [
+        FieldPanel("judge"),
+    ]
+
+
+@register_snippet
+class JudgeCollection(ClusterableModel):
+    """A collection of judge profiles for easy management and display."""
+
+    name = models.CharField(
+        max_length=255,
+        help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
+    )
+
+    panels = [
+        FieldPanel("name"),
+        InlinePanel("ordered_judges", label="Judges"),
+    ]
+
+    def __str__(self):
+        return self.name
+
+
+@register_snippet
+class JudgeRole(models.Model):
+    role_name = models.CharField(
+        max_length=255,
+        unique=True,  # Added unique constraint to ensure no duplicate role names
+        help_text="Name of the role (e.g., 'Chief Judge', 'Assistant Judge')",
+    )
+    judge = models.ForeignKey(
+        "JudgeProfile",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="roles",
+        help_text="Assign a judge to this role",
+    )
+
+    panels = [
+        FieldPanel("role_name"),
+        FieldPanel("judge"),
+    ]
+
+    def clean(self):
+        # Restrict updates to role_name for specific roles
+        if self.pk:  # Check if the object already exists
+            original = JudgeRole.objects.get(pk=self.pk)
+            if (
+                original.role_name in ["Chief Judge", "Chief Special Trial Judge"]
+                and original.role_name != self.role_name
+            ):
+                raise ValidationError(
+                    "You cannot modify the role name for 'Chief Judge' or 'Chief Special Trial Judge'.",
+                )
+        super().clean()
+
+    def delete(self, *args, **kwargs):
+        # Restrict deletion for specific roles
+        if self.role_name in ["Chief Judge", "Chief Special Trial Judge"]:
+            raise ValidationError(
+                "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge'.",
+            )
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.role_name}, {self.judge or '** Selection Pending **'}"
+
+
+judge_snippet = SnippetChooserBlock(
+    target_model="home.JudgeCollection",
+    required=False,
+    help_text="Optionally pick a JudgeCollection snippet",
+    label="Judge Collection",
+)
+
+
+class JudgeColumnBlock(CommonBlock):
+    judgeCollection = judge_snippet
+
+
+class JudgeColumns(blocks.StructBlock):
+    column = blocks.ListBlock(JudgeColumnBlock())
+
+
+class JudgeIndex(RoutablePageMixin, Page):
+    """
+    A specialized page for displaying judges categorized by their titles.
+    Only one instance of this page can exist in the site.
+    """
+
+    template = "home/enhanced_standard_page.html"
+    max_count = 1
+
+    body = StreamField(
+        [
+            ("columns", JudgeColumns()),
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Add judge profiles or collections to display on this page",
+    )
+
+    content_panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        # Get all judge collections
+        roles = JudgeRole.objects.filter(
+            role_name__in=["Chief Judge", "Chief Special Trial Judge"]
+        )
+        context["roles"] = roles
+        return context
+
+    @route(r"^(?P<id>\d+)/(?P<last_name>[\w-]+)/$")
+    def judge_detail(self, request, id, last_name):
+        try:
+            # Use the ID to find the judge
+            judge = JudgeProfile.objects.get(id=id)
+            context = self.get_context(request)
+            context["judge"] = judge
+            if judge.last_name.lower() != last_name:
+                raise Http404("Judge not found")
+            return render(request, "home/judge_detail.html", context)
+        except JudgeProfile.DoesNotExist:
+            # Handle case where judge doesn't exist
+            raise Http404("Judge not found")
+
+    class Meta:
+        verbose_name = "Judges Index Page"
+        abstract = False
 
 
 class HomePage(Page):
@@ -527,7 +850,7 @@ class SimpleCard(ClusterableModel):
         return (
             self.card_title
             if self.card_title
-            else f"Simple Card {self.parent_page.group_label}"
+            else f"Simple Card - {self.parent_page.group_label or self.parent_page.parent_page.title}"
         )
 
 
@@ -560,6 +883,9 @@ class FancyCard(ClusterableModel):
         help_text="The text to appear next to the image in the light blue card.",
     )
 
+    def __str__(self):
+        return f"Fancy Card - {self.parent_page.title}"
+
 
 class SimpleCardGroup(ClusterableModel):
     """Group model for dynamically grouping Simple Cards."""
@@ -580,7 +906,11 @@ class SimpleCardGroup(ClusterableModel):
     ]
 
     def __str__(self):
-        return self.group_label
+        return (
+            self.group_label
+            if self.group_label
+            else f"Simple Card -{self.parent_page.title}"
+        )
 
 
 class PhotoDedication(models.Model):
@@ -807,6 +1137,12 @@ class NavigationMenu(
                                 required=True, help_text="Top level navigation title"
                             ),
                         ),
+                        (
+                            "external_url",
+                            blocks.URLBlock(
+                                required=False, help_text="Or enter an external URL"
+                            ),
+                        ),
                         ("sub_links", blocks.ListBlock(SubNavigationLinkBlock())),
                     ]
                 ),
@@ -847,3 +1183,297 @@ class NavigationMenu(
     @classmethod
     def get_active_menu(cls):
         return cls.objects.filter(live=True).first()
+
+
+class EnhancedRawHTMLPage(EnhancedStandardPage):
+    """
+    A specialized page type that allows embedding raw HTML.
+    """
+
+    template = "home/enhanced_standard_page.html"
+
+    raw_html_body = StreamField(
+        [
+            ("raw_html", RawHTMLBlock(label="Raw HTML")),
+            (
+                "questionanswers",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock(required=False)),
+                            (
+                                "answer",
+                                blocks.StructBlock(
+                                    [
+                                        (
+                                            "rich_text",
+                                            blocks.RichTextBlock(required=False),
+                                        ),
+                                        (
+                                            "html_block",
+                                            blocks.RawHTMLBlock(required=False),
+                                        ),
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                            ("anchortag", blocks.CharBlock(required=False)),
+                        ]
+                    ),
+                    label="Question and Answer",
+                    help_text="Add a question and answer with anchor tag for linking",
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("raw_html_body"),
+    ]
+
+    class Meta:
+        verbose_name = "Enhanced Raw HTML Page"
+
+
+class DirectoryColumnBlock(CommonBlock):
+    JudgeCollection = judge_snippet
+    DirectoryEntry = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("description", blocks.RichTextBlock()),
+                ("phone_number", blocks.CharBlock()),
+            ]
+        )
+    )
+
+
+class DirectoryIndex(Page):
+    template = "home/enhanced_standard_page.html"
+    max_count = 1
+
+    body = StreamField(
+        [
+            ("directory", DirectoryColumnBlock()),
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Directory entries or judge profiles",
+    )
+
+    content_panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
+    ]
+
+
+class JudgesRecruiting(EnhancedStandardPage):
+    judges_recruiting = StreamField(
+        [
+            (
+                "message",
+                blocks.RichTextBlock(
+                    required=False,
+                    help_text="Default message to display when no judges are recruiting.",
+                ),
+            ),
+            (
+                "judge",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            (
+                                "judge_name",
+                                SnippetChooserBlock(
+                                    "home.JudgeProfile", required=False
+                                ),
+                            ),
+                            ("description", blocks.RichTextBlock(blank=True)),
+                            (
+                                "apply_to_email",
+                                blocks.CharBlock(
+                                    required=False,
+                                    help_text="Enter a valid email.",
+                                ),
+                            ),
+                            (
+                                "display_from",
+                                DateBlock(
+                                    required=False,
+                                    help_text="Start displaying from this date",
+                                ),
+                            ),
+                            (
+                                "display_to",
+                                DateBlock(
+                                    required=False,
+                                    help_text="Stop displaying after this date",
+                                ),
+                            ),
+                        ]
+                    ),
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+        help_text="Add judges recruiting details",
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("judges_recruiting"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        today = date.today()
+        # Filter the StreamField content for active judges
+        filtered_judges = []
+        for block in self.judges_recruiting:
+            if block.block_type == "judge":
+                for judge in block.value:
+                    display_from = judge.get("display_from")
+                    display_to = judge.get("display_to")
+                    if (not display_from or display_from <= today) and (
+                        not display_to or display_to >= today
+                    ):
+                        filtered_judges.append(judge)
+            elif block.block_type == "message":
+                message = block.value
+                context["message"] = message
+        context["judges_recruiting"] = filtered_judges
+        return context
+
+
+class CSVUploadPage(EnhancedStandardPage):
+    csv_file = models.FileField(upload_to="csv_files/")
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("csv_file"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        if self.csv_file:
+            csv_data = self.get_csv_data()
+            if csv_data["headers"] and csv_data["rows"]:
+                context["csv_data"] = csv_data
+            else:
+                context["csv_data"] = None  # Explicitly set to None if no data
+        else:
+            context["csv_data"] = None
+        return context
+
+    def get_csv_data(self):
+        import csv
+        from io import StringIO
+
+        csv_data = {"headers": [], "rows": []}
+
+        # Open the file and read it
+        with self.csv_file.open("r") as file:
+            content = file.read()
+        if isinstance(content, bytes):  # Check if data is in bytes
+            content = content.decode("utf-8")  # Decode bytes to string
+        csv_file = StringIO(content)
+
+        # Parse the CSV
+        csv_reader = csv.reader(csv_file)
+
+        # Get headers from the first row
+        try:
+            csv_data["headers"] = next(csv_reader)
+            csv_data["rows"] = [row for row in csv_reader]
+        except StopIteration:
+            # Handle empty CSV
+            pass
+        finally:
+            pass
+        return csv_data
+
+
+class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
+    """
+    A specialized page for managing press releases with grouping and archive routing.
+    """
+
+    press_release_body = StreamField(
+        [
+            ("button", ButtonBlock()),
+            (
+                "press_releases",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("release_date", blocks.DateBlock(required=False)),
+                            (
+                                "details",
+                                blocks.StructBlock(
+                                    [
+                                        (
+                                            "description",
+                                            blocks.TextBlock(required=False),
+                                        ),
+                                        ("file", DocumentChooserBlock(required=False)),
+                                    ],
+                                    required=False,
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+            ),
+        ],
+        blank=True,
+        use_json_field=True,
+        null=True,
+    )
+
+    content_panels = EnhancedStandardPage.content_panels + [
+        FieldPanel("press_release_body"),
+    ]
+
+    @route("archives/")
+    def archive_view(self, request):
+        grouped = self.group_press_releases_by_year
+        all_years = list(grouped.keys())
+        archived_years = all_years[5:]  # After first 5 years
+        archived_releases = {year: grouped[year] for year in archived_years}
+
+        context = self.get_context(request)
+        context["press_releases_by_year"] = archived_releases
+        context["is_archive"] = True
+        self.title = "Press Release Archive"
+        return TemplateResponse(request, self.template, context)
+
+    @property
+    def group_press_releases_by_year(self):
+        grouped = defaultdict(list)
+        for block in self.press_release_body:
+            if block.block_type == "press_releases":
+                for release in block.value:
+                    release_date = release.get("release_date")
+                    if release_date:
+                        year = release_date.year
+                        grouped[year].append(release)
+        # Sort releases in each year by descending date
+        sorted_grouped = {
+            year: sorted(releases, key=itemgetter("release_date"), reverse=True)
+            for year, releases in grouped.items()
+        }
+        # Sort the years descending
+        return dict(sorted(sorted_grouped.items(), reverse=True))
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        grouped = self.group_press_releases_by_year
+        all_years = list(grouped.keys())
+        first_five_years = all_years[:5]
+        main_page_releases = {year: grouped[year] for year in first_five_years}
+        context["press_releases_by_year"] = main_page_releases
+        context["is_archive"] = False
+        return context
+
+    class Meta:
+        verbose_name = "Press Release Page"

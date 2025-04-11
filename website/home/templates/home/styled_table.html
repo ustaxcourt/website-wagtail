@@ -1,0 +1,17 @@
+<div class="table-container">
+    <table class="enhanced-table">
+        {% if block.value.caption %}<caption>{{ block.value.caption }}</caption>{% endif %}
+        <thead>
+            <tr>
+                {% for col in block.value.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in block.value.rows %}
+                <tr>
+                    {% for value in row %}<td>{{ value }}</td>{% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

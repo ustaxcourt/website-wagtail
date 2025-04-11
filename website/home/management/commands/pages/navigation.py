@@ -28,7 +28,6 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "MISSION",
                             "page": self.get_page("mission"),
-                            "external_url": "",
                         },
                         {
                             "title": "HISTORY",
@@ -36,23 +35,33 @@ class NavigationInitializer(PageInitializer):
                             "external_url": "",
                         },
                         {
-                            "title": "JUDGES",
-                            "page": self.get_page("judges"),
+                            "title": "REPORTS & STATISTICS",
+                            "page": self.get_page("reports-and-statistics"),
                             "external_url": "",
                         },
                         {
+                            "title": "JUDGES",
+                            "page": self.get_page("judges"),
+                        },
+                        {
+                            "title": "DIRECTORY",
+                            "page": self.get_page("directory"),
+                        },
+                        {
                             "title": "TRIAL SESSIONS",
-                            "page": None,
                             "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
+                        },
+                        {
+                            "title": "FEES & CHARGES",
+                            "page": self.get_page("fees-and-charges"),
                         },
                         {
                             "title": "EMPLOYMENT",
                             "page": self.get_page("employment"),
-                            "external_url": "",
                         },
                         {
-                            "title": "REPORTS & STATISTICS",
-                            "page": self.get_page("reports-and-statistics"),
+                            "title": "PRESS RELEASES",
+                            "page": self.get_page("press-releases"),
                             "external_url": "",
                         },
                     ],
@@ -66,32 +75,26 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "REMOTE PROCEEDINGS",
                             "page": self.get_page("zoomgov"),
-                            "external_url": "",
                         },
                         {
                             "title": "ADMINISTRATIVE ORDERS",
                             "page": self.get_page("administrative-orders"),
-                            "external_url": "",
                         },
                         {
                             "title": "TAX COURT RULES",
                             "page": self.get_page("rules"),
-                            "external_url": "",
                         },
                         {
                             "title": "GUIDANCE FOR PETITIONERS",
                             "page": self.get_page("petitioners"),
-                            "external_url": "",
                         },
                         {
                             "title": "CLINICS & PRO BONO PROGRAMS",
                             "page": self.get_page("clinics"),
-                            "external_url": "",
                         },
                         {
                             "title": "GUIDANCE FOR PRACTITIONERS",
                             "page": self.get_page("practitioners"),
-                            "external_url": "",
                         },
                     ],
                 },
@@ -103,33 +106,27 @@ class NavigationInitializer(PageInitializer):
                     "sub_links": [
                         {
                             "title": "TODAY'S OPINIONS",
-                            "page": None,
                             "external_url": "https://dawson.ustaxcourt.gov/todays-opinions",
                         },
                         {
                             "title": "TODAY'S ORDERS",
-                            "page": None,
                             "external_url": "https://dawson.ustaxcourt.gov/todays-orders",
                         },
                         {
                             "title": "SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
-                            "page": None,
                             "external_url": "https://dawson.ustaxcourt.gov/",
                         },
                         {
                             "title": "CITATION & STYLE MANUAL",
                             "page": self.get_page("citation-and-style-manual"),
-                            "external_url": "",
                         },
                         {
                             "title": "TRANSCRIPTS & COPIES",
                             "page": self.get_page("transcripts-and-copies"),
-                            "external_url": "",
                         },
                         {
                             "title": "TAX COURT REPORTS: PAMPHLETS",
                             "page": self.get_page("pamphlets"),
-                            "external_url": "",
                         },
                     ],
                 },
@@ -152,9 +149,16 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "CASE RELATED FORMS",
                             "page": self.get_page("case-related-forms"),
-                            "external_url": "",
                         },
                     ],
+                },
+            ),
+            (
+                "section",
+                {
+                    "title": "GIVE FEEDBACK",
+                    "external_url": "https://forms.office.com/r/45R5iAguPG",
+                    "sub_links": [],
                 },
             ),
         ]
