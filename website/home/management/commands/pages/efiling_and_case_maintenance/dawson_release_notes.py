@@ -92,7 +92,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "February 2, 2025"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Motion to Supplement the Record (M129) is no longer available to use as a document type and has been replaced with a new document type: Motion to Complete or Supplement the Administrative Record (M129A). Prior filings of Motion to Supplement the Record (M129) are unaffected.</li><li>Resolved issue that caused users with a browser that was not updated to the latest version to experience an error when adding a PDF document to DAWSON.\u202f</li><li>Resolved styling accessibility issue on some public-facing pages.</li><li>Resolved an issue that caused an incorrect button/link to display for IRS or DOJ attorney's accessing DAWSON via a mobile device</li><li>Resolved the issue that caused a spinning wheel to display on the screen if a logged in user was idle for longer than 60 minutes and the system timed out. </li></ul>",
+                        "value": "<ul><li>Motion to Supplement the Record (M129) is no longer available to use as a document type and has been replaced with a new document type: Motion to Complete or Supplement the Administrative Record (M129A). Prior filings of Motion to Supplement the Record (M129) are unaffected.</li><li>Resolved issue that caused users with a browser that was not updated to the latest version to experience an error when adding a PDF document to DAWSON.</li><li>Resolved styling accessibility issue on some public-facing pages.</li><li>Resolved an issue that caused an incorrect button/link to display for IRS or DOJ attorney's accessing DAWSON via a mobile device</li><li>Resolved the issue that caused a spinning wheel to display on the screen if a logged in user was idle for longer than 60 minutes and the system timed out. </li></ul>",
                     },
                     {"type": "h2", "value": "January 5, 2025"},
                     {
@@ -117,7 +117,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "November 22, 2024"},
                     {
                         "type": "paragraph",
-                        "value": '<ul><li>Updated the casing of words in all of the hover-over helper tips.</li><li>An updated view of scheduled trial sessions is now posted on the Court\u2019s website. Click on the <strong>About the Court</strong> menu and select <strong>Trial Sessions</strong>. Users may also navigate directly to the page by going here: <strong><a data-original-title="Trial Sessions" href="https://dawson.ustaxcourt.gov/trial-sessions" target="_blank" title="">https://dawson.ustaxcourt.gov/trial-sessions</a></strong>.</li></ul>',
+                        "value": """<ul><li>Updated the casing of words in all of the hover-over helper tips.</li><li>An updated view of scheduled trial sessions is now posted on the Court's website. Click on the <strong>About the Court</strong> menu and select <strong>Trial Sessions</strong>. Users may also navigate directly to the page by going here: <strong><a data-original-title="Trial Sessions" href="https://dawson.ustaxcourt.gov/trial-sessions" target="_blank" title="">https://dawson.ustaxcourt.gov/trial-sessions</a></strong>.</li></ul>""",
                     },
                     {"type": "h2", "value": "October 27, 2024"},
                     {
@@ -147,7 +147,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "August 18, 2024"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Removed the \u201cCancel Upload\u201d link that would flash and then be hidden to the user on the modals displayed when uploading documents.</li><li>Removed an alert banner that provided incorrect information to logged in users when viewing cases where the petition was not yet served, and the user was not a party to.</li><li>When a user views any page in DAWSON via a supported browser, the USTC logo is now present on the right side of the browser tab.</li></ul>",
+                        "value": """<ul><li>Removed the "Cancel Upload" link that would flash and then be hidden to the user on the modals displayed when uploading documents.</li><li>Removed an alert banner that provided incorrect information to logged in users when viewing cases where the petition was not yet served, and the user was not a party to.</li><li>When a user views any page in DAWSON via a supported browser, the USTC logo is now present on the right side of the browser tab.</li></ul>""",
                     },
                     {"type": "h2", "value": "July 31, 2024"},
                     {
@@ -217,7 +217,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "March 3, 2024"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Resolved issue that caused some public users to experience a 502 error after clicking on the printable docket record link for cases that have a large number of documents on the docket record.</li><li>Implemented additional code to reduce the probability of a e-filer receiving the \u201cYour Request Was Not Completed\u201d warning modal when uploading documents. View the recorded webinar.</li></ul>",
+                        "value": """<ul><li>Resolved issue that caused some public users to experience a 502 error after clicking on the printable docket record link for cases that have a large number of documents on the docket record.</li><li>Implemented additional code to reduce the probability of a e-filer receiving the "Your Request Was Not Completed" warning modal when uploading documents. View the recorded webinar.</li></ul>""",
                     },
                     {"type": "h2", "value": "January 21, 2024"},
                     {
@@ -357,7 +357,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "September 18, 2022"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>The docket record can now be filtered so that parties to a case can view only those docket entries coded with exhibit-related event codes.</li><li>The Today\u2019s Orders page now sorts orders processed in consolidated cases appropriately.</li></ul>",
+                        "value": "<ul><li>The docket record can now be filtered so that parties to a case can view only those docket entries coded with exhibit-related event codes.</li><li>The Today's Orders page now sorts orders processed in consolidated cases appropriately.</li></ul>",
                     },
                     {"type": "h2", "value": "August 21, 2022"},
                     {
@@ -392,22 +392,22 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "May 15, 2022"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Cover sheets now include the docket index entry number of the document (e.g., the petition would have a \u201cDocument No. 1\u201d on the coversheet).</li></ul>",
+                        "value": """<ul><li>Cover sheets now include the docket index entry number of the document (e.g., the petition would have a "Document No. 1" on the coversheet).</li></ul>""",
                     },
                     {"type": "h2", "value": "May 5, 2022"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>The \u201cFiled By\u201d value for private practitioner e-filed case access documents now reflect the name of the actual filer, not the party they represent.</li><li>If a pro se petitioner's requested place of trial has a low income taxpayer clinic available, a notice will now be automatically appended to the Notice of Receipt of Petition and the Notice Setting Case for Trial.</li></ul>",
+                        "value": """<ul><li>The "Filed By" value for private practitioner e-filed case access documents now reflect the name of the actual filer, not the party they represent.</li><li>If a pro se petitioner's requested place of trial has a low income taxpayer clinic available, a notice will now be automatically appended to the Notice of Receipt of Petition and the Notice Setting Case for Trial.</li></ul>""",
                     },
                     {"type": "h2", "value": "March 27, 2022"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Implemented style change to Orders generated in DAWSON to conform to the Court\u2019s new style guide requirements.</li></ul>",
+                        "value": "<ul><li>Implemented style change to Orders generated in DAWSON to conform to the Court's new style guide requirements.</li></ul>",
                     },
                     {"type": "h2", "value": "March 6, 2022"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Improved document upload process</li><li>Improved formatting of the title \u201cNotice of Change of Email Address\u201d on the docket record</li></ul>",
+                        "value": """<ul><li>Improved document upload process</li><li>Improved formatting of the title "Notice of Change of Email Address" on the docket record</li></ul>""",
                     },
                     {"type": "h2", "value": "January 9, 2022"},
                     {
@@ -487,7 +487,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "June 19, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Improvements made to the user interface:</li><ul><li>\u201cPetitioner\u201d, \u201cRespondent\u201d, and \u201cOther\u201d tabs under Case Information have been combined into a one \u201cParty\u201d tab.</li><li>Counsel is now listed on the same screen as the party they represent.</li><li>Intervenor/Participant subtab will only appear if there is an intervenor or participant on the case.</li><li>eAccess is now available for secondary petitioners.</li></ul></ul><ul><li>Improved consistency with respect to Entered &amp; Served date on all dispositive documents.</li></ul>",
+                        "value": """<ul><li>Improvements made to the user interface:</li><ul><li>"Petitioner", "Respondent", and "Other" tabs under Case Information have been combined into a one "Party" tab.</li><li>Counsel is now listed on the same screen as the party they represent.</li><li>Intervenor/Participant subtab will only appear if there is an intervenor or participant on the case.</li><li>eAccess is now available for secondary petitioners.</li></ul></ul><ul><li>Improved consistency with respect to Entered &amp; Served date on all dispositive documents.</li></ul>""",
                     },
                     {"type": "h2", "value": "June 10, 2021"},
                     {
@@ -497,7 +497,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "June 6, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Added \u201cNot Served\u201d indicator on Document Detail for unserved Petitions viewed on mobile devices.</li><li>Revised the Review Your Case screen for disclosure cases so that \u201cDisclosure1\u201d now reads \u201cDisclosure\u201d.</li><li>Added scrolling for eFiling a document.</li><li>Revised Certificate of Service date format on printable Receipt of Filing.</li><li>Revised capitalization on Docket Number search for mobile devices.</li><li>Revised eFiling success message styling.</li><li>Improved validation messaging from shifting submit buttons on advanced case search.</li><li>Changed petitioner address font on Notice of Receipt of Petition.</li><li>Public Docket Record now populates served Parties column.</li></ul>",
+                        "value": """<ul><li>Added "Not Served" indicator on Document Detail for unserved Petitions viewed on mobile devices.</li><li>Revised the Review Your Case screen for disclosure cases so that "Disclosure1" now reads "Disclosure".</li><li>Added scrolling for eFiling a document.</li><li>Revised Certificate of Service date format on printable Receipt of Filing.</li><li>Revised capitalization on Docket Number search for mobile devices.</li><li>Revised eFiling success message styling.</li><li>Improved validation messaging from shifting submit buttons on advanced case search.</li><li>Changed petitioner address font on Notice of Receipt of Petition.</li><li>Public Docket Record now populates served Parties column.</li></ul>""",
                     },
                     {"type": "h2", "value": "May 1, 2021"},
                     {
@@ -522,7 +522,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "March 28, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Improvement: Today\u2019s Orders can be sorted by time served (oldest to newest and vice versa) and page count (highest to lowest and vice versa).</li></ul>",
+                        "value": "<ul><li>Improvement: Today's Orders can be sorted by time served (oldest to newest and vice versa) and page count (highest to lowest and vice versa).</li></ul>",
                     },
                     {"type": "h2", "value": "March 20, 2021"},
                     {
@@ -537,7 +537,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "February 22, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Improvement: Petitioners and practitioners can change the email used for login and service through their DAWSON account.</li><li>Improvement: Bench Opinions now display as part of Today\u2019s Opinions.</li><li>The DAWSON application itself now provides a link to these release notes. See \u201cWhat\u2019s New in DAWSON\u201d in the footer next to the link for \u201cFrequently Asked Questions\u201d.</li></ul>",
+                        "value": """<ul><li>Improvement: Petitioners and practitioners can change the email used for login and service through their DAWSON account.</li><li>Improvement: Bench Opinions now display as part of Today's Opinions.</li><li>The DAWSON application itself now provides a link to these release notes. See "What's New in DAWSON" in the footer next to the link for "Frequently Asked Questions".</li></ul>""",
                     },
                     {"type": "h2", "value": "January 31, 2021"},
                     {
@@ -547,7 +547,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "January 25, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Improvement: Text fields</li><ul><li>Document free text fields can now accept up to 1000 characters, and will show a helpful error message when the limit is reached.</li><li>The complete document title now accepts up to 3000 characters total, and will inform the user when the limit is reached.</li></ul></ul><ul><li>Left-align titles that expand to multiple lines on the \u201cToday\u2019s Orders\u201d table</li></ul>",
+                        "value": """<ul><li>Improvement: Text fields</li><ul><li>Document free text fields can now accept up to 1000 characters, and will show a helpful error message when the limit is reached.</li><li>The complete document title now accepts up to 3000 characters total, and will inform the user when the limit is reached.</li></ul></ul><ul><li>Left-align titles that expand to multiple lines on the "Today's Orders" table</li></ul>""",
                     },
                     {"type": "h2", "value": "January 17, 2021"},
                     {
@@ -557,7 +557,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "January 10, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Implement posting of Today's Orders</li><li>Improve \u200bmo\u200bbile scrolling for Printable \u200bDocket Record</li><li>Allow petitioner names with \u200bspecial characters (\u200b') in case search</li><li>Improve mobile viewing of PDFs on the \u201cReview Your Case\u201d screen</li></ul>",
+                        "value": """<ul><li>Implement posting of Today's Orders</li><li>Improve \u200bmo\u200bbile scrolling for Printable \u200bDocket Record</li><li>Allow petitioner names with \u200bspecial characters (\u200b') in case search</li><li>Improve mobile viewing of PDFs on the "Review Your Case" screen</li></ul>""",
                     },
                 ],
             )
