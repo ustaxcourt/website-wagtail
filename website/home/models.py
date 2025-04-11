@@ -36,6 +36,11 @@ from operator import itemgetter
 from django.template.response import TemplateResponse
 
 
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
+
+
 @register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
@@ -371,14 +376,34 @@ class EnhancedStandardPage(Page):
                     help_text="Add 'Horizontal Rule'.",
                 ),
             ),
+            (
+                "alert",
+                blocks.StructBlock(
+                    [
+                        (
+                            "alert_type",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("info", "Info"),
+                                    ("success", "Success"),
+                                ],
+                                default="info",
+                            ),
+                        ),
+                        ("content", blocks.RichTextBlock()),
+                    ],
+                ),
+            ),
             ("image", ImageBlock()),
             (
                 "table",
                 TypedTableBlock(
-                    [
-                        ("text", blocks.RichTextBlock()),
-                    ]
+                    table_value_types,
                 ),
+            ),
+            (
+                "unstyled_table",
+                TypedTableBlock(table_value_types),
             ),
             ("list", create_nested_list_block(max_depth=4)),
             (

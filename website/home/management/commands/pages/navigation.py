@@ -52,6 +52,10 @@ class NavigationInitializer(PageInitializer):
                             "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                         },
                         {
+                            "title": "FEES & CHARGES",
+                            "page": self.get_page("fees-and-charges"),
+                        },
+                        {
                             "title": "EMPLOYMENT",
                             "page": self.get_page("employment"),
                         },
