@@ -6,7 +6,7 @@
         <hr />
         <div>{{ page.paragraph|richtext }}</div>
         {% for entry in page.release_entries %}
-            <h2>{{ entry.value.release_date }}</h2>
+            <h2>{{ entry.value.release_date|date:"F j, Y" }}</h2>
             <p>{{ entry.value.description|richtext }}</p>
             {% if not forloop.last %}<hr />{% endif %}
         {% endfor %}
