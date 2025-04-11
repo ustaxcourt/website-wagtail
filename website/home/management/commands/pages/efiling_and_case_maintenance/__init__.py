@@ -21,6 +21,7 @@ from .documents_eligible_for_efiling_page import DocumentsEligibleEfilingPageIni
 from .dawson_pay_filing_fee import DawsonPayFilingFeeInitializer
 from .merging_files_page import MergingFilesPageInitializer
 from .efile_a_petition_page import EfileAPetitionPageInitializer
+from .dawson_release_notes import DawsonReleaseNotesInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
@@ -36,6 +37,7 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFaqsDefinitionsPageInitializer,
     DawsonFindAnOrderPageInitializer,
     DawsonFindAnOpinionPageInitializer,
+    DawsonReleaseNotesInitializer,
     FindACasePageInitializer,
     DawsonPayFilingFeeInitializer,
     # Order of initialization matters
