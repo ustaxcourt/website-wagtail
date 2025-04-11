@@ -25,6 +25,7 @@ urlpatterns = [
         name="tc_report_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
+    path("", include("social_django.urls", namespace="social")),
 ]
 
 if settings.DEBUG:

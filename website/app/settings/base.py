@@ -22,7 +22,10 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-# Application definition
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.azuread_tenant.AzureADTenantOAuth2",
+]
+
 
 INSTALLED_APPS = [
     "home",
@@ -86,10 +89,18 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
 ]
+
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = "OAUTH2_KEY"
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET = "OAUTH2_SECRET"
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID = "OAUTH2_TENANT_ID"
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ["username", "first_name", "last_name", "email"]
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 WSGI_APPLICATION = "app.wsgi.application"
 
