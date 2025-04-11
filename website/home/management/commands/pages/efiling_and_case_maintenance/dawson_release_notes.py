@@ -477,7 +477,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "June 23, 2021"},
                     {
                         "type": "paragraph",
-                        "value": "<ul><li>Improved parties\u02bc display on the Review Your Filing screen.</li><li>Improved keyboard navigation.</li></ul>",
+                        "value": "<ul><li>Improved parties' display on the Review Your Filing screen.</li><li>Improved keyboard navigation.</li></ul>",
                     },
                     {"type": "h2", "value": "June 22, 2021"},
                     {
@@ -557,7 +557,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
                     {"type": "h2", "value": "January 10, 2021"},
                     {
                         "type": "paragraph",
-                        "value": """<ul><li>Implement posting of Today's Orders</li><li>Improve \u200bmo\u200bbile scrolling for Printable \u200bDocket Record</li><li>Allow petitioner names with \u200bspecial characters (\u200b') in case search</li><li>Improve mobile viewing of PDFs on the "Review Your Case" screen</li></ul>""",
+                        "value": """<ul><li>Implement posting of Today's Orders</li><li>Improve mobile scrolling for Printable Docket Record</li><li>Allow petitioner names with special characters (') in case search</li><li>Improve mobile viewing of PDFs on the "Review Your Case" screen</li></ul>""",
                     },
                 ],
             )
