@@ -159,7 +159,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-03-17",
-                "description": '<ul><li>New login page for DAWSON access implemented at <a href="https://dawson.ustaxcourt.gov/login" target="_blank" title="">https://dawson.ustaxcourt.gov/login</a>.</li></ul>',
+                "description": '<ul><li>New login page for DAWSON access implemented at <a href="https://dawson.ustaxcourt.gov/login" title="DAWSON login">https://dawson.ustaxcourt.gov/login</a>.</li></ul>',
             },
             {
                 "release_date": "2024-03-10",
@@ -227,7 +227,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-07-05",
-                "description": '<ul><li>Parties to consolidated cases now have the ability to electronically file documents simultaneously in all of the consolidated cases. Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately. Refer to the <a data-original-title="DAWSON User Guides" href="/dawson-user-guides" title="DAWSON User guides">DAWSON User Guides</a> for detailed instructions on how to electronically file documents in consolidated cases.</li><li>Parties to at least one case in a consolidated group of cases now have the ability to view documents on the docket record in all of the consolidated cases in the group.</li></ul>',
+                "description": '<ul><li>Parties to consolidated cases now have the ability to electronically file documents simultaneously in all of the consolidated cases. Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately. Refer to the <a href="/dawson-user-guides" title="DAWSON User guides">DAWSON User Guides</a> for detailed instructions on how to electronically file documents in consolidated cases.</li><li>Parties to at least one case in a consolidated group of cases now have the ability to view documents on the docket record in all of the consolidated cases in the group.</li></ul>',
             },
             {
                 "release_date": "2023-04-30",
@@ -235,7 +235,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-25",
-                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url} target="_blank" title="Rule 27">Rule 27</a>.</li></ul>',
+                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url} title="Rule 27">Rule 27</a>.</li></ul>',
             },
             {
                 "release_date": "2023-04-02",
@@ -419,7 +419,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2021-03-07",
-                "description": '<ul><li>Improvement: The Court can provide petitioners with electronic access to their existing cases. Petitioners should submit a request to <strong><a data-original-title="Contact Support" href="dawson.support@ustaxcourt.gov" title="">dawson.support@ustaxcourt.gov</a></strong> and a letter with additional information will be mailed to them.</li><li>Improvement: The Printable Docket Record now includes counsel information for both parties.</li><li>Users can now preview PDF documents that are larger than 2MB before eFiling.</li></ul>',
+                "description": '<ul><li>Improvement: The Court can provide petitioners with electronic access to their existing cases. Petitioners should submit a request to <strong><a data-original-title="Contact Support" href="mailto:dawson.support@ustaxcourt.gov" title="Email DAWSON support">dawson.support@ustaxcourt.gov</a></strong> and a letter with additional information will be mailed to them.</li><li>Improvement: The Printable Docket Record now includes counsel information for both parties.</li><li>Users can now preview PDF documents that are larger than 2MB before eFiling.</li></ul>',
             },
             {
                 "release_date": "2021-02-22",
