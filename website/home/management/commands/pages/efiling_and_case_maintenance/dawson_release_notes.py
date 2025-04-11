@@ -2,20 +2,20 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import ReleaseNotes
 
-docs = [
-    {
+docs = {
+    "Administrative_Order_2023-02.pdf": {
         "title": "Administrative Order 2023-02 - Expanding Remote Electronic Access to Certain Court Documents",
         "name": "Administrative_Order_2023-02.pdf",
     },
-    {
+    "Rule-151_1_Amended_03202023.pdf": {
         "title": "Rule 151.1. Brief of an Amicus Curiae",
         "name": "Rule-151_1_Amended_03202023.pdf",
     },
-    {
+    "Rule-27_Amended_03202023.pdf": {
         "title": "Rule 27. Privacy Protection for Filings Made With the Court",
-        "document": "Rule-27_Amended_03202023.pdf",
+        "name": "Rule-27_Amended_03202023.pdf",
     },
-]
+}
 
 
 class DawsonReleaseNotesInitializer(PageInitializer):
@@ -36,6 +36,13 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             return
 
         self.logger.write(f"Creating the '{title}' page.")
+
+        for doc in docs:
+            docs[doc]["document"] = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=docs[doc]["name"],
+                title=docs[doc]["title"],
+            )
 
         release_entries = [
             {
@@ -204,11 +211,11 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-08-13",
-                "description": '<ul><li>Updated feature allowing for public visibility of briefs for consolidated groups of cases consistent with <strong><a data-original-title="Administrative Order 2023-02" href="resources/administrative_orders/Administrative_Order_2023-02.pdf" target="_blank" title="">Administrative Order 2023-02</a></strong>.</li></ul>',
+                "description": f'<ul><li>Updated feature allowing for public visibility of briefs for consolidated groups of cases consistent with <a href="{docs["Administrative_Order_2023-02.pdf"]["document"].file.url}" title="Administrative Order 2023-02">Administrative Order 2023-02</a>.</li></ul>',
             },
             {
                 "release_date": "2023-08-01",
-                "description": '<ul><li>As identified in <strong><a data-original-title="Administrative Order 2023-02" href="resources/administrative_orders/Administrative_Order_2023-02.pdf" target="_blank" title="">Administrative Order 2023-02</a></strong>, certain documents filed on or after August 1, 2023, in non-sealed cases will now be viewable by the public through DAWSON:</li><ul><li>Stipulated Decisions</li><li>Post-trial briefs e-filed by practitioners</li><li>Amicus briefs filed pursuant to <strong><a data-original-title="Rule 151.1" href="resources/ropp/Rule-151_1_Amended_03202023.pdf" target="_blank" title="">Rule 151.1</a></strong></li></ul><li>Beginning with the Fall 2023 term, an additional Notice of Trial will be served on pro se petitioners approximately a month before the scheduled trial date.</li></ul>',
+                "description": f'<ul><li>As identified in <a href="{docs["Administrative_Order_2023-02.pdf"]["document"].file.url}" title="Administrative Order 2023-02">Administrative Order 2023-02</a>, certain documents filed on or after August 1, 2023, in non-sealed cases will now be viewable by the public through DAWSON:</li><ul><li>Stipulated Decisions</li><li>Post-trial briefs e-filed by practitioners</li><li>Amicus briefs filed pursuant to <a href="{docs["Rule-151_1_Amended_03202023.pdf"]["document"].file.url}" title="Rule 151.1">Rule 151.1</a></li></ul><li>Beginning with the Fall 2023 term, an additional Notice of Trial will be served on pro se petitioners approximately a month before the scheduled trial date.</li></ul>',
             },
             {
                 "release_date": "2023-07-16",
