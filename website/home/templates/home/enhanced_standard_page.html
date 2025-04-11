@@ -173,7 +173,6 @@
 
                 td,
                 th {
-                    width: 50%;
                     padding: 1rem;
                     vertical-align: top;
                 }
@@ -221,7 +220,17 @@
 
                 .enhanced-table {
                     margin: 0;
-                    min-width: 740px;
+                    /* min-width: 740px; */
+                }
+            }
+
+            @media (max-width: 768px) {
+                .enhanced-table.usa-table--stacked tr, .usa-table--stacked-header tr {
+                    border-bottom: 0px;
+                }
+
+                .enhanced-table.usa-table--stacked td, .usa-table--stacked-header td {
+                    border-bottom: 0px;
                 }
             }
 
@@ -357,9 +366,9 @@
                 padding: 1rem;
                 margin: 1rem 0;
                 border-radius: 4px;
+                color: #1B1B1B;
 
                 &.success {
-                    color: #2e8540;
                     border: none;
                     background-color: #ecf3ce;
                     border-color: #e4eeba;
@@ -368,7 +377,6 @@
                 &.info {
                     background-color: #f1f9fc;
                     border-color: #d4ecf6;
-                    color: #0288d1;
                     border: none;
                 }
 
