@@ -87,7 +87,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-11-22",
-                "description": '<ul><li>Updated the casing of words in all of the hover-over helper tips.</li><li>An updated view of scheduled trial sessions is now posted on the Court\'s website. Click on the <strong>About the Court</strong> menu and select <strong>Trial Sessions</strong>. Users may also navigate directly to the page by going here: <strong><a data-original-title="Trial Sessions" href="https://dawson.ustaxcourt.gov/trial-sessions" target="_blank" title="">https://dawson.ustaxcourt.gov/trial-sessions</a></strong>.</li></ul>',
+                "description": '<ul><li>Updated the casing of words in all of the hover-over helper tips.</li><li>An updated view of scheduled trial sessions is now posted on the Court\'s website. Click on the <strong>About the Court</strong> menu and select <strong>Trial Sessions</strong>. Users may also navigate directly to the page by going here: <a title="Trial Sessions" href="https://dawson.ustaxcourt.gov/trial-sessions">https://dawson.ustaxcourt.gov/trial-sessions</a>.</li></ul>',
             },
             {
                 "release_date": "2024-10-27",
@@ -159,7 +159,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-03-17",
-                "description": '<ul><li>New login page for DAWSON access implemented at <strong><a data-original-title="DAWSON Login" href="https://dawson.ustaxcourt.gov/login" target="_blank" title="">https://dawson.ustaxcourt.gov/login</a></strong>.</li></ul>',
+                "description": '<ul><li>New login page for DAWSON access implemented at <a href="https://dawson.ustaxcourt.gov/login" target="_blank" title="">https://dawson.ustaxcourt.gov/login</a>.</li></ul>',
             },
             {
                 "release_date": "2024-03-10",
@@ -227,7 +227,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-07-05",
-                "description": '<ul><li>Parties to consolidated cases now have the ability to electronically file documents simultaneously in all of the consolidated cases. Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately. Refer to the <strong><a data-original-title="DAWSON User Guides" href="/dawson-user-guides" title="DAWSON User guides">DAWSON User Guides</a></strong> for detailed instructions on how to electronically file documents in consolidated cases.</li><li>Parties to at least one case in a consolidated group of cases now have the ability to view documents on the docket record in all of the consolidated cases in the group.</li></ul>',
+                "description": '<ul><li>Parties to consolidated cases now have the ability to electronically file documents simultaneously in all of the consolidated cases. Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately. Refer to the <a data-original-title="DAWSON User Guides" href="/dawson-user-guides" title="DAWSON User guides">DAWSON User Guides</a> for detailed instructions on how to electronically file documents in consolidated cases.</li><li>Parties to at least one case in a consolidated group of cases now have the ability to view documents on the docket record in all of the consolidated cases in the group.</li></ul>',
             },
             {
                 "release_date": "2023-04-30",
@@ -235,7 +235,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-25",
-                "description": '<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <strong><a data-original-title="Rule 27" href="resources/ropp/Rule-27_Amended_03202023.pdf" target="_blank" title="">Rule 27</a></strong>.</li></ul>',
+                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url} target="_blank" title="Rule 27">Rule 27</a>.</li></ul>',
             },
             {
                 "release_date": "2023-04-02",
