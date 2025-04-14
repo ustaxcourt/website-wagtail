@@ -1497,17 +1497,16 @@ class ReleaseNotes(EnhancedStandardPage):
                         (
                             "release_date",
                             blocks.DateBlock(
-                                required=True, help_text="Date of the release"
+                                required=False, help_text="Date of the release"
                             ),
                         ),
                         (
                             "description",
                             blocks.RichTextBlock(
-                                required=True,
+                                required=False,
                                 help_text="Description or details of the release",
                             ),
                         ),
-                        ("list", create_nested_list_block(max_depth=4)),
                     ]
                 ),
             )
