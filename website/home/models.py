@@ -1507,6 +1507,7 @@ class ReleaseNotes(EnhancedStandardPage):
                                 help_text="Description or details of the release",
                             ),
                         ),
+                        ("list", create_nested_list_block(max_depth=4)),
                     ]
                 ),
             )
