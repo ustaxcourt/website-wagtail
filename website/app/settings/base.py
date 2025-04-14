@@ -220,6 +220,11 @@ if aws_bucket_name:
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
 
+    # s3 static settings
+    AWS_LOCATION = "static"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
     # when running in github actions, we use access keys instead of assumed roles like on ECS
     if os.getenv("AWS_ACCESS_KEY_ID"):
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
