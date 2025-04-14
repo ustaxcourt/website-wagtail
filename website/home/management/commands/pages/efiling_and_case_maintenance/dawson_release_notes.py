@@ -59,7 +59,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2025-03-09",
-                "description": "<ul><li>The following document types/event codes are no longer available in the dropdown picklist for Petitioners and Practitioners when eFiling a document:</li><ul><li>Application for Waiver of Filing Fee and Affidavit (APPW)</li><li>Civil Penalty Approval Form (CIVP)</li><li>Motion to Appoint New Tax Matters Partner (M044)</li><li>Motion to Calendar in the Electronic (North) Courtroom (M038)</li><li>Motion to Appoint an Interpreter Pursuant to Rule 143(f) (M045)</li><li>Motion to Certify for Interlocutory Appeal (M055)</li><li>Motion to Preclude (M085)</li><li>Motion to Shorten the Time (M102)</li><li>Notice of Clarification of Tax Matters Partner (NCTP)</li><li>Notice of Judicial Ruling (NRJR)</li><li>Notice of Relevant Judicial Decisions (NRJD)</li><li>Notice of Telephone Number (NTN)</li><li>Seriatim Answering Memorandum Brief (SAMB)</li><li>Seriatim Opening Memorandum Brief (SOMB)</li><li>Seriatim Reply Memorandum Brief (SRMB)</li><li>Seriatim Sur-Reply Memorandum Brief (SSRB)</li><li>Simultaneous Answering Memorandum Brief (SIMB)</li><li>Simultaneous Opening Memorandum Brief (SIOM)</li><li>Simultaneous Sur-Reply Memorandum Brief (SSRM)</li><li>Unsworn Declaration of [Name] under Penalty of Perjury in Support of [Document Name] (USDL)</li></ul><li>Motion to Appoint an Interpreter (M045A) is now available in the dropdown picklist for Petitioners and Practitioners when eFiling a document.</li></ul>",
+                "description": "<ul><li>The following document types/event codes are no longer available in the dropdown picklist for Petitioners and Practitioners when eFiling a document:<ul><li>Application for Waiver of Filing Fee and Affidavit (APPW)</li><li>Civil Penalty Approval Form (CIVP)</li><li>Motion to Appoint New Tax Matters Partner (M044)</li><li>Motion to Calendar in the Electronic (North) Courtroom (M038)</li><li>Motion to Appoint an Interpreter Pursuant to Rule 143(f) (M045)</li><li>Motion to Certify for Interlocutory Appeal (M055)</li><li>Motion to Preclude (M085)</li><li>Motion to Shorten the Time (M102)</li><li>Notice of Clarification of Tax Matters Partner (NCTP)</li><li>Notice of Judicial Ruling (NRJR)</li><li>Notice of Relevant Judicial Decisions (NRJD)</li><li>Notice of Telephone Number (NTN)</li><li>Seriatim Answering Memorandum Brief (SAMB)</li><li>Seriatim Opening Memorandum Brief (SOMB)</li><li>Seriatim Reply Memorandum Brief (SRMB)</li><li>Seriatim Sur-Reply Memorandum Brief (SSRB)</li><li>Simultaneous Answering Memorandum Brief (SIMB)</li><li>Simultaneous Opening Memorandum Brief (SIOM)</li><li>Simultaneous Sur-Reply Memorandum Brief (SSRM)</li><li>Unsworn Declaration of [Name] under Penalty of Perjury in Support of [Document Name] (USDL)</li></ul></li><li>Motion to Appoint an Interpreter (M045A) is now available in the dropdown picklist for Petitioners and Practitioners when eFiling a document.</li></ul>",
             },
             {
                 "release_date": "2025-02-23",
@@ -131,7 +131,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-06-23",
-                "description": '<ul><li>Implemented practitioner search for public users:</li><ul><li>Includes practitioner name search</li><li>Includes practitioner Tax Court Bar number search</li></ul><li>The "Request Access To Case" button that displays for practitioners has been relabeled "Represent a Party".</li><li>The document type picklist of available options in the "File First IRS Document" workflow is now revised to display more appropriate document types for first IRS filings to a case.</li><li>Resolved issue that caused document preview links on the review pages to not open the documents on iOS devices.</li><li>Added a new pop-up message that informs the user that DAWSON was updated if the user was logged in during a release.</li></ul>',
+                "description": '<ul><li>Implemented practitioner search for public users:<ul><li>Includes practitioner name search</li><li>Includes practitioner Tax Court Bar number search</li></ul></li><li>The "Request Access To Case" button that displays for practitioners has been relabeled "Represent a Party".</li><li>The document type picklist of available options in the "File First IRS Document" workflow is now revised to display more appropriate document types for first IRS filings to a case.</li><li>Resolved issue that caused document preview links on the review pages to not open the documents on iOS devices.</li><li>Added a new pop-up message that informs the user that DAWSON was updated if the user was logged in during a release.</li></ul>',
             },
             {
                 "release_date": "2024-06-09",
@@ -215,7 +215,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-08-01",
-                "description": f'<ul><li>As identified in <a href="{docs["Administrative_Order_2023-02.pdf"]["document"].file.url}" title="Administrative Order 2023-02">Administrative Order 2023-02</a>, certain documents filed on or after August 1, 2023, in non-sealed cases will now be viewable by the public through DAWSON:</li><ul><li>Stipulated Decisions</li><li>Post-trial briefs e-filed by practitioners</li><li>Amicus briefs filed pursuant to <a href="{docs["Rule-151_1_Amended_03202023.pdf"]["document"].file.url}" title="Rule 151.1">Rule 151.1</a></li></ul><li>Beginning with the Fall 2023 term, an additional Notice of Trial will be served on pro se petitioners approximately a month before the scheduled trial date.</li></ul>',
+                "description": f'<ul><li>As identified in <a href="{docs["Administrative_Order_2023-02.pdf"]["document"].file.url}" title="Administrative Order 2023-02">Administrative Order 2023-02</a>, certain documents filed on or after August 1, 2023, in non-sealed cases will now be viewable by the public through DAWSON:<ul><li>Stipulated Decisions</li><li>Post-trial briefs e-filed by practitioners</li><li>Amicus briefs filed pursuant to <a href="{docs["Rule-151_1_Amended_03202023.pdf"]["document"].file.url}" title="Rule 151.1">Rule 151.1</a></li></ul></li><li>Beginning with the Fall 2023 term, an additional Notice of Trial will be served on pro se petitioners approximately a month before the scheduled trial date.</li></ul>',
             },
             {
                 "release_date": "2023-07-16",
@@ -327,7 +327,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2021-12-27",
-                "description": '<ul><li>Implemented opinion search for public users.</li><ul><li>Includes keyword and phrase search.</li><li>Includes ability to find exact matches with "" (quotation marks) ex: "Premium Tax Credit".</li><li>Includes ability to combine two or more keywords or phrases with the (plus sign) ex: "fraud" "sanctions".</li><li>Includes ability to find documents with one or more keywords or phrases with the | (pipe character) ex: "fraud" | "sanctions" [Note: this search will return documents with the words fraud or sanctions].</li><li>Includes ability to filter by date, judge, case title, petitioner name, or docket number.</li><li>Includes ability to filter by opinion type.</li></ul></ul>',
+                "description": '<ul><li>Implemented opinion search for public users.<ul><li>Includes keyword and phrase search.</li><li>Includes ability to find exact matches with "" (quotation marks) ex: "Premium Tax Credit".</li><li>Includes ability to combine two or more keywords or phrases with the (plus sign) ex: "fraud" "sanctions".</li><li>Includes ability to find documents with one or more keywords or phrases with the | (pipe character) ex: "fraud" | "sanctions" [Note: this search will return documents with the words fraud or sanctions].</li><li>Includes ability to filter by date, judge, case title, petitioner name, or docket number.</li><li>Includes ability to filter by opinion type.</li></ul></li></ul>',
             },
             {
                 "release_date": "2021-12-19",
@@ -335,7 +335,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2021-12-13",
-                "description": '<ul><li>Implemented Order search for public users</li><ul><li>Includes keyword and phrase search</li><li>Includes ability to find exact matches with "" (quotation marks) ex: "innocent spouse"</li><li>Includes ability to combine two or more keywords or phrases with the + (plus sign) ex: "collection due process" + remand</li><li>Includes ability to find documents with one or more keywords or phrases with the | (pipe character) ex: Lien | levy [Note: this search will return documents that contain the words "lien" or "levy"]</li><li>Includes ability to filter by date, judge, case title, petitioner name, or docket number</li></ul><li>Petitions and other documents with form fields now upload correctly for all browsers</li></ul>',
+                "description": '<ul><li>Implemented Order search for public users<ul><li>Includes keyword and phrase search</li><li>Includes ability to find exact matches with "" (quotation marks) ex: "innocent spouse"</li><li>Includes ability to combine two or more keywords or phrases with the + (plus sign) ex: "collection due process" + remand</li><li>Includes ability to find documents with one or more keywords or phrases with the | (pipe character) ex: Lien | levy [Note: this search will return documents that contain the words "lien" or "levy"]</li><li>Includes ability to filter by date, judge, case title, petitioner name, or docket number</li></ul></li><li>Petitions and other documents with form fields now upload correctly for all browsers</li></ul>',
             },
             {
                 "release_date": "2021-11-10",
@@ -383,7 +383,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2021-06-19",
-                "description": '<ul><li>Improvements made to the user interface:</li><ul><li>"Petitioner", "Respondent", and "Other" tabs under Case Information have been combined into a one "Party" tab.</li><li>Counsel is now listed on the same screen as the party they represent.</li><li>Intervenor/Participant subtab will only appear if there is an intervenor or participant on the case.</li><li>eAccess is now available for secondary petitioners.</li></ul></ul><ul><li>Improved consistency with respect to Entered &amp; Served date on all dispositive documents.</li></ul>',
+                "description": '<ul><li>Improvements made to the user interface:<ul><li>"Petitioner", "Respondent", and "Other" tabs under Case Information have been combined into a one "Party" tab.</li><li>Counsel is now listed on the same screen as the party they represent.</li><li>Intervenor/Participant subtab will only appear if there is an intervenor or participant on the case.</li><li>eAccess is now available for secondary petitioners.</li></ul></li><li>Improved consistency with respect to Entered &amp; Served date on all dispositive documents.</li></ul>',
             },
             {
                 "release_date": "2021-06-10",
@@ -427,11 +427,11 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2021-01-31",
-                "description": "<ul><li>Electronic signatures visible in all PDF previews</li><li>Improvement to public docket record display of consistent event codes, filings, and proceedings</li><ul><li>All lodged documents show on the Docket Record with the event code ofMISCL.</li><li>Parenthetical text (i.e. Attachments, Certificate of Service, Objections) now display as part of the Filings and Proceedings for all views of the Docket Record.</li></ul></ul>",
+                "description": "<ul><li>Electronic signatures visible in all PDF previews</li><li>Improvement to public docket record display of consistent event codes, filings, and proceedings<ul><li>All lodged documents show on the Docket Record with the event code ofMISCL.</li><li>Parenthetical text (i.e. Attachments, Certificate of Service, Objections) now display as part of the Filings and Proceedings for all views of the Docket Record.</li></ul></li></ul>",
             },
             {
                 "release_date": "2021-01-25",
-                "description": '<ul><li>Improvement: Text fields</li><ul><li>Document free text fields can now accept up to 1000 characters, and will show a helpful error message when the limit is reached.</li><li>The complete document title now accepts up to 3000 characters total, and will inform the user when the limit is reached.</li></ul></ul><ul><li>Left-align titles that expand to multiple lines on the "Today\'s Orders" table</li></ul>',
+                "description": '<ul><li>Improvement: Text fields<ul><li>Document free text fields can now accept up to 1000 characters, and will show a helpful error message when the limit is reached.</li><li>The complete document title now accepts up to 3000 characters total, and will inform the user when the limit is reached.</li></ul></li><li>Left-align titles that expand to multiple lines on the "Today\'s Orders" table</li></ul>',
             },
             {
                 "release_date": "2021-01-17",
