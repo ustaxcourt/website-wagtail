@@ -131,6 +131,14 @@ jobs:
       #     ./disable-bastion-host.sh
       #
 
+      - name: Run collectstatic
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          make collectstatic
+
       - name: Create GitHub Release (optional)
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/create-release@v1

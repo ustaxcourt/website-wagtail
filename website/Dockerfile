@@ -51,7 +51,7 @@ COPY --chown=wagtail:wagtail . .
 USER wagtail
 
 # Collect static files.
-RUN python manage.py collectstatic --noinput --clear
+# RUN python manage.py collectstatic --noinput --clear
 
 # Run the service
 CMD set -xe; gunicorn app.wsgi:application

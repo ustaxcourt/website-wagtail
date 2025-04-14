@@ -79,6 +79,9 @@ setup: init
 	npx gulp copyAssets
 	npx gulp compile
 
+collectstatic:
+	. $(VENV) && python manage.py collectstatic --noinput --clear
+
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
 
