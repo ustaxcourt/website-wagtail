@@ -137,6 +137,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
+          cd website
           make collectstatic
 
       - name: Create GitHub Release (optional)
