@@ -72,6 +72,9 @@ reset: setup resetdb
 run:
 	. $(VENV) && python manage.py runserver
 
+run-debug:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=app.settings.debug python manage.py runserver
+
 setup: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
