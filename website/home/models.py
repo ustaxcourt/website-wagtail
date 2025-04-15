@@ -1581,16 +1581,13 @@ class InternshipPrograms(EnhancedStandardPage):
                 display_from = block.value.get("display_from")
                 closing_date = block.value.get("closing_date")
 
-                if (not display_from or display_from <= today) and (
-                    closing_date and closing_date >= today
-                ):
+                if display_from <= today and closing_date >= today:
                     has_active_internship = True
                     filtered_blocks.append(block)
 
             elif block.block_type in ["h2", "paragraph"]:
                 filtered_blocks.append(block)
 
-        # Only include if there's at least one valid internship
         if has_active_internship:
             context["active_internships"] = filtered_blocks
         else:

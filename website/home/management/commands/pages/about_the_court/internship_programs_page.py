@@ -52,7 +52,7 @@ class InternshipProgramsPageInitializer(PageInitializer):
                             "description": """2023 Information Technology Internship Program – Student Intern (Summer)
                                                 <br> GS-01/08 to GS-02/10""",
                             "display_from": datetime(2023, 1, 1).date(),
-                            "closing_date": datetime(2025, 12, 31).date(),
+                            "closing_date": datetime(2024, 12, 31).date(),
                             "external_link": None,
                         },
                     },
@@ -93,7 +93,7 @@ class InternshipProgramsPageInitializer(PageInitializer):
                             "description": """2022 Diversity in Government Internship Program – Student Intern (Summer)
                                                 <br> GS-01/08 to GS-02/10""",
                             "display_from": datetime(2022, 5, 26).date(),
-                            "closing_date": datetime(2025, 5, 26).date(),
+                            "closing_date": datetime(2024, 5, 26).date(),
                             "external_link": None,
                         },
                     },
