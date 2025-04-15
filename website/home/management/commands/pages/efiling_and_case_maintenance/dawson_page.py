@@ -196,7 +196,7 @@ class DawsonPageInitializer(PageInitializer):
                     "search_description": "Release Notes",
                 },
                 {
-                    "title": "DAWSON User Guides",
+                    "title": "User Guides",
                     "slug": "dawson-user-guides",
                     "path": "dawson-user-guides",
                     "depth": 4,
