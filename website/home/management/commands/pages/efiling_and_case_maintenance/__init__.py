@@ -24,12 +24,14 @@ from .notice_regarding_privacy_page import NoticeRegardingPrivacyPageInitializer
 from .efile_a_petition_page import EfileAPetitionPageInitializer
 from .update_contact_information_page import UpdateContactInformationPageInitializer
 from .dawson_release_notes import DawsonReleaseNotesInitializer
+from .dawson_terms_of_use import DawsonTermsOfUsePageInitializer
 
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
     DocumentsEligibleEfilingPageInitializer,
     MergingFilesPageInitializer,
+    DawsonTermsOfUsePageInitializer,
     EfileAPetitionPageInitializer,
     UpdateContactInformationPageInitializer,
     DawsonUserGuidesPageInitializer,
