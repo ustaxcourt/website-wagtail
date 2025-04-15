@@ -2,6 +2,7 @@
 
 coverage==7.6.10
 djlint==1.36.4
+django-debug-toolbar
 mypy==1.14.1
 mypy-extensions==1.0.0
 moto==5.0.26
