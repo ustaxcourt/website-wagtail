@@ -853,6 +853,9 @@ class SimpleCard(ClusterableModel):
             else f"Simple Card - {self.parent_page.group_label or self.parent_page.parent_page.title}"
         )
 
+    class Meta:
+        ordering = ["id"]
+
 
 @register_snippet
 class FancyCard(ClusterableModel):
