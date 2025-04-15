@@ -10,6 +10,7 @@ from .reports_and_statistics_page import ReportsAndStatisticsPageInitializer
 from .directory_page import DirectoryPageInitializer
 from .judges_recruiting_page import JudgesRecruitingPageInitializer
 from .press_releases_page import PressReleasesPageInitializer
+from .internship_programs_page import InternshipProgramsPageInitializer
 
 about_the_court_pages_to_initialize = [
     #  Order matters for menu
@@ -25,4 +26,5 @@ about_the_court_pages_to_initialize = [
     DirectoryPageInitializer,
     JudgesRecruitingPageInitializer,
     PressReleasesPageInitializer,
+    InternshipProgramsPageInitializer,
 ]

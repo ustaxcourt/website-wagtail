@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% block extra_css %}
+    <style>
+        .closing-date {
+            color: #b50909;
+            font-weight: bold;
+        }
+
+        .description-link {
+            color: var(--link-blue);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        .internship-block {
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="grid-container padding-bottom-2 padding-top-2">
+        <h1 class="margin-bottom-3">{{ page.title }}</h1>
+        <hr />
+        {% if active_internships %}
+            {% for block in active_internships %}
+                {{ block.active_internships }}
+                <div>
+                    {% if block.block_type == "h2" %}
+                        <h2>{{ block.value }}</h2>
+                    {% elif block.block_type == "paragraph" %}
+                        {{ block.value|richtext }}
+                        <hr />
+                    {% elif block.block_type == "internship" %}
+                        {% for section_block in block.value.section %}
+                            {% if section_block.block_type == 'h2' %}
+                                <h2>{{ section_block.value }}</h2>
+                            {% elif section_block.block_type == 'paragraph' %}
+                                <p>{{ section_block.value|richtext }}</p>
+                            {% endif %}
+                        {% endfor %}
+                        <hr />
+                        <div class="grid-row internship-block">
+                            <div class="grid-col-12 tablet:grid-col-10">
+                                <h2>Position Title/Position Type/Salary Range</h2>
+                                {% if block.value.external_link %}
+                                    <a href="{{ block.value.external_link }}"
+                                       target="_blank"
+                                       class="description-link">{{ block.value.description|richtext }}</a>
+                                {% else %}
+                                    <a href="" class="description-link">{{ block.value.description|richtext }}</a>
+                                {% endif %}
+                            </div>
+                            <div class="grid-col-12 tablet:grid-col-2">
+                                <h2>Closing Date</h2>
+                                <div class="closing-date">{{ block.value.closing_date|date:"F j, Y" }}</div>
+                            </div>
+                            <p>{{ block.value.paragraph }}</p>
+                        </div>
+                        <hr />
+                    {% endif %}
+                {% endfor %}
+            {% elif no_opportunities_message %}
+                <p>{{ no_opportunities_message }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
