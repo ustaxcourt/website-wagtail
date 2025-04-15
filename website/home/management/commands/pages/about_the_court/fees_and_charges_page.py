@@ -24,7 +24,7 @@ class FeesAndChargesPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        title = "Fees & Charges"
+        title = "Fee & Charges"
         slug = self.slug
 
         if Page.objects.filter(slug=slug).exists():
