@@ -1,0 +1,11 @@
+<div class="table-container">
+    <table class="enhanced-table unstyled usa-table usa-table--stacked usa-table--borderless">
+        <tbody>
+            {% for row in block.value.rows %}
+                <tr>
+                    {% for value in row %}<td>{{ value }}</td>{% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
