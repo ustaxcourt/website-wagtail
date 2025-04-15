@@ -74,7 +74,7 @@ class InternshipProgramsPageInitializer(PageInitializer):
                                             Additionally, applicants must:
                                             <ol>
                                             <li>Be a U.S. citizen or national;</li>
-                                            <li>Be currently enrolled in an undergraduate or graduate program at an accredited U.S. institution of higher education recognized by the U.S. Department of Education (visit https://www.ed.gov/accreditation to verify your school and/or program of study);</li>
+                                            <li>Be currently enrolled in an undergraduate or graduate program at an accredited U.S. institution of higher education recognized by the U.S. Department of Education (visit <a href="https://www.ed.gov/accreditation" title="https://www.ed.gov/accreditation">https://www.ed.gov/accreditation</a> to verify your school and/or program of study);</li>
                                             <li>Have and maintain a 3.0 GPA or better;</li>
                                             <li>Have an interest in working with the federal government; and</li>
                                             <li>Be able to work 40 hours per week during the summer internship.</li>

@@ -1257,7 +1257,7 @@ class InternshipSectionBlock(blocks.StreamBlock):
 class InternshipPositionBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(required=False)
     section = InternshipSectionBlock(required=False)
-    paragraph = blocks.TextBlock(
+    paragraph = blocks.RichTextBlock(
         required=False, help_text="A simple paragraph of text."
     )
     display_from = blocks.DateBlock(
