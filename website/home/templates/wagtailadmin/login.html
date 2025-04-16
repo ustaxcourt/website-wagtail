@@ -1,4 +1,3 @@
-
 {% extends "wagtailadmin/admin_base.html" %}
 {% load i18n wagtailadmin_tags %}
 {% block titletag %}{% trans "Sign in" %}{% endblock %}
@@ -55,6 +54,36 @@
         background-color: #106ebe;
         color: white;
     }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 2rem 0;
+        color: #666;
+
+        @media (prefers-color-scheme: dark) {
+            color: #999;
+        }
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #ddd;
+
+        @media (prefers-color-scheme: dark) {
+            border-bottom-color: #444;
+        }
+    }
+
+    .divider span {
+        margin: 0 1rem;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
 </style>
 {% endblock extra_css %}
 
@@ -82,6 +111,12 @@
         </div>
 
         {% block above_login %}{% endblock %}
+
+        <a href="{% url "social:begin" "azuread-tenant-oauth2" %}" class="azure-login">Login with Azure AD</a>
+
+        <div class="divider">
+            <span>or</span>
+        </div>
 
         <form class="login-form" action="{% url 'wagtailadmin_login' %}" method="post" autocomplete="off" novalidate>
             {% block login_form %}
@@ -124,7 +159,5 @@
         </form>
 
         {% block below_login %}{% endblock %}
-
-        <a href="{% url "social:begin" "azuread-tenant-oauth2" %}" class="azure-login">Azure AD login</a>
     </main>
 {% endblock %}
