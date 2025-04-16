@@ -202,13 +202,6 @@ class DawsonPageInitializer(PageInitializer):
                     "depth": 4,
                     "search_description": "DAWSON User Guides",
                 },
-                # {
-                #     "title": "DAWSON Status",
-                #     "slug": "dawson-status",
-                #     "url": "https://status.ustaxcourt.gov/",
-                #     "depth": 4,
-                #     "search_description": "DAWSON Status",
-                # },
             ],
             "registration": [
                 {
