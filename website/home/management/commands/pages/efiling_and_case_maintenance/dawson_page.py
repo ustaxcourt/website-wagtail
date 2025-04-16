@@ -196,18 +196,11 @@ class DawsonPageInitializer(PageInitializer):
                     "search_description": "Release Notes",
                 },
                 {
-                    "title": "DAWSON User Guides",
+                    "title": "User Guides",
                     "slug": "dawson-user-guides",
                     "path": "dawson-user-guides",
                     "depth": 4,
                     "search_description": "DAWSON User Guides",
-                },
-                {
-                    "title": "DAWSON Status",
-                    "slug": "dawson-status",
-                    "path": "https://status.ustaxcourt.gov/",
-                    "depth": 4,
-                    "search_description": "DAWSON Status",
                 },
             ],
             "registration": [
@@ -311,6 +304,15 @@ class DawsonPageInitializer(PageInitializer):
             "reference_materials",
             standard_pages,
         )
+
+        RelatedPage.objects.create(
+            display_title="DAWSON Status",
+            card=reference_materials_card,
+            related_page=None,
+            url="https://status.ustaxcourt.gov/",
+        )
+
+        reference_materials_card.save()
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",

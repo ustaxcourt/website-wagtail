@@ -811,10 +811,17 @@ class RelatedPage(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    url = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Optional URL to link to when the card is clicked.",
+    )
 
     panels = [
         FieldPanel("display_title"),
         PageChooserPanel("related_page"),
+        FieldPanel("url"),
     ]
 
 
@@ -852,6 +859,9 @@ class SimpleCard(ClusterableModel):
             if self.card_title
             else f"Simple Card - {self.parent_page.group_label or self.parent_page.parent_page.title}"
         )
+
+    class Meta:
+        ordering = ["id"]
 
 
 @register_snippet
