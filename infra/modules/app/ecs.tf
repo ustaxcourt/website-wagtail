@@ -63,6 +63,18 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "DJANGO_SETTINGS_MODULE",
         value = "app.settings.${var.environment}"
+      },
+      {
+        name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY",
+        value = var.social_auth_azuread_tenant_oauth2_key
+      },
+      {
+        name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET",
+        value = var.social_auth_azuread_tenant_oauth2_secret
+      },
+      {
+        name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID",
+        value = var.social_auth_azuread_tenant_oauth2_tenant_id
       }
     ],
     secrets: [
