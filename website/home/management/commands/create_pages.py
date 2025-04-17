@@ -145,25 +145,10 @@ class Command(BaseCommand):
             if old_path.endswith(".html"):
                 cleaned_path = old_path.replace(".html", "").replace("_", "-")
                 new_path = cleaned_path + "/"
-                # Example: temporarily handle pages not yet implemented
-                if new_path in ["/about-the-court/", "/some-other-wip-page/"]:
-                    new_path = "/not-found-temporary/"  # redirect to a known 404 route if you must
-                    self.stdout.write(
-                        f"Redirecting {old_path} to /not-found-temporary/ (Page not ready)"
-                    )
-
                 redirects.append(
                     {
                         "old_path": old_path,
                         "new_path": new_path,
-                        "is_permanent": True,
-                    }
-                )
-            else:
-                redirects.append(
-                    {
-                        "old_path": old_path,
-                        "new_path": "/404",
                         "is_permanent": True,
                     }
                 )
