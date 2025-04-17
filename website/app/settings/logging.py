@@ -7,7 +7,9 @@ ENV = settings.ENVIRONMENT.lower()
 LOG_LEVEL = "INFO" if ENV == "production" else "DEBUG"
 
 # Define log format
-LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s %(message)s"
+LOG_FORMAT = (
+    "%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s:%(lineno)d %(message)s"
+)
 formatter = jsonlogger.JsonFormatter(LOG_FORMAT)
 
 # Console handler that writes to STDOUT
@@ -36,8 +38,7 @@ LOGGING = {
         "level": LOG_LEVEL,
     },
     "loggers": {
-        # Avoid Django logging noise unless needed
-        "django": {
+        "website": {
             "handlers": ["console"],
             "level": LOG_LEVEL,
             "propagate": False,
