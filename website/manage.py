@@ -6,6 +6,12 @@ import logging.config
 
 
 def main():
+    from django.core.management import execute_from_command_line
+
+    execute_from_command_line(sys.argv)
+
+
+if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings.local")
 
     from app.settings import logging as logger
@@ -14,17 +20,9 @@ def main():
     log = logging.getLogger("website")
     log.debug(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
     log.info("Healthy")
-    print("Imported Logging Config")
-    print(log)
 
-    from django.core.management import execute_from_command_line
-
-    execute_from_command_line(sys.argv)
-
-
-if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        logging.exception("Unhandled exception in manage.py")
+        log.exception("Unhandled exception in manage.py")
         raise e

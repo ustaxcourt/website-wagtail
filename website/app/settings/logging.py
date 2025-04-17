@@ -43,6 +43,11 @@ LOGGING = {
             "level": "ERROR",
             "propagate": False,
         },
+        "django.server": {  # Add this for server errors
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
         "django": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": False},
         "website": {
             "handlers": ["console"],
