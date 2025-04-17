@@ -14,6 +14,8 @@ def main():
     log = logging.getLogger("website")
     log.debug(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
     log.info("Healthy")
+    print("Imported Logging Config")
+    print(log)
 
     from django.core.management import execute_from_command_line
 
