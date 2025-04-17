@@ -38,6 +38,12 @@ LOGGING = {
         "level": LOG_LEVEL,
     },
     "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": False},
         "website": {
             "handlers": ["console"],
             "level": LOG_LEVEL,
