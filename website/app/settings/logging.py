@@ -1,37 +1,46 @@
-import os
 import sys
-import logging
-import datetime
 from pythonjsonlogger import jsonlogger
+from django.conf import settings
 
-# 1. Pick the level from ENV
-ENV = os.getenv("ENVIRONMENT", "local")  # prod | staging | local
-LOG_LEVEL = "INFO" if ENV == "prod" else "DEBUG"
+# Determine environment
+ENV = settings.ENVIRONMENT.lower()
+LOG_LEVEL = "INFO" if ENV == "production" else "DEBUG"
 
-# 2. Build a JSON formatter
-json_fmt = "%(asctime)s %(levelname)s %(name)s %(message)s"
-formatter = jsonlogger.JsonFormatter(json_fmt)
+# Define log format
+LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s %(message)s"
+formatter = jsonlogger.JsonFormatter(LOG_FORMAT)
 
-# 3. Console handler (always)
-console = logging.StreamHandler(sys.stdout)
-console.setFormatter(formatter)
+# Console handler that writes to STDOUT
+console_handler = {
+    "level": LOG_LEVEL,
+    "class": "logging.StreamHandler",
+    "stream": sys.stdout,
+    "formatter": "json",
+}
 
-# 4. Optional CloudWatch handler (only when we detect AWS)
-handlers = [console]
-if os.getenv("AWS_EXECUTION_ENV"):  # present in Lambda, ECS, EB
-    import watchtower
-
-    cw_handler = watchtower.CloudWatchLogHandler(
-        log_group=f"{os.getenv('APP_NAME','wagtail')}-{ENV}",
-        stream_name=datetime.datetime.utcnow().strftime("%Y-%m-%d"),
-        create_log_group=False,  # let infra‑as‑code own this
-    )
-    cw_handler.setFormatter(formatter)
-    handlers.append(cw_handler)
-
+# Base logging config
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"default": {"class": "logging.NullHandler"}},
-    "root": {"handlers": handlers, "level": LOG_LEVEL},
+    "formatters": {
+        "json": {
+            "()": jsonlogger.JsonFormatter,
+            "fmt": LOG_FORMAT,
+        },
+    },
+    "handlers": {
+        "console": console_handler,
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": LOG_LEVEL,
+    },
+    "loggers": {
+        # Avoid Django logging noise unless needed
+        "django": {
+            "handlers": ["console"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+    },
 }
