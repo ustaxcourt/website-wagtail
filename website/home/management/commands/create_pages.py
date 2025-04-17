@@ -57,7 +57,116 @@ class Command(BaseCommand):
                 "new_path": "/employment/vacancy-announcements",
                 "is_permanent": True,
             },
+            {
+                "old_path": "/index.html",
+                "new_path": "/",
+                "is_permanent": True,
+            },
         ]
+
+        legacy_urls = [
+            "/administrative_orders.html",
+            "/case_procedure.html",
+            "/case_related_forms.html",
+            "/check_info.html",
+            "/citation_and_style_manual.html",
+            "/clinics.html",
+            "/clinics_academic.html",
+            "/clinics_academic_non_law_school.html",
+            "/clinics_calendar_call.html",
+            "/clinics_chief_counsel.html",
+            "/clinics_nonacademic.html",
+            "/dashboard.html",
+            "/dawson.html",
+            "/dawson_account_petitioner.html",
+            "/dawson_account_practitioner.html",
+            "/dawson_faqs.html",
+            "/dawson_faqs_account_management.html",
+            "/dawson_faqs_basics.html",
+            "/dawson_faqs_case_management.html",
+            "/dawson_faqs_login.html",
+            "/dawson_faqs_searches_public_access.html",
+            "/dawson_faqs_training_and_support.html",
+            "/dawson_tou.html",
+            "/dawson_user_guides.html",
+            "/definitions.html",
+            "/directory.html",
+            "/documents_eligible_for_efiling.html",
+            "/dpt_cities.html",
+            "/efile_a_petition.html",
+            "/efiling_and_case_maintenance.html",
+            "/employment.html",
+            "/fees_and_charges.html",
+            "/find_a_case.html",
+            "/find_an_opinion.html",
+            "/find_an_order.html",
+            "/forms_instructions.html",
+            "/history.html",
+            "/holidays.html",
+            "/internship_programs.html",
+            "/judges.html",
+            "/jcdp.html",
+            "/jcdp_orders_issued.html",
+            "/law_clerk_program.html",
+            "/merging_files.html",
+            "/mission.html",
+            "/notice_regarding_privacy.html",
+            "/notices_of_rule_amendments.html",
+            "/pamphlets.html",
+            "/pay_filing_fee.html",
+            "/petitioners.html",
+            "/petitioners_about.html",
+            "/petitioners_after.html",
+            "/petitioners_before.html",
+            "/petitioners_during.html",
+            "/petitioners_glossary.html",
+            "/petitioners_start.html" "/practitioners.html",
+            "/press_release_archives.html",
+            "/press_releases.html",
+            "/release_notes.html",
+            "/remote_proceedings.html",
+            "/reports_and_statistics.html",
+            "/rules.html",
+            "/rules_and_guidance.html",
+            "/rules_comments.html",
+            "/search.html",
+            "/site_map.html",
+            "/transcripts_and_copies.html",
+            "/trial_sessions.html",
+            "/update_contact_information.html",
+            "/vacancy_announcements.html",
+            "/zoomgov.html",
+            "zoomgov_getting_ready.html",
+            "zoomgov_the_basics.html",
+            "zoomgov_zoomgov_proceedings.html",
+        ]
+
+        for old_path in legacy_urls:
+            if old_path.endswith(".html"):
+                cleaned_path = old_path.replace(".html", "").replace("_", "-")
+                new_path = cleaned_path + "/"
+                # Example: temporarily handle pages not yet implemented
+                if new_path in ["/about-the-court/", "/some-other-wip-page/"]:
+                    new_path = "/not-found-temporary/"  # redirect to a known 404 route if you must
+                    self.stdout.write(
+                        f"Redirecting {old_path} to /not-found-temporary/ (Page not ready)"
+                    )
+
+                redirects.append(
+                    {
+                        "old_path": old_path,
+                        "new_path": new_path,
+                        "is_permanent": True,
+                    }
+                )
+            else:
+                redirects.append(
+                    {
+                        "old_path": old_path,
+                        "new_path": "/404",
+                        "is_permanent": True,
+                    }
+                )
 
         self.stdout.write("Initializing redirects...")
         for redirect in redirects:
