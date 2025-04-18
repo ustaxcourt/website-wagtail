@@ -16,6 +16,7 @@ required_env_vars=(
   "DATABASE_PASSWORD"
   "SECRET_KEY"
   "DOMAIN_NAME"
+  "FILES_DOMAIN_NAME"
 )
 check_env_vars "${required_env_vars[@]}"
 
@@ -24,4 +25,5 @@ export TF_VAR_bastion_public_key=$BASTION_PUBLIC_KEY
 export TF_VAR_environment=$ENVIRONMENT
 export TF_VAR_secret_key=$SECRET_KEY
 export TF_VAR_domain_name=$DOMAIN_NAME
+export TF_VAR_files_domain_name=$FILES_DOMAIN_NAME
 export TF_VAR_github_sha=$GITHUB_SHA

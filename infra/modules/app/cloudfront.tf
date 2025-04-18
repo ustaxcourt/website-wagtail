@@ -1,11 +1,11 @@
 resource "aws_cloudfront_distribution" "files_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Files distribution for cody-sandbox-files.ustaxcourt.gov"
+  comment             = "Files distribution for ${var.files_domain_name}"
   default_root_object = "index.html"
   price_class         = "PriceClass_100"  # US, Canada, Europe
 
-  aliases = ["cody-sandbox-files.ustaxcourt.gov"]
+  aliases = [var.files_domain_name]
 
   origin {
     domain_name = aws_s3_bucket.private_bucket.bucket_regional_domain_name
