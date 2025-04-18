@@ -6,7 +6,7 @@ module "alb" {
 
   load_balancer_type = "application"
   security_groups    = [module.vpc.default_security_group_id]
-  subnets            = module.vpc.private_subnets  # ALB in private subnets
+  subnets            = module.vpc.public_subnets  # Temporarily back to public subnets for troubleshooting
   vpc_id             = module.vpc.vpc_id
 
   security_group_rules = {
