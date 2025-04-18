@@ -74,7 +74,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                     "rich_text": """During the process of electronically filing your petition, a unique Docket Number will be assigned to your case. You may pay the fee on
                 <a href="https://www.pay.gov/public/home" title="Pay.gov">Pay.gov</a>
                  with an accepted payment method (e.g., credit card, bank account (ACH)). Your case Docket Number is required. For more information, see
-                 <a href="https://www.ustaxcourt.gov/pay_filing_fee.html" title="How to Pay the Filing Fee">How to Pay the Filing Fee</a>."""
+                 <a href="/pay-filing-fee" title="How to Pay the Filing Fee">How to Pay the Filing Fee</a>."""
                 },
                 "anchortag": "FAQS2",
             },
@@ -91,7 +91,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                     "rich_text": """<ul>
                                 <li>Parties to consolidated cases have the ability to electronically file documents simultaneously in all of the consolidated cases.</li>
                                 <li>Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately.</li>
-                                <li>Refer to the <a href="https://www.ustaxcourt.gov/release_notes.html" title="DAWSON Release Notes">DAWSON Release Notes</a> for more information, or the <a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a>.
+                                <li>Refer to the <a href="/release-notes" title="DAWSON Release Notes">DAWSON Release Notes</a> for more information, or the <a href="/dawson_user_guides" target="_blank" title="DAWSON User Guides">User Guides</a>.
                                   for detailed instructions on how to electronically file documents in consolidated cases.</li>
                                  </ul>"""
                 },
