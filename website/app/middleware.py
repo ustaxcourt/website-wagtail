@@ -41,17 +41,11 @@ def configure_logging():
             "level": LOG_LEVEL,
         },
         "loggers": {
-            "django.request": {
+            "django": {
                 "handlers": ["console"],
-                "level": "ERROR",
+                "level": "WARNING",
                 "propagate": False,
             },
-            "django.server": {
-                "handlers": ["console"],
-                "level": "ERROR",
-                "propagate": False,
-            },
-            "django": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": False},
             "website": {
                 "handlers": ["console"],
                 "level": LOG_LEVEL,
