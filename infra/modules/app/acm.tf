@@ -7,7 +7,6 @@ resource "aws_acm_certificate" "files_cert" {
   }
 }
 
-# Create DNS records for certificate validation
 resource "aws_route53_record" "files_cert_validation" {
   for_each = {
     for dvo in aws_acm_certificate.files_cert.domain_validation_options : dvo.domain_name => {
@@ -27,7 +26,6 @@ resource "aws_route53_record" "files_cert_validation" {
   depends_on = [data.aws_route53_zone.main]
 }
 
-# Certificate validation
 resource "aws_acm_certificate_validation" "files_cert" {
   certificate_arn         = aws_acm_certificate.files_cert.arn
   validation_record_fqdns = [for record in aws_route53_record.files_cert_validation : record.fqdn]
