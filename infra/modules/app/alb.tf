@@ -35,18 +35,7 @@ module "alb" {
     }
   }
 
-  http_tcp_listeners = [
-    {
-      port        = 80
-      protocol    = "HTTP"
-      action_type = "redirect"
-      redirect = {
-        port        = "443"
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
-    }
-  ]
+  http_tcp_listeners = []
 
   https_listeners = [
     {

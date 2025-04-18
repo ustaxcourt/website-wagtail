@@ -15,7 +15,7 @@ resource "aws_cloudfront_distribution" "main" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = "https-only"  # Only use HTTPS to origin
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
@@ -44,7 +44,7 @@ resource "aws_cloudfront_distribution" "main" {
       }
     }
 
-    viewer_protocol_policy = "redirect-to-https"
+    viewer_protocol_policy = "redirect-to-https"  # Redirect HTTP to HTTPS
     min_ttl                = 0
     default_ttl           = 0  # Don't cache dynamic content by default
     max_ttl              = 0
