@@ -71,24 +71,24 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   # Cache behavior for static files
-  ordered_cache_behavior {
-    path_pattern     = "/static/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "ALB-${module.alb.lb_id}"
+  # ordered_cache_behavior {
+  #   path_pattern     = "/static/*"
+  #   allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+  #   cached_methods   = ["GET", "HEAD"]
+  #   target_origin_id = "ALB-${module.alb.lb_id}"
 
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
+  #   forwarded_values {
+  #     query_string = false
+  #     cookies {
+  #       forward = "none"
+  #     }
+  #   }
 
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl           = 86400  # Cache static files for 24 hours
-    max_ttl              = 31536000  # Maximum cache time of 1 year
-  }
+  #   viewer_protocol_policy = "redirect-to-https"
+  #   min_ttl                = 0
+  #   default_ttl           = 86400  # Cache static files for 24 hours
+  #   max_ttl              = 31536000  # Maximum cache time of 1 year
+  # }
 
   restrictions {
     geo_restriction {
