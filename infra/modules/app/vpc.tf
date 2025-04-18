@@ -12,6 +12,10 @@ module "vpc" {
   public_subnets     = ["10.0.101.0/24", "10.0.102.0/24"]
   single_nat_gateway = true
 
+  # Enable DNS support and hostnames
+  enable_dns_support     = true
+  enable_dns_hostnames   = true
+
   tags = {
     Name        = "${var.environment}-vpc"
   }

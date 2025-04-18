@@ -5,7 +5,7 @@ resource "aws_cloudfront_distribution" "main" {
   default_root_object = "index.html"
   price_class         = "PriceClass_100"  # US, Canada, Europe
 
-  aliases = [var.domain_name, "www.${var.domain_name}"]
+  aliases = [var.domain_name]
 
   # ALB Origin
   origin {
