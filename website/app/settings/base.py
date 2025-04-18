@@ -214,11 +214,16 @@ if aws_bucket_name:
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+    # Use CloudFront domain for documents
+    AWS_S3_CUSTOM_DOMAIN = "cody-sandbox-files.ustaxcourt.gov"
     MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
+
+    # # Configure Wagtail to use the custom domain for documents
+    # WAGTAILDOCS_SERVE_METHOD = "direct"
+    # WAGTAILDOCS_URL_FUNCTION = "app.utils.get_document_url"
 
     # when running in github actions, we use access keys instead of assumed roles like on ECS
     if os.getenv("AWS_ACCESS_KEY_ID"):
