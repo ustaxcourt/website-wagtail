@@ -19,10 +19,6 @@ variable "domain_name" {
   type = string
 }
 
-variable "files_domain_name" {
-  type = string
-}
-
 variable "github_sha" {
   type = string
 }

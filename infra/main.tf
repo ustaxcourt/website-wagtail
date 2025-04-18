@@ -11,7 +11,6 @@ module "app" {
   environment = var.environment
   domain_name = var.domain_name
   github_sha = var.github_sha
-  files_domain_name = var.files_domain_name
   providers = {
     docker = docker
   }

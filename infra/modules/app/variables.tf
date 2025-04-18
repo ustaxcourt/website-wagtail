@@ -19,11 +19,6 @@ variable "domain_name" {
   type        = string
 }
 
-variable "files_domain_name" {
-  description = "The domain name for the files distribution (e.g., files.example.com)"
-  type        = string
-}
-
 variable "github_sha" {
   description = "The GitHub SHA of the commit being deployed"
   type        = string

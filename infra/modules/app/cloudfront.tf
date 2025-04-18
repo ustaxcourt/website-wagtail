@@ -1,12 +1,26 @@
-resource "aws_cloudfront_distribution" "files_distribution" {
+resource "aws_cloudfront_distribution" "main" {
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Files distribution for ${var.files_domain_name}"
+  comment             = "Main distribution for ${var.domain_name}"
   default_root_object = "index.html"
   price_class         = "PriceClass_100"  # US, Canada, Europe
 
-  aliases = [var.files_domain_name]
+  aliases = [var.domain_name, "www.${var.domain_name}"]
 
+  # ALB Origin
+  origin {
+    domain_name = module.alb.lb_dns_name
+    origin_id   = "ALB-${module.alb.lb_id}"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  # S3 Origin
   origin {
     domain_name = aws_s3_bucket.private_bucket.bucket_regional_domain_name
     origin_id   = "S3-${aws_s3_bucket.private_bucket.id}"
@@ -16,7 +30,29 @@ resource "aws_cloudfront_distribution" "files_distribution" {
     }
   }
 
+  # Default cache behavior (for ALB)
   default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "ALB-${module.alb.lb_id}"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl           = 0  # Don't cache dynamic content by default
+    max_ttl              = 0
+  }
+
+  # Cache behavior for /files/* path
+  ordered_cache_behavior {
+    path_pattern     = "/files/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-${aws_s3_bucket.private_bucket.id}"
@@ -34,6 +70,26 @@ resource "aws_cloudfront_distribution" "files_distribution" {
     max_ttl              = 86400
   }
 
+  # Cache behavior for static files
+  ordered_cache_behavior {
+    path_pattern     = "/static/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "ALB-${module.alb.lb_id}"
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl           = 86400  # Cache static files for 24 hours
+    max_ttl              = 31536000  # Maximum cache time of 1 year
+  }
+
   restrictions {
     geo_restriction {
       restriction_type = "none"
@@ -41,7 +97,7 @@ resource "aws_cloudfront_distribution" "files_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.files_cert.arn
+    acm_certificate_arn      = aws_acm_certificate.main.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }

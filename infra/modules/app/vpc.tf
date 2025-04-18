@@ -1,4 +1,3 @@
-
 data "aws_availability_zones" "available" { state = "available" }
 
 module "vpc" {
@@ -26,3 +25,43 @@ module "vpc" {
     Name = "${var.environment}-private-subnet"
   }
 }
+
+# Create VPC endpoint for CloudFront to access the private ALB
+resource "aws_vpc_endpoint" "cloudfront" {
+  vpc_id            = module.vpc.vpc_id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.execute-api"
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [aws_security_group.vpc_endpoint.id]
+  subnet_ids         = module.vpc.private_subnets
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "${var.environment}-cloudfront-endpoint"
+  }
+}
+
+# Security group for VPC endpoint
+resource "aws_security_group" "vpc_endpoint" {
+  name        = "${var.environment}-vpc-endpoint-sg"
+  description = "Security group for VPC endpoint"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # CloudFront will access through this endpoint
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Get current AWS region
+data "aws_region" "current" {}
