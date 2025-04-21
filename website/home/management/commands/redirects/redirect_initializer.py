@@ -20,11 +20,9 @@ class RedirectInitializer:
             return
 
         try:
-            redirect = Redirect.objects.create(
+            Redirect.objects.create(
                 old_path=old_path, redirect_link=new_path, is_permanent=is_permanent
             )
             self.logger.write(f"Created redirect: {old_path} → {new_path}")
-            return redirect
         except ValidationError as e:
-            self.logger.write(f"Error creating redirect: {e}")
-            return None
+            self.logger.write(f"Error creating redirect for '{old_path}': {e}")
