@@ -32,12 +32,10 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "HISTORY",
                             "page": self.get_page("history"),
-                            "external_url": "",
                         },
                         {
                             "title": "REPORTS & STATISTICS",
                             "page": self.get_page("reports-and-statistics"),
-                            "external_url": "",
                         },
                         {
                             "title": "JUDGES",
@@ -62,7 +60,6 @@ class NavigationInitializer(PageInitializer):
                         {
                             "title": "PRESS RELEASES",
                             "page": self.get_page("press-releases"),
-                            "external_url": "",
                         },
                     ],
                 },
@@ -138,13 +135,11 @@ class NavigationInitializer(PageInitializer):
                     "sub_links": [
                         {
                             "title": "SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
-                            "page": None,
                             "external_url": "https://dawson.ustaxcourt.gov/",
                         },
                         {
                             "title": "DAWSON (EFILING SYSTEM)",
                             "page": self.get_page("dawson"),
-                            "external_url": "",
                         },
                         {
                             "title": "CASE RELATED FORMS",
