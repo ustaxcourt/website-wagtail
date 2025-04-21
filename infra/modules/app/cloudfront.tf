@@ -22,12 +22,9 @@ resource "aws_cloudfront_distribution" "main" {
 
   # S3 Origin
   origin {
-    domain_name = aws_s3_bucket.private_bucket.bucket_regional_domain_name
-    origin_id   = "S3-${aws_s3_bucket.private_bucket.id}"
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.files_oai.cloudfront_access_identity_path
-    }
+    domain_name              = aws_s3_bucket.private_bucket.bucket_regional_domain_name
+    origin_id                = "S3-${aws_s3_bucket.private_bucket.id}"
+    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
   }
 
   # Default cache behavior (for ALB)
@@ -103,19 +100,30 @@ resource "aws_cloudfront_distribution" "main" {
   }
 }
 
-resource "aws_cloudfront_origin_access_identity" "files_oai" {
-  comment = "OAI for files distribution"
+# Create Origin Access Control
+resource "aws_cloudfront_origin_access_control" "default" {
+  name                              = "S3 OAC ${var.environment}"
+  description                       = "Origin Access Control for S3"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
-# S3 bucket policy to allow CloudFront access
+# S3 bucket policy to allow CloudFront access using OAC
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.private_bucket.arn}/*"]
 
     principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.files_oai.iam_arn]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.main.arn]
     }
   }
 
@@ -124,8 +132,14 @@ data "aws_iam_policy_document" "s3_policy" {
     resources = [aws_s3_bucket.private_bucket.arn]
 
     principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.files_oai.iam_arn]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.main.arn]
     }
   }
 }
