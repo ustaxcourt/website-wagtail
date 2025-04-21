@@ -46,6 +46,16 @@ def configure_logging():
                 "level": "WARNING",
                 "propagate": False,
             },
+            "PIL": {
+                "handlers": ["console"],
+                "level": "WARNING",
+                "propagate": False,
+            },
+            "wagtail": {
+                "handlers": ["console"],
+                "level": "WARNING",
+                "propagate": False,
+            },
             "website": {
                 "handlers": ["console"],
                 "level": LOG_LEVEL,
