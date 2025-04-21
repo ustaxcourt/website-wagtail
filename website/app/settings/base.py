@@ -211,14 +211,21 @@ if aws_bucket_name:
     print(f"Loading from base config, bucket: {aws_bucket_name}")
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": os.getenv("AWS_STORAGE_BUCKET_NAME"),
+            "custom_domain": f"{os.getenv('DOMAIN_NAME')}/files",
+            # "location": "files",  # This will prefix all uploads with 'files/'
+            "querystring_auth": False,  # Disable query param auth since we're using CloudFront
+            "url_protocol": "https:",
+        },
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
+    # MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
     WAGTAILDOCS_SERVE_METHOD = "direct"
-    WAGTAILDOCS_URL_PREFIX = "files/documents"
+    # WAGTAILDOCS_URL_PREFIX = "files/documents"
     AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = False
+    # AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
 
     # WAGTAILDOCS_SERVE_METHOD = "direct"
