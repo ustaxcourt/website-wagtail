@@ -38,15 +38,10 @@ def configure_logging():
         },
         "root": {
             "handlers": ["console"],
-            "level": LOG_LEVEL,
+            "level": "WARNING",
         },
         "loggers": {
             "django": {
-                "handlers": ["console"],
-                "level": "WARNING",
-                "propagate": False,
-            },
-            "PIL": {
                 "handlers": ["console"],
                 "level": "WARNING",
                 "propagate": False,
