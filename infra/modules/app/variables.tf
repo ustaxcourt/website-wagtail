@@ -23,3 +23,18 @@ variable "github_sha" {
   description = "The GitHub SHA of the commit being deployed"
   type        = string
 }
+
+variable "social_auth_azuread_tenant_oauth2_key" {
+  description = "The Azure AD tenant OAuth2 key"
+  type = string
+}
+
+variable "social_auth_azuread_tenant_oauth2_secret" {
+  description = "The Azure AD tenant OAuth2 secret"
+  type = string
+}
+
+variable "social_auth_azuread_tenant_oauth2_tenant_id" {
+  description = "The Azure AD tenant ID"
+  type = string
+}

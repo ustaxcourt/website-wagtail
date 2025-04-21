@@ -7,7 +7,6 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from django.shortcuts import redirect
 from django.urls import re_path
-from . import views
 
 
 def tc_report_redirect(request, path):
@@ -26,7 +25,7 @@ urlpatterns = [
         name="tc_report_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
-    path("explode/", views.explode, name="explode"),
+    path("", include("social_django.urls", namespace="social")),
 ]
 
 if settings.DEBUG:
