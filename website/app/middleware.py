@@ -66,6 +66,8 @@ def configure_logging():
 
 class JSONExceptionMiddleware:
     def __init__(self, get_response):
+        configure_logging()
+        self.get_response = get_response
         self.logger = logging.getLogger("django.request")
 
     def __call__(self, request):
