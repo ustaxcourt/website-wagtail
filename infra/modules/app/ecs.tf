@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "this" {
       },
       {
         name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET",
-        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET::"
+        value = var.social_auth_azuread_tenant_oauth2_secret
       },
     ],
 
