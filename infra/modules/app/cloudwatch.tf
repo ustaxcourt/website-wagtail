@@ -13,8 +13,6 @@ resource "aws_cloudwatch_dashboard" "log_dashboard" {
           title       = "Log Summary by Level and Component"
           view        = "table"
           stacked     = false
-          start       = "-P1D" # Last 24 hours
-          end         = "P0D"  # Now
           query       = <<EOT
 SOURCE '${aws_cloudwatch_log_group.ecs_log_group.name}' | fields @timestamp, levelname, name
 | stats  count(*)       as events,
@@ -36,8 +34,6 @@ EOT
           title       = "Detailed Log Messages"
           view        = "table"
           stacked     = false
-          start       = "-P1D" # Last 24 hours
-          end         = "P0D"  # Now
           query       = <<EOT
 SOURCE '${aws_cloudwatch_log_group.ecs_log_group.name}' | fields @timestamp, levelname, name, message, exc_info
 | filter levelname = '$${logLevel}'
