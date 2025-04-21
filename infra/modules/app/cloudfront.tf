@@ -1,3 +1,23 @@
+resource "aws_cloudfront_function" "rewrite_uri" {
+  name    = "${var.environment}-rewrite-uri"
+  runtime = "cloudfront-js-1.0"
+  comment = "Function to strip /files prefix from request URI"
+  publish = true
+  code    = <<-EOT
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Check if the URI starts with /files/ and remove it
+    if (uri.startsWith('/files/')) {
+        request.uri = uri.slice(6); // Remove '/files'
+    }
+
+    return request;
+}
+EOT
+}
+
 resource "aws_cloudfront_distribution" "main" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -53,6 +73,11 @@ resource "aws_cloudfront_distribution" "main" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-${aws_s3_bucket.private_bucket.id}"
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.rewrite_uri.arn
+    }
 
     forwarded_values {
       query_string = false
