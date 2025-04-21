@@ -23,6 +23,6 @@ if __name__ == "__main__":
 
     try:
         main()
-    except Exception as e:
+    except Exception:
         log.exception("Unhandled exception in manage.py")
         raise
