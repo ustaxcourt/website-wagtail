@@ -214,14 +214,13 @@ if aws_bucket_name:
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    # Use CloudFront domain for documentss
-    AWS_S3_CUSTOM_DOMAIN = os.getenv("DOMAIN_NAME")
-    MEDIA_URL = "https://%s/files/" % AWS_S3_CUSTOM_DOMAIN
+    # MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
+    WAGTAILDOCS_SERVE_METHOD = "direct"
+    WAGTAILDOCS_URL_PREFIX = "files/documents"
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
 
-    # # Configure Wagtail to use the custom domain for documents
     # WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_FUNCTION = "app.utils.get_document_url"
 

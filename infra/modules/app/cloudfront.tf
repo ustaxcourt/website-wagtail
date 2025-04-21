@@ -107,12 +107,7 @@ resource "aws_cloudfront_origin_access_identity" "files_oai" {
   comment = "OAI for files distribution"
 }
 
-# Update S3 bucket policy to allow CloudFront access
-resource "aws_s3_bucket_policy" "files_bucket_policy" {
-  bucket = aws_s3_bucket.private_bucket.id
-  policy = data.aws_iam_policy_document.s3_policy.json
-}
-
+# S3 bucket policy to allow CloudFront access
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     actions   = ["s3:GetObject"]
@@ -123,4 +118,19 @@ data "aws_iam_policy_document" "s3_policy" {
       identifiers = [aws_cloudfront_origin_access_identity.files_oai.iam_arn]
     }
   }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.private_bucket.arn]
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.files_oai.iam_arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "cloudfront_access_policy" {
+  bucket = aws_s3_bucket.private_bucket.id
+  policy = data.aws_iam_policy_document.s3_policy.json
 }
