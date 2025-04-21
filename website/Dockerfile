@@ -5,6 +5,9 @@ FROM --platform=linux/amd64 python:3.12-slim-bookworm
 ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
 
+ARG ENVIRONMENT
+ENV ENVIRONMENT=${ENVIRONMENT}
+
 # Add user that will be used in the container.
 RUN useradd wagtail
 
@@ -35,6 +38,8 @@ RUN pip install "gunicorn==23.0.0"
 # Install the project requirements.
 COPY requirements/base.txt /requirements.txt
 RUN pip install -r /requirements.txt
+
+RUN if [ "$ENVIRONMENT" = "sandbox" ]; then pip install django-debug-toolbar; fi
 
 # Use /app folder as a directory where the source code is stored.
 WORKDIR /app

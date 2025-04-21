@@ -22,7 +22,11 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-# Application definition
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.azuread_tenant.AzureADTenantOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 INSTALLED_APPS = [
     "home",
@@ -51,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "fontawesomefree",
+    "social_django",
 ]
 
 MIDDLEWARE = [
@@ -71,6 +76,8 @@ ROOT_URLCONF = "app.urls"
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
+LOGIN_REDIRECT_URL = "/admin/"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -86,10 +93,24 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
 ]
+
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(
+    "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY"
+)
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET = os.getenv(
+    "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET"
+)
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID = os.getenv(
+    "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID"
+)
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ["username", "first_name", "last_name", "email"]
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 WSGI_APPLICATION = "app.wsgi.application"
 
