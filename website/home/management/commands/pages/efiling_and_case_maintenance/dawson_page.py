@@ -305,6 +305,15 @@ class DawsonPageInitializer(PageInitializer):
             standard_pages,
         )
 
+        dawson_petitioner_registration_page = RelatedPage.objects.get(
+            related_page__slug="dawson-petitioner-registration"
+        )
+        dawson_petitioner_registration_page.related_page = None
+        dawson_petitioner_registration_page.url = (
+            "https://app.dawson.ustaxcourt.gov/create-account/petitioner"
+        )
+        dawson_petitioner_registration_page.save()
+
         RelatedPage.objects.create(
             display_title="DAWSON Status",
             card=reference_materials_card,
