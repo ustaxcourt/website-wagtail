@@ -25,9 +25,3 @@ variable "github_sha" {
   description = "The GitHub SHA of the commit being deployed"
   type        = string
 }
-
-variable "cloudfront_origin_secret" {
-  description = "Secret value for CloudFront origin header"
-  type        = string
-  sensitive   = true
-}

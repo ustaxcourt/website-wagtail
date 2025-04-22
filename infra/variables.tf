@@ -24,8 +24,3 @@ variable "domain_name" {
 variable "github_sha" {
   type = string
 }
-
-variable "cloudfront_origin_secret" {
-  type = string
-  sensitive = true
-}

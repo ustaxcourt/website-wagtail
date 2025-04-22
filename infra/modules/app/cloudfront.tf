@@ -67,7 +67,7 @@ resource "aws_cloudfront_cache_policy" "static_content" {
 resource "aws_cloudfront_vpc_origin" "app" {
   vpc_origin_endpoint_config {
     name                   = "${var.environment}-app-origin"
-    arn                    = aws_lb.app.arn
+    arn                    = module.alb.lb_arn
     http_port              = 80
     https_port             = 443
     origin_protocol_policy = "https-only"
@@ -86,12 +86,11 @@ resource "aws_cloudfront_origin_access_identity" "app" {
 resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
-  default_root_object = "index.html"
   price_class = "PriceClass_100"
   aliases = [var.domain_name]
 
   origin {
-    domain_name = aws_lb.app.dns_name
+    domain_name = module.alb.lb_dns_name
     origin_id   = "app-origin"
 
     vpc_origin_config {

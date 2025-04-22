@@ -2,7 +2,7 @@ data "aws_availability_zones" "available" { state = "available" }
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.19.0"
+  version = "5.21.0"
 
   azs                = slice(data.aws_availability_zones.available.names, 0, 2) # Span subnetworks across multiple avalibility zones
   cidr               = "10.0.0.0/16"

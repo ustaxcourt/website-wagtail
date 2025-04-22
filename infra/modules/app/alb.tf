@@ -1,6 +1,6 @@
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 8.4.0"
+  version = "8.5.0"
 
   name = "${var.environment}-load-balancer"
 
@@ -35,39 +35,6 @@ module "alb" {
       protocol          = "HTTPS"
       certificate_arn   = aws_acm_certificate.main.arn
       target_group_index = 0
-      rules = [
-        {
-          priority = 1
-          conditions = [
-            {
-              http_header = {
-                http_header_name = "X-CloudFront-Origin"
-                values = [var.cloudfront_origin_secret]
-              }
-            }
-          ]
-          actions = [
-            {
-              type = "forward"
-              target_group_index = 0
-            }
-          ]
-        },
-        {
-          priority = 2
-          conditions = []
-          actions = [
-            {
-              type = "fixed-response"
-              fixed_response = {
-                content_type = "text/plain"
-                message_body = "Access denied"
-                status_code = "403"
-              }
-            }
-          ]
-        }
-      ]
     }
   ]
 

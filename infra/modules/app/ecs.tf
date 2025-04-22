@@ -6,7 +6,7 @@ module "ecs" {
   # depends_on = [aws_iam_service_linked_role.ecs]
 
   source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 4.1.3"
+  version = "5.12.1"
 
   cluster_name = "${var.environment}-website-cluster"
 
