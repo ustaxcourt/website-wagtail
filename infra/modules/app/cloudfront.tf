@@ -82,6 +82,11 @@ resource "aws_cloudfront_distribution" "main" {
       origin_protocol_policy = "https-only"
       origin_ssl_protocols  = ["TLSv1.2"]
     }
+
+    custom_header {
+      name  = "X-CloudFront-Origin"
+      value = var.cloudfront_origin_secret
+    }
   }
 
   # S3 Origin

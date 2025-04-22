@@ -16,6 +16,7 @@ required_env_vars=(
   "DATABASE_PASSWORD"
   "SECRET_KEY"
   "DOMAIN_NAME"
+  "CLOUDFRONT_ORIGIN_SECRET"
 )
 check_env_vars "${required_env_vars[@]}"
 
@@ -25,3 +26,4 @@ export TF_VAR_environment=$ENVIRONMENT
 export TF_VAR_secret_key=$SECRET_KEY
 export TF_VAR_domain_name=$DOMAIN_NAME
 export TF_VAR_github_sha=$GITHUB_SHA
+export TF_VAR_cloudfront_origin_secret=$CLOUDFRONT_ORIGIN_SECRET

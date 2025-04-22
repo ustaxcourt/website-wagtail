@@ -11,6 +11,7 @@ module "app" {
   environment = var.environment
   domain_name = var.domain_name
   github_sha = var.github_sha
+  cloudfront_origin_secret = var.cloudfront_origin_secret
   providers = {
     docker = docker
   }

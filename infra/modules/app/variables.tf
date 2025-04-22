@@ -1,5 +1,6 @@
 variable "database_password" {
   type = string
+  sensitive = true
 }
 
 variable "bastion_public_key" {
@@ -12,6 +13,7 @@ variable "environment" {
 
 variable "secret_key" {
   type = string
+  sensitive = true
 }
 
 variable "domain_name" {
@@ -22,4 +24,10 @@ variable "domain_name" {
 variable "github_sha" {
   description = "The GitHub SHA of the commit being deployed"
   type        = string
+}
+
+variable "cloudfront_origin_secret" {
+  description = "Secret value for CloudFront origin header"
+  type        = string
+  sensitive   = true
 }
