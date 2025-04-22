@@ -1608,3 +1608,41 @@ class InternshipPrograms(EnhancedStandardPage):
             )
 
         return context
+
+
+class TrialCityBlock(blocks.StructBlock):
+    name = blocks.CharBlock()
+    note = blocks.TextBlock(required=False)
+    address = blocks.CharBlock(
+        required=False, help_text="Street address or location name"
+    )
+
+    class Meta:
+        icon = "home"
+        label = "Trial City"
+
+
+class TrialStateBlock(blocks.StructBlock):
+    state = blocks.CharBlock()
+    cities = blocks.ListBlock(TrialCityBlock())
+
+
+class PlacesOfTrialPage(Page):
+    places_of_trial = StreamField(
+        [("state", TrialStateBlock())],
+        use_json_field=True,
+        blank=True,
+    )
+    body = StreamField(
+        [
+            ("text", blocks.RichTextBlock()),
+            ("paragraph", blocks.RichTextBlock(features=["bold", "italic", "link"])),
+        ],
+        use_json_field=True,
+        blank=True,
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel("places_of_trial"),
+        FieldPanel("body"),
+    ]

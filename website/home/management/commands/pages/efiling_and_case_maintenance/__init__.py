@@ -25,7 +25,7 @@ from .efile_a_petition_page import EfileAPetitionPageInitializer
 from .update_contact_information_page import UpdateContactInformationPageInitializer
 from .dawson_release_notes import DawsonReleaseNotesInitializer
 from .dawson_terms_of_use import DawsonTermsOfUsePageInitializer
-
+from .places_of_trial_page import PlacesOfTrialPageInitializer
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages
@@ -52,6 +52,7 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonPageInitializer,
     CaseRelatedFormPageInitializer,
     # Other pages, order does not matter
+    PlacesOfTrialPageInitializer,
     FillInFormsInstructionsPageInitializer,
     SearchesAndPublicAccessPageInitializer,
 ]

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% block extra_css %}
+    <style>
+        .notice {
+            background: #e6f0f8;
+            border-left: 6px solid #0077c8;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .notice-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .notice-content i {
+            margin-right: 1.2rem;
+            font-size: 1.5rem;
+        }
+
+        .alphabet {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alphabet button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dcdee0;
+            background-color: #fff;
+            color: #000;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .alphabet button:hover {
+            border-color: #007BFF;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .state-card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .state-header {
+            background: #003366;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            border-radius: 4px 4px 0 0;
+            margin: -1rem -1rem 1rem -1rem;
+        }
+
+        .city {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .address a {
+            color: black;
+            text-decoration: underline;
+            font-weight: 400;
+        }
+
+        .feedback {
+            position: fixed;
+            right: 0;
+            top: 40%;
+            background: #003366;
+            color: white;
+            padding: 0.5rem 1rem;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="grid-container padding-bottom-2 padding-top-2">
+        <h1 class="page-title">Places of Trial</h1>
+        <div class="notice">
+            <div class="notice-content">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>{{ page.body.0.value }}</p>
+            </div>
+        </div>
+        <div class="alphabet">
+            {% for letter in "ACDFGHIKLMNOPSTUVW" %}<button>{{ letter }}</button>{% endfor %}
+        </div>
+        <div class="grid">
+            {% for state in page.places_of_trial %}
+                <div class="state-card">
+                    <div class="state-header">{{ state.value.state }}</div>
+                    {% for city in state.value.cities %}
+                        <div class="city">{{ city.name }}</div>
+                        {% if city.map_link %}
+                            <div class="address">
+                                <a href="{{ city.map_link }}" target="_blank">{{ city.map_link }}</a>
+                            </div>
+                        {% elif city.address %}
+                            <div class="address">
+                                <a href="https://www.google.com/maps/search/{{ city.address|urlencode }}"
+                                   target="_blank">{{ city.address }}</a>
+                            </div>
+                        {% endif %}
+                        {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="feedback">Give Feedback</div>
+{% endblock %}
