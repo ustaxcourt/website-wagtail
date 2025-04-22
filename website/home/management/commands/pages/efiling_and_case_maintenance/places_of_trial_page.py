@@ -269,7 +269,7 @@ all_dpt_cities = [
             {
                 "name": "Detroit",
                 "note": "",
-                "address": "Theodore Levin United States Courthouse 231 W Lafayette Blvd, Detroit, MI 48226 Room 1031",
+                "address": "Theodore Levin United States Courthouse 231 W Lafayette Blvd, Detroit, MI 48226 Room 1069",
             },
         ],
     },
@@ -374,7 +374,7 @@ all_dpt_cities = [
             {
                 "name": "New York City",
                 "note": "",
-                "address": "Jacob K. Javits Federal Building 26 Federal Plaza, New York, NY 10278 Rooms 206 and 208",
+                "address": "Jacob K. Javits Federal Building 26 Federal Plaza, New York, NY 10278 Rooms 206",
             },
             {
                 "name": "Syracuse",
