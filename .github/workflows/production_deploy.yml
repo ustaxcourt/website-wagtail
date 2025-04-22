@@ -17,7 +17,7 @@ jobs:
       - name: Set Environment
         id: set_env
         run: |
-          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
       - name: Checkout specific commit
         uses: actions/checkout@v3
@@ -91,12 +91,17 @@ jobs:
         run: |
           cd website
           set -e
+
+          if [ -z "${DJANGO_SUPERUSER_PASSWORD}" ]; then
+            echo "ERROR: DJANGO_SUPERUSER_PASSWORD is not set or empty."
+            exit 1
+          fi
+
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.${ENVIRONMENT}" || echo "user already exists, skipping"
-          make resetadminpassword settings="app.settings.${ENVIRONMENT}"
+          make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make createpages settings="app.settings.${ENVIRONMENT}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
