@@ -32,26 +32,32 @@ aws-setup: check-env aws-init
 		cd ~/.ssh && cat wagtail_$(env)_bastion_key_id_rsa.pub | base64 > wagtail_$(env)_bastion_key_id_rsa.pub.base64; \
 	fi
 
-	@secret_payload=$$(cat <<EOF
-{
-	"DATABASE_PASSWORD": "$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)",
-	"BASTION_PUBLIC_KEY": "$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)",
-	"BASTION_PRIVATE_KEY": "$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)",
-	"DJANGO_SUPERUSER_PASSWORD": "REPLACE",
-	"DOMAIN_NAME": "$(DOMAIN_NAME)",
-	"SECRET_KEY": "$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)",
-	"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE",
-	"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE",
-	"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE"
-}
-EOF
-	); \
-	if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
+	@if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
 		echo "Secret exists. Updating secret..."; \
-		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string "$$secret_payload"; \
+		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string '{ \
+			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
+			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
+			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
+			"DJANGO_SUPERUSER_PASSWORD": "REPLACE", \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE" \
+		}'; \
 	else \
 		echo "Creating new secret..."; \
-		aws secretsmanager create-secret --name website_secrets --region us-east-1 --description "Secrets for website infrastructure" --secret-string "$$secret_payload"; \
+		aws secretsmanager create-secret --name website_secrets --region us-east-1 --description "Secrets for website infrastructure" --secret-string '{ \
+			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
+			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
+			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
+			"DJANGO_SUPERUSER_PASSWORD": "REPLACE", \
+			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" , \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE" \
+		}'; \
 	fi
 
 	@if aws iam get-user --user-name deployer > /dev/null 2>&1; then \
@@ -75,8 +81,7 @@ EOF
 
 init:
 	@echo "Initializing environment: $(env)"
-	@cd infra && ./local_init.sh && \
-	   . ./load-secrets.sh
+	@cd infra && ./local_init.sh
 
 aws-init: check-env
 	@echo "Initializing environment: $(env)"
