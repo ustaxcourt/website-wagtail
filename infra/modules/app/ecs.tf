@@ -122,10 +122,6 @@ resource "aws_ecs_service" "this" {
     rollback = true
   }
 
-  depends_on = [
-    module.alb.target_group_arns[0]
-  ]
-
   lifecycle {
     ignore_changes = [
       task_definition,
