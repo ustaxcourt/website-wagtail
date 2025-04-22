@@ -63,29 +63,39 @@ resource "aws_cloudfront_cache_policy" "static_content" {
   }
 }
 
-resource "aws_cloudfront_distribution" "main" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "Main distribution for ${var.domain_name}"
-  price_class         = "PriceClass_100"  # US, Canada, Europe
+# Create VPC origin for CloudFront
+resource "aws_cloudfront_vpc_origin" "app" {
+  vpc_origin_endpoint_config {
+    name                   = "${var.environment}-app-origin"
+    arn                    = aws_lb.app.arn
+    http_port              = 80
+    https_port             = 443
+    origin_protocol_policy = "https-only"
 
+    origin_ssl_protocols {
+      items    = ["TLSv1.2"]
+      quantity = 1
+    }
+  }
+}
+
+resource "aws_cloudfront_origin_access_identity" "app" {
+  comment = "Origin access identity for ${var.environment} app"
+}
+
+resource "aws_cloudfront_distribution" "app" {
+  enabled = true
+  is_ipv6_enabled = true
+  default_root_object = "index.html"
+  price_class = "PriceClass_100"
   aliases = [var.domain_name]
 
-  # ALB Origin
   origin {
-    domain_name = module.alb.lb_dns_name
-    origin_id   = "ALB-${module.alb.lb_id}"
+    domain_name = aws_lb.app.dns_name
+    origin_id   = "app-origin"
 
-    custom_origin_config {
-      http_port              = 80
-      https_port            = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols  = ["TLSv1.2"]
-    }
-
-    custom_header {
-      name  = "X-CloudFront-Origin"
-      value = var.cloudfront_origin_secret
+    vpc_origin_config {
+      vpc_origin_id = aws_cloudfront_vpc_origin.app.id
     }
   }
 
@@ -100,7 +110,7 @@ resource "aws_cloudfront_distribution" "main" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "ALB-${module.alb.lb_id}"
+    target_origin_id = "app-origin"
 
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
@@ -161,7 +171,7 @@ data "aws_iam_policy_document" "s3_policy" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.main.arn]
+      values   = [aws_cloudfront_distribution.app.arn]
     }
   }
 
@@ -177,7 +187,7 @@ data "aws_iam_policy_document" "s3_policy" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.main.arn]
+      values   = [aws_cloudfront_distribution.app.arn]
     }
   }
 }

@@ -7,7 +7,7 @@ terraform {
 	required_providers {
 		aws = {
 			source  = "hashicorp/aws"
-			version = "~> 4.56"
+			version = "~> 5.0"
 		}
 		docker = {
 			source  = "kreuzwerker/docker"

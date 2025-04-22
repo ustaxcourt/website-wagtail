@@ -90,7 +90,6 @@ module "alb" {
   ]
 
   depends_on = [
-    aws_vpc_endpoint.cloudfront,
     data.aws_ec2_managed_prefix_list.cloudfront,
     aws_acm_certificate.main,
     aws_acm_certificate_validation.main
