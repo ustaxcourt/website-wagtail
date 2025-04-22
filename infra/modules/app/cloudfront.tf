@@ -18,28 +18,9 @@ function handler(event) {
 EOT
 }
 
-# Create cache policy for dynamic content (no caching)
-resource "aws_cloudfront_cache_policy" "dynamic_content" {
-  name        = "${var.environment}-dynamic-content"
-  comment     = "Policy for dynamic content - no caching"
-  min_ttl     = 0
-  default_ttl = 0
-  max_ttl     = 0
-
-  parameters_in_cache_key_and_forwarded_to_origin {
-    cookies_config {
-      cookie_behavior = "all"
-    }
-    headers_config {
-      header_behavior = "whitelist"
-      headers {
-        items = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
-      }
-    }
-    query_strings_config {
-      query_string_behavior = "all"
-    }
-  }
+# Use AWS managed CachingDisabled policy for dynamic content
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
 }
 
 # Create origin request policy for dynamic content
@@ -116,7 +97,7 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "ALB-${module.alb.lb_id}"
 
-    cache_policy_id          = aws_cloudfront_cache_policy.dynamic_content.id
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
 
     viewer_protocol_policy = "redirect-to-https"  # Redirect HTTP to HTTPS
