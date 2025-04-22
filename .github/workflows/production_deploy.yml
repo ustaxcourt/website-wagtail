@@ -1,0 +1,126 @@
+name: PRODUCTION Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to deploy'
+        required: true
+        type: string
+
+jobs:
+  production-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Set Environment
+        id: set_env
+        run: |
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+
+      - name: Checkout specific commit
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.commit_sha }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.6
+          terraform_wrapper: false
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Build USWDS
+        run: |
+          cd website
+          make setup
+
+      - name: Apply Terraform
+        id: tf_outputs
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./setup-tf-buckets.sh
+
+          export TF_VAR_github_sha=${{ github.event.inputs.commit_sha }}
+
+          ./deploy.sh
+
+          bastion_ip=$(terraform output -raw bastion_public_ip)
+          echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
+
+          db_endpoint=$(terraform output -raw database_endpoint)
+          echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
+
+          bucket_name=$(terraform output -raw bucket_name)
+          echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}"
+          echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          set -e
+
+          if [ -z "${DJANGO_SUPERUSER_PASSWORD}" ]; then
+            echo "ERROR: DJANGO_SUPERUSER_PASSWORD is not set or empty."
+            exit 1
+          fi
+
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make migrate
+          make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
+          make createpages settings="app.settings.${ENVIRONMENT}"
+
+      - name: Manually Deploy ECS Task (Post-Migration)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          taskArn=$(aws ecs list-task-definitions \
+            --family-prefix "${ENVIRONMENT}-website-tasks" \
+            --sort DESC \
+            --region us-east-1 \
+            --query 'taskDefinitionArns[0]' \
+            --output text
+          )
+
+          aws ecs update-service \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --service "${ENVIRONMENT}-website-service" \
+            --task-definition "${taskArn}" \
+            --desired-count 1 \
+            --force-new-deployment \
+            --region us-east-1
