@@ -18,11 +18,74 @@ function handler(event) {
 EOT
 }
 
+# Create cache policy for dynamic content (no caching)
+resource "aws_cloudfront_cache_policy" "dynamic_content" {
+  name        = "${var.environment}-dynamic-content"
+  comment     = "Policy for dynamic content - no caching"
+  min_ttl     = 0
+  default_ttl = 0
+  max_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "all"
+    }
+    headers_config {
+      header_behavior = "whitelist"
+      headers {
+        items = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+      }
+    }
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+  }
+}
+
+# Create origin request policy for dynamic content
+resource "aws_cloudfront_origin_request_policy" "dynamic_content" {
+  name    = "${var.environment}-dynamic-content"
+  comment = "Policy for dynamic content"
+
+  cookies_config {
+    cookie_behavior = "all"
+  }
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+    }
+  }
+  query_strings_config {
+    query_string_behavior = "all"
+  }
+}
+
+# Create cache policy for static content
+resource "aws_cloudfront_cache_policy" "static_content" {
+  name        = "${var.environment}-static-content"
+  comment     = "Policy for static content with standard caching"
+  min_ttl     = 0
+  default_ttl = 3600
+  max_ttl     = 86400
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "none"
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "main" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Main distribution for ${var.domain_name}"
-  default_root_object = "index.html"
   price_class         = "PriceClass_100"  # US, Canada, Europe
 
   aliases = [var.domain_name]
@@ -53,18 +116,10 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "ALB-${module.alb.lb_id}"
 
-    forwarded_values {
-      query_string = true
-      headers      = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
-      cookies {
-        forward = "all"
-      }
-    }
+    cache_policy_id          = aws_cloudfront_cache_policy.dynamic_content.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
 
     viewer_protocol_policy = "redirect-to-https"  # Redirect HTTP to HTTPS
-    min_ttl                = 0
-    default_ttl           = 0  # Don't cache dynamic content by default
-    max_ttl              = 0
   }
 
   # Cache behavior for /files/* path
@@ -79,17 +134,9 @@ resource "aws_cloudfront_distribution" "main" {
       function_arn = aws_cloudfront_function.rewrite_uri.arn
     }
 
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id = aws_cloudfront_cache_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl           = 3600
-    max_ttl              = 86400
   }
 
   # Cache behavior for static files
