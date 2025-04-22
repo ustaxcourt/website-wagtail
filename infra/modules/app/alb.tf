@@ -10,12 +10,12 @@ module "alb" {
   vpc_id             = module.vpc.vpc_id
 
   security_group_rules = {
-    ingress_http = {
+    ingress_https = {
       type        = "ingress"
-      from_port   = 80
-      to_port     = 80
+      from_port   = 443
+      to_port     = 443
       protocol    = "TCP"
-      description = "HTTP traffic from CloudFront only"
+      description = "HTTPS traffic from CloudFront only"
       prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
     }
     egress_all = {
@@ -27,15 +27,16 @@ module "alb" {
     }
   }
 
-  http_tcp_listeners = [
+  http_tcp_listeners = []
+
+  https_listeners = [
     {
-      port               = 80
-      protocol          = "HTTP"
+      port               = 443
+      protocol          = "HTTPS"
+      certificate_arn   = aws_acm_certificate.main.arn
       target_group_index = 0
     }
   ]
-
-  https_listeners = []
 
   target_groups = [
     {
@@ -57,7 +58,9 @@ module "alb" {
 
   depends_on = [
     aws_vpc_endpoint.cloudfront,
-    data.aws_ec2_managed_prefix_list.cloudfront
+    data.aws_ec2_managed_prefix_list.cloudfront,
+    aws_acm_certificate.main,
+    aws_acm_certificate_validation.main
   ]
 }
 

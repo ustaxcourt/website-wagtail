@@ -1,4 +1,3 @@
-
 resource "aws_cloudfront_function" "rewrite_uri" {
   name    = "${var.environment}-rewrite-uri"
   runtime = "cloudfront-js-1.0"
@@ -79,9 +78,9 @@ resource "aws_cloudfront_distribution" "main" {
 
     custom_origin_config {
       http_port              = 80
-      https_port             = 443
+      https_port            = 443
       origin_protocol_policy = "https-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
+      origin_ssl_protocols  = ["TLSv1.2"]
     }
   }
 
