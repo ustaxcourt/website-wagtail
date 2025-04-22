@@ -228,8 +228,8 @@ all_dpt_cities = [
             },
             {
                 "name": "Shreveport",
-                "note": "",
-                "address": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
+                "note": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
+                "address": "",
             },
         ],
     },
@@ -238,8 +238,8 @@ all_dpt_cities = [
         "cities": [
             {
                 "name": "Portland",
-                "note": "",
-                "address": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
+                "note": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
+                "address": "",
             },
         ],
     },
@@ -248,8 +248,8 @@ all_dpt_cities = [
         "cities": [
             {
                 "name": "Baltimore",
-                "note": "",
-                "address": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
+                "note": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
+                "address": "",
             },
         ],
     },

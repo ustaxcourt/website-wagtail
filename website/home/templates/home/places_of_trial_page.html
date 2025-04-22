@@ -46,6 +46,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1rem;
+            align-items: start;
         }
 
         .state-card {
@@ -66,6 +67,7 @@
         }
 
         .city {
+            margin-top: 15px;
             margin-bottom: 0.5rem;
             font-weight: bold;
         }
@@ -74,6 +76,10 @@
             color: black;
             text-decoration: underline;
             font-weight: 400;
+        }
+
+        .note {
+            margin-bottom: 10px;
         }
 
         .feedback {
@@ -100,27 +106,33 @@
             </div>
         </div>
         <div class="alphabet">
-            {% for letter in "ACDFGHIKLMNOPSTUVW" %}<button>{{ letter }}</button>{% endfor %}
+            {% for letter in "ACDFGHIKLMNOPSTUVW" %}
+                <a href="#{{ letter }}" class="alphabet-link">
+                    <button>{{ letter }}</button>
+                </a>
+            {% endfor %}
         </div>
         <div class="grid">
             {% for state in page.places_of_trial %}
-                <div class="state-card">
-                    <div class="state-header">{{ state.value.state }}</div>
-                    {% for city in state.value.cities %}
-                        <div class="city">{{ city.name }}</div>
-                        {% if city.map_link %}
-                            <div class="address">
-                                <a href="{{ city.map_link }}" target="_blank">{{ city.map_link }}</a>
-                            </div>
-                        {% elif city.address %}
-                            <div class="address">
-                                <a href="https://www.google.com/maps/search/{{ city.address|urlencode }}"
-                                   target="_blank">{{ city.address }}</a>
-                            </div>
-                        {% endif %}
-                        {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
-                    {% endfor %}
-                </div>
+                {% with state_letter=state.value.state|slice:":1" %}
+                    <div class="state-card" id="{{ state_letter }}">
+                        <div class="state-header">{{ state.value.state }}</div>
+                        {% for city in state.value.cities %}
+                            <div class="city">{{ city.name }}</div>
+                            {% if city.map_link %}
+                                <div class="address">
+                                    <a href="{{ city.map_link }}" target="_blank">{{ city.map_link }}</a>
+                                </div>
+                            {% elif city.address %}
+                                <div class="address">
+                                    <a href="https://www.google.com/maps/search/{{ city.address|urlencode }}"
+                                       target="_blank">{{ city.address }}</a>
+                                </div>
+                            {% endif %}
+                            {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
+                        {% endfor %}
+                    </div>
+                {% endwith %}
             {% endfor %}
         </div>
     </div>
