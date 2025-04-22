@@ -1,37 +1,28 @@
 name: PRODUCTION Deploy
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'website/**'
-      - 'infra/**'
-    tags:
-      - 'production'
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to deploy'
+        required: true
+        type: string
 
 jobs:
   deploy:
-    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
     steps:
       - name: Set Environment
         id: set_env
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
-            echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-          else
-            echo "Debug: No matching condition found"
-            exit 1
-          fi
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
 
-      - name: Checkout code
+      - name: Checkout specific commit
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
@@ -45,18 +36,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          # Examples: 12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node
           node-version: '20.x'
 
       - name: Build USWDS
         run: |
           cd website
           make setup
-
-      - name: Generate Release Tag
-        if: ${{ github.ref == 'refs/heads/main' }}
-        id: current_date
-        run: echo "DATE=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_OUTPUT
 
       - name: Apply Terraform
         id: tf_outputs
@@ -67,8 +52,7 @@ jobs:
           cd infra
           ./setup-tf-buckets.sh
 
-          # Pass GitHub SHA to Terraform
-          export TF_VAR_github_sha=$GITHUB_SHA
+          export TF_VAR_github_sha=${{ github.event.inputs.commit_sha }}
 
           ./deploy.sh
 
@@ -90,9 +74,9 @@ jobs:
           . ./load-secrets.sh
           cd ..
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
-          echo "::add-mask::${DATABASE_PASSWORD}" # prevent the password from logging out
+          echo "::add-mask::${DATABASE_PASSWORD}"
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
-          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}" # prevent the password from logging out
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
@@ -106,31 +90,14 @@ jobs:
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           cd website
-          # setup the tunnel so that we can run django commands into the env database
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
-          # run migration and other commands
           make migrate
-          make superuser settings="app.settings.${ENVIRONMENT}"|| echo "user already exists, skipping"
+          make superuser settings="app.settings.${ENVIRONMENT}" || echo "user already exists, skipping"
           make resetadminpassword settings="app.settings.${ENVIRONMENT}"
           make createpages settings="app.settings.${ENVIRONMENT}"
-          make users group="Editors" settings="app.settings.${ENVIRONMENT}"
-          make users group="Moderators" settings="app.settings.${ENVIRONMENT}"
-
-      - name: Create GitHub Release (optional)
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ steps.current_date.outputs.DATE }}
-          release_name: ${{ steps.current_date.outputs.DATE }}
-          draft: false
-          prerelease: false
-          body: ${{ github.event.pull_request.title || 'No PR title available.' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
