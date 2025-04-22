@@ -1,3 +1,4 @@
+
 resource "aws_cloudfront_function" "rewrite_uri" {
   name    = "${var.environment}-rewrite-uri"
   runtime = "cloudfront-js-1.0"
@@ -79,7 +80,7 @@ resource "aws_cloudfront_distribution" "main" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "https-only"  # Only use HTTPS to origin
+      origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
@@ -100,7 +101,7 @@ resource "aws_cloudfront_distribution" "main" {
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
 
-    viewer_protocol_policy = "redirect-to-https"  # Redirect HTTP to HTTPS
+    viewer_protocol_policy = "redirect-to-https"
   }
 
   # Cache behavior for /files/* path
@@ -119,26 +120,6 @@ resource "aws_cloudfront_distribution" "main" {
 
     viewer_protocol_policy = "redirect-to-https"
   }
-
-  # Cache behavior for static files
-  # ordered_cache_behavior {
-  #   path_pattern     = "/static/*"
-  #   allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-  #   cached_methods   = ["GET", "HEAD"]
-  #   target_origin_id = "ALB-${module.alb.lb_id}"
-
-  #   forwarded_values {
-  #     query_string = false
-  #     cookies {
-  #       forward = "none"
-  #     }
-  #   }
-
-  #   viewer_protocol_policy = "redirect-to-https"
-  #   min_ttl                = 0
-  #   default_ttl           = 86400  # Cache static files for 24 hours
-  #   max_ttl              = 31536000  # Maximum cache time of 1 year
-  # }
 
   restrictions {
     geo_restriction {
