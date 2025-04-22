@@ -10,6 +10,7 @@ on:
 
 jobs:
   production-deploy:
+    environment: production
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
