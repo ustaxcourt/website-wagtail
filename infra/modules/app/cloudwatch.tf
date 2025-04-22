@@ -24,25 +24,6 @@ EOT
         }
       },
       {
-        type   = "log"
-        x      = 0
-        y      = 6
-        width  = 24
-        height = 12
-        properties = {
-          region      = "us-east-1"
-          title       = "Detailed Log Messages"
-          view        = "table"
-          stacked     = false
-          query       = <<EOT
-SOURCE '${aws_cloudwatch_log_group.ecs_log_group.name}' | fields @timestamp, levelname, name, message, exc_info
-| filter levelname = '$${logLevel}'
-| sort @timestamp desc
-| limit 1000
-EOT
-        }
-      },
-      {
         type   = "metric"
         x      = 0
         y      = 18
