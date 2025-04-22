@@ -1,8 +1,6 @@
 env := $(shell ./infra/get_env.sh)
 
-ifeq ($(env),prod)
-	DOMAIN_NAME := ustaxcourt.gov
-else ifeq ($(env),sandbox)
+ifeq ($(env),sandbox)
 	DOMAIN_NAME := $(USER)-sandbox-web.ustaxcourt.gov
 else ifeq ($(env),local)
 	DOMAIN_NAME := localhost:8000
@@ -77,7 +75,8 @@ aws-setup: check-env aws-init
 
 init:
 	@echo "Initializing environment: $(env)"
-	@cd infra && ./local_init.sh
+	@cd infra && ./local_init.sh && \
+	   . ./load-secrets.sh
 
 aws-init: check-env
 	@echo "Initializing environment: $(env)"
