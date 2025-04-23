@@ -26,3 +26,8 @@ SESSION_COOKIE_SECURE = True
 DEBUG = True
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "sandbox"
+
+LOGGING["root"]["handlers"] = ["console"]
+
+MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
+
