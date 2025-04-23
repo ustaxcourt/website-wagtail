@@ -15,6 +15,22 @@ jobs:
     timeout-minutes: 45
 
     steps:
+      - name: Check deployer permission
+        env:
+          ACTOR: ${{ github.actor }}
+          APPROVED: ${{ vars.APPROVED_DEPLOYERS }}
+        run: |
+          echo "Triggered by: $ACTOR"
+          IFS=',' read -ra USERS <<< "$APPROVED"
+          for u in "${USERS[@]}"; do
+            if [[ "$ACTOR" == "$u" ]]; then
+              echo "✅ $ACTOR is authorized"
+              exit 0
+            fi
+          done
+          echo "❌ $ACTOR is not an authorized deployer"
+          exit 1
+
       - name: Set Environment
         id: set_env
         run: |
