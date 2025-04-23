@@ -1,4 +1,4 @@
-# 13. Cloudfront
+# 13. Cloudfront for Caching
 
 Date: 2025-04-22
 
