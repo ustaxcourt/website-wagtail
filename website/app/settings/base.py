@@ -247,8 +247,7 @@ if aws_bucket_name:
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # Wagtail settings
-
-WAGTAIL_SITE_NAME = "app"
+WAGTAIL_SITE_NAME = "USTC Website"
 
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
@@ -257,10 +256,6 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
-
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://example.com"
 
 # Allowed file extensions for documents in the document library.
 # This can be omitted to allow all files, but note that this may present a security risk
@@ -289,8 +284,18 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
-print(f"Finished base: BASE_URL: {BASE_URL}")
-
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("DOMAIN_NAME")]
+SECRET_KEY = os.getenv("SECRET_KEY")
+CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("DOMAIN_NAME")}']
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+print(f"Finished base: BASE_URL: {BASE_URL}")
