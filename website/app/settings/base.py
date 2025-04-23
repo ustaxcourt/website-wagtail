@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import dj_database_url
+import json
+import urllib.request
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -22,7 +24,11 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-# Application definition
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.azuread_tenant.AzureADTenantOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 INSTALLED_APPS = [
     "home",
@@ -51,6 +57,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "fontawesomefree",
+    "social_django",
 ]
 
 MIDDLEWARE = [
@@ -71,6 +78,8 @@ ROOT_URLCONF = "app.urls"
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
+LOGIN_REDIRECT_URL = "/admin/"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -86,10 +95,24 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
 ]
+
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(
+    "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY"
+)
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET = os.getenv(
+    "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET"
+)
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID = os.getenv(
+    "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID"
+)
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ["username", "first_name", "last_name", "email"]
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 WSGI_APPLICATION = "app.wsgi.application"
 
@@ -237,8 +260,7 @@ if aws_bucket_name:
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # Wagtail settings
-
-WAGTAIL_SITE_NAME = "app"
+WAGTAIL_SITE_NAME = "USTC Website"
 
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
@@ -247,10 +269,6 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
-
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://example.com"
 
 # Allowed file extensions for documents in the document library.
 # This can be omitted to allow all files, but note that this may present a security risk
@@ -279,8 +297,41 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
-print(f"Finished base: BASE_URL: {BASE_URL}")
-
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("DOMAIN_NAME")]
+
+
+def _task_ips():
+    """Return the task’s IPv4 address(es) from the ECS metadata API."""
+    meta = os.getenv("ECS_CONTAINER_METADATA_URI_V4") or os.getenv(
+        "ECS_CONTAINER_METADATA_URI"
+    )
+    if not meta:
+        return []
+
+    try:
+        with urllib.request.urlopen(f"{meta}/task", timeout=0.2) as r:
+            data = json.load(r)
+            # First container in the task is usually “ours”
+            nets = data["Containers"][0]["Networks"]
+            return [ip for net in nets for ip in net["IPv4Addresses"]]
+    except Exception:
+        return []
+
+
+ALLOWED_HOSTS += _task_ips()
+
+USE_X_FORWARDED_HOST = True
+SECRET_KEY = os.getenv("SECRET_KEY")
+CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("DOMAIN_NAME")}']
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+print(f"Finished base: BASE_URL: {BASE_URL}")

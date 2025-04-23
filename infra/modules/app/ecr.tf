@@ -27,6 +27,7 @@ resource "docker_image" "this" {
     context = "../website"
     build_args = {
       GITHUB_SHA = var.github_sha
+      ENVIRONMENT = var.environment
     }
   }
 }

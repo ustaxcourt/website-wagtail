@@ -102,7 +102,7 @@
     <body class="{% block body_class %}  {% endblock %}">
         {% include 'banner.html' %}
         {% get_enviroment as environment %}
-        {% if environment != "production" %}
+        {% if environment != "production-yet" %}
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
