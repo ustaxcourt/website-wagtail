@@ -34,7 +34,7 @@ all_dpt_cities = [
             {
                 "name": "Phoenix",
                 "note": "",
-                "address": "Sandra Day O'Connor U.S. Courthouse <br> 401 West Washington Street (85003)",
+                "address": "Sandra Day O'Connor U.S. Courthouse 401 West Washington Street (85003)",
             },
         ],
     },

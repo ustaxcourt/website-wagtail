@@ -106,11 +106,7 @@
                         <div class="state-header">{{ state.value.state }}</div>
                         {% for city in state.value.cities %}
                             <div class="city">{{ city.name }}</div>
-                            {% if city.map_link %}
-                                <div class="address">
-                                    <a href="{{ city.map_link }}" target="_blank">{{ city.map_link }}</a>
-                                </div>
-                            {% elif city.address %}
+                            {% if city.address %}
                                 <div class="address">
                                     <a href="https://www.google.com/maps/search/{{ city.address|urlencode }}"
                                        target="_blank">{{ city.address }}</a>
