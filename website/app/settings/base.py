@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import socket
 import dj_database_url
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -292,12 +291,6 @@ GITHUB_SHA = os.getenv("GITHUB_SHA")
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("DOMAIN_NAME")]
-
-try:
-    ALLOWED_HOSTS.append(socket.gethostbyname(socket.gethostname()))
-except socket.gaierror:
-    # This is expected to fail in some environments, e.g. GitHub Actions
-    pass
 
 USE_X_FORWARDED_HOST = True
 SECRET_KEY = os.getenv("SECRET_KEY")
