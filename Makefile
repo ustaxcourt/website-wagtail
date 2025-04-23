@@ -1,8 +1,6 @@
 env := $(shell ./infra/get_env.sh)
 
-ifeq ($(env),prod)
-	DOMAIN_NAME := ustaxcourt.gov
-else ifeq ($(env),sandbox)
+ifeq ($(env),sandbox)
 	DOMAIN_NAME := $(USER)-sandbox-web.ustaxcourt.gov
 else ifeq ($(env),local)
 	DOMAIN_NAME := localhost:8000
@@ -40,9 +38,12 @@ aws-setup: check-env aws-init
 			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"DJANGO_SUPERUSER_PASSWORD": "ustcAdminPW!", \
+			"DJANGO_SUPERUSER_PASSWORD": "REPLACE", \
 			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE" \
 		}'; \
 	else \
 		echo "Creating new secret..."; \
@@ -50,9 +51,12 @@ aws-setup: check-env aws-init
 			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"DJANGO_SUPERUSER_PASSWORD": "ustcAdminPW!", \
+			"DJANGO_SUPERUSER_PASSWORD": "REPLACE", \
 			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" \
+			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" , \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE" \
 		}'; \
 	fi
 
