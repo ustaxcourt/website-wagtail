@@ -434,7 +434,7 @@ all_dpt_cities = [
         ],
     },
     {
-        "state": "Oregno",
+        "state": "Oregon",
         "cities": [
             {
                 "name": "Portland",
