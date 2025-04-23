@@ -34,7 +34,7 @@ all_dpt_cities = [
             {
                 "name": "Phoenix",
                 "note": "",
-                "address": "Sandra Day O'Connor U.S. Courthouse 401 West Washington Street (85003)",
+                "address": "Sandra Day O'Connor U.S. Courthouse <br> 401 West Washington Street (85003)",
             },
         ],
     },
@@ -42,7 +42,7 @@ all_dpt_cities = [
         "state": "Arkansas",
         "cities": [
             {
-                "name": "LITTLE ROCK",
+                "name": "Little Rock",
                 "note": "No permanent courtroom. See notice of trial for address.",
                 "address": "",
             },
@@ -189,7 +189,7 @@ all_dpt_cities = [
         ],
     },
     {
-        "state": "Lowa",
+        "state": "Iowa",
         "cities": [
             {
                 "name": "Des Moines",
@@ -302,7 +302,7 @@ all_dpt_cities = [
                 "address": "Charles E. Whittaker U.S. Courthouse 400 E 9th St, Kansas City, MO 64106 Room 1010",
             },
             {
-                "name": "Saint Louis",
+                "name": "St Louis",
                 "note": "",
                 "address": "Thomas F. Eagleton United States Courthouse 111 S 10th St, St. Louis, MO 63102 Room 9.170",
             },
@@ -434,7 +434,7 @@ all_dpt_cities = [
         ],
     },
     {
-        "state": "Oregano",
+        "state": "Oregno",
         "cities": [
             {
                 "name": "Portland",
@@ -464,7 +464,7 @@ all_dpt_cities = [
             {
                 "name": "Columbia",
                 "note": "",
-                "address": "Hiram H. Ward Federal Building 229237 N Main St, Winston-Salem, NC 27101 Room 847",
+                "address": "Strom Thurmond Federal Building 1835 Assembly St, Columbia, SC 29201 Room 250",
             },
         ],
     },
@@ -504,11 +504,11 @@ all_dpt_cities = [
             {"name": "Dallas", "note": "", "address": ""},
             {
                 "name": "El Paso",
-                "note": "No permanent courtroom. See notice of trial for address.",
-                "address": "",
+                "note": "",
+                "address": "Earle Cabell Fed. Bldg. & U.S. Cthse. cf1100 Commerce Street, 75242 Room 726",
             },
             {
-                "name": "Huston",
+                "name": "Houston",
                 "note": "",
                 "address": "Casey U.S. Courthouse 515 Rusk Street, 77002 Room 7006",
             },
