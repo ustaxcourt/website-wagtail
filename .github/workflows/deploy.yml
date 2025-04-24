@@ -164,7 +164,7 @@ jobs:
             --region us-east-1
 
       - name: Perform Production Checks in staging
-        if: ${{ env.ENVIRONMENT == 'sandbox' }}
+        if: ${{ env.ENVIRONMENT == 'dev' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
