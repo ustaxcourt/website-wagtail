@@ -1,9 +1,6 @@
-import sys
 import logging
 import logging.config
 import traceback
-from pythonjsonlogger import jsonlogger
-from django.conf import settings
 
 
 class JSONExceptionMiddleware:

@@ -14,7 +14,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import sys
 import dj_database_url
-import logging
 from pythonjsonlogger import jsonlogger
 
 

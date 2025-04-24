@@ -1,4 +1,5 @@
 from .base import *  # noqa: F403
+from .base import LOGGING, MIDDLEWARE
 import os
 
 # SECURITY WARNING: define the correct hosts in production!
