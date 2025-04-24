@@ -24,8 +24,6 @@ def all_legacy_documents_redirect(request, filename):
         region_name="us-east-1",
     )
 
-    # TODO: retrieve bucket name
-    bucket_name = "miest-moore-sandbox-ustc-website-assets"
 
     # Construct the key
     prefix = "documents/"
@@ -33,7 +31,7 @@ def all_legacy_documents_redirect(request, filename):
 
     try:
         # Check if object exists
-        s3.head_object(Bucket=bucket_name, Key=possible_key)
+        s3.head_object(Bucket=settings.aws_bucket_name, Key=possible_key)
 
         # If it exists, redirect to S3 URL
         s3_url = f"{settings.MEDIA_URL}{possible_key}"
@@ -42,7 +40,6 @@ def all_legacy_documents_redirect(request, filename):
         # Handle object not found error specifically
         if e.response["Error"]["Code"] == "404":
             return render(request, "404.html", status=404)
-            # return HttpResponseNotFound(f"Document '{filename}' not found.")
         else:
             # Unexpected error - raise for visibility
             raise
@@ -53,11 +50,11 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     # Special pattern for resources/ropp/tc-reports
-    re_path(
-        r"^resources/ropp/tc-reports/(?P<path>.*)$",
-        tc_report_redirect,
-        name="tc_report_redirect",
-    ),
+    # re_path(
+    #     r"^resources/ropp/tc-reports/(?P<path>.*)$",
+    #     tc_report_redirect,
+    #     name="tc_report_redirect",
+    # ),
     # Special pattern for other documents
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
