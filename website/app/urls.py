@@ -31,7 +31,7 @@ def all_legacy_documents_redirect(request, filename):
 
     try:
         # Check if object exists
-        s3.head_object(Bucket=settings.aws_bucket_name, Key=possible_key)
+        s3.head_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=possible_key)
 
         # If it exists, redirect to S3 URL
         s3_url = f"{settings.MEDIA_URL}{possible_key}"
