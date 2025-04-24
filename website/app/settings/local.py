@@ -1,4 +1,5 @@
 from .base import *  # noqa: F403
+from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 
@@ -21,3 +22,9 @@ if not os.getenv("GITHUB_SHA"):
         subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         or "development"
     )
+
+# Use the simple logger when running local
+LOGGING["root"]["handlers"] = ["simple"]
+LOGGING["loggers"]["django"]["handlers"] = ["simple"]
+LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
+LOGGING["loggers"]["website"]["handlers"] = ["simple"]

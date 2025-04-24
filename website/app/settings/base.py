@@ -302,7 +302,7 @@ GITHUB_SHA = os.getenv("GITHUB_SHA")
 LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s:%(lineno)d %(message)s"
 
 # Console handler that writes to STDOUT
-console_handler = {
+aws_handler = {
     "class": "logging.StreamHandler",
     "formatter": "json",
     "level": "DEBUG",
@@ -327,33 +327,33 @@ LOGGING = {
         },
     },
     "handlers": {
-        "console": console_handler,
+        "aws": aws_handler,
         "simple": simple_handler
     },
     "root": {
-        "handlers": ["simple"],
+        "handlers": ["aws"],
         "level": "WARNING",
     },
 
     "loggers": {
         "": {
             "level": "WARNING",
-            "handlers": ["console"]
+            "handlers": ["aws"]
         },
         "django": {
             "level": "WARNING",
             "propagate": False,
-            "handlers": ["console"]
+            "handlers": ["aws"]
         },
         "wagtail": {
             "level": "WARNING",
             "propagate": False,
-            "handlers": ["console"]
+            "handlers": ["aws"]
         },
         "website": {
             "propagate": False,
             "level": "DEBUG",
-            "handlers": ["console"]
+            "handlers": ["aws"]
         },
     },
 }
