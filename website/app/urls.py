@@ -27,7 +27,7 @@ def all_legacy_documents_redirect(request, filename):
 
     # Search for the filename in the documents/ prefix
     prefix = "documents/"
-    possible_key = f"{prefix}{filename}.pdf"
+    possible_key = f"{prefix}{filename}"
 
     try:
         # Check if object exists
