@@ -42,6 +42,25 @@ resource "aws_cloudfront_origin_request_policy" "dynamic_content" {
   }
 }
 
+# Create origin request policy for static content
+resource "aws_cloudfront_origin_request_policy" "static_content" {
+  name    = "${var.environment}-static-content"
+  comment = "Policy for static content with necessary headers"
+
+  cookies_config {
+    cookie_behavior = "none"
+  }
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = ["Host", "Origin"]
+    }
+  }
+  query_strings_config {
+    query_string_behavior = "none"
+  }
+}
+
 # Create cache policy for static content
 resource "aws_cloudfront_cache_policy" "static_content" {
   name        = "${var.environment}-static-content"
@@ -172,6 +191,7 @@ resource "aws_cloudfront_distribution" "app" {
     target_origin_id = "app-origin"
 
     cache_policy_id = aws_cloudfront_cache_policy.static_content.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
   }
