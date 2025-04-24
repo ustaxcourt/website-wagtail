@@ -1,5 +1,7 @@
 import boto3
+from botocore.exceptions import ClientError
 from django.conf import settings
+from django.http import HttpResponseNotFound
 from django.urls import include, path
 from django.contrib import admin
 from wagtail.contrib.sitemaps.views import sitemap
@@ -14,32 +16,35 @@ def tc_report_redirect(request, path):
     s3_url = f"{settings.MEDIA_URL}documents/{path}"
     return redirect(s3_url)
 
+
 def all_legacy_documents_redirect(request, filename):
-    s3_url = f"{settings.MEDIA_URL}documents/{filename}"
-    return redirect(s3_url)
-#     # Initialize S3 client
-#     s3 = boto3.client(
-#         's3',
-#         region_name="us-east-1",
-#     )
+    # Initialize S3 client
+    s3 = boto3.client(
+        "s3",
+        region_name="us-east-1",
+    )
 
-# #TODO: get this name into secrets, or locate it
-#     bucket_name = "miest-moore-sandbox-ustc-website-assets"
+    # TODO: retrieve bucket name
+    bucket_name = "miest-moore-sandbox-ustc-website-assets"
 
-#     # Search for the filename in the documents/ prefix
-#     prefix = "documents/"
-#     possible_key = f"{prefix}{filename}"
+    # Construct the key
+    prefix = "documents/"
+    possible_key = f"{prefix}{filename}"
 
-#     try:
-#         # Check if object exists
-#         s3.head_object(Bucket=bucket_name, Key=possible_key)
-#         s3_url = f"{settings.MEDIA_URL}{possible_key}"
-#         return redirect(s3_url)
-#     except s3.exceptions.ClientError as e:
-#         if e.response['Error']['Code'] == "404":
-#             return HttpResponseNotFound(f"Document '{filename}' not found.")
-#         else:
-#             raise  # For unexpected errors
+    try:
+        # Check if object exists
+        s3.head_object(Bucket=bucket_name, Key=possible_key)
+
+        # If it exists, redirect to S3 URL
+        s3_url = f"{settings.MEDIA_URL}{possible_key}"
+        return redirect(s3_url)
+    except ClientError as e:
+        # Handle object not found error specifically
+        if e.response["Error"]["Code"] == "404":
+            return HttpResponseNotFound(f"Document '{filename}' not found.")
+        else:
+            # Unexpected error - raise for visibility
+            raise
 
 
 urlpatterns = [
@@ -52,7 +57,7 @@ urlpatterns = [
         tc_report_redirect,
         name="tc_report_redirect",
     ),
-    # Special pattern for other documents - check if we have file by whatever name and redirect to it, this story is not uploading files, 
+    # Special pattern for other documents
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
