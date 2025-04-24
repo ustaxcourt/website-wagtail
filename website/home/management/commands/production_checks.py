@@ -72,24 +72,33 @@ class Command(BaseCommand):
         else:
             self.stdout.write(
                 self.style.ERROR(
-                    f"{super_users_count} superusers found. Exactly one expected."
+                    f"ERROR: {super_users_count} superusers found. Exactly one expected."
                 )
             )
             RAISE_ERROR = True
 
         # Check if no other user have password login
+        count_of_users_with_password = 0
         for u in User.objects.filter(is_superuser=False):
             if u.has_usable_password():
-                RAISE_ERROR = True
+                count_of_users_with_password += 1
                 self.stdout.write(
                     self.style.ERROR(
-                        f"User {u.username} has a password login configured."
+                        f"ERROR: User {u.username} has a password login configured."
                     )
                 )
         else:
-            self.stdout.write(
-                self.style.SUCCESS("No other generic user/password login.")
-            )
+            if count_of_users_with_password == 0:
+                self.stdout.write(
+                    self.style.SUCCESS("No other user has password login configured.")
+                )
+            else:
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"ERROR: {count_of_users_with_password} users have password login configured. Expected: 0."
+                    )
+                )
+                RAISE_ERROR = True
 
         # Check if raising errors is enabled
         if RAISE_ERROR:
