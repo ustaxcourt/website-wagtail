@@ -165,9 +165,18 @@ jobs:
 
       - name: Perform Production Checks in staging
         if: ${{ env.ENVIRONMENT == 'sandbox' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           cd website
+          # setup the tunnel so that we can run django commands into the env database
           set -e
-
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make production-checks
         continue-on-error: true
