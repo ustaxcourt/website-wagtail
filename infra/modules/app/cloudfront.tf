@@ -83,11 +83,132 @@ resource "aws_cloudfront_origin_access_identity" "app" {
   comment = "Origin access identity for ${var.environment} app"
 }
 
+# Create S3 bucket for CloudFront logs
+resource "aws_s3_bucket" "cloudfront_logs" {
+  bucket = "${var.environment}-ustc-website-cloudfront-logs"
+}
+
+resource "aws_s3_bucket_acl" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+
+  rule {
+    id     = "expire_logs"
+    status = "Enabled"
+
+    expiration {
+      days = 90
+    }
+  }
+}
+
+# Create CloudWatch log group for real-time logs
+resource "aws_cloudwatch_log_group" "cloudfront" {
+  name              = "/aws/cloudfront/${var.environment}-ustc-website"
+  retention_in_days = 90
+}
+
+# Create IAM role for CloudFront to write logs
+resource "aws_iam_role" "cloudfront_logging" {
+  name = "${var.environment}-cloudfront-logging-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cloudfront_logging" {
+  name = "${var.environment}-cloudfront-logging-policy"
+  role = aws_iam_role.cloudfront_logging.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "${aws_cloudwatch_log_group.cloudfront.arn}:*"
+      }
+    ]
+  })
+}
+
+# Create real-time log configuration
+resource "aws_cloudfront_realtime_log_config" "main" {
+  name   = "${var.environment}-ustc-website-realtime-logs"
+  sampling_rate = 100
+  fields = [
+    "timestamp",
+    "c-ip",
+    "time-to-first-byte",
+    "sc-status",
+    "sc-bytes",
+    "cs-method",
+    "cs-host",
+    "cs-uri-stem",
+    "cs-bytes",
+    "x-edge-location",
+    "x-edge-request-id",
+    "x-host-header",
+    "time-taken",
+    "cs-protocol",
+    "cs-user-agent",
+    "cs-referer",
+    "cs-cookie"
+  ]
+
+  endpoint {
+    stream_type = "Kinesis"
+
+    kinesis_stream_config {
+      role_arn   = aws_iam_role.cloudfront_logging.arn
+      stream_arn = aws_kinesis_stream.cloudfront_logs.arn
+    }
+  }
+}
+
+# Create Kinesis stream for real-time logs
+resource "aws_kinesis_stream" "cloudfront_logs" {
+  name             = "${var.environment}-ustc-website-cloudfront-logs"
+  shard_count      = 1
+  retention_period = 24
+}
+
 resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
   aliases = [var.domain_name]
+
+  # Enable standard logging
+  logging_config {
+    include_cookies = false
+    bucket          = aws_s3_bucket.cloudfront_logs.bucket_domain_name
+    prefix          = "logs/"
+  }
 
   origin {
     domain_name = module.alb.lb_dns_name
