@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
 
 
 class Command(BaseCommand):
@@ -40,6 +41,40 @@ class Command(BaseCommand):
         else:
             self.stdout.write(
                 self.style.SUCCESS("SESSION_COOKIE_SECURE is set to True.")
+            )
+
+        # Check if the superuser exists
+        User = get_user_model()
+        super_users = User.objects.filter(is_superuser=True)
+        super_users_count = super_users.count()
+        if super_users_count == 1:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Exactly one superuser found: {super_users[0].username}"
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.ERROR(
+                    f"{super_users_count} superusers found. Exactly one expected."
+                )
+            )
+            RAISE_ERROR = True
+
+        # Check if no other user have password login
+        for u in User.objects.filter(is_superuser=False):
+            if u.has_usable_password():
+                RAISE_ERROR = True
+                self.stdout.write(
+                    self.style.ERROR(f"User {u.username} has a usable password.")
+                )
+            if not RAISE_ERROR:
+                self.stdout.write(
+                    self.style.SUCCESS("No other user has a usable password.")
+                )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS("No other user has a usable password.")
             )
 
         # Check if raising errors is enabled
