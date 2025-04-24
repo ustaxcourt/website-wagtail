@@ -199,7 +199,7 @@ resource "aws_cloudfront_distribution" "app" {
       function_arn = aws_cloudfront_function.rewrite_uri.arn
     }
 
-    cache_policy_id = aws_cloudfront_cache_policy.static_content.id
+    cache_policy_id = aws_cloudfront_cache_policy.static_30min.id
 
     viewer_protocol_policy = "redirect-to-https"
   }
