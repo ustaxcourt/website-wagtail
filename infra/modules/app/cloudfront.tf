@@ -139,7 +139,7 @@ resource "aws_cloudfront_distribution" "app" {
     path_pattern     = "/static/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.private_bucket.id}"
+    target_origin_id = "app-origin"
 
     cache_policy_id = aws_cloudfront_cache_policy.static_content.id
 
