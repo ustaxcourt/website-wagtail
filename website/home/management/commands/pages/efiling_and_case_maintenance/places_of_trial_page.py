@@ -501,16 +501,20 @@ all_dpt_cities = [
     {
         "state": "Texas",
         "cities": [
-            {"name": "Dallas", "note": "", "address": ""},
+            {
+                "name": "Dallas",
+                "note": "",
+                "address": "Earle Cabell Fed. Bldg. & U.S. Cthse. 1100 Commerce Street, 75242 Room 726",
+            },
             {
                 "name": "El Paso",
-                "note": "",
-                "address": "Earle Cabell Fed. Bldg. & U.S. Cthse. cf1100 Commerce Street, 75242 Room 726",
+                "note": "No permanent courtroom. See notice of trial for address.",
+                "address": "",
             },
             {
                 "name": "Houston",
                 "note": "",
-                "address": "Casey U.S. Courthouse 515 Rusk Street, 77002 Room 7006",
+                "address": "Casey U.S. Courthouse 515 Rusk Street, 77002 Room 7006",
             },
             {
                 "name": "Lubbock",
@@ -520,7 +524,7 @@ all_dpt_cities = [
             {
                 "name": "San Antonio",
                 "note": "",
-                "address": "Hipolito F. Garcia Federal Building & Courthouse 615 E. Houston Street, 78206 Room 371",
+                "address": "Hipolito F. Garcia Federal Building & Courthouse 615 E. Houston Street, 78206 Room 371",
             },
         ],
     },
@@ -590,7 +594,7 @@ all_dpt_cities = [
             {
                 "name": "Milwaukee",
                 "note": "",
-                "address": "Federal Building & U.S. Courthouse 517 E. Wisconsin Avenue (53202) Room 498",
+                "address": "Federal Building & U.S. Courthouse 517 E. Wisconsin Avenue 53202 Room 498",
             },
         ],
     },
