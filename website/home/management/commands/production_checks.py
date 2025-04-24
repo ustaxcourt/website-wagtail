@@ -66,15 +66,17 @@ class Command(BaseCommand):
             if u.has_usable_password():
                 RAISE_ERROR = True
                 self.stdout.write(
-                    self.style.ERROR(f"User {u.username} has a usable password.")
+                    self.style.ERROR(
+                        f"User {u.username} has a password login configured."
+                    )
                 )
             if not RAISE_ERROR:
                 self.stdout.write(
-                    self.style.SUCCESS("No other user has a usable password.")
+                    self.style.SUCCESS("No other generic password/user login.")
                 )
         else:
             self.stdout.write(
-                self.style.SUCCESS("No other user has a usable password.")
+                self.style.SUCCESS("No other generic password/user login.")
             )
 
         # Check if raising errors is enabled
