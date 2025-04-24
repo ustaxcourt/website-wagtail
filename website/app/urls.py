@@ -1,7 +1,6 @@
 import boto3
 from botocore.exceptions import ClientError
 from django.conf import settings
-from django.http import HttpResponseNotFound
 from django.urls import include, path
 from django.contrib import admin
 from wagtail.contrib.sitemaps.views import sitemap
@@ -18,7 +17,6 @@ def all_legacy_documents_redirect(request, filename):
         "s3",
         region_name="us-east-1",
     )
-
 
     # Construct the key
     prefix = "documents/"
