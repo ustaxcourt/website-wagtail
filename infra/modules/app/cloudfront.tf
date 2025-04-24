@@ -66,13 +66,13 @@ resource "aws_cloudfront_origin_request_policy" "static_content" {
   }
 }
 
-# Create cache policy for static content
-resource "aws_cloudfront_cache_policy" "static_content" {
-  name        = "${var.environment}-static-content"
-  comment     = "Policy for static content with standard caching"
-  min_ttl     = 0
-  default_ttl = 3600
-  max_ttl     = 86400
+# Create cache policy for static content with 30 minute minimum TTL
+resource "aws_cloudfront_cache_policy" "static_30min" {
+  name        = "${var.environment}-static-30min"
+  comment     = "Policy for static content with 30 minute minimum cache"
+  min_ttl     = 1800    # 30 minutes
+  default_ttl = 3600    # 1 hour
+  max_ttl     = 86400   # 24 hours
 
   parameters_in_cache_key_and_forwarded_to_origin {
     cookies_config {
@@ -211,7 +211,7 @@ resource "aws_cloudfront_distribution" "app" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "app-origin"
 
-    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id = aws_cloudfront_cache_policy.static_30min.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
