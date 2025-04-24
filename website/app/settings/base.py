@@ -25,8 +25,6 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-print("hello from settings")
-
 AUTHENTICATION_BACKENDS = [
     "social_core.backends.azuread_tenant.AzureADTenantOAuth2",
     "django.contrib.auth.backends.ModelBackend",
@@ -316,6 +314,7 @@ simple_handler = {
     "class": "logging.StreamHandler",
     "level": "DEBUG",
     "stream": sys.stdout,
+
 }
 
 # Base logging config
@@ -340,19 +339,22 @@ LOGGING = {
     "loggers": {
         "": {
             "level": "WARNING",
-            "handlers": ["simple"]
+            "handlers": ["console"]
         },
         "django": {
             "level": "WARNING",
             "propagate": False,
+            "handlers": ["console"]
         },
         "wagtail": {
             "level": "WARNING",
             "propagate": False,
+            "handlers": ["console"]
         },
         "website": {
             "propagate": False,
-            "level": "DEBUG"
+            "level": "DEBUG",
+            "handlers": ["console"]
         },
     },
 }
