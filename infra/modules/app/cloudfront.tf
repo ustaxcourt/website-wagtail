@@ -23,6 +23,11 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
 }
 
+# Use AWS managed CachingOptimized policy for static content
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 # Create origin request policy for dynamic content
 resource "aws_cloudfront_origin_request_policy" "dynamic_content" {
   name    = "${var.environment}-dynamic-content"
@@ -79,6 +84,8 @@ resource "aws_cloudfront_cache_policy" "static_content" {
     query_strings_config {
       query_string_behavior = "none"
     }
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
   }
 }
 
@@ -112,7 +119,7 @@ resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 
   rule {
-    object_ownership = "BucketOwnerPreferred"
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
@@ -204,7 +211,7 @@ resource "aws_cloudfront_distribution" "app" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "app-origin"
 
-    cache_policy_id = aws_cloudfront_cache_policy.static_content.id
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
