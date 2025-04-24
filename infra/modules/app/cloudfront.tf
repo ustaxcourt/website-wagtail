@@ -109,56 +109,11 @@ resource "aws_cloudfront_origin_access_identity" "app" {
   comment = "Origin access identity for ${var.environment} app"
 }
 
-# Create S3 bucket for CloudFront logs
-resource "aws_s3_bucket" "cloudfront_logs" {
-  bucket = "${var.environment}-ustc-website-cloudfront-logs"
-}
-
-# Enable bucket ownership controls
-resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
-  bucket = aws_s3_bucket.cloudfront_logs.id
-
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
-}
-
-# Set bucket public access block
-resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
-  bucket = aws_s3_bucket.cloudfront_logs.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "cloudfront_logs" {
-  depends_on = [aws_s3_bucket_ownership_controls.cloudfront_logs]
-  bucket = aws_s3_bucket.cloudfront_logs.id
-
-  rule {
-    id     = "expire_logs"
-    status = "Enabled"
-
-    expiration {
-      days = 90
-    }
-  }
-}
-
 resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
   aliases = [var.domain_name]
-
-  # Enable standard logging
-  logging_config {
-    include_cookies = false
-    bucket          = aws_s3_bucket.cloudfront_logs.bucket_domain_name
-    prefix          = "logs/"
-  }
 
   origin {
     domain_name = module.alb.lb_dns_name
