@@ -12,11 +12,6 @@ from django.shortcuts import redirect, render
 from django.urls import re_path
 
 
-def tc_report_redirect(request, path):
-    s3_url = f"{settings.MEDIA_URL}documents/{path}"
-    return redirect(s3_url)
-
-
 def all_legacy_documents_redirect(request, filename):
     # Initialize S3 client
     s3 = boto3.client(
@@ -49,13 +44,6 @@ urlpatterns = [
     path("sitemap.xml", sitemap),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
-    # Special pattern for resources/ropp/tc-reports
-    # re_path(
-    #     r"^resources/ropp/tc-reports/(?P<path>.*)$",
-    #     tc_report_redirect,
-    #     name="tc_report_redirect",
-    # ),
-    # Special pattern for other documents
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
