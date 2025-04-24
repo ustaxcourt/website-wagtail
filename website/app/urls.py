@@ -1,3 +1,4 @@
+import boto3
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
@@ -13,6 +14,32 @@ def tc_report_redirect(request, path):
     s3_url = f"{settings.MEDIA_URL}documents/{path}"
     return redirect(s3_url)
 
+def all_legacy_documents_redirect(request, filename):
+    # Initialize S3 client
+    # TODO: Check the secrets are correct (where do settings come from?)
+    s3 = boto3.client(
+        's3',
+        region_name="us-east-1",
+    )
+
+#TODO: get this name into secrets, or locate it
+    bucket_name = "miest-moore-sandbox-ustc-website-assets"
+
+    # Search for the filename in the documents/ prefix
+    prefix = "documents/"
+    possible_key = f"{prefix}{filename}.pdf"
+
+    try:
+        # Check if object exists
+        s3.head_object(Bucket=bucket_name, Key=possible_key)
+        s3_url = f"{settings.MEDIA_URL}{possible_key}"
+        return redirect(s3_url)
+    except s3.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            return HttpResponseNotFound(f"Document '{filename}' not found.")
+        else:
+            raise  # For unexpected errors
+
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
@@ -23,6 +50,12 @@ urlpatterns = [
         r"^resources/ropp/tc-reports/(?P<path>.*)$",
         tc_report_redirect,
         name="tc_report_redirect",
+    ),
+    # Special pattern for other documents - check if we have file by whatever name and redirect to it, this story is not uploading files, 
+    re_path(
+        r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
+        all_legacy_documents_redirect,
+        name="all_legacy_documents_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
