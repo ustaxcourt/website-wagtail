@@ -164,7 +164,7 @@ jobs:
             --region us-east-1
 
       - name: Perform Production Checks in staging
-        if: ${{ env.ENVIRONMENT == 'dev' }}
+        if: ${{ env.ENVIRONMENT == 'sandbox' }}
         run: |
           cd website
           set -e
