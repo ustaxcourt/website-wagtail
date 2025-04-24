@@ -67,8 +67,8 @@ resource "aws_cloudfront_origin_request_policy" "static_content" {
 }
 
 # Create cache policy for static content with 30 minute minimum TTL
-resource "aws_cloudfront_cache_policy" "static_30min" {
-  name        = "${var.environment}-static-30min"
+resource "aws_cloudfront_cache_policy" "static_content" {
+  name        = "${var.environment}-static-content"
   comment     = "Policy for static content with 30 minute minimum cache"
   min_ttl     = 1800    # 30 minutes
   default_ttl = 3600    # 1 hour
@@ -134,6 +134,7 @@ resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "cloudfront_logs" {
+  depends_on = [aws_s3_bucket_ownership_controls.cloudfront_logs]
   bucket = aws_s3_bucket.cloudfront_logs.id
 
   rule {
@@ -199,7 +200,7 @@ resource "aws_cloudfront_distribution" "app" {
       function_arn = aws_cloudfront_function.rewrite_uri.arn
     }
 
-    cache_policy_id = aws_cloudfront_cache_policy.static_30min.id
+    cache_policy_id = aws_cloudfront_cache_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -211,7 +212,7 @@ resource "aws_cloudfront_distribution" "app" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "app-origin"
 
-    cache_policy_id = aws_cloudfront_cache_policy.static_30min.id
+    cache_policy_id = aws_cloudfront_cache_policy.static_content.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
