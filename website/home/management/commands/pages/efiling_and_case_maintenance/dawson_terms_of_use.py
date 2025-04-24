@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 terms_of_use_docs = {
     "Rule-21.pdf": "",
@@ -8,8 +11,8 @@ terms_of_use_docs = {
 
 
 class DawsonTermsOfUsePageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "dawson-tou"
 
     def create(self):
@@ -21,10 +24,10 @@ class DawsonTermsOfUsePageInitializer(PageInitializer):
         slug = self.slug
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         # Load Rule 21 document
         for document in terms_of_use_docs.keys():
@@ -70,4 +73,4 @@ class DawsonTermsOfUsePageInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

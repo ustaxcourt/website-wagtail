@@ -340,20 +340,30 @@ LOGGING = {
             "level": "WARNING",
             "handlers": ["aws"]
         },
+        # topmost logger for django-specific messages
         "django": {
             "level": "WARNING",
             "propagate": False,
             "handlers": ["aws"]
         },
+        # topmost logger for wagtail-specific messages
         "wagtail": {
             "level": "WARNING",
             "propagate": False,
             "handlers": ["aws"]
         },
-        "website": {
+        # topmost logger our project-specific messages"
+        "home": {
             "propagate": False,
-            "level": "DEBUG",
+            "level": "INFO",
             "handlers": ["aws"]
         },
+        
+        # management commands happen outside of AWS, so force simple logging
+        "home.management.commands": {
+            "propagate": False,
+            "level": "INFO",
+            "handlers": ["simple"]
+        }
     },
 }

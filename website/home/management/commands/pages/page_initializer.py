@@ -5,14 +5,18 @@ from wagtail.models import Collection, CollectionViewRestriction
 from wagtail.images import get_image_model
 from django.core.files import File
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 class PageInitializer(ABC):
     DOCUMENTS_BASE_PATH = "home/management/documents"
     IMAGES_BASE_PATH = "home/management/images"
 
-    def __init__(self, logger):
-        self.logger = logger
+    def __init__(self):
+        pass
 
     @abstractmethod
     def create(self):
@@ -79,7 +83,7 @@ class PageInitializer(ABC):
             )
 
         if not os.path.exists(file_path):
-            self.logger.write(f"Document file not found at {file_path}")
+            logger.warning(f"Document file not found at {file_path}")
             return None
 
         if title is None:
@@ -90,7 +94,7 @@ class PageInitializer(ABC):
 
         # Check if the document already exists
         if Document.objects.filter(title=title).exists():
-            self.logger.write(f"Document with title '{title}' already exists.")
+            logger.info(f"Document with title '{title}' already exists.")
             return Document.objects.get(title=title)
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
@@ -104,7 +108,7 @@ class PageInitializer(ABC):
                 collection=collection_obj,
             )
             document.save()
-            self.logger.write(f"Document created: {document}")
+            logger.debug(f"Document created: {document}")
             return document
 
     def load_image_from_images_dir(self, subdirectory, filename, title=None):
@@ -124,7 +128,7 @@ class PageInitializer(ABC):
         )
 
         if not os.path.exists(file_path):
-            self.logger.write(f"Image file not found at {file_path}")
+            logger.warning(f"Image file not found at {file_path}")
             return None
 
         if title is None:
@@ -133,7 +137,7 @@ class PageInitializer(ABC):
 
         Image = get_image_model()
         if Image.objects.filter(title=title).exists():
-            self.logger.write(
+            logger.warning(
                 f"Image file already exists: {filename}. Choose a different file or title."
             )
             return Image.objects.get(title=title)
@@ -144,5 +148,5 @@ class PageInitializer(ABC):
                 file=File(image_file, name=filename),
             )
             image.save()
-            self.logger.write(f"Image created: {image}")
+            logger.debug(f"Image created: {image}")
             return image

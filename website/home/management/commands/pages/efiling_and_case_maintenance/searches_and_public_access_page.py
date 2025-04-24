@@ -7,11 +7,14 @@ from home.models import (
 from home.management.commands.snippets.dawson_faqs_ribbon import (
     dawson_faqs_ribbon_name,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SearchesAndPublicAccessPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -22,10 +25,10 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
         title = "Frequently Asked Questions About DAWSON"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name=dawson_faqs_ribbon_name
@@ -93,4 +96,4 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 update_contact_information_images = [
     {
@@ -23,8 +26,8 @@ update_contact_information_docs = {
 
 
 class UpdateContactInformationPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "update-contact-information"
 
     def create(self):
@@ -36,10 +39,10 @@ class UpdateContactInformationPageInitializer(PageInitializer):
         slug = self.slug
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         uploaded_images = {}
 
@@ -161,4 +164,4 @@ class UpdateContactInformationPageInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

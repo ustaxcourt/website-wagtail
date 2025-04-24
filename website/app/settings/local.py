@@ -27,4 +27,6 @@ if not os.getenv("GITHUB_SHA"):
 LOGGING["root"]["handlers"] = ["simple"]
 LOGGING["loggers"]["django"]["handlers"] = ["simple"]
 LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
-LOGGING["loggers"]["website"]["handlers"] = ["simple"]
+LOGGING["loggers"]["home"]["handlers"] = ["simple"]
+LOGGING["loggers"]["home"]["level"] = "DEBUG"
+LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"

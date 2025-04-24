@@ -34,13 +34,14 @@ from wagtail.blocks import DateBlock
 from collections import defaultdict
 from operator import itemgetter
 from django.template.response import TemplateResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
 ]
-
-
 @register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
@@ -538,6 +539,7 @@ class JudgeProfile(models.Model):
         ordering = ["last_name"]
 
     def save(self, *args, **kwargs):
+        logger.info(f"Saving judge profile: {self}")
         self.last_updated_date = timezone.now()
         # Only generate a default if display_name is blank
         if not self.display_name.strip():

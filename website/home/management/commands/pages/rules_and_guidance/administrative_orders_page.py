@@ -2,6 +2,9 @@ from django.contrib.contenttypes.models import ContentType
 from wagtail.models import Page
 from home.models import AdministrativeOrdersPage, PDFs
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Example PDF data
 ADMIN_ORDERS_DATA = [
@@ -62,15 +65,15 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
     and populates its pdf_section StreamField with multiple PDFs.
     """
 
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "administrative-orders"
 
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            self.logger.write("Root page (home) does not exist.")
+            logger.info("Root page (home) does not exist.")
             return
 
         title = "Administrative Orders"
@@ -78,10 +81,10 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
         # Check if page exists
         existing = Page.objects.filter(slug=self.slug).first()
         if existing:
-            self.logger.write(f"- '{title}' page already exists.")
+            logger.info(f"- '{title}' page already exists.")
             return existing
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         content_type = ContentType.objects.get_for_model(AdministrativeOrdersPage)
 
@@ -105,11 +108,11 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
             if document:
                 pdf_entry = PDFs(pdf=document, page=new_page)
                 pdf_entry.save()
-                self.logger.write(f"   - Loaded document: {file_detail['name']}")
+                logger.info(f"   - Loaded document: {file_detail['name']}")
             else:
-                self.logger.write(
+                logger.info(
                     f"   - **Failed** to load document: {file_detail['name']}"
                 )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")
         new_page.save()
