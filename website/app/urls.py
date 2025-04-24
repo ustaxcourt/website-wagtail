@@ -8,7 +8,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import re_path
 
 
@@ -41,7 +41,8 @@ def all_legacy_documents_redirect(request, filename):
     except ClientError as e:
         # Handle object not found error specifically
         if e.response["Error"]["Code"] == "404":
-            return HttpResponseNotFound(f"Document '{filename}' not found.")
+            return render(request, "404.html", status=404)
+            # return HttpResponseNotFound(f"Document '{filename}' not found.")
         else:
             # Unexpected error - raise for visibility
             raise
