@@ -321,6 +321,14 @@ class ButtonBlock(blocks.StructBlock):
         label = "Button"
 
 
+class AlertMessageBlock(blocks.StructBlock):
+    message = blocks.RichTextBlock(features=["bold", "italic", "link"])
+
+    class Meta:
+        icon = "warning"
+        label = "Alert Message"
+
+
 class EnhancedStandardPage(Page):
     class Meta:
         abstract = False
@@ -1635,7 +1643,7 @@ class PlacesOfTrialPage(Page):
     body = StreamField(
         [
             ("text", blocks.RichTextBlock()),
-            ("paragraph", blocks.RichTextBlock(features=["bold", "italic", "link"])),
+            ("alert_message", AlertMessageBlock()),
         ],
         use_json_field=True,
         blank=True,

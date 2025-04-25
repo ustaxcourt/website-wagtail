@@ -80,18 +80,21 @@
         .note {
             margin-bottom: 10px;
         }
-
     </style>
 {% endblock %}
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1 class="page-title">Places of Trial</h1>
-        <div class="notice">
-            <div class="notice-content">
-                <i class="fa-solid fa-circle-info"></i>
-                <p>{{ page.body.0.value }}</p>
-            </div>
-        </div>
+        {% for block in page.body %}
+            {% if block.block_type == "alert_message" %}
+                <div class="notice">
+                    <div class="notice-content">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <p>{{ block.value.message|richtext }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
         <div class="alphabet">
             {% for letter in "ACDFGHIKLMNOPSTUVW" %}
                 <a href="#{{ letter }}" class="alphabet-link">

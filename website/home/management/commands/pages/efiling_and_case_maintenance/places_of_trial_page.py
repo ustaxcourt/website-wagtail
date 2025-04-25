@@ -648,8 +648,10 @@ class PlacesOfTrialPageInitializer(PageInitializer):
             places_of_trial=places_of_trial_data,
             body=[
                 {
-                    "type": "paragraph",
-                    "value": "<strong>Addresses are trial locations only</strong> <br> Always address mail to: United States Tax Court, 400 Second Street NW, Washington, DC 20217-0002.",
+                    "type": "alert_message",
+                    "value": {
+                        "message": "<strong>Addresses are trial locations only</strong> <br>Always address mail to: United States Tax Court, 400 Second Street NW, Washington, DC 20217-0002.",
+                    },
                 }
             ],
             show_in_menus=True,
