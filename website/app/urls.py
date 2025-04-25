@@ -1,4 +1,5 @@
 import boto3
+import logging
 from botocore.exceptions import ClientError
 from django.conf import settings
 from django.urls import include, path
@@ -12,6 +13,9 @@ from django.urls import re_path
 
 
 def all_legacy_documents_redirect(request, filename):
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
+
     # Initialize S3 client
     s3 = boto3.client(
         "s3",
@@ -34,6 +38,9 @@ def all_legacy_documents_redirect(request, filename):
         if e.response["Error"]["Code"] == "404":
             return render(request, "404.html", status=404)
         else:
+            logger.warning(
+                f"Unsuccessful attempt to redirect original URL: {request.get_full_path()}"
+            )
             # Unexpected error - raise for visibility
             raise
 
