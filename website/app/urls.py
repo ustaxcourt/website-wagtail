@@ -38,7 +38,9 @@ def all_legacy_documents_redirect(request, filename):
         if e.response["Error"]["Code"] == "404":
             return render(request, "404.html", status=404)
         else:
-            logger.warning(f"Unsuccessful attempt to redirect original URL: {request.get_full_path()}")
+            logger.warning(
+                f"Unsuccessful attempt to redirect original URL: {request.get_full_path()}"
+            )
             # Unexpected error - raise for visibility
             raise
 
