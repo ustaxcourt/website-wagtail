@@ -163,6 +163,32 @@ jobs:
             --force-new-deployment \
             --region us-east-1
 
+      - name: Wait for ECS Service to Stabilize
+        if: ${{ env.ENVIRONMENT == 'dev' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --services "${ENVIRONMENT}-website-service" \
+            --region us-east-1
+
+      - name: Invalidate CloudFront Distribution
+        if: ${{ env.ENVIRONMENT == 'dev' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          distribution_id=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?contains(Origins.Items[*].DomainName, '${ENVIRONMENT}')].Id" \
+            --output text)
+
+          aws cloudfront create-invalidation \
+            --distribution-id $distribution_id \
+            --paths "/*"
+
       - name: Perform Production Checks in staging
         if: ${{ env.ENVIRONMENT == 'dev' }}
         env:

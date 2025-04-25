@@ -175,12 +175,15 @@ Leaving your sandbox running without being used will waste money.  Remember to c
 
 ## Manually Connecting to DB
 
+If you want to connect to the database from your local machine, you will need to make sure the bastion host is running and update the security group to allow your IP address.
+
 Because the RDS instance is behind a VPS, that means you will need to setup an SSH tunnel through a bastion host to be able to access it.
 
 `ssh -L 5432:<RDS_HOSTNAME>:5432 -N -i .ssh/id_rsa ubuntu@<IP_ADDRESS>`
 
 after running this in a separate terminal, you should be able to run migrations or connect directly using tableplus.
 
+Remember to remove your IP address from the security group when done.
 
 ## CI / CD
 
