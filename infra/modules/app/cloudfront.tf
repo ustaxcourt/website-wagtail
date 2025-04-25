@@ -109,11 +109,61 @@ resource "aws_cloudfront_origin_access_identity" "app" {
   comment = "Origin access identity for ${var.environment} app"
 }
 
+# Create S3 bucket for CloudFront logs
+resource "aws_s3_bucket" "cloudfront_logs" {
+  bucket = "${var.environment}-ustc-website-cloudfront-logs"
+}
+
+# Enable ACLs on the bucket
+resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# Add bucket policy to allow CloudFront to write logs
+resource "aws_s3_bucket_policy" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  policy = data.aws_iam_policy_document.cloudfront_logs.json
+}
+
+data "aws_iam_policy_document" "cloudfront_logs" {
+  statement {
+    actions   = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.cloudfront_logs.arn}/*"]
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.app.arn]
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
   aliases = [var.domain_name]
+
+  logging_config {
+    include_cookies = false
+    bucket          = aws_s3_bucket.cloudfront_logs.bucket_domain_name
+    prefix          = "cloudfront/"
+  }
 
   origin {
     domain_name = module.alb.lb_dns_name
