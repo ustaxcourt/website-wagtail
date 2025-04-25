@@ -4,6 +4,7 @@ from home.models import PressReleasePage
 from datetime import datetime
 
 press_releases_docs = {
+    "04162025.pdf": "",
     "01152020.pdf": "",
     "01112021.pdf": "",
     "01122022.pdf": "",
@@ -266,6 +267,13 @@ class PressReleasesPageInitializer(PageInitializer):
                     {
                         "type": "press_releases",
                         "value": [
+                            {
+                                "release_date": datetime(2025, 4, 16).date(),
+                                "details": {
+                                    "description": "The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
+                                    "file": press_releases_docs["04162025.pdf"],
+                                },
+                            },
                             {
                                 "release_date": datetime(2025, 4, 7).date(),
                                 "details": {

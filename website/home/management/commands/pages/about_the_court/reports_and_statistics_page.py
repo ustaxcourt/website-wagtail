@@ -40,6 +40,7 @@ reports_and_statistics_docs = {
     "appellate_report_march_2022.pdf": "",
     "appellate_report_march_2023.pdf": "",
     "appellate_report_march_2024.pdf": "",
+    "appellate_report_march_2025.pdf": "",
     "appellate_report_may_2021.pdf": "",
     "appellate_report_may_2022.pdf": "",
     "appellate_report_may_2024.pdf": "",
@@ -166,6 +167,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                         "type": "links",
                         "value": {
                             "links": [
+                                {
+                                    "title": "Cases Commenced in the Courts of Appeals, March 2025",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_march_2025.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
                                 {
                                     "title": "Cases Commenced in the Courts of Appeals, February 2025",
                                     "icon": IconCategories.PDF,

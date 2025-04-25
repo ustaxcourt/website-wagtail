@@ -46,6 +46,14 @@ class DawsonReleaseNotesInitializer(PageInitializer):
 
         release_entries = [
             {
+                "release_date": "2025-04-13",
+                "description": """<ul>
+                                    <li>New filters for Practitioner type, Practice type, Admissions Status, and Original Bar State are now present on the Practitioner Search page.</li>
+                                    <li>Resolved issue that caused search terms in the Case, Order, Opinion, and Practitioner search fields to persist when it should be cleared.</li>
+                                    <li>Resolved issue that caused a Docket Record filter to persist when is should be cleared.</li>
+                                </ul>""",
+            },
+            {
                 "release_date": "2025-04-05",
                 "description": "<ul><li>Fixed a radio button formatting issue on the Petition workflow.</li></ul>",
             },
