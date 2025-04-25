@@ -1650,6 +1650,6 @@ class PlacesOfTrialPage(Page):
     )
 
     content_panels = Page.content_panels + [
-        FieldPanel("places_of_trial"),
         FieldPanel("body"),
+        FieldPanel("places_of_trial"),
     ]
