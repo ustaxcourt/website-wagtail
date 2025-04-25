@@ -69,7 +69,7 @@ resource "aws_cloudfront_origin_request_policy" "static_content" {
 # Create cache policy for static content with 30 minute minimum TTL
 resource "aws_cloudfront_cache_policy" "static_content" {
   name        = "${var.environment}-static-content"
-  comment     = "Policy for static content with 30 minute minimum cache"
+  comment     = "Policy for static content with query string support"
   min_ttl     = 1800    # 30 minutes
   default_ttl = 3600    # 1 hour
   max_ttl     = 86400   # 24 hours
@@ -82,7 +82,7 @@ resource "aws_cloudfront_cache_policy" "static_content" {
       header_behavior = "none"
     }
     query_strings_config {
-      query_string_behavior = "none"
+      query_string_behavior = "all"
     }
     enable_accept_encoding_brotli = true
     enable_accept_encoding_gzip   = true
