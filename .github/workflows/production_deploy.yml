@@ -98,6 +98,16 @@ jobs:
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
 
+      - name: Perform Production Checks
+        env:
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+        run: |
+          cd website
+          set -e
+
+          make production-checks
+
       - name: Run Migrations
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
