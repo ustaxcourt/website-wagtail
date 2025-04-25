@@ -179,12 +179,19 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          # Get the CloudFront distribution ID for the environment
           distribution_id=$(aws cloudfront list-distributions \
-            --query "DistributionList.Items[?contains(Origins.Items[*].DomainName, '${ENVIRONMENT}')].Id" \
+            --query "DistributionList.Items[?contains(Origins.Items[0].DomainName, '${ENVIRONMENT}')].Id" \
             --output text)
 
+          if [ -z "$distribution_id" ]; then
+            echo "Error: Could not find CloudFront distribution for environment ${ENVIRONMENT}"
+            exit 1
+          fi
+
+          echo "Invalidating CloudFront distribution: $distribution_id"
           aws cloudfront create-invalidation \
-            --distribution-id $distribution_id \
+            --distribution-id "$distribution_id" \
             --paths "/*"
 
       - name: Perform Production Checks in staging
