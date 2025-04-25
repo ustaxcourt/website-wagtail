@@ -1,3 +1,5 @@
+import boto3
+from botocore.exceptions import ClientError
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
@@ -5,24 +7,45 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import re_path
 
 
-def tc_report_redirect(request, path):
-    s3_url = f"{settings.MEDIA_URL}documents/{path}"
-    return redirect(s3_url)
+def all_legacy_documents_redirect(request, filename):
+    # Initialize S3 client
+    s3 = boto3.client(
+        "s3",
+        region_name="us-east-1",
+    )
+
+    # Construct the key
+    prefix = "documents/"
+    possible_key = f"{prefix}{filename}"
+
+    try:
+        # Check if object exists
+        s3.head_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=possible_key)
+
+        # If it exists, redirect to S3 URL
+        s3_url = f"{settings.MEDIA_URL}{possible_key}"
+        return redirect(s3_url)
+    except ClientError as e:
+        # Handle object not found error specifically
+        if e.response["Error"]["Code"] == "404":
+            return render(request, "404.html", status=404)
+        else:
+            # Unexpected error - raise for visibility
+            raise
 
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
-    # Special pattern for resources/ropp/tc-reports
     re_path(
-        r"^resources/ropp/tc-reports/(?P<path>.*)$",
-        tc_report_redirect,
-        name="tc_report_redirect",
+        r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
+        all_legacy_documents_redirect,
+        name="all_legacy_documents_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
