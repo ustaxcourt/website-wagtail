@@ -164,7 +164,6 @@ jobs:
             --region us-east-1
 
       - name: Wait for ECS Service to Stabilize
-        if: ${{ env.ENVIRONMENT == 'dev' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -176,7 +175,6 @@ jobs:
             --region us-east-1
 
       - name: Invalidate CloudFront Distribution
-        if: ${{ env.ENVIRONMENT == 'dev' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
