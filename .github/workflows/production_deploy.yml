@@ -97,6 +97,8 @@ jobs:
           echo "::add-mask::${DATABASE_PASSWORD}"
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
           echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "::add-mask::${SECRET_KEY}"
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
