@@ -7,9 +7,6 @@ on:
         description: 'Commit SHA to deploy'
         required: true
         type: string
-  push:
-    branches:
-      - 'fix/workflow-reference'
 
 jobs:
   production-deploy:
@@ -32,7 +29,6 @@ jobs:
             fi
           done
           echo "❌ $ACTOR is not an authorized deployer"
-          exit 0
 
       - name: Set Environment
         id: set_env
