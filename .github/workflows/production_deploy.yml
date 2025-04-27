@@ -29,6 +29,7 @@ jobs:
             fi
           done
           echo "❌ $ACTOR is not an authorized deployer"
+          exit 1
 
       - name: Set Environment
         id: set_env
