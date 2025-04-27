@@ -42,6 +42,8 @@ logger = logging.getLogger(__name__)
 table_value_types = [
     ("text", blocks.RichTextBlock()),
 ]
+
+
 @register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(

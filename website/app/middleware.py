@@ -28,4 +28,3 @@ class JSONExceptionMiddleware:
 
         # Let Django handle the response normally
         return None
-    

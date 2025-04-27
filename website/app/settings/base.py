@@ -299,7 +299,9 @@ GITHUB_SHA = os.getenv("GITHUB_SHA")
 
 
 # Define log format
-LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s:%(lineno)d %(message)s"
+LOG_FORMAT = (
+    "%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s:%(lineno)d %(message)s"
+)
 
 # Console handler that writes to STDOUT
 aws_handler = {
@@ -313,7 +315,6 @@ simple_handler = {
     "class": "logging.StreamHandler",
     "level": "DEBUG",
     "stream": sys.stdout,
-
 }
 
 # Base logging config
@@ -326,44 +327,24 @@ LOGGING = {
             "fmt": LOG_FORMAT,
         },
     },
-    "handlers": {
-        "aws": aws_handler,
-        "simple": simple_handler
-    },
+    "handlers": {"aws": aws_handler, "simple": simple_handler},
     "root": {
         "handlers": ["aws"],
         "level": "WARNING",
     },
-
     "loggers": {
-        "": {
-            "level": "WARNING",
-            "handlers": ["aws"]
-        },
+        "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
-        "django": {
-            "level": "WARNING",
-            "propagate": False,
-            "handlers": ["aws"]
-        },
+        "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger for wagtail-specific messages
-        "wagtail": {
-            "level": "WARNING",
-            "propagate": False,
-            "handlers": ["aws"]
-        },
+        "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"
-        "home": {
-            "propagate": False,
-            "level": "INFO",
-            "handlers": ["aws"]
-        },
-        
+        "home": {"propagate": False, "level": "INFO", "handlers": ["aws"]},
         # management commands happen outside of AWS, so force simple logging
         "home.management.commands": {
             "propagate": False,
             "level": "INFO",
-            "handlers": ["simple"]
-        }
+            "handlers": ["simple"],
+        },
     },
 }

@@ -247,9 +247,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
 
         # Check if the form already exists
         if CaseRelatedFormsEntry.objects.filter(formName=formData["formName"]).exists():
-            logger.info(
-                f"  - Form entry for {formData['formName']} already exists."
-            )
+            logger.info(f"  - Form entry for {formData['formName']} already exists.")
             return
 
         document = self.load_document_from_documents_dir(

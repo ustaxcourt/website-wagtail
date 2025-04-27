@@ -110,9 +110,7 @@ class AdministrativeOrdersPageInitializer(PageInitializer):
                 pdf_entry.save()
                 logger.info(f"   - Loaded document: {file_detail['name']}")
             else:
-                logger.info(
-                    f"   - **Failed** to load document: {file_detail['name']}"
-                )
+                logger.info(f"   - **Failed** to load document: {file_detail['name']}")
 
         logger.info(f"Successfully created the '{title}' page.")
         new_page.save()

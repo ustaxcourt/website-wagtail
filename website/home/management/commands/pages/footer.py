@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class FooterInitializer(PageInitializer):
-
     def create(self):
         settings = Footer.objects.all().first()
 

@@ -10,7 +10,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 class PageInitializer(ABC):
     DOCUMENTS_BASE_PATH = "home/management/documents"
     IMAGES_BASE_PATH = "home/management/images"

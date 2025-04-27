@@ -31,4 +31,3 @@ ENVIRONMENT = "sandbox"
 LOGGING["root"]["handlers"] = ["console"]
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
-

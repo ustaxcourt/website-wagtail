@@ -126,9 +126,7 @@ class HomePageInitializer(PageInitializer):
         title = "Home"
 
         if HomePage.objects.filter(title=title).exists():
-            logger.info(
-                f"- {title} page already exists. Updating the existing page."
-            )
+            logger.info(f"- {title} page already exists. Updating the existing page.")
             homepage = HomePage.objects.get(title=title)
         else:
             logger.info("Page does not exist. Nothing to update. STOPPING.")
