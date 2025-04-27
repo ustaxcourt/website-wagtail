@@ -7,9 +7,6 @@ on:
         description: 'Commit SHA to deploy'
         required: true
         type: string
-  push:
-    branches:
-      - 'fix/workflow-reference'
 
 jobs:
   production-deploy:
