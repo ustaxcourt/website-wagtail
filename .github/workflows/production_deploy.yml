@@ -108,6 +108,7 @@ jobs:
           BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           cd website
           # setup the tunnel so that we can run django commands into the env database
