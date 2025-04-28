@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -x
+set -e
+
 # Set your variables
 ENVIRONMENT="sandbox"
 NEW_INSTANCE_NAME="${ENVIRONMENT}-restored-instance"
