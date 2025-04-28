@@ -83,7 +83,7 @@ setup: init
 	npx gulp compile
 
 superuser:
-	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "ustcemail@somedomain.com"
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "webmaster@ustaxcourt.gov"
 
 users:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_users --group_name $${group:-"Editors"}
@@ -95,6 +95,12 @@ upgrade-test:
 resetadminpassword:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py reset_admin_password
 
+production-checks:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py production_checks
+
 # an idempotent command for creating the pages after all the models / migrations have finished running
 createpages:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_pages
+
+collectstatic:
+	. $(VENV) && python manage.py collectstatic --noinput --clear

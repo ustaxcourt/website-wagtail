@@ -468,4 +468,3 @@ class DawsonReleaseNotesInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        new_page.save()

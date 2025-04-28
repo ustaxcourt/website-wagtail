@@ -21,6 +21,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "cloudfront:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "s3:*"
       ],
       "Resource": "arn:aws:s3:::*-ustc-website-assets/*"

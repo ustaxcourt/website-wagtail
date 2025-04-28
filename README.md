@@ -157,7 +157,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
 
-Now you can push changes to your sandbox branch and it'll auto deploy using github actions.
+Now you can tag any branch `make tag tag=sandbox` and the code will automatically deploy to your sandbox environment.
 
 ## Caveats
 
@@ -168,12 +168,14 @@ If you run a terraform init with your sandbox account, but then try to run it ag
 Leaving your sandbox running without being used will waste money.  Remember to clean it up with the following steps:
 
 1. `cd infra`
-2. manually disable delete protection for your rds database in file [rds.tf](./infra/modules/rds.tf)
-3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance
+2. manually disable delete protection for your rds database in file [rds.tf](./infra/modules/app/rds.tf)
+3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance by setting `deletion_protection = false`
 4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh` or run `make destroy`
 
 
 ## Manually Connecting to DB
+
+If you want to connect to the database from your local machine, you will need to make sure the bastion host is running and update the security group to allow your IP address.
 
 Because the RDS instance is behind a VPS, that means you will need to setup an SSH tunnel through a bastion host to be able to access it.
 
@@ -181,6 +183,7 @@ Because the RDS instance is behind a VPS, that means you will need to setup an S
 
 after running this in a separate terminal, you should be able to run migrations or connect directly using tableplus.
 
+Remember to remove your IP address from the security group when done.
 
 ## CI / CD
 
