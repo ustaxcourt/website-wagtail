@@ -1,4 +1,5 @@
 from .base import *  # noqa: F403
+from .base import MIDDLEWARE  # noqa: F403
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -29,3 +30,5 @@ SESSION_COOKIE_SECURE = True
 DEBUG = False
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "dev"
+
+MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE

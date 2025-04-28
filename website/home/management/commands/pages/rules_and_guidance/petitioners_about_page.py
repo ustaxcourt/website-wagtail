@@ -2,6 +2,9 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon
 from home.models import EnhancedStandardPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 petitioners_docs = {
     "Dubroff_Hellwig.pdf": "",
@@ -10,8 +13,8 @@ petitioners_docs = {
 
 
 class PetitionersAboutInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -22,10 +25,10 @@ class PetitionersAboutInitializer(PageInitializer):
         title = "Guidance for Petitioners: About the Court"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name="Guidance for Petitioners Ribbon"
@@ -72,4 +75,4 @@ class PetitionersAboutInitializer(PageInitializer):
             )
         )
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

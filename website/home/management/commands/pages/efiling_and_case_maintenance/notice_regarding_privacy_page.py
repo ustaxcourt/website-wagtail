@@ -1,11 +1,14 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NoticeRegardingPrivacyPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "notice-regarding-privacy"
 
     def create(self):
@@ -17,10 +20,10 @@ class NoticeRegardingPrivacyPageInitializer(PageInitializer):
         slug = self.slug
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
@@ -66,4 +69,4 @@ class NoticeRegardingPrivacyPageInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

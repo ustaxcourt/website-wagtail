@@ -4,7 +4,6 @@ from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage
 import logging
 
-
 logger = logging.getLogger(__name__)
 docs = ["Rule-21_Amended_03202023.pdf", "Rule-245.pdf"]
 slug = "definitions"
@@ -12,13 +11,13 @@ title = "Definitions"
 
 
 class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists)")
+            logger.info(f"- {title} page already exists)")
             return
         self.create_page_info(home_page)
 
@@ -81,4 +80,4 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
                 content_type=content_type,
             )
         )
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

@@ -2,6 +2,9 @@ from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import IconCategories
+import logging
+
+logger = logging.getLogger(__name__)
 
 documents = {
     "Rule-190.pdf": "",
@@ -15,8 +18,8 @@ documents_ids = {}
 
 
 class FeesAndChargesPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "fees-and-charges"
 
     def create(self):
@@ -28,10 +31,10 @@ class FeesAndChargesPageInitializer(PageInitializer):
         slug = self.slug
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for document in documents.keys():
             uploaded_document = self.load_document_from_documents_dir(None, document)
@@ -232,4 +235,4 @@ class FeesAndChargesPageInitializer(PageInitializer):
             )
         )
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

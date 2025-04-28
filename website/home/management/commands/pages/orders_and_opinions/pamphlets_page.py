@@ -2,6 +2,9 @@ from wagtail.models import Page
 from home.models import PamphletsPage, PamphletEntry
 from home.management.commands.pages.page_initializer import PageInitializer
 from django.contrib.contenttypes.models import ContentType
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Example pamphlet data
 pamphlets_data = [
@@ -137,8 +140,8 @@ pamphlets_data = [
 
 
 class PamphletsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "pamphlets"
 
     def create(self):
@@ -149,17 +152,17 @@ class PamphletsPageInitializer(PageInitializer):
             for pamphlet_data in pamphlets_data:
                 self.create_pamphlet_entry(pamphlet_page, pamphlet_data)
         except Page.DoesNotExist:
-            self.logger.write("Root page does not exist.")
+            logger.info("Root page does not exist.")
             return
 
     def create_page_info(self, parent_page):
         title = "United States Tax Court Reports: Pamphlets"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return Page.objects.get(slug=self.slug)
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         content_type = ContentType.objects.get_for_model(PamphletsPage)
 
@@ -174,14 +177,14 @@ class PamphletsPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")
         return new_page
 
     def create_pamphlet_entry(self, parent_page, pamphlet_data):
         try:
             # Check if the pamphlet already exists
             if PamphletEntry.objects.filter(title=pamphlet_data["title"]).exists():
-                self.logger.write(
+                logger.info(
                     f"  - Pamphlet entry for {pamphlet_data['title']} already exists."
                 )
                 return
@@ -193,7 +196,7 @@ class PamphletsPageInitializer(PageInitializer):
             )
 
             if not document:
-                self.logger.write(
+                logger.info(
                     f"Failed to load document for pamphlet: {pamphlet_data['title']}"
                 )
                 return
@@ -209,10 +212,10 @@ class PamphletsPageInitializer(PageInitializer):
             )
             entry.save()
 
-            self.logger.write(
+            logger.info(
                 f"Successfully created pamphlet entry: {pamphlet_data['title']}"
             )
 
         except Page.DoesNotExist:
-            self.logger.write("Parent page 'Pamphlets' does not exist.")
+            logger.info("Parent page 'Pamphlets' does not exist.")
             return

@@ -1,4 +1,5 @@
 from .base import *  # noqa: F403
+from .base import LOGGING, MIDDLEWARE
 import os
 
 # SECURITY WARNING: define the correct hosts in production!
@@ -26,3 +27,7 @@ SESSION_COOKIE_SECURE = True
 DEBUG = True
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "sandbox"
+
+LOGGING["root"]["handlers"] = ["console"]
+
+MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE

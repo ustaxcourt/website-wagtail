@@ -3,11 +3,14 @@ from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon, IconCategories
 from home.models import EnhancedStandardPage
 from home.management.commands.snippets.navigation_ribbon import ribbon_snippet_name
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class GuidenceForPetitionersPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -18,10 +21,10 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
         title = "Guidance for Petitioners"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         document = self.load_document_from_documents_dir(
             subdirectory=None,
