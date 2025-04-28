@@ -15,14 +15,6 @@ jobs:
     timeout-minutes: 45
 
     steps:
-      - name: Ensure workflow is triggered manually
-        run: |
-          echo "Trigger event: ${{ github.event_name }}"
-          if [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
-            echo "❌ This workflow must be triggered manually via workflow_dispatch."
-            exit 1
-          fi
-
       - name: Check deployer permission
         env:
           ACTOR: ${{ github.actor }}
