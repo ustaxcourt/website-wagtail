@@ -79,7 +79,7 @@ class DashboardPageInitializer(PageInitializer):
                                                     "text": "<a href='/efile-a-petition'>How to eFile a Petition</a>",
                                                 },
                                                 {
-                                                    "text": "<a href='/dpt_cities.html'>Find a Court Location</a>",
+                                                    "text": "<a href='/dpt-cities'>Find a Court Location</a>",
                                                 },
                                                 {
                                                     "text": "<a href='/case-related-forms'>U.S. Tax Court Forms</a>",

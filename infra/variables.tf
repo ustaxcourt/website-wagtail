@@ -1,6 +1,7 @@
 
 variable "database_password" {
   type = string
+  sensitive = true
 }
 
 variable "bastion_public_key" {
@@ -13,6 +14,7 @@ variable "environment" {
 
 variable "secret_key" {
   type = string
+  sensitive = true
 }
 
 variable "domain_name" {

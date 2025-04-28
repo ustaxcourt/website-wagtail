@@ -94,9 +94,27 @@ jobs:
           echo "::add-mask::${DATABASE_PASSWORD}"
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
           echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "::add-mask::${SECRET_KEY}"
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
+
+      - name: Perform Production Checks
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          # setup the tunnel so that we can run django commands into the env database
+          set -e
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make production-checks settings="app.settings.${ENVIRONMENT}"
 
       - name: Run Migrations
         env:
@@ -141,3 +159,34 @@ jobs:
             --desired-count 1 \
             --force-new-deployment \
             --region us-east-1
+
+      - name: Wait for ECS Service to Stabilize
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --services "${ENVIRONMENT}-website-service" \
+            --region us-east-1
+
+      - name: Invalidate CloudFront Distribution
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          # Get the CloudFront distribution ID for the environment
+          distribution_id=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?contains(Origins.Items[0].DomainName, '${ENVIRONMENT}')].Id" \
+            --output text)
+
+          if [ -z "$distribution_id" ]; then
+            echo "Error: Could not find CloudFront distribution for environment ${ENVIRONMENT}"
+            exit 1
+          fi
+
+          echo "Invalidating CloudFront distribution: $distribution_id"
+          aws cloudfront create-invalidation \
+            --distribution-id "$distribution_id" \
+            --paths "/*"

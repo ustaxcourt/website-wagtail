@@ -1,6 +1,6 @@
 module "ecr" {
   source  = "terraform-aws-modules/ecr/aws"
-  version = "~> 1.6.0"
+  version = "2.4.0"
 
   repository_force_delete = true
   repository_name         = "${var.environment}-website-repo"
