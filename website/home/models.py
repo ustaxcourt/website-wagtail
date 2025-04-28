@@ -224,7 +224,6 @@ class CommonBlock(blocks.StreamBlock):
     )
     h2WithAnchorTag = blocks.StructBlock(
         [
-            ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
         ],
         label="Heading 2 with Anchor Tag",
@@ -320,6 +319,14 @@ class ButtonBlock(blocks.StructBlock):
     class Meta:
         icon = "placeholder"
         label = "Button"
+
+
+class AlertMessageBlock(blocks.StructBlock):
+    message = blocks.RichTextBlock(features=["bold", "italic", "link"])
+
+    class Meta:
+        icon = "warning"
+        label = "Alert Message"
 
 
 class EnhancedStandardPage(Page):
@@ -1608,3 +1615,41 @@ class InternshipPrograms(EnhancedStandardPage):
             )
 
         return context
+
+
+class TrialCityBlock(blocks.StructBlock):
+    name = blocks.CharBlock()
+    note = blocks.TextBlock(required=False)
+    address = blocks.CharBlock(
+        required=False, help_text="Street address or location name"
+    )
+
+    class Meta:
+        icon = "home"
+        label = "Trial City"
+
+
+class TrialStateBlock(blocks.StructBlock):
+    state = blocks.CharBlock()
+    cities = blocks.ListBlock(TrialCityBlock())
+
+
+class PlacesOfTrialPage(Page):
+    places_of_trial = StreamField(
+        [("state", TrialStateBlock())],
+        use_json_field=True,
+        blank=True,
+    )
+    body = StreamField(
+        [
+            ("text", blocks.RichTextBlock()),
+            ("alert_message", AlertMessageBlock()),
+        ],
+        use_json_field=True,
+        blank=True,
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel("body"),
+        FieldPanel("places_of_trial"),
+    ]
