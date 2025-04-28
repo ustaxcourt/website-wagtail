@@ -114,6 +114,14 @@ resource "aws_s3_bucket" "cloudfront_logs" {
   bucket = "${var.environment}-ustc-website-cloudfront-logs"
 }
 
+# Disable ACLs and use bucket policy instead
+resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 
@@ -145,24 +153,17 @@ data "aws_iam_policy_document" "cloudfront_logs" {
   }
 }
 
-# Create CloudWatch Logs delivery source for CloudFront
-resource "aws_cloudwatch_log_delivery_source" "cloudfront" {
-  name     = "${var.environment}-cloudfront-logs"
-  log_type = "ACCESS_LOGS"
-  resource_arn = aws_cloudfront_distribution.app.arn
-}
-
-# Create CloudWatch Logs delivery for CloudFront
-resource "aws_cloudwatch_log_delivery" "cloudfront" {
-  delivery_source_name = aws_cloudwatch_log_delivery_source.cloudfront.name
-  delivery_destination_arn = aws_s3_bucket.cloudfront_logs.arn
-}
-
 resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
   aliases = [var.domain_name]
+
+  logging_config {
+    include_cookies = false
+    bucket          = aws_s3_bucket.cloudfront_logs.bucket_domain_name
+    prefix          = "cloudfront/"
+  }
 
   origin {
     domain_name = module.alb.lb_dns_name
