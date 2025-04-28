@@ -244,6 +244,7 @@ if aws_bucket_name:
     AWS_DEFAULT_ACL = None
     # AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
+    AWS_S3_FILE_OVERWRITE = False
 
     # WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_FUNCTION = "app.utils.get_document_url"
