@@ -44,7 +44,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                                         <strong>Law Clerk Interview Days will be updated in April 2025.</strong><br/>
                                         Last held August-September 2024.
                                         <br/><br/>
-                                        Law clerk vacancies also may occur throughout the year. Below is a list of Judges and Special Trial Judges currently recruiting for law clerks. Click each Judge's name to view their biography which may contain Additional Information or Requirements for Law Clerk Applicants. More information and specific application requirements are provided in the Application Procedure section below.""",
+                                        Law clerk vacancies also may occur throughout the year. Below is a list of Judges and Special Trial Judges currently recruiting for law clerks. Click each Judge's name to view their biography which may contain Additional Information or Requirements for Law Clerk Applicants. More information and specific application requirements are provided in the <a href="#AP" title="Application Procedure">Application Procedure</a> section below.""",
                     },
                     {"type": "hr", "value": True},
                     {

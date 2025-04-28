@@ -50,7 +50,7 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
                             page has helpful information, including this <strong><a href="https://us02web.zoom.us/rec/play/EZTpkvLfDeXoLeW2YzhdTgpBcKoC10NumGESfgR2Aorw_E85V6vwwpCCmQOEzW9GI9M-0fvLZTxMPr_T.wWcxq5k6tZ3GI8OP" title="DAWSON Training Video">training video</a></strong>.
                             <ul>
                                 <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Public_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Public Training Guide: DAWSON_Public_Training_Guide.pdf</a></strong></li>
-                                <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Petitioner_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Petitioner Training Guide: DAWSON_Petitioner_Training_Guide.pdf</a></strong></li>
+                                <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Petitioner_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide"> DAWSON Self-Represented (Pro Se) Training Guide: DAWSON_Petitioner_Training_Guide.pdf</a></strong></li>
                                 <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Practitioner_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Practitioner Training Guide: DAWSON_Practitioner_Training_Guide.pdf</a></strong></li>
                             </ul>""",
                             "anchortag": "FAQS1",

@@ -214,7 +214,7 @@ class PamphletsPageInitializer(PageInitializer):
         new_page = parent_page.add_child(
             instance=PamphletsPage(
                 title=title,
-                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner, 159 T.C. 33 (2022)</i></blockquote>",
+                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner</i>, 159 T.C. 33 (2022)</blockquote>",
                 slug=self.slug,
                 seo_title="Tax Court Reports Pamphlets",
                 content_type=content_type,

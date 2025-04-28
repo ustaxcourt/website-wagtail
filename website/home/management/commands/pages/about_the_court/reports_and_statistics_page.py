@@ -465,6 +465,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
+                                    "title": "Cases Commenced in the Courts of Appeals, May 2022",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_may_2022.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
                                     "title": "Cases Commenced in the Courts of Appeals, April 2022",
                                     "icon": IconCategories.PDF,
                                     "document": reports_and_statistics_docs[
@@ -560,6 +568,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                                     "icon": IconCategories.PDF,
                                     "document": reports_and_statistics_docs[
                                         "appellate_report_june_2021.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Cases Commenced in the Courts of Appeals, May 2021",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_may_2021.pdf"
                                     ].id,
                                     "url": None,
                                 },
