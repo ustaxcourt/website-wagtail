@@ -6,7 +6,7 @@ module "ecs" {
   # depends_on = [aws_iam_service_linked_role.ecs]
 
   source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 4.1.3"
+  version = "5.12.1"
 
   cluster_name = "${var.environment}-website-cluster"
 
@@ -119,8 +119,6 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  # depends_on = [aws_iam_service_linked_role.ecs]
-
   cluster         = module.ecs.cluster_id
   desired_count   = 0
   launch_type     = "FARGATE"
@@ -136,10 +134,8 @@ resource "aws_ecs_service" "this" {
     enable   = true
     rollback = true
   }
+
   lifecycle {
-    // we ignore both of these because later in the github actions pipeline,
-    // we manually run an ECS update after the migration scripts have run
-    // so that we do not deploy new versions of the app before the migration scripts
     ignore_changes = [
       task_definition,
       desired_count
@@ -158,8 +154,6 @@ resource "aws_ecs_service" "this" {
   }
 }
 
-
-
 # Security group for ECS tasks
 resource "aws_security_group" "ecs_sg" {
   name        = "${var.environment}-ecs-sg"
@@ -170,11 +164,10 @@ resource "aws_security_group" "ecs_sg" {
     from_port   = 8000
     to_port     = 8000
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [module.alb.security_group_id]  # Allow traffic from ALB security group
   }
 
   # Allow ECS tasks to communicate with the RDS instance
-  # TODO: might be better to scope it to just postgres port and maybe even point to rds security group
   egress {
     from_port   = 0
     to_port     = 0
@@ -183,13 +176,10 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
-
-
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name              = "/ecs/${var.environment}-website-logs"
   retention_in_days = 7 # You can modify this as needed
 }
-
 
 # * Step 6 - Create our ECS Task Definition
 data "aws_iam_policy_document" "this" {
@@ -207,7 +197,6 @@ data "aws_iam_policy_document" "this" {
     }
   }
 }
-
 
 resource "aws_iam_role" "this" { assume_role_policy = data.aws_iam_policy_document.this.json }
 

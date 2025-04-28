@@ -37,7 +37,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.6
+          terraform_version: 1.11.4
           terraform_wrapper: false
 
       - name: Set up Python
@@ -47,7 +47,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           # Examples: 12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node
-          node-version: '20.x'
+          node-version: '22.x'
 
       - name: Build USWDS
         run: |
@@ -162,6 +162,37 @@ jobs:
             --desired-count 1 \
             --force-new-deployment \
             --region us-east-1
+
+      - name: Wait for ECS Service to Stabilize
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --services "${ENVIRONMENT}-website-service" \
+            --region us-east-1
+
+      - name: Invalidate CloudFront Distribution
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          # Get the CloudFront distribution ID for the environment
+          distribution_id=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?contains(Origins.Items[0].DomainName, '${ENVIRONMENT}')].Id" \
+            --output text)
+
+          if [ -z "$distribution_id" ]; then
+            echo "Error: Could not find CloudFront distribution for environment ${ENVIRONMENT}"
+            exit 1
+          fi
+
+          echo "Invalidating CloudFront distribution: $distribution_id"
+          aws cloudfront create-invalidation \
+            --distribution-id "$distribution_id" \
+            --paths "/*"
 
       - name: Perform Production Checks in staging
         if: ${{ env.ENVIRONMENT == 'dev' }}
