@@ -1,163 +1,152 @@
 {% extends "wagtailadmin/admin_base.html" %}
 {% load i18n wagtailadmin_tags %}
-{% block titletag %}{% trans "Sign in" %}{% endblock %}
+{% block titletag %}
+    {% trans "Sign in" %}
+{% endblock %}
 {% block bodyclass %}login{% endblock %}
 {% load static %}
-
 {% block extra_css %}
-<style>
-    .login {
-        background: #f0f0f0;
-
-        @media (prefers-color-scheme: dark) {
-            background: #1a1a1a;
-        }
-
-        .content-wrapper {
-            background: #FFF;
+    <style>
+        .login {
+            background: #f0f0f0;
 
             @media (prefers-color-scheme: dark) {
-                background: #2d2d2d;
-                color: #fff;
+                background: #1a1a1a;
+            }
+
+            .content-wrapper {
+                background: #FFF;
+
+                @media (prefers-color-scheme: dark) {
+                    background: #2d2d2d;
+                    color: #fff;
+                }
             }
         }
-    }
 
-    .court-seal {
-        width: 150px;
-        height: 150px;
-        filter: grayscale(100%);
+        .court-seal {
+            width: 150px;
+            height: 150px;
+            filter: grayscale(100%);
 
-        @media (prefers-color-scheme: dark) {
-            filter: grayscale(100%) invert(1);
+            @media (prefers-color-scheme: dark) {
+                filter: grayscale(100%) invert(1);
+            }
         }
-    }
 
-    .court-seal-container {
-        text-align: center;
-    }
-
-    .azure-login {
-        display: block;
-        text-align: center;
-        margin-top: 1rem;
-        padding: 0.75rem 1.5rem;
-        background-color: #0078d4;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-weight: bold;
-        transition: background-color 0.2s;
-    }
-
-    .azure-login:hover {
-        background-color: #106ebe;
-        color: white;
-    }
-
-    .divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 2rem 0;
-        color: #666;
-
-        @media (prefers-color-scheme: dark) {
-            color: #999;
+        .court-seal-container {
+            text-align: center;
         }
-    }
 
-    .divider::before,
-    .divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid #ddd;
-
-        @media (prefers-color-scheme: dark) {
-            border-bottom-color: #444;
+        .azure-login {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #0078d4;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.2s;
         }
-    }
 
-    .divider span {
-        margin: 0 1rem;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-</style>
+        .azure-login:hover {
+            background-color: #106ebe;
+            color: white;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+            color: #666;
+
+            @media (prefers-color-scheme: dark) {
+                color: #999;
+            }
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+
+            @media (prefers-color-scheme: dark) {
+                border-bottom-color: #444;
+            }
+        }
+
+        .divider span {
+            margin: 0 1rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+    </style>
 {% endblock extra_css %}
-
-
 {% block furniture %}
     <main class="content-wrapper" id="main">
         <div class="court-seal-container">
-            <img src="{% static 'images/footer/seal.png' %}" alt="United States Tax Court Seal" class="court-seal">
+            <img src="{% static 'images/footer/seal.png' %}"
+                 alt="United States Tax Court Seal"
+                 class="court-seal">
         </div>
-
         <div class="messages" role="status">
             {# Always show messages div so it can be appended to by JS #}
             {% if messages or form.errors %}
                 <ul>
                     {% if form.errors %}
-                        {% for error in form.non_field_errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
+                        {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
                     {% endif %}
-                    {% for message in messages %}
-                        <li class="{{ message.tags }}">{{ message }}</li>
-                    {% endfor %}
+                    {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
                 </ul>
             {% endif %}
         </div>
-
         {% block above_login %}{% endblock %}
-
-        <a href="{% url "social:begin" "azuread-tenant-oauth2" %}" class="azure-login">Login with Azure AD</a>
-
+        <a href="{% url "social:begin" "azuread-tenant-oauth2" %}"
+           class="azure-login">Login with Azure AD</a>
         <div class="divider">
             <span>or</span>
         </div>
-
-        <form class="login-form" action="{% url 'wagtailadmin_login' %}" method="post" autocomplete="off" novalidate>
+        <form class="login-form"
+              action="{% url 'wagtailadmin_login' %}"
+              method="post"
+              autocomplete="off"
+              novalidate>
             {% block login_form %}
                 {% csrf_token %}
-
                 {% url 'wagtailadmin_home' as home_url %}
                 <input type="hidden" name="next" value="{{ next|default:home_url }}" />
-
                 {% block fields %}
                     {% formattedfield form.username %}
                     {% formattedfield form.password %}
-
                     {% if show_password_reset %}
                         <a class="reset-password" href="{% url 'wagtailadmin_password_reset' %}">{% trans "Forgotten password?" %}</a>
                     {% endif %}
-
                     {% block extra_fields %}
                         {% for field_name, field in form.extra_fields %}
                             {% formattedfield field %}
                         {% endfor %}
                     {% endblock extra_fields %}
-
                     {% include "wagtailadmin/shared/forms/single_checkbox.html" with label_classname="remember-me" name="remember" text=_("Remember me") %}
                 {% endblock %}
             {% endblock %}
             <footer class="form-actions">
                 {% block submit_buttons %}
-                    <button
-                        type="submit"
-                        class="button button-longrunning"
-                        data-controller="w-progress"
-                        data-action="w-progress#activate"
-                        data-w-progress-active-value="{% trans 'Signing in…' %}"
-                    >
+                    <button type="submit"
+                            class="button button-longrunning"
+                            data-controller="w-progress"
+                            data-action="w-progress#activate"
+                            data-w-progress-active-value="{% trans 'Signing in…' %}">
                         {% icon name="spinner" %}
                         <em data-w-progress-target="label">{% trans 'Sign in' %}</em>
                     </button>
                 {% endblock %}
             </footer>
         </form>
-
         {% block below_login %}{% endblock %}
     </main>
 {% endblock %}
