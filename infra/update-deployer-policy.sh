@@ -24,7 +24,18 @@ if [ -n "$POLICY_ARN" ]; then
     echo "Normalizing local policy document for comparison..."
     jq -S . "$POLICY_FILE" > /tmp/local_policy.json
 
-    if cmp -s /tmp/aws_policy.json /tmp/local_policy.json; then
+    # Remove metadata fields from AWS policy document (like Version, CreateDate, VersionId, etc.)
+    jq 'del(.Version, .CreateDate, .VersionId, .IsDefaultVersion)' /tmp/aws_policy.json > /tmp/aws_policy_normalized.json
+
+    # Remove metadata fields from local policy document
+    jq 'del(.Version)' /tmp/local_policy.json > /tmp/local_policy_normalized.json
+
+    # Sort keys within each statement (to ensure they are in the same order for comparison)
+    jq '.Statement |= map(to_entries | sort_by(.key) | from_entries)' /tmp/aws_policy_normalized.json > /tmp/aws_policy_sorted.json
+    jq '.Statement |= map(to_entries | sort_by(.key) | from_entries)' /tmp/local_policy_normalized.json > /tmp/local_policy_sorted.json
+
+    echo "Comparing local and AWS policy documents..."
+    if cmp -s /tmp/aws_policy_sorted.json /tmp/local_policy_sorted.json; then
         echo "Policy is up-to-date. No changes needed."
     else
         echo "Policy differs. Creating a new version..."
@@ -33,7 +44,7 @@ if [ -n "$POLICY_ARN" ]; then
 
         echo "Cleaning up old versions if more than 4 exist..."
         VERSIONS=$(aws iam list-policy-versions --policy-arn "$POLICY_ARN" \
-            --query "Versions[?IsDefaultVersion==\`false\`].[VersionId]" --output text)
+            --query "Versions[?IsDefaultVersion==\`false\`] | [].[VersionId]" --output text)
 
         COUNT=0
         for v in $VERSIONS; do
