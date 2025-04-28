@@ -82,7 +82,7 @@ class HomePageInitializer(PageInitializer):
         )
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
+            title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
                 "See the <a target='_blank' href='/press-release'>Press Release</a>."
             ),
@@ -94,13 +94,6 @@ class HomePageInitializer(PageInitializer):
                 "See the <a target='_blank' href='/press-release'>Press Release</a>."
             ),
         )
-        #         HomePageEntry.objects.create(
-        #             homepage=homepage,
-        #             title="In Memory of Victor Lundy",
-        #             body=(
-        #                 'Victor Lundy, architect of the Tax Court courthouse in Washington, D.C., died peacefully in his sleep on November 4, 2024. He was 101. The Tax Court will continue to be good stewards of this special building, a prime example of Mr. Lundy’s artistry in architecture. Learn more by watching <a href="https://www.youtube.com/watch?v=s6umLipF7-E" target="_blank">Victor Lundy: Sculptor of Space</a> or by visiting the <a href="https://www.gsa.gov/real-estate/gsa-properties/visiting-public-buildings/united-states-tax-court" target="_blank">GSA website</a>.'
-        #             ),
-        #         )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="U.S. Tax Court Warning about Tax Scams",
