@@ -4,6 +4,8 @@ source ./setup.sh
 
 source ./setup_zone.sh
 
+./update-deployer-policy.sh
+
 terraform init \
     -upgrade \
     -backend=true \

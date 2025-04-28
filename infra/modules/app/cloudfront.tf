@@ -111,7 +111,21 @@ resource "aws_cloudfront_origin_access_identity" "app" {
 
 # Create S3 bucket for CloudFront logs
 resource "aws_s3_bucket" "cloudfront_logs" {
-  bucket = "${var.environment}-ustc-website-cloudfront-logs"
+  bucket = var.environment == "sandbox" ? "${replace(var.domain_name, "-web.ustaxcourt.gov", "")}-ustc-website-cloudfront-logs": "${var.environment}-ustc-website-cloudfront-logs"
+}
+
+resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "cloudfront_logs" {
+  depends_on = [aws_s3_bucket_ownership_controls.cloudfront_logs]
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
@@ -146,6 +160,7 @@ data "aws_iam_policy_document" "cloudfront_logs" {
 }
 
 resource "aws_cloudfront_distribution" "app" {
+  depends_on = [aws_s3_bucket_acl.cloudfront_logs]
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
