@@ -111,7 +111,7 @@ resource "aws_cloudfront_origin_access_identity" "app" {
 
 # Create S3 bucket for CloudFront logs
 resource "aws_s3_bucket" "cloudfront_logs" {
-  bucket = var.environment == "sandbox" ? "${replace(var.domain_name, "-ustc-website-cloudfront-logs", "")}-ustc-website-cloudfront-logs": "${var.environment}-ustc-website-cloudfront-logs"
+  bucket = var.environment == "sandbox" ? "${replace(var.domain_name, "-web.ustaxcourt.gov", "")}-ustc-website-cloudfront-logs": "${var.environment}-ustc-website-cloudfront-logs"
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
