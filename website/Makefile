@@ -101,3 +101,6 @@ production-checks:
 # an idempotent command for creating the pages after all the models / migrations have finished running
 createpages:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_pages
+
+collectstatic:
+	. $(VENV) && python manage.py collectstatic --noinput --clear

@@ -72,8 +72,6 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 ROOT_URLCONF = "app.urls"
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
@@ -220,12 +218,8 @@ STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
-    # ManifestStaticFilesStorage is recommended in production, to prevent
-    # outdated JavaScript / CSS assets being served from cache
-    # (e.g. after a Wagtail upgrade).
-    # See https://docs.djangoproject.com/en/5.1/ref/contrib/staticfiles/#manifeststaticfilesstorage
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
@@ -234,14 +228,25 @@ if aws_bucket_name:
     print(f"Loading from base config, bucket: {aws_bucket_name}")
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": os.getenv("AWS_STORAGE_BUCKET_NAME"),
+            "custom_domain": f"{os.getenv('DOMAIN_NAME')}/files",
+            # "location": "files",  # This will prefix all uploads with 'files/'
+            "querystring_auth": False,  # Disable query param auth since we're using CloudFront
+            "url_protocol": "https:",
+        },
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
-    MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+    # MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
+    WAGTAILDOCS_SERVE_METHOD = "direct"
+    # WAGTAILDOCS_URL_PREFIX = "files/documents"
     AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = False
+    # AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
+
+    # WAGTAILDOCS_SERVE_METHOD = "direct"
+    # WAGTAILDOCS_URL_FUNCTION = "app.utils.get_document_url"
 
     # when running in github actions, we use access keys instead of assumed roles like on ECS
     if os.getenv("AWS_ACCESS_KEY_ID"):
