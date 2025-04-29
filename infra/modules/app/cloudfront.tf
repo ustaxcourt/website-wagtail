@@ -114,6 +114,7 @@ resource "aws_s3_bucket" "cloudfront_logs" {
   bucket = var.environment == "sandbox" ? "${replace(var.domain_name, "-web.ustaxcourt.gov", "")}-ustc-website-cloudfront-logs": "${var.environment}-ustc-website-cloudfront-logs"
 }
 
+// test
 resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 
