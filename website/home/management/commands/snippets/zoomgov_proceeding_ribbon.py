@@ -1,20 +1,23 @@
 from home.models import NavigationRibbon, NavigationRibbonLink, IconCategories
+import logging
+
+logger = logging.getLogger(__name__)
 
 remote_proceedings_ribbon_name = "Zoomgov Proceedings Ribbon"
 
 
 class ZoomgovProceedingRibbonInitializer:
-    def __init__(self, logger):
+    def __init__(self):
         self.logger = logger
 
     def create(self):
         if NavigationRibbon.objects.filter(
             name=remote_proceedings_ribbon_name
         ).exists():
-            self.logger.write(f"{remote_proceedings_ribbon_name} already exists.")
+            logger.info(f"{remote_proceedings_ribbon_name} already exists.")
             return
 
-        self.logger.write(f"Creating the {remote_proceedings_ribbon_name}.")
+        logger.info(f"Creating the {remote_proceedings_ribbon_name}.")
 
         navigation_ribbon = NavigationRibbon(
             name=remote_proceedings_ribbon_name,

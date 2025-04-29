@@ -6,6 +6,10 @@ from home.models import (
     JudgeCollection,
     JudgeRole,
 )
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 all_judges = [
     {
@@ -362,15 +366,15 @@ all_judges = [
 
 
 class JudgesPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "judges"
 
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            self.logger.write("Root page (home) does not exist.")
+            logger.info("Root page (home) does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -379,10 +383,10 @@ class JudgesPageInitializer(PageInitializer):
         title = "Judges"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         judge_collection = JudgeCollection.objects.create(name="Judges")
         senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
@@ -481,4 +485,4 @@ class JudgesPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Created the '{title}' page with judge collections.")
+        logger.info(f"Created the '{title}' page with judge collections.")

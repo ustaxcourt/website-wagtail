@@ -1,17 +1,20 @@
 from home.models import CommonText
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ClinicsContactDetailsSnippetInitializer:
-    def __init__(self, logger):
+    def __init__(self):
         self.logger = logger
         self.name = "Clinics Contact Details"
 
     def create(self):
         if CommonText.objects.filter(name=self.name).exists():
-            self.logger.write(f"{self.name} already exists.")
+            logger.info(f"{self.name} already exists.")
             return
 
-        self.logger.write(f"Creating the snippet {self.name}.")
+        logger.info(f"Creating the snippet {self.name}.")
 
         clinics_contact_details = CommonText(
             name=self.name,

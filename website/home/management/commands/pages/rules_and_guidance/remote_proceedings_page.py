@@ -5,11 +5,14 @@ from home.models import (
     IndentStyle,
     EnhancedStandardPage,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RemoteProceedingsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -20,10 +23,10 @@ class RemoteProceedingsPageInitializer(PageInitializer):
         title = "Remote Proceedings"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         info = [
             {
@@ -231,4 +234,4 @@ class RemoteProceedingsPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

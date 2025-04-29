@@ -2,6 +2,9 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import IconCategories
 from home.models import EnhancedStandardPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 practitioners_docs = {
     "02202024.pdf": "",
@@ -28,8 +31,8 @@ practitioners_docs = {
 
 
 class GuidenceForPractitionersPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -40,10 +43,10 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
         title = "Guidance for Practitioners"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for doc_name in practitioners_docs.keys():
             document = self.load_document_from_documents_dir(

@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage, CommonText
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 docs = {
@@ -10,8 +13,8 @@ docs = {
 
 
 class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -24,10 +27,10 @@ class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
         )
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for document in docs.keys():
             uploaded_document = self.load_document_from_documents_dir(None, document)
@@ -118,4 +121,4 @@ class ClinicsAcademicNonLawSchoolPageInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

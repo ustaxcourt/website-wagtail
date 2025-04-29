@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 docs = {
     "dawson_pay_filing_fee.pdf": "",
@@ -16,8 +19,8 @@ images = {
 
 
 class DawsonPayFilingFeeInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -29,10 +32,10 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
 
         page = Page.objects.filter(slug=slug).first()
         if page:
-            self.logger.write(f"- {title} page already exists. Updating...")
+            logger.info(f"- {title} page already exists. Updating...")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for doc_name in docs.keys():
             document = self.load_document_from_documents_dir(
@@ -262,4 +265,4 @@ Washington, DC 20217
             ),
         )
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

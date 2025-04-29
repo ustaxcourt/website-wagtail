@@ -5,11 +5,14 @@ from home.models import EnhancedStandardPage
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     remote_proceedings_ribbon_name,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RemoteBasicsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -20,10 +23,10 @@ class RemoteBasicsPageInitializer(PageInitializer):
         title = "Zoomgov Proceedings"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name=remote_proceedings_ribbon_name
@@ -86,4 +89,4 @@ class RemoteBasicsPageInitializer(PageInitializer):
             )
         )
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

@@ -10,11 +10,14 @@ from home.models import (
     EnhancedStandardPage,
 )
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DawsonPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -42,7 +45,7 @@ class DawsonPageInitializer(PageInitializer):
 
         existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
         if existing_dawson_page:
-            self.logger.write(f"- {title} page already exists. Updating cards...")
+            logger.info(f"- {title} page already exists. Updating cards...")
             dawson_page = existing_dawson_page.specific
         else:
             dawson_page = DawsonPage(
@@ -52,7 +55,7 @@ class DawsonPageInitializer(PageInitializer):
                 body="Placeholder body text.",
             )
             home_page.add_child(instance=dawson_page)
-            self.logger.write(f"Created {title} page stub.")
+            logger.info(f"Created {title} page stub.")
 
         body_content = (
             "DAWSON (Docket Access Within a Secure Online Network) is the U.S. Tax Court's electronic filing and "
@@ -87,7 +90,7 @@ class DawsonPageInitializer(PageInitializer):
         )
         dawson_card_group.save()
 
-        self.logger.write("Created card groups.")
+        logger.info("Created card groups.")
 
         standard_pages = {
             "petition": [
@@ -256,7 +259,7 @@ class DawsonPageInitializer(PageInitializer):
         )
         reference_materials_card.save()
 
-        self.logger.write("Created cards.")
+        logger.info("Created cards.")
 
         all_new_std_pages = {}
         for card_name, pages in standard_pages.items():
@@ -270,7 +273,7 @@ class DawsonPageInitializer(PageInitializer):
                 else:
                     new_std_page = EnhancedStandardPage(**page)
                     home_page.add_child(instance=new_std_page)
-                    self.logger.write(f"Created {new_std_page.title} page.")
+                    logger.info(f"Created {new_std_page.title} page.")
                     new_std_pages.append(new_std_page)
             all_new_std_pages[card_name] = new_std_pages
 
@@ -351,11 +354,11 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "photo_dedication": [photo_dedication],
         }
 
-        self.logger.write(f"- {title} page already exists. Updating content.")
+        logger.info(f"- {title} page already exists. Updating content.")
 
         for field_name, field_value in page_fields.items():
             setattr(dawson_page, field_name, field_value)
 
         dawson_page.save()
 
-        self.logger.write(f"Successfully updated the '{title}' page.")
+        logger.info(f"Successfully updated the '{title}' page.")
