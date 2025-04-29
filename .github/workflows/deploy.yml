@@ -46,8 +46,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          # Examples: 12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node
           node-version: '22.x'
+          cache: 'npm'
 
       - name: Build USWDS
         run: |
