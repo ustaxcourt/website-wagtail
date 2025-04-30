@@ -78,30 +78,23 @@ class HomePageInitializer(PageInitializer):
 
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Remote Proceedings Info",
+            title="",
             body=(
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Closed for Holidays",
+            title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
-                "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
+                "See the <a target='_blank' href='/press-release'>Press Release</a>."
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Chief Judge Kathleen Kerrigan announced today that Cathy Fung was sworn in as Judge of the United States Tax Court.",
+            title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025.",
             body=(
-                'See the <a href="https://ustaxcourt.gov/resources/press/12132024.pdf" target="_blank">Press Release</a>.'
-            ),
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="In Memory of Victor Lundy",
-            body=(
-                'Victor Lundy, architect of the Tax Court courthouse in Washington, D.C., died peacefully in his sleep on November 4, 2024. He was 101. The Tax Court will continue to be good stewards of this special building, a prime example of Mr. Lundy’s artistry in architecture. Learn more by watching <a href="https://www.youtube.com/watch?v=s6umLipF7-E" target="_blank">Victor Lundy: Sculptor of Space</a> or by visiting the <a href="https://www.gsa.gov/real-estate/gsa-properties/visiting-public-buildings/united-states-tax-court" target="_blank">GSA website</a>.'
+                "See the <a target='_blank' href='/press-release'>Press Release</a>."
             ),
         )
         HomePageEntry.objects.create(
@@ -115,7 +108,7 @@ class HomePageInitializer(PageInitializer):
                 "<li>call or email threatening arrest;</li>"
                 "<li>call or email insisting that a specific payment method be used to pay Court fees, a tax debt, or requesting credit or debit card numbers over the phone.</li>"
                 "</ul>"
-                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.fbi.gov' target='_blank'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI—government agencies that are unrelated to the Tax Court.</p>"
+                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.fbi.gov' target='_blank'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI — government agencies that are unrelated to the Tax Court.</p>"
                 "<p>If you would like to verify that the communication you received is really from the Tax Court, please call the Court at (202) 521-0700.</p>"
             ),
         )

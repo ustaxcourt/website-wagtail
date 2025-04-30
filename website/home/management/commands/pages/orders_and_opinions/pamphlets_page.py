@@ -9,6 +9,54 @@ logger = logging.getLogger(__name__)
 # Example pamphlet data
 pamphlets_data = [
     {
+        "title": "Volume 162, Numbers 6",
+        "pdf": "162_TC_243-260.pdf",
+        "code": "162 T.C. 243-260",
+        "date_range": "June 1, 2024 to June 30, 2024",
+        "citation": "<p>Belagio Fine Jewelry, Inc.",
+        "volume_number": 162.6,
+    },
+    {
+        "title": "Volume 162, Numbers 5",
+        "pdf": "162_TC_199-242.pdf",
+        "code": "162 T.C. 199-242",
+        "date_range": "May 1, 2024 to May 31, 2024",
+        "citation": "<p>Anenberg, Sally J., Estate<br/>Anenberg, Steven B., Executor and Special Administrator<br/>MM Worthington Inc., Tax Matters Partner<br/>SN Worthington Holdings LLC f.k.a. Jacobs West St. Clair Acquisition LLC",
+        "volume_number": 162.5,
+    },
+    {
+        "title": "Volume 162, Numbers 4",
+        "pdf": "162_TC_148-199.pdf",
+        "code": "162 T.C. 148-199",
+        "date_range": "April 1, 2024 to April 30, 2024",
+        "citation": "<p>Abdo, Mohamed K.<br/>Farah, Fardowsa J.<br/>Mukhi, Raju J.",
+        "volume_number": 162.4,
+    },
+    {
+        "title": "Volume 162, Numbers 3",
+        "pdf": "162_TC_98-148.pdf",
+        "code": "162 T.C. 98-148",
+        "date_range": "March 1, 2024 to March 31, 2024",
+        "citation": "<p>Frutiger, Paul Andrew<br/>Oppenheimer, Reed, Tax Matters Partner<br/>Valley Park Ranch, LLC",
+        "volume_number": 162.3,
+    },
+    {
+        "title": "Volume 162, Numbers 2",
+        "pdf": "162_TC_35-98.pdf",
+        "code": "162 T.C. 35-98",
+        "date_range": "February 1, 2024 to February 29, 2024",
+        "citation": "<p>23rd Chelsea Associates, L.L.C.<br/>Couturier, Clair R., Jr.<br/> Related 23rd Chelsea Associates, L.L.C., Tax Matters Partner ",
+        "volume_number": 162.2,
+    },
+    {
+        "title": "Volume 162, Numbers 1",
+        "pdf": "162_TC_1-35.pdf",
+        "code": "162 T.C. 1-35",
+        "date_range": "January 1, 2024 to January 31, 2024",
+        "citation": "<p>Dodson, Douglas and Rebecca<br/>Thomas, Sydney Ann Chaney",
+        "volume_number": 162.1,
+    },
+    {
         "title": "Volume 161, Numbers 5 and 6",
         "pdf": "161_TC_112-328.pdf",
         "code": "161 T.C. 112-328",
@@ -169,7 +217,7 @@ class PamphletsPageInitializer(PageInitializer):
         new_page = parent_page.add_child(
             instance=PamphletsPage(
                 title=title,
-                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner, 159 T.C. 33 (2022)</i></blockquote>",
+                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner</i>, 159 T.C. 33 (2022)</blockquote>",
                 slug=self.slug,
                 seo_title="Tax Court Reports Pamphlets",
                 content_type=content_type,

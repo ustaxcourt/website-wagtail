@@ -44,7 +44,7 @@ class DawsonFAQsRibbonInitializer:
                 "url": "/dawson-faqs-training-and-support",
             },
             {
-                "title": "Search and Public Access",
+                "title": "Searches and Public Access",
                 "icon": IconCategories.SEARCH,
                 "url": "/dawson-faqs-searches-public-access",
             },
