@@ -605,6 +605,7 @@ class JudgeCollection(ClusterableModel):
 
     name = models.CharField(
         max_length=255,
+        unique=True,
         help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
     )
 
