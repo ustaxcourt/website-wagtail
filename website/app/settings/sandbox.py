@@ -15,6 +15,9 @@ DEBUG = True
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "sandbox"
 
-LOGGING["root"]["handlers"] = ["console"]
+LOGGING["root"]["handlers"] = ["simple"]
+LOGGING["loggers"]["django"]["handlers"] = ["simple"]
+LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
+LOGGING["loggers"]["home"]["handlers"] = ["simple"]
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
