@@ -34,7 +34,9 @@ jobs:
       id: node-cache
       uses: actions/cache@v3
       with:
-        path: website/node_modules
+        path: |
+          website/node_modules
+          ~/.cache/Cypress
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install Node dependencies
