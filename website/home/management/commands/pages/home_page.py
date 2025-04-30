@@ -1,6 +1,9 @@
 from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 carousel_images = [
     {
@@ -19,19 +22,19 @@ carousel_images = [
 
 
 class HomePageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         root = Page.objects.filter(depth=1).first()
         title = "Home"
 
         if not root:
-            self.logger.write("Error: No root page found. Cannot create Home page.")
+            logger.info("Error: No root page found. Cannot create Home page.")
             return
 
         if HomePage.objects.filter(title=title).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
         homepage = HomePage(
@@ -59,14 +62,14 @@ class HomePageInitializer(PageInitializer):
         if site:
             site.root_page = homepage
             site.save()
-            self.logger.write("Updated default site root to the new Home page.")
+            logger.info("Updated default site root to the new Home page.")
 
         # delete the wagtail generated page (it doesn't have the mixin)
         wagtailHome = Page.objects.filter(
             title="Welcome to your new Wagtail site!"
         ).first()
         if wagtailHome:
-            self.logger.write("Deleting the default wagtail home")
+            logger.info("Deleting the default wagtail home")
             wagtailHome.delete()
 
         # set the new home page slug as home now that the wagtail default page is deleted
@@ -110,18 +113,16 @@ class HomePageInitializer(PageInitializer):
             ),
         )
 
-        self.logger.write("Successfully created the new Home page.")
+        logger.info("Successfully created the new Home page.")
 
     def update(self):
         title = "Home"
 
         if HomePage.objects.filter(title=title).exists():
-            self.logger.write(
-                f"- {title} page already exists. Updating the existing page."
-            )
+            logger.info(f"- {title} page already exists. Updating the existing page.")
             homepage = HomePage.objects.get(title=title)
         else:
-            self.logger.write("Page does not exist. Nothing to update. STOPPING.")
+            logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
 
         remote_proceeding_entry = HomePageEntry.objects.filter(
@@ -135,8 +136,8 @@ class HomePageInitializer(PageInitializer):
                 )
             )
         else:
-            self.logger.write(
+            logger.info(
                 "Remote Proceedings Info entry does not exist. Nothing to update."
             )
 
-        self.logger.write("Successfully updated the new Home page.")
+        logger.info("Successfully updated the new Home page.")

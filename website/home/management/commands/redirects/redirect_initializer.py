@@ -1,9 +1,12 @@
 from wagtail.contrib.redirects.models import Redirect
 from django.core.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RedirectInitializer:
-    def __init__(self, logger):
+    def __init__(self):
         self.logger = logger
 
     def create_redirect(self, old_path, new_path, is_permanent=True):
@@ -16,13 +19,13 @@ class RedirectInitializer:
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
         if Redirect.objects.filter(old_path=old_path).exists():
-            self.logger.write(f"- Redirect from '{old_path}' already exists.")
+            logger.info(f"- Redirect from '{old_path}' already exists.")
             return
 
         try:
             Redirect.objects.create(
                 old_path=old_path, redirect_link=new_path, is_permanent=is_permanent
             )
-            self.logger.write(f"Created redirect: {old_path} → {new_path}")
+            logger.info(f"Created redirect: {old_path} → {new_path}")
         except ValidationError as e:
-            self.logger.write(f"Error creating redirect for '{old_path}': {e}")
+            logger.info(f"Error creating redirect for '{old_path}': {e}")

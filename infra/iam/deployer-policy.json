@@ -35,7 +35,6 @@
     {
       "Effect": "Allow",
       "Action": [
-        "s3:HeadObject",
         "s3:GetObject",
         "s3:PutObject",
         "s3:DeleteObject"
@@ -123,6 +122,11 @@
     {
       "Effect": "Allow",
       "Action": ["acm:*"],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["cloudwatch:*"],
       "Resource": "*"
     }
   ]

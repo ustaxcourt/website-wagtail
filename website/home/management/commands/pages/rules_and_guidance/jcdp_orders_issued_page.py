@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage, IconCategories
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 chief_judge_2024_docs = [
@@ -124,8 +127,8 @@ council_2017_docs = [
 
 
 class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -157,10 +160,10 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
         title = "Orders Issued in Judicial Conduct and Disability Cases"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         chief_judge_column = [
             {
@@ -338,4 +341,4 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
             )
         )
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

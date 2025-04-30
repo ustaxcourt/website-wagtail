@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import EnhancedStandardPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 docs = {
     "Rule-25_Amended_03202023.pdf": "",
@@ -8,15 +11,15 @@ docs = {
 
 
 class HolidaysPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "holidays"
 
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            self.logger.write("Root page (home) does not exist.")
+            logger.info("Root page (home) does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -25,10 +28,10 @@ class HolidaysPageInitializer(PageInitializer):
         title = "Legal Holidays"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for document in docs.keys():
             uploaded_document = self.load_document_from_documents_dir(None, document)
@@ -68,5 +71,5 @@ class HolidaysPageInitializer(PageInitializer):
                 ],
             )
         )
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")
         new_page.save()

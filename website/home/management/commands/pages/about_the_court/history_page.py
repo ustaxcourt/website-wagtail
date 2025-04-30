@@ -5,6 +5,9 @@ from home.models import (
     EnhancedStandardPage,
     PhotoDedication,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 HISTORY_DATA = [
     {
@@ -15,15 +18,15 @@ HISTORY_DATA = [
 
 
 class HistoryPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "history"
 
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            self.logger.write("Root page (home) does not exist.")
+            logger.info("Root page (home) does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -32,17 +35,17 @@ class HistoryPageInitializer(PageInitializer):
         title = "History"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         history_image = self.load_image_from_images_dir(
             "history", "us_tax_court_building.jpg", "US Tax Court Building"
         )
 
         if not history_image:
-            self.logger.write("Failed to load history image. Aborting page creation.")
+            logger.info("Failed to load history image. Aborting page creation.")
             return
 
         info = [
@@ -140,4 +143,4 @@ class HistoryPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")
