@@ -85,6 +85,13 @@ class HomePageInitializer(PageInitializer):
         )
         HomePageEntry.objects.create(
             homepage=homepage,
+            title="Tax Court disciplinary matters.",
+            body=(
+                "See the <a target='_blank' href='/press-releases'>Press Release</a>."
+            ),
+        )
+        HomePageEntry.objects.create(
+            homepage=homepage,
             title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
                 "See the <a target='_blank' href='/press-releases'>Press Release</a>."
