@@ -20,6 +20,12 @@ carousel_images = [
     },
 ]
 
+home_docs = {
+    "04292025.pdf": "",
+    "04162025.pdf": "",
+    "04072025.pdf": "",
+}
+
 
 class HomePageInitializer(PageInitializer):
     def __init__(self):
@@ -64,6 +70,11 @@ class HomePageInitializer(PageInitializer):
             site.save()
             logger.info("Updated default site root to the new Home page.")
 
+        for document in home_docs.keys():
+           uploaded_document = self.load_document_from_documents_dir(None, document)
+           home_docs[document] = uploaded_document.file.url
+
+
         # delete the wagtail generated page (it doesn't have the mixin)
         wagtailHome = Page.objects.filter(
             title="Welcome to your new Wagtail site!"
@@ -87,21 +98,21 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Tax Court disciplinary matters.",
             body=(
-                "See the <a target='_blank' href='/press-releases'>Press Release</a>."
+                f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank">Press Release</a>."""
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
-                "See the <a target='_blank' href='/press-releases'>Press Release</a>."
+                f"""See the <a href="{home_docs["04162025.pdf"]}" target="_blank">Press Release</a>."""
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025.",
             body=(
-                "See the <a target='_blank' href='/press-releases'>Press Release</a>."
+                f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank">Press Release</a>."""
             ),
         )
         HomePageEntry.objects.create(
