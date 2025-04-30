@@ -43,7 +43,7 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
-      - name: Build USWDS
+      - name: Install dependencies
         run: |
           cd website
           make setup
