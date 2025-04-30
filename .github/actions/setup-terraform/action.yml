@@ -1,0 +1,17 @@
+name: 'Setup Terraform'
+description: 'Sets up Terraform with a specific version'
+
+inputs:
+  terraform_version:
+    description: 'The version of Terraform to install'
+    required: false
+    default: '1.11.4'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+        terraform_wrapper: false
