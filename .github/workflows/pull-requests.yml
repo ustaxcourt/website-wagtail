@@ -33,7 +33,7 @@ jobs:
         make compile-uswds
 
     - name: Run pre-commit hooks
-      run:
+      run: |
         cd website
         make precommit
 
