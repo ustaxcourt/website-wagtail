@@ -33,7 +33,9 @@ jobs:
         make compile-uswds
 
     - name: Run pre-commit hooks
-      run: pre-commit run --all-files
+      run:
+        cd website
+        make precommit
 
     - name: Run Unit Tests
       run: |
