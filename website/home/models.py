@@ -756,7 +756,7 @@ class HomePageImage(Orderable):
 
 class HomePageEntry(models.Model):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=1000)
     body = RichTextField(blank=True)
 
     panels = [
