@@ -1,5 +1,6 @@
 import boto3
 import logging
+import os
 from botocore.exceptions import ClientError
 from django.conf import settings
 from django.urls import include, path
@@ -16,33 +17,61 @@ def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    # Initialize S3 client
-    s3 = boto3.client(
-        "s3",
-        region_name="us-east-1",
-    )
+    # Remove the .pdf extension if present
+    base_filename, ext = os.path.splitext(filename)
+    if ext.lower() != ".pdf":
+        logger.warning(f"Unexpected file extension: {ext}")
+        return render(request, "404.html", status=404)
 
-    # Construct the key
+    # Initialize S3 client
+    s3 = boto3.client("s3", region_name="us-east-1")
+
+    # Prefix to search for files like "test.pdf" and "test_1234.pdf"
     prefix = "documents/"
-    possible_key = f"{prefix}{filename}"
+    full_search = f"{prefix}{base_filename}"
 
     try:
-        # Check if object exists
-        s3.head_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=possible_key)
+        # List objects that match the prefix
+        response = s3.list_objects_v2(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix=full_search
+        )
 
-        # If it exists, redirect to S3 URL
-        s3_url = f"{settings.MEDIA_URL}{possible_key}"
-        return redirect(s3_url)
-    except ClientError as e:
-        # Handle object not found error specifically
-        if e.response["Error"]["Code"] == "404":
-            return render(request, "404.html", status=404)
-        else:
+        contents = response.get("Contents", [])
+
+        # Only include PDF files that start with the base name
+        matched_keys = [
+            obj["Key"]
+            for obj in contents
+            if obj["Key"].startswith(full_search) and obj["Key"].endswith(".pdf")
+        ]
+
+        if len(matched_keys) != 1:
             logger.warning(
-                f"Unsuccessful attempt to redirect original URL: {request.get_full_path()}"
+                f"Found non-singular matches for: {filename}, matches found: {matched_keys}"
             )
-            # Unexpected error - raise for visibility
-            raise
+            return render(request, "404.html", status=404)
+
+        s3_key = matched_keys[0]
+        expected_key = f"{prefix}{filename}"  # This includes '.pdf'
+
+        # Now check that it is the expected key
+        if s3_key != expected_key:
+            logger.warning(
+                f"Found non-specific match for: {filename}, match found: {s3_key}"
+            )
+
+        s3_url = f"{settings.MEDIA_URL}{s3_key}"
+        return redirect(s3_url)
+
+    except ClientError as e:
+        error_code = e.response.get("Error", {}).get("Code", "Unknown")
+        error_message = e.response.get("Error", {}).get("Message", str(e))
+        request_id = e.response.get("ResponseMetadata", {}).get("RequestId", "Unknown")
+
+        logger.error(
+            f"S3 ClientError occurred - Code: {error_code}, Message: {error_message}, Request ID: {request_id}"
+        )
+        return render(request, "404.html", status=404)
 
 
 urlpatterns = [
