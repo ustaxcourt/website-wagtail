@@ -1,5 +1,5 @@
 from .base import *  # noqa: F403
-from .base import MIDDLEWARE
+from .base import LOGGING, MIDDLEWARE
 import os
 
 
@@ -14,5 +14,11 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "sandbox"
+
+LOGGING["root"]["handlers"] = ["simple"]
+LOGGING["loggers"]["django"]["handlers"] = ["simple"]
+LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
+LOGGING["loggers"]["home"]["handlers"] = ["simple"]
+LOGGING["root"]["handlers"] = ["console"]
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE

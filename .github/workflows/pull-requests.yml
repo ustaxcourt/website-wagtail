@@ -17,10 +17,20 @@ jobs:
     - name: Set up Python
       uses: ./.github/actions/setup-python
 
-    - name: Install dependencies
+    - name: Install python dependencies
       run: |
         cd website
-        make setup
+        make pip-install
+
+    - name: Install Node dependencies
+      run: |
+        cd website
+        make npm-install
+
+    - name: Compile USWDS
+      run: |
+        cd website
+        make compile-uswds
 
     - name: Run pre-commit hooks
       run: pre-commit run --all-files
