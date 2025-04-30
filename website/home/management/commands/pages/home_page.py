@@ -80,21 +80,21 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="",
             body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
+                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
-                "See the <a target='_blank' href='/press-release'>Press Release</a>."
+                "See the <a target='_blank' href='/press-releases'>Press Release</a>."
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025.",
             body=(
-                "See the <a target='_blank' href='/press-release'>Press Release</a>."
+                "See the <a target='_blank' href='/press-releases'>Press Release</a>."
             ),
         )
         HomePageEntry.objects.create(
