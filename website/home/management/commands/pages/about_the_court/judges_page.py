@@ -388,11 +388,13 @@ class JudgesPageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        judge_collection = JudgeCollection.objects.create(name="Judges")
-        senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
-        special_trial_judge_collection = JudgeCollection.objects.create(
+        judge_collection = JudgeCollection.objects.update_or_create(name="Judges")[0]
+        senior_judge_collection = JudgeCollection.objects.update_or_create(
+            name="Senior Judges"
+        )[0]
+        special_trial_judge_collection = JudgeCollection.objects.update_or_create(
             name="Special Trial Judges"
-        )
+        )[0]
 
         for judge in all_judges:
             JudgeProfile.objects.update_or_create(
