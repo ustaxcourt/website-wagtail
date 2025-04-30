@@ -29,8 +29,8 @@ ropp_tc_reports_docs = [
 
 
 class UnlistedFiles(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         for doc in ropp_tc_reports_docs:

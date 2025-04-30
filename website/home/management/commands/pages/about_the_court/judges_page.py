@@ -6,6 +6,10 @@ from home.models import (
     JudgeCollection,
     JudgeRole,
 )
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 all_judges = [
     {
@@ -57,16 +61,6 @@ all_judges = [
         "title": "Judge",
         "chambers_telephone": "(202) 521-0670",
         "bio": "Judge. Born in Colorado. Bachelor of Business Administration from the University of Texas at Austin, cum laude, and Juris Doctor from the University of Texas School of Law. Certified Public Accountant (Texas, 1988); admitted to the State Bar of Texas (1992). Ernst & Whinney (1986-89); Law Clerk to Justice Cook of the Texas Supreme Court; Attorney-Adviser to Judge Mary Ann Cohen of the US Tax Court (1992-93); Adjunct Professor at Our Lady of the Lake University (1997-99); Partner with Clark Hill PLC. Recipient of the American Bar Association Section of Taxation's Janet Spragens Pro Bono Award (2009); Tax Person of the Year by Tax Analysts (2012); San Antonio Tax Lawyer of the Year (2011, 2017, 2018). Chair, State Bar of Texas Tax Section for the 2013-14 term. Appointed by President Trump as Judge of the United States Tax Court; sworn in on October 12, 2018 for a term ending October 11, 2033.",
-    },
-    {
-        "first_name": "Maurice",
-        "middle_initial": "B.",
-        "last_name": "Foley",
-        "suffix": "",
-        "display_name": "Maurice B. Foley",
-        "title": "Judge",
-        "chambers_telephone": "(202) 521-0681",
-        "bio": "Judge. Received a Bachelor of Arts degree from Swarthmore College; a Juris Doctor from University of California, Berkeley School of Law; and a Masters of Law in Taxation from Georgetown University Law Center. Prior to the appointment to the Court, was an attorney for the Legislation and Regulations Division of the Internal Revenue Service, Tax Counsel for the United States Senate Committee on Finance, and Deputy Tax Legislative Counsel in the U.S. Treasury's Office of Tax Policy. Appointed by President Clinton as Judge, United States Tax Court, and sworn in on April 10, 1995, for a term ending April 9, 2010. Reappointed by President Obama and sworn in on November 25, 2011, for a term ending November 24, 2026. Served as Chief Judge of the Court June 1, 2018, through May 31, 2022. <p><strong>Additional Information or Requirements for Law Clerk Applicants:</strong></p><p><ul><li>LL.M.</li><li>Member of Bar</li><li>Experienced attorney in tax (must have 2-3 years experience)</li><li>Excellent writing skills</li><li>Cover Letter</li><li>Resume</li><li>Transcripts (J.D. and LL.M)</li><li>Writing Sample</li><li>References (3)</li></ul></p>",
     },
     {
         "first_name": "Cathy",
@@ -207,6 +201,16 @@ all_judges = [
         "title": "Senior Judge",
         "chambers_telephone": "(202) 521-0655",
         "bio": "Senior Judge. Born in New Mexico. Attended public schools in Los Angeles, CA; B.S., University of California, at Los Angeles, 1964; J.D., University of Southern California School of Law, 1967. Practiced law in Los Angeles, member in law firm of Abbott & Cohen. American Bar Association, Section of Taxation, and Continuing Legal Education activities. Received Dana Latham Memorial Award from Los Angeles County Bar Association Taxation Section, May 30, 1997; Jules Ritholz Memorial Merit Award from ABA Tax Section Committee on Civil and Criminal Tax Penalties, 1999; and Joanne M. Garvey Award from California Bar Taxation Section on November 7, 2008. Appointed by President Reagan as Judge of the United States Tax Court; sworn in on September 24, 1982 for a term ending September 23, 1997.  Reappointed by President Clinton on November 7, 1997 for a term ending November 6, 2012.  Served as Chief Judge from June 1, 1996 to September 23, 1997 and from November 7, 1997 to May 31, 2000.  Assumed senior status on October 1, 2012 and continues to perform judicial duties as Senior Judge on recall.",
+    },
+    {
+        "first_name": "Maurice",
+        "middle_initial": "B.",
+        "last_name": "Foley",
+        "suffix": "",
+        "display_name": "Maurice B. Foley",
+        "title": "Senior Judge",
+        "chambers_telephone": "(202) 521-0681",
+        "bio": "Judge. Received a Bachelor of Arts degree from Swarthmore College; a Juris Doctor from University of California, Berkeley School of Law; and a Masters of Law in Taxation from Georgetown University Law Center. Prior to the appointment to the Court, was an attorney for the Legislation and Regulations Division of the Internal Revenue Service, Tax Counsel for the United States Senate Committee on Finance, and Deputy Tax Legislative Counsel in the U.S. Treasury's Office of Tax Policy. Appointed by President Clinton as Judge, United States Tax Court, and sworn in on April 10, 1995, for a term ending April 9, 2010. Reappointed by President Obama and sworn in on November 25, 2011, for a term ending November 24, 2026. Served as Chief Judge of the Court June 1, 2018, through May 31, 2022. <p><strong>Additional Information or Requirements for Law Clerk Applicants:</strong></p><p><ul><li>LL.M.</li><li>Member of Bar</li><li>Experienced attorney in tax (must have 2-3 years experience)</li><li>Excellent writing skills</li><li>Cover Letter</li><li>Resume</li><li>Transcripts (J.D. and LL.M)</li><li>Writing Sample</li><li>References (3)</li></ul></p>",
     },
     {
         "first_name": "Joseph Robert",
@@ -362,15 +366,15 @@ all_judges = [
 
 
 class JudgesPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "judges"
 
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            self.logger.write("Root page (home) does not exist.")
+            logger.info("Root page (home) does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -379,16 +383,18 @@ class JudgesPageInitializer(PageInitializer):
         title = "Judges"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
-        judge_collection = JudgeCollection.objects.create(name="Judges")
-        senior_judge_collection = JudgeCollection.objects.create(name="Senior Judges")
-        special_trial_judge_collection = JudgeCollection.objects.create(
+        judge_collection = JudgeCollection.objects.update_or_create(name="Judges")[0]
+        senior_judge_collection = JudgeCollection.objects.update_or_create(
+            name="Senior Judges"
+        )[0]
+        special_trial_judge_collection = JudgeCollection.objects.update_or_create(
             name="Special Trial Judges"
-        )
+        )[0]
 
         for judge in all_judges:
             JudgeProfile.objects.update_or_create(
@@ -481,4 +487,4 @@ class JudgesPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Created the '{title}' page with judge collections.")
+        logger.info(f"Created the '{title}' page with judge collections.")

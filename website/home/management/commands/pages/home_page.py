@@ -1,6 +1,9 @@
 from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 carousel_images = [
     {
@@ -19,19 +22,19 @@ carousel_images = [
 
 
 class HomePageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         root = Page.objects.filter(depth=1).first()
         title = "Home"
 
         if not root:
-            self.logger.write("Error: No root page found. Cannot create Home page.")
+            logger.info("Error: No root page found. Cannot create Home page.")
             return
 
         if HomePage.objects.filter(title=title).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
         homepage = HomePage(
@@ -59,14 +62,14 @@ class HomePageInitializer(PageInitializer):
         if site:
             site.root_page = homepage
             site.save()
-            self.logger.write("Updated default site root to the new Home page.")
+            logger.info("Updated default site root to the new Home page.")
 
         # delete the wagtail generated page (it doesn't have the mixin)
         wagtailHome = Page.objects.filter(
             title="Welcome to your new Wagtail site!"
         ).first()
         if wagtailHome:
-            self.logger.write("Deleting the default wagtail home")
+            logger.info("Deleting the default wagtail home")
             wagtailHome.delete()
 
         # set the new home page slug as home now that the wagtail default page is deleted
@@ -75,30 +78,23 @@ class HomePageInitializer(PageInitializer):
 
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Remote Proceedings Info",
+            title="",
             body=(
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Closed for Holidays",
+            title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
-                "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
+                "See the <a target='_blank' href='/press-release'>Press Release</a>."
             ),
         )
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Chief Judge Kathleen Kerrigan announced today that Cathy Fung was sworn in as Judge of the United States Tax Court.",
+            title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025.",
             body=(
-                'See the <a href="https://ustaxcourt.gov/resources/press/12132024.pdf" target="_blank">Press Release</a>.'
-            ),
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="In Memory of Victor Lundy",
-            body=(
-                'Victor Lundy, architect of the Tax Court courthouse in Washington, D.C., died peacefully in his sleep on November 4, 2024. He was 101. The Tax Court will continue to be good stewards of this special building, a prime example of Mr. Lundy’s artistry in architecture. Learn more by watching <a href="https://www.youtube.com/watch?v=s6umLipF7-E" target="_blank">Victor Lundy: Sculptor of Space</a> or by visiting the <a href="https://www.gsa.gov/real-estate/gsa-properties/visiting-public-buildings/united-states-tax-court" target="_blank">GSA website</a>.'
+                "See the <a target='_blank' href='/press-release'>Press Release</a>."
             ),
         )
         HomePageEntry.objects.create(
@@ -112,23 +108,21 @@ class HomePageInitializer(PageInitializer):
                 "<li>call or email threatening arrest;</li>"
                 "<li>call or email insisting that a specific payment method be used to pay Court fees, a tax debt, or requesting credit or debit card numbers over the phone.</li>"
                 "</ul>"
-                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.fbi.gov' target='_blank'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI—government agencies that are unrelated to the Tax Court.</p>"
+                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.fbi.gov' target='_blank'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI — government agencies that are unrelated to the Tax Court.</p>"
                 "<p>If you would like to verify that the communication you received is really from the Tax Court, please call the Court at (202) 521-0700.</p>"
             ),
         )
 
-        self.logger.write("Successfully created the new Home page.")
+        logger.info("Successfully created the new Home page.")
 
     def update(self):
         title = "Home"
 
         if HomePage.objects.filter(title=title).exists():
-            self.logger.write(
-                f"- {title} page already exists. Updating the existing page."
-            )
+            logger.info(f"- {title} page already exists. Updating the existing page.")
             homepage = HomePage.objects.get(title=title)
         else:
-            self.logger.write("Page does not exist. Nothing to update. STOPPING.")
+            logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
 
         remote_proceeding_entry = HomePageEntry.objects.filter(
@@ -142,8 +136,8 @@ class HomePageInitializer(PageInitializer):
                 )
             )
         else:
-            self.logger.write(
+            logger.info(
                 "Remote Proceedings Info entry does not exist. Nothing to update."
             )
 
-        self.logger.write("Successfully updated the new Home page.")
+        logger.info("Successfully updated the new Home page.")

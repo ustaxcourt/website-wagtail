@@ -2,11 +2,14 @@ from wagtail.models import Page
 from home.models import RedirectPage
 from home.management.commands.pages.page_initializer import PageInitializer
 from django.contrib.contenttypes.models import ContentType
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RedirectPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "redirect"
 
     def create(self):
@@ -18,10 +21,10 @@ class RedirectPageInitializer(PageInitializer):
         title = "redirect"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         content_type = ContentType.objects.get_for_model(RedirectPage)
 
@@ -36,4 +39,4 @@ class RedirectPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{new_page.title}' page.")
+        logger.info(f"Successfully created the '{new_page.title}' page.")

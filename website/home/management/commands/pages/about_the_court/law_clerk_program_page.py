@@ -1,18 +1,21 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class LawClerkProgramPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         # Find the Employment page instead of home page
         try:
             employment_page = Page.objects.get(slug="employment")
         except Page.DoesNotExist:
-            self.logger.write(
+            logger.info(
                 "Error: Employment page does not exist. Please create it first."
             )
             return
@@ -21,10 +24,10 @@ class LawClerkProgramPageInitializer(PageInitializer):
         title = "Law Clerk Program"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         # Add as child of employment_page instead of home_page
         employment_page.add_child(
@@ -44,7 +47,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                                         <strong>Law Clerk Interview Days will be updated in April 2025.</strong><br/>
                                         Last held August-September 2024.
                                         <br/><br/>
-                                        Law clerk vacancies also may occur throughout the year. Below is a list of Judges and Special Trial Judges currently recruiting for law clerks. Click each Judge's name to view their biography which may contain Additional Information or Requirements for Law Clerk Applicants. More information and specific application requirements are provided in the Application Procedure section below.""",
+                                        Law clerk vacancies also may occur throughout the year. Below is a list of Judges and Special Trial Judges currently recruiting for law clerks. Click each Judge's name to view their biography which may contain Additional Information or Requirements for Law Clerk Applicants. More information and specific application requirements are provided in the <a href="#AP" title="Application Procedure">Application Procedure</a> section below.""",
                     },
                     {"type": "hr", "value": True},
                     {
@@ -100,4 +103,4 @@ class LawClerkProgramPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

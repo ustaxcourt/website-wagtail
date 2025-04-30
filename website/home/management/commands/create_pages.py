@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Initialize redirects first
-        initializer = RedirectInitializer(self.stdout)
+        initializer = RedirectInitializer()
 
         redirects = [
             {
@@ -173,28 +173,28 @@ class Command(BaseCommand):
 
         # Continue with existing initialization
         for snippet_class in snippets_to_initialize:
-            snippet_instance = snippet_class(self.stdout)
+            snippet_instance = snippet_class()
             snippet_instance.create()
 
         for page_class in pages_to_initialize:
-            page_instance = page_class(self.stdout)
+            page_instance = page_class()
             page_instance.create()
 
         self.stdout.write(self.style.SUCCESS("All pages have been initialized."))
 
         # Update pages
         for page_class in pages_to_update:
-            page_instance = page_class(self.stdout)
+            page_instance = page_class()
             page_instance.update()
 
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
 
         # Initialize navigation last
-        nav_initializer = NavigationInitializer(self.stdout)
+        nav_initializer = NavigationInitializer()
         nav_initializer.create()
         self.stdout.write(self.style.SUCCESS("Navigation has been initialized."))
 
         # Initialize unlisted files
-        unlisted_files_initializer = UnlistedFiles(self.stdout)
+        unlisted_files_initializer = UnlistedFiles()
         unlisted_files_initializer.create()
         self.stdout.write(self.style.SUCCESS("Unlisted files have been initialized."))

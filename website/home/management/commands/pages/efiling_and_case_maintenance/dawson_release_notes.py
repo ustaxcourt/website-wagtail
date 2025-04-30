@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import ReleaseNotes
+import logging
+
+logger = logging.getLogger(__name__)
 
 docs = {
     "Administrative_Order_2023-02.pdf": {
@@ -19,8 +22,8 @@ docs = {
 
 
 class DawsonReleaseNotesInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -32,10 +35,10 @@ class DawsonReleaseNotesInitializer(PageInitializer):
 
         page = Page.objects.filter(slug=slug).first()
         if page:
-            self.logger.write(f"- {title} page already exists. Updating...")
+            logger.info(f"- {title} page already exists. Updating...")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for doc in docs:
             docs[doc]["document"] = self.load_document_from_documents_dir(
@@ -45,6 +48,14 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             )
 
         release_entries = [
+            {
+                "release_date": "2025-04-13",
+                "description": """<ul>
+                                    <li>New filters for Practitioner type, Practice type, Admissions Status, and Original Bar State are now present on the Practitioner Search page.</li>
+                                    <li>Resolved issue that caused search terms in the Case, Order, Opinion, and Practitioner search fields to persist when it should be cleared.</li>
+                                    <li>Resolved issue that caused a Docket Record filter to persist when is should be cleared.</li>
+                                </ul>""",
+            },
             {
                 "release_date": "2025-04-05",
                 "description": "<ul><li>Fixed a radio button formatting issue on the Petition workflow.</li></ul>",

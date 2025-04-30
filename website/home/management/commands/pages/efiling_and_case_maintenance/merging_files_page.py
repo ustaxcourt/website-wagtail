@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 merging_files_images = [
@@ -32,8 +35,8 @@ merging_files_images = [
 
 
 class MergingFilesPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "merging-files"
 
     def create(self):
@@ -45,10 +48,10 @@ class MergingFilesPageInitializer(PageInitializer):
         slug = self.slug
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         uploaded_images = {}
 
@@ -144,4 +147,4 @@ class MergingFilesPageInitializer(PageInitializer):
         )
 
         new_page.save_revision().publish()
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

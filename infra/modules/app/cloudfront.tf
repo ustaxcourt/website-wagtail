@@ -128,6 +128,14 @@ resource "aws_s3_bucket_acl" "cloudfront_logs" {
   acl    = "private"
 }
 
+# Disable ACLs and use bucket policy instead
+resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 

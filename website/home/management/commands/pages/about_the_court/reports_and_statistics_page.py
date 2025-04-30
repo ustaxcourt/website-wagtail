@@ -2,6 +2,9 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import IconCategories
 from home.models import EnhancedStandardPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 reports_and_statistics_docs = {
     "appellate_report_april_2021.pdf": "",
@@ -40,6 +43,7 @@ reports_and_statistics_docs = {
     "appellate_report_march_2022.pdf": "",
     "appellate_report_march_2023.pdf": "",
     "appellate_report_march_2024.pdf": "",
+    "appellate_report_march_2025.pdf": "",
     "appellate_report_may_2021.pdf": "",
     "appellate_report_may_2022.pdf": "",
     "appellate_report_may_2024.pdf": "",
@@ -68,8 +72,8 @@ reports_and_statistics_docs = {
 
 
 class ReportsAndStatisticsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -80,10 +84,10 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
         title = "Reports & Statistics"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for doc_name in reports_and_statistics_docs.keys():
             document = self.load_document_from_documents_dir(
@@ -166,6 +170,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                         "type": "links",
                         "value": {
                             "links": [
+                                {
+                                    "title": "Cases Commenced in the Courts of Appeals, March 2025",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_march_2025.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
                                 {
                                     "title": "Cases Commenced in the Courts of Appeals, February 2025",
                                     "icon": IconCategories.PDF,
@@ -456,6 +468,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
+                                    "title": "Cases Commenced in the Courts of Appeals, May 2022",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_may_2022.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
                                     "title": "Cases Commenced in the Courts of Appeals, April 2022",
                                     "icon": IconCategories.PDF,
                                     "document": reports_and_statistics_docs[
@@ -551,6 +571,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                                     "icon": IconCategories.PDF,
                                     "document": reports_and_statistics_docs[
                                         "appellate_report_june_2021.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
+                                {
+                                    "title": "Cases Commenced in the Courts of Appeals, May 2021",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_may_2021.pdf"
                                     ].id,
                                     "url": None,
                                 },
