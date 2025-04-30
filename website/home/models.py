@@ -227,6 +227,7 @@ class CommonBlock(blocks.StreamBlock):
     )
     h2WithAnchorTag = blocks.StructBlock(
         [
+            ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
         ],
         label="Heading 2 with Anchor Tag",
