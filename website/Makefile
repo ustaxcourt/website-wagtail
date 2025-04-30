@@ -82,11 +82,11 @@ compile-uswds:
 npm-install:
 	npm install
 
-pip-install:
+pip-install: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
 
-setup: init pip-install npm-install compile-uswds
+setup: pip-install npm-install compile-uswds
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "webmaster@ustaxcourt.gov"
