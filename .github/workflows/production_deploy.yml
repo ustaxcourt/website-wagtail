@@ -55,16 +55,16 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
-      - name: Build USWDS
-        run: |
-          cd website
-          make setup
-
       - name: Install Python dependencies
         uses: ./.github/actions/install-python-deps
 
       - name: Install Node dependencies
         uses: ./.github/actions/install-npm-deps
+
+      - name: Compile USWDS
+        run: |
+          cd website
+          make compile-uswds
 
       - name: Apply Terraform
         id: tf_outputs
