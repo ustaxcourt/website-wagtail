@@ -60,7 +60,7 @@ def all_legacy_documents_redirect(request, filename):
                 f"Found non-specific match for: {filename}, match found: {s3_key}"
             )
 
-        s3_url = f"{settings.MEDIA_URL}{prefix}{filename}"
+        s3_url = f"{settings.DOCUMENT_REDIRECT_URL}{prefix}{filename}"
         return redirect(s3_url)
 
     except ClientError as e:
