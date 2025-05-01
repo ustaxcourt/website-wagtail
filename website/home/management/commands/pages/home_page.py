@@ -27,6 +27,7 @@ home_docs = {
     "04072025.pdf": "",
 }
 
+
 class HomePageInitializer(PageInitializer):
     def __init__(self):
         super().__init__()
