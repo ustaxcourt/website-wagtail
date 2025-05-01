@@ -19,6 +19,5 @@ LOGGING["root"]["handlers"] = ["simple"]
 LOGGING["loggers"]["django"]["handlers"] = ["simple"]
 LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
 LOGGING["loggers"]["home"]["handlers"] = ["simple"]
-LOGGING["root"]["handlers"] = ["console"]
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
