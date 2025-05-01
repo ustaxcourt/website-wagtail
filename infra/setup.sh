@@ -22,6 +22,12 @@ required_env_vars=(
 )
 check_env_vars "${required_env_vars[@]}"
 
+if [ "$ENVIRONMENT" = "production" ]; then
+  export TF_VAR_prevent_db_deletion="true"
+else
+  export TF_VAR_prevent_db_deletion="false"
+fi
+
 export TF_VAR_database_password=$DATABASE_PASSWORD
 export TF_VAR_bastion_public_key=$BASTION_PUBLIC_KEY
 export TF_VAR_environment=$ENVIRONMENT
