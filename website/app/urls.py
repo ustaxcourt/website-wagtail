@@ -9,6 +9,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.documents.models import Document
 from django.shortcuts import redirect, render
 from django.urls import re_path
 
@@ -23,56 +24,38 @@ def all_legacy_documents_redirect(request, filename):
         logger.warning(f"Unexpected file extension: {ext}")
         return render(request, "404.html", status=404)
 
-    # Initialize S3 client
-    s3 = boto3.client("s3", region_name="us-east-1")
+    # Find documents where the filename starts with the base name
+    possible_matches = Document.objects.filter(file__icontains=base_filename)
 
-    # Prefix to search for files like "test.pdf" and "test_1234.pdf"
-    prefix = "documents/"
-    full_search = f"{prefix}{base_filename}"
+    # Filter down to .pdf files that start with the base filename
+    matched_docs = [
+        doc
+        for doc in possible_matches
+        if doc.filename.lower().endswith(".pdf")
+        and os.path.splitext(doc.filename)[0].startswith(base_filename)
+    ]
 
-    try:
-        # List objects that match the prefix
-        response = s3.list_objects_v2(
-            Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix=full_search
+    number_of_matches = len(matched_docs)
+
+    # Redirect if there is a single match and it is exact (ignoring case)
+    if number_of_matches == 1 and matched_docs[0].filename.lower() == filename.lower():
+        logger.info(
+            f"Successfully redirecting legacy resource request for: {filename}"
+            )
+        return redirect(matched_docs[0].file.url)
+    
+    # Log requests with no matches or multiple matches
+    if(number_of_matches == 0):
+        logger.warning(
+            f"No matches for: {filename}"
+        )
+    else:
+        logger.warning(
+            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
         )
 
-        contents = response.get("Contents", [])
-
-        # Only include PDF files that start with the base name
-        matched_keys = [
-            obj["Key"]
-            for obj in contents
-            if obj["Key"].startswith(full_search) and obj["Key"].endswith(".pdf")
-        ]
-
-        # Check if the number of responses is not 1
-        if len(matched_keys) != 1:
-            logger.warning(
-                f"Found non-singular matches for: {filename}, matches found: {matched_keys}"
-            )
-            return render(request, "404.html", status=404)
-
-        s3_key = matched_keys[0]
-        expected_key = f"{prefix}{filename}"  # This includes '.pdf'
-
-        # Now check that it is the expected key
-        if s3_key != expected_key:
-            logger.warning(
-                f"Found non-specific match for: {filename}, match found: {s3_key}"
-            )
-
-        s3_url = f"{settings.DOCUMENT_REDIRECT_URL}{prefix}{filename}"
-        return redirect(s3_url)
-
-    except ClientError as e:
-        error_code = e.response.get("Error", {}).get("Code", "Unknown")
-        error_message = e.response.get("Error", {}).get("Message", str(e))
-        request_id = e.response.get("ResponseMetadata", {}).get("RequestId", "Unknown")
-
-        logger.error(
-            f"S3 ClientError occurred - Code: {error_code}, Message: {error_message}, Request ID: {request_id}"
-        )
-        return render(request, "404.html", status=404)
+    # Not found or ambiguous matches result in 404
+    return render(request, "404.html", status=404)
 
 
 urlpatterns = [
