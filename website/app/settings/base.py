@@ -240,7 +240,6 @@ if aws_bucket_name:
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    DOCUMENT_REDIRECT_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
     WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_PREFIX = "files/documents"
     AWS_DEFAULT_ACL = None

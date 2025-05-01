@@ -1,17 +1,14 @@
-import boto3
 import logging
 import os
-from botocore.exceptions import ClientError
-from django.conf import settings
-from django.urls import include, path
 from django.contrib import admin
-from wagtail.contrib.sitemaps.views import sitemap
-from wagtail.admin import urls as wagtailadmin_urls
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.urls import include, path, re_path
 from wagtail import urls as wagtail_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
-from django.shortcuts import redirect, render
-from django.urls import re_path
 
 
 def all_legacy_documents_redirect(request, filename):
