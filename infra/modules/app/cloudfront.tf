@@ -114,14 +114,6 @@ resource "aws_s3_bucket" "cloudfront_logs" {
   bucket = var.environment == "sandbox" ? "${replace(var.domain_name, "-web.ustaxcourt.gov", "")}-ustc-website-cloudfront-logs": "${var.environment}-ustc-website-cloudfront-logs"
 }
 
-resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
-  bucket = aws_s3_bucket.cloudfront_logs.id
-
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
-
 resource "aws_s3_bucket_acl" "cloudfront_logs" {
   depends_on = [aws_s3_bucket_ownership_controls.cloudfront_logs]
   bucket = aws_s3_bucket.cloudfront_logs.id
