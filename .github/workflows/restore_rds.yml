@@ -47,3 +47,39 @@ jobs:
           ./infra/restore-rds.sh \
             "${{ github.event.inputs.source_instance_id }}" \
             "${{ github.event.inputs.snapshot_id }}"
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}"
+          echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "::add-mask::${SECRET_KEY}"
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          set -e
+
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make migrate
+          make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
+          make createpages settings="app.settings.${ENVIRONMENT}"
