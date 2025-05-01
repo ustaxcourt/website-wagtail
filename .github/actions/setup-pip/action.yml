@@ -16,3 +16,4 @@ runs:
       run: |
         cd website
         make pip-install
+      shell: bash

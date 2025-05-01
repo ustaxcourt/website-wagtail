@@ -37,6 +37,11 @@ jobs:
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
 
+      - name: Initialize Python Environment
+        run: |
+          cd website
+          make init
+
       - name: Set up Python
         uses: ./.github/actions/setup-python
 

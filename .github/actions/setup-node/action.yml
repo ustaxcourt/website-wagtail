@@ -31,3 +31,4 @@ runs:
       run: |
         cd website
         make npm-install
+      shell: bash

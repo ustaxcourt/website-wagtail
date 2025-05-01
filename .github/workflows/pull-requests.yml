@@ -14,13 +14,13 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: ./.github/actions/setup-python
-
     - name: Initialize Python Environment
       run: |
         cd website
         make init
+
+    - name: Set up Python
+      uses: ./.github/actions/setup-python
 
     - name: Install Python dependencies
       uses: ./.github/actions/install-python-deps
