@@ -12,6 +12,7 @@ from .petitioners_glossary_page import PetitionersGlossaryPageInitializer
 from .petitioners_start_page import PetitionersStartPageInitializer
 from .remote_basics import RemoteBasicsPageInitializer
 from .remote_proceedings_page import RemoteProceedingsPageInitializer
+from .remote_proceedings_calendar_page import RemoteProceedingsCalendarPageInitializer
 from .zoomgov_proceedings_page import ZoomgovProceedingPageInitializer
 from .judicial_conduct_and_disability_procedures_page import (
     JudicialConductAndDisabilityProceduresPageInitializer,
@@ -33,6 +34,7 @@ from .comments_and_suggestions_page import CommentsAndSuggestionsPageInitializer
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
     RemoteProceedingsPageInitializer,
+    RemoteProceedingsCalendarPageInitializer,
     AdministrativeOrdersPageInitializer,
     RulesPageInitializer,
     GuidenceForPetitionersPageInitializer,
