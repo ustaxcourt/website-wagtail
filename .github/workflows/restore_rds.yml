@@ -1,0 +1,49 @@
+name: Manual RDS Restore from Snapshot
+
+# Trigger the workflow manually from the Actions tab
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+          - sandbox
+          - development
+          - production
+        default: 'sandbox'
+      source_instance_id:
+        description: 'Source RDS Instance ID'
+        required: true
+        type: string
+      snapshot_id:
+        description: 'RDS Snapshot ID to restore from'
+        required: true
+        type: string
+
+jobs:
+  rds-restore:
+    environment: ${{ github.event.inputs.environment == 'development' && 'development' || github.event.inputs.environment == 'sandbox' && format('{0}_sandbox', github.actor) || github.event.inputs.environment == 'production' && 'production' || '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for configure-aws-credentials using OIDC
+      contents: read  # Required to checkout the repo
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Run RDS Restore Script
+        shell: bash
+        run: |
+          ./infra/restore-rds.sh \
+            "${{ github.event.inputs.source_instance_id }}" \
+            "${{ github.event.inputs.snapshot_id }}"
