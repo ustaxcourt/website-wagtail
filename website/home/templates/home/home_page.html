@@ -41,10 +41,12 @@
             </div>
             <div class="entries-list">
                 {% for entry in page.entries.all %}
-                    <div class="entry shadow-2">
-                        <h3>{{ entry.title }}</h3>
-                        <div>{{ entry.body|richtext }}</div>
-                    </div>
+                    {% if entry.end_date == None or entry.end_date >= today %}
+                        <div class="entry shadow-2">
+                            <h3>{{ entry.title }}</h3>
+                            <div>{{ entry.body| safe }}</div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
