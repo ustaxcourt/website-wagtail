@@ -45,6 +45,7 @@ def all_legacy_documents_redirect(request, filename):
             if obj["Key"].startswith(full_search) and obj["Key"].endswith(".pdf")
         ]
 
+        # Check if the number of responses is not 1
         if len(matched_keys) != 1:
             logger.warning(
                 f"Found non-singular matches for: {filename}, matches found: {matched_keys}"
