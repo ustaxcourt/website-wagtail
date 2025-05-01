@@ -16,19 +16,3 @@ runs:
         node-version: ${{ inputs.node_version }}
         cache: 'npm'
         cache-dependency-path: 'website/package-lock.json'
-
-    - name: Cache node modules
-      id: node-cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          website/node_modules
-          ~/.cache/Cypress
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-    - name: Install Node dependencies
-      if: steps.node-cache.outputs.cache-hit != 'true'
-      run: |
-        cd website
-        make npm-install
-      shell: bash
