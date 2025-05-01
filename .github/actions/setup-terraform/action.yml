@@ -1,0 +1,18 @@
+name: 'Setup Terraform'
+description: 'Sets up Terraform with version from .terraform-version file'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Load Terraform Version
+      id: terraform_version
+      shell: bash
+      run: |
+        TERRAFORM_VERSION=$(cat .terraform-version)
+        echo "terraform_version=${TERRAFORM_VERSION}" >> $GITHUB_OUTPUT
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ steps.terraform_version.outputs.terraform_version }}
+        terraform_wrapper: false
