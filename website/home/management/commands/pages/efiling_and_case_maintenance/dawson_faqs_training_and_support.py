@@ -5,6 +5,9 @@ from home.models import EnhancedStandardPage, NavigationRibbon
 from home.management.commands.snippets.dawson_faqs_ribbon import (
     dawson_faqs_ribbon_name,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 dawson_faqs_training_and_support_doc = {
     "DAWSON_Public_Training_Guide.pdf": "",
@@ -14,8 +17,8 @@ dawson_faqs_training_and_support_doc = {
 
 
 class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -26,10 +29,10 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
         title = "Frequently Asked Questions About DAWSON"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name=dawson_faqs_ribbon_name
@@ -50,7 +53,7 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
                             page has helpful information, including this <strong><a href="https://us02web.zoom.us/rec/play/EZTpkvLfDeXoLeW2YzhdTgpBcKoC10NumGESfgR2Aorw_E85V6vwwpCCmQOEzW9GI9M-0fvLZTxMPr_T.wWcxq5k6tZ3GI8OP" title="DAWSON Training Video">training video</a></strong>.
                             <ul>
                                 <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Public_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Public Training Guide: DAWSON_Public_Training_Guide.pdf</a></strong></li>
-                                <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Petitioner_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Petitioner Training Guide: DAWSON_Petitioner_Training_Guide.pdf</a></strong></li>
+                                <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Petitioner_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide"> DAWSON Self-Represented (Pro Se) Training Guide: DAWSON_Petitioner_Training_Guide.pdf</a></strong></li>
                                 <li><strong><a href="{dawson_faqs_training_and_support_doc["DAWSON_Practitioner_Training_Guide.pdf"]}" target="_blank" title="DAWSON Public Training Guide">DAWSON Practitioner Training Guide: DAWSON_Practitioner_Training_Guide.pdf</a></strong></li>
                             </ul>""",
                             "anchortag": "FAQS1",
@@ -80,4 +83,4 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
             )
         )
         new_page.save_revision().publish()
-        self.logger.write(f"Created the '{title}' page.")
+        logger.info(f"Created the '{title}' page.")

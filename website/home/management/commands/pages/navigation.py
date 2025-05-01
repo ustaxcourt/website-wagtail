@@ -1,21 +1,24 @@
 from home.management.commands.pages.page_initializer import PageInitializer
 from wagtail.models import Page
 from home.models import NavigationMenu
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NavigationInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def get_page(self, slug):
         try:
             page = Page.objects.live().filter(slug=slug).first()
             if page:
                 return page.specific
-            self.logger.write(f"WARNING: Page with slug '{slug}' not found")
+            logger.info(f"WARNING: Page with slug '{slug}' not found")
             return None
         except Page.DoesNotExist:
-            self.logger.write(f"WARNING: Page with slug '{slug}' not found")
+            logger.info(f"WARNING: Page with slug '{slug}' not found")
             return None
 
     def get_default_menu_items(self):
@@ -169,4 +172,4 @@ class NavigationInitializer(PageInitializer):
         revision = menu.save_revision()
         revision.publish()
 
-        self.logger.write("Successfully created Navigation menu.")
+        logger.info("Successfully created Navigation menu.")

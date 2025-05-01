@@ -1,18 +1,21 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import CSVUploadPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DocumentsEligibleEfilingPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "documents-eligible-for-efiling"
 
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
         except Page.DoesNotExist:
-            self.logger.write("Root page (home) does not exist.")
+            logger.info("Root page (home) does not exist.")
             return
 
         self.create_page_info(home_page)
@@ -21,10 +24,10 @@ class DocumentsEligibleEfilingPageInitializer(PageInitializer):
         title = "What Documents May be eFiled?"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         # Fetch the CSV document instance
         csv_document = self.load_document_from_documents_dir(
@@ -40,5 +43,5 @@ class DocumentsEligibleEfilingPageInitializer(PageInitializer):
                 csv_file=csv_document.file,
             )
         )
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")
         new_page.save()

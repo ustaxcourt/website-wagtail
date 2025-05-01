@@ -1,6 +1,9 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PlacesOfTrialPage
+import logging
+
+logger = logging.getLogger(__name__)
 
 all_dpt_cities = [
     {
@@ -569,7 +572,7 @@ all_dpt_cities = [
             {
                 "name": "Seattle",
                 "note": "",
-                "address": "Nakamura U.S. Courthouse 1010 5th Avenue, 98104 Room 4",
+                "address": "Nakamura U.S. Courthouse 1010 5th Avenue, 98104 Room 4",
             },
             {
                 "name": "Spokane",
@@ -612,8 +615,8 @@ all_dpt_cities = [
 
 
 class PlacesOfTrialPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -624,10 +627,10 @@ class PlacesOfTrialPageInitializer(PageInitializer):
         title = "Places Of Trial"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         places_of_trial_data = [
             {
@@ -659,4 +662,4 @@ class PlacesOfTrialPageInitializer(PageInitializer):
 
         home_page.add_child(instance=places_of_trial_page)
         places_of_trial_page.save_revision().publish()
-        self.logger.write(f"'{title}' page created and published.")
+        logger.info(f"'{title}' page created and published.")

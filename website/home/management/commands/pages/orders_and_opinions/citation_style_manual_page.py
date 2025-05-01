@@ -1,11 +1,14 @@
 from wagtail.models import Page
 from home.models import EnhancedStandardPage, IconCategories, IndentStyle
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CitationStyleManualPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -16,10 +19,10 @@ class CitationStyleManualPageInitializer(PageInitializer):
         title = "Citation and Style Manual"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         # Load the PDF document
         document = self.load_document_from_documents_dir(
@@ -69,4 +72,4 @@ class CitationStyleManualPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

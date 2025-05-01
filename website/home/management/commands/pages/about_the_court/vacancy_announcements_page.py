@@ -1,18 +1,21 @@
 from wagtail.models import Page
 from home.models import VacancyAnnouncementsPage
 from home.management.commands.pages.page_initializer import PageInitializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class VacancyAnnouncementsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         # Find the Employment page instead of home page
         try:
             employment_page = Page.objects.get(slug="employment")
         except Page.DoesNotExist:
-            self.logger.write(
+            logger.info(
                 "Error: Employment page does not exist. Please create it first."
             )
             return
@@ -21,10 +24,10 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
         title = "Vacancy Announcements"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         # Add as child of employment_page instead of home_page
         employment_page.add_child(
@@ -37,4 +40,4 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")

@@ -2,9 +2,60 @@ from wagtail.models import Page
 from home.models import PamphletsPage, PamphletEntry
 from home.management.commands.pages.page_initializer import PageInitializer
 from django.contrib.contenttypes.models import ContentType
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Example pamphlet data
 pamphlets_data = [
+    {
+        "title": "Volume 162, Numbers 6",
+        "pdf": "162_TC_243-260.pdf",
+        "code": "162 T.C. 243-260",
+        "date_range": "June 1, 2024 to June 30, 2024",
+        "citation": "<p>Belagio Fine Jewelry, Inc.",
+        "volume_number": 162.6,
+    },
+    {
+        "title": "Volume 162, Numbers 5",
+        "pdf": "162_TC_199-242.pdf",
+        "code": "162 T.C. 199-242",
+        "date_range": "May 1, 2024 to May 31, 2024",
+        "citation": "<p>Anenberg, Sally J., Estate<br/>Anenberg, Steven B., Executor and Special Administrator<br/>MM Worthington Inc., Tax Matters Partner<br/>SN Worthington Holdings LLC f.k.a. Jacobs West St. Clair Acquisition LLC",
+        "volume_number": 162.5,
+    },
+    {
+        "title": "Volume 162, Numbers 4",
+        "pdf": "162_TC_148-199.pdf",
+        "code": "162 T.C. 148-199",
+        "date_range": "April 1, 2024 to April 30, 2024",
+        "citation": "<p>Abdo, Mohamed K.<br/>Farah, Fardowsa J.<br/>Mukhi, Raju J.",
+        "volume_number": 162.4,
+    },
+    {
+        "title": "Volume 162, Numbers 3",
+        "pdf": "162_TC_98-148.pdf",
+        "code": "162 T.C. 98-148",
+        "date_range": "March 1, 2024 to March 31, 2024",
+        "citation": "<p>Frutiger, Paul Andrew<br/>Oppenheimer, Reed, Tax Matters Partner<br/>Valley Park Ranch, LLC",
+        "volume_number": 162.3,
+    },
+    {
+        "title": "Volume 162, Numbers 2",
+        "pdf": "162_TC_35-98.pdf",
+        "code": "162 T.C. 35-98",
+        "date_range": "February 1, 2024 to February 29, 2024",
+        "citation": "<p>23rd Chelsea Associates, L.L.C.<br/>Couturier, Clair R., Jr.<br/> Related 23rd Chelsea Associates, L.L.C., Tax Matters Partner ",
+        "volume_number": 162.2,
+    },
+    {
+        "title": "Volume 162, Numbers 1",
+        "pdf": "162_TC_1-35.pdf",
+        "code": "162 T.C. 1-35",
+        "date_range": "January 1, 2024 to January 31, 2024",
+        "citation": "<p>Dodson, Douglas and Rebecca<br/>Thomas, Sydney Ann Chaney",
+        "volume_number": 162.1,
+    },
     {
         "title": "Volume 161, Numbers 5 and 6",
         "pdf": "161_TC_112-328.pdf",
@@ -137,8 +188,8 @@ pamphlets_data = [
 
 
 class PamphletsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.slug = "pamphlets"
 
     def create(self):
@@ -149,24 +200,24 @@ class PamphletsPageInitializer(PageInitializer):
             for pamphlet_data in pamphlets_data:
                 self.create_pamphlet_entry(pamphlet_page, pamphlet_data)
         except Page.DoesNotExist:
-            self.logger.write("Root page does not exist.")
+            logger.info("Root page does not exist.")
             return
 
     def create_page_info(self, parent_page):
         title = "United States Tax Court Reports: Pamphlets"
 
         if Page.objects.filter(slug=self.slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return Page.objects.get(slug=self.slug)
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         content_type = ContentType.objects.get_for_model(PamphletsPage)
 
         new_page = parent_page.add_child(
             instance=PamphletsPage(
                 title=title,
-                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner, 159 T.C. 33 (2022)</i></blockquote>",
+                body="The Tax Court's published Reports are available as monthly or bimonthly pamphlets that provide the correct citation pages before the semiannual bound volumes are printed. Pamphlets are now available electronically below. When the pamphlet opens, click a link in the Table of Cases to open an opinion.<br/><br/>Sample citation:<blockquote><i>Smith v. Commissioner</i>, 159 T.C. 33 (2022)</blockquote>",
                 slug=self.slug,
                 seo_title="Tax Court Reports Pamphlets",
                 content_type=content_type,
@@ -174,14 +225,14 @@ class PamphletsPageInitializer(PageInitializer):
             )
         )
 
-        self.logger.write(f"Successfully created the '{title}' page.")
+        logger.info(f"Successfully created the '{title}' page.")
         return new_page
 
     def create_pamphlet_entry(self, parent_page, pamphlet_data):
         try:
             # Check if the pamphlet already exists
             if PamphletEntry.objects.filter(title=pamphlet_data["title"]).exists():
-                self.logger.write(
+                logger.info(
                     f"  - Pamphlet entry for {pamphlet_data['title']} already exists."
                 )
                 return
@@ -193,7 +244,7 @@ class PamphletsPageInitializer(PageInitializer):
             )
 
             if not document:
-                self.logger.write(
+                logger.info(
                     f"Failed to load document for pamphlet: {pamphlet_data['title']}"
                 )
                 return
@@ -209,10 +260,10 @@ class PamphletsPageInitializer(PageInitializer):
             )
             entry.save()
 
-            self.logger.write(
+            logger.info(
                 f"Successfully created pamphlet entry: {pamphlet_data['title']}"
             )
 
         except Page.DoesNotExist:
-            self.logger.write("Parent page 'Pamphlets' does not exist.")
+            logger.info("Parent page 'Pamphlets' does not exist.")
             return

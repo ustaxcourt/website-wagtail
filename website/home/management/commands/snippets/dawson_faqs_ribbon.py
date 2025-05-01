@@ -1,18 +1,21 @@
 from home.models import NavigationRibbon, NavigationRibbonLink, IconCategories
+import logging
+
+logger = logging.getLogger(__name__)
 
 dawson_faqs_ribbon_name = "Dawson FAQs Ribbon"
 
 
 class DawsonFAQsRibbonInitializer:
-    def __init__(self, logger):
+    def __init__(self):
         self.logger = logger
 
     def create(self):
         if NavigationRibbon.objects.filter(name=dawson_faqs_ribbon_name).exists():
-            self.logger.write(f"{dawson_faqs_ribbon_name} already exists.")
+            logger.info(f"{dawson_faqs_ribbon_name} already exists.")
             return
 
-        self.logger.write(f"Creating the {dawson_faqs_ribbon_name}.")
+        logger.info(f"Creating the {dawson_faqs_ribbon_name}.")
 
         navigation_ribbon = NavigationRibbon(
             name=dawson_faqs_ribbon_name,
@@ -41,7 +44,7 @@ class DawsonFAQsRibbonInitializer:
                 "url": "/dawson-faqs-training-and-support",
             },
             {
-                "title": "Search and Public Access",
+                "title": "Searches and Public Access",
                 "icon": IconCategories.SEARCH,
                 "url": "/dawson-faqs-searches-public-access",
             },

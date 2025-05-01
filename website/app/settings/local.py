@@ -1,4 +1,5 @@
 from .base import *  # noqa: F403
+from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 
@@ -20,3 +21,11 @@ if not os.getenv("GITHUB_SHA"):
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
+
+# Use the simple logger when running local
+LOGGING["root"]["handlers"] = ["simple"]
+LOGGING["loggers"]["django"]["handlers"] = ["simple"]
+LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
+LOGGING["loggers"]["home"]["handlers"] = ["simple"]
+LOGGING["loggers"]["home"]["level"] = "DEBUG"
+LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"

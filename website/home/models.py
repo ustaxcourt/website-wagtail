@@ -34,6 +34,9 @@ from wagtail.blocks import DateBlock
 from collections import defaultdict
 from operator import itemgetter
 from django.template.response import TemplateResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 table_value_types = [
@@ -224,6 +227,7 @@ class CommonBlock(blocks.StreamBlock):
     )
     h2WithAnchorTag = blocks.StructBlock(
         [
+            ("text", blocks.CharBlock()),
             ("anchortag", blocks.CharBlock(required=False)),
         ],
         label="Heading 2 with Anchor Tag",
@@ -545,6 +549,7 @@ class JudgeProfile(models.Model):
         ordering = ["last_name"]
 
     def save(self, *args, **kwargs):
+        logger.info(f"Saving judge profile: {self}")
         self.last_updated_date = timezone.now()
         # Only generate a default if display_name is blank
         if not self.display_name.strip():
@@ -600,6 +605,7 @@ class JudgeCollection(ClusterableModel):
 
     name = models.CharField(
         max_length=255,
+        unique=True,
         help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
     )
 
@@ -752,7 +758,7 @@ class HomePageImage(Orderable):
 
 class HomePageEntry(models.Model):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=1000)
     body = RichTextField(blank=True)
 
     panels = [

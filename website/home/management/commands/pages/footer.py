@@ -1,16 +1,16 @@
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import Footer
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FooterInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
-
     def create(self):
         settings = Footer.objects.all().first()
 
         if settings:
-            self.logger.write("- Footer settings already exists.")
+            logger.info("- Footer settings already exists.")
             return
 
         if not settings:
@@ -24,15 +24,15 @@ class FooterInitializer(PageInitializer):
                 ),
                 otherQuestions="For all non-technical questions, contact the Office of the Clerk of the Court at (202) 521-0700.",
             )
-            self.logger.write("Successfully created Footer settings.")
+            logger.info("Successfully created Footer settings.")
 
     def update(self):
         settings = Footer.objects.all().first()
 
         if settings:
-            self.logger.write("- Footer settings already exists. Updating.")
+            logger.info("- Footer settings already exists. Updating.")
         else:
-            self.logger.write("- Can't find Footer settings. STOPPING.")
+            logger.warning("- Can't find Footer settings. STOPPING.")
             return
 
         footer = Footer.objects.first()
@@ -45,4 +45,4 @@ class FooterInitializer(PageInitializer):
         )
         footer.otherQuestions = """For all non-technical questions, contact the Office of the Clerk of the Court at <a href="tel:+12025210700">(202) 521-0700</a>."""
         footer.save()
-        self.logger.write("Successfully updated Footer settings.")
+        logger.info("Successfully updated Footer settings.")

@@ -2,8 +2,12 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PressReleasePage
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 press_releases_docs = {
+    "04162025.pdf": "",
     "01152020.pdf": "",
     "01112021.pdf": "",
     "01122022.pdf": "",
@@ -228,8 +232,8 @@ press_releases_docs = {
 
 
 class PressReleasesPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -240,10 +244,10 @@ class PressReleasesPageInitializer(PageInitializer):
         title = "Press Releases"
 
         if Page.objects.filter(slug=slug).exists():
-            self.logger.write(f"- {title} page already exists.")
+            logger.info(f"- {title} page already exists.")
             return
 
-        self.logger.write(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{title}' page.")
 
         for doc_name in list(press_releases_docs.keys()):
             document = self.load_document_from_documents_dir(
@@ -266,6 +270,13 @@ class PressReleasesPageInitializer(PageInitializer):
                     {
                         "type": "press_releases",
                         "value": [
+                            {
+                                "release_date": datetime(2025, 4, 16).date(),
+                                "details": {
+                                    "description": "The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
+                                    "file": press_releases_docs["04162025.pdf"],
+                                },
+                            },
                             {
                                 "release_date": datetime(2025, 4, 7).date(),
                                 "details": {
@@ -1847,4 +1858,4 @@ class PressReleasesPageInitializer(PageInitializer):
 
         home_page.add_child(instance=press_release_page)
         press_release_page.save_revision().publish()
-        self.logger.write(f"'{title}' page created and published.")
+        logger.info(f"'{title}' page created and published.")

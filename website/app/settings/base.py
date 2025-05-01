@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 import dj_database_url
 import json
 import urllib.request
+from pythonjsonlogger import jsonlogger
+
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -22,7 +25,6 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 
 AUTHENTICATION_BACKENDS = [
     "social_core.backends.azuread_tenant.AzureADTenantOAuth2",
@@ -329,3 +331,55 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 print(f"Finished base: BASE_URL: {BASE_URL}")
+
+
+# Define log format
+LOG_FORMAT = (
+    "%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s:%(lineno)d %(message)s"
+)
+
+# Console handler that writes to STDOUT
+aws_handler = {
+    "class": "logging.StreamHandler",
+    "formatter": "json",
+    "level": "DEBUG",
+    "stream": sys.stdout,
+}
+
+simple_handler = {
+    "class": "logging.StreamHandler",
+    "level": "DEBUG",
+    "stream": sys.stdout,
+}
+
+# Base logging config
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {
+            "()": jsonlogger.JsonFormatter,
+            "fmt": LOG_FORMAT,
+        },
+    },
+    "handlers": {"aws": aws_handler, "simple": simple_handler},
+    "root": {
+        "handlers": ["aws"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "": {"level": "WARNING", "handlers": ["aws"]},
+        # topmost logger for django-specific messages
+        "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        # topmost logger for wagtail-specific messages
+        "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        # topmost logger our project-specific messages"
+        "home": {"propagate": False, "level": "INFO", "handlers": ["aws"]},
+        # management commands happen outside of AWS, so force simple logging
+        "home.management.commands": {
+            "propagate": False,
+            "level": "INFO",
+            "handlers": ["simple"],
+        },
+    },
+}

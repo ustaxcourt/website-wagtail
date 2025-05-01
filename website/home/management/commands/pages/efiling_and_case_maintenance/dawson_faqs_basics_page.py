@@ -5,11 +5,14 @@ from home.models import EnhancedStandardPage
 from home.management.commands.snippets.dawson_faqs_ribbon import (
     dawson_faqs_ribbon_name,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DawsonFaqsBasicsPageInitializer(PageInitializer):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -21,10 +24,10 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
 
         page = Page.objects.filter(slug=slug).first()
         if page:
-            self.logger.write(f"- {title} page already exists. Updating...")
+            logger.info(f"- {title} page already exists. Updating...")
             page = page.specific
         else:
-            self.logger.write(f"Creating the '{title}' page.")
+            logger.info(f"Creating the '{title}' page.")
             page = EnhancedStandardPage(
                 title=title,
                 slug=slug,
@@ -94,4 +97,4 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
             {"type": "questionanswers", "value": questions},
         ]
         page.save_revision().publish()
-        self.logger.write(f"Updated the '{title}' page.")
+        logger.info(f"Updated the '{title}' page.")
