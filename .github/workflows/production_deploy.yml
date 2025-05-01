@@ -55,6 +55,12 @@ jobs:
           cd website
           make setup
 
+      - name: Install Python dependencies
+        uses: ./.github/actions/install-python-deps
+
+      - name: Install Node dependencies
+        uses: ./.github/actions/install-npm-deps
+
       - name: Apply Terraform
         id: tf_outputs
         env:

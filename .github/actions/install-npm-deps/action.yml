@@ -1,22 +1,9 @@
-name: Setup Node
-description: Sets up Node.js with a specific version
-
-inputs:
-  node_version:
-    description: 'The version of Node.js to install'
-    required: false
-    default: '22.x'
+name: Install NPM Dependencies
+description: Install NPM dependencies with caching
 
 runs:
   using: "composite"
   steps:
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node_version }}
-        cache: 'npm'
-        cache-dependency-path: 'website/package-lock.json'
-
     - name: Cache node modules
       id: node-cache
       uses: actions/cache@v3

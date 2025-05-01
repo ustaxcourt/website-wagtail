@@ -22,33 +22,14 @@ jobs:
         cd website
         make init
 
-    - name: Cache pip packages
-      id: pip-cache
-      uses: actions/cache@v3
-      with:
-        path: .venv
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/base.txt', '**/local.txt', '**/requirements.txt') }}
-
     - name: Install Python dependencies
-      if: steps.pip-cache.outputs.cache-hit != 'true'
-      run: |
-        cd website
-        make pip-install
+      uses: ./.github/actions/install-python-deps
 
-    - name: Cache node modules
-      id: node-cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          website/node_modules
-          ~/.cache/Cypress
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    - name: Setup Node
+      uses: ./.github/actions/setup-node
 
     - name: Install Node dependencies
-      if: steps.node-cache.outputs.cache-hit != 'true'
-      run: |
-        cd website
-        make npm-install
+      uses: ./.github/actions/install-npm-deps
 
     - name: Compile USWDS
       run: |

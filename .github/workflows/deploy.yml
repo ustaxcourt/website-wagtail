@@ -48,6 +48,12 @@ jobs:
           cd website
           make setup
 
+      - name: Install Python dependencies
+        uses: ./.github/actions/install-python-deps
+
+      - name: Install Node dependencies
+        uses: ./.github/actions/install-npm-deps
+
       - name: Generate Release Tag
         if: ${{ github.ref == 'refs/heads/main' }}
         id: current_date
