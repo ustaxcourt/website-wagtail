@@ -42,18 +42,13 @@ jobs:
           ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.11.4
-          terraform_wrapper: false
+        uses: ./.github/actions/setup-terraform
 
       - name: Set up Python
         uses: ./.github/actions/setup-python
 
       - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
+        uses: ./.github/actions/setup-node
 
       - name: Build USWDS
         run: |
