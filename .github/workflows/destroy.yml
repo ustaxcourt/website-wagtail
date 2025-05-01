@@ -27,10 +27,7 @@ jobs:
           ref: sandbox # Always check out the sandbox tag
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.11.4
-          terraform_wrapper: false
+        uses: ./.github/actions/setup-terraform
 
       - name: Apply Terraform destructive plan
         id: tf_outputs
