@@ -17,6 +17,11 @@ jobs:
     - name: Set up Python
       uses: ./.github/actions/setup-python
 
+    - name: Initialize Python Environment
+      run: |
+        cd website
+        make init
+
     - name: Cache pip packages
       id: pip-cache
       uses: actions/cache@v3
