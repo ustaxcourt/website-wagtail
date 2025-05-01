@@ -647,6 +647,9 @@ class JudgeRole(models.Model):
                 original.role_name in ["Chief Judge", "Chief Special Trial Judge"]
                 and original.role_name != self.role_name
             ):
+                logger.error(
+                    "Attempted to modify the role name for 'Chief Judge' or 'Chief Special Trial Judge'."
+                )
                 raise ValidationError(
                     "You cannot modify the role name for 'Chief Judge' or 'Chief Special Trial Judge'.",
                 )
@@ -655,6 +658,9 @@ class JudgeRole(models.Model):
     def delete(self, *args, **kwargs):
         # Restrict deletion for specific roles
         if self.role_name in ["Chief Judge", "Chief Special Trial Judge"]:
+            logger.error(
+                "Attempted to delete the role 'Chief Judge' or 'Chief Special Trial Judge'."
+            )
             raise ValidationError(
                 "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge'.",
             )
