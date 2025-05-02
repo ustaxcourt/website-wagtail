@@ -94,7 +94,7 @@ class HomePageInitializer(PageInitializer):
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
             ),
             start_date=datetime(2025, 4, 1).date(),
-            end_date=datetime(2025, 4, 10).date(),
+            end_date=None,
             persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
@@ -103,21 +103,11 @@ class HomePageInitializer(PageInitializer):
             body=(
                 "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
             ),
-            start_date=datetime(2025, 4, 1).date(),
-            end_date=datetime(2025, 4, 25).date(),
+            start_date=datetime(2024, 12, 1).date(),
+            end_date=datetime(2024, 12, 25).date(),
             persist_to_press_releases=True,
         )
 
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="",
-            body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
-            ),
-            start_date=datetime(2025, 4, 14).date(),
-            end_date=None,
-            persist_to_press_releases=True,
-        )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="Tax Court disciplinary matters.",
