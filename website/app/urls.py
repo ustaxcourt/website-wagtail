@@ -40,9 +40,11 @@ def all_legacy_documents_redirect(request, filename):
             )
             return redirect(matched_doc.file.url)
         else:
+            # Log non-exact match and render 404
             logger.warning(
                 f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
             )
+            return render_404_util(request)
 
     # Log requests with no matches or multiple matches
     if number_of_matches == 0:
@@ -52,7 +54,7 @@ def all_legacy_documents_redirect(request, filename):
             f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
         )
 
-    # Not found or ambiguous matches result in 404
+    # Not found or multiple matches result in 404
     return render_404_util(request)
 
 
