@@ -18,34 +18,6 @@ function handler(event) {
 EOT
 }
 
-resource "aws_cloudfront_function" "www_redirect" {
-  name    = "${var.environment}-www-redirect"
-  runtime = "cloudfront-js-1.0"
-  comment = "Function to redirect www subdomain to apex domain"
-  publish = true
-  code    = <<-EOT
-function handler(event) {
-    var request = event.request;
-    var host = request.headers.host.value;
-
-    if (host.startsWith('www.')) {
-        var response = {
-            statusCode: 301,
-            statusDescription: 'Moved Permanently',
-            headers: {
-                'location': {
-                    value: 'https://' + host.substring(4) + request.uri
-                }
-            }
-        };
-        return response;
-    }
-
-    return request;
-}
-EOT
-}
-
 # Use AWS managed CachingDisabled policy for dynamic content
 data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
@@ -192,7 +164,7 @@ resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
-  aliases = var.include_www_subdomain ? [var.domain_name, "www.${var.domain_name}"] : [var.domain_name]
+  aliases = [var.domain_name, "www.${var.domain_name}"]
 
   logging_config {
     include_cookies = false
@@ -221,11 +193,6 @@ resource "aws_cloudfront_distribution" "app" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "app-origin"
-
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.www_redirect.arn
-    }
 
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id

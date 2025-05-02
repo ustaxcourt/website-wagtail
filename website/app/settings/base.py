@@ -299,7 +299,12 @@ GITHUB_SHA = os.getenv("GITHUB_SHA")
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("DOMAIN_NAME")]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    os.getenv("DOMAIN_NAME"),
+    f"www.{os.getenv('DOMAIN_NAME')}",
+]
 
 
 def _task_ips():

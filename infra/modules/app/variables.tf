@@ -40,9 +40,3 @@ variable "social_auth_azuread_tenant_oauth2_tenant_id" {
   description = "The Azure AD tenant ID"
   type = string
 }
-
-variable "include_www_subdomain" {
-  description = "Whether to include the www subdomain in the application"
-  type = bool
-  default = false
-}

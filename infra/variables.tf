@@ -36,8 +36,3 @@ variable "social_auth_azuread_tenant_oauth2_secret" {
 variable "social_auth_azuread_tenant_oauth2_tenant_id" {
   type = string
 }
-
-variable "include_www_subdomain" {
-  type = bool
-  default = false
-}

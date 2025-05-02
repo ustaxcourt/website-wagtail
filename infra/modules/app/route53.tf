@@ -22,7 +22,6 @@ resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.main.zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
-  count   = var.include_www_subdomain ? 1 : 0
 
   alias {
     name                   = aws_cloudfront_distribution.app.domain_name
