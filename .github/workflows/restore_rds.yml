@@ -1,0 +1,88 @@
+name: Manual RDS Restore from Snapshot
+
+# Trigger the workflow manually from the Actions tab
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+          - sandbox
+          - development
+          - production
+        default: 'sandbox'
+      source_instance_id:
+        description: 'Source RDS Instance ID'
+        required: true
+        type: string
+      snapshot_id:
+        description: 'RDS Snapshot ID to restore from'
+        required: true
+        type: string
+
+jobs:
+  rds-restore:
+    environment: ${{ github.event.inputs.environment == 'development' && 'development' || github.event.inputs.environment == 'sandbox' && format('{0}_sandbox', github.actor) || github.event.inputs.environment == 'production' && 'production' || '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for configure-aws-credentials using OIDC
+      contents: read  # Required to checkout the repo
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Run RDS Restore Script
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        shell: bash
+        run: |
+          ./infra/restore-rds.sh \
+            "${{ github.event.inputs.source_instance_id }}" \
+            "${{ github.event.inputs.snapshot_id }}"
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}"
+          echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
+          echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "::add-mask::${SECRET_KEY}"
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          set -e
+
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make migrate
+          make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
+          make createpages settings="app.settings.${ENVIRONMENT}"

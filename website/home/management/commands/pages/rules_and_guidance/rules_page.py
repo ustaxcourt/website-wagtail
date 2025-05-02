@@ -34,7 +34,7 @@ body = [
                     "title": "Forms",
                     "icon": None,
                     "document": None,
-                    "url": "/case_related_forms",
+                    "url": "/case-related-forms",
                 },
                 {
                     "title": "Fee Schedule",
