@@ -72,7 +72,7 @@ if [ -n "$POLICY_ARN" ]; then
 
         aws iam create-policy-version --policy-arn "$POLICY_ARN" \
             --policy-document file://"$POLICY_FILE" --set-as-default
-            
+
     fi
 else
     echo "Creating new policy '$POLICY_NAME'..."
