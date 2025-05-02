@@ -10,7 +10,7 @@ on:
         type: choice
         options:
           - sandbox
-          - development
+          - dev
           - production
         default: 'sandbox'
       source_instance_id:
