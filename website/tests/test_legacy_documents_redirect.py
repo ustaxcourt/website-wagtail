@@ -25,7 +25,7 @@ def test_redirects_on_exact_match(mock_document_model):
     assert response.url == doc.file.url
 
 
-@patch("app.urls.render_legacy_404")
+@patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 def test_returns_404_on_no_matches(mock_document_model, mock_render_404):
     # Arrange
@@ -36,10 +36,10 @@ def test_returns_404_on_no_matches(mock_document_model, mock_render_404):
     all_legacy_documents_redirect(request, "test.pdf")
 
     # Assert
-    mock_render_404.assert_called_once_with(request, "test.pdf")
+    mock_render_404.assert_called_once_with(request)
 
 
-@patch("app.urls.render_legacy_404")
+@patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 def test_returns_404_on_multiple_matches(mock_document_model, mock_render_404):
     # Arrange
@@ -52,10 +52,10 @@ def test_returns_404_on_multiple_matches(mock_document_model, mock_render_404):
     all_legacy_documents_redirect(request, "test.pdf")
 
     # Assert
-    mock_render_404.assert_called_once_with(request, "test.pdf")
+    mock_render_404.assert_called_once_with(request)
 
 
-@patch("app.urls.render_legacy_404")
+@patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 def test_returns_404_on_single_non_exact_match(mock_document_model, mock_render_404):
     # Arrange
@@ -67,4 +67,4 @@ def test_returns_404_on_single_non_exact_match(mock_document_model, mock_render_
     all_legacy_documents_redirect(request, "test.pdf")
 
     # Assert
-    mock_render_404.assert_called_once_with(request, "test.pdf")
+    mock_render_404.assert_called_once_with(request)

@@ -53,14 +53,11 @@ def all_legacy_documents_redirect(request, filename):
         )
 
     # Not found or ambiguous matches result in 404
-    return render_legacy_404(request, filename)
+    return render_404_util(request)
 
 
-def render_legacy_404(request, filename=None):
-    """
-    Shared 404 renderer for legacy document redirects.
-    Optionally takes filename for future customization/logging.
-    """
+# Exists for testing purposes only
+def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
