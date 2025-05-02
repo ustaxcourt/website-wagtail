@@ -9,11 +9,19 @@ logger = logging.getLogger(__name__)
 # Example pamphlet data
 pamphlets_data = [
     {
+        "title": "Volume 163, Numbers 1",
+        "pdf": "163_TC_1-45.pdf",
+        "code": "163 T.C. 1-45",
+        "date_range": "July 1, 2024 to July 31, 2024",
+        "citation": "<p>Berman, Annie<br/>Berman, Edward L. and Ellen L.<br/>LaRosa, Catherine L..</p>",
+        "volume_number": 163.1,
+    },
+    {
         "title": "Volume 162, Numbers 6",
         "pdf": "162_TC_243-260.pdf",
         "code": "162 T.C. 243-260",
         "date_range": "June 1, 2024 to June 30, 2024",
-        "citation": "<p>Belagio Fine Jewelry, Inc.",
+        "citation": "<p>Belagio Fine Jewelry, Inc.</p>",
         "volume_number": 162.6,
     },
     {
@@ -21,7 +29,7 @@ pamphlets_data = [
         "pdf": "162_TC_199-242.pdf",
         "code": "162 T.C. 199-242",
         "date_range": "May 1, 2024 to May 31, 2024",
-        "citation": "<p>Anenberg, Sally J., Estate<br/>Anenberg, Steven B., Executor and Special Administrator<br/>MM Worthington Inc., Tax Matters Partner<br/>SN Worthington Holdings LLC f.k.a. Jacobs West St. Clair Acquisition LLC",
+        "citation": "<p>Anenberg, Sally J., Estate<br/>Anenberg, Steven B., Executor and Special Administrator<br/>MM Worthington Inc., Tax Matters Partner<br/>SN Worthington Holdings LLC f.k.a. Jacobs West St. Clair Acquisition LLC</p>",
         "volume_number": 162.5,
     },
     {
@@ -29,7 +37,7 @@ pamphlets_data = [
         "pdf": "162_TC_148-199.pdf",
         "code": "162 T.C. 148-199",
         "date_range": "April 1, 2024 to April 30, 2024",
-        "citation": "<p>Abdo, Mohamed K.<br/>Farah, Fardowsa J.<br/>Mukhi, Raju J.",
+        "citation": "<p>Abdo, Mohamed K.<br/>Farah, Fardowsa J.<br/>Mukhi, Raju J.</p>",
         "volume_number": 162.4,
     },
     {
@@ -37,7 +45,7 @@ pamphlets_data = [
         "pdf": "162_TC_98-148.pdf",
         "code": "162 T.C. 98-148",
         "date_range": "March 1, 2024 to March 31, 2024",
-        "citation": "<p>Frutiger, Paul Andrew<br/>Oppenheimer, Reed, Tax Matters Partner<br/>Valley Park Ranch, LLC",
+        "citation": "<p>Frutiger, Paul Andrew<br/>Oppenheimer, Reed, Tax Matters Partner<br/>Valley Park Ranch, LLC</p>",
         "volume_number": 162.3,
     },
     {
@@ -45,7 +53,7 @@ pamphlets_data = [
         "pdf": "162_TC_35-98.pdf",
         "code": "162 T.C. 35-98",
         "date_range": "February 1, 2024 to February 29, 2024",
-        "citation": "<p>23rd Chelsea Associates, L.L.C.<br/>Couturier, Clair R., Jr.<br/> Related 23rd Chelsea Associates, L.L.C., Tax Matters Partner ",
+        "citation": "<p>23rd Chelsea Associates, L.L.C.<br/>Couturier, Clair R., Jr.<br/> Related 23rd Chelsea Associates, L.L.C., Tax Matters Partner</p>",
         "volume_number": 162.2,
     },
     {
@@ -53,7 +61,7 @@ pamphlets_data = [
         "pdf": "162_TC_1-35.pdf",
         "code": "162 T.C. 1-35",
         "date_range": "January 1, 2024 to January 31, 2024",
-        "citation": "<p>Dodson, Douglas and Rebecca<br/>Thomas, Sydney Ann Chaney",
+        "citation": "<p>Dodson, Douglas and Rebecca<br/>Thomas, Sydney Ann Chaney</p>",
         "volume_number": 162.1,
     },
     {
