@@ -335,10 +335,10 @@ class AlertMessageBlock(blocks.StructBlock):
 
 class EnhancedStandardPage(Page):
     class Meta:
-        abstract = False
+        verbose_name = "Enhanced Standard Page"
 
     navigation_ribbon = models.ForeignKey(
-        "NavigationRibbon",
+        NavigationRibbon,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -385,6 +385,21 @@ class EnhancedStandardPage(Page):
                     label="Horizontal Rule",
                     default=True,
                     help_text="Add 'Horizontal Rule'.",
+                ),
+            ),
+            (
+                "iframe",
+                blocks.StructBlock(
+                    [
+                        ("src", blocks.URLBlock(required=True)),
+                        ("width", blocks.CharBlock(required=True)),
+                        ("height", blocks.CharBlock(required=True)),
+                        ("class", blocks.CharBlock(required=False)),
+                        ("loading", blocks.CharBlock(required=False)),
+                        ("data_delay", blocks.CharBlock(required=False)),
+                        ("name", blocks.CharBlock(required=False)),
+                        ("title", blocks.CharBlock(required=False)),
+                    ]
                 ),
             ),
             (
@@ -605,6 +620,7 @@ class JudgeCollection(ClusterableModel):
 
     name = models.CharField(
         max_length=255,
+        unique=True,
         help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
     )
 

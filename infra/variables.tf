@@ -36,3 +36,8 @@ variable "social_auth_azuread_tenant_oauth2_secret" {
 variable "social_auth_azuread_tenant_oauth2_tenant_id" {
   type = string
 }
+
+variable "prevent_db_deletion" {
+  type = bool
+  default = true
+}
