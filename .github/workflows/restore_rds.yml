@@ -2,9 +2,6 @@ name: Manual RDS Restore from Snapshot
 
 # Trigger the workflow manually from the Actions tab
 on:
-  push:
-    branches:
-      - feature/database-backup
   workflow_dispatch:
     inputs:
       environment:
