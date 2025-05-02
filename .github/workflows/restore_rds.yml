@@ -24,6 +24,14 @@ on:
         description: 'RDS Snapshot ID to restore from'
         required: true
         type: string
+      apply_migration:
+        description: 'Apply Database Migrations after restore?'
+        required: false
+        type: choice
+        options:
+          - 'No'
+          - 'Yes'
+        default: 'No'
 
 jobs:
   rds-restore:
@@ -76,7 +84,8 @@ jobs:
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
 
-      - name: Run Migrations
+      - name: Run Migrations (Conditional)
+        if: github.event.inputs.apply_migration == 'Yes'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -88,5 +97,4 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make createpages settings="app.settings.${ENVIRONMENT}"
