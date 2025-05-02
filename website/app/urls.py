@@ -15,51 +15,38 @@ def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    # Remove the .pdf extension if present
+    # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
-    if ext.lower() != ".pdf":
-        logger.warning(f"Unexpected file extension: {ext}")
-        return render_legacy_404(request, filename)
 
     # Find documents where the filename starts with the base name
     possible_matches = Document.objects.filter(file__icontains=base_filename)
 
-    print("DEBUG: possible_matches =", possible_matches)
-    
-
-    # Filter down to .pdf files that start with the base filename
+    # Filter down to files with same extension that start with the base filename
     matched_docs = [
         doc
         for doc in possible_matches
-        if doc.filename.lower().endswith(".pdf")
+        if doc.filename.lower().endswith(ext)
         and os.path.splitext(doc.filename)[0].startswith(base_filename)
     ]
 
-    print("DEBUG: matched_docs =", matched_docs)
-
     number_of_matches = len(matched_docs)
-
-    print("DEBUG: number_of_matches =", number_of_matches)
 
     # Redirect if there is a single match and it is exact (ignoring case)
     if number_of_matches == 1:
         matched_doc = matched_docs[0]
-        print("DEBUG: first filename =", getattr(possible_matches[0], "filename", "MISSING"))
         if matched_doc.filename.lower() == filename.lower():
             logger.info(
                 f"Successfully redirecting legacy resource request for: {filename}"
-                )
+            )
             return redirect(matched_doc.file.url)
         else:
             logger.warning(
                 f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
             )
-    
+
     # Log requests with no matches or multiple matches
-    if(number_of_matches == 0):
-        logger.warning(
-            f"No matches for: {filename}"
-        )
+    if number_of_matches == 0:
+        logger.warning(f"No matches for: {filename}")
     else:
         logger.warning(
             f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
@@ -68,12 +55,14 @@ def all_legacy_documents_redirect(request, filename):
     # Not found or ambiguous matches result in 404
     return render_legacy_404(request, filename)
 
+
 def render_legacy_404(request, filename=None):
     """
     Shared 404 renderer for legacy document redirects.
     Optionally takes filename for future customization/logging.
     """
     return render(request, "404.html", status=404)
+
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
