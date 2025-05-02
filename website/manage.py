@@ -2,9 +2,8 @@
 import os
 import sys
 import logging
-import logging.config
 
-logger = logging.getLogger("home.management")
+logger = logging.getLogger("home")
 
 
 def main():
