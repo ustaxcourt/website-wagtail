@@ -426,14 +426,6 @@ class JudgesPageInitializer(PageInitializer):
                 "judge": JudgeProfile.objects.filter(last_name__iexact="Fried").first()
             },
         )
-        JudgeRole.objects.update_or_create(
-            role_name="Special Trial Judge",
-            defaults={
-                "judge": JudgeProfile.objects.filter(
-                    last_name__iexact="Carluzzo"
-                ).first()
-            },
-        )
 
         # Create the page first
         _ = home_page.add_child(

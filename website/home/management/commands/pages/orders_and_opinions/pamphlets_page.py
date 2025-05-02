@@ -13,7 +13,7 @@ pamphlets_data = [
         "pdf": "163_TC_1-45.pdf",
         "code": "163 T.C. 1-45",
         "date_range": "July 1, 2024 to July 31, 2024",
-        "citation": "<p>Berman, Annie<br/>Berman, Edward L. and Ellen L.<br/>LaRosa, Catherine L..</p>",
+        "citation": "<p>Berman, Annie<br/>Berman, Edward L. and Ellen L.<br/>LaRosa, Catherine L.</p>",
         "volume_number": 163.1,
     },
     {
