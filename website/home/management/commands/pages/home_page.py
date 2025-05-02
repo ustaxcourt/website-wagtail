@@ -94,7 +94,7 @@ class HomePageInitializer(PageInitializer):
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
             ),
             start_date=datetime(2025, 4, 1).date(),
-            end_date=None,
+            end_date=datetime(2025, 1, 1).date(),
             persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
@@ -107,14 +107,23 @@ class HomePageInitializer(PageInitializer):
             end_date=datetime(2024, 12, 25).date(),
             persist_to_press_releases=True,
         )
-
+        HomePageEntry.objects.create(
+            homepage=homepage,
+            title="",
+            body=(
+                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
+            ),
+            start_date=datetime(2025, 4, 14).date(),
+            end_date=None,
+            persist_to_press_releases=True,
+        )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="Tax Court disciplinary matters.",
             body=(
                 f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank">Press Release</a>."""
             ),
-            start_date=datetime(2025, 4, 1).date(),
+            start_date=datetime(2025, 4, 29).date(),
             end_date=None,
             persist_to_press_releases=True,
         )
@@ -134,7 +143,7 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank">Press Release</a>."""
             ),
-            start_date=datetime(2025, 4, 14).date(),
+            start_date=datetime(2025, 4, 7).date(),
             end_date=None,
             persist_to_press_releases=True,
         )
