@@ -11,7 +11,7 @@ resource "aws_route53_record" "app" {
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.app.domain_name
+    name                  = aws_cloudfront_distribution.app.domain_name
     zone_id               = aws_cloudfront_distribution.app.hosted_zone_id
     evaluate_target_health = false
   }
@@ -22,6 +22,7 @@ resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.main.zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
+  count   = var.include_www_subdomain ? 1 : 0
 
   alias {
     name                   = aws_cloudfront_distribution.app.domain_name

@@ -14,6 +14,7 @@ module "app" {
   social_auth_azuread_tenant_oauth2_key = var.social_auth_azuread_tenant_oauth2_key
   social_auth_azuread_tenant_oauth2_secret = var.social_auth_azuread_tenant_oauth2_secret
   social_auth_azuread_tenant_oauth2_tenant_id = var.social_auth_azuread_tenant_oauth2_tenant_id
+  include_www_subdomain = var.include_www_subdomain
   providers = {
     docker = docker
   }
