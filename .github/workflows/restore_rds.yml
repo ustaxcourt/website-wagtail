@@ -21,14 +21,22 @@ on:
         description: 'RDS Snapshot ID to restore from'
         required: true
         type: string
+      apply_migration:
+        description: 'Apply Database Migrations after restore?'
+        required: false
+        type: choice
+        options:
+          - 'No'
+          - 'Yes'
+        default: 'No'
 
 jobs:
   rds-restore:
     environment: ${{ github.event.inputs.environment == 'development' && 'development' || github.event.inputs.environment == 'sandbox' && format('{0}_sandbox', github.actor) || github.event.inputs.environment == 'production' && 'production' || '' }}
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # Required for configure-aws-credentials using OIDC
-      contents: read  # Required to checkout the repo
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout code
@@ -65,17 +73,19 @@ jobs:
           echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
           echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "::add-mask::${SECRET_KEY}"
+          echo "DATABASE_HOSTNAME=$DATABASE_HOSTNAME" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_HOSTNAME}"
+          echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
+          echo "::add-mask::${BASTION_HOST_IP}"
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
 
-      - name: Run Migrations
+      - name: Run Migrations (Conditional)
+        if: github.event.inputs.apply_migration == 'Yes'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
-          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
-          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           cd website
           set -e
@@ -84,5 +94,4 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
-          make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make createpages settings="app.settings.${ENVIRONMENT}"
