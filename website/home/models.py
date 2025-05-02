@@ -335,10 +335,10 @@ class AlertMessageBlock(blocks.StructBlock):
 
 class EnhancedStandardPage(Page):
     class Meta:
-        abstract = False
+        verbose_name = "Enhanced Standard Page"
 
     navigation_ribbon = models.ForeignKey(
-        "NavigationRibbon",
+        NavigationRibbon,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -385,6 +385,21 @@ class EnhancedStandardPage(Page):
                     label="Horizontal Rule",
                     default=True,
                     help_text="Add 'Horizontal Rule'.",
+                ),
+            ),
+            (
+                "iframe",
+                blocks.StructBlock(
+                    [
+                        ("src", blocks.URLBlock(required=True)),
+                        ("width", blocks.CharBlock(required=True)),
+                        ("height", blocks.CharBlock(required=True)),
+                        ("class", blocks.CharBlock(required=False)),
+                        ("loading", blocks.CharBlock(required=False)),
+                        ("data_delay", blocks.CharBlock(required=False)),
+                        ("name", blocks.CharBlock(required=False)),
+                        ("title", blocks.CharBlock(required=False)),
+                    ]
                 ),
             ),
             (
@@ -647,9 +662,6 @@ class JudgeRole(models.Model):
                 original.role_name in ["Chief Judge", "Chief Special Trial Judge"]
                 and original.role_name != self.role_name
             ):
-                logger.error(
-                    "Attempted to modify the role name for 'Chief Judge' or 'Chief Special Trial Judge'."
-                )
                 raise ValidationError(
                     "You cannot modify the role name for 'Chief Judge' or 'Chief Special Trial Judge'.",
                 )
@@ -658,9 +670,6 @@ class JudgeRole(models.Model):
     def delete(self, *args, **kwargs):
         # Restrict deletion for specific roles
         if self.role_name in ["Chief Judge", "Chief Special Trial Judge"]:
-            logger.error(
-                "Attempted to delete the role 'Chief Judge' or 'Chief Special Trial Judge'."
-            )
             raise ValidationError(
                 "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge'.",
             )
