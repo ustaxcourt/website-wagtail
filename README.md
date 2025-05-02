@@ -168,9 +168,10 @@ If you run a terraform init with your sandbox account, but then try to run it ag
 Leaving your sandbox running without being used will waste money.  Remember to clean it up with the following steps:
 
 1. `cd infra`
-2. manually disable delete protection for your rds database in file [rds.tf](./infra/modules/app/rds.tf)
+2. manually dissable delete protection for your rds database in file [rds.tf](./infra/modules/app/rds.tf)
 3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance by setting `deletion_protection = false`
 4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh` or run `make destroy`
+  - Alternatively, you can use `make tag tag=sandbox-destroy`
 
 
 ## Manually Connecting to DB
