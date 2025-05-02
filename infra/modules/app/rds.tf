@@ -1,7 +1,6 @@
 
 resource "aws_db_instance" "default" {
   identifier_prefix = "${var.environment}-"
-  # identifier = "${var.environment}-database"
   allocated_storage   = 10
   engine              = "postgres"
   engine_version      = "16.3"
@@ -9,10 +8,10 @@ resource "aws_db_instance" "default" {
   username            = "master"
   password            = var.database_password
   backup_retention_period = 14
-  skip_final_snapshot = true
-  deletion_protection = true
 
-  apply_immediately = true # only use when needing to force updates to the database, probably never use on production unless in a scheduled update window
+  skip_final_snapshot = !var.prevent_db_deletion
+  deletion_protection = var.prevent_db_deletion
+  apply_immediately = !var.prevent_db_deletion
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name

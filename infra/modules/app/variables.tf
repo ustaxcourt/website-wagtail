@@ -26,6 +26,11 @@ variable "github_sha" {
   type        = string
 }
 
+variable "prevent_db_deletion" {
+  description = "Whether to prevent the database from being deleted"
+  type        = bool
+}
+
 variable "social_auth_azuread_tenant_oauth2_key" {
   description = "The Azure AD tenant OAuth2 key"
   type = string
