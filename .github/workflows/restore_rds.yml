@@ -2,6 +2,9 @@ name: Manual RDS Restore from Snapshot
 
 # Trigger the workflow manually from the Actions tab
 on:
+  push:
+    branches:
+      - feature/database-backup
   workflow_dispatch:
     inputs:
       environment:
@@ -27,8 +30,8 @@ jobs:
     environment: ${{ github.event.inputs.environment == 'development' && 'development' || github.event.inputs.environment == 'sandbox' && format('{0}_sandbox', github.actor) || github.event.inputs.environment == 'production' && 'production' || '' }}
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # Required for configure-aws-credentials using OIDC
-      contents: read  # Required to checkout the repo
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout code
@@ -65,6 +68,10 @@ jobs:
           echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
           echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "::add-mask::${SECRET_KEY}"
+          echo "DATABASE_HOSTNAME=$DATABASE_HOSTNAME" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_HOSTNAME}"
+          echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
+          echo "::add-mask::${BASTION_HOST_IP}"
           mkdir -p .ssh
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
           chmod 600 .ssh/id_rsa
@@ -73,9 +80,6 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
-          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
-          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           cd website
           set -e
