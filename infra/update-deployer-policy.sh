@@ -5,6 +5,7 @@ set -euo pipefail
 POLICY_NAME="deployer-policy"
 POLICY_FILE="./iam/deployer-policy.json"
 USER_NAME="deployer"
+MAX_VERSIONS=5 # AWS limit for IAM policy versions
 
 echo "Checking if IAM policy '$POLICY_NAME' exists..."
 
@@ -39,27 +40,39 @@ if [ -n "$POLICY_ARN" ]; then
         echo "Policy is up-to-date. No changes needed."
     else
         echo "Policy differs. Creating a new version..."
+
+        echo "Checking number of existing policy versions..."
+        VERSION_INFO=$(aws iam list-policy-versions --policy-arn "$POLICY_ARN" --output json)
+        VERSION_COUNT=$(echo "$VERSION_INFO" | jq '.Versions | length')
+
+        if [ "$VERSION_COUNT" -ge "$MAX_VERSIONS" ]; then
+            echo "Maximum number of versions ($MAX_VERSIONS) reached. Deleting the oldest non-default version."
+
+            # Find the VersionId of the oldest non-default version
+            OLDEST_NON_DEFAULT_VERSION_ID=$(echo "$VERSION_INFO" | jq -r \
+                '.Versions | map(select(.IsDefaultVersion == false)) | sort_by(.CreateDate) | .[0].VersionId // empty')
+
+            if [ -n "$OLDEST_NON_DEFAULT_VERSION_ID" ]; then
+                 echo "Deleting oldest non-default policy version: $OLDEST_NON_DEFAULT_VERSION_ID"
+                 if ! aws iam delete-policy-version --policy-arn "$POLICY_ARN" --version-id "$OLDEST_NON_DEFAULT_VERSION_ID"; then
+                     echo "Error: Failed to delete policy version $OLDEST_NON_DEFAULT_VERSION_ID. Exiting."
+                     exit 1
+                 fi
+                 echo "Successfully deleted version $OLDEST_NON_DEFAULT_VERSION_ID."
+            else
+                 echo "Warning: Could not find an old non-default version to delete, even though count is >= $MAX_VERSIONS. This might indicate an unexpected state."
+                 # Decide if you want to proceed or exit here. Proceeding might still fail.
+                 # For safety, let's exit
+                 echo "Exiting due to inability to find a deletable version."
+                 exit 1
+            fi
+        else
+             echo "Current version count ($VERSION_COUNT) is less than maximum ($MAX_VERSIONS). No cleanup needed before creating new version."
+        fi
+
         aws iam create-policy-version --policy-arn "$POLICY_ARN" \
             --policy-document file://"$POLICY_FILE" --set-as-default
-
-        echo "Cleaning up old versions if more than 4 exist..."
-        VERSIONS=$(aws iam list-policy-versions --policy-arn "$POLICY_ARN" \
-            --query "Versions[?IsDefaultVersion==\`false\`] | [].[VersionId]" --output text)
-
-        COUNT=0
-        for v in $VERSIONS; do
-            COUNT=$((COUNT + 1))
-        done
-
-        if [ "$COUNT" -ge 4 ]; then
-            # Delete oldest non-default version
-            OLDEST=$(aws iam list-policy-versions --policy-arn "$POLICY_ARN" \
-                --query "Versions[?IsDefaultVersion==\`false\`] | sort_by(@, &CreateDate) | [0].VersionId" \
-                --output text)
-
-            echo "Deleting oldest policy version: $OLDEST"
-            aws iam delete-policy-version --policy-arn "$POLICY_ARN" --version-id "$OLDEST"
-        fi
+            
     fi
 else
     echo "Creating new policy '$POLICY_NAME'..."
