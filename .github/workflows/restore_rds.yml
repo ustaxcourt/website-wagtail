@@ -21,6 +21,14 @@ on:
         description: 'RDS Snapshot ID to restore from'
         required: true
         type: string
+      create_backup_db:
+        description: 'Create backup DB?'
+        required: false
+        type: choice
+        options:
+          - 'No'
+          - 'Yes'
+        default: 'Yes'
       apply_migration:
         description: 'Apply Database Migrations after restore?'
         required: false
@@ -52,17 +60,47 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Run RDS Restore Script
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Setup Python Dependencies
+        run: |
+          cd website
+          make setup
+
+      - name: Update Bastion SG for Runner Access
+        id: tf_update_sg
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        shell: bash
+          AWS_REGION: us-east-1
         run: |
-          ./infra/restore-rds.sh \
-            "${{ github.event.inputs.source_instance_id }}" \
-            "${{ github.event.inputs.snapshot_id }}"
+          cd infra
+          # Source helper scripts to set TF variables (STATE_BUCKET, KEY, LOCK_TABLE, REGION etc.)
+          # Ensure these scripts correctly use the $ENVIRONMENT variable
+          echo "Setting up Terraform backend config for environment: ${ENVIRONMENT}"
+          source ./setup.sh
+          source ./setup_zone.sh
+          ./update-deployer-policy.sh # Consider if this is needed here
+          echo "Initializing Terraform..."
+          terraform init \
+              -upgrade \
+              -backend=true \
+              -backend-config=bucket="${STATE_BUCKET}" \
+              -backend-config=key="${KEY}" \
+              -backend-config=dynamodb_table="${LOCK_TABLE}" \
+              -backend-config=region="${REGION}"
+          echo "Refreshing Terraform state..."
+          terraform refresh
+          echo "Applying targeted update to Bastion Security Group..."
+          # Assuming bastion_sg is within a module named 'app'
+          terraform apply -target=module.app.aws_security_group.bastion_sg -auto-approve
+          echo "Bastion Security Group update applied."
 
-      - name: Set up SSH Key
+      - name: Load Secrets and Set up SSH Key
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -70,6 +108,7 @@ jobs:
           cd infra
           . ./load-secrets.sh
           cd ..
+          # Load necessary secrets into GitHub Actions environment for subsequent steps
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
           echo "::add-mask::${DATABASE_PASSWORD}"
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
@@ -80,9 +119,24 @@ jobs:
           echo "::add-mask::${DATABASE_HOSTNAME}"
           echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
           echo "::add-mask::${BASTION_HOST_IP}"
-          mkdir -p .ssh
-          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
-          chmod 600 .ssh/id_rsa
+          # Create SSH key file
+          mkdir -p ~/.ssh # Use ~/.ssh for standard location
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "SSH key configured."
+
+      - name: Run RDS Restore Script (Conditional)
+        if: github.event.inputs.create_backup_db == 'Yes'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        shell: bash
+        run: |
+          echo "Starting RDS restore process..."
+          ./infra/restore-rds.sh \
+            "${{ github.event.inputs.source_instance_id }}" \
+            "${{ github.event.inputs.snapshot_id }}"
+          echo "RDS restore script finished."
 
       - name: Run Migrations (Conditional)
         if: github.event.inputs.apply_migration == 'Yes'
@@ -90,12 +144,39 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          cd website
-          set -e
+          echo "Changing to website directory..."
+          cd website || { echo "ERROR: Failed to cd into website directory"; exit 1; }
 
-          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
-          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          # Print variables being used for connection (useful for debugging)
+          echo "Using Bastion Host IP: ***" # Masked automatically by ::add-mask::
+          echo "Using Database Hostname: ***" # Masked automatically by ::add-mask::
+
+          echo "Scanning bastion host key..."
+          # Add host key to known_hosts
+          ssh-keyscan -H ${BASTION_HOST_IP} >> ~/.ssh/known_hosts || { echo "ERROR: ssh-keyscan failed for ${BASTION_HOST_IP}"; exit 1; }
+          echo "Host key scanned and added."
+
+          echo "Starting SSH tunnel in background..."
+          # Use standard SSH key location; removed -vvv for cleaner logs
+          # Use -o StrictHostKeyChecking=yes now that key is scanned
+          ssh -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts \
+              -L 5432:${DATABASE_HOSTNAME}:5432 \
+              -f -N -i ~/.ssh/id_rsa ubuntu@${BASTION_HOST_IP} || { echo "ERROR: SSH tunnel command failed to start"; exit 1; }
+          echo "SSH tunnel command executed. Waiting for tunnel establishment..."
+          sleep 5 # Give tunnel a moment
+
+          echo "Exporting DATABASE_URL for local connection through tunnel..."
+          # Masked password will be used here
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
-          echo "Running migrations..."
-          make migrate
-          make createpages settings="app.settings.${ENVIRONMENT}"
+          echo "DATABASE_URL exported."
+
+          echo "Running database migrations (make migrate)..."
+          make migrate || { echo "ERROR: 'make migrate' failed"; exit 1; }
+          echo "'make migrate' completed."
+
+          echo "Running custom commands (make createpages)..."
+          # Ensure settings argument format is correct for your Makefile/manage.py
+          make createpages settings="app.settings.${ENVIRONMENT}" || { echo "ERROR: 'make createpages' failed"; exit 1; }
+          echo "'make createpages' completed."
+
+          echo "Migration step finished successfully."
