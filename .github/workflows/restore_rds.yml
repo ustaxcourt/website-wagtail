@@ -147,23 +147,17 @@ jobs:
           echo "Changing to website directory..."
           cd website || { echo "ERROR: Failed to cd into website directory"; exit 1; }
 
-          # Print variables being used for connection (useful for debugging)
-          echo "Using Bastion Host IP: ***" # Masked automatically by ::add-mask::
-          echo "Using Database Hostname: ***" # Masked automatically by ::add-mask::
-
           echo "Scanning bastion host key..."
           # Add host key to known_hosts
           ssh-keyscan -H ${BASTION_HOST_IP} >> ~/.ssh/known_hosts || { echo "ERROR: ssh-keyscan failed for ${BASTION_HOST_IP}"; exit 1; }
           echo "Host key scanned and added."
 
           echo "Starting SSH tunnel in background..."
-          # Use standard SSH key location; removed -vvv for cleaner logs
-          # Use -o StrictHostKeyChecking=yes now that key is scanned
           ssh -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts \
               -L 5432:${DATABASE_HOSTNAME}:5432 \
               -f -N -i ~/.ssh/id_rsa ubuntu@${BASTION_HOST_IP} || { echo "ERROR: SSH tunnel command failed to start"; exit 1; }
           echo "SSH tunnel command executed. Waiting for tunnel establishment..."
-          sleep 5 # Give tunnel a moment
+          sleep 5
 
           echo "Exporting DATABASE_URL for local connection through tunnel..."
           # Masked password will be used here
