@@ -43,7 +43,7 @@ brew install nvm
 
 #### Setup `tfenv`
 
-You will want to install `tfenv` so that you can install and switch to different terraform versions. The current terraform version is tracked in file [.terraform-version](./.terraform-version).
+You will want to install `tfenv` so that you can install and switch to different terraform versions. The current terraform version used in this project is tracked in file [.terraform-version](./.terraform-version). `tfenv install` command installs the version mentioned in that file.
 
 ```shell
 brew install tfenv
