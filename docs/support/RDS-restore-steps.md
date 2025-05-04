@@ -7,6 +7,8 @@ It's possible to perform the core actions of the Database restore workflow (rest
 ### Prerequisites
 
 - **AWS Credentials:** Configure AWS credentials locally with sufficient permissions for RDS restore, EC2 Security Group modifications, and potentially accessing secrets (e.g., via `aws configure`, or setting `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` environment variables).
+- **DATABASE_HOSTNAME:** Configure `DATABASE_HOSTNAME` in AWS Secrets manager for secret: `website_secrets`. This should be the restored Database hostname.
+- **BASTION_HOST_IP:** Configure `BASTION_HOST_IP` in AWS Secrets manager for secret: `website_secrets`.
 
 **Steps:**
 
@@ -27,6 +29,9 @@ The process typically involves three main `make` commands run in sequence:
 
 **2. Start SSH Tunnel:**
 
+> ![IMPORTANT]
+> Check you have rightly configured `BASTION_HOST_IP` in `website_secrets`.
+
 * **Purpose:** Prepares for database connection by:
     * Updating the bastion host's security group via Terraform to allow SSH from your *current* public IP.
     * Fetching necessary secrets (like bastion key, DB hostname - likely handled within the script).
@@ -46,6 +51,9 @@ The process typically involves three main `make` commands run in sequence:
 * **Outcome:** This command will print status messages and typically exit quickly after launching the SSH tunnel process in the background (using `ssh -f`). The tunnel forwarding `localhost:5432` to the database will remain active in the background.
 
 **3. Apply Migrations to Restored DB:**
+
+> ![IMPORTANT]
+> Check you have rightly configured `DATABASE_HOSTNAME` in `website_secrets`.
 
 * **Purpose:** Connects to the newly restored database (via the background tunnel established in Step 2) and applies database migrations and any custom setup commands (like `createpages`). Corresponds to the migration execution part of the "Run Migrations" step in the GitHub workflow.
 * **Command Syntax:**
