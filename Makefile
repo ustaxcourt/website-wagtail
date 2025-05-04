@@ -38,12 +38,14 @@ aws-setup: check-env aws-init
 			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"DJANGO_SUPERUSER_PASSWORD": "REPLACE", \
+			"DJANGO_SUPERUSER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
 			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE" \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"DATABASE_HOSTNAME": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
 		}'; \
 	else \
 		echo "Creating new secret..."; \
@@ -51,12 +53,14 @@ aws-setup: check-env aws-init
 			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
 			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
 			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"DJANGO_SUPERUSER_PASSWORD": "REPLACE", \
+			"DJANGO_SUPERUSER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
 			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
 			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" , \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "REPLACE", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "REPLACE", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "REPLACE" \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"DATABASE_HOSTNAME": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+			"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
 		}'; \
 	fi
 
@@ -89,6 +93,18 @@ aws-init: check-env
 	   . ./load-secrets.sh && \
 	   echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64 && \
 	   echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64
+
+create-db-restore:
+	@echo "Creating database restore for environment: $(env)"
+	@cd infra && ./restore-rds.sh $(db_instance_id) $(db_snapshot_id)
+
+start-tunnel:
+	@echo "Starting SSH tunnel to bastion host..."
+	@cd infra && ENVIRONMENT=$(env) ./ssh-tunnel.sh
+
+apply-db-restore:
+	@echo "Restoring database for environment: $(env)"
+	@cd infra && ENVIRONMENT=$(env) ./apply-migrations-to-restored-db.sh
 
 deploy:
 	@echo "Deploying to environment: $(env)"
