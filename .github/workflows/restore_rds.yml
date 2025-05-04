@@ -30,7 +30,7 @@ on:
           - 'Yes'
         default: 'Yes'
       apply_migration:
-        description: 'Apply Database Migrations after restore?'
+        description: 'Apply Database Migrations?'
         required: false
         type: choice
         options:
