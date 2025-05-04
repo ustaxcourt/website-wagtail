@@ -1,6 +1,72 @@
 # Workflow Documentation: Manual RDS Restore from Snapshot
 
-## Overview
+## Local Execution Overview
+
+It's possible to perform the core actions of the Database restore workflow (restore, tunnel, migrate) from your local machine using `make` commands. This is useful optional manual action to performing restores outside of GitHub Actions.
+
+### Prerequisites
+
+- **AWS Credentials:** Configure AWS credentials locally with sufficient permissions for RDS restore, EC2 Security Group modifications, and potentially accessing secrets (e.g., via `aws configure`, or setting `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` environment variables).
+
+**Steps:**
+
+The process typically involves three main `make` commands run in sequence:
+
+**1. Create DB Restore:**
+
+* **Purpose:** Initiates the AWS RDS restore process, creating a new instance from the specified snapshot. Corresponds to the "Run RDS Restore Script" step in the GitHub workflow.
+* **Command Syntax:**
+    ```bash
+    make create-db-restore db_instance_id=<source_instance_id> db_snapshot_id=<snapshot_id>
+    ```
+* **Example:**
+    ```bash
+    make create-db-restore db_instance_id=sandbox-20250503200625381200000001 db_snapshot_id=rds:sandbox-20250503200625381200000001-2025-05-03-20-10
+    ```
+* **Action:** Executes the `infra/restore-rds.sh` script, passing the instance and snapshot IDs. This is an AWS operation and may take considerable time for the new RDS instance to become available.
+
+**2. Start SSH Tunnel:**
+
+* **Purpose:** Prepares for database connection by:
+    * Updating the bastion host's security group via Terraform to allow SSH from your *current* public IP.
+    * Fetching necessary secrets (like bastion key, DB hostname - likely handled within the script).
+    * Setting up the bastion's private key locally (`./infra/.ssh/id_rsa`).
+    * Adding the bastion's host key to `./infra/.ssh/known_hosts`.
+    * Starting the SSH tunnel process **in the background**.
+    Corresponds to the "Update Bastion SG", "Load Secrets/Set up SSH Key", and SSH tunnel setup parts of the GitHub workflow.
+* **Command Syntax:**
+    ```bash
+    make start-tunnel
+    ```
+* **Example:**
+    ```bash
+    make start-tunnel
+    ```
+* **Action:** Executes the `infra/ssh-tunnel.sh` script.
+* **Outcome:** This command will print status messages and typically exit quickly after launching the SSH tunnel process in the background (using `ssh -f`). The tunnel forwarding `localhost:5432` to the database will remain active in the background.
+
+**3. Apply Migrations to Restored DB:**
+
+* **Purpose:** Connects to the newly restored database (via the background tunnel established in Step 2) and applies database migrations and any custom setup commands (like `createpages`). Corresponds to the migration execution part of the "Run Migrations" step in the GitHub workflow.
+* **Command Syntax:**
+    ```bash
+    make apply-db-restore
+    ```
+* **Example:**
+    ```bash
+    make apply-db-restore
+    ```
+* **Action:** Executes the `infra/apply-migrations-to-restored-db.sh` script. This script likely sets the `DATABASE_URL` environment variable to point to `localhost:5432` and then runs the necessary `make migrate` and `make createpages` commands within the `website` directory context.
+* **Prerequisite:** Requires the SSH tunnel from `make start-tunnel` to be running in the background.
+
+**Important Notes for Local Execution:**
+
+* **Environment:** Environment is inferred from the AWS session key.
+* **Tunnel Management:** The `make start-tunnel` command starts the tunnel in the background. You will need to manage this process separately if you need to stop it (e.g., using `ps aux | grep ssh` to find the process ID and `kill <PID>`).
+* **Security Group Cleanup:** The `infra/ssh-tunnel.sh` script (as invoked by `make start-tunnel`) modifies the bastion security group to allow your IP.
+* **Error Handling:** Pay close attention to the output of each command for any errors during execution.
+
+## Github Action Overview
 
 This GitHub Actions workflow provides a manual mechanism to restore an AWS Relational Database Service (RDS) instance from a specified snapshot. It is designed to be triggered manually via the GitHub Actions UI (`workflow_dispatch`). The workflow handles AWS authentication, infrastructure updates (specifically bastion host access), the core RDS restore operation (conditionally), and database migrations (conditionally) via an SSH tunnel through a bastion host.
 

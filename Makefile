@@ -96,7 +96,7 @@ aws-init: check-env
 
 create-db-restore:
 	@echo "Creating database restore for environment: $(env)"
-	@cd infra && ./restore-rds.sh $(db_instance_id) $(db_snapshot_id)
+	@cd infra && ENVIRONMENT=$(env) ./restore-rds.sh $(db_instance_id) $(db_snapshot_id)
 
 start-tunnel:
 	@echo "Starting SSH tunnel to bastion host..."
