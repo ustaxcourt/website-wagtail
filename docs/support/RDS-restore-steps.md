@@ -39,11 +39,7 @@ The process typically involves three main `make` commands run in sequence:
     * Adding the bastion's host key to `./infra/.ssh/known_hosts`.
     * Starting the SSH tunnel process **in the background**.
     Corresponds to the "Update Bastion SG", "Load Secrets/Set up SSH Key", and SSH tunnel setup parts of the GitHub workflow.
-* **Command Syntax:**
-    ```bash
-    make start-tunnel
-    ```
-* **Example:**
+* **Command:**
     ```bash
     make start-tunnel
     ```
@@ -56,11 +52,7 @@ The process typically involves three main `make` commands run in sequence:
 > Check that you have correctly configured `DATABASE_HOSTNAME` in `website_secrets`.
 
 * **Purpose:** Connects to the newly restored database (via the background tunnel established in Step 2) and applies database migrations and any custom setup commands (like `createpages`). Corresponds to the migration execution part of the "Run Migrations" step in the GitHub workflow.
-* **Command Syntax:**
-    ```bash
-    make apply-db-restore
-    ```
-* **Example:**
+* **Command:**
     ```bash
     make apply-db-restore
     ```
