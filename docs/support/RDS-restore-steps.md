@@ -30,7 +30,7 @@ The process typically involves three main `make` commands run in sequence:
 **2. Start SSH Tunnel:**
 
 > [!IMPORTANT]
-> Check you have rightly configured `BASTION_HOST_IP` in `website_secrets`.
+> Check that you have correctly configured `BASTION_HOST_IP` in `website_secrets`.
 
 * **Purpose:** Prepares for database connection by:
     * Updating the bastion host's security group via Terraform to allow SSH from your *current* public IP.
@@ -53,7 +53,7 @@ The process typically involves three main `make` commands run in sequence:
 **3. Apply Migrations to Restored DB:**
 
 > [!IMPORTANT]
-> Check you have rightly configured `DATABASE_HOSTNAME` in `website_secrets`.
+> Check that you have correctly configured `DATABASE_HOSTNAME` in `website_secrets`.
 
 * **Purpose:** Connects to the newly restored database (via the background tunnel established in Step 2) and applies database migrations and any custom setup commands (like `createpages`). Corresponds to the migration execution part of the "Run Migrations" step in the GitHub workflow.
 * **Command Syntax:**
