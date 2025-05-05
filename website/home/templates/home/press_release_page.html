@@ -64,11 +64,7 @@
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1 class="page-title">
-            {% if is_archive %}
-                Press Release Archive
-            {% else %}
-                Press Releases & News
-            {% endif %}
+            {{ page.title }}
             <hr>
         </h1>
         {% for year, releases in press_releases_by_year.items %}

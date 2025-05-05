@@ -43,7 +43,11 @@
                 {% for entry in page.entries.all %}
                     {% if entry.end_date == None or entry.end_date >= today %}
                         <div class="entry shadow-2">
-                            <h3>{{ entry.title }}</h3>
+                            {% if entry.title %}
+                                <h3>{{ entry.title }}</h3>
+                            {% else %}
+                                <br />
+                            {% endif %}
                             <div>{{ entry.body| safe }}</div>
                         </div>
                     {% endif %}
