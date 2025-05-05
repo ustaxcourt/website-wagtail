@@ -240,12 +240,12 @@ if aws_bucket_name:
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    # MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
     WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_PREFIX = "files/documents"
     AWS_DEFAULT_ACL = None
     # AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
+    AWS_S3_FILE_OVERWRITE = False
 
     # WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_FUNCTION = "app.utils.get_document_url"
@@ -371,6 +371,7 @@ LOGGING = {
         "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
         "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        "django.request": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger for wagtail-specific messages
         "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"
