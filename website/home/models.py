@@ -334,6 +334,14 @@ class AlertMessageBlock(blocks.StructBlock):
 
 
 class EnhancedStandardPage(Page):
+    def serve_preview(self, request, mode_name):
+        # Swap to faster storage for preview
+        if not settings.DEBUG:
+            settings.STORAGES["default"] = {
+                "BACKEND": "django.core.files.storage.FileSystemStorage"
+            }
+        return super().serve_preview(request, mode_name)
+
     class Meta:
         verbose_name = "Enhanced Standard Page"
 
