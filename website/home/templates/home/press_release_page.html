@@ -14,26 +14,95 @@
         h2 {
             font-size: 20px;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .modal-toggle:checked+label+.modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
     </style>
 {% endblock %}
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1 class="page-title">
-            {% if is_archive %}
-                Press Release Archive
-            {% else %}
-                Press Releases
-            {% endif %}
+            {{ page.title }}
             <hr>
         </h1>
         {% for year, releases in press_releases_by_year.items %}
             <h2 class="title">{{ year }}</h2>
-            <ul class="press-release-list">
+            <ul>
                 {% for release in releases %}
-                    {% if release.details %}
+                    {% if release.is_homepage_entry %}
+                        <li>
+                            <!-- Hidden Checkbox Toggle -->
+                            <input type="checkbox"
+                                   id="modal-toggle-{{ release.id }}"
+                                   class="modal-toggle"
+                                   hidden>
+                            <!-- Modal Trigger (release title) -->
+                            <label for="modal-toggle-{{ release.id }}"
+                                   class="modal-label"
+                                   style="cursor: pointer;
+                                          color: #0056b3;
+                                          text-decoration: underline">
+                                <strong>{{ release.title }} ({{ release.release_date|date:"m/d/Y" }})</strong>
+                            </label>
+                            <!-- Modal Content -->
+                            <div class="modal">
+                                <div class="modal-content">
+                                    <!-- Close Modal -->
+                                    <label for="modal-toggle-{{ release.id }}"
+                                           class="modal-close"
+                                           style="cursor: pointer">&times;</label>
+                                    <h1>{{ release.title }} ({{ release.release_date|date:"m/d/Y" }})</h1>
+                                    <p>{{ release.body | safe }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% else %}
                         <li>
                             {% if release.details.file %}
-                                <a href="{{ release.details.file.url }}">
+                                <a href="{{ release.details.file.url }}"
+                                   style="text-decoration: underline">
                                     <strong>{{ release.release_date|date:"m/d/Y" }}</strong>
                                 </a>
                             {% else %}

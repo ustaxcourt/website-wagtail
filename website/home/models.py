@@ -756,6 +756,17 @@ class HomePage(Page):
     ]
 
 
+def get_context(self, request):
+    context = super().get_context(request)
+
+    live_entries = HomePageEntry.objects.filter(homepage=self).filter(
+        models.Q(end_date__isnull=True) | models.Q(end_date__gte=date.today())
+    )
+
+    context["entries"] = live_entries
+    return context
+
+
 class HomePageImage(Orderable):
     page = ParentalKey("HomePage", related_name="images", on_delete=models.CASCADE)
     image = models.ForeignKey(
@@ -773,13 +784,24 @@ class HomePageImage(Orderable):
 
 class HomePageEntry(models.Model):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=1000)
+    title = RichTextField(blank=True)
     body = RichTextField(blank=True)
+    id = models.AutoField(primary_key=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    persist_to_press_releases = models.BooleanField(default=True)
 
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("body"),
-    ]
+
+def is_expired(self):
+    return self.end_date and self.end_date < date.today()
+
+
+panels = [
+    FieldPanel("title"),
+    FieldPanel("body"),
+    FieldPanel("start_date"),
+    FieldPanel("end_date"),
+]
 
 
 class CaseRelatedFormsPage(StandardPage):
@@ -1521,6 +1543,22 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                     if release_date:
                         year = release_date.year
                         grouped[year].append(release)
+
+        persisted_entries = HomePageEntry.objects.filter(
+            persist_to_press_releases=True, end_date__lt=date.today()
+        ).order_by("-end_date")
+
+        for entry in persisted_entries:
+            year = entry.end_date.year if entry.end_date else "Unknown"
+            grouped[year].append(
+                {
+                    "is_homepage_entry": True,
+                    "release_date": entry.end_date,
+                    "id": entry.id,
+                    "title": entry.title,
+                    "body": entry.body,
+                }
+            )
         # Sort releases in each year by descending date
         sorted_grouped = {
             year: sorted(releases, key=itemgetter("release_date"), reverse=True)
