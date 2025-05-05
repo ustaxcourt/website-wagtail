@@ -6,9 +6,15 @@
 {% block extra_css %}
     <style>
         .enhanced-page {
+            width: 100%;
+            overflow-x: auto;
 
             iframe {
+                width: 100%;
+                max-width: 100%;
                 height: 100vh;
+                display: block;
+                border: none;
             }
 
             .centered-image {
