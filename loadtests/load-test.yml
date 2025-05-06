@@ -8,7 +8,7 @@ config:
     #   rampTo: 100
     #   name: "Ramp up to 100 users"
     - duration: 10
-      arrivalRate: 20
+      arrivalRate: 100
       name: "Sustained load"
     # - duration: 60
     #   arrivalRate: 100

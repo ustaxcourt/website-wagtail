@@ -60,14 +60,11 @@ resource "aws_cloudfront_origin_request_policy" "dynamic_content" {
   comment = "Policy for dynamic content"
 
   cookies_config {
-    cookie_behavior = "none"
+    cookie_behavior = "all"
   }
 
   headers_config {
-    header_behavior = "whitelist"
-    headers {
-      items = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
-    }
+    header_behavior = "all"
   }
 
   query_strings_config {
