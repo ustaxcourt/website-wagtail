@@ -94,7 +94,7 @@ class PageInitializer(ABC):
         # Check if the document already exists
         if Document.objects.filter(title=title).exists():
             logger.info(f"Document with title '{title}' already exists.")
-            print(Document.__dict__)
+            document = Document.objects.get(title=title)
             return Document.objects.get(title=title)
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
