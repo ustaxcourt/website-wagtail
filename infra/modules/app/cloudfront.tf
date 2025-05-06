@@ -64,7 +64,7 @@ resource "aws_cloudfront_origin_request_policy" "dynamic_content" {
   }
 
   headers_config {
-    header_behavior = "all"
+    header_behavior = "allViewer"
   }
 
   query_strings_config {
