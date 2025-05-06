@@ -790,18 +790,23 @@ class HomePageEntry(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     persist_to_press_releases = models.BooleanField(default=True)
+    order = models.IntegerField(
+        default=0, blank=True, null=True
+    )  # Order field for dynamic sorting
 
+    def is_expired(self):
+        return self.end_date and self.end_date < date.today()
 
-def is_expired(self):
-    return self.end_date and self.end_date < date.today()
+    class Meta:
+        ordering = ["order"]  # Ensures entries are sorted dynamically by order
 
-
-panels = [
-    FieldPanel("title"),
-    FieldPanel("body"),
-    FieldPanel("start_date"),
-    FieldPanel("end_date"),
-]
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
+        FieldPanel("start_date"),
+        FieldPanel("end_date"),
+        FieldPanel("order"),
+    ]
 
 
 class CaseRelatedFormsPage(StandardPage):

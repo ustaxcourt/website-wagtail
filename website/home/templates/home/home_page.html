@@ -40,7 +40,7 @@
                 <span class="label">NOTEWORTHY</span>
             </div>
             <div class="entries-list">
-                {% for entry in page.entries.all %}
+                {% for entry in page.entries.all|dictsort:"order" %}
                     {% if entry.end_date == None or entry.end_date >= today %}
                         <div class="entry shadow-2">
                             {% if entry.title %}
