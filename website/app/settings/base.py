@@ -136,10 +136,11 @@ if DATABASE_URL:
     # Add Django 5.1+ connection pooling options
     db_config.setdefault("OPTIONS", {})
     db_config["OPTIONS"]["pool"] = {
-        "pool_size": 10,  # Number of connections in the pool (adjust as needed)
-        "max_overflow": 5,  # Extra connections allowed above pool_size
-        "recycle": 300,  # Recycle connections after 300 seconds
+        "min_size": 1,  # Minimum number of connections in the pool
+        "max_size": 10,  # Maximum number of connections in the pool
         "timeout": 30,  # Wait up to 30 seconds for a connection
+        "max_waiting": 5,  # Maximum number of clients waiting for a connection
+        "max_lifetime": 300,  # Maximum lifetime of a connection in seconds
     }
     DATABASES["default"] = db_config
 
