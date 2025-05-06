@@ -130,7 +130,7 @@ DATABASES = {
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=None)
+    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=0)
     # Add built-in connection pooling for PostgreSQL
     if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
         # Set max_conns to your desired pool size (e.g., 20)
