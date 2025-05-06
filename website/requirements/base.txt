@@ -55,4 +55,4 @@ whitenoise==6.8.2
 Willow==1.9.0
 social-auth-app-django==5.4.3
 gevent==23.9.1
-"psycopg[pool]"==3.2.6
+psycopg[pool]==3.2.6
