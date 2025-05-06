@@ -64,7 +64,7 @@ class HomePageInitializer(PageInitializer):
             homepage.images = loaded_images
 
         root.add_child(instance=homepage)
-        homepage.save_revision().publish()
+        # homepage.save_revision().publish()
 
         site = Site.objects.filter(is_default_site=True).first()
         if site:
