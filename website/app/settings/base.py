@@ -131,6 +131,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
     DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    # Add built-in connection pooling for PostgreSQL
+    if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+        # Set max_conns to your desired pool size (e.g., 20)
+        DATABASES["default"].setdefault("OPTIONS", {})
+        DATABASES["default"]["OPTIONS"]["pool"] = {
+            "max_conns": 10  # Adjust as needed
+        }
 
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
@@ -303,7 +310,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("DOMAIN_NAME")]
 
 
 def _task_ips():
-    """Return the task’s IPv4 address(es) from the ECS metadata API."""
+    """Return the task's IPv4 address(es) from the ECS metadata API."""
     meta = os.getenv("ECS_CONTAINER_METADATA_URI_V4") or os.getenv(
         "ECS_CONTAINER_METADATA_URI"
     )
@@ -313,7 +320,7 @@ def _task_ips():
     try:
         with urllib.request.urlopen(f"{meta}/task", timeout=0.2) as r:
             data = json.load(r)
-            # First container in the task is usually “ours”
+            # First container in the task is usually "ours"
             nets = data["Containers"][0]["Networks"]
             return [ip for net in nets for ip in net["IPv4Addresses"]]
     except Exception:
