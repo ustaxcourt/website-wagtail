@@ -42,7 +42,8 @@ class HomePageInitializer(PageInitializer):
 
         if HomePage.objects.filter(title=title).exists():
             logger.info(f"- {title} page already exists.")
-            return
+            HomePage.objects.filter(title=title).delete()
+            # return
 
         homepage = HomePage(
             title=title,
