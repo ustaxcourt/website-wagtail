@@ -130,7 +130,17 @@ DATABASES = {
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    db_config = dj_database_url.parse(
+        DATABASE_URL, conn_max_age=0
+    )  # Disable persistent connections
+    # Add Django 5.1+ connection pooling options
+    db_config["POOL_OPTIONS"] = {
+        "pool_size": 10,  # Number of connections in the pool (adjust as needed)
+        "max_overflow": 5,  # Extra connections allowed above pool_size
+        "recycle": 300,  # Recycle connections after 300 seconds
+        "timeout": 30,  # Wait up to 30 seconds for a connection
+    }
+    DATABASES["default"] = db_config
 
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
@@ -240,12 +250,12 @@ if aws_bucket_name:
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
+    # MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
     WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_PREFIX = "files/documents"
     AWS_DEFAULT_ACL = None
     # AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
-    AWS_S3_FILE_OVERWRITE = False
 
     # WAGTAILDOCS_SERVE_METHOD = "direct"
     # WAGTAILDOCS_URL_FUNCTION = "app.utils.get_document_url"
@@ -299,11 +309,16 @@ GITHUB_SHA = os.getenv("GITHUB_SHA")
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("DOMAIN_NAME")]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    os.getenv("DOMAIN_NAME"),
+    f"www.{os.getenv('DOMAIN_NAME')}",
+]
 
 
 def _task_ips():
-    """Return the task’s IPv4 address(es) from the ECS metadata API."""
+    """Return the task's IPv4 address(es) from the ECS metadata API."""
     meta = os.getenv("ECS_CONTAINER_METADATA_URI_V4") or os.getenv(
         "ECS_CONTAINER_METADATA_URI"
     )
@@ -313,7 +328,7 @@ def _task_ips():
     try:
         with urllib.request.urlopen(f"{meta}/task", timeout=0.2) as r:
             data = json.load(r)
-            # First container in the task is usually “ours”
+            # First container in the task is usually "ours"
             nets = data["Containers"][0]["Networks"]
             return [ip for net in nets for ip in net["IPv4Addresses"]]
     except Exception:
@@ -371,7 +386,6 @@ LOGGING = {
         "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
         "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
-        "django.request": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger for wagtail-specific messages
         "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"
