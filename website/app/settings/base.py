@@ -137,10 +137,10 @@ if DATABASE_URL:
     # Add Django 5.1+ connection pooling options
     db_config.setdefault("OPTIONS", {})
     db_config["OPTIONS"]["pool"] = {
-        "min_size": 1,  # Minimum number of connections in the pool
-        "max_size": 5,  # Reduced from 10 to 5 to prevent connection exhaustion
-        "timeout": 60,  # Increased timeout to 60 seconds
-        "max_waiting": 10,  # Increased waiting clients
+        "min_size": 10,  # Increased minimum connections to handle base load
+        "max_size": 50,  # Increased max connections for high load
+        "timeout": 15,  # Reduced timeout to fail faster if no connection available
+        "max_waiting": 30,  # Increased waiting queue size
         "max_lifetime": 300,  # Maximum lifetime of a connection in seconds
     }
     # Ensure we're using the correct engine for psycopg3
