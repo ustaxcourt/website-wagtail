@@ -313,16 +313,6 @@ all_judges = [
         "bio": "Senior Judge. Born in Texas. Attended Fox Tech High School and San Antonio Junior College, A.D. (Data Processing); received B.B.A. (Accounting), University of Texas, Austin, 1972; attended State University of New York, Buffalo in 1st year law school, 1975; J.D., University of Houston Law Center, 1977; LL.M., Taxation, New York University Law School, 1978. Admitted to Texas Bar, 1977. Certified in Tax Law by Texas Board of Legal Specialization, 1984; Certified Public Accountant Certificate from Texas, 1976, and California, 1974. Admitted to United States District Court, Southern District of Texas, 1982, and Western District of Texas, 1985, U.S. Court of Appeals for the Fifth Circuit, 1982; private practice of tax law, in San Antonio, TX, 1987-April 1995; partner, Leighton, Hood and Vasquez, 1982-87, San Antonio, TX; Trial Attorney, Office of Chief Counsel, Internal Revenue Service, Houston, TX, 1978-82; accountant, Coopers and Lybrand, Los Angeles, CA., 1972-74. Member of American Bar Association, Tax Section; Texas State Bar, Tax and Probate Section; Fellow of Texas and San Antonio Bar Foundations, Mexican American Bar Association (MABA) of San Antonio (Treasurer); Houston MABA; Texas MABA (Treasurer); National Association of Hispanic CPA's; San Antonio Chapter (founding member); College of State Bar of Texas, National Hispanic Bar Association; member of Greater Austin Tax Litigation Association; served on Austin Internal Revenue Service District Director's Practitioner Liaison Committee, 1990-91, chairman, 1991. Appointed by President Clinton as Judge of the United States Tax Court; sworn in on May 1, 1995 for a term ending April 30, 2010. Reappointed by President Obama on October 13, 2011 for a term ending October 12, 2026. Assumed senior status on June 24, 2018 and continues to perform judicial duties as Senior Judge on recall.",
     },
     {
-        "first_name": "Lewis",
-        "middle_initial": "R.",
-        "last_name": "Carluzzo",
-        "suffix": "",
-        "display_name": "Lewis R. Carluzzo",
-        "title": "Special Trial Judge",
-        "chambers_telephone": "(202) 521-3339",
-        "bio": "Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Appointed Chief Special Trial Judge effective September 1, 2017.",
-    },
-    {
         "first_name": "Zachary",
         "middle_initial": "S.",
         "last_name": "Fried",
@@ -330,7 +320,17 @@ all_judges = [
         "display_name": "Zachary S. Fried",
         "title": "Special Trial Judge",
         "chambers_telephone": "(202) 521-0867",
-        "bio": "Special Trial Judge Fried holds a B.A. from the University of Virginia, a J.D. from George Washington University Law School, and an LL.M in Taxation from Georgetown University Law Center. Before his appointment, he served as Attorney-Adviser to Chief Special Trial Judge Lewis R. Carluzzo and as Deputy Counsel to the Chief Judge. Prior professional experience included working as an Attorney with the Apartment and Office Building Association of Metropolitan Washington.<p>He is a member of the District of Columbia Bar, United States Tax Court Bar, and American Bar Association.</p><p>Appointed Special Trial Judge of the United States Tax Court on October 10, 2023.</p>",
+        "bio": "Special Trial Judge Fried holds a B.A. from the University of Virginia, a J.D. from George Washington University Law School, and an LL.M in Taxation from Georgetown University Law Center. Before his appointment, he served as Attorney-Adviser to Chief Special Trial Judge Lewis R. Carluzzo and as Deputy Counsel to the Chief Judge. Prior professional experience included working as an Attorney with the Apartment and Office Building Association of Metropolitan Washington.<p>He is a member of the District of Columbia Bar, United States Tax Court Bar, and American Bar Association.</p><p>Appointed Special Trial Judge of the United States Tax Court on October 10, 2023, and appointed Chief Special Trial Judge on May 2, 2025.</p>",
+    },
+    {
+        "first_name": "Lewis",
+        "middle_initial": "R.",
+        "last_name": "Carluzzo",
+        "suffix": "",
+        "display_name": "Lewis R. Carluzzo",
+        "title": "Special Trial Judge",
+        "chambers_telephone": "(202) 521-3339",
+        "bio": "Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025.",
     },
     {
         "first_name": "Diana",
@@ -423,9 +423,7 @@ class JudgesPageInitializer(PageInitializer):
         JudgeRole.objects.update_or_create(
             role_name="Chief Special Trial Judge",
             defaults={
-                "judge": JudgeProfile.objects.filter(
-                    last_name__iexact="Carluzzo"
-                ).first()
+                "judge": JudgeProfile.objects.filter(last_name__iexact="Fried").first()
             },
         )
 

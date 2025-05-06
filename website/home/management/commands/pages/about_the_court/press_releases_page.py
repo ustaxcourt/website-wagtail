@@ -241,7 +241,7 @@ class PressReleasesPageInitializer(PageInitializer):
 
     def create_page_info(self, home_page):
         slug = "press-releases"
-        title = "Press Releases"
+        title = "Press Releases & News"
 
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")

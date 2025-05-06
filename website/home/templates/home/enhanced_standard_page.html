@@ -6,9 +6,15 @@
 {% block extra_css %}
     <style>
         .enhanced-page {
+            width: 100%;
+            overflow-x: auto;
 
             iframe {
+                width: 100%;
+                max-width: 100%;
                 height: 100vh;
+                display: block;
+                border: none;
             }
 
             .centered-image {
@@ -459,16 +465,14 @@
                 {% elif block.block_type == 'alert' %}
                     <div class="alert {{ block.value.alert_type }}">{{ block.value.content | richtext }}</div>
                 {% elif block.block_type == 'iframe' %}
-                    <iframe
-                        src="{{ block.value.src }}"
-                        width="{{ block.value.width }}"
-                        height="{{ block.value.height }}"
-                        {% if block.value.class %}class="{{ block.value.class }}"{% endif %}
-                        {% if block.value.loading %}loading="{{ block.value.loading }}"{% endif %}
-                        {% if block.value.data_delay %}data-delay="{{ block.value.data_delay }}"{% endif %}
-                        {% if block.value.name %}name="{{ block.value.name }}"{% endif %}
-                        {% if block.value.title %}title="{{ block.value.title }}"{% endif %}
-                    ></iframe>
+                    <iframe src="{{ block.value.src }}"
+                            width="{{ block.value.width }}"
+                            height="{{ block.value.height }}"
+                            {% if block.value.class %}class="{{ block.value.class }}"{% endif %}
+                            {% if block.value.loading %}loading="{{ block.value.loading }}"{% endif %}
+                            {% if block.value.data_delay %}data-delay="{{ block.value.data_delay }}"{% endif %}
+                            {% if block.value.name %}name="{{ block.value.name }}"{% endif %}
+                            {% if block.value.title %}title="{{ block.value.title }}"{% endif %}></iframe>
                 {% elif block.block_type == 'table' %}
                     {% include "home/styled_table.html" with block=block %}
                 {% elif block.block_type == 'unstyled_table' %}
