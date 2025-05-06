@@ -1,0 +1,27 @@
+config:
+  target: "{{ $processEnvironment.TARGET_URL }}"
+  http:
+    timeout: 10
+  phases:
+    # - duration: 60
+    #   arrivalRate: 1
+    #   rampTo: 100
+    #   name: "Ramp up to 100 users"
+    - duration: 60
+      arrivalRate: 100
+      name: "Sustained load"
+    # - duration: 60
+    #   arrivalRate: 100
+    #   rampTo: 0
+    #   name: "Ramp down to 0 users"
+  processor: "./urls.js"
+
+scenarios:
+  - name: "Random URL access"
+    flow:
+      - function: "getRandomUrl"
+      - get:
+          url: "{{ url }}"
+          afterResponse: "afterResponse"
+          timeout: 10
+      - think: 1
