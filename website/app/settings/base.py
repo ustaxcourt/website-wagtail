@@ -134,7 +134,8 @@ if DATABASE_URL:
         DATABASE_URL, conn_max_age=0
     )  # Disable persistent connections
     # Add Django 5.1+ connection pooling options
-    db_config["POOL_OPTIONS"] = {
+    db_config.setdefault("OPTIONS", {})
+    db_config["OPTIONS"]["pool"] = {
         "pool_size": 10,  # Number of connections in the pool (adjust as needed)
         "max_overflow": 5,  # Extra connections allowed above pool_size
         "recycle": 300,  # Recycle connections after 300 seconds
