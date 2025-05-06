@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "fontawesomefree",
     "social_django",
+    "wagtail.contrib.frontend_cache",
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,15 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
+
+if os.getenv("CLOUDFRONT_DISTRIBUTION_ID"):
+    WAGTAILFRONTENDCACHE = {
+        "cloudfront": {
+            "BACKEND": "wagtail.contrib.frontend_cache.backends.CloudfrontBackend",
+            "DISTRIBUTION_ID": os.getenv("CLOUDFRONT_DISTRIBUTION_ID"),
+        }
+    }
+
 
 ROOT_URLCONF = "app.urls"
 
@@ -137,7 +147,7 @@ if DATABASE_URL:
     db_config.setdefault("OPTIONS", {})
     db_config["OPTIONS"]["pool"] = {
         "min_size": 10,  # Increased minimum connections to handle base load
-        "max_size": 50,  # Increased max connections for high load
+        "max_size": 20,  # Increased max connections for high load
         "timeout": 15,  # Reduced timeout to fail faster if no connection available
         "max_waiting": 30,  # Increased waiting queue size
         "max_lifetime": 300,  # Maximum lifetime of a connection in seconds

@@ -28,6 +28,32 @@ data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
 }
 
+# Create cache policy for 5-minute caching
+resource "aws_cloudfront_cache_policy" "five_minute_cache" {
+  name        = "${var.environment}-five-minute-cache"
+  comment     = "Policy for 5-minute caching of general content"
+  min_ttl     = 300     # 5 minutes
+  default_ttl = 300     # 5 minutes
+  max_ttl     = 300     # 5 minutes
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "all"
+    }
+    headers_config {
+      header_behavior = "whitelist"
+      headers {
+        items = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+      }
+    }
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
+  }
+}
+
 # Create origin request policy for dynamic content
 resource "aws_cloudfront_origin_request_policy" "dynamic_content" {
   name    = "${var.environment}-dynamic-content"
@@ -194,7 +220,7 @@ resource "aws_cloudfront_distribution" "app" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "app-origin"
 
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    cache_policy_id          = aws_cloudfront_cache_policy.five_minute_cache.id
     origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
 
     viewer_protocol_policy = "redirect-to-https"

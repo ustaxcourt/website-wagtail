@@ -49,6 +49,30 @@ resource "aws_iam_role_policy_attachment" "ecs_task_s3_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
+# Add CloudFront invalidation policy to the ECS task role
+resource "aws_iam_role_policy" "ecs_task_cloudfront_invalidation" {
+  name = "${var.environment}-ecs-task-cloudfront-invalidation"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudfront:CreateInvalidation"
+        ]
+        Resource = [
+          "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.app.id}"
+        ]
+      }
+    ]
+  })
+}
+
+# Get current AWS account ID
+data "aws_caller_identity" "current" {}
+
 # Updated ECS task definition
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
@@ -72,6 +96,10 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID",
         value = var.social_auth_azuread_tenant_oauth2_tenant_id
+      },
+      {
+        name = "CLOUDFRONT_DISTRIBUTION_ID",
+        value = aws_cloudfront_distribution.app.id
       }
     ],
     secrets: [
