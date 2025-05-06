@@ -1,48 +1,66 @@
-import boto3
 import logging
-from botocore.exceptions import ClientError
-from django.conf import settings
-from django.urls import include, path
+import os
 from django.contrib import admin
-from wagtail.contrib.sitemaps.views import sitemap
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail import urls as wagtail_urls
-from wagtail.documents import urls as wagtaildocs_urls
+from django.conf import settings
 from django.shortcuts import redirect, render
-from django.urls import re_path
+from django.urls import include, path, re_path
+from wagtail import urls as wagtail_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps.views import sitemap
+from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.documents.models import Document
 
 
 def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    # Initialize S3 client
-    s3 = boto3.client(
-        "s3",
-        region_name="us-east-1",
-    )
+    # Remove the extension if present
+    base_filename, ext = os.path.splitext(filename)
 
-    # Construct the key
-    prefix = "documents/"
-    possible_key = f"{prefix}{filename}"
+    # Find documents where the filename starts with the base name
+    possible_matches = Document.objects.filter(file__icontains=base_filename)
 
-    try:
-        # Check if object exists
-        s3.head_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=possible_key)
+    # Filter down to files with same extension that start with the base filename
+    matched_docs = [
+        doc
+        for doc in possible_matches
+        if doc.filename.lower().endswith(ext)
+        and os.path.splitext(doc.filename)[0].startswith(base_filename)
+    ]
 
-        # If it exists, redirect to S3 URL
-        s3_url = f"{settings.MEDIA_URL}{possible_key}"
-        return redirect(s3_url)
-    except ClientError as e:
-        # Handle object not found error specifically
-        if e.response["Error"]["Code"] == "404":
-            return render(request, "404.html", status=404)
-        else:
-            logger.warning(
-                f"Unsuccessful attempt to redirect original URL: {request.get_full_path()}"
+    number_of_matches = len(matched_docs)
+
+    # Redirect if there is a single match and it is exact (ignoring case)
+    if number_of_matches == 1:
+        matched_doc = matched_docs[0]
+        if matched_doc.filename.lower() == filename.lower():
+            logger.info(
+                f"Successfully redirecting legacy resource request for: {filename}"
             )
-            # Unexpected error - raise for visibility
-            raise
+            return redirect(matched_doc.file.url)
+        else:
+            # Log non-exact match and render 404
+            logger.warning(
+                f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
+            )
+            return render_404_util(request)
+
+    # Log requests with no matches or multiple matches
+    if number_of_matches == 0:
+        logger.warning(f"No matches for: {filename}")
+    else:
+        logger.warning(
+            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
+        )
+
+    # Not found or multiple matches result in 404
+    return render_404_util(request)
+
+
+# Exists for testing purposes only
+def render_404_util(request):
+    return render(request, "404.html", status=404)
 
 
 urlpatterns = [

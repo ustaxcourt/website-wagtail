@@ -7,7 +7,7 @@ This repository contains the code for [ustaxcourt.gov](https://ustaxcourt.gov). 
 
 Note, we plan to get sub domains for these environments, and these links are subject to change for now.
 
-# Running the Wagtail Website
+## Running the Wagtail Website
 
 There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory:
 
@@ -41,18 +41,16 @@ brew install node
 brew install nvm
 ```
 
-#### Setup Tfenv
+#### Setup `tfenv`
 
-You will want to install tfenv so that you can install and switch to different terraform versions.
+You will want to install `tfenv` so that you can install and switch to different terraform versions. The current terraform version used in this project is tracked in file [.terraform-version](./.terraform-version). `tfenv install` command installs the version mentioned in that file.
 
 ```shell
 brew install tfenv
-tfenv install 1.10.4
-tfenv use 1.10.4
+tfenv install
 ```
 
-
-#### Setup Pre-Commit
+#### Setup `pre-commit`
 
 Before you commit to the repo, we run some checks to verify and fix the formatting of python.
 
@@ -101,7 +99,7 @@ make resetadminpassword
 
 ### Run
 
-Finally, running applicaiton.
+Finally, running application.
 
 ```shell
 make run
@@ -119,7 +117,7 @@ See `make superuser` to see how it is setup first time.
 
 Mike will reach out to you with a aws console username & password. Please verify you can login with it, and also reach out to have your default password changed because you can't do it in the console from what we've seen.
 
-Next, you'll want to make sure your application is setup with your sso. You should be able to run this command and enter your SSO url when prompted. You'll also be promted with some other stuff you want to fill in.
+Next, you'll want to make sure your application is setup with your sso. You should be able to run this command and enter your SSO url when prompted. You'll also be prompted with some other stuff you want to fill in.
 
 - `aws sso configure`
 
@@ -171,6 +169,7 @@ Leaving your sandbox running without being used will waste money.  Remember to c
 2. manually disable delete protection for your rds database in file [rds.tf](./infra/modules/app/rds.tf)
 3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance by setting `deletion_protection = false`
 4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh` or run `make destroy`
+  - Alternatively, you can use `make tag tag=sandbox-destroy`
 
 
 ## Manually Connecting to DB
@@ -178,6 +177,14 @@ Leaving your sandbox running without being used will waste money.  Remember to c
 If you want to connect to the database from your local machine, you will need to make sure the bastion host is running and update the security group to allow your IP address.
 
 Because the RDS instance is behind a VPS, that means you will need to setup an SSH tunnel through a bastion host to be able to access it.
+
+Run the following `make` command.
+
+```bash
+make start-tunnel
+```
+
+Or
 
 `ssh -L 5432:<RDS_HOSTNAME>:5432 -N -i .ssh/id_rsa ubuntu@<IP_ADDRESS>`
 
@@ -189,7 +196,7 @@ Remember to remove your IP address from the security group when done.
 
 Our code is currently deployed using github actions when your pull request is merged to the `development` branch.  The way this works, is the github action will spin up an ubuntu machine, pull in the branch code, setup python and terraform, and eventually it'll run terraform which will build the wagtail container, and deploy that container to aws ecs.  After updating our infrastructure, the ci/cd pipeline will run migration scripts via the bastion host tunnel which will update the ecs service with the latest wagtail migration scripts.  Finally, the github action workflow will update the ECS task to run with the latest version of the wagtail container.
 
-The application is publically accessible via an AWS ALB which points to ECS.
+The application is publicly accessible via an AWS ALB which points to ECS.
 
 ![./docs/diagrams/ci-cd.png](./docs/diagrams/ci-cd.png)
 
@@ -217,7 +224,7 @@ This document clarifies the process a developer should follow when assigned to a
 ## Summary
 
 Generally speaking, this project will follow a [feature-branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow):
--  `main` branch represents the official project history, and the starting point for all story work
+- `main` branch represents the official project history, and the starting point for all story work
 - developers work on stories by branching off of `main`, implementing their work in a feature branch, and ultimately integrating their feature branch back into `main` once their work is complete
 
 Additionally, we will use tags to facilitate deployment to production and sandbox instances.
@@ -268,7 +275,7 @@ Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/we
 
 9. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
 
-10. **Destroy application environment**. Verify you are able to destory the application environment by running destory command.
+10. **Destroy application environment**. Verify you are able to destroy the application environment by running destroy command.
 
 > [!WARNING]
 > Leaving your sandbox application environment running might incur unwanted expense. Once the testing is done, you should destroy the AWS resources.
@@ -285,7 +292,7 @@ make tag tag=sandbox-destroy
       - `fix`: code that fixes a bug or adds/clarifies documentation, e.g. `fix/broken-dropdown-1234`
       - `feature`: code that adds or enhances functionality of the app, e.g. `feature/new-disco-theme-1234`
     - `brief-description`: a few words to describe the purpose of the branch
-    - `monday-id`: the valu of the **Item ID** in Monday.com
+    - `monday-id`: the value of the **Item ID** in Monday.com
 3. Develop and test locally
 4. When ready for review, push branch to github (if not done already) and create a draft PR to `main`
 5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox` , e.g.
@@ -300,7 +307,7 @@ Or, the following equivalent command.
 > Additionally, you can add/reassign tags using the Github website.
 
 6. Developer notifies team that feature is ready for review:
-  - by moving the story card in Monday.com to the `Watiting for review` lane, and
+  - by moving the story card in Monday.com to the `Waiting for review` lane, and
   - by notifying the stakeholders (UX, PO) in Teams that the feature is ready for testing.
 7. UX verifies AC in sandbox
 8. PO verifies AC in sandbox
@@ -309,5 +316,10 @@ Or, the following equivalent command.
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
 
-## Troubleshooting Python/Python 3
-  - if make commands are not running try doing the command "which python3"  which should give you a path which can be inserted into the "path" portion of the following command to alias python with python3. (sudo ln -s "path" /usr/local/bin/python)
+### Troubleshooting Python/Python 3
+
+- If `make` commands are not running try doing the command "`which python3`"  which should give you a path which can be inserted into the "path" portion of the following command to alias python with python3. (`sudo ln -s "path" /usr/local/bin/python`)
+
+## Support Documents
+
+- To restore RDS database, follow instructions in [RDS-restore-steps.md](./docs/support/RDS-restore-steps.md).

@@ -2,6 +2,11 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8" />
+        {% get_enviroment as environment %}
+        {% if environment != "production-yet" %}
+            <meta name="google-site-verification" content="alipAPhtm5ugza9OWr54BwvB3FkPOhwNXYitjmnf6Pk" />
+        {% endif %}
+        <meta name="google-site-verification" content="alipAPhtm5ugza9OWr54BwvB3FkPOhwNXYitjmnf6Pk" />
         <title>Internal server error</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>

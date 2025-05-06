@@ -1,6 +1,7 @@
 from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ class HomePageInitializer(PageInitializer):
 
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="",
+            title="Remote Proceedings Info",
             body=(
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
             ),
@@ -99,6 +100,39 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank">Press Release</a>."""
             ),
+            start_date=datetime(2025, 4, 1).date(),
+            end_date=datetime(2025, 1, 1).date(),
+            persist_to_press_releases=True,
+        )
+        HomePageEntry.objects.create(
+            homepage=homepage,
+            title="Closed for Holidays",
+            body=(
+                "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
+            ),
+            start_date=datetime(2024, 12, 1).date(),
+            end_date=datetime(2024, 12, 25).date(),
+            persist_to_press_releases=True,
+        )
+        HomePageEntry.objects.create(
+            homepage=homepage,
+            title="",
+            body=(
+                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
+            ),
+            start_date=datetime(2025, 4, 14).date(),
+            end_date=None,
+            persist_to_press_releases=True,
+        )
+        HomePageEntry.objects.create(
+            homepage=homepage,
+            title="Tax Court disciplinary matters.",
+            body=(
+                f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank">Press Release</a>."""
+            ),
+            start_date=datetime(2025, 4, 29).date(),
+            end_date=None,
+            persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -106,6 +140,9 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04162025.pdf"]}" target="_blank">Press Release</a>."""
             ),
+            start_date=datetime(2025, 4, 14).date(),
+            end_date=None,
+            persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -113,6 +150,9 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank">Press Release</a>."""
             ),
+            start_date=datetime(2025, 4, 7).date(),
+            end_date=None,
+            persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -125,9 +165,12 @@ class HomePageInitializer(PageInitializer):
                 "<li>call or email threatening arrest;</li>"
                 "<li>call or email insisting that a specific payment method be used to pay Court fees, a tax debt, or requesting credit or debit card numbers over the phone.</li>"
                 "</ul>"
-                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.fbi.gov' target='_blank'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI — government agencies that are unrelated to the Tax Court.</p>"
+                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.ic3.gov' target='_blank' title='Report Fraud'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI — government agencies that are unrelated to the Tax Court.</p>"
                 "<p>If you would like to verify that the communication you received is really from the Tax Court, please call the Court at (202) 521-0700.</p>"
             ),
+            start_date=None,
+            end_date=None,
+            persist_to_press_releases=True,
         )
 
         logger.info("Successfully created the new Home page.")
