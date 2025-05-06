@@ -74,7 +74,9 @@ class HomePageInitializer(PageInitializer):
 
         for document in home_docs.keys():
             uploaded_document = self.load_document_from_documents_dir(None, document)
-            home_docs[document] = uploaded_document.file.path
+            home_docs[document] = uploaded_document.file.id
+            print(uploaded_document.file.url)
+            print(uploaded_document.file.path)
             print(home_docs)
 
         # delete the wagtail generated page (it doesn't have the mixin)
