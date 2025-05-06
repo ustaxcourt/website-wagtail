@@ -130,7 +130,6 @@ DATABASES = {
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    print(f"Configuring database with URL: {DATABASE_URL}")
     db_config = dj_database_url.parse(
         DATABASE_URL, conn_max_age=0
     )  # Disable persistent connections
@@ -146,7 +145,6 @@ if DATABASE_URL:
     # Ensure we're using the correct engine for psycopg3
     db_config["ENGINE"] = "django.db.backends.postgresql"
     DATABASES["default"] = db_config
-    print(f"Final database configuration: {DATABASES['default']}")
 
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
