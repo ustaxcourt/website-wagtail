@@ -84,6 +84,7 @@ jobs:
           cd infra
           . ./load-secrets.sh
           cd ..
+          echo "DOMAIN_NAME" >> $GITHUB_ENV
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
           echo "::add-mask::${DATABASE_PASSWORD}" # prevent the password from logging out
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
