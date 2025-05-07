@@ -228,8 +228,6 @@ STORAGES = {
 aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
 if aws_bucket_name:
     print(f"Loading from base config, bucket: {aws_bucket_name}")
-    print(f"{os.getenv('DOMAIN_NAME')}/files")
-    WAGTAILDOCS_SERVE_METHOD = "direct"
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
@@ -240,9 +238,9 @@ if aws_bucket_name:
             "url_protocol": "https:",
         },
     }
-    print(f"STORAGES: {STORAGES}")
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
+    WAGTAILDOCS_SERVE_METHOD = "direct"
     AWS_DEFAULT_ACL = None
     AWS_S3_ADDRESSING_STYLE = "path"
     AWS_S3_FILE_OVERWRITE = False
