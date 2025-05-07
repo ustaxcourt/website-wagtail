@@ -31,7 +31,11 @@ class JudicialConductAndDisabilityProceduresPageInitializer(PageInitializer):
         logger.info(f"Creating the '{title}' page.")
 
         for document in jcdp_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             jcdp_docs[document] = uploaded_document.file.url
 
         body_text = (
