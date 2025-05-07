@@ -242,6 +242,7 @@ if aws_bucket_name:
     AWS_S3_REGION_NAME = "us-east-1"
     AWS_DEFAULT_ACL = None
     MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
+    MEDIA_ROOT = "https://%s/files/" % os.getenv("DOMAIN_NAME")
     AWS_S3_ADDRESSING_STYLE = "path"
     AWS_S3_FILE_OVERWRITE = False
 
