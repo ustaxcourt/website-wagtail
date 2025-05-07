@@ -87,10 +87,21 @@ class PageInitializer(ABC):
 
         Document = get_document_model()
 
-        # Check if the document already exists
-        if Document.objects.filter(title=title).exists():
-            logger.info(f"Document with title '{title}' already exists.")
-            return Document.objects.get(title=title)
+        # Check if the document already exists by filename instead of title
+        if Document.objects.filter(file__endswith=filename).exists():
+            logger.info(f"Document with filename '{filename}' already exists.")
+            existing_doc = None
+            try:
+                existing_doc = Document.objects.get(file__endswith=f"/{filename}")
+                return existing_doc
+            except Exception:
+                logger.error("Narrow down searches")
+                possible_matches = Document.objects.filter(file__icontains=filename)
+
+                for doc in possible_matches:
+                    if os.path.basename(doc.file.name) == filename:
+                        logger.info(f"Exact document match found for '{filename}'")
+                        return doc
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
             collection, restriction_type
