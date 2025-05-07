@@ -59,9 +59,9 @@ class HistoryPageInitializer(PageInitializer):
 
         for item in info:
             document = self.load_document_from_documents_dir(
-                None,
-                item["document"],
-                item["title"],
+                subdirectory=None,
+                filename=item["document"],
+                title=item["title"],
             )
 
             info_links.append(

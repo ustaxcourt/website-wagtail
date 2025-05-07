@@ -59,7 +59,7 @@ class PageInitializer(ABC):
         return collection
 
     def load_document_from_documents_dir(
-        self, subdirectory, filename, title=None, collection=None, restriction_type=None
+        self, subdirectory, filename, title, collection=None, restriction_type=None
     ):
         """
         Load a document from the documents directory and create a Wagtail Document instance.
@@ -67,7 +67,7 @@ class PageInitializer(ABC):
         Args:
             subdirectory (str): Subdirectory under DOCUMENTS_BASE_PATH
             filename (str): Name of the file to load
-            title (str, optional): Title for the document. If None, uses filename without extension
+            title (str): Title for the document.
 
         Returns:
             Document: The created document instance or None if file not found or already exists
@@ -84,10 +84,6 @@ class PageInitializer(ABC):
         if not os.path.exists(file_path):
             logger.warning(f"Document file not found at {file_path}")
             return None
-
-        if title is None:
-            # Use filename without extension as title
-            title = os.path.splitext(filename)[0].replace("_", " ")
 
         Document = get_document_model()
 

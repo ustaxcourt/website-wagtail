@@ -31,7 +31,11 @@ class DawsonTermsOfUsePageInitializer(PageInitializer):
 
         # Load Rule 21 document
         for document in terms_of_use_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             terms_of_use_docs[document] = uploaded_document.file.url
 
         new_page = home_page.add_child(

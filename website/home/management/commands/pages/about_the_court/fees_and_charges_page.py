@@ -37,7 +37,11 @@ class FeesAndChargesPageInitializer(PageInitializer):
         logger.info(f"Creating the '{title}' page.")
 
         for document in documents.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             documents[document] = uploaded_document.file.url
             documents_ids[document] = uploaded_document.id
 

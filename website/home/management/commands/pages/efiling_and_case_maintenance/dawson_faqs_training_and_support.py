@@ -39,7 +39,11 @@ class DawsonFaqsTrainingAndSupportPageInitializer(PageInitializer):
         ).first()
 
         for document in dawson_faqs_training_and_support_doc.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             dawson_faqs_training_and_support_doc[document] = uploaded_document.file.url
 
             body_content = [
