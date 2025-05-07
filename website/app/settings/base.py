@@ -229,6 +229,7 @@ aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
 if aws_bucket_name:
     print(f"Loading from base config, bucket: {aws_bucket_name}")
     print(f"{os.getenv('DOMAIN_NAME')}/files")
+    WAGTAILDOCS_SERVE_METHOD = "direct"
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
