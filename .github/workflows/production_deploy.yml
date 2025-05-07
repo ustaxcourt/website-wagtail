@@ -85,6 +85,8 @@ jobs:
           cd infra
           . ./load-secrets.sh
           cd ..
+          echo "DOMAIN_NAME=$DOMAIN_NAME" >> $GITHUB_ENV
+          echo "::add-mask::${DOMAIN_NAME}"
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
           echo "::add-mask::${DATABASE_PASSWORD}"
           echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
