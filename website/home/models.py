@@ -783,7 +783,7 @@ class HomePageImage(Orderable):
 
 class HomePageEntry(Orderable):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = models.CharField(max_length=2000)
+    title = models.CharField(max_length=2000, blank=True)
     body = RichTextField(blank=True)
     id = models.AutoField(primary_key=True)
     start_date = models.DateField(null=True, blank=True)
