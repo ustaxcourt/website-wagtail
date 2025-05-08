@@ -400,6 +400,7 @@ LOGGING = {
         "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
         "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        "django.request": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger for wagtail-specific messages
         "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"
