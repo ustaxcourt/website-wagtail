@@ -88,9 +88,9 @@ class PageInitializer(ABC):
         Document = get_document_model()
 
         # Check if the document already exists
-        if Document.objects.filter(title=title).exists():
-            logger.info(f"Document with title '{title}' already exists.")
-            return Document.objects.get(title=title)
+        if Document.objects.filter(file=f"documents/{filename}").exists():
+            logger.info(f"Document of {filename} already exists.")
+            return Document.objects.get(file=f"documents/{filename}")
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
             collection, restriction_type
