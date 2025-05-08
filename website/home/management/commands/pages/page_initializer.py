@@ -5,6 +5,7 @@ from wagtail.models import Collection, CollectionViewRestriction
 from wagtail.images import get_image_model
 from django.core.files import File
 from django.conf import settings
+from django.utils.text import get_valid_filename
 import logging
 
 logger = logging.getLogger(__name__)
@@ -87,10 +88,12 @@ class PageInitializer(ABC):
 
         Document = get_document_model()
 
+        wagtail_filename = get_valid_filename(filename)
+
         # Check if the document already exists
-        if Document.objects.filter(title=title).exists():
-            logger.info(f"Document with title '{title}' already exists.")
-            return Document.objects.get(title=title)
+        if Document.objects.filter(file=f"documents/{wagtail_filename}").exists():
+            logger.info(f"Document of {filename} already exists.")
+            return Document.objects.get(file=f"documents/{wagtail_filename}")
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
             collection, restriction_type
