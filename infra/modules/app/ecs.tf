@@ -73,6 +73,13 @@ resource "aws_iam_role_policy" "ecs_task_cloudfront_invalidation" {
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
+locals {
+  container_name = "website"
+  container_port = 8000
+  cpu_units      = var.environment == "sandbox" ? 512 : 1024  # 512 = 0.5 vCPU, 1024 = 1 vCPU
+  memory_mb      = var.environment == "sandbox" ? 1024 : 2048 # 1024MB = 1GB, 2048MB = 2GB
+}
+
 # Updated ECS task definition
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([{
@@ -137,11 +144,11 @@ resource "aws_ecs_task_definition" "this" {
       }
     }
   }])
-  cpu                      = 512 # 1 vCPU
+  cpu                      = local.cpu_units
   execution_role_arn       = aws_iam_role.this.arn
-  task_role_arn            = aws_iam_role.ecs_task_role.arn # Assign task role ARN here
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
   family                   = "${var.environment}-website-tasks"
-  memory                   = 1024 # wagtail recommended minimum
+  memory                   = local.memory_mb
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 }
