@@ -75,7 +75,7 @@ body = [
                     "title": "Comments and Suggestions",
                     "icon": None,
                     "document": None,
-                    "url": "/rules_comments",
+                    "url": "/rules-comments",
                 },
             ],
         },
