@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 reports_and_statistics_docs = {
+    "appellate_report_april_2025.pdf": "",
     "appellate_report_april_2021.pdf": "",
     "appellate_report_april_2022.pdf": "",
     "appellate_report_april_2023.pdf": "",
@@ -67,6 +68,7 @@ reports_and_statistics_docs = {
     "FY_2023_Congressional_Budget_Justification.pdf": "",
     "FY_2024_Congressional_Budget_Justification.pdf": "",
     "FY_2025_Congressional_Budget_Justification.pdf": "",
+    "FY_2026_Congressional_Budget_Justification.pdf": "",
     "USTC_IRA_Strategic_Plan_2024.pdf": "",
 }
 
@@ -112,6 +114,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                         "type": "links",
                         "value": {
                             "links": [
+                                {
+                                    "title": " FY 2026 Congressional Budget Justification",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "FY_2026_Congressional_Budget_Justification.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
                                 {
                                     "title": "USTC IRA Strategic Plan",
                                     "icon": IconCategories.PDF,
@@ -170,6 +180,14 @@ class ReportsAndStatisticsPageInitializer(PageInitializer):
                         "type": "links",
                         "value": {
                             "links": [
+                                {
+                                    "title": "Cases Commenced in the Courts of Appeals, April 2025",
+                                    "icon": IconCategories.PDF,
+                                    "document": reports_and_statistics_docs[
+                                        "appellate_report_april_2025.pdf"
+                                    ].id,
+                                    "url": None,
+                                },
                                 {
                                     "title": "Cases Commenced in the Courts of Appeals, March 2025",
                                     "icon": IconCategories.PDF,

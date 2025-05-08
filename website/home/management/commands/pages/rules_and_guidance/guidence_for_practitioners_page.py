@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 practitioners_docs = {
+    "04292025.pdf": "",
     "01282025.pdf": "",
     "02202024.pdf": "",
     "05082023.pdf": "",
@@ -234,6 +235,12 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "value": {
                             "links": [
                                 {
+                                    "title": "Disciplinary Matters Press Release - April 29, 2025",
+                                    "icon": IconCategories.PDF,
+                                    "document": practitioners_docs["04292025.pdf"].id,
+                                    "url": None,
+                                },
+                                {
                                     "title": "Disciplinary Matters Press Release - January 28, 2025",
                                     "icon": IconCategories.PDF,
                                     "document": practitioners_docs["01282025.pdf"].id,
@@ -255,12 +262,6 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                                     "title": "Disciplinary Matters Press Release - May 30, 2024",
                                     "icon": IconCategories.PDF,
                                     "document": practitioners_docs["05302024.pdf"].id,
-                                    "url": None,
-                                },
-                                {
-                                    "title": "Disciplinary Matters Press Release - February 20, 2024",
-                                    "icon": IconCategories.PDF,
-                                    "document": practitioners_docs["02202024.pdf"].id,
                                     "url": None,
                                 },
                             ],

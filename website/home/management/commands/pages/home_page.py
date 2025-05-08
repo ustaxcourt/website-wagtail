@@ -22,6 +22,7 @@ carousel_images = [
 ]
 
 home_docs = {
+    "05052025.pdf": "",
     "04292025.pdf": "",
     "04162025.pdf": "",
     "04072025.pdf": "",
@@ -95,9 +96,9 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Remote Proceedings Info",
             body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="https://ustaxcourt.gov/zoomgov.html">here.</a>'
+                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
             ),
-            start_date=datetime(2025, 4, 1).date(),
+            start_date=datetime(2024, 12, 31).date(),
             end_date=datetime(2025, 1, 1).date(),
             persist_to_press_releases=True,
         )
@@ -143,12 +144,12 @@ class HomePageInitializer(PageInitializer):
         )
         HomePageEntry.objects.create(
             homepage=homepage,
-            title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025.",
+            title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025",
             body=(
                 f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 7).date(),
-            end_date=None,
+            end_date=datetime(2025, 5, 5).date(),
             persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
@@ -197,4 +198,37 @@ class HomePageInitializer(PageInitializer):
                 "Remote Proceedings Info entry does not exist. Nothing to update."
             )
 
-        logger.info("Successfully updated the new Home page.")
+        entries_to_add = [
+            {
+                "title": "2025 Nonattorney Examination",
+                "body": f"""The United States Tax Court hereby announces that the examination for nonattorney applicants for admission to practice before the Court will be held remotely using the ExamSoft platform on Wednesday, November 5, 2025, 12:30pm Eastern Time.
+                </br>
+                </br>
+                See the <a href="{home_docs["05052025.pdf"]}" target="_blank">Press Release</a>.""",
+                "start_date": datetime(2025, 5, 5).date(),
+                "end_date": None,
+                "persist_to_press_releases": True,
+            },
+            # Add more entries as needed
+        ]
+
+        # 🔁 Loop through entries and create them if they don't exist
+        for entry_data in entries_to_add:
+            if not HomePageEntry.objects.filter(
+                homepage=homepage, title=entry_data["title"]
+            ).exists():
+                HomePageEntry.objects.create(
+                    homepage=homepage,
+                    title=entry_data["title"],
+                    body=entry_data["body"],
+                    start_date=entry_data["start_date"],
+                    end_date=entry_data["end_date"],
+                    persist_to_press_releases=entry_data["persist_to_press_releases"],
+                )
+                logger.info(f"{entry_data['title']} entry created successfully.")
+            else:
+                logger.info(
+                    f"{entry_data['title']} entry already exists. No action taken."
+                )
+
+        logger.info("Finished updating Home page entries.")

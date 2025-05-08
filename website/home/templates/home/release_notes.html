@@ -5,6 +5,7 @@
         <h1>{{ page.title }}</h1>
         <hr />
         <div>{{ page.paragraph|richtext }}</div>
+        <hr />
         {% for entry in page.release_entries %}
             <h2>{{ entry.value.release_date|date:"F j, Y" }}</h2>
             <p>{{ entry.value.description|richtext }}</p>
