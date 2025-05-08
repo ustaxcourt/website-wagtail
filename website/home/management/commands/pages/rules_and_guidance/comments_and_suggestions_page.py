@@ -79,7 +79,11 @@ class CommentsAndSuggestionsPageInitializer(PageInitializer):
         logger.info(f"Creating the '{title}' page.")
 
         for document in docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             docs[document] = uploaded_document.file.url
 
         new_page = home_page.add_child(

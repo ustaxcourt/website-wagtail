@@ -26,9 +26,9 @@ class CitationStyleManualPageInitializer(PageInitializer):
 
         # Load the PDF document
         document = self.load_document_from_documents_dir(
-            None,
-            "USTC_Citation_and_Style_Manual_modified_2024.09.pdf",
-            "USTC Citation and Style Manual",
+            subdirectory=None,
+            filename="USTC_Citation_and_Style_Manual_modified_2024.09.pdf",
+            title="USTC Citation and Style Manual",
         )
 
         if not document:

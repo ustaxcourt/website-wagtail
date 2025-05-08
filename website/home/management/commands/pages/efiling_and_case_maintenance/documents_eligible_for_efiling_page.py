@@ -29,10 +29,11 @@ class DocumentsEligibleEfilingPageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        # Fetch the CSV document instance
         csv_document = self.load_document_from_documents_dir(
-            subdirectory=None, filename="efiling_eligible_documents_list.csv"
-        )  # Removed trailing comma
+            subdirectory=None,
+            filename="efiling_eligible_documents_list.csv",
+            title="efiling_eligible_documents_list.csv",
+        )
 
         new_page = home_page.add_child(
             instance=CSVUploadPage(

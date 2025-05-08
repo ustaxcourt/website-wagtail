@@ -73,7 +73,11 @@ class HomePageInitializer(PageInitializer):
             logger.info("Updated default site root to the new Home page.")
 
         for document in home_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             home_docs[document] = uploaded_document.file.url
 
         # delete the wagtail generated page (it doesn't have the mixin)

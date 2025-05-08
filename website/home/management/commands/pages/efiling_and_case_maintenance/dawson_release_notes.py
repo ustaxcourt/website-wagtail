@@ -252,7 +252,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-25",
-                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url} title="Rule 27">Rule 27</a>.</li></ul>',
+                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url}" title="Rule 27">Rule 27</a>.</li></ul>',
             },
             {
                 "release_date": "2023-04-02",

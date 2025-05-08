@@ -37,7 +37,11 @@ class PetitionersAfterTrialInitializer(PageInitializer):
         ).first()
 
         for document in petitioners_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             petitioners_docs[document] = uploaded_document.file.url
 
         questions = [
@@ -69,7 +73,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                              </ol>
                              <p>
                                  The opinions of the Tax Court are posted daily on the Tax Court's website after 3:30 p.m. (Eastern time) under
-                                 <strong><a href="/todays-opinion" target="_blank" title="Today's Opinions">Today's Opinions</a></strong> and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.
+                                 <strong><a href="https://dawson.ustaxcourt.gov/todays-opinions" target="_blank" title="Today's Opinions">Today's Opinions</a></strong> and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.
                              </p>""",
                 "anchortag": "START2",
             },
