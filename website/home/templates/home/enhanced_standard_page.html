@@ -433,7 +433,6 @@
             </div>
         {% endif %}
         {% for block in page.body %}
-            {% with page_url=page.url|strip_trailing_slash %}
                 {% if block.block_type == 'h2' %}
                     <h2>{{ block.value }}</h2>
                 {% elif block.block_type == 'h3' %}
@@ -446,7 +445,7 @@
                         {% if block.value.id %}id="{{ block.value.id }}"{% endif %}
                         >
                         {% if block.value.id %}
-                            <a href="{{ page_url }}#{{ block.value.id }}"
+                            <a href="#{{ block.value.id }}"
                                title="{{ block.value.text }}">
                                 <div class="fa-solid fa-bookmark bookmark" id="{{ block.value.id }}"></div>
                             </a>
@@ -483,7 +482,7 @@
                     <ul class="links indented">
                         {% for q in block.value %}
                             <li>
-                                <a href="{{ page_url }}#{{ q.anchortag }}">
+                                <a href="#{{ q.anchortag }}">
                                     <i class="fa-solid fa-circle-info"></i>{{ q.question }}
                                 </a>
                             </li>
@@ -492,7 +491,7 @@
                     <hr />
                     {% for q in block.value %}
                         <div class="question-answer-block">
-                            <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
+                            <a href="#{{ q.anchortag }}" title="{{ q.question }}">
                                 <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
                             </a>
                             <h3>{{ q.question }}</h3>
@@ -587,7 +586,6 @@
                     <p>Block type not recognized: {{ block.block_type }}</p>
                     {{ block.value }}
                 {% endif %}
-            {% endwith %}
         {% endfor %}
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
