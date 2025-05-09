@@ -189,7 +189,7 @@ resource "aws_cloudfront_distribution" "app" {
   enabled = true
   is_ipv6_enabled = true
   price_class = "PriceClass_100"
-  aliases = [var.domain_name]
+  aliases = [var.domain_name, "www.${var.domain_name}"]
 
   logging_config {
     include_cookies = false

@@ -49,6 +49,12 @@ class DawsonReleaseNotesInitializer(PageInitializer):
 
         release_entries = [
             {
+                "release_date": "2025-04-27",
+                "description": """<ul>
+                                    <li>The Certificate of Service date for documents on the docket record no longer displays "undefined" for public DAWSON users.</li>
+                                </ul>""",
+            },
+            {
                 "release_date": "2025-04-13",
                 "description": """<ul>
                                     <li>New filters for Practitioner type, Practice type, Admissions Status, and Original Bar State are now present on the Practitioner Search page.</li>
@@ -246,7 +252,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-25",
-                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url} title="Rule 27">Rule 27</a>.</li></ul>',
+                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a href="{docs["Rule-27_Amended_03202023.pdf"]["document"].file.url}" title="Rule 27">Rule 27</a>.</li></ul>',
             },
             {
                 "release_date": "2023-04-02",

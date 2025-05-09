@@ -5,6 +5,7 @@ from wagtail.models import Collection, CollectionViewRestriction
 from wagtail.images import get_image_model
 from django.core.files import File
 from django.conf import settings
+from django.utils.text import get_valid_filename
 import logging
 
 logger = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ class PageInitializer(ABC):
         return collection
 
     def load_document_from_documents_dir(
-        self, subdirectory, filename, title=None, collection=None, restriction_type=None
+        self, subdirectory, filename, title, collection=None, restriction_type=None
     ):
         """
         Load a document from the documents directory and create a Wagtail Document instance.
@@ -67,7 +68,7 @@ class PageInitializer(ABC):
         Args:
             subdirectory (str): Subdirectory under DOCUMENTS_BASE_PATH
             filename (str): Name of the file to load
-            title (str, optional): Title for the document. If None, uses filename without extension
+            title (str): Title for the document.
 
         Returns:
             Document: The created document instance or None if file not found or already exists
@@ -85,16 +86,14 @@ class PageInitializer(ABC):
             logger.warning(f"Document file not found at {file_path}")
             return None
 
-        if title is None:
-            # Use filename without extension as title
-            title = os.path.splitext(filename)[0].replace("_", " ")
-
         Document = get_document_model()
 
+        wagtail_filename = get_valid_filename(filename)
+
         # Check if the document already exists
-        if Document.objects.filter(title=title).exists():
-            logger.info(f"Document with title '{title}' already exists.")
-            return Document.objects.get(title=title)
+        if Document.objects.filter(file=f"documents/{wagtail_filename}").exists():
+            logger.info(f"Document of {filename} already exists.")
+            return Document.objects.get(file=f"documents/{wagtail_filename}")
 
         collection_obj = self.get_or_create_collection_with_login_restriction(
             collection, restriction_type

@@ -421,6 +421,7 @@ class EnhancedStandardPage(Page):
                 ),
             ),
             ("image", ImageBlock()),
+            ("photo_dedication", PhotoDedicationBlock()),
             (
                 "table",
                 TypedTableBlock(
@@ -755,16 +756,15 @@ class HomePage(Page):
         InlinePanel("entries", label="Entries"),
     ]
 
+    def get_context(self, request):
+        context = super().get_context(request)
 
-def get_context(self, request):
-    context = super().get_context(request)
+        live_entries = HomePageEntry.objects.filter(homepage=self).filter(
+            models.Q(end_date__isnull=True) | models.Q(end_date__gte=date.today())
+        )
 
-    live_entries = HomePageEntry.objects.filter(homepage=self).filter(
-        models.Q(end_date__isnull=True) | models.Q(end_date__gte=date.today())
-    )
-
-    context["entries"] = live_entries
-    return context
+        context["entries"] = live_entries
+        return context
 
 
 class HomePageImage(Orderable):
@@ -782,26 +782,24 @@ class HomePageImage(Orderable):
     ]
 
 
-class HomePageEntry(models.Model):
+class HomePageEntry(Orderable):
     homepage = ParentalKey("HomePage", related_name="entries", on_delete=models.CASCADE)
-    title = RichTextField(blank=True)
+    title = models.CharField(max_length=2000, blank=True)
     body = RichTextField(blank=True)
     id = models.AutoField(primary_key=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     persist_to_press_releases = models.BooleanField(default=True)
 
+    def is_expired(self):
+        return self.end_date and self.end_date < date.today()
 
-def is_expired(self):
-    return self.end_date and self.end_date < date.today()
-
-
-panels = [
-    FieldPanel("title"),
-    FieldPanel("body"),
-    FieldPanel("start_date"),
-    FieldPanel("end_date"),
-]
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("body"),
+        FieldPanel("start_date"),
+        FieldPanel("end_date"),
+    ]
 
 
 class CaseRelatedFormsPage(StandardPage):

@@ -6,9 +6,15 @@
 {% block extra_css %}
     <style>
         .enhanced-page {
+            width: 100%;
+            overflow-x: auto;
 
             iframe {
+                width: 100%;
+                max-width: 100%;
                 height: 100vh;
+                display: block;
+                border: none;
             }
 
             .centered-image {
@@ -512,7 +518,7 @@
                         <h2>{{ block.value.title }}</h2>
                         <div class="video-desc-block">
                             <div class="video-container">
-                                <iframe title="Victor Lundy:Sulptor of Space"
+                                <iframe title="Victor Lundy:Sculptor of Space"
                                         src="{{ block.value.video_url }}"
                                         allowfullscreen></iframe>
                             </div>

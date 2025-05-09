@@ -37,7 +37,11 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
         ).first()
 
         for document in dawson_faqs_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(None, document)
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
             dawson_faqs_docs[document] = uploaded_document.file.url
 
         questions = [

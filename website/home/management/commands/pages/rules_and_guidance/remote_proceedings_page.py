@@ -63,9 +63,9 @@ class RemoteProceedingsPageInitializer(PageInitializer):
 
         for info in info:
             document = self.load_document_from_documents_dir(
-                None,
-                info["document"],
-                info["title"],
+                subdirectory=None,
+                filename=info["document"],
+                title=info["title"],
             )
 
             info_links.append(

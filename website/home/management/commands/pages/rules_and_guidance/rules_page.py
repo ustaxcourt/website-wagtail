@@ -75,7 +75,7 @@ body = [
                     "title": "Comments and Suggestions",
                     "icon": None,
                     "document": None,
-                    "url": "/rules_comments",
+                    "url": "/rules-comments",
                 },
             ],
         },
@@ -1813,7 +1813,9 @@ class RulesPageInitializer(PageInitializer):
                 for link in section["value"]["links"]:
                     if link["document"]:
                         uploaded_document = self.load_document_from_documents_dir(
-                            subdirectory=None, filename=link["document"]
+                            subdirectory=None,
+                            filename=link["document"],
+                            title=link["document"],
                         )
                         link["document"] = uploaded_document.id
 

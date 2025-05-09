@@ -25,7 +25,12 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
         """generate the definitions page"""
 
         definition_docs = {
-            doc: self.load_document_from_documents_dir(None, doc, doc) for doc in docs
+            doc: self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=doc,
+                title=doc,
+            )
+            for doc in docs
         }
 
         page_body = (
