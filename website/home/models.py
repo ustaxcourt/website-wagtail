@@ -421,6 +421,7 @@ class EnhancedStandardPage(Page):
                 ),
             ),
             ("image", ImageBlock()),
+            ("photo_dedication", PhotoDedicationBlock()),
             (
                 "table",
                 TypedTableBlock(
