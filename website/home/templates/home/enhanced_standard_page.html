@@ -483,7 +483,7 @@
                     <ul class="links indented">
                         {% for q in block.value %}
                             <li>
-                                <a href="{{ page_url }}#{{ q.anchortag }}">
+                                <a href="#{{ q.anchortag }}">
                                     <i class="fa-solid fa-circle-info"></i>{{ q.question }}
                                 </a>
                             </li>
@@ -492,7 +492,7 @@
                     <hr />
                     {% for q in block.value %}
                         <div class="question-answer-block">
-                            <a href="{{ page_url }}#{{ q.anchortag }}" title="{{ q.question }}">
+                            <a href="#{{ q.anchortag }}" title="{{ q.question }}">
                                 <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
                             </a>
                             <h3>{{ q.question }}</h3>
