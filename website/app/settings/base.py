@@ -264,10 +264,10 @@ if aws_bucket_name:
     }
     AWS_STORAGE_BUCKET_NAME = aws_bucket_name
     AWS_S3_REGION_NAME = "us-east-1"
-    # MEDIA_URL = "https://%s/files/" % os.getenv("DOMAIN_NAME")
     WAGTAILDOCS_SERVE_METHOD = "direct"
     AWS_DEFAULT_ACL = None
     AWS_S3_ADDRESSING_STYLE = "path"
+    AWS_S3_FILE_OVERWRITE = False
 
     # when running in github actions, we use access keys instead of assumed roles like on ECS
     if os.getenv("AWS_ACCESS_KEY_ID"):
