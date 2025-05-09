@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "fontawesomefree",
     "social_django",
+    "wagtail.contrib.frontend_cache",
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,15 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
+
+if os.getenv("CLOUDFRONT_DISTRIBUTION_ID"):
+    WAGTAILFRONTENDCACHE = {
+        "cloudfront": {
+            "BACKEND": "wagtail.contrib.frontend_cache.backends.CloudfrontBackend",
+            "DISTRIBUTION_ID": os.getenv("CLOUDFRONT_DISTRIBUTION_ID"),
+        }
+    }
+
 
 ROOT_URLCONF = "app.urls"
 
@@ -303,7 +313,7 @@ ALLOWED_HOSTS = [
 
 
 def _task_ips():
-    """Return the task’s IPv4 address(es) from the ECS metadata API."""
+    """Return the task's IPv4 address(es) from the ECS metadata API."""
     meta = os.getenv("ECS_CONTAINER_METADATA_URI_V4") or os.getenv(
         "ECS_CONTAINER_METADATA_URI"
     )
@@ -313,7 +323,7 @@ def _task_ips():
     try:
         with urllib.request.urlopen(f"{meta}/task", timeout=0.2) as r:
             data = json.load(r)
-            # First container in the task is usually “ours”
+            # First container in the task is usually "ours"
             nets = data["Containers"][0]["Networks"]
             return [ip for net in nets for ip in net["IPv4Addresses"]]
     except Exception:
