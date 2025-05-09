@@ -59,4 +59,4 @@ USER wagtail
 RUN python manage.py collectstatic --noinput --clear
 
 # Run the service
-CMD set -xe; gunicorn --worker-class=gevent --worker-connections=1000 --workers 3 app.wsgi:application
+CMD set -xe; gunicorn app.wsgi:application

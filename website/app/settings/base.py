@@ -140,21 +140,7 @@ DATABASES = {
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    db_config = dj_database_url.parse(
-        DATABASE_URL, conn_max_age=0
-    )  # Disable persistent connections
-    # Add Django 5.1+ connection pooling options
-    db_config.setdefault("OPTIONS", {})
-    db_config["OPTIONS"]["pool"] = {
-        "min_size": 10,  # Increased minimum connections to handle base load
-        "max_size": 20,  # Increased max connections for high load
-        "timeout": 15,  # Reduced timeout to fail faster if no connection available
-        "max_waiting": 30,  # Increased waiting queue size
-        "max_lifetime": 300,  # Maximum lifetime of a connection in seconds
-    }
-    # Ensure we're using the correct engine for psycopg3
-    db_config["ENGINE"] = "django.db.backends.postgresql"
-    DATABASES["default"] = db_config
+    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     "default": {
