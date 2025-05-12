@@ -10,7 +10,6 @@
         gtag('js', new Date());
         gtag('config', '{{ ga4_id }}');
 
-        // More reliable way to know GA is fully initialized
         gtag('get', '{{ ga4_id }}', 'client_id', function() {
             window.gaCallbacks.forEach(callback => callback());
             window.gaCallbacks = [];
