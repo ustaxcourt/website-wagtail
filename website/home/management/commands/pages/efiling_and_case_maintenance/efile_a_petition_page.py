@@ -75,7 +75,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": """Before starting the e-filing process, please review the helpful tips provided below. They will instruct you in what is needed and how to go about filing your petition electronically in DAWSON (Docket Access Within and Secure Online Network), the Court’s electronic filing and case management system. For more detailed instructions, refer to the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">DAWSON user guides</a>.""",
+                        "value": """Before starting the e-filing process, please review the helpful tips provided below. They will instruct you in what is needed and how to go about filing your petition electronically in DAWSON (Docket Access Within and Secure Online Network), the Court’s electronic filing and case management system. For more detailed instructions, refer to the <a href="/dawson-user-guides" title="DAWSON User Guides">DAWSON user guides</a>.""",
                     },
                     {"type": "hr", "value": True},
                     {
@@ -123,7 +123,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                                                     ),
                                                                 },
                                                                 {
-                                                                    "text": """Upload your own Petition that complies with the requirements of the <a href="/rules" target="_blank" title="Tax Court Rules">Tax Court Rules of Practice and Procedure</a>.""",
+                                                                    "text": """Upload your own Petition that complies with the requirements of the <a href="/rules" title="Tax Court Rules">Tax Court Rules of Practice and Procedure</a>.""",
                                                                 },
                                                             ],
                                                         }
@@ -261,7 +261,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                     "text": "Follow the prompts.",
                                 },
                                 {
-                                    "text": """For more detailed instructions on creating a new account, refer to the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">DAWSON user guides</a>.""",
+                                    "text": """For more detailed instructions on creating a new account, refer to the <a href="/dawson-user-guides" title="DAWSON User Guides">DAWSON user guides</a>.""",
                                 },
                             ],
                         },
@@ -300,7 +300,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                     ],
                                 },
                                 {
-                                    "text": """For more detailed information on filing a Petition electronically, refer to the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">DAWSON user guides</a>.""",
+                                    "text": """For more detailed information on filing a Petition electronically, refer to the <a href="/dawson-user-guides"  title="DAWSON User Guides">DAWSON user guides</a>.""",
                                 },
                             ],
                         },
@@ -312,7 +312,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": """You will be able to log in to DAWSON at any time and view your case. In addition, you can file other documents, update your contact information, and view documents in your case that are filed by the Court or other parties. Refer to the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">DAWSON user guides</a> for more detailed instructions.""",
+                        "value": """You will be able to log in to DAWSON at any time and view your case. In addition, you can file other documents, update your contact information, and view documents in your case that are filed by the Court or other parties. Refer to the <a href="/dawson-user-guides" title="DAWSON User Guides">DAWSON user guides</a> for more detailed instructions.""",
                     },
                 ],
                 search_description="Learn how to eFile a Petition",
