@@ -79,17 +79,7 @@
               type="text/css"
               href="{% static 'uswds/css/styles.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
-        {# Icons #}
-        <!-- <link href="{% static 'fontawesomefree/css/brands.css' %}"
-        rel="stylesheet"
-        type="text/css"> -->
-        <!-- <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
-              rel="stylesheet"
-              type="text/css">
-        <link href="{% static 'fontawesomefree/css/solid.css' %}"
-              rel="stylesheet"
-              type="text/css"> -->
-        {# Web Fonts #}
+        {# Javascript #}
         <script defer type="text/javascript" src="{% static 'js/app.js' %}"></script>
         <script defer
                 type="text/javascript"
@@ -202,36 +192,6 @@
     window.gaCallbacks = window.gaCallbacks || [];
     window.gaCallbacks.push(setupLinkHandlers);
 </script>
-<!--
-<script>
-function loadFontAwesome() {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = "{% static 'fontawesomefree/css/fontawesome.css' %}";
-    document.head.appendChild(link);
-  }
-
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(loadFontAwesome);
-  } else {
-    setTimeout(loadFontAwesome, 1);
-  }
-</script>
-
-<script>
-    function loadFontAwesome() {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = "{% static 'fontawesomefree/css/solid.css' %}";
-        document.head.appendChild(link);
-      }
-
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadFontAwesome);
-      } else {
-        setTimeout(loadFontAwesome, 1);
-      }
-    </script> -->
 
 <script>
     // Configure Font Awesome to only load specific icons

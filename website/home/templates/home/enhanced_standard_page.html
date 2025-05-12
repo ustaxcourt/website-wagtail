@@ -59,8 +59,15 @@
             }
 
             .links {
-                i {
-                    padding-right: .4em
+                i,svg {
+                    position: relative;
+                    right: 4px;
+                    width: 16px;
+                }
+
+                svg.fa-chevron-right {
+                    width: 12px;
+                    top: 2px;
                 }
 
                 &.with-bullets {
