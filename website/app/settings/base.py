@@ -330,6 +330,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
+WAGTAIL_AUTO_UPDATE_PREVIEW_INTERVAL = 500
+WAGTAIL_EDITING_SESSION_PING_INTERVAL = 10000
+
 print(f"Finished base: BASE_URL: {BASE_URL}")
 
 
@@ -371,7 +374,22 @@ LOGGING = {
         "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
         "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
-        "django.request": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        "django.request": {"level": "DEBUG", "propagate": False, "handlers": ["aws"]},
+        "django.db.backends": {
+            "level": "DEBUG",
+            "propagate": False,
+            "handlers": ["aws"],
+        },
+        "wagtail.admin.views.pages": {
+            "level": "DEBUG",
+            "propagate": False,
+            "handlers": ["aws"],
+        },
+        "django.staticfiles": {
+            "handlers": ["aws"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
         # topmost logger for wagtail-specific messages
         "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"
