@@ -59,4 +59,4 @@ USER wagtail
 RUN python manage.py collectstatic --noinput --clear
 
 # Run the service
-CMD set -xe; gunicorn app.wsgi:application
+CMD set -xe; gunicorn --worker-class gevent --workers 3 --timeout 120 app.wsgi:application
