@@ -80,22 +80,16 @@
               href="{% static 'uswds/css/styles.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
         {# Icons #}
-        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
-              rel="stylesheet"
-              type="text/css">
-        <link href="{% static 'fontawesomefree/css/brands.css' %}"
+        <!-- <link href="{% static 'fontawesomefree/css/brands.css' %}"
+        rel="stylesheet"
+        type="text/css"> -->
+        <!-- <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
               rel="stylesheet"
               type="text/css">
         <link href="{% static 'fontawesomefree/css/solid.css' %}"
               rel="stylesheet"
-              type="text/css">
+              type="text/css"> -->
         {# Web Fonts #}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css?family=Noto Serif JP:400,700,"
-              rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css?family=Source Sans Pro:400,700,"
-              rel="stylesheet" />
         <script defer type="text/javascript" src="{% static 'js/app.js' %}"></script>
         <script defer
                 type="text/javascript"
@@ -208,3 +202,64 @@
     window.gaCallbacks = window.gaCallbacks || [];
     window.gaCallbacks.push(setupLinkHandlers);
 </script>
+<!--
+<script>
+function loadFontAwesome() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = "{% static 'fontawesomefree/css/fontawesome.css' %}";
+    document.head.appendChild(link);
+  }
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadFontAwesome);
+  } else {
+    setTimeout(loadFontAwesome, 1);
+  }
+</script>
+
+<script>
+    function loadFontAwesome() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = "{% static 'fontawesomefree/css/solid.css' %}";
+        document.head.appendChild(link);
+      }
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadFontAwesome);
+      } else {
+        setTimeout(loadFontAwesome, 1);
+      }
+    </script> -->
+
+<script>
+    // Configure Font Awesome to only load specific icons
+    window.FontAwesomeConfig = {
+      searchPseudoElements: true,
+      observeMutations: true,
+      autoReplaceSvg: true,
+      autoAddCss: false,
+      icons: {
+        'book': ['fas'],
+        'building-columns': ['fas'],
+        'calendar': ['fas'],
+        'chevron-right': ['fas'],
+        'file': ['fas'],
+        'gavel': ['fas'],
+        'circle-info': ['fas'],
+        'check': ['fas'],
+        'link': ['fas'],
+        'exclamation': ['fas'],
+        'file-pdf': ['fas'],
+        'scale-balanced': ['fas'],
+        'user': ['fas'],
+        'video': ['fas'],
+        'gear': ['fas'],
+        'briefcase': ['fas'],
+        'magnifying-glass': ['fas']
+      }
+    };
+  </script>
+  <script defer src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
+  <script defer src="{% static 'fontawesomefree/js/solid.js' %}"></script>
