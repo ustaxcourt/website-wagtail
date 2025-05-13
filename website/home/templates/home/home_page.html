@@ -4,7 +4,6 @@
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
     {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
-    <link rel="stylesheet" href="{% static 'css/home_page.css' %}" />
 {% endblock %}
 {% block extra_js %}
     <script>
@@ -25,6 +24,7 @@
     </script>
 {% endblock %}
 {% block content %}
+<div id="home-page">
     <div class="carousel">
         {% for picture in page.images.all %}
             {% image picture.image fill-2000x400-c80  as myrendition %}
@@ -55,4 +55,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
