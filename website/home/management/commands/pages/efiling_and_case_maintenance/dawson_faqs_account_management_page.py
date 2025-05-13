@@ -89,7 +89,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                 "question": "If I had an eAccess account, will I need a new DAWSON account?",
                 "answer": """<ul>
                                 <li>Yes. Your eAccess credentials will not work in the new system.</li>
-                                <li>In late 2020, temporary DAWSON credentials were emailed to eAccess system users, including petitioners and practitioners. If you did not receive yours, or did not activate them timely, emaill <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.</li>
+                                <li>In late 2020, temporary DAWSON credentials were emailed to eAccess system users, including petitioners and practitioners. If you did not receive yours, or did not activate them timely, email <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.</li>
                                 </ul>""",
                 "anchortag": "FAQS4",
             },
