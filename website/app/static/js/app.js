@@ -1,5 +1,7 @@
 
-
+/***
+ * Scroll to top button handler which is used to scroll to the top of the page when the button is clicked
+ */
 function refreshScrollToTopButton() {
     const button = document.getElementById('scroll-to-top');
     if (window.scrollY > 100) {
