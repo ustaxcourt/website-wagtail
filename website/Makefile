@@ -81,7 +81,6 @@ setup: init
 	npm install
 	npx gulp copyAssets
 	npx gulp compile
-	npm run purgecss
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "webmaster@ustaxcourt.gov"

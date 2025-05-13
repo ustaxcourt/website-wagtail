@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "purgecss": "purgecss --config ./purgecss.config.js"
   },
   "keywords": [],
   "author": "",
@@ -11,8 +10,7 @@
   "description": "",
   "dependencies": {
     "@uswds/uswds": "3.10.0",
-    "cypress-real-events": "^1.14.0",
-    "purgecss": "^6.0.0"
+    "cypress-real-events": "^1.14.0"
   },
   "devDependencies": {
     "@uswds/compile": "^1.2.0",
