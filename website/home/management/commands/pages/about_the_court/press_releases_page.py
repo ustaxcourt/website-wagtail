@@ -1783,7 +1783,7 @@ class PressReleasesPageInitializer(PageInitializer):
                             {
                                 "release_date": datetime(2002, 2, 25).date(),
                                 "details": {
-                                    "description": "Chief Judge Thomas B Wells has been re-elseced as Cheif Judge of the United States Tax Court for a two year term",
+                                    "description": "Chief Judge Thomas B Wells has been re-selected as Chief Judge of the United States Tax Court for a two year term",
                                     "file": press_releases_docs["022502.pdf"],
                                 },
                             },
