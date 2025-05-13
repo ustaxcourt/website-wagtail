@@ -11,7 +11,7 @@ except ImportError:
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
 ENVIRONMENT = "sandbox"
 
