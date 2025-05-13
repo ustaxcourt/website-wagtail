@@ -5,7 +5,7 @@ module.exports = {
   ],
   css: ['app/static/uswds/css/styles.css'],
   safelist: {
-    greedy: [/^usa-table/]
+    greedy: [/^usa-table/, /^tablet:/, /^mobile-lg:/, /^desktop:/ ]
   },
   output: 'app/static/uswds/css/styles.css'
 }
