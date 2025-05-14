@@ -113,8 +113,8 @@
             padding: 0;
         }
 
-        header#top-navigation .navigation-header:hover .navigation-list:has(li),
-        header#top-navigation .navigation-header.active .navigation-list:has(li) {
+        header#top-navigation .navigation-header:hover .navigation-list,
+        header#top-navigation .navigation-header.active .navigation-list {
             display: flex;
             opacity: 1;
             visibility: visible;
@@ -387,9 +387,17 @@
 
             // Handle hover
             header.addEventListener('mouseenter', function() {
-                navigationHeaders.forEach(h => {
-                    if (h !== header) h.classList.remove('active');
-                });
+                const hasSubLinks = header.querySelector('.navigation-list li');
+                if (hasSubLinks) {
+                    navigationHeaders.forEach(h => {
+                        if (h !== header) h.classList.remove('active');
+                    });
+                    header.classList.add('active');
+                }
+            });
+
+            header.addEventListener('mouseleave', function() {
+                header.classList.remove('active');
             });
 
             // Add keyboard navigation for dropdown items
