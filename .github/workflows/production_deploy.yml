@@ -149,11 +149,18 @@ jobs:
             --output text
           )
 
+          # Set desired count based on environment
+          if [[ "${ENVIRONMENT}" == "sandbox" ]]; then
+            desired_count=1
+          else
+            desired_count=2
+          fi
+
           aws ecs update-service \
             --cluster "${ENVIRONMENT}-website-cluster" \
             --service "${ENVIRONMENT}-website-service" \
             --task-definition "${taskArn}" \
-            --desired-count 1 \
+            --desired-count "${desired_count}" \
             --force-new-deployment \
             --region us-east-1
 

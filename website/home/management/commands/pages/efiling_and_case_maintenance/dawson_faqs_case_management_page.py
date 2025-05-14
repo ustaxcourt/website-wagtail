@@ -65,7 +65,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                 "question": "Can I file a petition to start a new case in DAWSON?",
                 "answer": {
                     "rich_text": """<ul>
-                              <li>Yes. Petitions can be filed electronically in DAWSON. For more information, see the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">User Guides</a>.</li>
+                              <li>Yes. Petitions can be filed electronically in DAWSON. For more information, see the <a href="/dawson-user-guides" title="DAWSON User Guides">User Guides</a>.</li>
                               <li>If you file a petition electronically, there is no need to submit an additional paper copy. Likewise, if you have already sent a paper petition to the Court, there is no need to also file a petition electronically.</li>
                               </ul>"""
                 },
@@ -94,7 +94,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                     "rich_text": """<ul>
                                 <li>Parties to consolidated cases have the ability to electronically file documents simultaneously in all of the consolidated cases.</li>
                                 <li>Entries of Appearance for <strong>petitioner representatives</strong> and Decisions must still be filed in each case separately.</li>
-                                <li>Refer to the <a href="/release-notes" title="DAWSON Release Notes">DAWSON Release Notes</a> for more information, or the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">User Guides</a>.
+                                <li>Refer to the <a href="/release-notes" title="DAWSON Release Notes">DAWSON Release Notes</a> for more information, or the <a href="/dawson-user-guides" title="DAWSON User Guides">User Guides</a>.
                                   for detailed instructions on how to electronically file documents in consolidated cases.</li>
                                  </ul>"""
                 },
@@ -123,7 +123,7 @@ class DawsonFaqsCaseManagementPageInitializer(PageInitializer):
                                       <li>Parties wishing to seal a document that has previously been filed (e.g., after discovering missed redactions) may electronically file a Motion to Seal specifying whether it is to be sealed from the public or the public and the parties.</li>
                                     </ul>
                                   </li>
-                                    <li>For more information, see the <a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">User Guides</a>.</li>
+                                    <li>For more information, see the <a href="/dawson-user-guides" title="DAWSON User Guides">User Guides</a>.</li>
                               </ul>"""
                 },
                 "anchortag": "FAQS5",

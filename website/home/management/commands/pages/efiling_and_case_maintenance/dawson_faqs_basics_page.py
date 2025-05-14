@@ -67,7 +67,7 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
             {
                 "question": "How do I access DAWSON?",
                 "answer": """DAWSON can be accessed from a computer, smartphone, or tablet by going to the Court's
-                 <strong><a href="https://www.ustaxcourt.gov/" target="_blank" title="United States Tax Court">website</a></strong>
+                 <strong><a href="https://www.ustaxcourt.gov/" title="United States Tax Court">website</a></strong>
                   or to <strong><a href="https://dawson.ustaxcourt.gov" target="_blank" title="DAWSON">https://dawson.ustaxcourt.gov/</a></strong>.""",
                 "anchortag": "FAQS4",
             },

@@ -1,0 +1,20 @@
+{
+  "name": "loadtests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "artillery run load-test.yml",
+    "test:cody": "TARGET_URL=https://cody-sandbox-web.ustaxcourt.gov artillery run load-test.yml",
+    "test:dev": "TARGET_URL=https://dev-web.ustaxcourt.gov artillery run load-test.yml",
+    "test:staging": "TARGET_URL=https://staging-web.ustaxcourt.gov artillery run load-test.yml",
+    "test:prod": "TARGET_URL=https://www.ustaxcourt.gov artillery run load-test.yml",
+    "test:custom": "artillery run load-test.yml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "artillery": "^2.0.22"
+  }
+}

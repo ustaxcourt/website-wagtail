@@ -136,7 +136,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "type": "paragraph",
                         "value": f"""On May 2, 2020, the Court announced that attorney applications for admission to practice before the Court may be emailed to the <a href="mailto:Admissions@ustaxcourt.gov" title="Email Admissions@ustaxcourt.gov">Admissions Office</a> and must include:
                         <ul>
-                            <li><a href="{practitioners_docs["Application_for_Admission_to_Practice_Attorney_Form_30.pdf"].file.url}" title="Application for Admission to Practice, Form 30">Application for Admission to Practice, Form 30</a>. For instructions on completing the form, please see <a href="{practitioners_docs["Admissions_Information_Attorney_12212021.pdf"].file.url}" title="Admissions Information for Attorneys">Admissions Information for Attorneys</a>.</li>
+                            <li><a href="{practitioners_docs["Application_for_Admission_to_Practice_Attorney_Form_30.pdf"].file.url}" title="Application for Admission to Practice, Form 30" target="_blank">Application for Admission to Practice, Form 30</a>. For instructions on completing the form, please see <a href="{practitioners_docs["Admissions_Information_Attorney_12212021.pdf"].file.url}" title="Admissions Information for Attorneys" target="_blank">Admissions Information for Attorneys</a>.</li>
                             <li>Proof of payment of the $50 Application Fee (pay via <a href="https://www.pay.gov/public/form/start/16762207" title="Pay.gov">Pay.gov</a>).</li>
                             <li>A certificate of good standing from the Clerk of the appropriate court issued within 90 calendar days of the application filing date.</li>
                         </ul>""",
@@ -145,7 +145,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h3", "value": "Admission of Nonattorneys"},
                     {
                         "type": "paragraph",
-                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court Rules of Practice and Procedure.
+                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200" target="_blank">Rule 200</a>, Tax Court Rules of Practice and Procedure.
                         <br/><br/><strong>Resources</strong>""",
                     },
                     {
@@ -216,7 +216,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "type": "paragraph",
                         "value": f"""
                         <strong>Character and Fitness</strong><br/><br/>
-                        An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
+                        An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a href="{practitioners_docs["Rule-200(2nd-amended).pdf"].file.url}" title="Rule 200" target="_blank">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
                     },
                     {"type": "hr", "value": True},
                     {"type": "h3", "value": "Certificates of Good Standing"},
@@ -275,7 +275,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h2", "value": "Limited Entries of Appearance"},
                     {
                         "type": "paragraph",
-                        "value": f"""On May 29, 2020, the Court issued <a href="{practitioners_docs["Administrative_Order_2020-03.pdf"].file.url}" title="Administrative Order 2020-03">Administrative Order 2020-03</a> which outlines the procedures for entering a limited entry of appearance. These procedures are effective June 1, 2020.""",
+                        "value": f"""On May 29, 2020, the Court issued <a href="{practitioners_docs["Administrative_Order_2020-03.pdf"].file.url}" title="Administrative Order 2020-03" target="_blank">Administrative Order 2020-03</a> which outlines the procedures for entering a limited entry of appearance. These procedures are effective June 1, 2020.""",
                     },
                     {
                         "type": "links",
