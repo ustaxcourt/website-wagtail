@@ -4,7 +4,60 @@
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
     {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
-    <link rel="stylesheet" href="{% static 'css/home_page.css' %}" />
+    <style>
+        #home-page .entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #home-page .entries-list .entry {
+            border: 1px solid #BBB;
+            padding: 0px 30px;
+            padding-bottom: 40px;
+        }
+
+        #home-page .content {
+            padding: 40px 0;
+        }
+
+        #home-page .carousel {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            max-height: 300px;
+            overflow: hidden;
+        }
+
+        #home-page .hero-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        #home-page .hero-image.active {
+            opacity: 1;
+        }
+
+        #home-page .label {
+            margin-bottom: 0.5rem;
+            border-radius: 0;
+            background-color: green;
+            display: inline-block;
+            padding: .25em .4em;
+            font-size: 75%;
+            font-weight: bold;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+        }
+
+    </style>
 {% endblock %}
 {% block extra_js %}
     <script>
@@ -25,6 +78,7 @@
     </script>
 {% endblock %}
 {% block content %}
+<div id="home-page">
     <div class="carousel">
         {% for picture in page.images.all %}
             {% image picture.image fill-2000x400-c80  as myrendition %}
@@ -55,4 +109,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

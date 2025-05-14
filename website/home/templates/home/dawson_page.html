@@ -4,130 +4,127 @@
 {% load static %}
 {% block extra_css %}
     <style>
-        #dawson-page {
-            body {
-                font-size: 1rem;
-            }
+        #dawson-page body {
+            font-size: 1rem;
+        }
 
-            .page-body,
-            .dedication-text,
-            .usa-card__container {
-                font-size: 17px;
-                line-height: 24px;
-            }
+        #dawson-page .page-body,
+        #dawson-page .dedication-text,
+        #dawson-page .usa-card__container {
+            font-size: 17px;
+            line-height: 24px;
+        }
 
-            .card-related-pages-list {
-                list-style-type: none;
-                padding: 0;
-            }
+        #dawson-page .card-related-pages-list {
+            list-style-type: none;
+            padding: 0;
+        }
 
-            .card-icon {
-                text-align: center;
-                font-size: 50px;
-                padding-top: 5px;
-                color: var(--light-blue);
-            }
+        #dawson-page .card-icon {
+            text-align: center;
+            font-size: 50px;
+            padding-top: 5px;
+            color: var(--light-blue);
+        }
 
-            .usa-card-group {
-                justify-content: center;
+        #dawson-page .usa-card-group {
+            justify-content: center;
+        }
 
-                .usa-card {
-                    margin-bottom: 1 !important;
+        #dawson-page .usa-card-group .usa-card {
+            margin-bottom: 1 !important;
+        }
 
-                    .usa-card__container {
-                        border-width: 1px;
-                        border-radius: 0;
-                        box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.17);
-                        transition: box-shadow 0.2s;
-                        background-color: rgba(255, 255, 255, 1.00);
+        #dawson-page .usa-card-group .usa-card .usa-card__container {
+            border-width: 1px;
+            border-radius: 0;
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.17);
+            transition: box-shadow 0.2s;
+            background-color: rgba(255, 255, 255, 1.00);
+        }
 
-                        .usa-card__header {
-                            text-align: center;
-                            padding: 1.5rem .5rem .5rem;
+        #dawson-page .usa-card-group .usa-card .usa-card__container .usa-card__header {
+            text-align: center;
+            padding: 1.5rem .5rem .5rem;
+        }
 
-                            p {
-                                font-size: 17px;
-                                line-height: 24px;
-                                font-family: var(--heading-font);
-                                font-weight: 700;
-                            }
-                        }
-                    }
+        #dawson-page .usa-card-group .usa-card .usa-card__container .usa-card__header p {
+            font-size: 17px;
+            line-height: 24px;
+            font-family: var(--heading-font);
+            font-weight: 700;
+        }
 
-                    .usa-card__container:hover {
-                        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-                    }
-                }
-            }
+        #dawson-page .usa-card-group .usa-card .usa-card__container:hover {
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
 
-            .dedication {
-                padding-bottom: 2em;
-                gap: 1rem;
+        #dawson-page .dedication {
+            padding-bottom: 2em;
+            gap: 1rem;
+        }
 
-                .dedication-image {
-                    float: left;
-                    flex-shrink: 0;
-                    padding-top: 1em;
-                    padding-right: 1em;
-                    padding-left: 1em;
-                    padding-bottom: 1em;
+        #dawson-page .dedication .dedication-image {
+            float: left;
+            flex-shrink: 0;
+            padding-top: 1em;
+            padding-right: 1em;
+            padding-left: 1em;
+            padding-bottom: 1em;
+        }
 
-                    img {
-                        border-style: none;
-                        margin: 0;
-                        border: 1px solid rgba(0, 0, 0, 1.00);
-                        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.33);
-                    }
-                }
+        #dawson-page .dedication .dedication-image img {
+            border-style: none;
+            margin: 0;
+            border: 1px solid rgba(0, 0, 0, 1.00);
+            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.33);
+        }
 
-                .dedication-text {
-                    flex: 1;
+        #dawson-page .dedication .dedication-text {
+            flex: 1;
+        }
 
-                    p {
-                        font-size: 24px;
-                        ;
-                        line-height: 32px;
-                        font-family: var(--heading-font);
-                        font-weight: 700;
-                    }
-                }
-            }
+        #dawson-page .dedication .dedication-text p {
+            font-size: 24px;
+            line-height: 32px;
+            font-family: var(--heading-font);
+            font-weight: 700;
+        }
 
-            .usa-card-group.fancy-card-group {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-            }
+        #dawson-page .usa-card-group.fancy-card-group {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
 
-            .usa-card-group.fancy-card-group .usa-card {
-                margin: 0 !important;
-                padding: 0;
-            }
+        #dawson-page .usa-card-group.fancy-card-group .usa-card {
+            margin: 0 !important;
+            padding: 0;
+        }
 
-            .usa-card-group.fancy-card-group .usa-card__container {
-                margin: 0;
-                border: none;
-                box-shadow: none;
-            }
+        #dawson-page .usa-card-group.fancy-card-group .usa-card__container {
+            margin: 0;
+            border: none;
+            box-shadow: none;
+        }
 
-            .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
-                background-color: #07294D !important;
-                color: #fff !important;
-            }
+        #dawson-page .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
+            background-color: #07294D !important;
+            color: #fff !important;
+        }
 
-            .fancy-card-group .light-blue-card.usa-card .usa-card__container {
-                background-color: #E1F3F8 !important;
-                color: #000 !important;
-            }
+        #dawson-page .fancy-card-group .light-blue-card.usa-card .usa-card__container {
+            background-color: #E1F3F8 !important;
+            color: #000 !important;
+        }
 
-            .dark-blue-card .usa-card__container {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                min-height: 80px;
-                text-align: center;
-            }
+        #dawson-page .dark-blue-card .usa-card__container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+            text-align: center;
         }
     </style>
 {% endblock %}

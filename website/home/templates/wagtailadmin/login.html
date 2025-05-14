@@ -9,18 +9,22 @@
     <style>
         .login {
             background: #f0f0f0;
+        }
 
-            @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: dark) {
+            .login {
                 background: #1a1a1a;
             }
+        }
 
-            .content-wrapper {
-                background: #FFF;
+        .login .content-wrapper {
+            background: #FFF;
+        }
 
-                @media (prefers-color-scheme: dark) {
-                    background: #2d2d2d;
-                    color: #fff;
-                }
+        @media (prefers-color-scheme: dark) {
+            .login .content-wrapper {
+                background: #2d2d2d;
+                color: #fff;
             }
         }
 
@@ -28,8 +32,10 @@
             width: 150px;
             height: 150px;
             filter: grayscale(100%);
+        }
 
-            @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: dark) {
+            .court-seal {
                 filter: grayscale(100%) invert(1);
             }
         }
@@ -62,8 +68,10 @@
             text-align: center;
             margin: 2rem 0;
             color: #666;
+        }
 
-            @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: dark) {
+            .divider {
                 color: #999;
             }
         }
@@ -73,8 +81,11 @@
             content: '';
             flex: 1;
             border-bottom: 1px solid #ddd;
+        }
 
-            @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: dark) {
+            .divider::before,
+            .divider::after {
                 border-bottom-color: #444;
             }
         }

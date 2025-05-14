@@ -3,80 +3,68 @@
 {% load static %}
 {% block extra_css %}
     <style>
-        #pamphlets-page {
-            .header-section {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 50px;
+        #pamphlets-page .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 50px;
+        }
 
-                .bookshelf-image {
-                    max-width: 100%;
-                    width: auto;
-                    flex-shrink: 0;
-                }
-            }
+        #pamphlets-page .header-section .bookshelf-image {
+            max-width: 100%;
+            width: auto;
+            flex-shrink: 0;
+        }
 
-            .pamphlets-section {
-                .pamphlet-entry {
-                    display: flex;
-                    margin-bottom: 40px;
-                    margin-top: 40px;
-                    gap: 40px;
+        #pamphlets-page .pamphlets-section .pamphlet-entry {
+            display: flex;
+            margin-bottom: 40px;
+            margin-top: 40px;
+            gap: 40px;
+        }
 
-                    .entry-left {
-                        width: 200px;
-                        flex-shrink: 0;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
+        #pamphlets-page .pamphlets-section .pamphlet-entry .entry-left {
+            width: 200px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-                        a {
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: space-between;
-                            align-items: center;
-                            gap: 10px;
-                        }
+        #pamphlets-page .pamphlets-section .pamphlet-entry .entry-left a {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
 
-                        .pamphlet-image {
-                            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-                        }
-                    }
+        #pamphlets-page .pamphlets-section .pamphlet-entry .entry-left .pamphlet-image {
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+        }
 
-                    .entry-right {
-                        div.entry-header {
-                            font-size: 1.3rem;
-                        }
+        #pamphlets-page .pamphlets-section .pamphlet-entry .entry-right div.entry-header {
+            font-size: 1.3rem;
+        }
 
-                        .date-range {
-                            font-size: 1.1rem;
-                            font-weight: 500;
-                            margin-top: 0;
-                            font-style: italic;
-                            display: block;
-                            margin-block-end: 1em;
-                        }
-                    }
-                }
-            }
+        #pamphlets-page .pamphlets-section .pamphlet-entry .entry-right .date-range {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 0;
+            font-style: italic;
+            display: block;
+            margin-block-end: 1em;
         }
 
         @media (max-width: 840px) {
-            #pamphlets-page {
-                .header-section {
-                    display: flex;
-                    flex-direction: column-reverse;
-                    gap: 0px;
-                }
+            #pamphlets-page .header-section {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 0px;
+            }
 
-                .pamphlets-section {
-                    .pamphlet-entry {
-                        .entry-left {
-                            display: none;
-                        }
-                    }
-                }
+            #pamphlets-page .pamphlets-section .pamphlet-entry .entry-left {
+                display: none;
             }
         }
     </style>
