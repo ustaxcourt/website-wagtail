@@ -3,44 +3,39 @@
 {% load static %}
 {% block extra_css %}
     <style>
-        #remote-proceedings {
+        #remote-proceedings .links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 20px;
+        }
 
-            .links {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                padding-left: 20px;
+        #remote-proceedings .links a {
+            font-weight: normal;
+        }
 
-                a {
-                    font-weight: normal;
-                }
-            }
+        #remote-proceedings h2 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
 
-            h2 {
-                margin-bottom: 20px;
-                font-size: 1.3rem;
-            }
+        #remote-proceedings h3 {
+            font-size: 1.1rem;
+        }
 
-            h3 {
-                font-size: 1.1rem;
-            }
+        #remote-proceedings .info-body {
+            position: relative;
+        }
 
-            .info-body {
-                position: relative;
-            }
+        #remote-proceedings .anchor-link {
+            position: absolute;
+            left: -40px;
+            top: 0px;
+            font-size: 1.5rem;
+        }
 
-            .anchor-link {
-                position: absolute;
-                left: -40px;
-                top: 0px;
-                font-size: 1.5rem;
-            }
-
-            .examples:last-child {
-                hr {
-                    display: none;
-                }
-            }
+        #remote-proceedings .examples:last-child hr {
+            display: none;
         }
     </style>
 {% endblock %}

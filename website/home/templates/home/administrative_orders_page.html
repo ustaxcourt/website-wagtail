@@ -3,23 +3,21 @@
 {% load static %}
 {% block extra_css %}
     <style>
-        #administrative-orders {
-            .pdf-section-wrapper {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                padding-left: 20px;
+        #administrative-orders .pdf-section-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 20px;
+        }
 
-                a {
-                    font-size: 17px;
-                    line-height: 24px;
-                    font-weight: normal;
-                    flex-shrink: 1;
-                    color: var(--link-blue);
-                    text-decoration: none;
-                    cursor: pointer;
-                }
-            }
+        #administrative-orders .pdf-section-wrapper a {
+            font-size: 17px;
+            line-height: 24px;
+            font-weight: normal;
+            flex-shrink: 1;
+            color: var(--link-blue);
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 {% endblock extra_css %}

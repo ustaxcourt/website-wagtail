@@ -4,72 +4,66 @@
         background-color: #faf3cf;
         color: #000;
         font-weight: bold;
+    }
 
-        p {
-            margin-top: 0;
-            margin-bottom: 0;
-            line-height: 1.2;
-        }
+    .alert-banner p {
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 1.2;
+    }
 
-        a {
-            color: #000;
-            text-decoration: underline;
-        }
+    .alert-banner a {
+        color: #000;
+        text-decoration: underline;
+    }
 
-        .close-btn {
-            cursor: pointer;
-            border: none;
-            background-color: #0000;
+    .alert-banner .close-btn {
+        cursor: pointer;
+        border: none;
+        background-color: #0000;
+    }
 
-            &:hover {
-                color: #333;
-            }
-        }
+    .alert-banner .close-btn:hover {
+        color: #333;
+    }
 
-        .alert-content {
-            display: flex;
-            justify-content: space-evenly;
-            min-height: 48px;
-            align-items: center;
-        }
+    .alert-banner .alert-content {
+        display: flex;
+        justify-content: space-evenly;
+        min-height: 48px;
+        align-items: center;
     }
 
     @media(min-width:1025px) {
-        .alert-banner {
-            p {
-                font-size: 17px;
-            }
+        .alert-banner p {
+            font-size: 17px;
+        }
 
-            .alert-content {
-                padding-left: 2rem;
-                gap: 145px;
-            }
+        .alert-banner .alert-content {
+            padding-left: 2rem;
+            gap: 145px;
         }
     }
 
     @media(max-width:1024px) {
-        .alert-banner {
-            p {
-                font-size: 15px;
-            }
+        .alert-banner p {
+            font-size: 15px;
+        }
 
-            .alert-content {
-                padding-left: 1rem;
-                gap: 145px;
-            }
+        .alert-banner .alert-content {
+            padding-left: 1rem;
+            gap: 145px;
         }
     }
 
     @media(max-width:768px) {
-        .alert-banner {
-            p {
-                font-size: 13px;
-            }
+        .alert-banner p {
+            font-size: 13px;
+        }
 
-            .alert-content {
-                padding-left: 1rem;
-                gap: 0px;
-            }
+        .alert-banner .alert-content {
+            padding-left: 1rem;
+            gap: 0px;
         }
     }
 </style>
