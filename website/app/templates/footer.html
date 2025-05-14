@@ -1,69 +1,67 @@
 {% load static %}
 {% load wagtailcore_tags %}
 <style>
-    footer#app-footer {
-        .main {
-            background: var(--medium-gray);
-            padding: 20px 0px;
-            line-height: 1.6rem;
+    footer#app-footer .main {
+        background: var(--medium-gray);
+        padding: 20px 0px;
+        line-height: 1.6rem;
+    }
 
-            .title {
-                font-size: 1.4rem;
-                font-family: var(--heading-font);
-                font-weight: 600;
-                line-height: 2rem;
-                margin-bottom: 8px;
-                -webkit-font-smoothing: antialiased;
-            }
-        }
+    footer#app-footer .main .title {
+        font-size: 1.4rem;
+        font-family: var(--heading-font);
+        font-weight: 600;
+        line-height: 2rem;
+        margin-bottom: 8px;
+        -webkit-font-smoothing: antialiased;
+    }
 
-        .footer-address {
-            background: var(--dark-gray);
-            color: #555;
-            font-family: var(--font-family);
-            text-align: center;
-            padding-bottom: 20px;
-            padding-top: 20px;
+    footer#app-footer .footer-address {
+        background: var(--dark-gray);
+        color: #555;
+        font-family: var(--font-family);
+        text-align: center;
+        padding-bottom: 20px;
+        padding-top: 20px;
+    }
 
-            .content {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
+    footer#app-footer .footer-address .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-            .phone {
-                white-space: nowrap;
-            }
+    footer#app-footer .footer-address .phone {
+        white-space: nowrap;
+    }
 
-            p {
-                margin-bottom: 0px;
-                margin-top: 4px;
-            }
+    footer#app-footer .footer-address p {
+        margin-bottom: 0px;
+        margin-top: 4px;
+    }
 
-            hr {
-                width: 100%;
-                height: 1px;
-                margin: 10px;
-            }
+    footer#app-footer .footer-address hr {
+        width: 100%;
+        height: 1px;
+        margin: 10px;
+    }
 
-            .seal {
-                width: 100px;
-            }
+    footer#app-footer .footer-address .seal {
+        width: 100px;
+    }
 
-            .build-info {
-                font-size: 0.8rem;
-                margin-top: 8px;
-            }
-        }
+    footer#app-footer .footer-address .build-info {
+        font-size: 0.8rem;
+        margin-top: 8px;
+    }
 
-        h2 {
-            font-size: 20px;
-            line-height: normal;
-        }
+    footer#app-footer h2 {
+        font-size: 20px;
+        line-height: normal;
+    }
 
-        p {
-            margin-top: 0px;
-        }
+    footer#app-footer p {
+        margin-top: 0px;
     }
 </style>
 <footer id="app-footer">
