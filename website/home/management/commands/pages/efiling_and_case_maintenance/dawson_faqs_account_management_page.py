@@ -56,15 +56,17 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
             {
                 "question": "Do I need a DAWSON account?",
                 "answer": f"""<ul>
-                              <li>If you are a party, you will need a DAWSON account for free electronic access to your Court records.</li>
+                              <li>If you are a party, you will need a DAWSON account for free electronic access to your Court records.
                                  <ul>
                                  <li>If you do not have a DAWSON account, you will receive case documents from the Court by U.S. mail instead of being able to access them electronically.</li>
                                  </ul>
+                              </li>
                               <li>If you are admitted to practice before the Court, you are generally required to file documents and receive service electronically. See
-                              <strong><a href="{dawson_faqs_docs["Rule-26_Amended_03202023.pdf"]}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.</li>
+                              <strong><a href="{dawson_faqs_docs["Rule-26_Amended_03202023.pdf"]}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.
                                 <ul>
                                  <li>Petitions may, but are not required to be, filed electronically.</li>
                                  </ul>
+                              </li>
                               </ul>""",
                 "anchortag": "FAQS2",
             },
@@ -72,17 +74,18 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                 "question": "How do I get a DAWSON account?",
                 "answer": """<ul>
                                 <li>Self-represented petitioners who file a petition electronically will register for a DAWSON account before filing their petition. Petitioners who do not file their petitions electronically, or did not have an account in the prior eAccess system, can establish DAWSON credentials by emailing
-                                <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.</li>
+                                <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.
                                    <ul>
                                    <li>There is no need to submit another copy of your petition if you mailed it and later get DAWSON access.</li>
                                    </ul>
-                                   <li>The Court will provide newly admitted practitioners with DAWSON credentials when they are assigned a Tax Court Bar number.</li>
-                                    <li>Practitioners who did not receive or did not timely activate their temporary DAWSON credentials can request new credentials by emailing <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.
-                                    </li>
+                                </li>
+                                <li>The Court will provide newly admitted practitioners with DAWSON credentials when they are assigned a Tax Court Bar number.</li>
+                                <li>Practitioners who did not receive or did not timely activate their temporary DAWSON credentials can request new credentials by emailing <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.
                                    <ul>
                                    <li>Do not register for a DAWSON account through the registration process.</li>
                                    </ul>
-                                </ul>""",
+                                </li>
+                            </ul>""",
                 "anchortag": "FAQS3",
             },
             {
@@ -106,17 +109,17 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
             {
                 "question": "How do I change my contact information?",
                 "answer": """<ul>
-                              <li>Practitioners can update their contact information by clicking on the "Person Icon" and then "My Account" in the upper right corner of the DAWSON screen.</li>
+                              <li>Practitioners can update their contact information by clicking on the "Person Icon" and then "My Account" in the upper right corner of the DAWSON screen.
                                  <ul>
-                                 <li>Changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
-                                 <li>NOTE: IRS Practitioners should contact <strong><a href="mailto:admissions@ustaxcourt.gov" title="admissions@ustaxcourt.gov">admissions@ustaxcourt.gov</a></strong> for updates to contact information</li>
-                                 <li>Petitioners can update their email address by clicking on the "Person Icon" and then "My Account" in the upper right corner of the DAWSON screen.</li>
-                                 <li>NOTE that changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
+                                    <li>Changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
+                                    <li>NOTE: IRS Practitioners should contact <strong><a href="mailto:admissions@ustaxcourt.gov" title="admissions@ustaxcourt.gov">admissions@ustaxcourt.gov</a></strong> for updates to contact information</li>
+                                    <li>Petitioners can update their email address by clicking on the "Person Icon" and then "My Account" in the upper right corner of the DAWSON screen.</li>
+                                    <li>NOTE that changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
                                 </ul>
-                                 <li>Petitioners can update their mailing address and phone number by updating the Case Information in each of their cases.</li>
-                                 <li>Please refer to the <strong><a href="/dawson-user-guides" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
-                                 </ul>
-                              </ul>""",
+                              </li>
+                              <li>Petitioners can update their mailing address and phone number by updating the Case Information in each of their cases.</li>
+                              <li>Please refer to the <strong><a href="/dawson-user-guides" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
+                            </ul>""",
                 "anchortag": "FAQS7",
             },
             {
