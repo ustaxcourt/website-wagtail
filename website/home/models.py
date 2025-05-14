@@ -1587,7 +1587,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                 pdf_filename,
             ) in seen_press_release_keys
             if is_duplicate:
-                print(f"Skipping duplicate homepage entry: {title} -> {pdf_filename}")
                 continue
 
             if not is_duplicate:
