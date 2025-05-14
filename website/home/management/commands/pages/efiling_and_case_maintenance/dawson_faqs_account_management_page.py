@@ -89,7 +89,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                 "question": "If I had an eAccess account, will I need a new DAWSON account?",
                 "answer": """<ul>
                                 <li>Yes. Your eAccess credentials will not work in the new system.</li>
-                                <li>In late 2020, temporary DAWSON credentials were emailed to eAccess system users, including petitioners and practitioners. If you did not receive yours, or did not activate them timely, emaill <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.</li>
+                                <li>In late 2020, temporary DAWSON credentials were emailed to eAccess system users, including petitioners and practitioners. If you did not receive yours, or did not activate them timely, email <strong><a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON Support">dawson.support@ustaxcourt.gov</a></strong>.</li>
                                 </ul>""",
                 "anchortag": "FAQS4",
             },
@@ -114,7 +114,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                                  <li>NOTE that changing your email address in DAWSON will change both your service email and your login email. Only one email address per account is permitted. Email addresses are case-sensitive.</li>
                                 </ul>
                                  <li>Petitioners can update their mailing address and phone number by updating the Case Information in each of their cases.</li>
-                                 <li>Please refer to the <strong><a href="/dawson-user-guides" target="_blank" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
+                                 <li>Please refer to the <strong><a href="/dawson-user-guides" title="DAWSON User Guides">User Guides</a></strong> for more detailed instructions.</li>
                                  </ul>
                               </ul>""",
                 "anchortag": "FAQS7",
