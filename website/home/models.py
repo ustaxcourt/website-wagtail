@@ -34,7 +34,11 @@ from wagtail.blocks import DateBlock
 from collections import defaultdict
 from operator import itemgetter
 from django.template.response import TemplateResponse
+from django.utils.html import strip_tags
 import logging
+import re
+import os
+
 
 logger = logging.getLogger(__name__)
 
@@ -1477,6 +1481,15 @@ class CSVUploadPage(EnhancedStandardPage):
         return csv_data
 
 
+def extract_pdf_filename_from_body(html):
+    """Extracts the .pdf filename from an anchor tag's href in the HTML string. Returns the filename (e.g., '04072025.pdf') or None."""
+    match = re.search(r'href="([^"]+\.pdf)"', html or "", re.IGNORECASE)
+    if match:
+        pdf_url = match.group(1)
+        return os.path.basename(pdf_url)  # Extract just the filename
+    return None
+
+
 class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     """
     A specialized page for managing press releases with grouping and archive routing.
@@ -1534,6 +1547,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     @property
     def group_press_releases_by_year(self):
         grouped = defaultdict(list)
+        seen_press_release_keys = set()  # (title, pdf), (description, file)
         for block in self.press_release_body:
             if block.block_type == "press_releases":
                 for release in block.value:
@@ -1542,27 +1556,57 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                         year = release_date.year
                         grouped[year].append(release)
 
+                        # Track for duplication prevention
+                        details = release.get("details", {})
+                        description = strip_tags(
+                            details.get("description", "").strip().lower()
+                        )
+                        file = details.get("file")
+
+                        if file and hasattr(file, "url"):
+                            pdf_filename = os.path.basename(file.url).strip().lower()
+                            seen_press_release_keys.add(("file", pdf_filename))
+
+                            if description:
+                                seen_press_release_keys.add(
+                                    ("desc+file", description, pdf_filename)
+                                )
+
+        # Step 2: Add homepage entries, only if not duplicate
         persisted_entries = HomePageEntry.objects.filter(
             persist_to_press_releases=True, end_date__lt=date.today()
         ).order_by("-end_date")
 
         for entry in persisted_entries:
-            year = entry.end_date.year if entry.end_date else "Unknown"
-            grouped[year].append(
-                {
-                    "is_homepage_entry": True,
-                    "release_date": entry.end_date,
-                    "id": entry.id,
-                    "title": entry.title,
-                    "body": entry.body,
-                }
-            )
+            pdf_url = extract_pdf_filename_from_body(entry.body)
+            pdf_filename = os.path.basename(pdf_url).strip().lower() if pdf_url else ""
+            title = entry.title.strip() if entry.title else ""
+            is_duplicate = ("file", pdf_filename) in seen_press_release_keys or (
+                "desc+file",
+                title,
+                pdf_filename,
+            ) in seen_press_release_keys
+            if is_duplicate:
+                print(f"Skipping duplicate homepage entry: {title} -> {pdf_filename}")
+                continue
+
+            if not is_duplicate:
+                year = entry.end_date.year if entry.end_date else "Unknown"
+                grouped[year].append(
+                    {
+                        "is_homepage_entry": True,
+                        "release_date": entry.end_date,
+                        "id": entry.id,
+                        "title": entry.title,
+                        "body": entry.body,
+                        "file": pdf_filename,
+                    }
+                )
         # Sort releases in each year by descending date
         sorted_grouped = {
             year: sorted(releases, key=itemgetter("release_date"), reverse=True)
             for year, releases in grouped.items()
         }
-        # Sort the years descending
         return dict(sorted(sorted_grouped.items(), reverse=True))
 
     def get_context(self, request):
