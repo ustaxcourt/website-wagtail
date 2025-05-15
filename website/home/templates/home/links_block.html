@@ -2,7 +2,7 @@
     {% for link in block.value.links %}
         {% if link.document %}
             <li>
-                <a href="{{ link.document.url }}"
+                <a href="{{ link.document.url }}{% if link.anchor %}#{{ link.anchor }}{% endif %}"
                    data-testid="document-link"
                    title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
             </li>
