@@ -83,8 +83,8 @@ council_2020_docs = [
 ]
 
 council_2019_docs = [
-    {"title": "12/18/2019 - TC-17-90014", "document": "TC-19-90003.pdf"},
-    {"title": "07/02/2019 - TC-17-90002", "document": "TC-19-90003.pdf"},
+    {"title": "12/18/2019 - TC-17-90014", "document": "TC-17-90014.pdf"},
+    {"title": "07/02/2019 - TC-17-90002", "document": "TC-17-90002.pdf"},
 ]
 
 council_2018_docs = [
