@@ -1,4 +1,3 @@
-
 /****
  * PDF and link handlers which are used to track links and PDFs and open them in new tabs
  */
@@ -74,7 +73,8 @@ function isSubdomain(url) {
 
 function isPdf(url) {
     const urlWithoutHash = url.split('#')[0];
-    return urlWithoutHash.toLowerCase().endsWith('.pdf')
+    const urlWithoutQuery = urlWithoutHash.split('?')[0];
+    return urlWithoutQuery.toLowerCase().endsWith('.pdf')
 }
 
 // for testing only
