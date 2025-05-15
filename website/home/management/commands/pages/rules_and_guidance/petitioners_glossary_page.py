@@ -191,7 +191,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "LITC",
-                "answer": "Low Income Taxpayer Clinic. LITCs serve taxpayers meeting certain income guidelines all across the country. A <strong>list of LITCs</strong> can be found on the Tax Court Website.",
+                "answer": "Low Income Taxpayer Clinic. LITCs serve taxpayers meeting certain income guidelines all across the country. A <strong><a href='/clinics' title='Clinics'>list of LITCs</a></strong> can be found on the Tax Court Website.",
                 "anchortag": "LITC",
             },
             {
