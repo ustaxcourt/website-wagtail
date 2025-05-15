@@ -33,6 +33,11 @@ jobs:
         cd website
         make pytest
 
+    - name: Run JS Tests
+      run: |
+        cd website
+        make test-js
+
     - name: Run Cypress Tests
       run: |
         cd website
