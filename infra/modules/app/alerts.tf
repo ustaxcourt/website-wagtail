@@ -7,6 +7,9 @@ resource "aws_cloudwatch_log_metric_filter" "error_500_filter" {
     name      = "5xxErrorCount"
     namespace = "WebsiteErrors"
     value     = "1"
+    dimensions = {
+      Path = "$.request"
+    }
   }
 }
 
@@ -18,9 +21,12 @@ resource "aws_cloudwatch_metric_alarm" "error_500_alarm" {
   namespace           = "WebsiteErrors"
   period             = "60"
   statistic          = "Sum"
-  threshold          = "1"
+  threshold          = "0"
   alarm_description  = "This metric monitors for 5xx errors in the website logs"
   alarm_actions      = [aws_sns_topic.error_notifications.arn]
+  dimensions = {
+    Path = "*"
+  }
 }
 
 resource "aws_sns_topic" "error_notifications" {
