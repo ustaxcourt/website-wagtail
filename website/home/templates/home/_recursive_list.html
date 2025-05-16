@@ -10,7 +10,7 @@
             <li>
                 {% if item.text %}{{ item.text|richtext }}{% endif %}
                 {% if item.image %}
-                    {% picture item.image format-{webp,jpeg} width-1000 loading="lazy" %}
+                    {% picture item.image format-jpeg width-1000 loading="lazy" %}
                 {% endif %}
                 {% if item.nested_list %}
                     {% for nested in item.nested_list %}

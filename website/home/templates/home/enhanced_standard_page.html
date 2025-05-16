@@ -44,11 +44,19 @@
             padding-top: 1rem;
             display: block;
             margin: 0 auto;
-            width: 50%;
+            width: 55%;
             max-width: 100%;
             height: auto;
             margin-bottom: 2rem;
             margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .enhanced-page .nested-list img {
+                width: 90%;
+                height: auto;
+                margin: 0 0 1rem 0;
+            }
         }
 
         .enhanced-page .links i {
@@ -431,7 +439,7 @@
                 {% elif block.block_type == 'snippet' %}
                     {{ block.value.text |safe }}
                 {% elif block.block_type == 'image' %}
-                    <div class="centered-image">{% picture block.value format-{webp,jpeg} width-1000 loading="lazy" %}</div>
+                    <div class="centered-image">{% picture block.value format-jpeg width-1000 loading="lazy" %}</div>
                 {% elif block.block_type == 'hr' %}
                     <hr />
                 {% elif block.block_type == 'alert' %}
