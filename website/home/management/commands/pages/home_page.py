@@ -126,7 +126,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Tax Court disciplinary matters.",
             body=(
-                f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank">Press Release</a>."""
+                f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 29).date(),
             end_date=None,
@@ -136,7 +136,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
-                f"""See the <a href="{home_docs["04162025.pdf"]}" target="_blank">Press Release</a>."""
+                f"""See the <a href="{home_docs["04162025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 14).date(),
             end_date=None,
@@ -146,7 +146,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025",
             body=(
-                f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank">Press Release</a>."""
+                f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 7).date(),
             end_date=datetime(2025, 5, 5).date(),
