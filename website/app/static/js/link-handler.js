@@ -1,4 +1,3 @@
-
 /****
  * PDF and link handlers which are used to track links and PDFs and open them in new tabs
  */
@@ -73,9 +72,18 @@ function isSubdomain(url) {
 }
 
 function isPdf(url) {
-    return url.toLowerCase().endsWith('.pdf')
+    const urlWithoutHash = url.split('#')[0];
+    const urlWithoutQuery = urlWithoutHash.split('?')[0];
+    return urlWithoutQuery.toLowerCase().endsWith('.pdf')
 }
 
-// Queue the setup to run after GA loads
-window.gaCallbacks = window.gaCallbacks || [];
-window.gaCallbacks.push(setupLinkHandlers);
+// for testing only
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        isPdf,
+    };
+} else {
+    // Queue the setup to run after GA loads
+    window.gaCallbacks = window.gaCallbacks || [];
+    window.gaCallbacks.push(setupLinkHandlers);
+}

@@ -105,20 +105,23 @@ body = [
                 {
                     "title": "Rule 1. Rulemaking Authority, Scope of Rules, Publication of Rules and Amendments, Construction",
                     "icon": None,
-                    "document": "Rule-1_Amended_03202023.pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-1",
                 },
                 {
                     "title": "Rule 2. Effective Date",
                     "icon": None,
-                    "document": "Rule-2.pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-2",
                 },
                 {
                     "title": "Rule 3. Definitions",
                     "icon": None,
-                    "document": "Rule-3_Amended_03202023.pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-3",
                 },
             ]
         },
@@ -132,26 +135,30 @@ body = [
                 {
                     "title": "Rule 10. Name, Office, and Sessions",
                     "icon": None,
-                    "document": "Rule-10_Amended_03202023.pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-10",
                 },
                 {
                     "title": "Rule 11. Payments to the Court",
                     "icon": None,
-                    "document": "Rule-11(superseded).pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-11",
                 },
                 {
                     "title": "Rule 12. Court Records",
                     "icon": None,
-                    "document": "Rule-12(superseded).pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-12",
                 },
                 {
                     "title": "Rule 13. Jurisdiction",
                     "icon": None,
-                    "document": "Rule-13_amended_08082024.pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-13",
                 },
             ]
         },
@@ -168,8 +175,9 @@ body = [
                 {
                     "title": "Rule 20. Commencement of Case",
                     "icon": None,
-                    "document": "Rule-20_Amended_03202023.pdf",
+                    "document": "Master-Rules.pdf",
                     "url": None,
+                    "anchor": "rule-20",
                 },
                 {
                     "title": "Rule 21. Service of Papers",

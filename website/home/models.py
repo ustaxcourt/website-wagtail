@@ -207,6 +207,7 @@ link_obj = blocks.ListBlock(
                 "video",
                 DocumentChooserBlock(required=False),
             ),
+            ("anchor", blocks.CharBlock(required=False)),
             ("url", blocks.CharBlock(required=False)),
             (
                 "text_only",
