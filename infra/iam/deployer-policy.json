@@ -21,6 +21,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "sns:*"
+      ],
+      "Resource": "arn:aws:sns:us-east-1:*:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "cloudfront:*"
       ],
       "Resource": "*"
