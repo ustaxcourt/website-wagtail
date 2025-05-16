@@ -131,9 +131,9 @@ resource "aws_ecs_task_definition" "this" {
     logConfiguration = {
       logDriver = "awslogs",
       options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.ecs_log_group.name, # Reference the CloudWatch log group
-        "awslogs-region"        = "us-east-1",                                 # Your AWS region
-        "awslogs-stream-prefix" = "wagtail-fargate-service"                         # Log stream prefix
+        "awslogs-group"         = aws_cloudwatch_log_group.ecs_log_group.name,
+        "awslogs-region"        = "us-east-1",
+        "awslogs-stream-prefix" = "wagtail-fargate-service"
       }
     }
   }])
