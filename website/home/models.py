@@ -1050,7 +1050,6 @@ class PamphletsPage(StandardPage):
     ]
 
     def get_context(self, request, *args, **kwargs):
-        raise ValueError("Test error")
         context = super().get_context(request, *args, **kwargs)
         entries = PamphletEntry.objects.all().order_by("-volume_number")
         context["entries"] = entries
