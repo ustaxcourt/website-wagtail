@@ -9,4 +9,4 @@ terraform apply --auto-approve
 
 BUCKET_NAME=$(terraform output -raw s3_bucket_name)
 
-aws s3 sync ./static s3://$BUCKET_NAME
+# aws s3 sync ./static s3://$BUCKET_NAME
