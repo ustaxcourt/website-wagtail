@@ -546,3 +546,7 @@ class JudgesPageInitializer(PageInitializer):
             changed=True,
             approved_go_live_at=schedule_datetime_aware_edt,
         )
+
+        logger.info(
+            f"Schedule updates for the judge roles and profiles in page: '{self.slug}'."
+        )
