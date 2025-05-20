@@ -11,6 +11,7 @@ from home.models import (
 )
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -505,8 +506,6 @@ class JudgesPageInitializer(PageInitializer):
             role_name="Chief Judge",
             defaults={
                 "judge": current_chief_judge_profile,
-                # For DraftStateMixin, we need to ensure it's published to be 'live'
-                # If it's newly created, it starts as a draft.
             },
         )
 
@@ -515,44 +514,19 @@ class JudgesPageInitializer(PageInitializer):
         ).first()
         eastern_tz = ZoneInfo("America/New_York")
 
-        schedule_datetime_naive_edt = datetime(2025, 6, 1, 0, 0, 0)  # Midnight
-        schedule_datetime_aware_edt = schedule_datetime_naive_edt.replace(
-            tzinfo=eastern_tz
+        schedule_datetime_aware_edt = datetime(
+            2025, 5, 20, 13, 25, 0, tzinfo=eastern_tz
         )
         live_chief_judge_role = JudgeRole.objects.get(pk=chief_judge_role.pk)
 
         # Modify the instance in memory to reflect the future state
         live_chief_judge_role.judge = future_chief_judge_profile
-        live_chief_judge_role.go_live_at = (
-            schedule_datetime_aware_edt  # Set by PublishingPanel
-        )
+        live_chief_judge_role.go_live_at = schedule_datetime_aware_edt
 
-        # Save this as a new revision
-        # The user=None is for programmatic changes; ideally, you'd associate a user if available.
-        # log_action=True is default for save_revision
-        # changed=True tells Wagtail that content has changed for this revision
-        scheduled_revision = live_chief_judge_role.save_revision(
+        # Modify the instance in memory to reflect the future state
+        _ = live_chief_judge_role.save_revision(
             user=None,
             log_action=True,
-            changed=True,  # Indicate that this revision contains changes
+            changed=True,
+            approved_go_live_at=schedule_datetime_aware_edt,
         )
-
-        if scheduled_revision:
-            # For Wagtail 5.2+ (using DraftStateMixin's `schedule_revision` method):
-            try:
-                # This is the cleaner way if available (Wagtail 5.2+)
-                live_chief_judge_role.schedule_revision(scheduled_revision, user=None)
-                logger.info(
-                    f"Scheduled revision for '{live_chief_judge_role.role_name}' with Judge {future_chief_judge_profile} for {schedule_datetime_aware_edt}."
-                )
-            except AttributeError:
-                logger.info(
-                    f"Attempted to schedule '{live_chief_judge_role.role_name}' with Judge {future_chief_judge_profile} for {schedule_datetime_aware_edt} using publish()."
-                )
-
-        else:
-            logger.error(
-                f"Failed to create a revision for scheduling Judge {future_chief_judge_profile}."
-            )
-
-        logger.info(f"Updated the '{self.slug}' page.")
