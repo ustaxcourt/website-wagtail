@@ -32,3 +32,15 @@ When you receive a 5xx error notification email:
 1. Click the alarm link in the email notification to open the CloudWatch alarm directly
 2. On the alarm page, click the "View" button, then the "Related logs" entry, then click the log group
 3. This should open cloudwatch with all the filters already setup so you can view the related logs that triggered the alarm.
+
+### Configurating Periods and Threshold
+
+The alarm period (how frequently the metric is evaluated) and threshold (number of errors that trigger the alarm) can be manually adjusted in the AWS Console by:
+
+1. Navigate to CloudWatch > Alarms
+2. Find and select the alarm named `{environment}-5xx-error-alarm`
+3. Click "Edit"
+4. Under "Metric and conditions", you can modify:
+   - The "Period" value (currently set to 60 seconds)
+   - The "Threshold" value (currently set to 0)
+5. Click "Update alarm" to save changes

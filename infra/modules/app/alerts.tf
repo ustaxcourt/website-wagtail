@@ -21,6 +21,13 @@ resource "aws_cloudwatch_metric_alarm" "error_500_alarm" {
   threshold          = "0"
   alarm_description  = "This metric monitors for 5xx errors in the website logs"
   alarm_actions      = [aws_sns_topic.error_notifications.arn]
+
+  lifecycle {
+    ignore_changes = [
+      period,
+      threshold
+    ]
+  }
 }
 
 resource "aws_sns_topic" "error_notifications" {
