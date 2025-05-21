@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -14,7 +15,21 @@ from wagtail.documents.models import Document
 
 def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
-    logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
+
+    # Redirect any legacy rule pdf requests to the master rule pdf
+    rule_match = re.search(r"([rR]ule-[1-9]+)", filename)
+    is_rule_pdf = filename.lower().endswith(".pdf") and rule_match
+    if is_rule_pdf:
+        if rule_match:
+            master_rule_document = Document.objects.filter(
+                file__icontains="Master-Rules"
+            ).first()
+
+            if not master_rule_document:
+                return render_404_util(request)
+
+            rule_number = rule_match.group(1)
+            return redirect(f"{master_rule_document.url}#{rule_number}")
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
