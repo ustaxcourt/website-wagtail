@@ -1,0 +1,16 @@
+name: Daily Trigger
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # 2AM ET
+  workflow_dispatch:
+
+jobs:
+  trigger-target:
+    strategy:
+      matrix:
+        environment: [development, production]
+
+    uses: ./.github/workflows/schedule-publishes.yml
+    with:
+      environment: ${{ matrix.environment }}
