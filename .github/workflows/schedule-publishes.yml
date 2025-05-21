@@ -18,7 +18,7 @@ on:
           - production
 
 jobs:
-  production-deploy:
+  schedule-publishes:
     environment: ${{ inputs.environment || github.event.inputs.environment == 'development' && 'development' || github.event.inputs.environment == 'sandbox' && format('{0}_sandbox', github.actor) || github.event.inputs.environment == 'production' && 'production' || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
