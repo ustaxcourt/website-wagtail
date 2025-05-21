@@ -762,11 +762,10 @@ class HomePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-
+        context["now"] = timezone.now()
         live_entries = HomePageEntry.objects.filter(homepage=self).filter(
-            models.Q(end_date__isnull=True) | models.Q(end_date__gte=date.today())
+            models.Q(end_date__isnull=True) | models.Q(end_date__gte=timezone.now())
         )
-
         context["entries"] = live_entries
         return context
 
@@ -791,18 +790,19 @@ class HomePageEntry(Orderable):
     title = models.CharField(max_length=2000, blank=True)
     body = RichTextField(blank=True)
     id = models.AutoField(primary_key=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
     persist_to_press_releases = models.BooleanField(default=True)
 
     def is_expired(self):
-        return self.end_date and self.end_date < date.today()
+        return self.end_date and self.end_date < timezone.now()
 
     panels = [
         FieldPanel("title"),
         FieldPanel("body"),
         FieldPanel("start_date"),
         FieldPanel("end_date"),
+        FieldPanel("persist_to_press_releases"),
     ]
 
 

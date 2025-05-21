@@ -2,6 +2,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load static %}
 {% block body_class %}template-homepage{% endblock %}
+{% load tz %}
 {% block extra_css %}
     {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
     <style>
@@ -94,18 +95,21 @@
                 <span class="label">NOTEWORTHY</span>
             </div>
             <div class="entries-list">
-                {% for entry in page.entries.all %}
-                    {% if entry.end_date == None or entry.end_date >= today %}
-                        <div class="entry shadow-2">
-                            {% if entry.title %}
-                                <h3>{{ entry.title }}</h3>
-                            {% else %}
-                                <br />
-                            {% endif %}
-                            <div>{{ entry.body| richtext }}</div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                {% timezone "America/New_York" %}
+                    {% now "c" as current_time %}
+                        {% for entry in page.entries.all %}
+                            {% if not entry.end_date or entry.end_date|date:"c" >= current_time %}
+                                <div class="entry shadow-2">
+                                    {% if entry.title %}
+                                    <h3>{{ entry.title }}</h3>
+                                    {% else %}
+                                    <br/>
+                                    {% endif %}
+                                    <div>{{ entry.body|richtext }}</div>
+                                </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endtimezone %}
             </div>
         </div>
     </div>
