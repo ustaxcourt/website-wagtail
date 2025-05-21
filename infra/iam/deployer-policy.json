@@ -28,6 +28,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "sns:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "s3:*"
       ],
       "Resource": "arn:aws:s3:::*-ustc-website-assets/*"
