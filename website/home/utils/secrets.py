@@ -113,7 +113,7 @@ def get_secret_from_local(secret_name, filename="website_secrets"):
 
 
 def get_secret(secret_name):
-    # if environment_is_local():
-    #     return get_secret_from_local(secret_name)
-    # else:
-    return get_secret_from_aws(secret_name)
+    if environment_is_local():
+        return get_secret_from_local(secret_name)
+    else:
+        return get_secret_from_aws(secret_name)

@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.conf import settings
-from home.utils.secrets import get_secret
+from home.utils.secrets import get_secret_from_aws
 
 User = get_user_model()
 
@@ -24,7 +24,7 @@ class Command(BaseCommand):
         try:
             # This 'users_data' is expected to be the list of user dictionaries,
             # or a JSON string representation of it.
-            users_data_or_json_string = get_secret(USERS_LIST_SECRET_KEY)
+            users_data_or_json_string = get_secret_from_aws(USERS_LIST_SECRET_KEY)
 
             if users_data_or_json_string is None:
                 self.stderr.write(self.style.ERROR(
