@@ -1,72 +1,21 @@
 # myapp/management/commands/preregister_users.py
-import json
-import boto3 # Import boto3
-from botocore.exceptions import ClientError # For handling boto3 errors
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model # Use get_user_model
 from django.contrib.auth.models import Group
 from django.conf import settings
+from home.utils.secrets import get_secret
 
 User = get_user_model() # Get the currently active User model
 
 # Define the name of your secret in AWS Secrets Manager
 # It's good practice to fetch this from settings or an environment variable
 # For example, in your settings.py: AWS_PREREGISTER_USERS_SECRET_NAME = 'myapp/preregistered_users'
-AWS_SECRET_NAME = "website_secrets/USERS_TO_PREREGISTER"
+AWS_SECRET_NAME = "USERS_TO_PREREGISTER"
 # getattr(settings, 'AWS_PREREGISTER_USERS_SECRET_NAME', 'myapp/default_preregister_secret_name')
 # AWS_REGION_NAME = getattr(settings, 'AWS_SECRETS_MANAGER_REGION', 'us-east-1') # Or your desired region
 
 class Command(BaseCommand):
     help = 'Pre-registers users from AWS Secrets Manager and assigns them to Wagtail/Django groups.'
-
-    def get_users_from_secrets_manager(self):
-        """
-        Retrieves the user list from AWS Secrets Manager.
-        """
-        session = boto3.session.Session()
-        client = session.client(
-            service_name="secretsmanager",
-            region_name="us-east-1",
-        )
-
-        try:
-            get_secret_value_response = client.get_secret_value(
-                SecretId="USERS_TO_PREREGISTER"
-            )
-        except ClientError as e:
-            error_message = f"Could not retrieve secret '{AWS_SECRET_NAME}': {e}"
-            self.stderr.write(self.style.ERROR(error_message))
-            if e.response['Error']['Code'] == 'DecryptionFailureException':
-                # Secrets Manager can't decrypt the protected secret text using the configured KMS key.
-                pass
-            elif e.response['Error']['Code'] == 'InternalServiceErrorException':
-                # An error occurred on the server side.
-                pass
-            elif e.response['Error']['Code'] == 'InvalidParameterException':
-                # You provided an invalid value for a parameter.
-                pass
-            elif e.response['Error']['Code'] == 'InvalidRequestException':
-                # You provided a parameter value that is not valid for the current state of the resource.
-                pass
-            elif e.response['Error']['Code'] == 'ResourceNotFoundException':
-                # We can't find the resource that you asked for.
-                pass
-            return None # Indicate failure
-
-        # Decrypts secret using the associated KMS CMK.
-        # Depending on whether the secret is a string or binary, one of these fields will be populated.
-        if 'SecretString' in get_secret_value_response:
-            secret_string = get_secret_value_response['SecretString']
-            try:
-                users_data = json.loads(secret_string)
-                return users_data
-            except json.JSONDecodeError as je:
-                self.stderr.write(self.style.ERROR(f"Failed to parse JSON from secret '{AWS_SECRET_NAME}': {je}"))
-                return None # Indicate failure
-        else:
-            # If you store it as binary, you'd decode here, but for JSON, SecretString is expected.
-            self.stderr.write(self.style.ERROR(f"Secret '{AWS_SECRET_NAME}' does not contain a SecretString."))
-            return None # Indicate failure
 
 
     def handle(self, *args, **options):
@@ -76,7 +25,7 @@ class Command(BaseCommand):
                 "This script assumes username is the full email."
             ))
 
-        users_to_preregister = self.get_users_from_secrets_manager()
+        users_to_preregister = get_secret(AWS_SECRET_NAME)
 
         if users_to_preregister is None:
             self.stderr.write(self.style.ERROR("Failed to retrieve or parse user data from Secrets Manager. Aborting."))
