@@ -1,21 +1,79 @@
-# myapp/management/commands/preregister_users.py
+import json
 from django.core.management.base import BaseCommand
-from django.contrib.auth import get_user_model # Use get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.conf import settings
 from home.utils.secrets import get_secret
 
-User = get_user_model() # Get the currently active User model
+User = get_user_model()
 
-# Define the name of your secret in AWS Secrets Manager
-# It's good practice to fetch this from settings or an environment variable
-# For example, in your settings.py: AWS_PREREGISTER_USERS_SECRET_NAME = 'myapp/preregistered_users'
-AWS_SECRET_NAME = "USERS_TO_PREREGISTER"
-# getattr(settings, 'AWS_PREREGISTER_USERS_SECRET_NAME', 'myapp/default_preregister_secret_name')
-# AWS_REGION_NAME = getattr(settings, 'AWS_SECRETS_MANAGER_REGION', 'us-east-1') # Or your desired region
+# Define the key name used within your secrets utility to fetch the user list.
+# This should be a key within the 'website_secrets' JSON (local or AWS).
+# Fetch this from Django settings for better configurability.
+USERS_LIST_SECRET_KEY = "USERS_TO_PREREGISTER"
+# getattr(settings, 'PREREGISTER_USERS_SECRET_KEY', 'USERS_TO_PREREGISTER_LIST')
 
 class Command(BaseCommand):
-    help = 'Pre-registers users from AWS Secrets Manager and assigns them to Wagtail/Django groups.'
+    help = 'Pre-registers users from secrets (via utility) and assigns them to Wagtail/Django groups.'
+
+    def get_users_from_configured_secret(self):
+        """
+        Retrieves the user list using the provided get_secret utility.
+        """
+        self.stdout.write(f"Attempting to retrieve user list using secret key: '{USERS_LIST_SECRET_KEY}'")
+        try:
+            # This 'users_data' is expected to be the list of user dictionaries,
+            # or a JSON string representation of it.
+            users_data_or_json_string = get_secret(USERS_LIST_SECRET_KEY)
+
+            if users_data_or_json_string is None:
+                self.stderr.write(self.style.ERROR(
+                    f"Secret key '{USERS_LIST_SECRET_KEY}' not found or utility returned None."
+                ))
+                return None
+
+            # IMPORTANT: Your current utility might return a generated password (string)
+            # if the key is not found. This is problematic.
+            # We need to ensure we get a list.
+            if isinstance(users_data_or_json_string, str):
+                # If it's a string, try to parse it as JSON.
+                # This handles the case where the secret value is stored as a JSON string.
+                try:
+                    users_data = json.loads(users_data_or_json_string)
+                except json.JSONDecodeError as e:
+                    self.stderr.write(self.style.ERROR(
+                        f"Failed to parse JSON string for '{USERS_LIST_SECRET_KEY}': {e}. "
+                        f"Content was: '{users_data_or_json_string[:100]}...' (truncated)"
+                    ))
+                    self.stderr.write(self.style.WARNING(
+                        "This might happen if your secrets utility generated a password "
+                        "instead of providing a user list for this key."
+                    ))
+                    return None
+            elif isinstance(users_data_or_json_string, list):
+                users_data = users_data_or_json_string # It's already a list
+            else:
+                self.stderr.write(self.style.ERROR(
+                    f"Expected a list or JSON string for '{USERS_LIST_SECRET_KEY}', "
+                    f"but got type {type(users_data_or_json_string)}."
+                ))
+                return None
+
+            if not isinstance(users_data, list):
+                self.stderr.write(self.style.ERROR(
+                     f"Data for '{USERS_LIST_SECRET_KEY}' is not a list after processing. "
+                     "Please ensure it's a list of user objects."
+                ))
+                return None
+
+            return users_data
+
+        except RuntimeError as e: # Catching RuntimeError from your utility
+            self.stderr.write(self.style.ERROR(f"Runtime error from secrets utility: {e}"))
+            return None
+        except Exception as e:
+            self.stderr.write(self.style.ERROR(f"Unexpected error retrieving secret for '{USERS_LIST_SECRET_KEY}': {e}"))
+            return None
 
 
     def handle(self, *args, **options):
@@ -25,18 +83,27 @@ class Command(BaseCommand):
                 "This script assumes username is the full email."
             ))
 
-        users_to_preregister = get_secret(AWS_SECRET_NAME)
+        users_to_preregister = self.get_users_from_configured_secret()
 
         if users_to_preregister is None:
-            self.stderr.write(self.style.ERROR("Failed to retrieve or parse user data from Secrets Manager. Aborting."))
+            self.stderr.write(self.style.ERROR(
+                "Failed to retrieve or parse user data via secrets utility. Aborting."
+            ))
             return
 
-        if not users_to_preregister:
-            self.stdout.write(self.style.SUCCESS("No users found in the Secrets Manager list to pre-register."))
+        if not users_to_preregister: # Handles empty list
+            self.stdout.write(self.style.SUCCESS(
+                "No users found in the list from secrets utility to pre-register."
+            ))
             return
-
 
         for user_data in users_to_preregister:
+            # ... (rest of your user processing logic remains the same) ...
+            # Ensure user_data is a dictionary as expected by the rest of the script
+            if not isinstance(user_data, dict):
+                self.stderr.write(self.style.WARNING(f"Skipping non-dictionary item in user list: {user_data}"))
+                continue
+
             email = user_data.get('email', '').strip()
             if not email:
                 self.stderr.write(self.style.ERROR("Skipping entry with empty email."))
@@ -66,7 +133,7 @@ class Command(BaseCommand):
                         user.username = username
 
             except User.DoesNotExist:
-                self.stdout.write(f"User with email {email} not found. Attempting to find by username '{username}'.")
+                # self.stdout.write(f"User with email {email} not found. Attempting to find by username '{username}'.") # Less verbose
                 try:
                     user = User.objects.get(username__iexact=username)
                     self.stdout.write(self.style.SUCCESS(f"Found existing user by username: {username}"))
@@ -78,22 +145,20 @@ class Command(BaseCommand):
                 except User.DoesNotExist:
                     self.stdout.write(f"User {username} (email: {email}) does not exist. Creating new user.")
                     try:
-                        # Use create_user from the User model's manager
                         user = User.objects.create_user(
                             username=username,
                             email=email,
                             first_name=first_name,
                             last_name=last_name
                         )
-                        user.set_unusable_password() # SSO will handle auth
-                        # user.is_active = True # create_user usually sets this by default
+                        user.set_unusable_password()
                         self.stdout.write(self.style.SUCCESS(f"Successfully created user: {username}"))
                     except Exception as e:
                         self.stderr.write(self.style.ERROR(f"Error creating user {username}: {e}"))
                         continue
             except User.MultipleObjectsReturned:
                 self.stderr.write(self.style.ERROR(
-                    f"Multiple users found with email {email}. This should not happen. Please clean up duplicates manually."
+                    f"Multiple users found with email {email}. Please clean up duplicates manually."
                 ))
                 continue
             except Exception as e:
@@ -102,14 +167,10 @@ class Command(BaseCommand):
 
             if user:
                 update_needed = False
-                if user.first_name != first_name:
+                if user.first_name != first_name or user.last_name != last_name or not user.is_staff:
                     user.first_name = first_name
-                    update_needed = True
-                if user.last_name != last_name:
                     user.last_name = last_name
-                    update_needed = True
-                if not user.is_staff: # All Wagtail admin users need is_staff
-                    user.is_staff = True # Set is_staff to True for Wagtail admin access
+                    user.is_staff = True # Ensure staff status for Wagtail/Django admin
                     update_needed = True
 
                 if update_needed:
@@ -122,7 +183,6 @@ class Command(BaseCommand):
         current_group_names = set(user.groups.values_list('name', flat=True))
         target_group_names = set(role_names)
 
-        # Add user to groups they are not yet in
         groups_to_add = target_group_names - current_group_names
         for role_name in groups_to_add:
             try:
