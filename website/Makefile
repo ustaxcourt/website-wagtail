@@ -106,4 +106,4 @@ collectstatic:
 	. $(VENV) && python manage.py collectstatic --noinput --clear
 
 preregisterusers:
-	. $(VENV) python manage.py preregister_users
+	. $(VENV) && python manage.py preregister_users
