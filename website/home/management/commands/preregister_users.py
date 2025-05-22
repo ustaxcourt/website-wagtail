@@ -12,7 +12,8 @@ User = get_user_model() # Get the currently active User model
 # Define the name of your secret in AWS Secrets Manager
 # It's good practice to fetch this from settings or an environment variable
 # For example, in your settings.py: AWS_PREREGISTER_USERS_SECRET_NAME = 'myapp/preregistered_users'
-# AWS_SECRET_NAME = getattr(settings, 'AWS_PREREGISTER_USERS_SECRET_NAME', 'myapp/default_preregister_secret_name')
+AWS_SECRET_NAME = "website_secrets/USERS_TO_PREREGISTER"
+# getattr(settings, 'AWS_PREREGISTER_USERS_SECRET_NAME', 'myapp/default_preregister_secret_name')
 # AWS_REGION_NAME = getattr(settings, 'AWS_SECRETS_MANAGER_REGION', 'us-east-1') # Or your desired region
 
 class Command(BaseCommand):
@@ -24,7 +25,7 @@ class Command(BaseCommand):
         """
         session = boto3.session.Session()
         client = session.client(
-            "secretsmanager",
+            service_name="secretsmanager",
             region_name="us-east-1",
         )
 
