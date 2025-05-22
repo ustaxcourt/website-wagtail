@@ -30,38 +30,6 @@ resource "aws_cloudwatch_metric_alarm" "error_500_alarm" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "error_404_filter" {
-  name           = "${var.environment}-404-error-filter"
-  pattern        = "{ $.status_code = 404 }"
-  log_group_name = aws_cloudwatch_log_group.ecs_log_group.name
-
-  metric_transformation {
-    name      = "404ErrorCount"
-    namespace = "WebsiteErrors"
-    value     = "1"
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "error_404_alarm" {
-  alarm_name          = "${var.environment}-404-error-alarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "404ErrorCount"
-  namespace           = "WebsiteErrors"
-  period             = "3600"
-  statistic          = "Sum"
-  threshold          = "5"
-  alarm_description  = "This metric monitors for 404 errors in the website logs"
-  alarm_actions      = [aws_sns_topic.error_notifications.arn]
-
-  lifecycle {
-    ignore_changes = [
-      period,
-      threshold
-    ]
-  }
-}
-
 resource "aws_sns_topic" "error_notifications" {
   name = "${var.environment}-error-notifications"
 }
