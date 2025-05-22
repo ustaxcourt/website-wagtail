@@ -23,7 +23,7 @@ class Command(BaseCommand):
         Retrieves the user list from AWS Secrets Manager.
         """
         session = boto3.session.Session()
-        s3 = session.client(
+        client = session.client(
             "secretsmanager",
             region_name="us-east-1",
         )
