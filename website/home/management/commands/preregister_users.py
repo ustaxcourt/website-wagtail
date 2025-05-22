@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for user_data in USERS_TO_PREREGISTER:
             email = user_data['email']
-            username = user_data.get('username', email) # Or derive username as per your SSO config
+            username = user_data.get('username', user_data.get('first_name') + user_data.get('last_name')) # Or derive username as per your SSO config
 
             # Check if user already exists by email or username to avoid duplicates
             if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
