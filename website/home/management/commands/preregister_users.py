@@ -20,8 +20,8 @@ class Command(BaseCommand):
             if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
                 self.stdout.write(self.style.WARNING(f"User {email} or {username} already exists. Skipping."))
                 # Optionally, update their groups if they exist
-                # user = User.objects.get(email=email) # or username
-                # self.assign_groups(user, user_data['role_names'])
+                user = User.objects.get(email=email) # or username
+                self.assign_groups(user, user_data['role_names'])
                 continue
 
             try:
