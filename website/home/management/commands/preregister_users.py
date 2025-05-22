@@ -1,34 +1,96 @@
 # myapp/management/commands/preregister_users.py
+import json
+import boto3 # Import boto3
+from botocore.exceptions import ClientError # For handling boto3 errors
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User, Group # Or your custom User model
-from django.conf import settings # To potentially check SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL
+from django.contrib.auth import get_user_model # Use get_user_model
+from django.contrib.auth.models import Group
+from django.conf import settings
 
-# ... (your USERS_TO_PREREGISTER list) ...
-# Example:
-USERS_TO_PREREGISTER = [
-    {'email': 'Miriam.Miest-Moore.ctr@ustaxcourt.gov', 'first_name': 'Miriam', 'last_name': 'Miest-Moore', 'role_names': ['Editors']},
-    # ... other users
-]
+User = get_user_model() # Get the currently active User model
+
+# Define the name of your secret in AWS Secrets Manager
+# It's good practice to fetch this from settings or an environment variable
+# For example, in your settings.py: AWS_PREREGISTER_USERS_SECRET_NAME = 'myapp/preregistered_users'
+# AWS_SECRET_NAME = getattr(settings, 'AWS_PREREGISTER_USERS_SECRET_NAME', 'myapp/default_preregister_secret_name')
+# AWS_REGION_NAME = getattr(settings, 'AWS_SECRETS_MANAGER_REGION', 'us-east-1') # Or your desired region
 
 class Command(BaseCommand):
-    help = 'Pre-registers users and assigns them to Wagtail/Django groups, compatible with email as username.'
+    help = 'Pre-registers users from AWS Secrets Manager and assigns them to Wagtail/Django groups.'
+
+    def get_users_from_secrets_manager(self):
+        """
+        Retrieves the user list from AWS Secrets Manager.
+        """
+        s3 = boto3.client(
+            "secretsmanager",
+            region_name="us-east-1",
+        )
+
+        try:
+            get_secret_value_response = client.get_secret_value(
+                SecretId="USERS_TO_PREREGISTER"
+            )
+        except ClientError as e:
+            error_message = f"Could not retrieve secret '{AWS_SECRET_NAME}': {e}"
+            self.stderr.write(self.style.ERROR(error_message))
+            if e.response['Error']['Code'] == 'DecryptionFailureException':
+                # Secrets Manager can't decrypt the protected secret text using the configured KMS key.
+                pass
+            elif e.response['Error']['Code'] == 'InternalServiceErrorException':
+                # An error occurred on the server side.
+                pass
+            elif e.response['Error']['Code'] == 'InvalidParameterException':
+                # You provided an invalid value for a parameter.
+                pass
+            elif e.response['Error']['Code'] == 'InvalidRequestException':
+                # You provided a parameter value that is not valid for the current state of the resource.
+                pass
+            elif e.response['Error']['Code'] == 'ResourceNotFoundException':
+                # We can't find the resource that you asked for.
+                pass
+            return None # Indicate failure
+
+        # Decrypts secret using the associated KMS CMK.
+        # Depending on whether the secret is a string or binary, one of these fields will be populated.
+        if 'SecretString' in get_secret_value_response:
+            secret_string = get_secret_value_response['SecretString']
+            try:
+                users_data = json.loads(secret_string)
+                return users_data
+            except json.JSONDecodeError as je:
+                self.stderr.write(self.style.ERROR(f"Failed to parse JSON from secret '{AWS_SECRET_NAME}': {je}"))
+                return None # Indicate failure
+        else:
+            # If you store it as binary, you'd decode here, but for JSON, SecretString is expected.
+            self.stderr.write(self.style.ERROR(f"Secret '{AWS_SECRET_NAME}' does not contain a SecretString."))
+            return None # Indicate failure
+
 
     def handle(self, *args, **options):
-        # It's good practice to ensure this script aligns with the setting
-        # though python-social-auth handles the SSO part, this script creates users.
         if not getattr(settings, 'SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL', False):
             self.stdout.write(self.style.WARNING(
                 "Warning: SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL is not set to True. "
                 "This script assumes username is the full email."
             ))
 
-        for user_data in USERS_TO_PREREGISTER:
-            email = user_data['email'].strip() # Ensure no leading/trailing whitespace
+        users_to_preregister = self.get_users_from_secrets_manager()
+
+        if users_to_preregister is None:
+            self.stderr.write(self.style.ERROR("Failed to retrieve or parse user data from Secrets Manager. Aborting."))
+            return
+
+        if not users_to_preregister:
+            self.stdout.write(self.style.SUCCESS("No users found in the Secrets Manager list to pre-register."))
+            return
+
+
+        for user_data in users_to_preregister:
+            email = user_data.get('email', '').strip()
             if not email:
                 self.stderr.write(self.style.ERROR("Skipping entry with empty email."))
                 continue
 
-            # Since SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True, username MUST be the email
             username = email
             first_name = user_data.get('first_name', '')
             last_name = user_data.get('last_name', '')
@@ -36,47 +98,36 @@ class Command(BaseCommand):
 
             user = None
             try:
-                # Primary way to find an existing user should now be by email,
-                # as this is unique and what SSO will likely use to link.
-                user = User.objects.get(email__iexact=email) # Case-insensitive email look
+                user = User.objects.get(email__iexact=email)
                 self.stdout.write(self.style.SUCCESS(f"Found existing user by email: {email} (Username: {user.username})"))
 
-                # Sanity check/fix: If user found by email, ensure their username is also the email
                 if user.username != username:
                     self.stdout.write(self.style.WARNING(
                         f"User {email} found, but username '{user.username}' is not email. "
                         f"Attempting to update username to '{username}'."
                     ))
-                    # Check if the target username (the email) is already taken by another user
                     if User.objects.filter(username__iexact=username).exclude(pk=user.pk).exists():
                         self.stderr.write(self.style.ERROR(
                             f"Cannot update username for {email} to '{username}' because another user already has that username. Please resolve manually."
                         ))
-                        # Skip role assignment for this user or handle as error
                         continue
                     else:
                         user.username = username
-                        # user.save() # Save username change here or with role updates
 
             except User.DoesNotExist:
-                self.stdout.write(f"User with email {email} not found. Attempting to find by potential username '{username}' (which should be the email).")
+                self.stdout.write(f"User with email {email} not found. Attempting to find by username '{username}'.")
                 try:
-                    # Fallback: Check if user exists with the username (which should be the email)
-                    # This handles cases where email might not have been unique before, but username was.
                     user = User.objects.get(username__iexact=username)
                     self.stdout.write(self.style.SUCCESS(f"Found existing user by username: {username}"))
-                    # Ensure their email is also correct if found this way
                     if user.email.lower() != email.lower():
                          self.stdout.write(self.style.WARNING(
-                            f"User {username} found, but email '{user.email}' differs from target '{email}'. "
-                            f"Updating email."
+                            f"User {username} found, but email '{user.email}' differs from target '{email}'. Updating email."
                         ))
-                         user.email = email # Standardize email
-                         # user.save() # Save email change here or with role updates
-
+                         user.email = email
                 except User.DoesNotExist:
                     self.stdout.write(f"User {username} (email: {email}) does not exist. Creating new user.")
                     try:
+                        # Use create_user from the User model's manager
                         user = User.objects.create_user(
                             username=username,
                             email=email,
@@ -84,23 +135,21 @@ class Command(BaseCommand):
                             last_name=last_name
                         )
                         user.set_unusable_password() # SSO will handle auth
+                        # user.is_active = True # create_user usually sets this by default
                         self.stdout.write(self.style.SUCCESS(f"Successfully created user: {username}"))
                     except Exception as e:
                         self.stderr.write(self.style.ERROR(f"Error creating user {username}: {e}"))
-                        continue # Skip to next user in list
-
+                        continue
             except User.MultipleObjectsReturned:
                 self.stderr.write(self.style.ERROR(
                     f"Multiple users found with email {email}. This should not happen. Please clean up duplicates manually."
                 ))
-                continue # Skip to next user in list
+                continue
             except Exception as e:
                  self.stderr.write(self.style.ERROR(f"An unexpected error occurred looking for user {email}: {e}"))
                  continue
 
-
             if user:
-                # Update details if necessary (optional)
                 update_needed = False
                 if user.first_name != first_name:
                     user.first_name = first_name
@@ -109,41 +158,25 @@ class Command(BaseCommand):
                     user.last_name = last_name
                     update_needed = True
                 if not user.is_staff: # All Wagtail admin users need is_staff
-                    user.is_staff = True
+                    user.is_staff = True # Set is_staff to True for Wagtail admin access
                     update_needed = True
 
                 if update_needed:
                     self.stdout.write(f"Updating details for user {username}.")
-                
-                # Assign/update roles (groups)
-                self.assign_groups(user, role_names) # Your existing assign_groups function
-                user.save() # Save all changes (username, email, names, roles)
+
+                self.assign_groups(user, role_names)
+                user.save()
 
     def assign_groups(self, user, role_names):
-        # (Your existing assign_groups function from previous examples)
-        # Ensure it clears existing groups if that's the desired behavior,
-        # or just adds new ones.
-        # Example:
-        # user.groups.clear() # If you want these to be the *only* roles
         current_group_names = set(user.groups.values_list('name', flat=True))
         target_group_names = set(role_names)
 
+        # Add user to groups they are not yet in
         groups_to_add = target_group_names - current_group_names
-        groups_to_remove = current_group_names - target_group_names # Only if you want to enforce exact match
-
         for role_name in groups_to_add:
             try:
                 group = Group.objects.get(name=role_name)
                 user.groups.add(group)
                 self.stdout.write(f"Added user {user.username} to group {role_name}")
             except Group.DoesNotExist:
-                self.stderr.write(self.style.ERROR(f"Group '{role_name}' does not exist."))
-        
-        # Optional: remove groups user shouldn't be in anymore
-        # for role_name in groups_to_remove:
-        #     try:
-        #         group = Group.objects.get(name=role_name)
-        #         user.groups.remove(group)
-        #         self.stdout.write(f"Removed user {user.username} from group {role_name}")
-        #     except Group.DoesNotExist: # Should not happen if it was in current_group_names
-        #         pass
+                self.stderr.write(self.style.ERROR(f"Group '{role_name}' does not exist. Please create it first."))
