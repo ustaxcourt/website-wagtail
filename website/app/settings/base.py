@@ -130,7 +130,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_uid',         # Gets the unique ID from the provider
     'social_core.pipeline.social_auth.auth_allowed',       # Checks if authentication is allowed (e.g., whitelists)
     'social_core.pipeline.social_auth.social_user',        # Tries to find a SocialAuth entry for this uid and load the associated user
-    'website.settings.pipeline.associate_existing_user_by_email',
+    'website.app.settings.pipeline.associate_existing_user_by_email',
     'social_core.pipeline.user.get_username',              # Gets a username for new users (respects SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL)
                                                            # If associate_existing_user_by_email returned a user, this step might be skipped or adapt.
     'social_core.pipeline.user.create_user',               # Creates a new user *if no user was found or returned by previous steps*
