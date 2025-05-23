@@ -43,6 +43,26 @@ EOT
         }
       },
       {
+        type   = "log"
+        x      = 0
+        y      = 12
+        width  = 24
+        height = 6
+        properties = {
+          region      = "us-east-1"
+          title       = "404 Not Found Errors"
+          view        = "table"
+          stacked     = false
+          query       = <<EOT
+SOURCE '${aws_cloudwatch_log_group.ecs_log_group.name}'
+| filter status_code = 404
+| fields @timestamp, status_code, message, path
+| sort @timestamp desc
+| limit 40
+EOT
+        }
+      },
+      {
         type   = "metric"
         x      = 0
         y      = 18
@@ -59,6 +79,7 @@ EOT
           period = 300
         }
       },
+
       {
         type   = "metric"
         x      = 12
