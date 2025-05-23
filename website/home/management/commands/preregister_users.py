@@ -11,7 +11,6 @@ User = get_user_model()
 # This should be a key within the 'website_secrets' JSON (local or AWS).
 # Fetch this from Django settings for better configurability.
 USERS_LIST_SECRET_KEY = "USERS_TO_PREREGISTER"
-# getattr(settings, 'PREREGISTER_USERS_SECRET_KEY', 'USERS_TO_PREREGISTER_LIST')
 
 class Command(BaseCommand):
     help = 'Pre-registers users from secrets (via utility) and assigns them to Wagtail/Django groups.'
@@ -32,9 +31,6 @@ class Command(BaseCommand):
                 ))
                 return None
 
-            # IMPORTANT: Your current utility might return a generated password (string)
-            # if the key is not found. This is problematic.
-            # We need to ensure we get a list.
             if isinstance(users_data_or_json_string, str):
                 # If it's a string, try to parse it as JSON.
                 # This handles the case where the secret value is stored as a JSON string.
@@ -98,7 +94,6 @@ class Command(BaseCommand):
             return
 
         for user_data in users_to_preregister:
-            # ... (rest of your user processing logic remains the same) ...
             # Ensure user_data is a dictionary as expected by the rest of the script
             if not isinstance(user_data, dict):
                 self.stderr.write(self.style.WARNING(f"Skipping non-dictionary item in user list: {user_data}"))
@@ -133,7 +128,6 @@ class Command(BaseCommand):
                         user.username = username
 
             except User.DoesNotExist:
-                # self.stdout.write(f"User with email {email} not found. Attempting to find by username '{username}'.") # Less verbose
                 try:
                     user = User.objects.get(username__iexact=username)
                     self.stdout.write(self.style.SUCCESS(f"Found existing user by username: {username}"))
@@ -170,7 +164,7 @@ class Command(BaseCommand):
                 if user.first_name != first_name or user.last_name != last_name or not user.is_staff:
                     user.first_name = first_name
                     user.last_name = last_name
-                    user.is_staff = True # Ensure staff status for Wagtail/Django admin
+                    user.is_staff = True
                     update_needed = True
 
                 if update_needed:
