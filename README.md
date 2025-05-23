@@ -127,7 +127,7 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 ## Adding users to sandbox during deployment (Optional)
 
-If you would like to pre-load your users so that they can login seamlessly with SSO, add a secret to website-secrets in AWS. The secret must be named "USERS_TO_PREREGISTER", and include the below JSON with details filled in. Note that there are two groups, Editor and Moderator, and you can use Admin to give superuser status. 
+If you would like to pre-load your users so that they can login seamlessly with SSO, add a secret to website-secrets in AWS. The secret must be named "USERS_TO_PREREGISTER", and include the below JSON with details filled in. Note that there are two groups, Editor and Moderator, and you can use Admin to give superuser status.
 
 `
 [
