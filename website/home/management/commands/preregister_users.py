@@ -7,9 +7,6 @@ from home.utils.secrets import get_secret_from_aws
 
 User = get_user_model()
 
-# Define the key name used within your secrets utility to fetch the user list.
-# This should be a key within the 'website_secrets' JSON (local or AWS).
-# Fetch this from Django settings for better configurability.
 USERS_LIST_SECRET_KEY = "USERS_TO_PREREGISTER"
 
 class Command(BaseCommand):
@@ -21,8 +18,6 @@ class Command(BaseCommand):
         """
         self.stdout.write(f"Attempting to retrieve user list using secret key: '{USERS_LIST_SECRET_KEY}'")
         try:
-            # This 'users_data' is expected to be the list of user dictionaries,
-            # or a JSON string representation of it.
             users_data_or_json_string = get_secret_from_aws(USERS_LIST_SECRET_KEY)
 
             if users_data_or_json_string is None:
@@ -32,8 +27,6 @@ class Command(BaseCommand):
                 return None
 
             if isinstance(users_data_or_json_string, str):
-                # If it's a string, try to parse it as JSON.
-                # This handles the case where the secret value is stored as a JSON string.
                 try:
                     users_data = json.loads(users_data_or_json_string)
                 except json.JSONDecodeError as e:
@@ -47,7 +40,7 @@ class Command(BaseCommand):
                     ))
                     return None
             elif isinstance(users_data_or_json_string, list):
-                users_data = users_data_or_json_string # It's already a list
+                users_data = users_data_or_json_string
             else:
                 self.stderr.write(self.style.ERROR(
                     f"Expected a list or JSON string for '{USERS_LIST_SECRET_KEY}', "
@@ -64,7 +57,7 @@ class Command(BaseCommand):
 
             return users_data
 
-        except RuntimeError as e: # Catching RuntimeError from your utility
+        except RuntimeError as e:
             self.stderr.write(self.style.ERROR(f"Runtime error from secrets utility: {e}"))
             return None
         except Exception as e:
