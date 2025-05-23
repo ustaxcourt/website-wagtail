@@ -199,7 +199,7 @@ class Command(BaseCommand):
         target_group_names = set(role_names)
 
         groups_to_add = target_group_names - current_group_names
-        for role_name in groups_to_add.filter(group__iexact="admin"):
+        for role_name in groups_to_add:
             try:
                 group = Group.objects.get(name=role_name)
                 user.groups.add(group)
