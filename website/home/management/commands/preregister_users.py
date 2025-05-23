@@ -109,6 +109,29 @@ class Command(BaseCommand):
             last_name = user_data.get('last_name', '')
             role_names = user_data.get('role_names', [])
 
+            make_superuser = False
+            # Check if "Admin" is specified as a role, case-insensitively
+            # We'll make a copy of role_names to modify if "Admin" is just a flag
+            # and not an actual group you want to try and assign.
+            processed_role_names = []
+            for role_name in role_names:
+                if role_name.lower() == 'admin':
+                    make_superuser = True
+                    self.stdout.write(self.style.SUCCESS(f"User {email} flagged as superuser ('Admin' role found)."))
+                    # Optionally, if "Admin" is *only* a flag and not a real group name you use:
+                    # continue # This would skip adding "Admin" to processed_role_names
+                # processed_role_names.append(role_name) # Use this if "Admin" might also be a real group
+
+            # For simplicity, let's assume if "Admin" is specified, it means superuser,
+            # and we won't try to assign them to a group named "Admin" unless it explicitly exists
+            # and you want superusers to also be in it for some reason.
+            # If an "Admin" group does NOT exist, assign_groups will print an error for it, which is fine.
+            # Superuser status will grant access anyway.
+            # Alternatively, filter 'Admin' out of role_names if it's purely a superuser flag:
+            final_role_names_for_groups = [r for r in role_names if r.lower() != 'admin']
+            # If you want to keep 'Admin' and try to assign it as a group too (even if user is superuser):
+            # final_role_names_for_groups = role_names
+
             user = None
             try:
                 user = User.objects.get(email__iexact=email)
@@ -166,6 +189,26 @@ class Command(BaseCommand):
                     user.last_name = last_name
                     user.is_staff = True
                     update_needed = True
+
+                # Handle superuser status
+                if make_superuser:
+                    if not user.is_superuser:
+                        user.is_superuser = True
+                        update_needed = True
+                        self.stdout.write(f"Made {user.username} a superuser.")
+                    if not user.is_staff: # Superusers must be staff
+                        user.is_staff = True
+                        update_needed = True
+
+                elif not user.is_staff: # Ensure non-superusers who might be admins are staff
+                    # If any role implies needing admin access, they should be staff.
+                    # For Wagtail, anyone in Editors/Moderators (or your custom admin groups) needs this.
+                    # You might want to make this conditional based on role_names if not all roles need staff access.
+                    # For now, if not a superuser being made, we'll make them staff if they have any roles assigned,
+                    # as Wagtail groups usually imply staff access.
+                    if final_role_names_for_groups: # Only make staff if they are being put into groups
+                        user.is_staff = True
+                        update_needed = True
 
                 if update_needed:
                     self.stdout.write(f"Updating details for user {username}.")
