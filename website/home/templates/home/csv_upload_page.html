@@ -21,7 +21,7 @@
                         </thead>
                         <tbody>
                             {% for row in csv_data.rows %}
-                                <tr>
+                                <tr scope="row">
                                     {% for cell in row %}<td style="padding: 0.5rem; padding-left: 0.5rem;">{{ cell }}</td>{% endfor %}
                                 </tr>
                             {% endfor %}
