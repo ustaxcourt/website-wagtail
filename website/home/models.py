@@ -14,7 +14,7 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 from wagtail.models import Orderable
-from datetime import date
+from datetime import date, datetime
 
 from wagtail.fields import StreamField
 from wagtail import blocks
@@ -1552,8 +1552,17 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
             if block.block_type == "press_releases":
                 for release in block.value:
                     release_date = release.get("release_date")
+                    # Normalize release_date to `date` type
+                    release_date = (
+                        release_date.date()
+                        if isinstance(release_date, datetime)
+                        else release_date
+                    )
                     if release_date:
                         year = release_date.year
+                        release[
+                            "release_date"
+                        ] = release_date  # Ensure it stays consistent
                         grouped[year].append(release)
 
                         # Track for duplication prevention
@@ -1574,7 +1583,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
 
         # Step 2: Add homepage entries, only if not duplicate
         persisted_entries = HomePageEntry.objects.filter(
-            persist_to_press_releases=True, end_date__lt=date.today()
+            persist_to_press_releases=True, end_date__lt=timezone.now()
         ).order_by("-end_date")
 
         for entry in persisted_entries:
@@ -1590,11 +1599,12 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                 continue
 
             if not is_duplicate:
-                year = entry.end_date.year if entry.end_date else "Unknown"
+                release_date = entry.end_date.date() if entry.end_date else None
+                year = release_date.year if release_date else "Unknown"
                 grouped[year].append(
                     {
                         "is_homepage_entry": True,
-                        "release_date": entry.end_date,
+                        "release_date": release_date,
                         "id": entry.id,
                         "title": entry.title,
                         "body": entry.body,
