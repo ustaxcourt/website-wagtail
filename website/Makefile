@@ -107,3 +107,6 @@ collectstatic:
 
 preregisterusers:
 	. $(VENV) && python manage.py preregister_users
+
+preregistersuperusers:
+	. $(VENV) && python manage.py preregister_superusers
