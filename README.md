@@ -129,9 +129,7 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 You may pre-load your users so that they can login seamlessly with SSO, either as superusers or within an existing group (at time of writing, Editors or Moderators). There are sample values below for each secret. Save to website-secrets in the target environment prior to deployment.
 
-Note that the script for preregiserting users will not strip superuser status if user already exists. However, it will strip existing groups that are no longer applicable to a user listed in the secret as of the current deployment.
-
-When a user is added for the first time by these scripts, there is no name data associated. That information is updated once the user logs in using SSO for the first time.
+When a user is added for the first time by these scripts, there is no name data associated. That information is updated once the user logs in using SSO for the first time. Note that the script for preregistering users will update roles for existing users listed in the secret and remove any existing superuser status. If the user is also listed in the superuser secret, they will retain any roles applied when they are promoted to superuser.
 
 SUPERUSERS_TO_PREREGISTER:
 `
