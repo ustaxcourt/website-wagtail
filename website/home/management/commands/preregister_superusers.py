@@ -20,7 +20,9 @@ class Command(BaseCommand):
             f"Attempting to retrieve superuser list using secret key: '{SUPERUSERS_LIST_SECRET_KEY}'"
         )
         try:
-            superusers_data_or_json_string = get_secret_from_aws(SUPERUSERS_LIST_SECRET_KEY)
+            superusers_data_or_json_string = get_secret_from_aws(
+                SUPERUSERS_LIST_SECRET_KEY
+            )
 
             if superusers_data_or_json_string is None:
                 self.stderr.write(
@@ -179,7 +181,7 @@ class Command(BaseCommand):
                             username=username,
                             email=email,
                             first_name="",  # Set to null, will be updated by SSO
-                            last_name="",   # Set to null, will be updated by SSO
+                            last_name="",  # Set to null, will be updated by SSO
                         )
                         user.set_unusable_password()
                         self.stdout.write(
@@ -227,5 +229,6 @@ class Command(BaseCommand):
                     self.stdout.write(f"Updating details for user {username}.")
                     user.save()
                 else:
-                    self.stdout.write(f"User {username} is already a superuser with null first/last name. No update needed.")
-                    
+                    self.stdout.write(
+                        f"User {username} is already a superuser with null first/last name. No update needed."
+                    )

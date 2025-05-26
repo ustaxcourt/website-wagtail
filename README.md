@@ -127,14 +127,32 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 ## Adding users to sandbox during deployment (Optional)
 
-If you would like to pre-load your users so that they can login seamlessly with SSO, add a secret to website-secrets in AWS. The secret must be named "USERS_TO_PREREGISTER", and include the below JSON with details filled in. Note that there are two groups, Editor and Moderator, and you can use Admin to give superuser status.
+You may pre-load your users so that they can login seamlessly with SSO, either as superusers or within an existing group (at time of writing, Editors or Moderators). There are sample values below for each secret. Save to website-secrets in the target environment prior to deployment.
 
+Note that the script for preregiserting users will not strip superuser status if user already exists. However, it will strip existing groups that are no longer applicable to a user listed in the secret as of the current deployment.
+
+When a user is added for the first time by these scripts, there is no name data associated. That information is updated once the user logs in using SSO for the first time.
+
+SUPERUSERS_TO_PREREGISTER:
 `
 [
-  {"email": "user@example.com", "first_name": "Jane", "last_name": "Doe", "role_names": ["Admin"]},
-  {"email": "anotheruser@example.com", "first_name": "John", "last_name": "Doe", "role_names": ["Editor"]},
-  {"email": "thirduser@example.com", "first_name": "Jim", "last_name": "Doe", "role_names": ["Moderator"]},
+  "superuser1@example.com",
+  "superuser2@example.com"
 ]
+`
+
+USERS_TO_PREREGISTER:
+`
+{
+  "Editors": [
+    "editor1@example.com",
+    "john.doe@example.com"
+  ],
+  "Moderators": [
+    "moderator_a@example.com",
+    "editor1@example.com"
+  ]
+}
 `
 
 ## Deploying to your Sandbox

@@ -7,7 +7,9 @@ from home.utils.secrets import get_secret_from_aws
 
 User = get_user_model()
 
-USERS_ROLES_SECRET_KEY = "USERS_TO_PREREGISTER" # Renamed for clarity with the new structure
+USERS_ROLES_SECRET_KEY = (
+    "USERS_TO_PREREGISTER"  # Renamed for clarity with the new structure
+)
 
 
 class Command(BaseCommand):
@@ -115,10 +117,16 @@ class Command(BaseCommand):
         consolidated_users = {}
         for role_name, emails in users_roles_data.items():
             if not isinstance(role_name, str) or not role_name.strip():
-                self.stderr.write(self.style.WARNING(f"Skipping invalid role name: {role_name}"))
+                self.stderr.write(
+                    self.style.WARNING(f"Skipping invalid role name: {role_name}")
+                )
                 continue
             if not isinstance(emails, list):
-                self.stderr.write(self.style.WARNING(f"Skipping role '{role_name}' as its value is not a list of emails."))
+                self.stderr.write(
+                    self.style.WARNING(
+                        f"Skipping role '{role_name}' as its value is not a list of emails."
+                    )
+                )
                 continue
 
             for email_entry in emails:
@@ -132,17 +140,22 @@ class Command(BaseCommand):
 
                 email = email_entry.strip().lower()
                 if not email:
-                    self.stderr.write(self.style.ERROR(f"Skipping empty email entry found for role '{role_name}'."))
+                    self.stderr.write(
+                        self.style.ERROR(
+                            f"Skipping empty email entry found for role '{role_name}'."
+                        )
+                    )
                     continue
 
                 if email not in consolidated_users:
                     consolidated_users[email] = {"roles": set()}
                 consolidated_users[email]["roles"].add(role_name.strip())
 
-
         for email, user_data in consolidated_users.items():
             username = email
-            roles_for_user = list(user_data["roles"]) # Convert set to list for consistent iteration
+            roles_for_user = list(
+                user_data["roles"]
+            )  # Convert set to list for consistent iteration
 
             user = None
             try:
@@ -198,7 +211,7 @@ class Command(BaseCommand):
                             username=username,
                             email=email,
                             first_name="",  # Set to null for SSO
-                            last_name="",   # Set to null for SSO
+                            last_name="",  # Set to null for SSO
                         )
                         user.set_unusable_password()
                         self.stdout.write(
@@ -242,8 +255,11 @@ class Command(BaseCommand):
                 # The script won't unset is_superuser if it's already True.
                 # If you need to explicitly demote, that would require more logic.
                 if user.is_superuser:
-                    self.stdout.write(self.style.WARNING(f"User {user.username} is a superuser. This script will not alter their superuser status."))
-
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f"User {user.username} is a superuser. This script will not alter their superuser status."
+                        )
+                    )
 
                 if update_needed:
                     self.stdout.write(f"Updating details for user {username}.")
@@ -251,13 +267,14 @@ class Command(BaseCommand):
 
                 self.assign_groups(user, roles_for_user)
 
-
     def assign_groups(self, user, role_names):
         current_group_names = set(user.groups.values_list("name", flat=True))
         target_group_names = set(role_names)
 
         groups_to_add = target_group_names - current_group_names
-        groups_to_remove = current_group_names - target_group_names # Remove groups not in the target list
+        groups_to_remove = (
+            current_group_names - target_group_names
+        )  # Remove groups not in the target list
 
         for role_name in groups_to_add:
             try:
@@ -270,12 +287,14 @@ class Command(BaseCommand):
                         f"Group '{role_name}' does not exist. Please create it first."
                     )
                 )
-        
+
         for role_name in groups_to_remove:
             try:
                 group = Group.objects.get(name=role_name)
                 user.groups.remove(group)
-                self.stdout.write(f"Removed user {user.username} from group {role_name}")
+                self.stdout.write(
+                    f"Removed user {user.username} from group {role_name}"
+                )
             except Group.DoesNotExist:
                 # This should ideally not happen if it was in current_group_names, but as a safeguard:
                 self.stderr.write(
