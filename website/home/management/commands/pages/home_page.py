@@ -98,8 +98,8 @@ class HomePageInitializer(PageInitializer):
             body=(
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
             ),
-            start_date=datetime(2024, 12, 31).date(),
-            end_date=datetime(2025, 1, 1).date(),
+            start_date=datetime(2024, 12, 31, 6, 0),  # Example: 6 AM EST
+            end_date=datetime(2025, 1, 1, 23, 59),  # Example: 11.59 PM EST
             persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
@@ -108,8 +108,8 @@ class HomePageInitializer(PageInitializer):
             body=(
                 "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
             ),
-            start_date=datetime(2024, 12, 1).date(),
-            end_date=datetime(2024, 12, 25).date(),
+            start_date=datetime(2024, 12, 1, 6, 0),
+            end_date=datetime(2024, 12, 25, 23, 59),
             persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
@@ -118,7 +118,7 @@ class HomePageInitializer(PageInitializer):
             body=(
                 'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
             ),
-            start_date=datetime(2025, 4, 14).date(),
+            start_date=datetime(2025, 4, 14, 6, 0),
             end_date=None,
             persist_to_press_releases=True,
         )
@@ -128,7 +128,7 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
             ),
-            start_date=datetime(2025, 4, 29).date(),
+            start_date=datetime(2025, 4, 29, 6, 0),
             end_date=None,
             persist_to_press_releases=True,
         )
@@ -138,7 +138,7 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04162025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
             ),
-            start_date=datetime(2025, 4, 14).date(),
+            start_date=datetime(2025, 4, 14, 6, 0),
             end_date=None,
             persist_to_press_releases=True,
         )
@@ -148,8 +148,8 @@ class HomePageInitializer(PageInitializer):
             body=(
                 f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
             ),
-            start_date=datetime(2025, 4, 7).date(),
-            end_date=datetime(2025, 5, 5).date(),
+            start_date=datetime(2025, 4, 7, 6, 0),
+            end_date=datetime(2025, 5, 5, 23, 59),
             persist_to_press_releases=True,
         )
         HomePageEntry.objects.create(
@@ -205,7 +205,7 @@ class HomePageInitializer(PageInitializer):
                 </br>
                 </br>
                 See the <a href="{home_docs["05052025.pdf"]}" target="_blank">Press Release</a>.""",
-                "start_date": datetime(2025, 5, 5).date(),
+                "start_date": datetime(2025, 5, 5, 6, 0),
                 "end_date": None,
                 "persist_to_press_releases": True,
             },

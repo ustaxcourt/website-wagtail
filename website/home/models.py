@@ -14,7 +14,7 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 from django.core.exceptions import ValidationError
 from wagtail.models import Orderable
-from datetime import date
+from datetime import date, datetime
 
 from wagtail.fields import StreamField
 from wagtail import blocks
@@ -762,11 +762,10 @@ class HomePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-
+        context["now"] = timezone.now()
         live_entries = HomePageEntry.objects.filter(homepage=self).filter(
-            models.Q(end_date__isnull=True) | models.Q(end_date__gte=date.today())
+            models.Q(end_date__isnull=True) | models.Q(end_date__gte=timezone.now())
         )
-
         context["entries"] = live_entries
         return context
 
@@ -791,18 +790,19 @@ class HomePageEntry(Orderable):
     title = models.CharField(max_length=2000, blank=True)
     body = RichTextField(blank=True)
     id = models.AutoField(primary_key=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
     persist_to_press_releases = models.BooleanField(default=True)
 
     def is_expired(self):
-        return self.end_date and self.end_date < date.today()
+        return self.end_date and self.end_date < timezone.now()
 
     panels = [
         FieldPanel("title"),
         FieldPanel("body"),
         FieldPanel("start_date"),
         FieldPanel("end_date"),
+        FieldPanel("persist_to_press_releases"),
     ]
 
 
@@ -1552,8 +1552,17 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
             if block.block_type == "press_releases":
                 for release in block.value:
                     release_date = release.get("release_date")
+                    # Normalize release_date to `date` type
+                    release_date = (
+                        release_date.date()
+                        if isinstance(release_date, datetime)
+                        else release_date
+                    )
                     if release_date:
                         year = release_date.year
+                        release[
+                            "release_date"
+                        ] = release_date  # Ensure it stays consistent
                         grouped[year].append(release)
 
                         # Track for duplication prevention
@@ -1574,7 +1583,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
 
         # Step 2: Add homepage entries, only if not duplicate
         persisted_entries = HomePageEntry.objects.filter(
-            persist_to_press_releases=True, end_date__lt=date.today()
+            persist_to_press_releases=True, end_date__lt=timezone.now()
         ).order_by("-end_date")
 
         for entry in persisted_entries:
@@ -1590,11 +1599,12 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                 continue
 
             if not is_duplicate:
-                year = entry.end_date.year if entry.end_date else "Unknown"
+                release_date = entry.end_date.date() if entry.end_date else None
+                year = release_date.year if release_date else "Unknown"
                 grouped[year].append(
                     {
                         "is_homepage_entry": True,
-                        "release_date": entry.end_date,
+                        "release_date": release_date,
                         "id": entry.id,
                         "title": entry.title,
                         "body": entry.body,

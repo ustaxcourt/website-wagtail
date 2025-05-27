@@ -2,6 +2,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load static %}
 {% block body_class %}template-homepage{% endblock %}
+{% load tz %}
 {% block extra_css %}
     {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
     <style>
@@ -42,21 +43,6 @@
             opacity: 1;
         }
 
-        #home-page .label {
-            margin-bottom: 0.5rem;
-            border-radius: 0;
-            background-color: green;
-            display: inline-block;
-            padding: .25em .4em;
-            font-size: 75%;
-            font-weight: bold;
-            line-height: 1;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-        }
-
     </style>
 {% endblock %}
 {% block extra_js %}
@@ -90,22 +76,20 @@
     </div>
     <div class="grid-container">
         <div class="content">
-            <div class="text-xs-left">
-                <span class="label">NOTEWORTHY</span>
-            </div>
             <div class="entries-list">
-                {% for entry in page.entries.all %}
-                    {% if entry.end_date == None or entry.end_date >= today %}
-                        <div class="entry shadow-2">
-                            {% if entry.title %}
-                                <h3>{{ entry.title }}</h3>
-                            {% else %}
-                                <br />
-                            {% endif %}
-                            <div>{{ entry.body| richtext }}</div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                    {% now "c" as current_time %}
+                        {% for entry in page.entries.all %}
+                            {% if not entry.end_date or entry.end_date|date:"c" >= current_time %}
+                                <div class="entry shadow-2">
+                                    {% if entry.title %}
+                                    <h3>{{ entry.title }}</h3>
+                                    {% else %}
+                                    <br/>
+                                    {% endif %}
+                                    <div>{{ entry.body|richtext }}</div>
+                                </div>
+                        {% endif %}
+                    {% endfor %}
             </div>
         </div>
     </div>
