@@ -63,16 +63,10 @@ class Command(BaseCommand):
         User = get_user_model()
         super_users = User.objects.filter(is_superuser=True)
         super_users_count = super_users.count()
-        if super_users_count == 1:
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Exactly one superuser found: {super_users[0].username}"
-                )
-            )
-        else:
+        if super_users_count < 1:
             self.stdout.write(
                 self.style.ERROR(
-                    f"ERROR: {super_users_count} superusers found. Exactly one expected."
+                    f"ERROR: No superusers found. Expected at least one."
                 )
             )
             RAISE_ERROR = True
