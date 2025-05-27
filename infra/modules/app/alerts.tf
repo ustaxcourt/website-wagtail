@@ -84,3 +84,35 @@ resource "aws_sns_topic_policy" "error_notifications" {
     ]
   })
 }
+
+resource "aws_cloudwatch_log_metric_filter" "rds_error_filter" {
+  name           = "${var.environment}-rds-error-filter"
+  pattern        = "{ $.level = \"ERROR\" || $.level = \"FATAL\" || $.level = \"PANIC\" }"
+  log_group_name = "/aws/rds/instance/${var.environment}-*/postgresql"
+
+  metric_transformation {
+    name      = "RDSErrorCount"
+    namespace = "RDS/PostgreSQL"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "rds_error_alarm" {
+  alarm_name          = "${var.environment}-rds-error-alarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "RDSErrorCount"
+  namespace           = "RDS/PostgreSQL"
+  period             = "3600"
+  statistic          = "Sum"
+  threshold          = "0"
+  alarm_description  = "This metric monitors for ERROR, FATAL, or PANIC level messages in RDS PostgreSQL logs"
+  alarm_actions      = [aws_sns_topic.error_notifications.arn]
+
+  lifecycle {
+    ignore_changes = [
+      period,
+      threshold
+    ]
+  }
+}
