@@ -43,21 +43,6 @@
             opacity: 1;
         }
 
-        #home-page .label {
-            margin-bottom: 0.5rem;
-            border-radius: 0;
-            background-color: green;
-            display: inline-block;
-            padding: .25em .4em;
-            font-size: 75%;
-            font-weight: bold;
-            line-height: 1;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-        }
-
     </style>
 {% endblock %}
 {% block extra_js %}
@@ -91,9 +76,6 @@
     </div>
     <div class="grid-container">
         <div class="content">
-            <div class="text-xs-left">
-                <span class="label">NOTEWORTHY</span>
-            </div>
             <div class="entries-list">
                     {% now "c" as current_time %}
                         {% for entry in page.entries.all %}
