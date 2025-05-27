@@ -65,9 +65,7 @@ class Command(BaseCommand):
         super_users_count = super_users.count()
         if super_users_count < 1:
             self.stdout.write(
-                self.style.ERROR(
-                    f"ERROR: No superusers found. Expected at least one."
-                )
+                self.style.ERROR("ERROR: No superusers found. Expected at least one.")
             )
             RAISE_ERROR = True
 
