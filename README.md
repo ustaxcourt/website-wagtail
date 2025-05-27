@@ -125,6 +125,34 @@ If you want to manually refresh your token which should last 8 hours, run this c
 
 - `aws sso login --profile sandbox`
 
+## Adding users to sandbox during deployment (Optional)
+
+You may pre-load your users so that they can login seamlessly with SSO, either as superusers or within an existing group (at time of writing, Editors or Moderators). There are sample values below for each secret. Save to website-secrets in the target environment prior to deployment.
+
+When a user is added for the first time by these scripts, there is no name data associated. That information is updated once the user logs in using SSO for the first time. Note that the script for preregistering users will update roles for existing users listed in the secret and remove any existing superuser status. If the user is also listed in the superuser secret, they will retain any roles applied when they are promoted to superuser.
+
+SUPERUSERS_TO_PREREGISTER:
+`
+[
+  "superuser1@example.com",
+  "superuser2@example.com"
+]
+`
+
+USERS_TO_PREREGISTER:
+`
+{
+  "Editors": [
+    "editor1@example.com",
+    "john.doe@example.com"
+  ],
+  "Moderators": [
+    "moderator_a@example.com",
+    "editor1@example.com"
+  ]
+}
+`
+
 ## Deploying to your Sandbox
 
 If you want to deploy the application to your sandbox, follow these steps:
