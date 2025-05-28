@@ -45,8 +45,8 @@ chief_judge_2020_docs = [
 
 chief_judge_2019_docs = [
     {"title": "12/19/2019 - TC-19-90003", "document": "TC-19-90003.pdf"},
-    {"title": "06/25/2019 - TC-19-90002", "document": "TC-19-90003.pdf"},  # Check this.
-    {"title": "02/22/2019 - TC-19-90001", "document": "TC-19-90003.pdf"},  # Check this.
+    {"title": "06/25/2019 - TC-19-90002", "document": "TC-19-90002.pdf"},
+    {"title": "02/22/2019 - TC-19-90001", "document": "TC-19-90001.pdf"},
 ]
 
 chief_judge_2018_docs = [
@@ -73,6 +73,10 @@ chief_judge_2017_docs = [
     {"title": "06/01/2017 - TC-17-90004", "document": "TC-17-90004.pdf"},
 ]
 
+council_2025_docs = [
+    {"title": "02/20/2025 - TC-24-90008", "document": "TC-24-90008.pdf"},
+]
+
 council_2024_docs = [
     {"title": "08/16/2024 - TC-24-90001-1", "document": "TC-24-90001-JCDC-1.pdf"},
     {"title": "08/16/2024 - TC-24-90001-2", "document": "TC-24-90001-JCDC-2.pdf"},
@@ -83,8 +87,8 @@ council_2020_docs = [
 ]
 
 council_2019_docs = [
-    {"title": "12/18/2019 - TC-17-90014", "document": "TC-19-90003.pdf"},
-    {"title": "07/02/2019 - TC-17-90002", "document": "TC-19-90003.pdf"},
+    {"title": "12/18/2019 - TC-17-90014", "document": "TC-17-90014.pdf"},
+    {"title": "07/02/2019 - TC-17-90002", "document": "TC-17-90002.pdf"},
 ]
 
 council_2018_docs = [
@@ -264,6 +268,17 @@ class JCDPOrdersIssuedStartPageInitializer(PageInitializer):
             {
                 "type": "h2",
                 "value": "Judicial Conduct and Disability Council:",
+            },
+            {"type": "hr", "value": True},
+            {
+                "type": "h3",
+                "value": "2025",
+            },
+            {
+                "type": "links",
+                "value": {
+                    "links": self.load_order_docs(council_2025_docs),
+                },
             },
             {"type": "hr", "value": True},
             {
