@@ -72,6 +72,7 @@ urlpatterns = [
         name="robots_file",
     ),
     path("django-admin/", admin.site.urls),
+    path('admin-tools/role-switcher/', include('app.role_switcher.urls')), # Or your app's urls, adjust path as desired
     path("admin/", include(wagtailadmin_urls)),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
