@@ -7,8 +7,6 @@ from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from django.core.exceptions import ValidationError
-from wagtail.models import DraftStateMixin, RevisionMixin
-from wagtail.admin.panels import PublishingPanel
 
 
 import logging
@@ -20,7 +18,7 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 
 @register_snippet
-class JudgeProfile(DraftStateMixin, RevisionMixin, models.Model):
+class JudgeProfile(models.Model):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255)
@@ -53,7 +51,6 @@ class JudgeProfile(DraftStateMixin, RevisionMixin, models.Model):
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
-        PublishingPanel(),
     ]
 
     class Meta:
@@ -249,7 +246,7 @@ class JudgeCollection(ClusterableModel):
 
 
 @register_snippet
-class JudgeRole(DraftStateMixin, RevisionMixin, models.Model):
+class JudgeRole(models.Model):
     role_name = models.CharField(
         max_length=255,
         unique=True,
@@ -267,7 +264,6 @@ class JudgeRole(DraftStateMixin, RevisionMixin, models.Model):
     panels = [
         FieldPanel("role_name"),
         FieldPanel("judge"),
-        PublishingPanel(),
     ]
 
     def clean(self):
