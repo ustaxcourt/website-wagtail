@@ -106,7 +106,7 @@ jobs:
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
-          export DATABASE_URL="postgresql://master:testing@localhost:5432/postgres"
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           # run migration and other commands
           make migrate
           make superuser settings="app.settings.${ENVIRONMENT}"|| echo "user already exists, skipping"
