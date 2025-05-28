@@ -40,7 +40,7 @@ import re
 import os
 
 
-from home.common_models.judges import (
+from home.models.judges import (
     JudgeCollection,  # noqa: F401
     JudgeProfile,
     JudgeRole,
