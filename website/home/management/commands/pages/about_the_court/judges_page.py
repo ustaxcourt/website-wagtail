@@ -492,8 +492,25 @@ class JudgesPageInitializer(PageInitializer):
         try:
             _ = Page.objects.get(slug=self.slug)
             logger.info(f"Updating existing page '{self.slug}'.")
+            self.update_judge_roles_and_profiles()
         except Page.DoesNotExist:
             logger.info(f"Page '{self.slug}' does not exist.")
+            return
+
+    def update_judge_roles_and_profiles(self):
+        # Find the current judge with chief judge role
+        chief_judge_role = JudgeRole.objects.filter(role_name="Chief Judge").first()
+        if chief_judge_role:
+            current_chief_judge_profile = chief_judge_role.judge
+        else:
+            current_chief_judge_profile = None
+
+        # Proceed only if the chief judge last name is "Kerrigan"
+        if (
+            not current_chief_judge_profile
+            or current_chief_judge_profile.last_name != "Kerrigan"
+        ):
+            logger.info("Chief Judge update is complete. No update performed.")
             return
 
         current_chief_judge_profile = JudgeProfile.objects.filter(
