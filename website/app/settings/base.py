@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
-    "app.role_switcher"
+    "app.role_switcher",
 ]
 
 MIDDLEWARE = [
@@ -107,7 +107,7 @@ TEMPLATES = [
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
                 "social_django.context_processors.backends",
-                "social_django.context_processors.login_redirect"
+                "social_django.context_processors.login_redirect",
             ],
         },
     },

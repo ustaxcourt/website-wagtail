@@ -10,15 +10,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@hooks.register('register_settings_menu_item') # Or 'register_admin_menu_item' for a top-level item
+@hooks.register(
+    "register_settings_menu_item"
+)  # Or 'register_admin_menu_item' for a top-level item
 def register_role_switcher_menu_item():
     return MenuItem(
-        _('Switch Role (Testing)'),
-        reverse('switch_role'),
-        icon_name='user', # Choose an appropriate icon
-        order=1000, # Adjust order as needed
-        classname='icon icon-user' # Ensure icon_name matches if you use this
+        _("Switch Role (Testing)"),
+        reverse("switch_role"),
+        icon_name="user",  # Choose an appropriate icon
+        order=1000,  # Adjust order as needed
+        classname="icon icon-user",  # Ensure icon_name matches if you use this
     )
+
 
 @hooks.register("before_delete_snippet")
 def prevent_navigation_menu_deletion(request, instances):
