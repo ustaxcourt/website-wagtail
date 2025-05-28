@@ -27,6 +27,7 @@ from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
 from wagtail.models import PreviewableMixin
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
+from django.utils import timezone
 from django.http import Http404
 from wagtail.blocks import RawHTMLBlock
 from wagtail.blocks import DateBlock
