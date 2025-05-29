@@ -1,14 +1,8 @@
-from django import forms
-from django.conf import settings
 from django.db import models
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
-from wagtail.contrib.settings.models import (
-    BaseGenericSetting,
-    register_setting,
-)
 from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
@@ -46,41 +40,25 @@ from home.models.judges import (
     JudgeRole,
 )
 
+from home.models.settings import (
+    Footer,  # noqa: F401
+    GoogleAnalyticsSettings,  # noqa: F401
+)
+
+from home.models.config import IconCategories
+
+from home.models.snippets import (
+    NavigationRibbon,  # noqa: F401
+    NavigationRibbonLink,  # noqa: F401
+    CommonText,  # noqa: F401
+)
+
 logger = logging.getLogger(__name__)
 
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
 ]
-
-
-@register_setting
-class Footer(BaseGenericSetting):
-    technicalQuestions = RichTextField(
-        blank=True, help_text="Content for technical questions."
-    )
-    otherQuestions = RichTextField(blank=True, help_text="Content for other questions.")
-
-    content_panels = Page.content_panels + [
-        FieldPanel("technicalQuestions"),
-        FieldPanel("otherQuestions"),
-    ]
-
-
-@register_setting
-class GoogleAnalyticsSettings(BaseGenericSetting):
-    tracking_id = models.CharField(
-        max_length=20,
-        help_text="Google Analytics Measurement ID (e.g., G-1234567890)",
-        default=settings.GOOGLE_ANALYTICS_ID,
-    )
-
-    panels = [
-        FieldPanel(
-            "tracking_id",
-            widget=forms.TextInput(attrs={"value": settings.GOOGLE_ANALYTICS_ID}),
-        ),
-    ]
 
 
 class IndentStyle(models.TextChoices):
@@ -98,27 +76,6 @@ LIST_TYPE_BLOCK = blocks.ChoiceBlock(
 )
 
 
-class IconCategories(models.TextChoices):
-    NONE = ("",)
-    BOOK = "fa-solid fa-book"
-    BUILDING_BANK = "fa-solid fa-building-columns"
-    CALENDAR_MONTH = "fa-solid fa-calendar"
-    CHEVRON_RIGHT = "fa-solid fa-chevron-right"
-    FILE = "fa-solid fa-file"
-    HAMMER = "fa-solid fa-gavel"
-    INFO = "fa-solid fa-circle-info"
-    CHECK = "fa-solid fa-check"
-    LINK = "fa-solid fa-link"
-    EXCLAMATION_MARK = "fa-solid fa-exclamation"
-    PDF = "fa-solid fa-file-pdf"
-    SCALE = "fa-solid fa-scale-balanced"
-    USER = "fa-solid fa-user"
-    VIDEO = "fa-solid fa-video"
-    SETTINGS = "fa-solid fa-gear"
-    BRIEFCASE = "fa-solid fa-briefcase"
-    SEARCH = "fa-solid fa-magnifying-glass"
-
-
 class StandardPage(Page):
     class Meta:
         abstract = False
@@ -126,50 +83,6 @@ class StandardPage(Page):
     body = RichTextField(blank=True, help_text="Insert text here.")
 
     content_panels = Page.content_panels + [FieldPanel("body")]
-
-
-class NavigationRibbonLink(models.Model):
-    title = models.CharField(max_length=255)
-    icon = models.CharField(max_length=200, choices=IconCategories.choices)
-    url = models.CharField(max_length=1000)
-
-    navigation_ribbon = ParentalKey(
-        "NavigationRibbon", related_name="links", on_delete=models.CASCADE
-    )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("icon"),
-        FieldPanel("url"),
-    ]
-
-
-@register_snippet
-class NavigationRibbon(ClusterableModel):
-    name = models.CharField(max_length=255)
-
-    panels = [
-        InlinePanel("links", label="Links"),  # Now properly references the ParentalKey
-    ]
-
-    def __str__(self):
-        return self.name
-
-
-@register_snippet
-class CommonText(models.Model):
-    name = models.CharField(
-        max_length=255, help_text="Name of the text snippet", blank=False
-    )
-    text = RichTextField(help_text="HTML Rich text content", blank=False)
-
-    panels = [
-        FieldPanel("name"),
-        FieldPanel("text"),
-    ]
-
-    def __str__(self):
-        return self.name
 
 
 class PhotoDedicationBlock(blocks.StructBlock):
