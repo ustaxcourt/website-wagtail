@@ -96,6 +96,26 @@ EOT
           title  = "Log Size"
           period = 300
         }
+      },
+      {
+        type   = "log"
+        x      = 0
+        y      = 24
+        width  = 24
+        height = 6
+        properties = {
+          region      = "us-east-1"
+          title       = "RDS Error Logs"
+          view        = "table"
+          stacked     = false
+          query       = <<EOT
+SOURCE '/aws/rds/instance/${aws_db_instance.default.identifier}/postgresql'
+| filter @message like /ERROR|FATAL|PANIC/
+| fields @timestamp, @message
+| sort @timestamp desc
+| limit 40
+EOT
+        }
       }
     ]
   })
