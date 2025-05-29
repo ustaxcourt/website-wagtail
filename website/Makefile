@@ -69,6 +69,9 @@ resetdb: rmdb rmmedia makemigrations migrate superuser createpages
 
 reset: setup resetdb
 
+updateindex:
+	. $(VENV) && python manage.py update_index
+
 run:
 	. $(VENV) && python manage.py runserver
 
