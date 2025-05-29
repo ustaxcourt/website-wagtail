@@ -14,6 +14,35 @@
         width: 70px;
     }
 
+    header#top-navigation .search-form {
+        display: flex;
+        gap: 8px;
+        margin: 0 20px;
+    }
+
+    header#top-navigation .search-form input {
+        padding: 8px 12px;
+        border: 1px solid var(--light-blue);
+        border-radius: 4px;
+        min-width: 200px;
+    }
+
+    header#top-navigation .search-form button {
+        background-color: var(--light-blue);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    header#top-navigation .search-form button:hover {
+        background-color: var(--dark-blue);
+    }
+
     header#top-navigation .navigation {
         border: solid var(--light-blue);
         background-color: #f2f4f4;
@@ -171,7 +200,27 @@
 
     @media (max-width: 639px) {
         header#top-navigation .blue-banner {
-            height: 80px;
+            height: auto;
+            padding: 10px 0;
+        }
+
+        header#top-navigation .usa-header__inner {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        header#top-navigation .search-form {
+            margin: 10px 0;
+            width: 100%;
+            order: 2;
+        }
+
+        header#top-navigation .search-form input {
+            flex: 1;
+        }
+
+        header#top-navigation .dawson-link {
+            order: 3;
         }
     }
 
@@ -294,7 +343,18 @@
                          src="{% static 'images/header/logo.webp' %}"
                          alt="US Tax Court Logo" />
                 </a>
-                <a href="https://dawson.ustaxcourt.gov/">
+                <form class="search-form" action="/search/" method="get">
+                    <input type="text"
+                           name="query"
+                           placeholder="Search..."
+                           aria-label="Search"
+                           data-testid="search-input">
+                    <button type="submit" data-testid="search-button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Search
+                    </button>
+                </form>
+                <a href="https://dawson.ustaxcourt.gov/" class="dawson-link">
                     <img class="dawson"
                          src="{% static 'images/header/dawson.webp' %}"
                          alt="Dawson Logo" />

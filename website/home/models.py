@@ -39,6 +39,7 @@ import logging
 import re
 import os
 
+from wagtail.search import index
 
 from home.common_models.judges import (
     JudgeCollection,  # noqa: F401
@@ -126,6 +127,22 @@ class StandardPage(Page):
     body = RichTextField(blank=True, help_text="Insert text here.")
 
     content_panels = Page.content_panels + [FieldPanel("body")]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
+    ]
+
+    @property
+    def search_snippet(self):
+        if hasattr(self, "body"):
+            body = getattr(self, "body")
+            if hasattr(body, "stream_data") or hasattr(body, "blocks"):
+                return extract_text_from_streamfield(body)
+            elif isinstance(body, str):
+                return strip_tags(body)[:300]
+        if hasattr(self, "intro"):
+            return strip_tags(getattr(self, "intro"))[:300]
+        return ""
 
 
 class NavigationRibbonLink(models.Model):
@@ -525,9 +542,14 @@ class EnhancedStandardPage(Page):
         ],
         blank=True,
     )
+
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
     ]
 
 
@@ -570,6 +592,10 @@ class JudgeIndex(RoutablePageMixin, Page):
         FieldPanel("body"),
     ]
 
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
+    ]
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         # Get all judge collections
@@ -605,6 +631,10 @@ class HomePage(Page):
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries"),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("intro"),
     ]
 
     def get_context(self, request):
@@ -1142,6 +1172,10 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
         FieldPanel("raw_html_body"),
     ]
 
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("raw_html_body"),
+    ]
+
     class Meta:
         verbose_name = "Enhanced Raw HTML Page"
 
@@ -1202,6 +1236,10 @@ class DirectoryIndex(Page):
         FieldPanel("body"),
     ]
 
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
+    ]
+
 
 class JudgesRecruiting(EnhancedStandardPage):
     judges_recruiting = StreamField(
@@ -1260,6 +1298,10 @@ class JudgesRecruiting(EnhancedStandardPage):
         FieldPanel("judges_recruiting"),
     ]
 
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("judges_recruiting"),
+    ]
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         today = date.today()
@@ -1286,6 +1328,10 @@ class CSVUploadPage(EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("csv_file"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("csv_file"),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -1376,6 +1422,10 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("press_release_body"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("press_release_body"),
     ]
 
     @route("archives/")
@@ -1522,6 +1572,11 @@ class ReleaseNotes(EnhancedStandardPage):
         FieldPanel("release_entries"),
     ]
 
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("paragraph"),
+        index.SearchField("release_entries"),
+    ]
+
     class Meta:
         verbose_name = "Release Notes"
         verbose_name_plural = "Release Notes"
@@ -1541,6 +1596,10 @@ class InternshipPrograms(EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("internship_programs"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("internship_programs"),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -1610,3 +1669,41 @@ class PlacesOfTrialPage(Page):
         FieldPanel("body"),
         FieldPanel("places_of_trial"),
     ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
+        index.SearchField("places_of_trial"),
+    ]
+
+
+def extract_text_from_streamfield(stream_value, max_length=300):
+    """
+    Recursively extract text from a StreamField value.
+    """
+    if not stream_value:
+        return ""
+    text = []
+    for block in stream_value:
+        value = block.value
+        if hasattr(value, "stream_data") or hasattr(
+            value, "blocks"
+        ):  # Nested StreamBlock
+            text.append(extract_text_from_streamfield(value, max_length))
+        elif hasattr(value, "source"):  # RichTextBlock
+            text.append(str(value.source))
+        elif isinstance(value, str):
+            text.append(value)
+        elif isinstance(value, dict):
+            for v in value.values():
+                if (
+                    hasattr(v, "stream_data")
+                    or hasattr(v, "blocks")
+                    or isinstance(v, list)
+                ):
+                    text.append(extract_text_from_streamfield(v, max_length))
+                elif isinstance(v, str):
+                    text.append(v)
+        elif isinstance(value, list):
+            text.append(extract_text_from_streamfield(value, max_length))
+    combined = strip_tags(" ".join(text))
+    return combined[:max_length]
