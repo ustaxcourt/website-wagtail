@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags %}
+{% load static wagtailcore_tags wagtailsearchpromotions_tags %}
 
 {% block body_class %}template-searchresults{% endblock %}
 
@@ -152,6 +152,51 @@
             padding: 14px 8px;
         }
     }
+    #search-page .promoted-results {
+        margin-top: 40px;
+        padding-top: 32px;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    #search-page .promoted-results h2 {
+        font-size: 1.5rem;
+        color: var(--dark-blue, #003366);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    #search-page .promoted-results .promoted-card {
+        background: #fff;
+        border: 2px solid var(--light-blue, #0071bc);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 20px 24px;
+        transition: box-shadow 0.2s;
+    }
+
+    #search-page .promoted-results .promoted-card:hover {
+        box-shadow: 0 4px 16px 0 rgba(0,113,188,0.10);
+    }
+
+    #search-page .promoted-results .promoted-card h4 {
+        margin: 0 0 8px 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    #search-page .promoted-results .promoted-card h4 a {
+        color: var(--link-blue, #0071bc);
+        text-decoration: none;
+    }
+
+    #search-page .promoted-results .promoted-card h4 a:hover {
+        text-decoration: underline;
+    }
+
+    #search-page .promoted-results .promoted-card .desc {
+        color: #333;
+        font-size: 1rem;
+    }
 </style>
 
 <div id="search-page">
@@ -194,6 +239,30 @@
             <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
             {% endif %}
         </div>
+
+        {% get_search_promotions search_query as search_promotions %}
+        {% if search_promotions %}
+        <div class="promoted-results">
+            <h2>Promoted Results</h2>
+            <ul class="results-list">
+                {% for search_promotion in search_promotions %}
+                    <li class="promoted-card">
+                        {% if search_promotion.page %}
+                            <h4><a href="{% pageurl search_promotion.page %}">{{ search_promotion.page.title }}</a></h4>
+                            {% if search_promotion.description %}
+                                <div class="desc">{{ search_promotion.description }}</div>
+                            {% endif %}
+                        {% else %}
+                            <h4><a href="{{ search_promotion.external_link_url }}">{{ search_promotion.external_link_text }}</a></h4>
+                            {% if search_promotion.description %}
+                                <div class="desc">{{ search_promotion.description }}</div>
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     {% elif search_query %}
         <div class="no-results">No results found</div>
     {% endif %}

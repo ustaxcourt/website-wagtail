@@ -4,6 +4,7 @@ from django.utils.html import strip_tags
 
 from wagtail.models import Page
 from wagtail.blocks import StreamValue
+from wagtail.contrib.search_promotions.models import Query
 
 # To enable logging of search queries for use with the "Promoted search results" module
 # <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
@@ -78,6 +79,10 @@ def search(request):
     # Search
     if search_query:
         search_results = Page.objects.live().search(search_query)
+
+        query = Query.get(search_query)
+        query.add_hit()
+
         # Add search snippets to results
         for result in search_results:
             result.search_snippet = get_search_snippet(result)
