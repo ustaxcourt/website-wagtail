@@ -16,8 +16,7 @@ def associate_existing_user_by_email(
 
     email = details.get("email")
     if not email:
-        if not email:
-            return None
+        return None
 
     # Try to find an existing user with the same email (case-insensitive)
     try:
