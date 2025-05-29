@@ -87,7 +87,7 @@ resource "aws_sns_topic_policy" "error_notifications" {
 
 resource "aws_cloudwatch_log_metric_filter" "rds_error_filter" {
   name           = "${var.environment}-rds-error-filter"
-  pattern        = "{ $.level = \"ERROR\" || $.level = \"FATAL\" || $.level = \"PANIC\" }"
+  pattern        = "ERROR: || FATAL: || PANIC:"
   log_group_name = "/aws/rds/instance/${aws_db_instance.default.identifier}/postgresql"
 
   metric_transformation {

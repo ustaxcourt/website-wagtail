@@ -21,6 +21,8 @@ terraform apply -target=module.app.aws_security_group.bastion_sg -auto-approve
 
 echo "Bastion Security Group update applied."
 
+BASTION_HOST_IP=$(terraform output -raw bastion_public_ip)
+
 mkdir -p .ssh
 echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
 chmod 600 .ssh/id_rsa
