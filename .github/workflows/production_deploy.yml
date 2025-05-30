@@ -135,6 +135,7 @@ jobs:
           make migrate
           make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make createpages settings="app.settings.${ENVIRONMENT}"
+          make updateindex
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:

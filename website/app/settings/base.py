@@ -34,6 +34,7 @@ AUTHENTICATION_BACKENDS = [
 
 INSTALLED_APPS = [
     "home",
+    "search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
+    "wagtail.contrib.search_promotions",
     "wagtail.admin",
     "wagtail.contrib.routable_page",
     "wagtail.contrib.settings",
