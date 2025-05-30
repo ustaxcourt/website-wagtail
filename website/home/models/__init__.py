@@ -52,6 +52,10 @@ from home.models.pages.release_notes import ReleaseNotes  # noqa: F401
 from home.models.pages.internship import InternshipPrograms  # noqa: F401
 from home.models.pages.press_release import PressReleasePage  # noqa: F401
 from home.models.pages.home_page import HomePage, HomePageEntry, HomePageImage  # noqa: F401
+from home.models.pages.administrative_orders import (
+    AdministrativeOrdersPage,  # noqa: F401
+    PDFs,  # noqa: F401
+)
 
 logger = logging.getLogger(__name__)
 
@@ -360,30 +364,6 @@ class DawsonPage(StandardPage):
 
 class RedirectPage(StandardPage):
     content_panels = StandardPage.content_panels
-
-
-class PDFs(Orderable):
-    page = ParentalKey(
-        "AdministrativeOrdersPage", related_name="pdfs", on_delete=models.CASCADE
-    )
-
-    pdf = models.ForeignKey(
-        "wagtaildocs.Document",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    panels = [
-        FieldPanel("pdf"),
-    ]
-
-
-class AdministrativeOrdersPage(StandardPage):
-    content_panels = StandardPage.content_panels + [
-        InlinePanel("pdfs", label="PDFs"),
-    ]
 
 
 class VacancyAnnouncementsPage(StandardPage):
