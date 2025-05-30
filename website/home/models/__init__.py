@@ -56,7 +56,9 @@ from home.models.snippets.common import CommonText  # noqa: F401
 
 from home.models.pages.standard import StandardPage
 
-from home.models._blocks.photo_dedication import PhotoDedicationBlock
+from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
+
+from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock
 
 logger = logging.getLogger(__name__)
 
@@ -71,139 +73,7 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
-LIST_TYPE_CHOICES = [
-    ("ordered", "Ordered List"),
-    ("unordered", "Unordered List"),
-]
-
-LIST_TYPE_BLOCK = blocks.ChoiceBlock(
-    choices=LIST_TYPE_CHOICES, required=False, default="ordered"
-)
-
-
-link_obj = blocks.ListBlock(
-    blocks.StructBlock(
-        [
-            ("title", blocks.CharBlock()),
-            (
-                "icon",
-                blocks.ChoiceBlock(
-                    choices=[
-                        (
-                            icon.value,
-                            icon.name.replace("_", " ").title(),
-                        )
-                        for icon in IconCategories
-                    ],
-                    required=False,
-                ),
-            ),
-            (
-                "document",
-                DocumentChooserBlock(required=False),
-            ),
-            (
-                "video",
-                DocumentChooserBlock(required=False),
-            ),
-            ("url", blocks.CharBlock(required=False)),
-            (
-                "text_only",
-                blocks.BooleanBlock(required=False),
-            ),
-        ]
-    )
-)
-
-
-class CommonBlock(blocks.StreamBlock):
-    h2 = blocks.CharBlock(label="Heading 2")
-    h3 = blocks.CharBlock(label="Heading 3")
-    hr = blocks.BooleanBlock(
-        label="Horizontal Rule",
-        default=True,
-        help_text="Add Horizontal Rule.",
-    )
-    h2WithAnchorTag = blocks.StructBlock(
-        [
-            ("text", blocks.CharBlock()),
-            ("anchortag", blocks.CharBlock(required=False)),
-        ],
-        label="Heading 2 with Anchor Tag",
-        help_text="Heading 2 with optional anchor tag for linking",
-    )
-    clickableButton = blocks.StructBlock(
-        [
-            ("text", blocks.CharBlock()),
-            ("url", blocks.CharBlock(required=False)),
-        ],
-        label="Clickable Button",
-    )
-    links = blocks.StructBlock(
-        [
-            (
-                "class",
-                blocks.ChoiceBlock(
-                    choices=[
-                        ("indented", "Indented"),
-                        ("unindented", "Unindented"),
-                    ],
-                    default="indented",
-                ),
-            ),
-            # Reuse your link_obj here
-            ("links", link_obj),
-        ],
-        label="Links",
-    )
-
-
-class ColumnBlock(blocks.StructBlock):
-    column = blocks.ListBlock(CommonBlock())
-
-
-def create_nested_list_block(max_depth=5, current_depth=1):
-    """
-    Creates a nested list block structure with configurable depth.
-
-    Args:
-        max_depth (int): Maximum nesting depth allowed (default: 4)
-        current_depth (int): Current depth in the recursion (used internally)
-
-    Returns:
-        blocks.StructBlock: A Wagtail block structure for nested lists
-    """
-    # Base structure that's common at all levels
-    list_item_blocks = [
-        ("text", blocks.RichTextBlock(required=False)),
-        ("image", ImageBlock(required=False)),
-    ]
-
-    # Add nested_list field if we haven't reached max depth
-    if current_depth < max_depth:
-        list_item_blocks.append(
-            (
-                "nested_list",
-                blocks.ListBlock(
-                    create_nested_list_block(max_depth, current_depth + 1),
-                    default=[],
-                ),
-            )
-        )
-
-    return blocks.StructBlock(
-        [
-            ("list_type", LIST_TYPE_BLOCK),
-            (
-                "items",
-                blocks.ListBlock(
-                    blocks.StructBlock(list_item_blocks, required=False),
-                    default=[],
-                ),
-            ),
-        ],
-        required=False,
-    )
+from home.models.custom_blocks.nested_list import create_nested_list_block  # noqa: E402
 
 
 class ButtonBlock(blocks.StructBlock):
@@ -224,7 +94,7 @@ class ButtonBlock(blocks.StructBlock):
         label = "Button"
 
 
-from home.models._blocks.alert_message import AlertMessageBlock  # noqa: E402
+from home.models.custom_blocks.alert_message import AlertMessageBlock  # noqa: E402
 
 
 class EnhancedStandardPage(Page):
