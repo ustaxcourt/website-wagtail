@@ -2,7 +2,6 @@ from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel
-from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 from home.models.config import IconCategories
 
@@ -29,22 +28,6 @@ class NavigationRibbon(ClusterableModel):
 
     panels = [
         InlinePanel("links", label="Links"),  # Now properly references the ParentalKey
-    ]
-
-    def __str__(self):
-        return self.name
-
-
-@register_snippet
-class CommonText(models.Model):
-    name = models.CharField(
-        max_length=255, help_text="Name of the text snippet", blank=False
-    )
-    text = RichTextField(help_text="HTML Rich text content", blank=False)
-
-    panels = [
-        FieldPanel("name"),
-        FieldPanel("text"),
     ]
 
     def __str__(self):

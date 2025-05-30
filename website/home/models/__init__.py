@@ -47,11 +47,14 @@ from home.models.settings import (
 
 from home.models.config import IconCategories
 
-from home.models.snippets import (
+from home.models.snippets.navigation import (
     NavigationRibbon,  # noqa: F401
     NavigationRibbonLink,  # noqa: F401
-    CommonText,  # noqa: F401
 )
+
+from home.models.snippets.common import CommonText  # noqa: F401
+
+from home.models.pages.standard import StandardPage
 
 logger = logging.getLogger(__name__)
 
@@ -74,15 +77,6 @@ LIST_TYPE_CHOICES = [
 LIST_TYPE_BLOCK = blocks.ChoiceBlock(
     choices=LIST_TYPE_CHOICES, required=False, default="ordered"
 )
-
-
-class StandardPage(Page):
-    class Meta:
-        abstract = False
-
-    body = RichTextField(blank=True, help_text="Insert text here.")
-
-    content_panels = Page.content_panels + [FieldPanel("body")]
 
 
 class PhotoDedicationBlock(blocks.StructBlock):
