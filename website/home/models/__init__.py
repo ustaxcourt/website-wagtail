@@ -56,6 +56,8 @@ from home.models.snippets.common import CommonText  # noqa: F401
 
 from home.models.pages.standard import StandardPage
 
+from home.models._blocks.photo_dedication import PhotoDedicationBlock
+
 logger = logging.getLogger(__name__)
 
 
@@ -77,26 +79,6 @@ LIST_TYPE_CHOICES = [
 LIST_TYPE_BLOCK = blocks.ChoiceBlock(
     choices=LIST_TYPE_CHOICES, required=False, default="ordered"
 )
-
-
-class PhotoDedicationBlock(blocks.StructBlock):
-    title = blocks.CharBlock(max_length=255, required=True)
-    photo = ImageBlock(
-        required=False, help_text="Upload an image to display with this dedication"
-    )
-    paragraph_text = blocks.RichTextBlock(
-        required=False,
-        help_text="Add the main paragraph text for the dedication section",
-    )
-    alt_text = blocks.CharBlock(
-        required=False,
-        max_length=255,
-        help_text="Provide alternative text for the image for accessibility.",
-    )
-
-    class Meta:
-        icon = "image"
-        label = "Photo Dedication"
 
 
 link_obj = blocks.ListBlock(
@@ -242,12 +224,7 @@ class ButtonBlock(blocks.StructBlock):
         label = "Button"
 
 
-class AlertMessageBlock(blocks.StructBlock):
-    message = blocks.RichTextBlock(features=["bold", "italic", "link"])
-
-    class Meta:
-        icon = "warning"
-        label = "Alert Message"
+from home.models._blocks.alert_message import AlertMessageBlock  # noqa: E402
 
 
 class EnhancedStandardPage(Page):
