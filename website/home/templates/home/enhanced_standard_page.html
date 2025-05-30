@@ -140,12 +140,35 @@
             gap: 20px;
         }
 
-        .enhanced-page #video-container .video-container iframe {
-            border: none;
-            width: 640px;
-            height: 360px;
-            border-width: 2px;
-            border-style: inset;
+        .enhanced-page #video-container .video-desc-block .video-wrapper {
+            position: relative;
+            padding-bottom: 27.75%;
+            padding-left: 14%;
+            height: 0;
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .enhanced-page #video-container .video-desc-block .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            .video-wrapper {
+                padding-bottom: 56.25% !important;
+            }
+
+            .enhanced-page #video-container .video-wrapper iframe {
+                width: 297px !important;
+                height: 100% !important;
+            }
         }
 
         .enhanced-page #video-container .description-block {
@@ -228,6 +251,7 @@
         }
 
         @media (max-width: 768px) {
+
             .enhanced-page .enhanced-table.usa-table--stacked tr,
             .enhanced-page .usa-table--stacked-header tr {
                 border-bottom: 0px;
@@ -328,6 +352,13 @@
                 grid-template-columns: 1fr;
             }
 
+            .enhanced-page .dedication .dedication-image {
+                width: 100%;
+                height: auto;
+                display: inline-block;
+                margin-bottom: 21px;
+            }
+
             .enhanced-page .dedication .dedication-text blockquote {
                 margin: 15px;
             }
@@ -338,22 +369,13 @@
                 gap: 10px;
             }
 
-            .enhanced-page #video-container .video-container iframe {
-                width: 280px;
-                height: 250px;
-                margin-left: -15px;
-            }
 
             .enhanced-page #video-container .description-block {
                 margin-left: -38px;
             }
 
             .enhanced-page #video-container .description-block p {
-                margin-left: 28px;
-            }
-
-            .enhanced-page #video-container .description-block blockquote {
-                margin: 15px;
+                margin-top: 30px;
             }
         }
 
@@ -426,8 +448,7 @@
                         {% if block.value.id %}id="{{ block.value.id }}"{% endif %}
                         >
                         {% if block.value.id %}
-                            <a href="#{{ block.value.id }}"
-                               title="{{ block.value.text }}">
+                            <a href="#{{ block.value.id }}" title="{{ block.value.text }}">
                                 <div class="fa-solid fa-bookmark bookmark" id="{{ block.value.id }}"></div>
                             </a>
                         {% endif %}
@@ -497,8 +518,8 @@
                     <div id="video-container">
                         <h2>{{ block.value.title }}</h2>
                         <div class="video-desc-block">
-                            <div class="video-container">
-                                <iframe title="Victor Lundy:Sculptor of Space"
+                            <div class="video-wrapper">
+                                <iframe title="Victor Lundy:Sculptor of Space" aria-label="Watch on YouTube"
                                         src="{{ block.value.video_url }}"
                                         allowfullscreen></iframe>
                             </div>

@@ -42,12 +42,6 @@ body = [
                     "document": None,
                     "url": "/fees-and-charges",
                 },
-                {
-                    "title": "Judicial Conduct and Disability Procedures",
-                    "icon": None,
-                    "document": None,
-                    "url": "/jcdp",
-                },
             ],
         },
     },
@@ -77,6 +71,22 @@ body = [
                     "document": None,
                     "url": "/rules-comments",
                 },
+            ],
+        },
+    },
+    {"type": "hr", "value": True},
+    {"type": "h2", "value": "Judicial Conduct and Disability Procedures"},
+    {
+        "type": "links",
+        "value": {
+            "class": "with-bullets",
+            "links": [
+                {
+                    "title": "Judicial Conduct and Disability Procedures",
+                    "icon": None,
+                    "document": None,
+                    "url": "/jcdp",
+                }
             ],
         },
     },
