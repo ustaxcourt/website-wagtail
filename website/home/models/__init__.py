@@ -57,9 +57,8 @@ from home.models.pages.vacancy_announcements import (
     VacancyAnnouncementsPage,  # noqa: F401
     VacancyEntry,  # noqa: F401
 )
-from home.models.pages.judges_recruiting import (
-    JudgesRecruiting,  # noqa: F401
-)
+from home.models.pages.judges_recruiting import JudgesRecruiting  # noqa: F401
+
 
 logger = logging.getLogger(__name__)
 
