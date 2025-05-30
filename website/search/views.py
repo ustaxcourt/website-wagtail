@@ -13,6 +13,8 @@ from wagtail.contrib.search_promotions.models import Query
 
 # from wagtail.contrib.search_promotions.models import Query
 
+filter_out_pages_by_title = ["Press Releases & News"]
+
 
 def extract_text_from_streamfield(stream_value, max_length=300):
     """
@@ -23,7 +25,22 @@ def extract_text_from_streamfield(stream_value, max_length=300):
     text = []
     for block in stream_value:
         value = block.value
-        if hasattr(value, "stream_data") or hasattr(
+        if block.block_type == "questionanswers":
+            for qa in value:
+                if isinstance(qa, dict):
+                    if "question" in qa:
+                        text.append(qa["question"])
+                    if "answer" in qa:
+                        if isinstance(qa["answer"], str):
+                            text.append(qa["answer"])
+                        elif (
+                            isinstance(qa["answer"], dict)
+                            and "rich_text" in qa["answer"]
+                        ):
+                            text.append(str(qa["answer"]["rich_text"].source))
+                        elif hasattr(qa["answer"], "source"):
+                            text.append(str(qa["answer"].source))
+        elif hasattr(value, "stream_data") or hasattr(
             value, "blocks"
         ):  # Nested StreamBlock
             text.append(extract_text_from_streamfield(value, max_length))
@@ -32,7 +49,7 @@ def extract_text_from_streamfield(stream_value, max_length=300):
         elif isinstance(value, str):
             text.append(value)
         elif isinstance(value, dict):
-            for v in value.values():
+            for k, v in value.items():
                 if (
                     hasattr(v, "stream_data")
                     or hasattr(v, "blocks")
@@ -58,10 +75,10 @@ def get_search_snippet(page):
     if hasattr(specific_page, "body"):
         body = getattr(specific_page, "body")
 
-        # Handle StreamValue directly
-        if isinstance(body, StreamValue):
+        if hasattr(specific_page, "release_entries"):
+            return strip_tags(specific_page.release_entries)
+        elif isinstance(body, StreamValue):
             return extract_text_from_streamfield(body)
-        # Handle other cases
         elif hasattr(body, "stream_data") or hasattr(body, "blocks"):
             return extract_text_from_streamfield(body)
         elif isinstance(body, str):
@@ -82,6 +99,12 @@ def search(request):
 
         query = Query.get(search_query)
         query.add_hit()
+
+        search_results = [
+            result
+            for result in search_results
+            if result.title not in filter_out_pages_by_title
+        ]
 
         # Add search snippets to results
         for result in search_results:
