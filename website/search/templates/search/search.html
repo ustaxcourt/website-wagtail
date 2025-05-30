@@ -217,7 +217,11 @@
         <ul class="results-list">
             {% for result in search_results %}
             <li class="result-card">
-                <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+                {% if result.url %}
+                    <h4><a href="{{ result.url }}">{{ result.title }}</a></h4>
+                {% else %}
+                    <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+                {% endif %}
                 {% if result.search_snippet %}
                     <div class="desc">{{ result.search_snippet|striptags|truncatechars:200 }}</div>
                 {% elif result.search_description and result.search_description != result.title %}

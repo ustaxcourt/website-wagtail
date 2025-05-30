@@ -6,6 +6,9 @@ from wagtail.models import Page
 from wagtail.blocks import StreamValue
 from wagtail.contrib.search_promotions.models import Query
 
+from home.common_models.judges import JudgeProfile
+from django.db.models import Q
+
 # To enable logging of search queries for use with the "Promoted search results" module
 # <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
 # uncomment the following line and the lines indicated in the search function
@@ -96,19 +99,39 @@ def search(request):
     # Search
     if search_query:
         search_results = Page.objects.live().search(search_query)
-
+        judge_results = JudgeProfile.objects.filter(
+            Q(first_name__icontains=search_query)
+            | Q(last_name__icontains=search_query)
+            | Q(display_name__icontains=search_query)
+        )
         query = Query.get(search_query)
         query.add_hit()
 
+        # Filter out unwanted pages
         search_results = [
             result
             for result in search_results
             if result.title not in filter_out_pages_by_title
         ]
 
-        # Add search snippets to results
+        # Add search snippets to page results
         for result in search_results:
             result.search_snippet = get_search_snippet(result)
+
+        # Convert judge results to a compatible format
+        for judge in judge_results:
+            # Create a mock page-like object for the judge
+            judge_page = type(
+                "JudgePage",
+                (),
+                {
+                    "title": judge.display_name
+                    or f"{judge.first_name} {judge.last_name}",
+                    "search_snippet": f"Judge {judge.display_name or f'{judge.first_name} {judge.last_name}'}",
+                    "url": "/judges/",
+                },
+            )
+            search_results.append(judge_page)
 
     else:
         search_results = Page.objects.none()
