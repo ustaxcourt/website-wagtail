@@ -5,10 +5,6 @@ from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
-
-from wagtail.fields import StreamField
-from wagtail import blocks
-from wagtail.blocks import RawHTMLBlock
 import logging
 
 
@@ -34,7 +30,7 @@ from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock  # n
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock  # noqa: F401
 from home.models.custom_blocks.alert_message import AlertMessageBlock  # noqa: F401
 from home.models.custom_blocks.button import ButtonBlock  # noqa: F401
-from home.models.pages.enhanced_standard import EnhancedStandardPage
+from home.models.pages.enhanced_standard import EnhancedStandardPage  # noqa: F401
 from home.models.pages.enhanced_standard import IndentStyle  # noqa: F401
 from home.models.pages.trial import PlacesOfTrialPage  # noqa: F401
 from home.models.pages.pamphlet import PamphletsPage, PamphletEntry  # noqa: F401
@@ -58,6 +54,7 @@ from home.models.pages.vacancy_announcements import (
     VacancyEntry,  # noqa: F401
 )
 from home.models.pages.judges_recruiting import JudgesRecruiting  # noqa: F401
+from home.models.pages.enhanced_raw_html import EnhancedRawHTMLPage  # noqa: F401
 
 
 logger = logging.getLogger(__name__)
@@ -266,55 +263,3 @@ class DawsonPage(StandardPage):
 
 class RedirectPage(StandardPage):
     content_panels = StandardPage.content_panels
-
-
-class EnhancedRawHTMLPage(EnhancedStandardPage):
-    """
-    A specialized page type that allows embedding raw HTML.
-    """
-
-    template = "home/enhanced_standard_page.html"
-
-    raw_html_body = StreamField(
-        [
-            ("raw_html", RawHTMLBlock(label="Raw HTML")),
-            (
-                "questionanswers",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("question", blocks.CharBlock(required=False)),
-                            (
-                                "answer",
-                                blocks.StructBlock(
-                                    [
-                                        (
-                                            "rich_text",
-                                            blocks.RichTextBlock(required=False),
-                                        ),
-                                        (
-                                            "html_block",
-                                            blocks.RawHTMLBlock(required=False),
-                                        ),
-                                    ],
-                                    required=False,
-                                ),
-                            ),
-                            ("anchortag", blocks.CharBlock(required=False)),
-                        ]
-                    ),
-                    label="Question and Answer",
-                    help_text="Add a question and answer with anchor tag for linking",
-                ),
-            ),
-        ],
-        blank=True,
-        use_json_field=True,
-    )
-
-    content_panels = EnhancedStandardPage.content_panels + [
-        FieldPanel("raw_html_body"),
-    ]
-
-    class Meta:
-        verbose_name = "Enhanced Raw HTML Page"
