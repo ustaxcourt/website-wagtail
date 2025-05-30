@@ -3,21 +3,30 @@
 <style>
     header#top-navigation .blue-banner {
         background-color: var(--dark-blue);
-        height: 116px;
     }
 
     header#top-navigation .blue-banner .dawson {
         width: 60px;
+        flex-shrink: 0;
+        flex-grow: 0;
     }
 
     header#top-navigation .logo-seal {
         width: 70px;
     }
 
-    header#top-navigation .search-form {
+    header#top-navigation #desktop-search-form {
         display: flex;
         gap: 8px;
         margin: 0 20px;
+    }
+
+    header#top-navigation #mobile-search-form {
+        display: none;
+    }
+
+    header#top-navigation .dawson-link {
+        flex-shrink: 0;
     }
 
     header#top-navigation .search-form input {
@@ -176,7 +185,7 @@
         }
     }
 
-    @media (min-width: 854px) and (max-width: 960px) {
+    @media (min-width: 854px) and (max-width: 1086px) {
         header#top-navigation .navigation .navigation-header .link {
             padding: 0 15px;
             font-size: 0.9rem;
@@ -199,13 +208,20 @@
     }
 
     @media (max-width: 639px) {
+        header#top-navigation #desktop-search-form {
+            display: none;
+        }
+
+        header#top-navigation #mobile-search-form {
+            display: flex;
+        }
+
         header#top-navigation .blue-banner {
             height: auto;
             padding: 10px 0;
         }
 
         header#top-navigation .usa-header__inner {
-            flex-direction: column;
             gap: 10px;
         }
 
@@ -221,6 +237,24 @@
 
         header#top-navigation .dawson-link {
             order: 3;
+        }
+    }
+
+    @media (max-width: 940px) {
+        #logo-link {
+            max-width: 400px;
+        }
+    }
+
+    @media (max-width: 830px) {
+        #logo-link {
+            max-width: 250px;
+        }
+    }
+
+    @media (max-width: 690px) {
+        #logo-link {
+            max-width: 200px;
         }
     }
 
@@ -335,7 +369,7 @@
     <div class="blue-banner">
         <div class="grid-container padding-1">
             <div class="usa-header__inner display-flex flex-justify flex-align-center">
-                <a href="/">
+                <a id="logo-link" href="/">
                     <img class="tablet:display-none logo-seal"
                          src="{% static 'images/header/logo_seal.webp' %}"
                          alt="US Tax Court Logo" />
@@ -344,7 +378,7 @@
                          alt="US Tax Court Logo" />
                 </a>
                 <div class="display-flex flex-justify flex-align-center">
-                    <form class="search-form" action="/search/" method="get">
+                    <form id="desktop-search-form" class="search-form" action="/search/" method="get">
                         <input type="text"
                             name="query"
                             placeholder="Search..."
@@ -362,6 +396,17 @@
                     </a>
                 </div>
             </div>
+            <form id="mobile-search-form" class="search-form" action="/search/" method="get">
+                <input type="text"
+                    name="query"
+                    placeholder="Search..."
+                    aria-label="Search"
+                    data-testid="search-input">
+                <button type="submit" data-testid="search-button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search
+                </button>
+            </form>
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
