@@ -58,6 +58,7 @@ from home.models.pages.case_related_forms import (
     CaseRelatedFormsEntry,  # noqa: F401
     CaseRelatedFormsPage,  # noqa: F401
 )
+from home.models.pages.directory import DirectoryIndex  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -436,37 +437,6 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
 
     class Meta:
         verbose_name = "Enhanced Raw HTML Page"
-
-
-class DirectoryColumnBlock(CommonBlock):
-    JudgeCollection = judge_snippet  # noqa: F811
-    DirectoryEntry = blocks.ListBlock(
-        blocks.StructBlock(
-            [
-                ("description", blocks.RichTextBlock()),
-                ("phone_number", blocks.CharBlock()),
-            ]
-        )
-    )
-
-
-class DirectoryIndex(Page):
-    template = "home/enhanced_standard_page.html"
-    max_count = 1
-
-    body = StreamField(
-        [
-            ("directory", DirectoryColumnBlock()),
-        ],
-        blank=True,
-        use_json_field=True,
-        help_text="Directory entries or judge profiles",
-    )
-
-    content_panels = [
-        FieldPanel("title"),
-        FieldPanel("body"),
-    ]
 
 
 class JudgesRecruiting(EnhancedStandardPage):
