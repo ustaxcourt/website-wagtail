@@ -56,6 +56,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.enhanced_standard import IndentStyle  # noqa: F401
 from home.models.pages.trial import PlacesOfTrialPage  # noqa: F401
 from home.models.pages.pamphlet import PamphletsPage, PamphletEntry  # noqa: F401
+from home.models.pages.release_notes import ReleaseNotes  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -963,54 +964,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
 
     class Meta:
         verbose_name = "Press Release Page"
-
-
-class ReleaseNotes(EnhancedStandardPage):
-    """
-    A page model for managing release notes with a title, paragraph, and a list of release entries.
-    """
-
-    paragraph = RichTextField(
-        blank=True, help_text="Introduction or description for the release notes"
-    )
-
-    release_entries = StreamField(
-        [
-            (
-                "release_entry",
-                blocks.StructBlock(
-                    [
-                        (
-                            "release_date",
-                            blocks.DateBlock(
-                                required=False, help_text="Date of the release"
-                            ),
-                        ),
-                        (
-                            "description",
-                            blocks.RichTextBlock(
-                                required=False,
-                                help_text="Description or details of the release",
-                            ),
-                        ),
-                    ]
-                ),
-            )
-        ],
-        blank=True,
-        use_json_field=True,
-        help_text="List of release entries with date and description",
-    )
-
-    content_panels = [
-        FieldPanel("title"),
-        FieldPanel("paragraph"),
-        FieldPanel("release_entries"),
-    ]
-
-    class Meta:
-        verbose_name = "Release Notes"
-        verbose_name_plural = "Release Notes"
 
 
 class InternshipPrograms(EnhancedStandardPage):
