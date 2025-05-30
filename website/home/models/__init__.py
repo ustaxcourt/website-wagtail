@@ -55,6 +55,7 @@ from home.models.custom_blocks.button import ButtonBlock  # noqa: F401
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.enhanced_standard import IndentStyle  # noqa: F401
 from home.models.pages.trial import PlacesOfTrialPage  # noqa: F401
+from home.models.pages.pamphlet import PamphletsPage, PamphletEntry  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -418,49 +419,6 @@ class DawsonPage(StandardPage):
 
 class RedirectPage(StandardPage):
     content_panels = StandardPage.content_panels
-
-
-class PamphletsPage(StandardPage):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    content_panels = StandardPage.content_panels + [
-        InlinePanel("entries", label="Entries"),
-    ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        entries = PamphletEntry.objects.all().order_by("-volume_number")
-        context["entries"] = entries
-        return context
-
-
-class PamphletEntry(models.Model):
-    title = models.CharField(max_length=255)
-    pdf = models.ForeignKey(
-        "wagtaildocs.Document",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-    code = models.CharField(max_length=255, blank=True)
-    date_range = models.CharField(max_length=255)
-    citation = RichTextField(blank=True)
-    volume_number = models.FloatField(default=0)
-
-    parentpage = ParentalKey(
-        "PamphletsPage", related_name="entries", on_delete=models.CASCADE
-    )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("pdf"),
-        FieldPanel("code"),
-        FieldPanel("date_range"),
-        FieldPanel("citation"),
-        FieldPanel("volume_number"),
-    ]
 
 
 class PDFs(Orderable):
