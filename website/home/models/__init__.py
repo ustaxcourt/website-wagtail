@@ -54,13 +54,9 @@ from home.models.custom_blocks.alert_message import AlertMessageBlock  # noqa: F
 from home.models.custom_blocks.button import ButtonBlock  # noqa: F401
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.enhanced_standard import IndentStyle  # noqa: F401
+from home.models.pages.trial import PlacesOfTrialPage  # noqa: F401
 
 logger = logging.getLogger(__name__)
-
-
-table_value_types = [
-    ("text", blocks.RichTextBlock()),
-]
 
 
 judge_snippet = SnippetChooserBlock(
@@ -1104,41 +1100,3 @@ class InternshipPrograms(EnhancedStandardPage):
             )
 
         return context
-
-
-class TrialCityBlock(blocks.StructBlock):
-    name = blocks.CharBlock()
-    note = blocks.TextBlock(required=False)
-    address = blocks.CharBlock(
-        required=False, help_text="Street address or location name"
-    )
-
-    class Meta:
-        icon = "home"
-        label = "Trial City"
-
-
-class TrialStateBlock(blocks.StructBlock):
-    state = blocks.CharBlock()
-    cities = blocks.ListBlock(TrialCityBlock())
-
-
-class PlacesOfTrialPage(Page):
-    places_of_trial = StreamField(
-        [("state", TrialStateBlock())],
-        use_json_field=True,
-        blank=True,
-    )
-    body = StreamField(
-        [
-            ("text", blocks.RichTextBlock()),
-            ("alert_message", AlertMessageBlock()),
-        ],
-        use_json_field=True,
-        blank=True,
-    )
-
-    content_panels = Page.content_panels + [
-        FieldPanel("body"),
-        FieldPanel("places_of_trial"),
-    ]
