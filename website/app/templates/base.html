@@ -123,5 +123,8 @@
         </button>
         {# Global javascript #}
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
+        <!--        {% if settings.ENABLE_STATUSPAGE %} #condition to show the status widget only in production  -->
+        <script type="text/javascript" src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
+        <!--        {% endif %}-->
     </body>
 </html>
