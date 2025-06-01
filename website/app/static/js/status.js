@@ -8,7 +8,7 @@
     frame.style.transition = 'left 1s ease, bottom 1s ease, right 1s ease';
 
     frame.title = 'US Tax Court Status';
-    frame.ariaHidden = true;
+    frame.ariaHidden = false;
 
     var mobile;
     if (mobile = screen.width < 450) {
@@ -30,7 +30,7 @@
 
     var actions = {
       showFrame: function() {
-        frame.tabIndex = '-1';
+        frame.tabIndex = '0';
         if (mobile) {
           frame.style.left = '0';
           frame.style.bottom = '0';
