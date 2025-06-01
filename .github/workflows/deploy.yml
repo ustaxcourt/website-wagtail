@@ -112,6 +112,7 @@ jobs:
           make superuser settings="app.settings.${ENVIRONMENT}"|| echo "user already exists, skipping"
           make resetadminpassword settings="app.settings.${ENVIRONMENT}"
           make createpages settings="app.settings.${ENVIRONMENT}"
+          make updateindex
           make preregisterusers
           make preregistersuperusers
 
