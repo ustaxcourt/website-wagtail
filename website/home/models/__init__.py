@@ -1,4 +1,4 @@
-from home.models.judges import (
+from home.models.snippets.judges import (
     JudgeCollection,  # noqa: F401
     JudgeProfile,  # noqa: F401
     JudgeRole,  # noqa: F401

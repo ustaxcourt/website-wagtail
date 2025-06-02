@@ -7,7 +7,7 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
 from django.http import Http404
 from wagtail.snippets.blocks import SnippetChooserBlock
-from home.models.judges import JudgeProfile, JudgeRole
+from home.models.snippets.judges import JudgeProfile, JudgeRole
 
 
 judge_snippet = SnippetChooserBlock(

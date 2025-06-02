@@ -1,7 +1,7 @@
 from wagtail import hooks
 from django.contrib import messages
 from .models import NavigationMenu, JudgeRole
-from .models.judges import RESTRICTED_ROLES
+from .models.snippets.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
 from django.urls import reverse
 import logging
