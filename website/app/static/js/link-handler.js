@@ -58,7 +58,7 @@ function isSamedomain(url) {
     let linkDomain;
 
     try {
-        linkDomain = new URL(url, window.location.origin).hostname;
+        linkDomain = normalize(new URL(url, window.location.origin).hostname);
     } catch (e) {
         return true;
     }
