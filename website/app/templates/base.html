@@ -124,16 +124,5 @@
         {# Global javascript #}
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
         <script type="text/javascript" src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
-        <script>
-            window.addEventListener('load', function () {
-                const interval = setInterval(() => {
-                    const iframe = document.querySelector('iframe[src*="statuspage.io/embed/frame"]');
-                    if (iframe) {
-                        iframe.removeAttribute('tabindex'); // Remove tabindex for fixing a11y
-                        clearInterval(interval);
-                    }
-                }, 500);
-            });
-        </script>
     </body>
 </html>

@@ -102,3 +102,20 @@ export function checkHeaderStyles() {
         });
     });
 }
+
+Cypress.Commands.add('fixStatusPageIframe', () => {
+    cy.window().then((win) => {
+        let attempts = 0;
+        const maxAttempts = 10;
+        const interval = setInterval(() => {
+            const iframe = win.document.querySelector('iframe[src*="statuspage.io/embed/frame"]');
+            if (iframe) {
+                iframe.removeAttribute('tabindex');
+                clearInterval(interval);
+            }
+            if (++attempts >= maxAttempts) {
+                clearInterval(interval);
+            }
+        }, 500);
+    });
+});
