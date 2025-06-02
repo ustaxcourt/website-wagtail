@@ -52,7 +52,8 @@ function getRootDomain(url) {
 }
 
 function isSamedomain(url) {
-    let currentDomain = window.location.hostname;
+    const normalize = host => host.toLowerCase().replace(/^www\./, '');
+    let currentDomain = normalize(window.location.hostname);
     let s3StaticDomainPattern = /.*ustc-website-assets\.s3\.amazonaws\.com$/;
     let linkDomain;
 
