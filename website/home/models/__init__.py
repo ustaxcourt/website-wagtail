@@ -1,7 +1,3 @@
-from wagtail.models import Page
-import logging
-
-
 from home.models.judges import (
     JudgeCollection,  # noqa: F401
     JudgeProfile,  # noqa: F401
@@ -19,7 +15,7 @@ from home.models.snippets.navigation import (
     SubNavigationLinkBlock,  # noqa: F401
 )
 from home.models.snippets.common import CommonText  # noqa: F401
-from home.models.pages.standard import StandardPage
+from home.models.pages.standard import StandardPage  # noqa: F401
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock  # noqa: F401
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock  # noqa: F401
 from home.models.custom_blocks.alert_message import AlertMessageBlock  # noqa: F401
@@ -58,14 +54,5 @@ from home.models.pages.dawson import (
     DawsonPage,  # noqa: F401
 )
 
-
-logger = logging.getLogger(__name__)
-
-
-class ExternalRedirectPage(Page):
-    class Meta:
-        abstract = False
-
-
-class RedirectPage(StandardPage):
-    content_panels = StandardPage.content_panels
+from home.models.pages.external_redirect import ExternalRedirectPage  # noqa: F401
+from home.models.pages.redirect import RedirectPage  # noqa: F401
