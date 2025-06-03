@@ -41,7 +41,8 @@ export function terminalLog(violations: Result[]): void {
 
 export function checkA11y() {
   cy.injectAxe();
-
+  // hack: tweak any statuspage.io message so it doesn't cause A11y test to fail
+  fixStatusPageIframe();
   cy.checkA11y(
     undefined,
     {
