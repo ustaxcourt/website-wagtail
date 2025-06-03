@@ -103,6 +103,8 @@ def search(request):
             Q(first_name__icontains=search_query)
             | Q(last_name__icontains=search_query)
             | Q(display_name__icontains=search_query)
+            | Q(bio__icontains=search_query)
+            | Q(chambers_telephone__icontains=search_query)
         )
         query = Query.get(search_query)
         query.add_hit()
