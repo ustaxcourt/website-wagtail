@@ -103,7 +103,7 @@ export function checkHeaderStyles() {
     });
 }
 
-Cypress.Commands.add('fixStatusPageIframe', () => {
+export function fixStatusPageIframe(): void {
     cy.window().then((win) => {
         let attempts = 0;
         const maxAttempts = 10;
@@ -112,10 +112,11 @@ Cypress.Commands.add('fixStatusPageIframe', () => {
             if (iframe) {
                 iframe.removeAttribute('tabindex');
                 clearInterval(interval);
+                return;
             }
             if (++attempts >= maxAttempts) {
                 clearInterval(interval);
             }
         }, 500);
     });
-});
+}
