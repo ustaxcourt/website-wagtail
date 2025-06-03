@@ -130,7 +130,7 @@ def search(request):
                     "title": judge.display_name
                     or f"{judge.first_name} {judge.last_name}",
                     "search_snippet": f"Judge {judge.display_name or f'{judge.first_name} {judge.last_name}'}",
-                    "url": "/judges/",
+                    "url": f"/judges/{judge.id}/{judge.last_name.lower()}",
                 },
             )
             search_results.append(judge_page)

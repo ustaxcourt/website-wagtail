@@ -214,6 +214,30 @@
         <div class="results-count">
             Found {{ search_results.paginator.count }} result{{ search_results.paginator.count|pluralize }} for "{{ search_query }}"
         </div>
+        {% get_search_promotions search_query as search_promotions %}
+        {% if search_promotions %}
+        <div class="promoted-results">
+            <h2>Promoted Results</h2>
+            <ul class="results-list">
+                {% for search_promotion in search_promotions %}
+                    <li class="promoted-card">
+                        {% if search_promotion.page %}
+                            <h4><a href="{% pageurl search_promotion.page %}">{{ search_promotion.page.title }}</a></h4>
+                            {% if search_promotion.description %}
+                                <div class="desc">{{ search_promotion.description }}</div>
+                            {% endif %}
+                        {% else %}
+                            <h4><a href="{{ search_promotion.external_link_url }}">{{ search_promotion.external_link_text }}</a></h4>
+                            {% if search_promotion.description %}
+                                <div class="desc">{{ search_promotion.description }}</div>
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <hr />
+        {% endif %}
         <ul class="results-list">
             {% for result in search_results %}
             <li class="result-card">
@@ -244,29 +268,7 @@
             {% endif %}
         </div>
 
-        {% get_search_promotions search_query as search_promotions %}
-        {% if search_promotions %}
-        <div class="promoted-results">
-            <h2>Promoted Results</h2>
-            <ul class="results-list">
-                {% for search_promotion in search_promotions %}
-                    <li class="promoted-card">
-                        {% if search_promotion.page %}
-                            <h4><a href="{% pageurl search_promotion.page %}">{{ search_promotion.page.title }}</a></h4>
-                            {% if search_promotion.description %}
-                                <div class="desc">{{ search_promotion.description }}</div>
-                            {% endif %}
-                        {% else %}
-                            <h4><a href="{{ search_promotion.external_link_url }}">{{ search_promotion.external_link_text }}</a></h4>
-                            {% if search_promotion.description %}
-                                <div class="desc">{{ search_promotion.description }}</div>
-                            {% endif %}
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+
     {% elif search_query %}
         <div class="no-results">No results found</div>
     {% endif %}
