@@ -232,6 +232,7 @@ class PamphletsPageInitializer(PageInitializer):
         )
 
         logger.info(f"Successfully created the '{title}' page.")
+        logger.info(f"Creating entries on '{title}' page...")
 
         for pamphlet_data in pamphlets_data:
             self.create_pamphlet_entry(new_page, pamphlet_data)
