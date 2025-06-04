@@ -203,10 +203,8 @@ class PamphletsPageInitializer(PageInitializer):
     def create(self):
         try:
             home_page = Page.objects.get(slug="home")
-            pamphlet_page = self.create_page_info(home_page)
+            self.create_page_info(home_page)
 
-            for pamphlet_data in pamphlets_data:
-                self.create_pamphlet_entry(pamphlet_page, pamphlet_data)
         except Page.DoesNotExist:
             logger.info("Root page does not exist.")
             return
@@ -234,7 +232,9 @@ class PamphletsPageInitializer(PageInitializer):
         )
 
         logger.info(f"Successfully created the '{title}' page.")
-        return new_page
+
+        for pamphlet_data in pamphlets_data:
+            self.create_pamphlet_entry(new_page, pamphlet_data)
 
     def create_pamphlet_entry(self, parent_page, pamphlet_data):
         try:
@@ -264,7 +264,7 @@ class PamphletsPageInitializer(PageInitializer):
                 date_range=pamphlet_data["date_range"],
                 citation=pamphlet_data["citation"],
                 volume_number=pamphlet_data["volume_number"],
-                parentpage=parent_page,
+                parentpage=parent_page.specific,
             )
             entry.save()
 
