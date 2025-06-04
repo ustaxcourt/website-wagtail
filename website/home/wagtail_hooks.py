@@ -4,6 +4,9 @@ from .models import NavigationMenu, JudgeRole
 from .common_models.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.conf import settings
+from .utils.aws_cloudfront import invalidate_cloudfront_cache
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,3 +43,39 @@ def protect_special_judge_roles(request, snippets):
                 if referer:
                     return redirect(referer)
                 return redirect(reverse("wagtailsnippets:index"))
+
+
+@hooks.register("after_edit_snippet")
+def invalidate_cloudfront_on_snippet_edit(request, instance):
+    """
+    Invalidate CloudFront cache when a snippet is saved.
+    """
+    env = getattr(settings, "ENVIRONMENT", "dev")
+    if env != "production":
+        logger.debug(f"Skipping CloudFront invalidation in {env} environment.")
+        return
+
+    distribution_id = getattr(settings, "CLOUDFRONT_DISTRIBUTION_ID", None)
+    if not distribution_id:
+        logger.error("CLOUDFRONT_DISTRIBUTION_ID not set in settings.")
+        return
+
+    snippet_type = type(instance).__name__.lower()
+    path_map = {
+        "commontext": ["/"],
+        "fancycard": ["/cards/*"],
+        "judgecollection": ["/judges/*"],
+        "judgeprofile": ["/judges/*"],
+        "judgerole": ["/judges/*"],
+        "navigationmenu": ["/nav/*"],
+        "navigationribbon": ["/nav/*"],
+        "simplecard": ["/cards/*"],
+    }
+
+    paths = path_map.get(snippet_type, ["/*"])
+
+    try:
+        invalidate_cloudfront_cache(distribution_id, paths)
+        logger.info(f"Invalidated CloudFront cache for: {paths}")
+    except Exception as e:
+        logger.error(f"Failed to invalidate CloudFront for snippet: {e}")
