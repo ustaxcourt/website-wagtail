@@ -214,7 +214,7 @@ class PamphletsPageInitializer(PageInitializer):
 
         if Page.objects.filter(slug=self.slug).exists():
             logger.info(f"- {title} page already exists.")
-            return Page.objects.get(slug=self.slug)
+            return
 
         logger.info(f"Creating the '{title}' page.")
 
