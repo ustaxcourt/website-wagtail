@@ -94,9 +94,7 @@ def protect_special_judge_roles(request, snippets):
         # Only proceed for JudgeRole snippets
         if isinstance(snippet, JudgeRole):
             if snippet.role_name in RESTRICTED_ROLES:
-                message_text = (
-                    f"""You cannot delete the role "{'", "'.join(RESTRICTED_ROLES)}" as they are required for site functionality.""",
-                )
+                message_text = f"""You cannot delete the role "{'", "'.join(RESTRICTED_ROLES)}" as they are required for site functionality."""
                 logger.info(message_text)
                 messages.error(request, message_text)
                 referer = request.META.get("HTTP_REFERER")
