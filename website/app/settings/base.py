@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
+    "app.role_switcher",
 ]
 
 MIDDLEWARE = [
