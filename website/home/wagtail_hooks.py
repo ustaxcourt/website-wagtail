@@ -63,7 +63,7 @@ class ConditionalRoleSwitcherMenuItem(MenuItem):
 @hooks.register("register_settings_menu_item")
 def register_conditional_role_switcher_menu_item():
     return ConditionalRoleSwitcherMenuItem(
-        _("Switch Role (Testing)"),
+        _("Switch User Role for Testing"),
         reverse("switch_role"),
         icon_name="user",
         order=10000,
