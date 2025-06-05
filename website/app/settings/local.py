@@ -31,4 +31,4 @@ LOGGING["loggers"]["home"]["handlers"] = ["simple"]
 LOGGING["loggers"]["home"]["level"] = "DEBUG"
 LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"
 
-IS_SITE_LIVE = date.today() >= date(2999, 6, 1)
+SITE_IS_LIVE = date.today() >= date(2999, 6, 1)

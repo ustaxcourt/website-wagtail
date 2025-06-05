@@ -18,4 +18,4 @@ ENVIRONMENT = "sandbox"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
-IS_SITE_LIVE = date.today() >= date(2999, 6, 1)
+SITE_IS_LIVE = date.today() >= date(2999, 6, 1)

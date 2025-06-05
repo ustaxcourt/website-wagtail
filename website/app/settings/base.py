@@ -411,4 +411,4 @@ LOGGING = {
     },
 }
 
-IS_SITE_LIVE = date.today() >= date(2025, 6, 1)
+SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
