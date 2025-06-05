@@ -2,6 +2,7 @@ from .base import *  # noqa: F403
 from .base import LOGGING  # noqa: F403
 import os
 import subprocess
+from datetime import date
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,3 +30,5 @@ LOGGING["loggers"]["wagtail"]["handlers"] = ["simple"]
 LOGGING["loggers"]["home"]["handlers"] = ["simple"]
 LOGGING["loggers"]["home"]["level"] = "DEBUG"
 LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"
+
+IS_SITE_LIVE = date.today() >= date(2999, 6, 1)

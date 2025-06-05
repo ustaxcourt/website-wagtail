@@ -17,6 +17,7 @@ import dj_database_url
 import json
 import urllib.request
 from pythonjsonlogger import jsonlogger
+from datetime import date
 
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -409,3 +410,5 @@ LOGGING = {
         },
     },
 }
+
+IS_SITE_LIVE = date.today() >= date(2025, 6, 1)
