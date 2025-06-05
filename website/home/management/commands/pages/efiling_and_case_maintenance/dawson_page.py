@@ -45,8 +45,8 @@ class DawsonPageInitializer(PageInitializer):
 
         existing_dawson_page = home_page.get_children().live().filter(slug=slug).first()
         if existing_dawson_page:
-            logger.info(f"- {title} page already exists. Updating cards...")
-            dawson_page = existing_dawson_page.specific
+            logger.info(f"- {title} page already exists.")
+            return
         else:
             dawson_page = DawsonPage(
                 title=title,
