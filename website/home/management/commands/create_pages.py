@@ -198,9 +198,15 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
 
         # Initialize navigation last
-        nav_initializer = NavigationInitializer()
-        nav_initializer.create()
-        self.stdout.write(self.style.SUCCESS("Navigation has been initialized."))
+        if settings.IS_SITE_LIVE:
+            self.stdout.write(
+                "Skipping Navigation creation. Navigation menu creation/recreation suppressed past site LIVE DATE."
+            )
+        else:
+            self.stdout.write("Creating snippets...")
+            nav_initializer = NavigationInitializer()
+            nav_initializer.create()
+            self.stdout.write(self.style.SUCCESS("Navigation has been initialized."))
 
         # Initialize unlisted files
         unlisted_files_initializer = UnlistedFiles()
