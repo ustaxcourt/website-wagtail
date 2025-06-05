@@ -35,14 +35,38 @@ class VacancyEntry(Orderable):
     position_title = models.CharField(
         max_length=255, help_text="Position title, series, and grade"
     )
-    closing_date = models.DateField(help_text="Closing date for the vacancy")
-    url = models.URLField(max_length=255, help_text="Link to the vacancy announcement")
+    closing_date = models.DateField(
+        help_text="Closing date for the vacancy", blank=True, null=True
+    )
+    closing_date_text = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default="Until the position is filled",
+        help_text='Text for closing date display, e.g., "June 30, 2025 or until filled"',
+    )
+
+    url = models.URLField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Link to the vacancy announcement",
+    )
+
+    attachment = models.FileField(
+        upload_to="vacancy-attachments/",
+        blank=True,
+        null=True,
+        help_text="Upload a PDF or Word doc of the vacancy (optional)",
+    )
 
     panels = [
         FieldPanel("number"),
         FieldPanel("position_title"),
         FieldPanel("closing_date"),
+        FieldPanel("closing_date_text"),
         FieldPanel("url"),
+        FieldPanel("attachment"),
     ]
 
     def clean(self):
@@ -51,6 +75,11 @@ class VacancyEntry(Orderable):
         if self.closing_date and self.closing_date < date.today():
             raise ValidationError(
                 {"closing_date": "Closing date cannot be in the past."}
+            )
+        # Ensure at least one of url or attachment is provided
+        if not self.url and not self.attachment:
+            raise ValidationError(
+                "Please provide either a URL or an attachment for the vacancy."
             )
 
     class Meta:
