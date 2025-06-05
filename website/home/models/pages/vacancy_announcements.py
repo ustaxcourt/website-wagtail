@@ -2,6 +2,7 @@ from django.db import models
 from wagtail.models import Page, ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from django.core.exceptions import ValidationError
+from wagtail.documents.models import Document
 from wagtail.models import Orderable
 
 from datetime import date
@@ -53,8 +54,9 @@ class VacancyEntry(Orderable):
         help_text="Link to the vacancy announcement",
     )
 
-    attachment = models.FileField(
-        upload_to="vacancy-attachments/",
+    attachment = models.ForeignKey(
+        Document,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
         help_text="Upload a PDF or Word doc of the vacancy (optional)",
