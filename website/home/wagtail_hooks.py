@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.conf import settings
 from .models import NavigationMenu, JudgeRole
+from .models.snippets.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -92,14 +93,12 @@ def protect_special_judge_roles(request, snippets):
     for snippet in snippets:
         # Only proceed for JudgeRole snippets
         if isinstance(snippet, JudgeRole):
-            if snippet.role_name in ["Chief Judge", "Chief Special Trial Judge"]:
-                logger.info(
-                    "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge' as they are required for site functionality.",
+            if snippet.role_name in RESTRICTED_ROLES:
+                message_text = (
+                    f"""You cannot delete the role "{'", "'.join(RESTRICTED_ROLES)}" as they are required for site functionality.""",
                 )
-                messages.error(
-                    request,
-                    "You cannot delete the role 'Chief Judge' or 'Chief Special Trial Judge' as they are required for site functionality.",
-                )
+                logger.info(message_text)
+                messages.error(request, message_text)
                 referer = request.META.get("HTTP_REFERER")
                 if referer:
                     return redirect(referer)

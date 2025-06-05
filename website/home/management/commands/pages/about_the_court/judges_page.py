@@ -8,6 +8,7 @@ from home.models import (
 )
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,7 +21,7 @@ all_judges = [
         "display_name": "Kathleen Kerrigan",
         "title": "Judge",
         "chambers_telephone": "(202) 521-0777",
-        "bio": "Chief Judge. B.S., Boston College 1985; J.D., University of Notre Dame Law School, 1990. Admitted to Massachusetts Bar, 1991 and District Columbia Bar, 1992. Legislative Director for Congressman Richard E. Neal, Member of the Ways and Means Committee, 1990 to 1998. Associate and partner at Baker & Hostetler LLP, Washington, D.C. 1998-2005. Tax Counsel for Senator John F. Kerry, Member of Senate Finance Committee, 2005-2012. Appointed by President Obama as Judge of the United States Tax Court; sworn in on May 4, 2012, for a term ending on May 3, 2027. Elected as Chief Judge for a two-year term effective June 1, 2022. Re-elected as Chief Judge for a two-year term effective June 1, 2024.",
+        "bio": "Judge. B.S., Boston College 1985; J.D., University of Notre Dame Law School, 1990. Admitted to Massachusetts Bar, 1991 and District Columbia Bar, 1992. Legislative Director for Congressman Richard E. Neal, Member of the Ways and Means Committee, 1990 to 1998. Associate and partner at Baker & Hostetler LLP, Washington, D.C. 1998-2005. Tax Counsel for Senator John F. Kerry, Member of Senate Finance Committee, 2005-2012. Appointed by President Obama as Judge of the United States Tax Court; sworn in on May 4, 2012, for a term ending on May 3, 2027. Elected as Chief Judge for a two-year term effective June 1, 2022. Re-elected as Chief Judge for a two-year term effective June 1, 2024.",
     },
     {
         "first_name": "Jeffrey",
@@ -170,7 +171,7 @@ all_judges = [
         "display_name": "Patrick J. Urda",
         "title": "Judge",
         "chambers_telephone": "(202) 521-0800",
-        "bio": "Judge. Born in Indiana. Received a Bachelor of Arts degree, summa cum laude, from the University of Notre Dame and a Juris Doctor from Harvard Law School. Prior to appointment to the Court practiced law with McDermott Will & Emery and with Maciorowski, Sackmann & Ulrich; served as a Law Clerk to Judge Daniel A. Manion of the U.S. Court of Appeals for the Seventh Circuit; and held several positions with the U.S. Department of Justice’s Tax Division, including details as Counsel to the Deputy Assistant Attorney General for Appellate and Review and to the Criminal Division’s Office of Overseas Prosecutorial Development Assistance and Training. Former Adjunct Professor of Law at American University Washington College of Law. Appointed by President Trump as Judge of the United States Tax Court; sworn in on September 27, 2018 for a term ending September 26, 2033.<p><strong>Additional Information or Requirements for Law Clerk Applicants:</strong></p><ul><li>LL.M. preferred</li><li>Writing sample no longer than 10 pages</li><li>Transcripts (College/J.D./LL.M)</li></ul></p>",
+        "bio": "Chief Judge. Born in Indiana. Received a Bachelor of Arts degree, summa cum laude, from the University of Notre Dame and a Juris Doctor from Harvard Law School. Prior to appointment to the Court practiced law with McDermott Will & Emery and with Maciorowski, Sackmann & Ulrich; served as a Law Clerk to Judge Daniel A. Manion of the U.S. Court of Appeals for the Seventh Circuit; and held several positions with the U.S. Department of Justice’s Tax Division, including details as Counsel to the Deputy Assistant Attorney General for Appellate and Review and to the Criminal Division’s Office of Overseas Prosecutorial Development Assistance and Training. Former Adjunct Professor of Law at American University Washington College of Law. Appointed by President Trump as Judge of the United States Tax Court; sworn in on September 27, 2018 for a term ending September 26, 2033.<p><strong>Additional Information or Requirements for Law Clerk Applicants:</strong></p><ul><li>LL.M. preferred</li><li>Writing sample no longer than 10 pages</li><li>Transcripts (College/J.D./LL.M)</li></ul></p>",
     },
     {
         "first_name": "Kashi",
@@ -486,3 +487,62 @@ class JudgesPageInitializer(PageInitializer):
         )
 
         logger.info(f"Created the '{title}' page with judge collections.")
+
+    def update(self):
+        try:
+            _ = Page.objects.get(slug=self.slug)
+            logger.info(f"Updating existing page '{self.slug}'.")
+            self.update_judge_roles_and_profiles()
+        except Page.DoesNotExist:
+            logger.info(f"Page '{self.slug}' does not exist.")
+            return
+
+    def update_judge_roles_and_profiles(self):
+        # Find the current judge with chief judge role
+        chief_judge_role = JudgeRole.objects.filter(role_name="Chief Judge").first()
+        if chief_judge_role:
+            current_chief_judge_profile = chief_judge_role.judge
+        else:
+            current_chief_judge_profile = None
+
+        # Proceed only if the chief judge last name is "Kerrigan"
+        if (
+            not current_chief_judge_profile
+            or current_chief_judge_profile.last_name != "Kerrigan"
+        ):
+            logger.info("Chief Judge update is complete. No update performed.")
+            return
+
+        current_chief_judge_profile = JudgeProfile.objects.filter(
+            last_name__iexact="Kerrigan"
+        ).first()
+
+        current_chief_judge_profile.bio = "Judge. B.S., Boston College 1985; J.D., University of Notre Dame Law School, 1990. Admitted to Massachusetts Bar, 1991 and District Columbia Bar, 1992. Legislative Director for Congressman Richard E. Neal, Member of the Ways and Means Committee, 1990 to 1998. Associate and partner at Baker & Hostetler LLP, Washington, D.C. 1998-2005. Tax Counsel for Senator John F. Kerry, Member of Senate Finance Committee, 2005-2012. Appointed by President Obama as Judge of the United States Tax Court; sworn in on May 4, 2012, for a term ending on May 3, 2027. Elected as Chief Judge for a two-year term effective June 1, 2022. Served as Chief Judge from June 1, 2022-June 1, 2025."
+
+        current_chief_judge_profile.chambers_telephone = "(202) 521-0750"
+
+        current_chief_judge_profile.save()
+
+        chief_judge_role = JudgeRole.objects.get(
+            role_name="Chief Judge",
+        )
+
+        future_chief_judge_profile = JudgeProfile.objects.filter(
+            last_name__iexact="Urda"
+        ).first()
+
+        future_chief_judge_profile.bio = """Chief Judge. Born in Indiana. Received a Bachelor of Arts degree, summa cum laude, from the University of Notre Dame and a Juris Doctor from Harvard Law School. Prior to appointment to the Court practiced law with McDermott Will & Emery and with Maciorowski, Sackmann & Ulrich; served as a Law Clerk to Judge Daniel A. Manion of the U.S. Court of Appeals for the Seventh Circuit; and held several positions with the U.S. Department of Justice’s Tax Division, including details as Counsel to the Deputy Assistant Attorney General for Appellate and Review and to the Criminal Division’s Office of Overseas Prosecutorial Development Assistance and Training. Former Adjunct Professor of Law at American University Washington College of Law. Appointed by President Trump as Judge of the United States Tax Court; sworn in on September 27, 2018 for a term ending September 26, 2033. Elected as Chief Judge for a two-year term effective June 1, 2025.<p><strong>Additional Information or Requirements for Law Clerk Applicants:</strong></p><ul><li>LL.M. preferred</li><li>Writing sample no longer than 10 pages</li><li>Transcripts (College/J.D./LL.M)</li></ul></p>"""
+
+        future_chief_judge_profile.chambers_telephone = "(202) 521-0777"
+
+        future_chief_judge_profile.save()
+
+        live_chief_judge_role = JudgeRole.objects.get(pk=chief_judge_role.pk)
+
+        # Modify the instance in memory to reflect the future state
+        live_chief_judge_role.judge = future_chief_judge_profile
+
+        # Modify the instance in memory to reflect the future state
+        _ = live_chief_judge_role.save()
+
+        logger.info(f"Judge roles and profiles updated in page: '{self.slug}'.")
