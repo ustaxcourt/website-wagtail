@@ -148,9 +148,9 @@ class Command(BaseCommand):
             "/update_contact_information.html",
             "/vacancy_announcements.html",
             "/zoomgov.html",
-            "zoomgov_getting_ready.html",
-            "zoomgov_the_basics.html",
-            "zoomgov_zoomgov_proceedings.html",
+            "/zoomgov_getting_ready.html",
+            "/zoomgov_the_basics.html",
+            "/zoomgov_zoomgov_proceedings.html",
         ]
 
         for old_path in legacy_urls:
