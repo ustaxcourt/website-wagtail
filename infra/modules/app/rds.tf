@@ -1,4 +1,3 @@
-
 resource "aws_db_instance" "default" {
   identifier_prefix = "${var.environment}-"
   allocated_storage   = 10
@@ -15,8 +14,45 @@ resource "aws_db_instance" "default" {
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
+
+  enabled_cloudwatch_logs_exports = ["postgresql"]
+
+  parameter_group_name = aws_db_parameter_group.postgresql.name
 }
 
+resource "aws_db_parameter_group" "postgresql" {
+  family = "postgres16"
+  name   = "${var.environment}-postgresql-params"
+
+  parameter {
+    name  = "log_min_duration_statement"
+    value = "0"
+  }
+
+  parameter {
+    name  = "log_statement"
+    value = "all"
+  }
+
+  parameter {
+    name  = "log_connections"
+    value = "1"
+  }
+
+  parameter {
+    name  = "log_disconnections"
+    value = "1"
+  }
+
+  parameter {
+    name  = "log_error_verbosity"
+    value = "verbose"
+  }
+
+  tags = {
+    Environment = var.environment
+  }
+}
 
 resource "aws_security_group" "rds_sg" {
   name        = "${var.environment}-rds-sg"
