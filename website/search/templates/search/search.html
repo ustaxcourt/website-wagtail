@@ -85,7 +85,7 @@
             box-shadow: 0 4px 16px 0 rgba(0, 113, 188, 0.10);
         }
 
-        #search-page .result-card h4 {
+        #search-page .result-card h2 {
             margin: 0 0 8px 0;
             font-size: 1.25rem;
             font-weight: 700;
@@ -230,7 +230,6 @@
         {% elif search_results %}
             {% get_search_promotions search_query as search_promotions %}
             {% with promotions_count=search_promotions|length %}
-                {# 2. Now, use that new variable in the add filter to get the final total #}
                 {% with total_results=search_results.paginator.count|add:promotions_count %}
                     <div class="results-count">Found {{ total_results }} result{{ total_results|pluralize }} for "{{ search_query }}"</div>
                 {% endwith %}
@@ -240,14 +239,14 @@
                     {% for search_promotion in search_promotions %}
                         <li class="result-card">
                             {% if search_promotion.page %}
-                                <h4>
+                                <h2>
                                     <a href="{% pageurl search_promotion.page %}">{{ search_promotion.page.title }}</a>
-                                </h4>
+                                </h2>
                                 {% if search_promotion.description %}<div class="desc">{{ search_promotion.description }}</div>{% endif %}
                             {% else %}
-                                <h4>
+                                <h2>
                                     <a href="{{ search_promotion.external_link_url }}">{{ search_promotion.external_link_text }}</a>
-                                </h4>
+                                </h2>
                                 {% if search_promotion.description %}<div class="desc">{{ search_promotion.description }}</div>{% endif %}
                             {% endif %}
                         </li>
@@ -256,13 +255,13 @@
                 {% for result in search_results %}
                     <li class="result-card">
                         {% if result.url %}
-                            <h4>
+                            <h2>
                                 <a href="{{ result.url }}">{{ result.title }}</a>
-                            </h4>
+                            </h2>
                         {% else %}
-                            <h4>
+                            <h2>
                                 <a href="{% pageurl result %}">{{ result }}</a>
-                            </h4>
+                            </h2>
                         {% endif %}
                         {% if result.search_snippet %}
                             <div class="desc">{{ result.search_snippet|striptags|truncatechars:200 }}</div>
