@@ -411,3 +411,4 @@ LOGGING = {
         },
     },
 }
+WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
