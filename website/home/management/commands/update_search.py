@@ -107,9 +107,9 @@ PROMOTIONS_DATA = [
     {
         "terms": ["Judge", "Judges", "Judge[name]", "[name of judge]"],
         "results": [
-            "https://ustaxcourt.gov/judges/",
-            "https://ustaxcourt.gov/press-releases/",
-            "https://ustaxcourt.gov/directory/",
+            "https://ustaxcourt.gov/judges",
+            "https://ustaxcourt.gov/press-releases",
+            "https://ustaxcourt.gov/directory",
         ],
     },
     {
@@ -130,8 +130,8 @@ PROMOTIONS_DATA = [
         ],
         "results": [
             "https://ustaxcourt.gov/files/documents/04252024.pdf",
-            "https://ustaxcourt.gov/press-releases/",
-            "https://ustaxcourt.gov/directory/",
+            "https://ustaxcourt.gov/press-releases",
+            "https://ustaxcourt.gov/directory",
         ],
     },
     {
