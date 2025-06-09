@@ -313,11 +313,6 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 
 ENVIRONMENT = "dev"
 
-CLOUDFRONT_DISTRIBUTION_ID = os.getenv("CLOUDFRONT_DISTRIBUTION_ID")
-
-if ENVIRONMENT in ("staging", "prod") and not CLOUDFRONT_DISTRIBUTION_ID:
-    raise ValueError("CLOUDFRONT_DISTRIBUTION_ID environment variable must be set.")
-
 BASE_URL = "http://127.0.0.1:8000"
 
 # GitHub SHA for build version

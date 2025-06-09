@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.conf import settings
+from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
+from wagtail.models import Page
 from .models import NavigationMenu, JudgeRole
 from .models.snippets.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
 from django.urls import reverse
-from .utils.aws_cloudfront import invalidate_cloudfront_cache
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
@@ -105,36 +106,33 @@ def protect_special_judge_roles(request, snippets):
 
 
 @hooks.register("after_edit_snippet")
-def invalidate_cloudfront_on_snippet_edit(request, instance):
+def purge_cache_for_snippet_related_pages(request, instance):
     """
-    Invalidate CloudFront cache when a snippet is saved.
+    Purge frontend cache for pages that might be affected by this snippet.
+    This uses a snippet type to path mapping and matches live pages based on path.
     """
-    env = getattr(settings, "ENVIRONMENT", "dev")
-    if env != "production":
-        logger.debug(f"Skipping CloudFront invalidation in {env} environment.")
-        return
-
-    distribution_id = getattr(settings, "CLOUDFRONT_DISTRIBUTION_ID", None)
-    if not distribution_id:
-        logger.error("CLOUDFRONT_DISTRIBUTION_ID not set in settings.")
-        return
-
     snippet_type = type(instance).__name__.lower()
+
     path_map = {
         "commontext": ["/"],
-        "fancycard": ["/cards/*"],
-        "judgecollection": ["/judges/*"],
-        "judgeprofile": ["/judges/*"],
-        "judgerole": ["/judges/*"],
-        "navigationmenu": ["/nav/*"],
-        "navigationribbon": ["/nav/*"],
-        "simplecard": ["/cards/*"],
+        "judgecollection": ["/judges/"],
+        "judgeprofile": ["/judges/"],
+        "judgerole": ["/judges/"],
     }
 
-    paths = path_map.get(snippet_type, ["/*"])
+    affected_prefixes = path_map.get(snippet_type, ["/"])
+    affected_pages = []
+    for prefix in affected_prefixes:
+        pages = Page.objects.live().filter(url_path__startswith=prefix)
+        affected_pages.extend(pages)
 
-    try:
-        invalidate_cloudfront_cache(distribution_id, paths)
-        logger.info(f"Invalidated CloudFront cache for: {paths}")
-    except Exception as e:
-        logger.error(f"Failed to invalidate CloudFront for snippet: {e}")
+    if not affected_pages:
+        logger.info(f"No affected pages found for snippet type '{snippet_type}'")
+        return
+
+    for page in affected_pages:
+        try:
+            purge_page_from_cache(page)
+            logger.info(f"Purged frontend cache for page: {page.url_path}")
+        except Exception as e:
+            logger.warning(f"Error purging cache for page {page.id}: {e}")
