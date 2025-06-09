@@ -1,4 +1,12 @@
 {% extends "wagtailadmin/base.html" %}
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .pagination {
+            margin-bottom: 3rem;
+        }
+    </style>
+{% endblock %}
 {% block extra_js %}
     {{ block.super }}
     <script>
@@ -7,7 +15,7 @@
             var scrollButton = document.createElement("button");
             scrollButton.innerText = "Scroll to Bottom";
             scrollButton.style.position = "fixed";
-            scrollButton.style.bottom = "20px";
+            scrollButton.style.bottom = "15px";
             scrollButton.style.right = "20px";
             scrollButton.style.padding = "10px 15px";
             scrollButton.style.background = "#007acc";

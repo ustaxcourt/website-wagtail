@@ -265,7 +265,7 @@ class CaseRelatedFormPageInitializer(PageInitializer):
                 "eligibleForEFilingByPractitioners"
             ],
             pdf=document,
-            parentpage=parent_page,
+            parentpage=parent_page.specific,
         )
         form.save()
 
