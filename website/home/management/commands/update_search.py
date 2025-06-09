@@ -88,6 +88,112 @@ PROMOTIONS_DATA = [
             "https://ustaxcourt.gov/dawson.html",
         ],
     },
+    {
+        "terms": [
+            "places of trial",
+            "trial locations",
+            "courthouse",
+            "trial sessions",
+            "Trial Sessions",
+            "Trials",
+            "Proceedings",
+            "Remote proceedings",
+        ],
+        "results": [
+            "https://ustaxcourt.gov/dpt-cities",
+            "https://ustaxcourt.gov/petitioners-during/",
+        ],
+    },
+    {
+        "terms": ["Judge", "Judges", "Judge[name]", "[name of judge]"],
+        "results": [
+            "https://ustaxcourt.gov/judges/",
+            "https://ustaxcourt.gov/press-releases/",
+            "https://ustaxcourt.gov/directory/",
+        ],
+    },
+    {
+        "terms": ["Urda", "Judge Urda", "Chief Judge", "Chief Judge Urda"],
+        "results": [
+            "https://ustaxcourt.gov/judges/51/urda/",
+            "https://ustaxcourt.gov/press-releases/",
+            "https://ustaxcourt.gov/directory/",
+        ],
+    },
+    {
+        "terms": [
+            "Charles Jeane",
+            "Charles G. Jeane",
+            "Clerk of the Court",
+            "Clerk",
+            "clerk of court",
+        ],
+        "results": [
+            "https://ustaxcourt.gov/files/documents/04252024.pdf",
+            "https://ustaxcourt.gov/press-releases/",
+            "https://ustaxcourt.gov/directory/",
+        ],
+    },
+    {
+        "terms": ["Rules", "Tax Court Rules", "Amendments"],
+        "results": ["https://ustaxcourt.gov/rules/"],
+    },
+    {
+        "terms": ["Orders", "Today's Orders", "Judge Ruling", "Ruling"],
+        "results": ["https://dawson.ustaxcourt.gov/todays-orders"],
+    },
+    {
+        "terms": [
+            "Opinion",
+            "Today's Opinions",
+            "Judge Ruling",
+            "Memorandum Opinion",
+            "Docket",
+        ],
+        "results": [
+            "https://dawson.ustaxcourt.gov/todays-opinions",
+            "https://ustaxcourt.gov/pamphlets/",
+        ],
+    },
+    {
+        "terms": [
+            "Practitioner",
+            "Tax Court Bar",
+            "Attorney Admissions",
+            "Admission Application",
+        ],
+        "results": ["https://ustaxcourt.gov/practitioners/"],
+    },
+    {
+        "terms": [
+            "Transcripts & Copies",
+            "Transcripts",
+            "Copies",
+            "Document",
+            "Documents",
+        ],
+        "results": [
+            "https://ustaxcourt.gov/transcripts-and-copies/",
+            "https://ustaxcourt.gov/pamphlets/",
+        ],
+    },
+    {
+        "terms": [
+            "Employment",
+            "Jobs",
+            "Law Clerk Program",
+            "Internships",
+            "Vacancy Announcement",
+        ],
+        "results": [
+            "https://ustaxcourt.gov/employment/",
+            "https://ustaxcourt.gov/employment/law-clerk-program/#AP",
+        ],
+    },
+    {
+        "terms": ["Customer support", "Support", "Help", "Feedback", "Questions"],
+        "results": ["https://ustaxcourt.gov/contact"],
+    },
 ]
 
 
