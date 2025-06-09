@@ -51,7 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "error_404_alarm" {
   namespace           = "WebsiteErrors"
   period             = "3600"
   statistic          = "Sum"
-  threshold          = "5"
+  threshold          = "50"
   alarm_description  = "This metric monitors for 404 errors in the website logs"
   alarm_actions      = [aws_sns_topic.error_notifications.arn]
 
