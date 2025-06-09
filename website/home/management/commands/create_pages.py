@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from home.management.commands.pages.about_the_court import (
     about_the_court_pages_to_initialize,
@@ -173,9 +174,15 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("All redirects have been initialized."))
 
         # Continue with existing initialization
-        for snippet_class in snippets_to_initialize:
-            snippet_instance = snippet_class()
-            snippet_instance.create()
+        if settings.SITE_IS_LIVE:
+            self.stdout.write(
+                "Skipping snippet creation. Snippets creation/recreation suppressed past site LIVE DATE."
+            )
+        else:
+            self.stdout.write("Creating snippets...")
+            for snippet_class in snippets_to_initialize:
+                snippet_instance = snippet_class()
+                snippet_instance.create()
 
         for page_class in pages_to_initialize:
             page_instance = page_class()
