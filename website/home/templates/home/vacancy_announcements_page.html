@@ -20,7 +20,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Number</th>
-                            <th scope="col">Position & Title/Series/Grade</th>
+                            <th scope="col">Position & Title/Series/Grade/Salary</th>
                             <th scope="col">Closing Date</th>
                         </tr>
                     </thead>
@@ -29,14 +29,22 @@
                             <tr>
                                 <td data-label="Number">
                                     {% if vacancy.url %}
-                                        <a href="{{ vacancy.url }}" target="_blank" class="usa-link">{{ vacancy.number }}</a>
+                                        <a href="{{ vacancy.url }}">{{ vacancy.number }}</a>
+                                    {% elif vacancy.attachment %}
+                                        <a href="{{ vacancy.attachment.url }}">{{ vacancy.number }}</a>
                                     {% else %}
                                         {{ vacancy.number }}
                                     {% endif %}
                                 </td>
                                 <td data-label="Position">{{ vacancy.position_title }}</td>
                                 <td data-label="Closing Date">
-                                    <span class="closing-date">{{ vacancy.closing_date|date:"F j, Y" }}</span>
+                                    <span class="closing-date">
+                                        {% if vacancy.closing_date_text %}
+                                            {{ vacancy.closing_date_text }}
+                                        {% elif vacancy.closing_date %}
+                                            {{ vacancy.closing_date }}
+                                        {% endif %}
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %}
