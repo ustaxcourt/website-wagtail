@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "error_500_alarm" {
 
 resource "aws_cloudwatch_log_metric_filter" "error_404_filter" {
   name           = "${var.environment}-404-error-filter"
-  pattern        = "{ ($.status_code = 404) && ($.path != %.*\\.(xml|php|git|aspx|png)$%) }"
+  pattern        = "{ ($.status_code = 404) && ($.path != \"*.xml*\") && ($.path != \"*.php*\") && ($.path != \"*.git*\") && ($.path != \"*.aspx*\") && ($.path != \"*.png*\")}"
   log_group_name = aws_cloudwatch_log_group.ecs_log_group.name
 
   metric_transformation {
