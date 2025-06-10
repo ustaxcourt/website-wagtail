@@ -109,7 +109,7 @@ collectstatic:
 	. $(VENV) && python manage.py collectstatic --noinput --clear
 
 preregisterusers:
-	. $(VENV) && python manage.py preregister_users
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py preregister_users
 
 preregistersuperusers:
-	. $(VENV) && python manage.py preregister_superusers
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py preregister_superusers

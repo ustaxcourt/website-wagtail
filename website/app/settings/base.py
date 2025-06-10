@@ -17,6 +17,7 @@ import dj_database_url
 import json
 import urllib.request
 from pythonjsonlogger import jsonlogger
+from datetime import date
 
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
+    "app.role_switcher",
 ]
 
 MIDDLEWARE = [
@@ -411,4 +413,6 @@ LOGGING = {
         },
     },
 }
+
+SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 WAGTAILSEARCH_HITS_MAX_AGE = 180  # days

@@ -103,7 +103,7 @@
         font-size: 1rem;
     }
 
-    header#top-navigation .navigation-header .link > div {
+    header#top-navigation .navigation-header .link>div {
         display: flex;
         align-items: center;
         gap: 4px;
@@ -191,7 +191,7 @@
             font-size: 0.9rem;
         }
 
-        header#top-navigation .navigation .navigation-header .link > div {
+        header#top-navigation .navigation .navigation-header .link>div {
             gap: 2px;
         }
     }
@@ -202,7 +202,7 @@
             font-size: 1rem;
         }
 
-        header#top-navigation .navigation-header .link > div {
+        header#top-navigation .navigation-header .link>div {
             gap: 4px;
         }
     }
@@ -304,7 +304,7 @@
             padding: 8px 20px;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header .link > div {
+        header#top-navigation .navigation-bar .navigation .navigation-header .link>div {
             flex-wrap: wrap;
         }
 
@@ -437,27 +437,29 @@
                             </div>
                         </button>
                     {% endif %}
-                    <ul class="navigation-list"
-                        data-testid="nav-list-{{ section.value.title|slugify }}">
-                        {% for sub_link in section.value.sub_links %}
-                            <li class="nav-link">
-                                {% if sub_link.external_url %}
-                                    <a target="_blank"
-                                       href="{{ sub_link.external_url }}"
-                                       data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                        <i class="fa-solid fa-chevron-right"></i>
-                                        {{ sub_link.title }}
-                                    </a>
-                                {% elif sub_link.page %}
-                                    <a href="{% pageurl sub_link.page %}"
-                                       data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                        <i class="fa-solid fa-chevron-right"></i>
-                                        {{ sub_link.title }}
-                                    </a>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    {% if section.value.sub_links %}
+                        <ul class="navigation-list"
+                            data-testid="nav-list-{{ section.value.title|slugify }}">
+                            {% for sub_link in section.value.sub_links %}
+                                <li class="nav-link">
+                                    {% if sub_link.external_url %}
+                                        <a target="_blank"
+                                           href="{{ sub_link.external_url }}"
+                                           data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                            {{ sub_link.title }}
+                                        </a>
+                                    {% elif sub_link.page %}
+                                        <a href="{% pageurl sub_link.page %}"
+                                           data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                            {{ sub_link.title }}
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
@@ -542,9 +544,15 @@
 
         // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.navigation-header')) {
+            const isInsideNavigation = e.target.closest('.navigation-bar');
+            if (!isInsideNavigation) {
                 navigationHeaders.forEach(header => {
                     header.classList.remove('active');
+                    header.classList.remove('displayed-navigation-header');
+                    const navList = header.querySelector('.navigation-list');
+                    if (navList) {
+                        navList.classList.remove('displayed-navigation-list');
+                    }
                 });
             }
         });
