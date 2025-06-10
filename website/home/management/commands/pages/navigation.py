@@ -1,3 +1,4 @@
+from django.conf import settings
 from home.management.commands.pages.page_initializer import PageInitializer
 from wagtail.models import Page
 from home.models import NavigationMenu
@@ -163,7 +164,14 @@ class NavigationInitializer(PageInitializer):
 
     def create(self):
         # Delete existing navigation menu if it exists
-        NavigationMenu.objects.all().delete()
+        if settings.SITE_IS_LIVE:
+            logger.info(
+                "Skipping Navigation creation. Navigation menu creation/recreation suppressed past site LIVE DATE."
+            )
+            return
+        else:
+            logger.info("Creating Navigation menu...")
+            NavigationMenu.objects.all().delete()
 
         # Create a single navigation menu
         menu = NavigationMenu.objects.create(menu_items=self.get_default_menu_items())

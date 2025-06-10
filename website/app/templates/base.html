@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8" />
         {% get_enviroment as environment %}
-        {% if environment != "production-yet" %}
+        {% if environment != "production" %}
             <meta name="robots" content="noindex">
         {% endif %}
         <title>
@@ -105,7 +105,7 @@
     <body class="{% block body_class %}  {% endblock %}">
         {% include 'banner.html' %}
         {% get_enviroment as environment %}
-        {% if environment != "production-yet" %}
+        {% if environment != "production" %}
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
@@ -123,5 +123,6 @@
         </button>
         {# Global javascript #}
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
+        <script type="text/javascript" src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
     </body>
 </html>

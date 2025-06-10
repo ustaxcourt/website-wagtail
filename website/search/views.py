@@ -6,7 +6,7 @@ from wagtail.models import Page
 from wagtail.blocks import StreamValue
 from wagtail.contrib.search_promotions.models import Query
 
-from home.common_models.judges import JudgeProfile
+from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
 
 # To enable logging of search queries for use with the "Promoted search results" module
@@ -103,6 +103,8 @@ def search(request):
             Q(first_name__icontains=search_query)
             | Q(last_name__icontains=search_query)
             | Q(display_name__icontains=search_query)
+            | Q(bio__icontains=search_query)
+            | Q(chambers_telephone__icontains=search_query)
         )
         query = Query.get(search_query)
         query.add_hit()
@@ -128,7 +130,7 @@ def search(request):
                     "title": judge.display_name
                     or f"{judge.first_name} {judge.last_name}",
                     "search_snippet": f"Judge {judge.display_name or f'{judge.first_name} {judge.last_name}'}",
-                    "url": "/judges/",
+                    "url": f"/judges/{judge.id}/{judge.last_name.lower()}",
                 },
             )
             search_results.append(judge_page)

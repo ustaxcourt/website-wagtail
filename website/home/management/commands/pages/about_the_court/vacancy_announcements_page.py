@@ -5,6 +5,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+vacancy_announcements_docs = {
+    "VA_Dep_Clerk_Admin_Svc_Final_20250424.pdf": "",
+}
+
 
 class VacancyAnnouncementsPageInitializer(PageInitializer):
     def __init__(self):
@@ -28,6 +32,14 @@ class VacancyAnnouncementsPageInitializer(PageInitializer):
             return
 
         logger.info(f"Creating the '{title}' page.")
+
+        for doc_name in vacancy_announcements_docs.keys():
+            document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=doc_name,
+                title=doc_name,
+            )
+            vacancy_announcements_docs[doc_name] = document
 
         # Add as child of employment_page instead of home_page
         employment_page.add_child(

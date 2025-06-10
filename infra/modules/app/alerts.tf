@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "error_500_alarm" {
 
 resource "aws_cloudwatch_log_metric_filter" "error_404_filter" {
   name           = "${var.environment}-404-error-filter"
-  pattern        = "{ $.status_code = 404 }"
+  pattern        = "{ ($.status_code = 404) && ($.path != \"*.xml*\") && ($.path != \"*.php*\") && ($.path != \"*.git*\") && ($.path != \"*.aspx*\") && ($.path != \"*.png*\")}"
   log_group_name = aws_cloudwatch_log_group.ecs_log_group.name
 
   metric_transformation {
@@ -51,7 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "error_404_alarm" {
   namespace           = "WebsiteErrors"
   period             = "3600"
   statistic          = "Sum"
-  threshold          = "5"
+  threshold          = "50"
   alarm_description  = "This metric monitors for 404 errors in the website logs"
   alarm_actions      = [aws_sns_topic.error_notifications.arn]
 
@@ -83,4 +83,36 @@ resource "aws_sns_topic_policy" "error_notifications" {
       }
     ]
   })
+}
+
+resource "aws_cloudwatch_log_metric_filter" "rds_error_filter" {
+  name           = "${var.environment}-rds-error-filter"
+  pattern        = "%ERROR|FATAL|PANIC%"
+  log_group_name = "/aws/rds/instance/${aws_db_instance.default.identifier}/postgresql"
+
+  metric_transformation {
+    name      = "RDSErrorCount"
+    namespace = "RDS/PostgreSQL"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "rds_error_alarm" {
+  alarm_name          = "${var.environment}-rds-error-alarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "RDSErrorCount"
+  namespace           = "RDS/PostgreSQL"
+  period             = "3600"
+  statistic          = "Sum"
+  threshold          = "0"
+  alarm_description  = "This metric monitors for ERROR, FATAL, or PANIC level messages in RDS PostgreSQL logs"
+  alarm_actions      = [aws_sns_topic.error_notifications.arn]
+
+  lifecycle {
+    ignore_changes = [
+      period,
+      threshold
+    ]
+  }
 }
