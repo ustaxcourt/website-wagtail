@@ -11,45 +11,45 @@ PROMOTIONS_DATA = [
         "terms": ["Taxpayer", "Petitioner"],
         "results": [
             "https://ustaxcourt.gov/petitioners.html",
-            "https://ustaxcourt.gov/petitioners-glossary.html#PETITIONER",
+            "https://ustaxcourt.gov/petitioners-glossary.html",
         ],
     },
     {
         "terms": ["What is a petitioner", "Am I a petitioner"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html#START2",
-            "https://ustaxcourt.gov/petitioners-glossary.html#PETITIONER",
+            "https://ustaxcourt.gov/petitioners-start.html",
+            "https://ustaxcourt.gov/petitioners-glossary.html",
         ],
     },
     {
         "terms": ["Notice of deficiency", "notice"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html#START2",
-            "https://ustaxcourt.gov/petitioners-glossary.html#NOTICE-OF-DEFICIENCY",
+            "https://ustaxcourt.gov/petitioners-start.html",
+            "https://ustaxcourt.gov/petitioners-glossary.html",
         ],
     },
     {
         "terms": ["Notice of determination"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html#START2",
-            "https://ustaxcourt.gov/petitioners-glossary.html#NOTICE-OF-DETERMINATION",
+            "https://ustaxcourt.gov/petitioners-start.html",
+            "https://ustaxcourt.gov/petitioners-glossary.html",
         ],
     },
     {
         "terms": ["Notice of certification"],
-        "results": ["https://ustaxcourt.gov/petitioners-start.html#START2"],
+        "results": ["https://ustaxcourt.gov/petitioners-start.html"],
     },
     {
         "terms": ["Start a case"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html#START1",
+            "https://ustaxcourt.gov/petitioners-start.html",
             "https://ustaxcourt.gov/dawson.html",
         ],
     },
     {
         "terms": ["What is DAWSON", "DAWSON", "Register for DAWSON"],
         "results": [
-            "https://ustaxcourt.gov/dawson-faqs-basics.html#BASICS1",
+            "https://ustaxcourt.gov/dawson-faqs-basics.html",
             "https://ustaxcourt.gov/dawson.html",
         ],
     },
@@ -70,7 +70,7 @@ PROMOTIONS_DATA = [
     {
         "terms": ["How to get a DAWSON account"],
         "results": [
-            "https://ustaxcourt.gov/dawson-faqs-account-management.html#ACCOUNT3",
+            "https://ustaxcourt.gov/dawson-faqs-account-management.html",
             "https://ustaxcourt.gov/dawson.html",
         ],
     },
@@ -187,7 +187,7 @@ PROMOTIONS_DATA = [
         ],
         "results": [
             "https://ustaxcourt.gov/employment/",
-            "https://ustaxcourt.gov/employment/law-clerk-program/#AP",
+            "https://ustaxcourt.gov/employment/law-clerk-program/",
         ],
     },
     {
