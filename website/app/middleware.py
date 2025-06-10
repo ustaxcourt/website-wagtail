@@ -1,5 +1,7 @@
 import logging
 import traceback
+from django.utils.deprecation import MiddlewareMixin
+from django.utils.cache import patch_cache_control
 
 
 class JSONExceptionMiddleware:
@@ -27,3 +29,14 @@ class JSONExceptionMiddleware:
 
         # Let Django handle the response normally
         return None
+
+
+class NoCacheForLoggedInUsersMiddleware(MiddlewareMixin):
+    """
+    Prevents CloudFront from caching pages served to logged-in users.
+    """
+
+    def process_response(self, request, response):
+        if request.user.is_authenticated:
+            patch_cache_control(response, no_store=True, private=True)
+        return response

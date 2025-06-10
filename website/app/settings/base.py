@@ -75,6 +75,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "app.middleware.NoCacheForLoggedInUsersMiddleware",
 ]
 
 if os.getenv("CLOUDFRONT_DISTRIBUTION_ID"):
