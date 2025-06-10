@@ -115,6 +115,7 @@ jobs:
           make updateindex settings="app.settings.${ENVIRONMENT}"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
+          make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 
       # TODO: disabling for now because of An error occurred (IncorrectInstanceState) when calling the StopInstances operation: This instance 'i-02e10df312188338c' is not in a state from which it can be stopped.
       # TODO: disable this for security reasons
