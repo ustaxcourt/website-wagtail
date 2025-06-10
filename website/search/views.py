@@ -6,7 +6,7 @@ from wagtail.models import Page
 from wagtail.blocks import StreamValue
 from wagtail.contrib.search_promotions.models import Query
 
-from home.common_models.judges import JudgeProfile
+from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
 
 # To enable logging of search queries for use with the "Promoted search results" module
