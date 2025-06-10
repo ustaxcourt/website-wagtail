@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.conf import settings
+from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
+from wagtail.models import Page
 from .models import NavigationMenu, JudgeRole
 from .models.snippets.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
@@ -101,3 +103,40 @@ def protect_special_judge_roles(request, snippets):
                 if referer:
                     return redirect(referer)
                 return redirect(reverse("wagtailsnippets:index"))
+
+
+@hooks.register("after_edit_snippet")
+def purge_cache_for_snippet_related_pages(request, instance):
+    """
+    Purge frontend cache for pages that might be affected by this snippet.
+    This uses a snippet type to path mapping and matches live pages based on path.
+    """
+    snippet_type = type(instance).__name__.lower()
+
+    path_map = {
+        "commontext": ["/*"],
+        "fancycard": ["/*"],
+        "judgecollection": ["/judges/*"],
+        "judgeprofile": ["/judges/*"],
+        "judgerole": ["/judges/*"],
+        "navigationmenu": ["/*"],
+        "navigationribbon": ["/*"],
+        "simplecard": ["/*"],
+    }
+
+    affected_prefixes = path_map.get(snippet_type, ["/"])
+    affected_pages = []
+    for prefix in affected_prefixes:
+        pages = Page.objects.live().filter(url_path__startswith=prefix)
+        affected_pages.extend(pages)
+
+    if not affected_pages:
+        logger.info(f"No affected pages found for snippet type '{snippet_type}'")
+        return
+
+    for page in affected_pages:
+        try:
+            purge_page_from_cache(page)
+            logger.info(f"Purged frontend cache for page: {page.url_path}")
+        except Exception as e:
+            logger.error(f"Error purging cache for page {page.id}: {e}")
