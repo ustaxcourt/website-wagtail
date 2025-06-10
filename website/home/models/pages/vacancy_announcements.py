@@ -37,7 +37,9 @@ class VacancyEntry(Orderable):
         max_length=255, help_text="Position title, series, and grade"
     )
     closing_date = models.DateField(
-        help_text="Closing date for the vacancy", blank=True, null=True
+        help_text="Closing date that the vacancy will no longer appear on the Vacancy announcement page.",
+        blank=True,
+        null=True,
     )
     closing_date_text = models.CharField(
         max_length=255,
