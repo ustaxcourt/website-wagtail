@@ -1,5 +1,4 @@
-from urllib.parse import urlparse
-
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from wagtail.contrib.search_promotions.models import SearchPromotion, Query
 from wagtail.models import Page
@@ -10,82 +9,82 @@ PROMOTIONS_DATA = [
     {
         "terms": ["Taxpayer", "Petitioner"],
         "results": [
-            "https://ustaxcourt.gov/petitioners.html",
-            "https://ustaxcourt.gov/petitioners-glossary.html",
+            "petitioners",
+            "petitioners-glossary",
         ],
     },
     {
         "terms": ["What is a petitioner", "Am I a petitioner"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html",
-            "https://ustaxcourt.gov/petitioners-glossary.html",
+            "petitioners-start",
+            "petitioners-glossary",
         ],
     },
     {
         "terms": ["Notice of deficiency", "notice"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html",
-            "https://ustaxcourt.gov/petitioners-glossary.html",
+            "petitioners-start",
+            "petitioners-glossary",
         ],
     },
     {
         "terms": ["Notice of determination"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html",
-            "https://ustaxcourt.gov/petitioners-glossary.html",
+            "petitioners-start",
+            "petitioners-glossary",
         ],
     },
     {
         "terms": ["Notice of certification"],
-        "results": ["https://ustaxcourt.gov/petitioners-start.html"],
+        "results": ["petitioners-start"],
     },
     {
         "terms": ["Start a case"],
         "results": [
-            "https://ustaxcourt.gov/petitioners-start.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "petitioners-start",
+            "dawson",
         ],
     },
     {
         "terms": ["What is DAWSON", "DAWSON", "Register for DAWSON"],
         "results": [
-            "https://ustaxcourt.gov/dawson-faqs-basics.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "dawson-faqs-basics",
+            "dawson",
         ],
     },
     {
         "terms": ["How to efile", "eFile", "efile"],
         "results": [
-            "https://ustaxcourt.gov/efile-a-petition.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "efile-a-petition",
+            "dawson",
         ],
     },
     {
         "terms": ["Electronic access", "eAccess"],
         "results": [
-            "https://ustaxcourt.gov/dawson-faqs-account-management.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "dawson-faqs-account-management",
+            "dawson",
         ],
     },
     {
         "terms": ["How to get a DAWSON account"],
         "results": [
-            "https://ustaxcourt.gov/dawson-faqs-account-management.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "dawson-faqs-account-management",
+            "dawson",
         ],
     },
     {
         "terms": ["Fee", "Fees", "Filing fee"],
         "results": [
-            "https://ustaxcourt.gov/fees-and-charges.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "fees-and-charges",
+            "dawson",
         ],
     },
     {
         "terms": ["places of trial", "trial locations", "courthouse", "trial sessions"],
         "results": [
-            "https://ustaxcourt.gov/fees-and-charges.html",
-            "https://ustaxcourt.gov/dawson.html",
+            "fees-and-charges",
+            "dawson",
         ],
     },
     {
@@ -100,24 +99,24 @@ PROMOTIONS_DATA = [
             "Remote proceedings",
         ],
         "results": [
-            "https://ustaxcourt.gov/dpt-cities",
-            "https://ustaxcourt.gov/petitioners-during/",
+            "dpt-cities",
+            "petitioners-during",
         ],
     },
     {
-        "terms": ["Judge", "Judges", "Judge[name]", "[name of judge]"],
+        "terms": ["Judge", "Judges"],
         "results": [
-            "https://ustaxcourt.gov/judges",
-            "https://ustaxcourt.gov/press-releases",
-            "https://ustaxcourt.gov/directory",
+            "judges",
+            "press-releases",
+            "directory",
         ],
     },
     {
         "terms": ["Urda", "Judge Urda", "Chief Judge", "Chief Judge Urda"],
         "results": [
             "https://ustaxcourt.gov/judges/51/urda/",
-            "https://ustaxcourt.gov/press-releases/",
-            "https://ustaxcourt.gov/directory/",
+            "press-releases",
+            "directory",
         ],
     },
     {
@@ -129,14 +128,14 @@ PROMOTIONS_DATA = [
             "clerk of court",
         ],
         "results": [
-            "https://ustaxcourt.gov/files/documents/04252024.pdf",
-            "https://ustaxcourt.gov/press-releases",
-            "https://ustaxcourt.gov/directory",
+            f"{settings.BASE_URL}/files/documents/04252024.pdf",
+            "press-releases",
+            "directory",
         ],
     },
     {
         "terms": ["Rules", "Tax Court Rules", "Amendments"],
-        "results": ["https://ustaxcourt.gov/rules/"],
+        "results": ["rules"],
     },
     {
         "terms": ["Orders", "Today's Orders", "Judge Ruling", "Ruling"],
@@ -152,7 +151,7 @@ PROMOTIONS_DATA = [
         ],
         "results": [
             "https://dawson.ustaxcourt.gov/todays-opinions",
-            "https://ustaxcourt.gov/pamphlets/",
+            "pamphlets",
         ],
     },
     {
@@ -162,7 +161,7 @@ PROMOTIONS_DATA = [
             "Attorney Admissions",
             "Admission Application",
         ],
-        "results": ["https://ustaxcourt.gov/practitioners/"],
+        "results": ["practitioners"],
     },
     {
         "terms": [
@@ -173,8 +172,8 @@ PROMOTIONS_DATA = [
             "Documents",
         ],
         "results": [
-            "https://ustaxcourt.gov/transcripts-and-copies/",
-            "https://ustaxcourt.gov/pamphlets/",
+            "transcripts-and-copies",
+            "pamphlets",
         ],
     },
     {
@@ -186,13 +185,13 @@ PROMOTIONS_DATA = [
             "Vacancy Announcement",
         ],
         "results": [
-            "https://ustaxcourt.gov/employment/",
-            "https://ustaxcourt.gov/employment/law-clerk-program/",
+            "employment",
+            "law-clerk-program",
         ],
     },
     {
         "terms": ["Customer support", "Support", "Help", "Feedback", "Questions"],
-        "results": ["https://ustaxcourt.gov/contact"],
+        "results": ["contact"],
     },
 ]
 
@@ -200,31 +199,18 @@ PROMOTIONS_DATA = [
 class Command(BaseCommand):
     help = "Creates or updates search promotions."
 
-    def get_page_from_url(self, full_url):
-        """
-        Takes a full URL, extracts the slug, and retrieves the corresponding Page object.
-        Example: "https://example.com/about-us.html#section" -> slug "about-us"
-        """
-        if not full_url:
+    def get_page_from_slug(self, text):
+        if not text:
             return None
 
         try:
-            path = urlparse(full_url).path
-            filename = path.split("/")[-1]
-            slug = filename.rsplit(".html", 1)[0]
-
-            page = Page.objects.get(slug=slug)
+            page = Page.objects.get(slug=text)
             return page
         except Page.DoesNotExist:
             self.stdout.write(
                 self.style.WARNING(
-                    f"  -> WARNING: Page with derived slug '{slug}' from URL '{full_url}' not found."
+                    f"  -> WARNING: Page with derived slug '{text}' not found."
                 )
-            )
-            return None
-        except Exception as e:
-            self.stdout.write(
-                self.style.ERROR(f"  -> ERROR: Could not process URL '{full_url}': {e}")
             )
             return None
 
@@ -245,7 +231,7 @@ class Command(BaseCommand):
             # Find all page objects first
             promoted_pages = []
             for url in result_urls:
-                page = self.get_page_from_url(url)
+                page = self.get_page_from_slug(url)
                 if page:
                     promoted_pages.append(page)
 
