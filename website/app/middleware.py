@@ -42,8 +42,7 @@ class NoCacheForLoggedInUsersMiddleware:
             ] = "private, no-store, no-cache, must-revalidate, max-age=0"
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"
-            response[
-                "X-Logged-In-User"
-            ] = "true"  # Custom header to help bypass CDN caching
-
+            response["X-Logged-In-User"] = "true"
+        else:
+            response["X-Logged-In-User"] = "false"
         return response
