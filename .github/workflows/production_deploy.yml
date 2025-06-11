@@ -134,7 +134,6 @@ jobs:
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make migrate
           make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
-          make createpages settings="app.settings.${ENVIRONMENT}"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
 
