@@ -43,6 +43,4 @@ class NoCacheForLoggedInUsersMiddleware:
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"
             response["X-Logged-In-User"] = "true"
-        else:
-            response["X-Logged-In-User"] = "false"
         return response
