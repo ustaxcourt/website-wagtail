@@ -9,14 +9,7 @@ from wagtail.contrib.search_promotions.models import Query
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
 
-# To enable logging of search queries for use with the "Promoted search results" module
-# <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
-# uncomment the following line and the lines indicated in the search function
-# (after adding wagtail.contrib.search_promotions to INSTALLED_APPS):
-
-# from wagtail.contrib.search_promotions.models import Query
-
-filter_out_pages_by_title = ["Press Releases & News"]
+SEARCH_EXCLUSION_PAGES = ["Press Releases & News"]
 
 
 def extract_text_from_streamfield(stream_value, max_length=300):
@@ -109,11 +102,11 @@ def search(request):
         query = Query.get(search_query)
         query.add_hit()
 
-        # Filter out unwanted pages
+        # Filter out excluded pages
         search_results = [
             result
             for result in search_results
-            if result.title not in filter_out_pages_by_title
+            if result.title not in SEARCH_EXCLUSION_PAGES
         ]
 
         # Add search snippets to page results
