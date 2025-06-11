@@ -4,7 +4,7 @@ from django.utils.html import strip_tags
 
 from wagtail.models import Page
 from wagtail.blocks import StreamValue
-from wagtail.contrib.search_promotions.models import Query
+from wagtail.contrib.search_promotions.models import Query, SearchPromotion
 
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
@@ -102,16 +102,43 @@ def search(request):
         query = Query.get(search_query)
         query.add_hit()
 
-        # Filter out excluded pages
-        search_results = [
-            result
-            for result in search_results
-            if result.title not in SEARCH_EXCLUSION_PAGES
-        ]
+        # Get search promotions
+        search_promotions = SearchPromotion.objects.filter(query=query).select_related(
+            "page"
+        )
 
-        # Add search snippets to page results
+        # Filter out excluded pages and add search snippets to page results
+        # Also, prepare a set of promoted page IDs for efficient lookup
+        promoted_page_ids = {p.page.id for p in search_promotions if p.page}
+
+        filtered_search_results = []
         for result in search_results:
-            result.search_snippet = get_search_snippet(result)
+            if result.title not in SEARCH_EXCLUSION_PAGES:
+                # Add search snippet
+                result.search_snippet = get_search_snippet(result)
+                filtered_search_results.append(result)
+        search_results = filtered_search_results
+
+        # Handle duplicate pages between promotions and organic results
+        # Iterate through search promotions to update descriptions and mark duplicates
+        for promotion in search_promotions:
+            if promotion.page:  # Ensure it's a page promotion
+                # Check if this promoted page also exists in the organic search results
+                for organic_result in search_results:
+                    if organic_result.pk == promotion.page.pk:
+                        # If a duplicate is found, copy the organic result's snippet to the promotion's description
+                        # and mark the organic result for removal.
+                        if (
+                            hasattr(organic_result, "search_snippet")
+                            and organic_result.search_snippet
+                        ):
+                            promotion.description = organic_result.search_snippet
+                        break
+
+        # Remove duplicate pages from search_results that are already in search_promotions
+        search_results = [
+            result for result in search_results if result.pk not in promoted_page_ids
+        ]
 
         # Convert judge results to a compatible format
         for judge in judge_results:
@@ -130,6 +157,9 @@ def search(request):
 
     else:
         search_results = Page.objects.none()
+        search_promotions = (
+            SearchPromotion.objects.none()
+        )  # Initialize even if no query
 
     # Pagination
     paginator = Paginator(search_results, 10)
@@ -146,5 +176,6 @@ def search(request):
         {
             "search_query": search_query,
             "search_results": search_results,
+            "search_promotions": search_promotions,  # Pass promotions to the template
         },
     )

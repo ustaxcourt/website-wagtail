@@ -227,9 +227,10 @@
         </form>
         {% if search_query == "" %}
             <div class="empty-search">Please enter a search term to find content.</div>
-        {% elif search_results %}
-            {% get_search_promotions search_query as search_promotions %}
+        {% elif search_results or search_promotions %}
+            {# Changed condition to include promotions #}
             {% with promotions_count=search_promotions|length %}
+                {# Using the passed search_promotions #}
                 {% with total_results=search_results.paginator.count|add:promotions_count %}
                     <div class="results-count">Found {{ total_results }} result{{ total_results|pluralize }} for "{{ search_query }}"</div>
                 {% endwith %}
