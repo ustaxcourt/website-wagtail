@@ -548,7 +548,7 @@
                                             <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                                         {% elif sub_block.block_type == 'links' %}
                                             {% include "home/links_block.html" with block=sub_block %}
-                                        {% elif sub_block.block_type == 'JudgeCollection' %}
+                                        {% elif sub_block.block_type == 'judgeCollection' %}
                                             {% with judge_collection=sub_block.value %}
                                                 {% for ordered_judge in judge_collection.ordered_judges.all %}
                                                     <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}"
