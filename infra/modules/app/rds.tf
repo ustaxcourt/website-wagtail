@@ -18,6 +18,10 @@ resource "aws_db_instance" "default" {
   enabled_cloudwatch_logs_exports = ["postgresql"]
 
   parameter_group_name = aws_db_parameter_group.postgresql.name
+
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_db_parameter_group" "postgresql" {
