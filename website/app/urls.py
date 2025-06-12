@@ -10,8 +10,6 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
-from django.views.decorators.csrf import csrf_exempt
-from social_django import views as social_views
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -84,11 +82,6 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
-    path(
-        "complete/azuread-tenant-oauth2/",
-        csrf_exempt(social_views.complete),
-        name="oauth_complete",
-    ),
     path("", include("social_django.urls", namespace="social")),
 ]
 
