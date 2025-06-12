@@ -12,6 +12,41 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from django.http import JsonResponse
 import uuid
+from social_django.utils import psa
+
+logger = logging.getLogger(__name__)
+
+
+@psa("social:begin")
+def debug_oauth_start(request):
+    """Debug view to see what happens when OAuth starts"""
+
+    # Log session state before starting OAuth
+    logger.info("=== OAuth Start Debug ===")
+    logger.info(f"Session key: {request.session.session_key}")
+    logger.info(f"Session contents: {dict(request.session)}")
+
+    # Force session creation if not exists
+    if not request.session.session_key:
+        request.session.create()
+        request.session.save()
+        logger.info(f"Created new session: {request.session.session_key}")
+
+    # Manually set a test state to see if it persists
+    test_state = "test_state_12345"
+    request.session["test_oauth_state"] = test_state
+    request.session.save()
+
+    logger.info(f"Set test state in session: {test_state}")
+    logger.info(f"Session after setting state: {dict(request.session)}")
+
+    return JsonResponse(
+        {
+            "session_key": request.session.session_key,
+            "session_contents": dict(request.session),
+            "message": "Session prepared for OAuth test",
+        }
+    )
 
 
 def test_session(request):
@@ -106,6 +141,7 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("test-session/", test_session, name="test_session"),
+    path("debug-oauth-start/", debug_oauth_start, name="debug_oauth_start"),
 ]
 
 if settings.DEBUG:

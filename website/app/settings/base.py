@@ -28,7 +28,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 AUTHENTICATION_BACKENDS = [
-    "social_core.backends.azuread_tenant.AzureADTenantOAuth2",
+    "app.backends.DebugAzureADTenantOAuth2",  # Use debug backend
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -76,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "app.middleware.ForceSessionMiddleware",
 ]
 
 if os.getenv("CLOUDFRONT_DISTRIBUTION_ID"):
@@ -379,6 +380,9 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/admin/"
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["state"]
 SOCIAL_AUTH_SESSION_EXPIRATION = False
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_STATE_PARAMETER = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True  # Ensure redirects are secure
+SOCIAL_AUTH_SESSION_KEY = "social_auth_session"
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ["email"]
 
 # 5. If you're behind a reverse proxy, add these headers
 USE_X_FORWARDED_HOST = True

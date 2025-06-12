@@ -29,6 +29,21 @@ class JSONExceptionMiddleware:
         return None
 
 
+class ForceSessionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Force session creation for OAuth requests
+        if "/login/azuread-tenant-oauth2/" in request.path:
+            if not request.session.session_key:
+                request.session.create()
+                request.session.save()
+
+        response = self.get_response(request)
+        return response
+
+
 class DebugSessionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
