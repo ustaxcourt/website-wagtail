@@ -10,6 +10,28 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
+from django.http import JsonResponse
+import uuid
+
+
+def test_session(request):
+    """Test view to check if sessions are working"""
+
+    # Set a test value in session
+    if "test_value" not in request.session:
+        request.session["test_value"] = str(uuid.uuid4())
+        request.session.save()  # Force save
+
+    return JsonResponse(
+        {
+            "session_key": request.session.session_key,
+            "test_value": request.session.get("test_value"),
+            "session_items": dict(request.session),
+            "cookies": dict(request.COOKIES),
+            "session_modified": request.session.modified,
+            "session_accessed": request.session.accessed,
+        }
+    )
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -83,6 +105,7 @@ urlpatterns = [
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
+    path("test-session/", test_session, name="test_session"),
 ]
 
 if settings.DEBUG:
