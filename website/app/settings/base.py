@@ -67,6 +67,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "app.middleware.DebugSessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -354,8 +355,34 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("DOMAIN_NAME")}']
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_SAMESITE = "None"
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+
+SESSION_COOKIE_SAMESITE = "Lax"  # Change from "None" to "Lax"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_SAVE_EVERY_REQUEST = True  # Ensure sessions are saved on every request
+
+# 2. Add OAuth-specific session settings
+SOCIAL_AUTH_STORAGE = "social_django.models.DjangoStorage"
+SOCIAL_AUTH_STRATEGY = "social_django.strategy.DjangoStrategy"
+
+# 3. Add state parameter settings for OAuth
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/admin/"
+SOCIAL_AUTH_RAISE_EXCEPTIONS = (
+    False  # Change from True to False for better error handling
+)
+
+# 4. Add session configuration for OAuth state management
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["state"]
+SOCIAL_AUTH_SESSION_EXPIRATION = False
+
+# 5. If you're behind a reverse proxy, add these headers
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
+# 6. Update CSRF settings for OAuth callback
+CSRF_COOKIE_SAMESITE = "Lax"  # Match session cookie setting
+CSRF_USE_SESSIONS = True  # Store CSRF token in session instead of cookie
 
 
 CSRF_COOKIE_SECURE = True
