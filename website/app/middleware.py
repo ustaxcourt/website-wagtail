@@ -43,4 +43,6 @@ class NoCacheForLoggedInUsersMiddleware:
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"
             response["X-Logged-In-User"] = "true"
+        else:
+            response["Cache-Control"] = "max-age=300"
         return response
