@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar env_tags %}
+{% load static wagtailcore_tags env_tags %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -109,7 +109,6 @@
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
-        {% wagtailuserbar %}
         {% block content %}{% endblock %}
         {% include 'footer.html' %}
         <button title="Scroll to top"
