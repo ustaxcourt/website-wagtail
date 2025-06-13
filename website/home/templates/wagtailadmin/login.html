@@ -112,6 +112,7 @@
                 <ul>
                     {% if form.errors %}
                         {% for error in form.non_field_errors %}
+                            {{error}}
                             {% if error.strip == "You do not have permission to access the admin" %}
                                 <li class="error">
                                     You need permission to access the administrative section of this website. Please contact Web Apps Team <a href="mailto:website-adhoc@ustaxcourt.gov">Website-adhoc@ustaxcourt.gov</a> to be added.
@@ -136,8 +137,8 @@
               method="post"
               autocomplete="off"
               novalidate>
-            {% csrf_token %}
             {% block login_form %}
+                {% csrf_token %}
                 {% url 'wagtailadmin_home' as home_url %}
                 <input type="hidden" name="next" value="{{ next|default:home_url }}" />
                 {% block fields %}
