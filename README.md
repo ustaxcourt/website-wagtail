@@ -346,10 +346,11 @@ Or, the following equivalent command.
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
 
 ### Workflow for Production Deploys
+
 1. At the end of a sprint, we create a *release* branch (e.g. `release/sprint-13`) off of production.
 2. We then merge main into the release branch, and create a *release pull request* from it.
 3. After obtaining necessary approvals,the dev-lead merges the release pull request to production.
-4. Finally, a member of the *authorized deployers* group deploys the production branch to prod-web using a manually-triggered github action (see [production_deploy.yml](.github/workflows/production_deploy.yml) ).
+4. Finally, a member of the *authorized deployers* group deploys the production branch to prod-web using a manually-triggered github action (see [production_deploy.yml](.github/workflows/production_deploy.yml) ). See [production deploy workflow documentation](./docs/support/PRODUCTION-deployment.md) for detailed instructions.
 
 ### Troubleshooting Python/Python 3
 
