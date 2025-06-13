@@ -15,7 +15,7 @@ fi
 
 echo "Found bucket: ${bucket_name}"
 
-# Delete all objects recursively !
-aws s3 rm "s3://${bucket_name}" --recursive
+# Delete bucket with all objects!
+aws s3 rb "s3://${bucket_name}" --force
 
-echo "Bucket cleanup complete"
+echo "Bucket ${bucket_name} has been deleted."
