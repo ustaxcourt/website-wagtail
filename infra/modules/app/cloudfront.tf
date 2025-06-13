@@ -41,10 +41,13 @@ resource "aws_cloudfront_cache_policy" "custom_five_minute_app_cache" {
       cookie_behavior = "none"
     }
     headers_config {
-      header_behavior = "none"
+      header_behavior = "whitelist"
+      headers {
+        items = ["Host", "Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+      }
     }
     query_strings_config {
-      query_string_behavior = "none"
+      query_string_behavior = "all"
     }
     enable_accept_encoding_brotli = true
     enable_accept_encoding_gzip   = true
