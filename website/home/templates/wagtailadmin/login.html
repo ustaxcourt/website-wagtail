@@ -119,7 +119,7 @@
         </div>
         {% block above_login %}{% endblock %}
         <a href="{% url "social:begin" "azuread-tenant-oauth2" %}"
-           class="azure-login">Login with Azure AD</a>
+           class="azure-login">Login with Court SSO credentials</a>
         <div class="divider">
             <span>or</span>
         </div>
@@ -128,8 +128,8 @@
               method="post"
               autocomplete="off"
               novalidate>
+            {% csrf_token %}
             {% block login_form %}
-                {% csrf_token %}
                 {% url 'wagtailadmin_home' as home_url %}
                 <input type="hidden" name="next" value="{{ next|default:home_url }}" />
                 {% block fields %}
