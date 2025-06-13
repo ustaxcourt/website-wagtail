@@ -42,7 +42,6 @@
         #home-page .hero-image.active {
             opacity: 1;
         }
-
     </style>
 {% endblock %}
 {% block extra_js %}
@@ -64,34 +63,34 @@
     </script>
 {% endblock %}
 {% block content %}
-<div id="home-page">
-    <div class="carousel">
-        {% for picture in page.images.all %}
-            {% image picture.image fill-2000x400-c80  as myrendition %}
-            <img src="{{ myrendition.url }}"
-                 alt="{{ myrendition.title }}"
-                 class="hero-image {% if forloop.first %}active{% endif %}"
-                 {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
-        {% endfor %}
-    </div>
-    <div class="grid-container">
-        <div class="content">
-            <div class="entries-list">
+    <div id="home-page">
+        <div class="carousel">
+            {% for picture in page.images.all %}
+                {% image picture.image fill-2000x400-c80  as myrendition %}
+                <img src="{{ myrendition.url }}"
+                     alt="{{ myrendition.title }}"
+                     class="hero-image {% if forloop.first %}active{% endif %}"
+                     {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
+            {% endfor %}
+        </div>
+        <div class="grid-container">
+            <div class="content">
+                <div class="entries-list">
                     {% now "c" as current_time %}
-                        {% for entry in page.entries.all %}
-                            {% if not entry.end_date or entry.end_date|date:"c" >= current_time %}
-                                <div class="entry shadow-2">
-                                    {% if entry.title %}
+                    {% for entry in page.entries.all %}
+                        {% if not entry.end_date or entry.end_date|date:"c" >= current_time %}
+                            <div class="entry shadow-2">
+                                {% if entry.title %}
                                     <h3>{{ entry.title }}</h3>
-                                    {% else %}
-                                    <br/>
-                                    {% endif %}
-                                    <div>{{ entry.body|richtext }}</div>
-                                </div>
+                                {% else %}
+                                    <br />
+                                {% endif %}
+                                <div>{{ entry.body|richtext }}</div>
+                            </div>
                         {% endif %}
                     {% endfor %}
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
