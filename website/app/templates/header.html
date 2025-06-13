@@ -378,12 +378,15 @@
                          alt="US Tax Court Logo" />
                 </a>
                 <div class="display-flex flex-justify flex-align-center">
-                    <form id="desktop-search-form" class="search-form" action="/search/" method="get">
+                    <form id="desktop-search-form"
+                          class="search-form"
+                          action="/search/"
+                          method="get">
                         <input type="text"
-                            name="query"
-                            placeholder="Search..."
-                            aria-label="Search"
-                            data-testid="search-input">
+                               name="query"
+                               placeholder="Search..."
+                               aria-label="Search"
+                               data-testid="search-input">
                         <button type="submit" data-testid="search-button">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             Search
@@ -391,17 +394,20 @@
                     </form>
                     <a href="https://dawson.ustaxcourt.gov/" class="dawson-link">
                         <img class="dawson"
-                            src="{% static 'images/header/dawson.webp' %}"
-                            alt="Dawson Logo" />
+                             src="{% static 'images/header/dawson.webp' %}"
+                             alt="Dawson Logo" />
                     </a>
                 </div>
             </div>
-            <form id="mobile-search-form" class="search-form" action="/search/" method="get">
+            <form id="mobile-search-form"
+                  class="search-form"
+                  action="/search/"
+                  method="get">
                 <input type="text"
-                    name="query"
-                    placeholder="Search..."
-                    aria-label="Search"
-                    data-testid="search-input">
+                       name="query"
+                       placeholder="Search..."
+                       aria-label="Search"
+                       data-testid="search-input">
                 <button type="submit" data-testid="search-button">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     Search

@@ -1,14 +1,9 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n wagtailadmin_tags %}
-
-{% block titletag %}
-    {{ title|default:"Switch User Role for Testing" }}
-{% endblock %}
-
+{% block titletag %}{{ title|default:"Switch User Role for Testing" }}{% endblock %}
 {% block bodyclass %}
     {{ block.super }} role-switcher-page section-role-switcher {# Append to existing body classes #}
 {% endblock %}
-
 {% block extra_css %}
     {{ block.super }}
     <style>
@@ -18,73 +13,83 @@
             padding: 0.5em;
             border-radius: 4px;
         }
+
         .role-switcher-page .fieldWrapper label {
             font-weight: bold;
             display: block;
             margin-bottom: 0.3em;
         }
+
         .role-switcher-page .help {
             font-size: 0.9em;
             color: #666;
             margin-top: 0.2em;
         }
+
         .role-switcher-page .error-message {
             color: #d9534f;
             font-size: 0.9em;
             margin-top: 0.2em;
         }
-        .role-switcher-page hr.w-my-4 { /* Ensure hr is visible if needed */
+
+        .role-switcher-page hr.w-my-4 {
+            /* Ensure hr is visible if needed */
             margin-top: 1.5rem;
             margin-bottom: 1.5rem;
             border-top-width: 1px;
         }
     </style>
 {% endblock extra_css %}
-
 {# By NOT overriding block furniture, we let admin_base.html set up the sidebar and main content wrapper #}
 {# We now target the 'content' block which is typically inside admin_base.html's <main> element #}
 {% block content %}
     {# This include renders the H1 title and icon for the page content area #}
     {% include "wagtailadmin/shared/header.html" with title=title|default:"Switch User Role for Testing" icon="user" classname="merged" %}
-
-    <div class="nice-padding"> {# Standard Wagtail class for content padding #}
-
+    <div class="nice-padding">
+        {# Standard Wagtail class for content padding #}
         {% if is_assuming_role %}
             <div class="w-alert w-alert--warning" role="alert">
-                <p>You are currently assuming the role: <strong>{{ assumed_role_name }}</strong>. Your superuser privileges are temporarily inactive.</p>
+                <p>
+                    You are currently assuming the role: <strong>{{ assumed_role_name }}</strong>. Your superuser privileges are temporarily inactive.
+                </p>
             </div>
             <form method="post" action="{% url 'switch_role' %}" class="w-mt-4">
                 {% csrf_token %}
-                {% for field in revert_role_form %}{{ field }}{% endfor %} {# For hidden CSRF field #}
+                {% for field in revert_role_form %}{{ field }}{% endfor %}
+                {# For hidden CSRF field #}
                 <button type="submit" name="revert_role" class="button">Revert to Original Permissions</button>
             </form>
             <hr class="w-my-4">
             <p>To assume a different role, please revert to your original permissions first.</p>
         {% elif can_initiate_new_switch %}
-            <p>Select a role below to temporarily assume its permissions for testing purposes. Your superuser status will be temporarily disabled while assuming a role.</p>
-
-            <form method="post" action="{% url 'switch_role' %}" novalidate class="w-mt-4">
+            <p>
+                Select a role below to temporarily assume its permissions for testing purposes. Your superuser status will be temporarily disabled while assuming a role.
+            </p>
+            <form method="post"
+                  action="{% url 'switch_role' %}"
+                  novalidate
+                  class="w-mt-4">
                 {% csrf_token %}
-
                 {% for field in role_switch_form %}
-                    <div class="fieldWrapper"> {# Using the simple form rendering loop #}
+                    <div class="fieldWrapper">
+                        {# Using the simple form rendering loop #}
                         {{ field.label_tag }}
                         {{ field }}
-                        {% if field.help_text %}
-                            <p class="help">{{ field.help_text }}</p>
-                        {% endif %}
+                        {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
                         {% if field.errors %}
                             <p class="error-message">
-                                {% for error in field.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
+                                {% for error in field.errors %}<span>{{ error }}</span>{% endfor %}
                             </p>
                         {% endif %}
                     </div>
                 {% endfor %}
-
                 <div class="form-actions w-pt-4">
-                    <button type="submit" name="assume_role" class="button button-longrunning" data-controller="w-progress" data-action="w-progress#activate" data-w-progress-active-value="{% trans 'Switching…' %}">
+                    <button type="submit"
+                            name="assume_role"
+                            class="button button-longrunning"
+                            data-controller="w-progress"
+                            data-action="w-progress#activate"
+                            data-w-progress-active-value="{% trans 'Switching…' %}">
                         {% icon name="spinner" classname="w-mr-2" %}
                         <em data-w-progress-target="label">{% trans "Assume Selected Role" %}</em>
                     </button>
@@ -92,9 +97,13 @@
             </form>
         {% else %}
             <div class="w-alert w-alert--critical" role="alert">
-              <p>You do not have permission to switch roles from your current account state, or no roles are available to switch to.</p>
+                <p>
+                    You do not have permission to switch roles from your current account state, or no roles are available to switch to.
+                </p>
             </div>
-            <p class="w-mt-4"><a href="{% url 'wagtailadmin_home' %}" class="button">Return to Dashboard</a></p>
+            <p class="w-mt-4">
+                <a href="{% url 'wagtailadmin_home' %}" class="button">Return to Dashboard</a>
+            </p>
         {% endif %}
     </div>
 {% endblock content %}
