@@ -6,6 +6,7 @@ from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageBlock
+from wagtail.search import index
 
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
@@ -210,4 +211,8 @@ class EnhancedStandardPage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
     ]

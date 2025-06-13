@@ -1,6 +1,8 @@
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 from wagtail import blocks
+from wagtail.search import index
+
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from datetime import date
 
@@ -45,6 +47,10 @@ class InternshipPrograms(EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("internship_programs"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("internship_programs"),
     ]
 
     def get_context(self, request, *args, **kwargs):
