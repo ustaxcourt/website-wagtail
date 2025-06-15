@@ -8,6 +8,7 @@ from wagtail import blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.fields import StreamField
+from wagtail.search import index
 from wagtail.admin.panels import FieldPanel
 from django.utils import timezone
 from django.utils.html import strip_tags
@@ -66,6 +67,10 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("press_release_body"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("press_release_body"),
     ]
 
     @route("archives/")

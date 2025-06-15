@@ -136,6 +136,8 @@ jobs:
           make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
+          make updateindex settings="app.settings.${ENVIRONMENT}"
+          make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:

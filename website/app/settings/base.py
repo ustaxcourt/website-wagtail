@@ -35,6 +35,7 @@ AUTHENTICATION_BACKENDS = [
 
 INSTALLED_APPS = [
     "home",
+    "search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
+    "wagtail.contrib.search_promotions",
     "wagtail.admin",
     "wagtail.contrib.routable_page",
     "wagtail.contrib.settings",
@@ -70,6 +72,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "app.middleware.NoCacheForLoggedInUsersMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -413,3 +416,4 @@ LOGGING = {
 }
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
+WAGTAILSEARCH_HITS_MAX_AGE = 180  # days

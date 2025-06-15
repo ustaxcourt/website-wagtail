@@ -254,8 +254,9 @@ This document clarifies the process a developer should follow when assigned to a
 Generally speaking, this project will follow a [feature-branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow):
 - `main` branch represents the official project history, and the starting point for all story work
 - developers work on stories by branching off of `main`, implementing their work in a feature branch, and ultimately integrating their feature branch back into `main` once their work is complete
+- `production` branch is reserved for deployments to the production website.  Upon the end of a sprint, we create a pull request that incorporates the current state of the main branch into the `production` branch.  With the exception of hotfixes, the `production` branch should only accept pull requests from `main`.
 
-Additionally, we will use tags to facilitate deployment to production and sandbox instances.
+Additionally, we will use tags to facilitate deployment to sandbox instances.
 
 **Sandbox Environment Configuration**
 
@@ -343,6 +344,13 @@ Or, the following equivalent command.
 > If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
+
+### Workflow for Production Deploys
+
+1. At the end of a sprint, we create a *release* branch (e.g. `release/sprint-13`) off of production.
+2. We then merge main into the release branch, and create a *release pull request* from it.
+3. After obtaining necessary approvals,the dev-lead merges the release pull request to production.
+4. Finally, a member of the *authorized deployers* group deploys the production branch to prod-web using a manually-triggered github action (see [production_deploy.yml](.github/workflows/production_deploy.yml) ). See [production deploy workflow documentation](./docs/support/PRODUCTION-deployment.md) for detailed instructions.
 
 ### Troubleshooting Python/Python 3
 

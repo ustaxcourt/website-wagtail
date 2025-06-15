@@ -3,15 +3,53 @@
 <style>
     header#top-navigation .blue-banner {
         background-color: var(--dark-blue);
-        height: 116px;
     }
 
     header#top-navigation .blue-banner .dawson {
         width: 60px;
+        flex-shrink: 0;
+        flex-grow: 0;
     }
 
     header#top-navigation .logo-seal {
         width: 70px;
+    }
+
+    header#top-navigation #desktop-search-form {
+        display: flex;
+        gap: 8px;
+        margin: 0 20px;
+    }
+
+    header#top-navigation #mobile-search-form {
+        display: none;
+    }
+
+    header#top-navigation .dawson-link {
+        flex-shrink: 0;
+    }
+
+    header#top-navigation .search-form input {
+        padding: 8px 12px;
+        border: 1px solid var(--light-blue);
+        border-radius: 4px;
+        min-width: 200px;
+    }
+
+    header#top-navigation .search-form button {
+        background-color: var(--light-blue);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    header#top-navigation .search-form button:hover {
+        background-color: var(--dark-blue);
     }
 
     header#top-navigation .navigation {
@@ -147,7 +185,7 @@
         }
     }
 
-    @media (min-width: 854px) and (max-width: 960px) {
+    @media (min-width: 854px) and (max-width: 1086px) {
         header#top-navigation .navigation .navigation-header .link {
             padding: 0 15px;
             font-size: 0.9rem;
@@ -170,8 +208,53 @@
     }
 
     @media (max-width: 639px) {
+        header#top-navigation #desktop-search-form {
+            display: none;
+        }
+
+        header#top-navigation #mobile-search-form {
+            display: flex;
+        }
+
         header#top-navigation .blue-banner {
-            height: 80px;
+            height: auto;
+            padding: 10px 0;
+        }
+
+        header#top-navigation .usa-header__inner {
+            gap: 10px;
+        }
+
+        header#top-navigation .search-form {
+            margin: 10px 0;
+            width: 100%;
+            order: 2;
+        }
+
+        header#top-navigation .search-form input {
+            flex: 1;
+        }
+
+        header#top-navigation .dawson-link {
+            order: 3;
+        }
+    }
+
+    @media (max-width: 940px) {
+        #logo-link {
+            max-width: 400px;
+        }
+    }
+
+    @media (max-width: 830px) {
+        #logo-link {
+            max-width: 250px;
+        }
+    }
+
+    @media (max-width: 690px) {
+        #logo-link {
+            max-width: 200px;
         }
     }
 
@@ -286,7 +369,7 @@
     <div class="blue-banner">
         <div class="grid-container padding-1">
             <div class="usa-header__inner display-flex flex-justify flex-align-center">
-                <a href="/">
+                <a id="logo-link" href="/">
                     <img class="tablet:display-none logo-seal"
                          src="{% static 'images/header/logo_seal.webp' %}"
                          alt="US Tax Court Logo" />
@@ -294,12 +377,42 @@
                          src="{% static 'images/header/logo.webp' %}"
                          alt="US Tax Court Logo" />
                 </a>
-                <a href="https://dawson.ustaxcourt.gov/">
-                    <img class="dawson"
-                         src="{% static 'images/header/dawson.webp' %}"
-                         alt="Dawson Logo" />
-                </a>
+                <div class="display-flex flex-justify flex-align-center">
+                    <form id="desktop-search-form"
+                          class="search-form"
+                          action="/search/"
+                          method="get">
+                        <input type="text"
+                               name="query"
+                               placeholder="Search..."
+                               aria-label="Search"
+                               data-testid="search-input">
+                        <button type="submit" data-testid="search-button">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Search
+                        </button>
+                    </form>
+                    <a href="https://dawson.ustaxcourt.gov/" class="dawson-link">
+                        <img class="dawson"
+                             src="{% static 'images/header/dawson.webp' %}"
+                             alt="Dawson Logo" />
+                    </a>
+                </div>
             </div>
+            <form id="mobile-search-form"
+                  class="search-form"
+                  action="/search/"
+                  method="get">
+                <input type="text"
+                       name="query"
+                       placeholder="Search..."
+                       aria-label="Search"
+                       data-testid="search-input">
+                <button type="submit" data-testid="search-button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search
+                </button>
+            </form>
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
