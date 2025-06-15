@@ -1,5 +1,4 @@
 from django import template
-from pprint import pformat
 import re
 
 register = template.Library()
@@ -23,12 +22,3 @@ def judge_display_name(judge):
         role = judge.roles.first()
         return f"{role.role_name} {judge.display_name}"
     return f"{judge.title} {judge.display_name}"
-
-
-@register.filter
-def ppr(value):
-    """
-    A filter to pretty-print a variable.
-    Usage: {{ my_variable|ppr }}
-    """
-    return pformat(value)
