@@ -111,18 +111,17 @@
             {% if messages or form.errors %}
                 <ul>
                     {% if form.errors %}
-                        {% for error in form.non_field_errors %}
-                            <li class="debugerror">{{ error }}</li>
-                            {% if "You do not have permission to access the admin" in error %}
-                                <li class="error">
-                                    You need permission to access the administrative section of this website. Please contact Web Apps Team <a href="mailto:website-adhoc@ustaxcourt.gov">Website-adhoc@ustaxcourt.gov</a> to be added.
-                                </li>
-                            {% else %}
-                                <li class="error">{{ error }}</li>
-                            {% endif %}
-                        {% endfor %}
+                        {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
                     {% endif %}
-                    {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+                    {% for message in messages %}
+                        {% if "You do not have permission to access the admin" in message %}
+                            <li class="{{ message.tags }}">
+                                You need permission to access the administrative section of this website. Please contact Web Apps Team <a href="mailto:website-adhoc@ustaxcourt.gov">Website-adhoc@ustaxcourt.gov</a> to be added.
+                            </li>
+                        {% else %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endif %}
+                    {% endfor %}
                 </ul>
             {% endif %}
         </div>
