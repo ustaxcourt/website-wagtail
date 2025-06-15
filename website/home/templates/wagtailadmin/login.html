@@ -1,5 +1,5 @@
 {% extends "wagtailadmin/admin_base.html" %}
-{% load i18n wagtailadmin_tags %}
+{% load i18n wagtailadmin_tags custom_tags %}
 {% block titletag %}
     {% trans "Sign in" %}
 {% endblock %}
@@ -114,7 +114,7 @@
                         {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
                     {% endif %}
                     {% for message in messages %}
-                        <pre>{{ message|debug }}</pre>
+                        <pre>{{ message|ppr }}</pre>
                         {{ message|safe }}
                         {% if "You do not have permission to access the admin" in message.message %}
                             <li class="{{ message.tags }}">
