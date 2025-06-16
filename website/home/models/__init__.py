@@ -15,7 +15,6 @@ from home.models.snippets.navigation import (
     SubNavigationLinkBlock,  # noqa: F401
 )
 from home.models.snippets.common import CommonText  # noqa: F401
-from home.models.snippets.scheduled_text import ScheduledCommonText  # noqa: F401
 from home.models.pages.standard import StandardPage  # noqa: F401
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock  # noqa: F401
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock  # noqa: F401
