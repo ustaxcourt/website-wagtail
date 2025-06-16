@@ -106,8 +106,8 @@ make run
 ```
 
 ## Default Admin Account
-- Default username: admin
-- Default password: ustcAdminPW!
+- Default username: `admin`
+- Default password: `ustcAdminPW!`
 
 See `make superuser` to see how it is setup first time.
 
@@ -119,11 +119,81 @@ Mike will reach out to you with a aws console username & password. Please verify
 
 Next, you'll want to make sure your application is setup with your sso. You should be able to run this command and enter your SSO url when prompted. You'll also be prompted with some other stuff you want to fill in.
 
-- `aws sso configure`
+   ```
+   aws configure sso
+   ```
+
+Your `sso_start_url` value will be provided to you by an admin. For the other values, use:
+
+- *SSO Session Name*: something memorable, e.g. `ustc-sso`
+- *sso_region*: `us-east-1`
+- *sso_registration_scopes*: `sso:account:access`
 
 If you want to manually refresh your token which should last 8 hours, run this command
 
 - `aws sso login --profile sandbox`
+
+## Sandbox Environment Configuration
+
+Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
+
+1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console and use this console for remaining steps).
+
+> [!IMPORTANT]
+> You should add an account alias to your AWS Sandbox account. It should end with `-sandbox`, a good alias would be: `ustc-username-sandbox`. See [IAM console](https://docs.aws.amazon.com/IAM/latest/UserGuide/account-alias-create.html#w5aab9c19c19b7) section for "To create an AWS account alias".
+
+To check whether you have successfully logged into your account and that the proper environment variables are set, run the following:
+   ```
+   . infra/get_env.sh
+   ```
+   This should return the value `sandbox`.  If not, revisit the previous steps or ask someone on the team for help before moving forward.
+
+2. **Check out the `main` branch** of the repository.
+
+3. **From the repository’s root directory**, run:
+   ```shell
+   make aws-setup
+   ```
+   This command creates the necessary `website_secrets` in your AWS sandbox environment.
+
+4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
+
+5. **Configure github sandbox environment** Open file "infra/iam/sandbox_generated-deployer-access-key.json" and provide "AccessKeyId" and the "SecretAccessKey" values to [@jtdevos](https://github.com/jtdevos)/admin for github environment configuration. a new environment with "github user_sandbox" will be created.
+
+```text
+github environment name: {{github_user_id}}_sandbox
+AWS_ACCESS_KEY_ID: AccessKeyId
+AWS_SECRET_ACCESS_KEY: SecretAccessKey
+```
+
+6. **Push `sandbox` tag to setup your sandbox environment**. In your laptop console, run the following command to create a deployment workflow in GitHub to start the application deployment workflow:
+
+```shell
+   make tag tag=sandbox
+```
+Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). The entire deployment will complete after you provide NS entries to [@jtdevos](https://github.com/jtdevos). See next step.
+
+7. **While the github workflow is in progress.** Log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
+   ```text
+   ns-1396.awsdns-46.org.
+   ns-886.awsdns-46.net.
+   ns-1560.awsdns-03.co.uk.
+   ns-341.awsdns-42.com.
+   ```
+
+8. **Provide the `NS` entries and "Record name" (`DOMAIN_NAME`)** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow should complete successfully.
+
+9. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
+
+10. **Destroy application environment**. Verify you are able to destroy the application environment by running destroy command.
+
+> [!WARNING]
+> Leaving your sandbox application environment running might incur unwanted expense. Once the testing is done, you should destroy the AWS resources.
+
+```shell
+make tag tag=sandbox-destroy
+```
+
 
 ## Adding users to sandbox during deployment (Optional)
 
@@ -256,62 +326,8 @@ Generally speaking, this project will follow a [feature-branch workflow](https:/
 - developers work on stories by branching off of `main`, implementing their work in a feature branch, and ultimately integrating their feature branch back into `main` once their work is complete
 - `production` branch is reserved for deployments to the production website.  Upon the end of a sprint, we create a pull request that incorporates the current state of the main branch into the `production` branch.  With the exception of hotfixes, the `production` branch should only accept pull requests from `main`.
 
-Additionally, we will use tags to facilitate deployment to sandbox instances.
+Additionally, we will use tags to facilåitate deployment to sandbox instances.
 
-**Sandbox Environment Configuration**
-
-Each developer needs to configure and maintain a test environment for new features. Currently, your AWS sandbox account serves as this environment. If you have not configured your sandbox account yet, follow these steps:
-
-1. **Log in to your AWS sandbox account**, export the account keys, and configure them as your current AWS environment on your laptop (copy and paste the export commands into your shell console and use this console for remaining steps).
-
-> [!IMPORTANT]
-> You should add an account alias to your AWS Sandbox account. It should end with `-sandbox`, a good alias would be: `ustc-username-sandbox`. See [IAM console](https://docs.aws.amazon.com/IAM/latest/UserGuide/account-alias-create.html#w5aab9c19c19b7) section for "To create an AWS account alias".
-
-2. **Check out the `main` branch** of the repository.
-
-3. **From the repository’s root directory**, run:
-   ```shell
-   make aws-setup
-   ```
-   This command creates the necessary `website_secrets` in your AWS sandbox environment.
-
-4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
-
-5. **Configure github sandbox environment** Open file "infra/iam/sandbox_generated-deployer-access-key.json" and provide "AccessKeyId" and the "SecretAccessKey" values to [@jtdevos](https://github.com/jtdevos)/admin for github environment configuration. a new environment with "github user_sandbox" will be created.
-
-```text
-github environment name: {{github_user_id}}_sandbox
-AWS_ACCESS_KEY_ID: AccessKeyId
-AWS_SECRET_ACCESS_KEY: SecretAccessKey
-```
-
-6. **Push `sandbox` tag to setup your sandbox environment**. In your laptop console, run the following command to create a deployment workflow in GitHub to start the application deployment workflow:
-
-```shell
-   make tag tag=sandbox
-```
-Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). The entire deployment will complete after you provide NS entries to [@jtdevos](https://github.com/jtdevos). See next step.
-
-7. **While the github workflow is in progress.** Log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
-   ```text
-   ns-1396.awsdns-46.org.
-   ns-886.awsdns-46.net.
-   ns-1560.awsdns-03.co.uk.
-   ns-341.awsdns-42.com.
-   ```
-
-8. **Provide the `NS` entries and "Record name" (`DOMAIN_NAME`)** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow should complete successfully.
-
-9. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
-
-10. **Destroy application environment**. Verify you are able to destroy the application environment by running destroy command.
-
-> [!WARNING]
-> Leaving your sandbox application environment running might incur unwanted expense. Once the testing is done, you should destroy the AWS resources.
-
-```shell
-make tag tag=sandbox-destroy
-```
 
 ## The Workflow
 1. Pick up a story on the main board,
