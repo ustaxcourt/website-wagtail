@@ -56,8 +56,8 @@ resource "aws_scheduler_schedule" "run_daily_check" {
   name       = "${var.environment}-daily-management-command"
   group_name = "default"
 
-  # Flexible schedule definition (e.g., daily at 2:00 AM UTC)
-  schedule_expression = "cron(45 3 * * ? *)"
+  # Flexible schedule definition (e.g., daily at 5:00 AM UTC)
+  schedule_expression = "cron(0 5 * * ? *)"
 
   # Ensures the schedule is created in an enabled state.
   state = "ENABLED"
@@ -85,7 +85,6 @@ resource "aws_scheduler_schedule" "run_daily_check" {
       }
     }
 
-    # THIS IS THE KEY PART: Here we override the default container command
     retry_policy {
       maximum_retry_attempts = 1
     }
