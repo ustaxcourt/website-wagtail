@@ -98,12 +98,25 @@ resource "aws_scheduler_schedule" "run_daily_check" {
     }
 
     input = jsonencode({
-      "overrides": {
+      # 1. Specify the Task Definition and Launch Type
+      "TaskDefinitionArn": aws_ecs_task_definition.this.arn,
+      "LaunchType": "FARGATE",
+
+      # 2. Specify the full Network Configuration, as the API requires it.
+      #    Note the structure is "awsvpcConfiguration" and AssignPublicIp is a string.
+      "NetworkConfiguration": {
+        "awsvpcConfiguration": {
+          "Subnets":        module.vpc.private_subnets,
+          "SecurityGroups": [aws_security_group.ecs_sg.id],
+          "AssignPublicIp": "DISABLED"
+        }
+      },
+
+      # 3. Specify the Overrides, correctly nested
+      "Overrides": {
         "containerOverrides": [
           {
-            # The name must match the container name in your task definition
             "name": local.container_name,
-            # The new command to execute instead of the one in the Dockerfile
             "command": [
               "python",
               "manage.py",
