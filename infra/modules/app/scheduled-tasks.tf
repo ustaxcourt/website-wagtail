@@ -51,6 +51,13 @@ resource "aws_iam_role_policy_attachment" "scheduler_ecs_run_task_attachment" {
 }
 
 
+# A dedicated log group for the output of scheduled tasks
+resource "aws_cloudwatch_log_group" "scheduled_task_logs" {
+  name              = "/ecs/${var.environment}-scheduled-task-logs"
+  retention_in_days = 14 # Keep logs for 14 days
+}
+
+
 # This resource defines the schedule and the target, including the command override.
 resource "aws_scheduler_schedule" "run_daily_check" {
   name       = "${var.environment}-daily-management-command"
@@ -100,7 +107,15 @@ resource "aws_scheduler_schedule" "run_daily_check" {
             "python",
             "manage.py",
             "publish_scheduled"
-          ]
+          ],
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": aws_cloudwatch_log_group.scheduled_task_logs.name,
+              "awslogs-region": "us-east-1",
+              "awslogs-stream-prefix": "scheduled-task"
+            }
+          }
         }
       ]
     })
