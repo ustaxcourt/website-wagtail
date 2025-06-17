@@ -51,20 +51,13 @@ resource "aws_iam_role_policy_attachment" "scheduler_ecs_run_task_attachment" {
 }
 
 
-# A dedicated log group for the output of scheduled tasks
-resource "aws_cloudwatch_log_group" "scheduled_task_logs" {
-  name              = "/ecs/${var.environment}-scheduled-task-logs"
-  retention_in_days = 14 # Keep logs for 14 days
-}
-
-
 # This resource defines the schedule and the target, including the command override.
 resource "aws_scheduler_schedule" "run_daily_check" {
   name       = "${var.environment}-daily-management-command"
   group_name = "default"
 
   # Flexible schedule definition (e.g., daily at 2:00 AM UTC)
-  schedule_expression = "cron(30 3 * * ? *)"
+  schedule_expression = "cron(45 3 * * ? *)"
 
   # Ensures the schedule is created in an enabled state.
   state = "ENABLED"
@@ -98,41 +91,18 @@ resource "aws_scheduler_schedule" "run_daily_check" {
     }
 
     input = jsonencode({
-      # 1. Specify the Task Definition and Launch Type
-      "TaskDefinitionArn": aws_ecs_task_definition.this.arn,
-      "LaunchType": "FARGATE",
-
-      # 2. Specify the full Network Configuration, as the API requires it.
-      #    Note the structure is "awsvpcConfiguration" and AssignPublicIp is a string.
-      "NetworkConfiguration": {
-        "awsvpcConfiguration": {
-          "Subnets":        module.vpc.private_subnets,
-          "SecurityGroups": [aws_security_group.ecs_sg.id],
-          "AssignPublicIp": "DISABLED"
+      "containerOverrides": [
+        {
+          # The name must match the container name in your task definition
+          "name": local.container_name,
+          # The new command to execute instead of the one in the Dockerfile
+          "command": [
+            "python",
+            "manage.py",
+            "publish_scheduled"
+          ]
         }
-      },
-
-      # 3. Specify the Overrides, correctly nested
-      "Overrides": {
-        "containerOverrides": [
-          {
-            "name": local.container_name,
-            "command": [
-              "python",
-              "manage.py",
-              "publish_scheduled"
-            ],
-            "logConfiguration": {
-              "logDriver": "awslogs",
-              "options": {
-                "awslogs-group":         aws_cloudwatch_log_group.scheduled_task_logs.name,
-                "awslogs-region":        "us-east-1",
-                "awslogs-stream-prefix": "scheduled-task"
-              }
-            }
-          }
-        ]
-      }
+      ]
     })
   }
 }
