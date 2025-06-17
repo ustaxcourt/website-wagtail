@@ -64,7 +64,7 @@ resource "aws_scheduler_schedule" "run_daily_check" {
   group_name = "default"
 
   # Flexible schedule definition (e.g., daily at 2:00 AM UTC)
-  schedule_expression = "cron(45 2 * * ? *)"
+  schedule_expression = "cron(0 3 * * ? *)"
 
   # Ensures the schedule is created in an enabled state.
   state = "ENABLED"
@@ -98,26 +98,28 @@ resource "aws_scheduler_schedule" "run_daily_check" {
     }
 
     input = jsonencode({
-      "containerOverrides": [
-        {
-          # The name must match the container name in your task definition
-          "name": local.container_name,
-          # The new command to execute instead of the one in the Dockerfile
-          "command": [
-            "python",
-            "manage.py",
-            "publish_scheduled"
-          ],
-          "logConfiguration": {
-            "logDriver": "awslogs",
-            "options": {
-              "awslogs-group": aws_cloudwatch_log_group.scheduled_task_logs.name,
-              "awslogs-region": "us-east-1",
-              "awslogs-stream-prefix": "scheduled-task"
+      "overrides": {
+        "containerOverrides": [
+          {
+            # The name must match the container name in your task definition
+            "name": local.container_name,
+            # The new command to execute instead of the one in the Dockerfile
+            "command": [
+              "python",
+              "manage.py",
+              "publish_scheduled"
+            ],
+            "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                "awslogs-group":         aws_cloudwatch_log_group.scheduled_task_logs.name,
+                "awslogs-region":        "us-east-1",
+                "awslogs-stream-prefix": "scheduled-task"
+              }
             }
           }
-        }
-      ]
+        ]
+      }
     })
   }
 }
