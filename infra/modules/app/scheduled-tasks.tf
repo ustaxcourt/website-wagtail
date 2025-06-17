@@ -64,7 +64,7 @@ resource "aws_scheduler_schedule" "run_daily_check" {
   group_name = "default"
 
   # Flexible schedule definition (e.g., daily at 2:00 AM UTC)
-  schedule_expression = "cron(0 3 * * ? *)"
+  schedule_expression = "cron(30 3 * * ? *)"
 
   # Ensures the schedule is created in an enabled state.
   state = "ENABLED"
