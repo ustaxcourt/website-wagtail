@@ -1,4 +1,3 @@
-# An IAM role for the EventBridge Scheduler to assume, allowing it to run tasks on your behalf.
 resource "aws_iam_role" "scheduler_for_ecs" {
   name = "${var.environment}-scheduler-for-ecs-role"
 
@@ -27,7 +26,6 @@ resource "aws_iam_policy" "scheduler_ecs_run_task" {
           "ecs:RunTask"
         ]
         Effect   = "Allow"
-        # Restrict this to the specific task definition you want it to be able to run
         Resource = aws_ecs_task_definition.this.arn
       },
       {
@@ -51,15 +49,12 @@ resource "aws_iam_role_policy_attachment" "scheduler_ecs_run_task_attachment" {
 }
 
 
-# This resource defines the schedule and the target, including the command override.
 resource "aws_scheduler_schedule" "run_daily_check" {
   name       = "${var.environment}-daily-management-command"
   group_name = "default"
 
-  # Flexible schedule definition (e.g., daily at 5:00 AM UTC)
-  schedule_expression = "cron(0 5 * * ? *)"
+  schedule_expression = "cron(0 * * * ? *)"
 
-  # Ensures the schedule is created in an enabled state.
   state = "ENABLED"
 
   flexible_time_window {
@@ -67,17 +62,14 @@ resource "aws_scheduler_schedule" "run_daily_check" {
   }
 
   target {
-    # The ARN of the role the scheduler will use to run the task
     role_arn = aws_iam_role.scheduler_for_ecs.arn
-    # The ARN of the ECS cluster where the task will run
     arn      = module.ecs.cluster_id
 
     ecs_parameters {
-      # Use your EXISTING task definition
+      # Use EXISTING task definition
       task_definition_arn = aws_ecs_task_definition.this.arn
       launch_type         = "FARGATE"
 
-      # Fargate tasks require a network configuration
       network_configuration {
         subnets          = module.vpc.private_subnets
         security_groups  = [aws_security_group.ecs_sg.id]
