@@ -7,6 +7,9 @@ from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from django.core.exceptions import ValidationError
+from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet
+from django.contrib.contenttypes.fields import GenericRelation
+from wagtail.admin.panels import PublishingPanel
 
 
 import logging
@@ -18,7 +21,7 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 
 @register_snippet
-class JudgeProfile(models.Model):
+class JudgeProfile(DraftStateMixin, RevisionMixin, models.Model):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255)
@@ -41,6 +44,10 @@ class JudgeProfile(models.Model):
     )
     bio = RichTextField(blank=True)
     last_updated_date = models.DateTimeField(auto_now=True)
+    _revisions = GenericRelation(
+        "wagtailcore.Revision", related_query_name="judgeprofile"
+    )
+    objects = PageQuerySet.as_manager()
 
     panels = [
         FieldPanel("first_name"),
@@ -51,6 +58,7 @@ class JudgeProfile(models.Model):
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
+        PublishingPanel(),
     ]
 
     class Meta:
@@ -122,6 +130,10 @@ class JudgeProfile(models.Model):
         # Explicitly save collections that were modified to trigger their reordering logic
         for collection_to_save in collections_to_update:
             collection_to_save.save()
+
+    @property
+    def revisions(self):
+        return self._revisions
 
     def __str__(self):
         return self.display_name

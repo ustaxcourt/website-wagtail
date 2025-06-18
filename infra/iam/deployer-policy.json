@@ -135,6 +135,11 @@
       "Effect": "Allow",
       "Action": ["cloudwatch:*"],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["scheduler:*"],
+      "Resource": "*"
     }
   ]
 }
