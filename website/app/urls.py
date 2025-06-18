@@ -14,6 +14,8 @@ from search import views as search_views
 from django.http import JsonResponse
 import uuid
 from social_django.utils import psa
+from app import views as custom_auth_views
+
 
 logger = logging.getLogger(__name__)
 
@@ -144,6 +146,11 @@ urlpatterns = [
     path("test-session/", test_session, name="test_session"),
     path("debug-oauth-start/", debug_oauth_start, name="debug_oauth_start"),
     path("search/", search_views.search, name="search"),
+    path(
+        "admin/logout/",
+        custom_auth_views.custom_logout_view,
+        name="wagtailadmin_logout",
+    ),
 ]
 
 if settings.DEBUG:
