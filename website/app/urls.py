@@ -10,6 +10,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
+from search import views as search_views
 from django.http import JsonResponse
 import uuid
 from social_django.utils import psa
@@ -142,6 +143,7 @@ urlpatterns = [
     path("", include("social_django.urls", namespace="social")),
     path("test-session/", test_session, name="test_session"),
     path("debug-oauth-start/", debug_oauth_start, name="debug_oauth_start"),
+    path("search/", search_views.search, name="search"),
 ]
 
 if settings.DEBUG:

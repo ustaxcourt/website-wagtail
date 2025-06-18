@@ -2,6 +2,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 from wagtail import blocks
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
+from wagtail.search import index
 
 
 class ReleaseNotes(EnhancedStandardPage):
@@ -45,6 +46,11 @@ class ReleaseNotes(EnhancedStandardPage):
         FieldPanel("title"),
         FieldPanel("paragraph"),
         FieldPanel("release_entries"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("paragraph"),
+        index.SearchField("release_entries"),
     ]
 
     class Meta:
