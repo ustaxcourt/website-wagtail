@@ -35,6 +35,13 @@
     {
       "Effect": "Allow",
       "Action": [
+        "scheduler:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "s3:*"
       ],
       "Resource": "arn:aws:s3:::*-ustc-website-assets/*"
