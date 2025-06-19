@@ -62,6 +62,6 @@ class CacheControlMiddleware:
         # Rule 3: For all other requests (anonymous users on non-auth pages),
         # allow caching by shared caches for 5 minutes (300 seconds).
         else:
-            response["Cache-Control"] = "public, max-age=300"
+            response["Cache-Control"] = "max-age=300"
 
         return response
