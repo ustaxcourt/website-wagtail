@@ -380,7 +380,7 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/admin/"
 
 # 4. Add session configuration for OAuth state management
-SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["state"]
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["azuread-tenant-oauth2_state"]
 SOCIAL_AUTH_SESSION_EXPIRATION = False
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_STATE_PARAMETER = True
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True  # Ensure redirects are secure

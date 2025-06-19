@@ -12,9 +12,6 @@ class DebugAzureADTenantOAuth2(AzureADTenantOAuth2):
         This is where the 'state' parameter is generated and stored in the session.
         """
         url = super().auth_url()
-        # Log session details *after* super().auth_url() has potentially stored state
-        # The 'state' will be stored by social_core.backends.oauth.OAuthAuth.state_token()
-        # which is called during the auth_url generation.
         logger.debug(
             f"DEBUG: auth_url called. Session key: {self.strategy.request.session.session_key}"
         )
@@ -56,35 +53,25 @@ class DebugAzureADTenantOAuth2(AzureADTenantOAuth2):
     def validate_state(self):
         """
         Overrides the method specifically responsible for validating the 'state'.
-        This will log directly before the core validation logic.
+        This will log the full session content, then let the parent method handle validation.
         """
-        logger.debug("DEBUG: validate_state called. Checking for state in session.")
-
+        logger.debug(
+            "DEBUG: validate_state called. About to let super() handle state validation."
+        )
         session_content = dict(self.strategy.request.session)
-
-        # The state is typically stored under self.name + '_oauth_state' or just 'oauth_state'
-        # based on the backend.name.
-        # Let's try to find it dynamically or check common keys.
-        expected_state_keys = [
-            "oauth_state",  # Common key used by social_core
-            f"{self.name}_oauth_state",  # Specific to backend name
-            "state",  # Sometimes just 'state' if configured very simply
-        ]
-
-        found_state_in_session = "NOT_FOUND"
-        for key in expected_state_keys:
-            if key in session_content:
-                found_state_in_session = session_content.get(key)
-                break  # Found a state, use it for logging
-
         logger.debug(
             f"DEBUG: Full session content within validate_state: {session_content}"
         )
+        # The key for social_core_state in session is typically backend_name + '_state'
+        # e.g., 'azuread-tenant-oauth2_state'
+        logger.debug(f"DEBUG: Expecting state under key: {self.name}_state")
         logger.debug(
-            f"DEBUG: Value of potential state in session: {found_state_in_session}"
+            f"DEBUG: Value of {self.name}_state in session: {session_content.get(f'{self.name}_state', 'NOT_FOUND')}"
         )
         logger.debug(
             f"DEBUG: Value of 'test_oauth_state_manual' in session (from debug view): {session_content.get('test_oauth_state_manual', 'NOT_FOUND')}"
         )
 
+        # Now, call the parent's validate_state method.
+        # If the state is truly missing for social_core's logic, it will raise AuthStateMissing.
         return super().validate_state()
