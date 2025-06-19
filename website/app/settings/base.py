@@ -130,7 +130,6 @@ SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ["username", "first_name", "last_name", "
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 
-
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",  # Gets email, name, etc. from provider
     "social_core.pipeline.social_auth.social_uid",  # Gets the unique ID from the provider
