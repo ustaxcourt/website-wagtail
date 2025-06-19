@@ -48,6 +48,25 @@ class NoCacheForLoggedInUsersMiddleware:
         return response
 
 
+class NoCacheAuthMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before the view (and later middleware) are called.
+        response = self.get_response(request)
+
+        # Code to be executed for each request/response after the view is called.
+        # Check if the path matches our auth URLs.
+        if request.path.startswith("/login/") or request.path.startswith("/complete/"):
+            response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response["Pragma"] = "no-cache"
+            response["Expires"] = "0"
+
+        return response
+
+
 def debug_session_and_request(strategy, *args, **kwargs):
     # Log as an ERROR to ensure it has high visibility in your logs
     backend_name = kwargs.get("backend").name

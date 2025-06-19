@@ -68,6 +68,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "app.middleware.NoCacheAuthMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
