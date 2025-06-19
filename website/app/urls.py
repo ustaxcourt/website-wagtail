@@ -11,18 +11,6 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
-import app.app_views as auth_views
-
-social_auth_patterns = [
-    path("login/<str:backend>/", auth_views.auth, name="begin"),
-    path("complete/<str:backend>/", auth_views.complete, name="complete"),
-    path("disconnect/<str:backend>/", auth_views.disconnect, name="disconnect"),
-    path(
-        "disconnect/<str:backend>/<int:association_id>/",
-        auth_views.disconnect,
-        name="disconnect_individual",
-    ),
-]
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -95,7 +83,7 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
-    path("", include((social_auth_patterns, "social_django"), namespace="social")),
+    path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
 ]
 

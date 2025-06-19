@@ -29,55 +29,39 @@ class JSONExceptionMiddleware:
         return None
 
 
-class NoCacheForLoggedInUsersMiddleware:
+class CacheControlMiddleware:
+    """
+    Sets the Cache-Control header based on the request path and user authentication state.
+    This single middleware consolidates all caching policies for the application.
+    """
+
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         response = self.get_response(request)
 
-        if request.user.is_authenticated:
+        # Rule 1: Never cache the SSO authentication flow pages.
+        # This is the most specific and critical rule to prevent login errors.
+        if request.path.startswith("/login/") or request.path.startswith("/complete/"):
+            response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response["Pragma"] = "no-cache"
+            response["Expires"] = "0"
+
+        # Rule 2: For any other page, if the user is authenticated, prevent caching.
+        # 'private' indicates the response is for a single user and should not be
+        # stored by a shared cache.
+        elif request.user.is_authenticated:
             response[
                 "Cache-Control"
             ] = "private, no-store, no-cache, must-revalidate, max-age=0"
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"
             response["X-Logged-In-User"] = "true"
+
+        # Rule 3: For all other requests (anonymous users on non-auth pages),
+        # allow caching by shared caches for 5 minutes (300 seconds).
         else:
-            response["Cache-Control"] = "max-age=300"
-        return response
-
-
-class NoCacheAuthMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-        # One-time configuration and initialization.
-
-    def __call__(self, request):
-        # Code to be executed for each request before the view (and later middleware) are called.
-        response = self.get_response(request)
-
-        # Code to be executed for each request/response after the view is called.
-        # Check if the path matches our auth URLs.
-        if request.path.startswith("/login/") or request.path.startswith("/complete/"):
-            response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-            response["Pragma"] = "no-cache"
-            response["Expires"] = "0"
+            response["Cache-Control"] = "public, max-age=300"
 
         return response
-
-
-def debug_session_and_request(strategy, *args, **kwargs):
-    # Log as an ERROR to ensure it has high visibility in your logs
-    backend_name = kwargs.get("backend").name
-    session_key = f"{backend_name}_state"
-
-    print("--- EXECUTION PROOF: DEBUG PIPELINE STEP IS RUNNING ---")
-    print(f"Backend: {kwargs.get('backend').name}")
-    print(f"Session Keys: {list(strategy.session.keys())}")
-    azuread_state = strategy.session.get("azuread-tenant-oauth2_state")
-    print(f"Azure AD State in Session: {azuread_state}")
-    print(f"Session Keys: {list(strategy.session.keys())}")
-    print(f"Looking for session key: {session_key}")
-    print(f"State value in session: {strategy.session.get(session_key)}")
-    print("-----------------------------------------------------")
