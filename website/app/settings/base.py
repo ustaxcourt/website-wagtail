@@ -153,6 +153,7 @@ LOGOUT_REDIRECT_URL = "/admin/login/"
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_SAVE_EVERY_REQUEST = True
 
 WSGI_APPLICATION = "app.wsgi.application"
 
