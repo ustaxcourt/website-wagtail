@@ -51,6 +51,7 @@ class NoCacheForLoggedInUsersMiddleware:
 class ForceSessionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
+        self.logger = logging.getLogger("django.request")
 
     def __call__(self, request):
         if not request.session.session_key:
