@@ -53,12 +53,19 @@ class ForceSessionMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Force session creation for OAuth requests
-        if "/login/azuread-tenant-oauth2/" in request.path:
-            if not request.session.session_key:
-                request.session.create()
-                request.session.save()
-
+        if not request.session.session_key:
+            self.logger.debug(
+                "DEBUG: ForceSessionMiddleware: No session key found, forcing creation."
+            )
+            request.session.create()
+            request.session.save()  # Ensure it's saved
+            self.logger.debug(
+                f"DEBUG: ForceSessionMiddleware: New session key created: {request.session.session_key}"
+            )
+        else:
+            self.logger.debug(
+                f"DEBUG: ForceSessionMiddleware: Existing session key: {request.session.session_key}"
+            )
         response = self.get_response(request)
         return response
 
