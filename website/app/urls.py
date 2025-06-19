@@ -11,7 +11,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
-from app import auth_views
+import app.app_views as auth_views
 
 
 def all_legacy_documents_redirect(request, filename):
