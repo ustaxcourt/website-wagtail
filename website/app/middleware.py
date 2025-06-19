@@ -49,9 +49,16 @@ class NoCacheForLoggedInUsersMiddleware:
 
 
 def debug_session_and_request(strategy, *args, **kwargs):
-    print("--- DEBUGGING SOCIAL AUTH PIPELINE ---")
+    # Log as an ERROR to ensure it has high visibility in your logs
+    backend_name = kwargs.get("backend").name
+    session_key = f"{backend_name}_state"
+
+    print("--- EXECUTION PROOF: DEBUG PIPELINE STEP IS RUNNING ---")
     print(f"Backend: {kwargs.get('backend').name}")
     print(f"Session Keys: {list(strategy.session.keys())}")
     azuread_state = strategy.session.get("azuread-tenant-oauth2_state")
     print(f"Azure AD State in Session: {azuread_state}")
-    print("------------------------------------")
+    print(f"Session Keys: {list(strategy.session.keys())}")
+    print(f"Looking for session key: {session_key}")
+    print(f"State value in session: {strategy.session.get(session_key)}")
+    print("-----------------------------------------------------")
