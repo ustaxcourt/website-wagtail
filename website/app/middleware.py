@@ -46,3 +46,12 @@ class NoCacheForLoggedInUsersMiddleware:
         else:
             response["Cache-Control"] = "max-age=300"
         return response
+
+
+def debug_session_and_request(strategy, *args, **kwargs):
+    print("--- DEBUGGING SOCIAL AUTH PIPELINE ---")
+    print(f"Backend: {kwargs.get('backend').name}")
+    print(f"Session Keys: {list(strategy.session.keys())}")
+    azuread_state = strategy.session.get("azuread-tenant-oauth2_state")
+    print(f"Azure AD State in Session: {azuread_state}")
+    print("------------------------------------")
