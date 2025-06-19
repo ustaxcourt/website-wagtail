@@ -130,6 +130,8 @@ SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ["username", "first_name", "last_name", "
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 
+AZURE_AD_LOGOUT_URL = f"https://login.microsoftonline.com/{SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID}/oauth2/v2.0/logout"
+
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",  # Gets email, name, etc. from provider
     "social_core.pipeline.social_auth.social_uid",  # Gets the unique ID from the provider
@@ -143,6 +145,10 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.load_extra_data",  # Loads extra data from the provider
     "social_core.pipeline.user.user_details",  # Updates user model fields (like first_name, last_name) from provider data
 )
+
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_LOGOUT_URL = AZURE_AD_LOGOUT_URL
+LOGOUT_URL = "social:logout"
+LOGOUT_REDIRECT_URL = "/admin/login/"
 
 WSGI_APPLICATION = "app.wsgi.application"
 
