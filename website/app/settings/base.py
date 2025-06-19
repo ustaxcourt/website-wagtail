@@ -465,5 +465,21 @@ LOGGING["loggers"]["social_django"] = {
     "handlers": ["aws"],
 }
 
+LOGGING["loggers"]["social_core"] = {
+    "level": "DEBUG",  # Make sure this is DEBUG
+    "propagate": False,
+    "handlers": ["aws"],  # Or 'simple' if you're testing locally
+}
+LOGGING["loggers"]["social_django"] = {
+    "level": "DEBUG",  # Make sure this is DEBUG
+    "propagate": False,
+    "handlers": ["aws"],  # Or 'simple' if you're testing locally
+}
+LOGGING["loggers"]["app"] = {  # Add logger for your custom app logs
+    "level": "DEBUG",  # Make sure this is DEBUG
+    "propagate": False,
+    "handlers": ["aws"],  # Or 'simple' if you're testing locally
+}
+
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
