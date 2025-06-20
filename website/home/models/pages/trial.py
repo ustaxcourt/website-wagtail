@@ -3,6 +3,7 @@ from wagtail.fields import StreamField
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
+from home.models.custom_blocks import common as common_blocks
 
 from home.models.custom_blocks.alert_message import AlertMessageBlock
 
@@ -38,6 +39,8 @@ class PlacesOfTrialPage(Page):
         use_json_field=True,
         blank=True,
     )
+
+    promote_panels = common_blocks.promote_panels
 
     content_panels = Page.content_panels + [
         FieldPanel("body"),

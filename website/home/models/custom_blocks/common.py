@@ -1,6 +1,7 @@
 from wagtail import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from home.models.config import IconCategories
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
 link_obj = blocks.ListBlock(
@@ -36,6 +37,17 @@ link_obj = blocks.ListBlock(
         ]
     )
 )
+
+promote_panels = [
+    MultiFieldPanel(
+        [
+            FieldPanel("slug"),
+            FieldPanel("seo_title"),
+            FieldPanel("search_description"),
+        ],
+        heading="For search engines",
+    ),
+]
 
 
 class CommonBlock(blocks.StreamBlock):
