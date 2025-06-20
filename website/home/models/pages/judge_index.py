@@ -10,6 +10,7 @@ from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.search import index
 
 from home.models.snippets.judges import JudgeProfile, JudgeRole
+from home.models.custom_blocks.common import custom_promote_panels
 
 
 judge_snippet = SnippetChooserBlock(
@@ -50,6 +51,8 @@ class JudgeIndex(RoutablePageMixin, Page):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+    promote_panels = custom_promote_panels
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),

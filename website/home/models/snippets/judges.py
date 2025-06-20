@@ -7,6 +7,7 @@ from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from django.core.exceptions import ValidationError
+from wagtail.search import index
 
 
 import logging
@@ -18,7 +19,7 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 
 @register_snippet
-class JudgeProfile(models.Model):
+class JudgeProfile(index.Indexed, models.Model):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255)
@@ -51,6 +52,13 @@ class JudgeProfile(models.Model):
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
+    ]
+
+    search_fields = [
+        index.SearchField("last_name", partial_match=True),
+        index.AutocompleteField("last_name"),
+        index.SearchField("first_name", partial_match=True),
+        index.AutocompleteField("first_name"),
     ]
 
     class Meta:
