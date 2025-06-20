@@ -38,7 +38,7 @@ link_obj = blocks.ListBlock(
     )
 )
 
-promote_panels = [
+custom_promote_panels = [
     MultiFieldPanel(
         [
             FieldPanel("slug"),
