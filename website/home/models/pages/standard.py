@@ -3,6 +3,7 @@ from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
 from django.utils.html import strip_tags
+from home.models.custom_blocks.common import custom_promote_panels
 
 
 class StandardPage(Page):
@@ -16,6 +17,8 @@ class StandardPage(Page):
     search_fields = Page.search_fields + [
         index.SearchField("body"),
     ]
+
+    promote_panels = custom_promote_panels
 
     @property
     def search_snippet(self):

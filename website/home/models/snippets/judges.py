@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
+from wagtail.search import index
 
 
 import logging
@@ -21,7 +22,7 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 
 @register_snippet
-class JudgeProfile(DraftStateMixin, RevisionMixin, models.Model):
+class JudgeProfile(DraftStateMixin, RevisionMixin, index.Indexed, models.Model):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255)
@@ -59,6 +60,13 @@ class JudgeProfile(DraftStateMixin, RevisionMixin, models.Model):
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
         PublishingPanel(),
+    ]
+
+    search_fields = [
+        index.SearchField("last_name", partial_match=True),
+        index.AutocompleteField("last_name"),
+        index.SearchField("first_name", partial_match=True),
+        index.AutocompleteField("first_name"),
     ]
 
     class Meta:
