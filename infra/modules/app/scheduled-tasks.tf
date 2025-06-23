@@ -55,6 +55,10 @@ resource "aws_scheduler_schedule" "run_daily_check" {
 
   schedule_expression = "cron(0 * * * ? *)"
 
+  lifecycle {
+    ignore_changes = [schedule_expression]
+  }
+
   state = "ENABLED"
 
   flexible_time_window {
