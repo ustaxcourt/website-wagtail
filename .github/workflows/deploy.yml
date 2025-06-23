@@ -11,6 +11,10 @@ on:
       - 'sandbox'
       - 'development'
 
+# Run one job at a time. Subsequent jobs will wait for the previous job to finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   deploy:
     environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || '' }}
