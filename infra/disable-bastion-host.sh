@@ -21,4 +21,4 @@ if [ -z "$INSTANCE_ID" ]; then
     exit 1
 fi
 
-aws ec2 stop-instances --instance-ids $INSTANCE_ID
+aws ec2 terminate-instances --instance-ids $INSTANCE_ID
