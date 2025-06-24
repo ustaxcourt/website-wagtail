@@ -17,7 +17,7 @@ terraform init \
 terraform refresh
 
 echo "Applying targeted update to Bastion Security Group..."
-terraform apply -target=module.app.aws_security_group.bastion_sg -auto-approve
+terraform apply -target=module.app.aws_instance.bastion -target=module.app.aws_security_group.bastion_sg -auto-approve
 
 echo "Bastion Security Group update applied."
 
