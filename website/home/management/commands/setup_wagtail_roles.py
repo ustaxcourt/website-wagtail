@@ -125,7 +125,7 @@ class Command(BaseCommand):
                 "lock": "lock_page",
                 "unlock": "unlock_page",
                 "delete": "delete_page",
-                "bulk_delete": "delete_page_with_children",
+                "bulk_delete": "bulk_delete_page",
             }
 
             for slug in slugs:
@@ -176,7 +176,7 @@ class Command(BaseCommand):
                 )
 
             # Document Permissions
-            for action in ["add", "change", "view"]:
+            for action in ["add", "change", "choose"]:
                 codename = f"{action}_document"
                 try:
                     perm = Permission.objects.get(
@@ -191,7 +191,7 @@ class Command(BaseCommand):
                     )
 
             # Image Permissions
-            for action in ["add", "change", "view"]:
+            for action in ["add", "change", "choose"]:
                 codename = f"{action}_image"
                 try:
                     perm = Permission.objects.get(
