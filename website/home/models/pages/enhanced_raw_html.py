@@ -2,6 +2,7 @@ from wagtail.fields import StreamField
 from wagtail import blocks
 from wagtail.blocks import RawHTMLBlock
 from wagtail.admin.panels import FieldPanel
+from wagtail.search import index
 
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
@@ -52,6 +53,10 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("raw_html_body"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("raw_html_body"),
     ]
 
     class Meta:

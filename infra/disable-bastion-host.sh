@@ -18,7 +18,7 @@ INSTANCE_ID=$(aws ec2 describe-instances \
 
 if [ -z "$INSTANCE_ID" ]; then
     echo "No bastion host found with name ${ENVIRONMENT}-bastion-host"
-    exit 1
+    exit 0
 fi
 
-aws ec2 stop-instances --instance-ids $INSTANCE_ID
+aws ec2 terminate-instances --instance-ids $INSTANCE_ID

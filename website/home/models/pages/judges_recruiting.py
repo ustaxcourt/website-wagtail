@@ -4,6 +4,8 @@ from wagtail import blocks
 from wagtail.blocks import DateBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.admin.panels import FieldPanel
+from wagtail.search import index
+
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
 
@@ -62,6 +64,10 @@ class JudgesRecruiting(EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("judges_recruiting"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("judges_recruiting"),
     ]
 
     def get_context(self, request, *args, **kwargs):

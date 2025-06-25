@@ -6,6 +6,7 @@ from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageBlock
+from wagtail.search import index
 
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
@@ -14,6 +15,7 @@ from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
+from home.models.custom_blocks.common import custom_promote_panels
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -210,4 +212,10 @@ class EnhancedStandardPage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
+    ]
+
+    promote_panels = custom_promote_panels
+
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
     ]

@@ -436,158 +436,159 @@
             </div>
         {% endif %}
         {% for block in page.body %}
-                {% if block.block_type == 'h2' %}
-                    <h2>{{ block.value }}</h2>
-                {% elif block.block_type == 'h3' %}
-                    <h3>{{ block.value }}</h3>
-                {% elif block.block_type == 'h4' %}
-                    <h4>{{ block.value }}</h4>
-                {% elif block.block_type == 'heading' %}
-                    <div class="heading-wrapper">
-                        <{{ block.value.level }}
-                        {% if block.value.id %}id="{{ block.value.id }}"{% endif %}
-                        >
-                        {% if block.value.id %}
-                            <a href="#{{ block.value.id }}" title="{{ block.value.text }}">
-                                <div class="fa-solid fa-bookmark bookmark" id="{{ block.value.id }}"></div>
-                            </a>
-                        {% endif %}
-                        {{ block.value.text }}
-                        </{{ block.value.level }}>
-                    </div>
-                {% elif block.block_type == 'paragraph' %}
-                    <p data-testid="page-body-paragraph">{{ block.value }}</p>
-                {% elif block.block_type == 'snippet' %}
-                    {{ block.value.text |safe }}
-                {% elif block.block_type == 'image' %}
-                    <div class="centered-image">{% picture block.value format-jpeg width-1000 loading="lazy" %}</div>
-                {% elif block.block_type == 'hr' %}
-                    <hr />
-                {% elif block.block_type == 'alert' %}
-                    <div class="alert {{ block.value.alert_type }}">{{ block.value.content | richtext }}</div>
-                {% elif block.block_type == 'iframe' %}
-                    <iframe src="{{ block.value.src }}"
-                            width="{{ block.value.width }}"
-                            height="{{ block.value.height }}"
-                            {% if block.value.class %}class="{{ block.value.class }}"{% endif %}
-                            {% if block.value.loading %}loading="{{ block.value.loading }}"{% endif %}
-                            {% if block.value.data_delay %}data-delay="{{ block.value.data_delay }}"{% endif %}
-                            {% if block.value.name %}name="{{ block.value.name }}"{% endif %}
-                            {% if block.value.title %}title="{{ block.value.title }}"{% endif %}></iframe>
-                {% elif block.block_type == 'table' %}
-                    {% include "home/styled_table.html" with block=block %}
-                {% elif block.block_type == 'unstyled_table' %}
-                    {% include "home/unstyled_table.html" with block=block %}
-                {% elif block.block_type == 'links' %}
-                    {% include "home/links_block.html" with block=block %}
-                {% elif block.block_type == 'questionanswers' %}
-                    <ul class="links indented">
-                        {% for q in block.value %}
-                            <li>
-                                <a href="#{{ q.anchortag }}">
-                                    <i class="fa-solid fa-circle-info"></i>{{ q.question }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <hr />
+            {% if block.block_type == 'h2' %}
+                <h2>{{ block.value }}</h2>
+            {% elif block.block_type == 'h3' %}
+                <h3>{{ block.value }}</h3>
+            {% elif block.block_type == 'h4' %}
+                <h4>{{ block.value }}</h4>
+            {% elif block.block_type == 'heading' %}
+                <div class="heading-wrapper">
+                    <{{ block.value.level }}
+                    {% if block.value.id %}id="{{ block.value.id }}"{% endif %}
+                    >
+                    {% if block.value.id %}
+                        <a href="#{{ block.value.id }}" title="{{ block.value.text }}">
+                            <div class="fa-solid fa-bookmark bookmark" id="{{ block.value.id }}"></div>
+                        </a>
+                    {% endif %}
+                    {{ block.value.text }}
+                    </{{ block.value.level }}>
+                </div>
+            {% elif block.block_type == 'paragraph' %}
+                <p data-testid="page-body-paragraph">{{ block.value }}</p>
+            {% elif block.block_type == 'snippet' %}
+                {{ block.value.text |safe }}
+            {% elif block.block_type == 'image' %}
+                <div class="centered-image">{% picture block.value format-jpeg width-1000 loading="lazy" %}</div>
+            {% elif block.block_type == 'hr' %}
+                <hr />
+            {% elif block.block_type == 'alert' %}
+                <div class="alert {{ block.value.alert_type }}">{{ block.value.content | richtext }}</div>
+            {% elif block.block_type == 'iframe' %}
+                <iframe src="{{ block.value.src }}"
+                        width="{{ block.value.width }}"
+                        height="{{ block.value.height }}"
+                        {% if block.value.class %}class="{{ block.value.class }}"{% endif %}
+                        {% if block.value.loading %}loading="{{ block.value.loading }}"{% endif %}
+                        {% if block.value.data_delay %}data-delay="{{ block.value.data_delay }}"{% endif %}
+                        {% if block.value.name %}name="{{ block.value.name }}"{% endif %}
+                        {% if block.value.title %}title="{{ block.value.title }}"{% endif %}></iframe>
+            {% elif block.block_type == 'table' %}
+                {% include "home/styled_table.html" with block=block %}
+            {% elif block.block_type == 'unstyled_table' %}
+                {% include "home/unstyled_table.html" with block=block %}
+            {% elif block.block_type == 'links' %}
+                {% include "home/links_block.html" with block=block %}
+            {% elif block.block_type == 'questionanswers' %}
+                <ul class="links indented">
                     {% for q in block.value %}
-                        <div class="question-answer-block">
-                            <a href="#{{ q.anchortag }}" title="{{ q.question }}">
-                                <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
+                        <li>
+                            <a href="#{{ q.anchortag }}">
+                                <i class="fa-solid fa-circle-info"></i>{{ q.question }}
                             </a>
-                            <h3>{{ q.question }}</h3>
-                        </div>
-                        <div>{{ q.answer|richtext }}</div>
-                        <hr />
+                        </li>
                     {% endfor %}
-                {% elif block.block_type == 'list' %}
-                    {% include "home/list_block.html" with block=block %}
-                {% elif block.block_type == "photo_dedication" %}
-                    <div class="dedication">
-                        {% if block.value.photo %}
-                            <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
-                        {% endif %}
-                        <div class="dedication-text">
-                            <h2 class="title">{{ block.value.title }}</h2>
-                            {{ block.value.paragraph_text | richtext }}
-                        </div>
+                </ul>
+                <hr />
+                {% for q in block.value %}
+                    <div class="question-answer-block">
+                        <a href="#{{ q.anchortag }}" title="{{ q.question }}">
+                            <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
+                        </a>
+                        <h3>{{ q.question }}</h3>
                     </div>
-                {% elif block.block_type == 'embedded_video' %}
+                    <div>{{ q.answer|richtext }}</div>
                     <hr />
-                    <div id="video-container">
-                        <h2>{{ block.value.title }}</h2>
-                        <div class="video-desc-block">
-                            <div class="video-wrapper">
-                                <iframe title="Victor Lundy:Sculptor of Space" aria-label="Watch on YouTube"
-                                        src="{{ block.value.video_url }}"
-                                        allowfullscreen></iframe>
-                            </div>
-                            <div class="description-block">
-                                <p>{{ block.value.description }}</p>
-                            </div>
+                {% endfor %}
+            {% elif block.block_type == 'list' %}
+                {% include "home/list_block.html" with block=block %}
+            {% elif block.block_type == "photo_dedication" %}
+                <div class="dedication">
+                    {% if block.value.photo %}
+                        <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+                    {% endif %}
+                    <div class="dedication-text">
+                        <h2 class="title">{{ block.value.title }}</h2>
+                        {{ block.value.paragraph_text | richtext }}
+                    </div>
+                </div>
+            {% elif block.block_type == 'embedded_video' %}
+                <hr />
+                <div id="video-container">
+                    <h2>{{ block.value.title }}</h2>
+                    <div class="video-desc-block">
+                        <div class="video-wrapper">
+                            <iframe title="Victor Lundy:Sculptor of Space"
+                                    aria-label="Watch on YouTube"
+                                    src="{{ block.value.video_url }}"
+                                    allowfullscreen></iframe>
+                        </div>
+                        <div class="description-block">
+                            <p>{{ block.value.description }}</p>
                         </div>
                     </div>
-                {% elif block.block_type == 'directory' %}
-                    {% include "home/directory_detail.html" with block=block %}
-                {% elif block.block_type == 'columns' %}
-                    {% with column_count=block.value.column|length %}
-                        <div class="grid-row">
-                            {% for column in block.value.column %}
-                                <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
-                                    {% for sub_block in column %}
-                                        {% if sub_block.block_type == 'h2WithAnchorTag' %}
-                                            <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
-                                        {% elif sub_block.block_type == 'h2' %}
-                                            <h2>{{ sub_block.value }}</h2>
-                                        {% elif sub_block.block_type == 'h3' %}
-                                            <h3>{{ sub_block.value }}</h3>
-                                        {% elif sub_block.block_type ==  'hr' %}
-                                            <hr />
-                                        {% elif sub_block.block_type == 'clickableButton' %}
-                                            <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
-                                        {% elif sub_block.block_type == 'links' %}
-                                            {% include "home/links_block.html" with block=sub_block %}
-                                        {% elif sub_block.block_type == 'judgeCollection' %}
-                                            {% with judge_collection=sub_block.value %}
-                                                {% for ordered_judge in judge_collection.ordered_judges.all %}
-                                                    <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}"
-                                                       class="usa-button">
-                                                        {% with judge=ordered_judge.judge %}
-                                                            {% if judge.roles.exists %}
-                                                                {% with role=judge.roles.first %}{{ judge.display_name }}, {{ role.role_name }}{% endwith %}
-                                                            {% else %}
-                                                                {{ judge.display_name }}
-                                                            {% endif %}
-                                                        {% endwith %}
-                                                    </a>
-                                                {% endfor %}
-                                            {% endwith %}
-                                        {% else %}
-                                            <p>Column type not recognized: {{ sub_block.block_type }}</p>
-                                            {{ sub_block.value }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endwith %}
-                {% elif block.block_type == 'card' %}
-                    <div class="info-cards">
-                        {% for card in block.value %}
-                            <div class="info-card {{ card.color }}">
-                                <div class="card-header">
-                                    <i class="{{ card.icon }}" aria-hidden="true"></i>
-                                    <div class="title">{{ card.title }}</div>
-                                </div>
-                                <div class="description">{{ card.description|richtext }}</div>
+                </div>
+            {% elif block.block_type == 'directory' %}
+                {% include "home/directory_detail.html" with block=block %}
+            {% elif block.block_type == 'columns' %}
+                {% with column_count=block.value.column|length %}
+                    <div class="grid-row">
+                        {% for column in block.value.column %}
+                            <div class="grid-col-12 tablet:grid-col-{{ column_count|column_width }}">
+                                {% for sub_block in column %}
+                                    {% if sub_block.block_type == 'h2WithAnchorTag' %}
+                                        <h2 id="{{ sub_block.value.anchortag }}">{{ sub_block.value.text }}</h2>
+                                    {% elif sub_block.block_type == 'h2' %}
+                                        <h2>{{ sub_block.value }}</h2>
+                                    {% elif sub_block.block_type == 'h3' %}
+                                        <h3>{{ sub_block.value }}</h3>
+                                    {% elif sub_block.block_type ==  'hr' %}
+                                        <hr />
+                                    {% elif sub_block.block_type == 'clickableButton' %}
+                                        <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
+                                    {% elif sub_block.block_type == 'links' %}
+                                        {% include "home/links_block.html" with block=sub_block %}
+                                    {% elif sub_block.block_type == 'judgeCollection' %}
+                                        {% with judge_collection=sub_block.value %}
+                                            {% for ordered_judge in judge_collection.ordered_judges.all %}
+                                                <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}"
+                                                   class="usa-button">
+                                                    {% with judge=ordered_judge.judge %}
+                                                        {% if judge.roles.exists %}
+                                                            {% with role=judge.roles.first %}{{ judge.display_name }}, {{ role.role_name }}{% endwith %}
+                                                        {% else %}
+                                                            {{ judge.display_name }}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </a>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <p>Column type not recognized: {{ sub_block.block_type }}</p>
+                                        {{ sub_block.value }}
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         {% endfor %}
                     </div>
-                {% else %}
-                    <p>Block type not recognized: {{ block.block_type }}</p>
-                    {{ block.value }}
-                {% endif %}
+                {% endwith %}
+            {% elif block.block_type == 'card' %}
+                <div class="info-cards">
+                    {% for card in block.value %}
+                        <div class="info-card {{ card.color }}">
+                            <div class="card-header">
+                                <i class="{{ card.icon }}" aria-hidden="true"></i>
+                                <div class="title">{{ card.title }}</div>
+                            </div>
+                            <div class="description">{{ card.description|richtext }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Block type not recognized: {{ block.block_type }}</p>
+                {{ block.value }}
+            {% endif %}
         {% endfor %}
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}

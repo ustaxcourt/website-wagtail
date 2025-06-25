@@ -136,6 +136,8 @@ jobs:
           make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
+          make updateindex settings="app.settings.${ENVIRONMENT}"
+          make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
         env:
@@ -175,6 +177,14 @@ jobs:
             --cluster "${ENVIRONMENT}-website-cluster" \
             --services "${ENVIRONMENT}-website-service" \
             --region us-east-1
+
+      - name: Terminate Bastion Host
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./disable-bastion-host.sh
 
       - name: Invalidate CloudFront Distribution
         env:

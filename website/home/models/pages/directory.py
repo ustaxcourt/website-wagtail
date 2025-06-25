@@ -4,7 +4,7 @@ from wagtail.fields import StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.models import Page
 from wagtail.snippets.blocks import SnippetChooserBlock
-
+from wagtail.search import index
 
 judge_snippet = SnippetChooserBlock(
     target_model="home.JudgeCollection",
@@ -42,4 +42,8 @@ class DirectoryIndex(Page):
     content_panels = [
         FieldPanel("title"),
         FieldPanel("body"),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("body"),
     ]

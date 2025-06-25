@@ -114,14 +114,14 @@ def purge_cache_for_snippet_related_pages(request, instance):
     snippet_type = type(instance).__name__.lower()
 
     path_map = {
-        "commontext": ["/*"],
-        "fancycard": ["/*"],
-        "judgecollection": ["/judges/*"],
-        "judgeprofile": ["/judges/*"],
-        "judgerole": ["/judges/*"],
-        "navigationmenu": ["/*"],
-        "navigationribbon": ["/*"],
-        "simplecard": ["/*"],
+        "commontext": ["/"],
+        "fancycard": ["/"],
+        "judgecollection": ["/home/judges/"],
+        "judgeprofile": ["/home/judges/"],
+        "judgerole": ["/home/judges/"],
+        "navigationmenu": ["/"],
+        "navigationribbon": ["/"],
+        "simplecard": ["/"],
     }
 
     affected_prefixes = path_map.get(snippet_type, ["/"])

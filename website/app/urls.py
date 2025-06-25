@@ -10,6 +10,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
+from search import views as search_views
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -83,6 +84,7 @@ urlpatterns = [
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
+    path("search/", search_views.search, name="search"),
 ]
 
 if settings.DEBUG:

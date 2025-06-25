@@ -17,6 +17,7 @@ This workflow is triggered manually using `workflow_dispatch`.
 2.  In the left sidebar, under **Workflows**, click on **[PRODUCTION Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/production_deploy.yml)**.
 3.  On the right side of the page, click the **Run workflow** button.
 4.  A modal window will appear prompting you to provide input:
+    * **Use workflow from: ** Select `production` branch (change default from `main`).
     * **commit\_sha (string, required):** Enter the specific commit SHA (the unique identifier of a commit) that you want to deploy to production. Ensure this is the correct and tested commit.
 5.  Click the green **Run workflow** button at the bottom of the modal.
 6.  Wait for the workflow to complete successfully.

@@ -2,6 +2,8 @@ from django.db import models
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.fields import RichTextField
 from wagtail.models import Page, Orderable, ParentalKey
+from wagtail.search import index
+
 from django.utils import timezone
 
 
@@ -12,6 +14,10 @@ class HomePage(Page):
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries"),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("intro"),
     ]
 
     def get_context(self, request):

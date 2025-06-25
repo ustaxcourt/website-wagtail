@@ -8,7 +8,7 @@ init:
 	python -m venv ../.venv
 
 cmd:
-	. $(VENV) && $(c)
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} $(c)
 
 check:
 	. $(VENV) && python manage.py check
@@ -68,6 +68,9 @@ rmmedia:
 resetdb: rmdb rmmedia makemigrations migrate superuser createpages
 
 reset: setup resetdb
+
+updateindex:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py update_index
 
 run:
 	. $(VENV) && python manage.py runserver

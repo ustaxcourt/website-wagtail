@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailsearchpromotions_tags %}
+{% block body_class %}template-searchresults{% endblock %}
+{% block title %}Search{% endblock %}
+{% block content %}
+    <style>
+        #search-page {
+            max-width: 800px;
+            margin: 40px auto 40px auto;
+            padding: 24px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.07);
+        }
+
+        #search-page h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-blue, #003366);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        #search-page .search-form {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 32px;
+        }
+
+        #search-page .search-form input[type="text"] {
+            padding: 12px 18px;
+            font-size: 1.1rem;
+            border: 1.5px solid var(--light-blue, #0071bc);
+            border-radius: 6px 0 0 6px;
+            outline: none;
+            width: 320px;
+            max-width: 100%;
+        }
+
+        #search-page .search-form input[type="submit"] {
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            background: var(--light-blue, #0071bc);
+            color: #fff;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        #search-page .search-form input[type="submit"]:hover {
+            background: var(--dark-blue, #003366);
+        }
+
+        #search-page .results-count {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        #search-page .results-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #search-page .result-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+            margin-bottom: 20px;
+            padding: 20px 24px;
+            transition: box-shadow 0.2s, background 0.2s;
+        }
+
+        #search-page .result-card:hover {
+            background: #e6f0fa;
+            box-shadow: 0 4px 16px 0 rgba(0, 113, 188, 0.10);
+        }
+
+        #search-page .result-card h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        #search-page .result-card h4 a {
+            color: var(--link-blue, #0071bc);
+            text-decoration: none;
+        }
+
+        #search-page .result-card h4 a:hover {
+            text-decoration: underline;
+        }
+
+        #search-page .result-card .desc {
+            color: #333;
+            font-size: 1rem;
+        }
+
+        #search-page .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+            align-items: center;
+        }
+
+        #search-page .pagination a {
+            color: var(--link-blue, #0071bc);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background: #f2f4f4;
+            transition: background 0.2s;
+        }
+
+        #search-page .pagination a:hover {
+            background: var(--light-blue, #0071bc);
+            color: #fff;
+        }
+
+        #search-page .pagination .current-page {
+            color: #666;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        #search-page .no-results {
+            text-align: center;
+            color: #888;
+            font-size: 1.2rem;
+            margin-top: 32px;
+        }
+
+        #search-page .empty-search {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 24px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 600px) {
+            #search-page {
+                padding: 8px;
+            }
+
+            #search-page .search-form input[type="text"] {
+                width: 100%;
+                min-width: 0;
+            }
+
+            #search-page .result-card {
+                padding: 14px 8px;
+            }
+        }
+
+        #search-page .promoted-results {
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        #search-page .promoted-results h2 {
+            font-size: 1.5rem;
+            color: var(--dark-blue, #003366);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #search-page .promoted-results .promoted-card {
+            background: #fff;
+            border: 2px solid var(--light-blue, #0071bc);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px 24px;
+            transition: box-shadow 0.2s;
+        }
+
+        #search-page .promoted-results .promoted-card:hover {
+            box-shadow: 0 4px 16px 0 rgba(0, 113, 188, 0.10);
+        }
+
+        #search-page .promoted-results .promoted-card h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        #search-page .promoted-results .promoted-card h4 a {
+            color: var(--link-blue, #0071bc);
+            text-decoration: none;
+        }
+
+        #search-page .promoted-results .promoted-card h4 a:hover {
+            text-decoration: underline;
+        }
+
+        #search-page .promoted-results .promoted-card .desc {
+            color: #333;
+            font-size: 1rem;
+        }
+    </style>
+    <div id="search-page">
+        <h1>Search</h1>
+        <form class="search-form" action="{% url 'search' %}" method="get">
+            <input type="text"
+                   name="query"
+                   {% if search_query %}value="{{ search_query }}"{% endif %}
+                   placeholder="Search...">
+            <input type="submit" value="Search" class="button">
+        </form>
+        {% if search_query == "" %}
+            <div class="empty-search">Please enter a search term to find content.</div>
+        {% elif search_results or search_promotions %}
+            {% with promotions_count=search_promotions|length %}
+                {% with total_results=search_results.paginator.count|add:promotions_count %}
+                    <div class="results-count">Found {{ total_results }} result{{ total_results|pluralize }} for "{{ search_query }}"</div>
+                {% endwith %}
+            {% endwith %}
+            <ul class="results-list">
+                {% if search_promotions %}
+                    {% for search_promotion in search_promotions %}
+                        <li class="result-card">
+                            {% if search_promotion.page %}
+                                <h2>
+                                    <a href="{% pageurl search_promotion.page %}">{{ search_promotion.page.title }}</a>
+                                </h2>
+                                {% if search_promotion.description %}<div class="desc">{{ search_promotion.description }}</div>{% endif %}
+                            {% else %}
+                                <h2>
+                                    <a href="{{ search_promotion.external_link_url }}">{{ search_promotion.external_link_text }}</a>
+                                </h2>
+                                {% if search_promotion.description %}<div class="desc">{{ search_promotion.description }}</div>{% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                {% for result in search_results %}
+                    <li class="result-card">
+                        {% if result.url %}
+                            <h2>
+                                <a href="{{ result.url }}">{{ result.title }}</a>
+                            </h2>
+                        {% else %}
+                            <h2>
+                                <a href="{% pageurl result %}">{{ result }}</a>
+                            </h2>
+                        {% endif %}
+                        {% if result.search_snippet %}
+                            <div class="desc">{{ result.search_snippet|striptags|truncatechars:200 }}</div>
+                        {% elif result.search_description and result.search_description != result.title %}
+                            <div class="desc">{{ result.search_description|striptags|truncatechars:200 }}</div>
+                        {% elif result.body %}
+                            <div class="desc">{{ result.body|striptags|truncatechars:200 }}</div>
+                        {% elif result.intro %}
+                            <div class="desc">{{ result.intro|striptags|truncatechars:200 }}</div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="pagination">
+                {% if search_results.has_previous %}
+                    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
+                {% endif %}
+                <span class="current-page">Page {{ search_results.number }} of {{ search_results.paginator.num_pages }}</span>
+                {% if search_results.has_next %}
+                    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
+                {% endif %}
+            </div>
+        {% elif search_query %}
+            <div class="no-results">No results found</div>
+        {% endif %}
+    </div>
+{% endblock %}

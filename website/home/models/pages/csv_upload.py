@@ -1,6 +1,7 @@
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from django.db import models
 from wagtail.admin.panels import FieldPanel
+from wagtail.search import index
 
 
 class CSVUploadPage(EnhancedStandardPage):
@@ -8,6 +9,10 @@ class CSVUploadPage(EnhancedStandardPage):
 
     content_panels = EnhancedStandardPage.content_panels + [
         FieldPanel("csv_file"),
+    ]
+
+    search_fields = EnhancedStandardPage.search_fields + [
+        index.SearchField("csv_file"),
     ]
 
     def get_context(self, request, *args, **kwargs):
