@@ -115,4 +115,4 @@ preregistersuperusers:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py preregister_superusers
 
 setupwagtaillroles:
-	. $(VENV) && DJANGO_SETTINGS_MODULE=app.settings.local python manage.py setup_wagtail_roles
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py setup_wagtail_roles
