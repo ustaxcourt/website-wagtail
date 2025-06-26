@@ -47,8 +47,8 @@ from home.models.pages.judges_recruiting import JudgesRecruiting  # noqa: F401
 from home.models.pages.enhanced_raw_html import EnhancedRawHTMLPage  # noqa: F401
 from home.models.pages.dawson import (
     SimpleCard,  # noqa: F401
-    SimpleCardGroup,  # noqa: F401
     RelatedPage,  # noqa: F401
+    SimpleCardGroup,  # noqa: F401
     FancyCard,  # noqa: F401
     PhotoDedication,  # noqa: F401
     DawsonPage,  # noqa: F401
