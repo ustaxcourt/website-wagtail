@@ -15,7 +15,6 @@ from home.models.snippets.navigation import (
     SubNavigationLinkBlock,  # noqa: F401
 )
 from home.models.snippets.common import CommonText  # noqa: F401
-from home.models.snippets.cards import SimpleCard, FancyCard, RelatedPage  # noqa: F401
 from home.models.pages.standard import StandardPage  # noqa: F401
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock  # noqa: F401
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock  # noqa: F401
@@ -47,10 +46,10 @@ from home.models.pages.vacancy_announcements import (
 from home.models.pages.judges_recruiting import JudgesRecruiting  # noqa: F401
 from home.models.pages.enhanced_raw_html import EnhancedRawHTMLPage  # noqa: F401
 from home.models.pages.dawson import (
-    DawsonSimpleCard,  # noqa: F401
+    SimpleCard,  # noqa: F401
     SimpleCardGroup,  # noqa: F401
-    SimpleCardGroupItem,  # noqa: F401
-    DawsonFancyCard,  # noqa: F401
+    RelatedPage,  # noqa: F401
+    FancyCard,  # noqa: F401
     PhotoDedication,  # noqa: F401
     DawsonPage,  # noqa: F401
 )
