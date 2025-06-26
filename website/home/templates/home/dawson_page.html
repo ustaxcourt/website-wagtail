@@ -84,14 +84,7 @@
             flex: 1;
         }
 
-        #dawson-page .dedication .dedication-text p {
-            font-size: 24px;
-            line-height: 32px;
-            font-family: var(--heading-font);
-            font-weight: 700;
-        }
-
-        #dawson-page .dedication .dedication-text .dedication-text-normal {
+        #dawson-page .dedication .dedication-text .dedication-text-normal p {
             font-size: 17px;
             line-height: 24px;
             font-family: var(--body-font);
@@ -211,7 +204,7 @@
                             {% endif %}
                             <div class="dedication-text">
                                 <h2>{{ dedication.title }}</h2>
-                                <p class="dedication-text-normal">{{ dedication.paragraph_text | richtext }}</p>
+                                <div class="dedication-text-normal">{{ dedication.paragraph_text | richtext }}</div>
                             </div>
                         </div>
                     {% endfor %}
