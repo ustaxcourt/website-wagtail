@@ -4,14 +4,13 @@ from wagtail.fields import RichTextField
 from wagtail.models import ParentalKey
 from django.db import models
 from modelcluster.models import ClusterableModel
-from wagtail.snippets.models import register_snippet
 
 
 class RelatedPage(models.Model):
     """Model to store multiple related pages for a DawsonCard."""
 
     card = ParentalKey(
-        "SimpleCard", related_name="related_pages", on_delete=models.CASCADE
+        "DawsonSimpleCard", related_name="related_pages", on_delete=models.CASCADE
     )
     display_title = models.CharField(
         max_length=255,
@@ -39,8 +38,7 @@ class RelatedPage(models.Model):
     ]
 
 
-@register_snippet
-class SimpleCard(ClusterableModel):
+class DawsonSimpleCard(ClusterableModel):
     """A Simple Card that contains optional title, icon, and related pages."""
 
     parent_page = ParentalKey(
@@ -78,8 +76,7 @@ class SimpleCard(ClusterableModel):
         ordering = ["id"]
 
 
-@register_snippet
-class FancyCard(ClusterableModel):
+class DawsonFancyCard(ClusterableModel):
     parent_page = ParentalKey(
         "DawsonPage", related_name="fancy_card", on_delete=models.CASCADE
     )

@@ -7,7 +7,7 @@ from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from django.core.exceptions import ValidationError
-from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet
+from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.search import index
@@ -22,7 +22,9 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 
 @register_snippet
-class JudgeProfile(DraftStateMixin, RevisionMixin, index.Indexed, models.Model):
+class JudgeProfile(
+    WorkflowMixin, DraftStateMixin, RevisionMixin, index.Indexed, models.Model
+):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255)
@@ -166,16 +168,21 @@ class JudgeCollectionOrderable(Orderable):
 
 
 @register_snippet
-class JudgeCollection(ClusterableModel):
+class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel):
     name = models.CharField(
         max_length=255,
         unique=True,
         help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
     )
+    _revisions = GenericRelation(
+        "wagtailcore.Revision", related_query_name="judgecollection"
+    )
+    objects = PageQuerySet.as_manager()
 
     panels = [
         FieldPanel("name"),
         InlinePanel("ordered_judges", label="Judges"),
+        PublishingPanel(),
     ]
 
     def _reorder_judges(self):
@@ -264,9 +271,13 @@ class JudgeCollection(ClusterableModel):
     def __str__(self):
         return self.name
 
+    @property
+    def revisions(self):
+        return self._revisions
+
 
 @register_snippet
-class JudgeRole(models.Model):
+class JudgeRole(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     role_name = models.CharField(
         max_length=255,
         unique=True,
@@ -280,10 +291,13 @@ class JudgeRole(models.Model):
         related_name="roles",  # This allows JudgeProfile.roles to get all roles of a judge
         help_text="Assign a judge to this role",
     )
+    _revisions = GenericRelation("wagtailcore.Revision", related_query_name="judgerole")
+    objects = PageQuerySet.as_manager()
 
     panels = [
         FieldPanel("role_name"),
         FieldPanel("judge"),
+        PublishingPanel(),
     ]
 
     def clean(self):
@@ -355,3 +369,7 @@ class JudgeRole(models.Model):
 
     def __str__(self):
         return f"{self.role_name}, {self.judge or '** Selection Pending **'}"
+
+    @property
+    def revisions(self):
+        return self._revisions

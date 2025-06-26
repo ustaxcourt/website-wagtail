@@ -2,9 +2,9 @@ from wagtail.models import Page
 from django.contrib.contenttypes.models import ContentType
 from home.models import (
     DawsonPage,
-    FancyCard,
+    DawsonFancyCard,
     SimpleCardGroup,
-    SimpleCard,
+    DawsonSimpleCard,
     RelatedPage,
     PhotoDedication,
     EnhancedStandardPage,
@@ -67,10 +67,10 @@ class DawsonPageInitializer(PageInitializer):
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
 
-        FancyCard.objects.filter(parent_page=dawson_page).delete()
+        DawsonFancyCard.objects.filter(parent_page=dawson_page).delete()
         SimpleCardGroup.objects.filter(parent_page=dawson_page).delete()
 
-        dawson_fancy_card = FancyCard(
+        dawson_fancy_card = DawsonFancyCard(
             url="https://dawson.ustaxcourt.gov/",
             text="DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
             parent_page=dawson_page,
@@ -224,35 +224,35 @@ class DawsonPageInitializer(PageInitializer):
             ],
         }
 
-        register_card = SimpleCard(
+        register_card = DawsonSimpleCard(
             card_title="",
             card_icon="",
             parent_page=dawson_petition_card_group,
         )
         register_card.save()
 
-        petition_simple_card = SimpleCard(
+        petition_simple_card = DawsonSimpleCard(
             card_title="Filing a Petition",
             card_icon="file-lines",
             parent_page=dawson_card_group,
         )
         petition_simple_card.save()
 
-        managing_case_card = SimpleCard(
+        managing_case_card = DawsonSimpleCard(
             card_title="Managing Your Cases",
             card_icon="gears",
             parent_page=dawson_card_group,
         )
         managing_case_card.save()
 
-        searching_case_card = SimpleCard(
+        searching_case_card = DawsonSimpleCard(
             card_title="Searching for Cases and Documents",
             card_icon="search",
             parent_page=dawson_card_group,
         )
         searching_case_card.save()
 
-        reference_materials_card = SimpleCard(
+        reference_materials_card = DawsonSimpleCard(
             card_title="Reference Materials",
             card_icon="book",
             parent_page=dawson_card_group,
