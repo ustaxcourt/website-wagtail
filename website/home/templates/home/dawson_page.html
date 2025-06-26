@@ -91,6 +91,13 @@
             font-weight: 700;
         }
 
+        #dawson-page .dedication .dedication-text .dedication-text-normal {
+            font-size: 17px;
+            line-height: 24px;
+            font-family: var(--body-font);
+            font-weight: 400;
+        }
+
         #dawson-page .usa-card-group.fancy-card-group {
             margin: 0;
             padding: 0;
@@ -204,7 +211,7 @@
                             {% endif %}
                             <div class="dedication-text">
                                 <h2>{{ dedication.title }}</h2>
-                                {{ dedication.paragraph_text | richtext }}
+                                <p class="dedication-text-normal">{{ dedication.paragraph_text | richtext }}</p>
                             </div>
                         </div>
                     {% endfor %}
