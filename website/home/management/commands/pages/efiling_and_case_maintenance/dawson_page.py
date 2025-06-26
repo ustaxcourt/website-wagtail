@@ -4,10 +4,13 @@ from home.models import (
     DawsonPage,
     DawsonFancyCard,
     SimpleCardGroup,
+    SimpleCardGroupItem,
     DawsonSimpleCard,
-    RelatedPage,
     PhotoDedication,
     EnhancedStandardPage,
+    SimpleCard,
+    FancyCard,
+    RelatedPage,
 )
 from home.management.commands.pages.page_initializer import PageInitializer
 import logging
@@ -23,7 +26,10 @@ class DawsonPageInitializer(PageInitializer):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
-    def create_related_pages(self, card, related_std_pages, category, standard_pages):
+    def create_related_pages(
+        self, card_snippet, related_std_pages, category, standard_pages
+    ):
+        """Create RelatedPage instances for a SimpleCard snippet."""
         for a_page in related_std_pages:
             RelatedPage.objects.create(
                 display_title=next(
@@ -34,10 +40,10 @@ class DawsonPageInitializer(PageInitializer):
                     ),
                     a_page.title,
                 ),
-                card=card,
+                card=card_snippet,
                 related_page=a_page,
             )
-        card.save()
+        card_snippet.save()
 
     def create_page_info(self, home_page):
         slug = "dawson"
@@ -67,18 +73,28 @@ class DawsonPageInitializer(PageInitializer):
 
         dawson_content_type = ContentType.objects.get_for_model(DawsonPage)
 
+        # Clear existing relationships
         DawsonFancyCard.objects.filter(parent_page=dawson_page).delete()
+        DawsonSimpleCard.objects.filter(parent_page=dawson_page).delete()
         SimpleCardGroup.objects.filter(parent_page=dawson_page).delete()
 
-        dawson_fancy_card = DawsonFancyCard(
+        # Create FancyCard snippet
+        fancy_card_snippet = FancyCard(
             url="https://dawson.ustaxcourt.gov/",
             text="DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
-            parent_page=dawson_page,
+            live=True,
         )
         login_image = self.load_image_from_images_dir(
             "dawson", "DAWSON-log-in.png", "DAWSON Log In"
         )
-        dawson_fancy_card.photo = login_image
+        fancy_card_snippet.photo = login_image
+        fancy_card_snippet.save()
+
+        # Link FancyCard snippet to DawsonPage
+        dawson_fancy_card_link = DawsonFancyCard(
+            parent_page=dawson_page, fancy_card=fancy_card_snippet
+        )
+        dawson_fancy_card_link.save()
 
         dawson_petition_card_group = SimpleCardGroup(
             group_label="", parent_page=dawson_page
@@ -224,40 +240,54 @@ class DawsonPageInitializer(PageInitializer):
             ],
         }
 
-        register_card = DawsonSimpleCard(
-            card_title="",
-            card_icon="",
-            parent_page=dawson_petition_card_group,
+        # Create SimpleCard snippets
+        register_card_snippet = SimpleCard(
+            card_title="Registration", card_icon="user-plus", live=True
         )
-        register_card.save()
+        register_card_snippet.save()
 
-        petition_simple_card = DawsonSimpleCard(
-            card_title="Filing a Petition",
-            card_icon="file-lines",
-            parent_page=dawson_card_group,
+        petition_card_snippet = SimpleCard(
+            card_title="Filing a Petition", card_icon="file-lines", live=True
         )
-        petition_simple_card.save()
+        petition_card_snippet.save()
 
-        managing_case_card = DawsonSimpleCard(
-            card_title="Managing Your Cases",
-            card_icon="gears",
-            parent_page=dawson_card_group,
+        managing_case_card_snippet = SimpleCard(
+            card_title="Managing Your Cases", card_icon="gears", live=True
         )
-        managing_case_card.save()
+        managing_case_card_snippet.save()
 
-        searching_case_card = DawsonSimpleCard(
+        searching_case_card_snippet = SimpleCard(
             card_title="Searching for Cases and Documents",
             card_icon="search",
-            parent_page=dawson_card_group,
+            live=True,
         )
-        searching_case_card.save()
+        searching_case_card_snippet.save()
 
-        reference_materials_card = DawsonSimpleCard(
-            card_title="Reference Materials",
-            card_icon="book",
-            parent_page=dawson_card_group,
+        reference_materials_card_snippet = SimpleCard(
+            card_title="Reference Materials", card_icon="book", live=True
         )
-        reference_materials_card.save()
+        reference_materials_card_snippet.save()
+
+        # Link SimpleCard snippets to groups via SimpleCardGroupItem
+        SimpleCardGroupItem.objects.create(
+            group=dawson_petition_card_group, simple_card=register_card_snippet
+        )
+
+        SimpleCardGroupItem.objects.create(
+            group=dawson_card_group, simple_card=petition_card_snippet
+        )
+
+        SimpleCardGroupItem.objects.create(
+            group=dawson_card_group, simple_card=managing_case_card_snippet
+        )
+
+        SimpleCardGroupItem.objects.create(
+            group=dawson_card_group, simple_card=searching_case_card_snippet
+        )
+
+        SimpleCardGroupItem.objects.create(
+            group=dawson_card_group, simple_card=reference_materials_card_snippet
+        )
 
         logger.info("Created cards.")
 
@@ -278,31 +308,31 @@ class DawsonPageInitializer(PageInitializer):
             all_new_std_pages[card_name] = new_std_pages
 
         self.create_related_pages(
-            register_card,
+            register_card_snippet,
             all_new_std_pages["registration"],
             "registration",
             standard_pages,
         )
         self.create_related_pages(
-            petition_simple_card,
+            petition_card_snippet,
             all_new_std_pages["petition"],
             "petition",
             standard_pages,
         )
         self.create_related_pages(
-            managing_case_card,
+            managing_case_card_snippet,
             all_new_std_pages["managing_case"],
             "managing_case",
             standard_pages,
         )
         self.create_related_pages(
-            searching_case_card,
+            searching_case_card_snippet,
             all_new_std_pages["searching_case"],
             "searching_case",
             standard_pages,
         )
         self.create_related_pages(
-            reference_materials_card,
+            reference_materials_card_snippet,
             all_new_std_pages["reference_materials"],
             "reference_materials",
             standard_pages,
@@ -319,12 +349,12 @@ class DawsonPageInitializer(PageInitializer):
 
         RelatedPage.objects.create(
             display_title="DAWSON Status",
-            card=reference_materials_card,
+            card=reference_materials_card_snippet,
             related_page=None,
             url="https://status.ustaxcourt.gov/",
         )
 
-        reference_materials_card.save()
+        reference_materials_card_snippet.save()
 
         photo_dedication = PhotoDedication(
             title="Judge Howard A. Dawson, Jr.",
@@ -349,9 +379,6 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             "seo_title": title,
             "search_description": "Dawson",
             "content_type": dawson_content_type,
-            "fancy_card": [dawson_fancy_card],
-            "card_groups": [dawson_petition_card_group, dawson_card_group],
-            "photo_dedication": [photo_dedication],
         }
 
         logger.info(f"- {title} page already exists. Updating content.")
@@ -360,5 +387,9 @@ Judge Dawson was Chief Judge of the Tax Court for three terms. Known as a meticu
             setattr(dawson_page, field_name, field_value)
 
         dawson_page.save()
+
+        # Save the photo dedication instance
+        photo_dedication.dawson_page = dawson_page
+        photo_dedication.save()
 
         logger.info(f"Successfully updated the '{title}' page.")
