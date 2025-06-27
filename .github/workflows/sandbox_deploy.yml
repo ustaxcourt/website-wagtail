@@ -24,6 +24,12 @@ jobs:
         run: |
           echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
 
+      - name: Configure AWS credentials from Prod account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::221082179478:role/github-workflow-deployer
+          aws-region: us-east-1
+
       - name: Checkout specific commit
         uses: actions/checkout@v3
         with:
@@ -37,12 +43,6 @@ jobs:
 
       - name: Setup Node
         uses: ./.github/actions/setup-node
-
-      - name: Configure AWS credentials from Prod account
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::221082179478:role/github-workflow-deployer
-          aws-region: us-east-1
 
       - name: Build USWDS
         run: |
