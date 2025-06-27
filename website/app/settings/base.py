@@ -110,6 +110,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
+                "app.context_processors.get_environment",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
             ],
@@ -315,9 +316,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Add this setting to store your GA tracking ID
 GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 
-ENVIRONMENT = "dev"
+ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
 
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")

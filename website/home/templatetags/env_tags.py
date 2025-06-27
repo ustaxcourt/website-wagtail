@@ -6,5 +6,5 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def get_enviroment(context):
+def get_environment(context):
     return settings.ENVIRONMENT

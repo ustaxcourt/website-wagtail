@@ -5,8 +5,27 @@
         .pagination {
             margin-bottom: 3rem;
         }
+        .admin-env-banner {
+            background-color: #FAA500;
+            color: #020103;
+            padding: 10px 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 15px;
+            border-bottom: 1px solid #ffeeba;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 {% endblock %}
+
+{% block body_class %}
+    {{ block.super }}
+    {% if environment != "production" %}
+    {% endif %}
+{% endblock %}
+
 {% block extra_js %}
     {{ block.super }}
     <script>
@@ -38,6 +57,18 @@
 
             // Add the button to the admin dashboard
             document.body.appendChild(scrollButton);
+
+            {% if environment != "production" %}
+            const banner = document.createElement("div");
+            banner.className = "admin-env-banner";
+            banner.innerHTML = `
+                    <span> ⚠️ You are in the {{ environment|upper }} environment — changes here will not affect production.</span>
+                `;
+            const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
+            if (header && header.parentNode) {
+                header.parentNode.insertBefore(banner, header.nextSibling);
+            }
+            {% endif %}
         });
     </script>
 {% endblock %}

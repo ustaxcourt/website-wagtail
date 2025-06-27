@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        {% get_enviroment as environment %}
+        {% get_environment as environment %}
         {% if environment != "production" %}<meta name="robots" content="noindex">{% endif %}
         <title>
             {% block title %}
@@ -103,7 +103,7 @@
     </head>
     <body class="{% block body_class %}  {% endblock %}">
         {% include 'banner.html' %}
-        {% get_enviroment as environment %}
+        {% get_environment as environment %}
         {% if environment != "production" %}
             {% include 'alert_banner.html' %}
         {% endif %}
