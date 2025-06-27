@@ -10,7 +10,7 @@ on:
 
 jobs:
   production-deploy:
-    environment: guruparan18_sandbox
+    environment: production
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -22,7 +22,7 @@ jobs:
       - name: Set Environment
         id: set_env
         run: |
-          echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
       - name: Checkout specific commit
         uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
       - name: Configure AWS credentials from Prod account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::221082179478:role/github-workflow-deployer
+          role-to-assume: arn:aws:iam::727646494184:role/github-workflow-deployer
           aws-region: us-east-1
 
       - name: Set up Terraform
