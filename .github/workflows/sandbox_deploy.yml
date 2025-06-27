@@ -12,6 +12,9 @@ jobs:
   sandbox-deploy:
     environment: guruparan18_sandbox
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     timeout-minutes: 45
 
     steps:
@@ -48,9 +51,6 @@ jobs:
 
       - name: Apply Terraform
         id: tf_outputs
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           ./setup-tf-buckets.sh
@@ -69,9 +69,6 @@ jobs:
           echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
 
       - name: Set up SSH Key
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           . ./load-secrets.sh
@@ -90,8 +87,6 @@ jobs:
 
       - name: Perform Production Checks
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
@@ -106,8 +101,6 @@ jobs:
 
       - name: Run Migrations
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
@@ -132,9 +125,6 @@ jobs:
           make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           taskArn=$(aws ecs list-task-definitions \
             --family-prefix "${ENVIRONMENT}-website-tasks" \
@@ -160,9 +150,6 @@ jobs:
             --region us-east-1
 
       - name: Wait for ECS Service to Stabilize
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo "Waiting for ECS service to stabilize..."
           aws ecs wait services-stable \
@@ -171,17 +158,11 @@ jobs:
             --region us-east-1
 
       - name: Terminate Bastion Host
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           ./disable-bastion-host.sh
 
       - name: Invalidate CloudFront Distribution
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           # Get the CloudFront distribution ID for the environment
           distribution_id=$(aws cloudfront list-distributions \
