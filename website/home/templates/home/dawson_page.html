@@ -197,7 +197,7 @@
                             {% endif %}
                             <div class="dedication-text">
                                 <h2>{{ dedication.title }}</h2>
-                                {{ dedication.paragraph_text | richtext }}
+                                <div>{{ dedication.paragraph_text | richtext }}</div>
                             </div>
                         </div>
                     {% endfor %}
