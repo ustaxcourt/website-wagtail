@@ -24,16 +24,26 @@ jobs:
         run: |
           echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
 
+      - name: Checkout specific commit
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.commit_sha }}
+
+      - name: 'Debug: Decode OIDC Token'
+        id: oidc_debug
+        run: |
+          echo "Decoding OIDC Token..."
+          encoded_token=$(curl -sSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value')
+          echo "ENCODED TOKEN: $encoded_token"
+
+          echo "DECODED TOKEN CLAIMS:"
+          echo "$encoded_token" | cut -d. -f2 | base64 --decode | jq .
+
       - name: Configure AWS credentials from Prod account
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::221082179478:role/github-workflow-deployer
           aws-region: us-east-1
-
-      - name: Checkout specific commit
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
