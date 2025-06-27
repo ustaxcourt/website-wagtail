@@ -92,6 +92,7 @@ These steps should be performed in sequence to configure the production environm
         ]
     }
     ```
+-----
 
 ### Part 2: GitHub Repository Configuration
 
