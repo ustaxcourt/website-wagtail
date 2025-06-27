@@ -8,11 +8,7 @@ Accepted
 
 ### Context
 
-The current production deployment process relies on long-lived IAM user credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) stored as GitHub secrets. This presents several critical issues:
-
-1.  **Security Risk:** These static, perpetual credentials are a high-value target. If compromised, they could grant unauthorized access to our production AWS environment.
-2.  **Operational Risk:** The secrets are managed manually, requiring a specific team member to copy them into GitHub before each deployment. This process is error-prone, not easily scalable, and creates a single point of failure.
-3.  **Authorization Vulnerability:** A user with write-access to the repository could potentially modify the deployment workflow to bypass intended controls and trigger an unauthorized production deployment using the stored secrets.
+The current production deployment process relies on long-lived IAM user credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) stored as GitHub secrets. This presents security issues.
 
 Our goal is to migrate to a more secure, keyless, and auditable deployment model that enforces a strict separation of duties and a clear approval process.
 
@@ -22,8 +18,7 @@ We will adopt a multi-layered security strategy that eliminates static credentia
 
 1.  **Eliminate Static Credentials:** We will permanently remove the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from GitHub secrets.
 2.  **Adopt AWS OIDC:** We will use OpenID Connect (OIDC) to establish a trust relationship between our production AWS account and the GitHub Actions runner. Workflows will assume an IAM Role by exchanging a short-lived OIDC token for temporary AWS credentials.
-3.  **Implement GitHub Environments:** A protected `production` environment will be created in GitHub. Deployments to this environment will require manual approval from designated reviewers and will be restricted to a specific branch.
-4.  **Lock Down Workflows:** We will use branch protection rules and a `CODEOWNERS` file to prevent unauthorized modifications to the deployment workflow files themselves.
+3.  **Implement GitHub Environments:** Deployments to `production` environment will require manual approval from designated reviewers and will be restricted to a specific branch.
 
 This approach ensures that a production deployment can only be triggered from the correct branch, after the workflow's integrity is verified, and only after an authorized user explicitly approves the run.
 
@@ -33,7 +28,7 @@ This approach ensures that a production deployment can only be triggered from th
 
   * **Enhanced Security:** The attack surface is drastically reduced by eliminating long-lived secrets. Credentials are now temporary and scoped to a single workflow run.
   * **Improved Auditability:** All production deployment approvals are explicitly logged in GitHub, providing a clear audit trail of who authorized what and when.
-  * **Foolproof Authorization:** The OIDC trust policy's conditions (checking the repository and environment) provide cryptographic verification that cannot be bypassed, even by repository administrators.
+  * **Foolproof Authorization:** The OIDC trust policy's conditions (checking the repository and environment) provide cryptographic verification controlled in AWS, cannot be bypassed, even by repository administrators.
   * **Reduced Human Error:** The manual and error-prone step of managing secrets before a deploy is completely eliminated.
 
 **Negative:**
@@ -66,13 +61,14 @@ These steps should be performed in sequence to configure the production environm
       * **Audience:** Choose `sts.amazonaws.com` and click **Next**.
       * **Add permissions:** Attach the necessary IAM policies that allow your workflow to perform its tasks (e.g., Terraform apply, ECS service updates, CloudFront invalidation).
       * **Name and review:**
-          * **Role name:** `deployer`
-          * **Description:** This is an existing role already used for all deployments.
+          * **Role name:** `github-workflow-deployer`
+          * **Description:** This is a new IAM role to be used for all Github deployments.
       * Click **Create role**.
 
 3.  **Configure the Role's Trust Policy**
 
-      * Navigate to the `deployer`.
+      * Navigate to the `github-workflow-deployer`.
+      * Select the "Permissions" tab, add the existing `"deployer"` policy.
       * Select the **Trust relationships** tab and click **Edit trust policy**.
       * **Replace the entire content** with the following JSON. This is the most critical step, as it locks the role to your repository and the `production` environment.
 
@@ -99,10 +95,9 @@ These steps should be performed in sequence to configure the production environm
 
 ### Part 2: GitHub Repository Configuration
 
-1.  **Create and Configure the `production` Environment**
+1.  **Configure the `production` Environment**
 
-      * In your repository, navigate to **Settings \> Environments** and click **New environment**.
-      * **Name:** `production`
+      * In your repository, navigate to **Settings \> Environments** `production`.
       * Click **Configure environment**.
       * Under **Protection rules**, configure the following:
           * **Required reviewers:** Check this box and add the authorized team or individuals (e.g., `@ustaxcourt/administrators`).
@@ -117,25 +112,3 @@ These steps should be performed in sequence to configure the production environm
           * `[x]` **Require review from Code Owners**
           * `[x]` **Dismiss stale pull request approvals when new commits are pushed**
           * `[x]` **Include administrators**
-
-3.  **Create or Verify the `CODEOWNERS` File**
-
-      * Ensure a file exists at the exact path `.github/CODEOWNERS`.
-      * Add the following line to ensure any changes to workflows must be approved by administrators.
-
-    ```
-    # Require administrators to approve any changes to GitHub Actions workflows
-    /.github/workflows/ @ustaxcourt/administrators
-    ```
-
-4.  **Merge the Pull Request**
-
-      * At this point, the PR containing the updated workflow YAML file can be reviewed and merged into the `main` branch.
-
-5.  **Remove Old Production Secrets**
-
-      * This is the final cleanup step after all configuration is complete and the new workflow is merged.
-      * Navigate to **Settings \> Secrets and variables \> Actions**.
-      * Delete the following repository secrets:
-          * `AWS_ACCESS_KEY_ID`
-          * `AWS_SECRET_ACCESS_KEY`
