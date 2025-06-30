@@ -7,7 +7,7 @@ from wagtail.models import Page, Orderable, ParentalKey
 from wagtail.search import index
 
 from django.utils import timezone
-from ..custom_blocks.add_entry_custom_button import AddEntryButton
+from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
 
 
 class HomePage(Page):

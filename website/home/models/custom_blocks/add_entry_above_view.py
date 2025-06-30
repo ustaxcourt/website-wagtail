@@ -1,6 +1,6 @@
 from django.contrib import messages
 
-from ..pages.home_page import HomePageEntry
+from home.models.pages.home_page import HomePageEntry
 from django.urls import reverse
 from wagtail.models import Page
 from django.http import HttpResponseRedirect

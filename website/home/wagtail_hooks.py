@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.conf import settings
 from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
 from wagtail.models import Page
-from .models import NavigationMenu, JudgeRole
-from .models.snippets.judges import RESTRICTED_ROLES
+from home.models import NavigationMenu, JudgeRole
+from home.models.snippets.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
