@@ -2,13 +2,15 @@ from django.contrib import messages
 from django.conf import settings
 from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
 from wagtail.models import Page
-from .models import NavigationMenu, JudgeRole
-from .models.snippets.judges import RESTRICTED_ROLES
+from home.models import NavigationMenu, JudgeRole
+from home.models.snippets.judges import RESTRICTED_ROLES
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
+from django.urls import path, reverse
+from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -140,3 +142,14 @@ def purge_cache_for_snippet_related_pages(request, instance):
             logger.info(f"Purged frontend cache for page: {page.url_path}")
         except Exception as e:
             logger.error(f"Error purging cache for page {page.id}: {e}")
+
+
+@hooks.register("register_admin_urls")
+def register_add_entry_above_url():
+    return [
+        path(
+            "add_entry_above/<int:page_id>/<int:sort_order>/",
+            add_entry_above_view,
+            name="add_entry_above_view",
+        ),
+    ]

@@ -1,10 +1,13 @@
 from django.db import models
+from django.contrib import messages
+
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.fields import RichTextField
 from wagtail.models import Page, Orderable, ParentalKey
 from wagtail.search import index
 
 from django.utils import timezone
+from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
 
 
 class HomePage(Page):
@@ -57,7 +60,40 @@ class HomePageEntry(Orderable):
     def is_expired(self):
         return self.end_date and self.end_date < timezone.now()
 
+    def add_entry_above_me(self, sort_order, request):
+        try:
+            parent = self.homepage.get_latest_revision_as_object()
+
+            new_entry = HomePageEntry(
+                homepage=parent,
+                title="Insert title ...",
+                body="",
+                start_date=None,
+                end_date=None,
+                persist_to_press_releases=True,
+            )
+
+            entries = list(parent.entries.order_by("sort_order"))
+            current_index = sort_order
+
+            if current_index > -1:
+                for i in range(len(entries) - 1, current_index - 1, -1):
+                    entry = parent.entries.get(sort_order=i)
+                    parent.entries.remove(entry)
+                    entry.sort_order += 1
+                    parent.entries.add(entry)
+
+                new_entry.sort_order = current_index
+                parent.entries.add(new_entry)
+                parent.save_revision(user=request.user)
+
+            return new_entry
+        except Exception as e:
+            messages.error(request, f"Error adding entry above: {str(e)}")
+            return None
+
     panels = [
+        AddEntryButton(button_text="Add Entry Above"),
         FieldPanel("title"),
         FieldPanel("body"),
         FieldPanel("start_date"),
