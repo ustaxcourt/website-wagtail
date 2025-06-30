@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from django.urls import path, reverse
-from .models.custom_blocks.add_entry_above_view import add_entry_above_view
+from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 
 import logging
 
