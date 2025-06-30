@@ -23,7 +23,6 @@ jobs:
         id: set_env
         run: |
           echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
-          echo "AWS_ACCOUNT_ID=221082179478" >> $GITHUB_ENV
 
       - name: Checkout specific commit
         uses: actions/checkout@v3
@@ -33,17 +32,17 @@ jobs:
       - name: Configure AWS credentials from Prod account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::221082179478:role/github-workflow-deployer
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-workflow-deployer
           aws-region: us-east-1
 
       - name: Wait for AWS Approval (Poll for Policy Attachment)
         run: |
           while true; do
             if ! ATTACHED_POLICIES=$(aws iam list-attached-role-policies --role-name github-workflow-deployer 2>/dev/null); then
-              echo "❌ Waiting for role: github-workflow-deployer to be granted with deployer-policy."
+              echo "⏳ Waiting for IAM/role: github-workflow-deployer to be granted with deployer-policy."
             else
               if echo "$ATTACHED_POLICIES" | jq -r '.["AttachedPolicies"][].PolicyName' | grep -q "^deployer-policy$"; then
-                echo "✅ Approval received! The policy change has propagated."
+                echo "✅ Policy change on user has propagated. Good to proceed with deployment."
                 break
               fi
             fi
@@ -198,7 +197,7 @@ jobs:
         if: always() # Always runs, even if deployment fails
         run: |
           echo "Detaching deployer policy as a cleanup step..."
-          aws iam detach-role-policy \
+            aws iam detach-role-policy \
             --role-name github-workflow-deployer \
-            --policy-arn arn:aws:iam::221082179478:policy/deployer-policy || echo "Policy was not attached or already detached."
+            --policy-arn arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:policy/deployer-policy || echo "Policy was not attached or already detached."
           echo "... Completed."
