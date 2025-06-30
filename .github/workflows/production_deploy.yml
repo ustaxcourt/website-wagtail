@@ -33,7 +33,7 @@ jobs:
       - name: Configure AWS credentials from Prod account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-workflow-deployer
+          role-to-assume: arn:aws:iam::221082179478:role/github-workflow-deployer
           aws-region: us-east-1
 
       - name: Wait for AWS Approval (Poll for Policy Attachment)
@@ -199,4 +199,4 @@ jobs:
           echo "Detaching deployer policy as a cleanup step..."
           aws iam detach-role-policy \
             --role-name github-workflow-deployer \
-            --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/deployer-policy || echo "Policy was not attached or already detached."
+            --policy-arn arn:aws:iam::221082179478:policy/deployer-policy || echo "Policy was not attached or already detached."
