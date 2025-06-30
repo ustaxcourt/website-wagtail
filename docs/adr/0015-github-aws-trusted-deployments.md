@@ -22,6 +22,8 @@ We will adopt a "Dynamic Policy Elevation" security model. This is a multi-layer
 
 This approach ensures that a production deployment can only be triggered from the correct branch, after the workflow's integrity is verified, and only after an authorized user explicitly approves the run.
 
+### Control Flow
+
 ```mermaid
 graph TD
     %% Define the two main actors/environments in swimlanes
