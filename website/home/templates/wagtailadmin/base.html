@@ -19,13 +19,6 @@
         }
     </style>
 {% endblock %}
-
-{% block body_class %}
-    {{ block.super }}
-    {% if environment != "production" %}
-    {% endif %}
-{% endblock %}
-
 {% block extra_js %}
     {{ block.super }}
     <script>
