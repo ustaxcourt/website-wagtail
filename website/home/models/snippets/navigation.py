@@ -2,14 +2,20 @@ from django.db import models
 from wagtail import blocks
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PublishingPanel
 from wagtail.snippets.models import register_snippet
 from home.models.config import IconCategories
 
 from wagtail.blocks import PageChooserBlock
 from django.contrib.contenttypes.fields import GenericRelation
-from wagtail.models import DraftStateMixin, LockableMixin, RevisionMixin
-from wagtail.models import PreviewableMixin
+from wagtail.models import (
+    DraftStateMixin,
+    LockableMixin,
+    RevisionMixin,
+    PreviewableMixin,
+    WorkflowMixin,
+    PageQuerySet,
+)
 from wagtail.fields import StreamField
 from django.core.exceptions import ValidationError
 
@@ -31,15 +37,25 @@ class NavigationRibbonLink(models.Model):
 
 
 @register_snippet
-class NavigationRibbon(ClusterableModel):
+class NavigationRibbon(WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel):
     name = models.CharField(max_length=255)
+    _revisions = GenericRelation(
+        "wagtailcore.Revision", related_query_name="navigation_ribbon"
+    )
+    objects = PageQuerySet.as_manager()
 
     panels = [
-        InlinePanel("links", label="Links"),  # Now properly references the ParentalKey
+        FieldPanel("name"),
+        InlinePanel("links", label="Links"),
+        PublishingPanel(),
     ]
 
     def __str__(self):
         return self.name
+
+    @property
+    def revisions(self):
+        return self._revisions
 
 
 class SubNavigationLinkBlock(blocks.StructBlock):
@@ -57,7 +73,12 @@ class SubNavigationLinkBlock(blocks.StructBlock):
 
 @register_snippet
 class NavigationMenu(
-    PreviewableMixin, DraftStateMixin, LockableMixin, RevisionMixin, ClusterableModel
+    WorkflowMixin,
+    PreviewableMixin,
+    DraftStateMixin,
+    LockableMixin,
+    RevisionMixin,
+    ClusterableModel,
 ):
     def clean(self):
         super().clean()
@@ -107,6 +128,7 @@ class NavigationMenu(
 
     panels = [
         FieldPanel("menu_items"),
+        PublishingPanel(),
     ]
 
     @property
