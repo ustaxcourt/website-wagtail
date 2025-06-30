@@ -39,12 +39,13 @@ jobs:
       - name: Wait for AWS Approval (Poll for Policy Attachment)
         run: |
           while true; do
-            # This command asks the IAM service "What policies do I see attached RIGHT NOW?"
-            if aws iam list-attached-role-policies --role-name github-workflow-deployer \
-              | jq -r '.["AttachedPolicies"][].PolicyName' \
-              | grep -q "^deployer-policy$"; then
+            if ! ATTACHED_POLICIES=$(aws iam list-attached-role-policies --role-name github-workflow-deployer 2>/dev/null); then
+              echo "❌ Waiting for role: github-workflow-deployer to be granted with deployer-policy."
+            else
+              if echo "$ATTACHED_POLICIES" | jq -r '.["AttachedPolicies"][].PolicyName' | grep -q "^deployer-policy$"; then
                 echo "✅ Approval received! The policy change has propagated."
                 break
+              fi
             fi
             sleep 15
           done
@@ -200,3 +201,4 @@ jobs:
           aws iam detach-role-policy \
             --role-name github-workflow-deployer \
             --policy-arn arn:aws:iam::221082179478:policy/deployer-policy || echo "Policy was not attached or already detached."
+          echo "... Completed."
