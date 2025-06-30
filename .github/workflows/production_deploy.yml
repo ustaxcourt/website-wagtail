@@ -35,7 +35,7 @@ jobs:
           role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-workflow-deployer
           aws-region: us-east-1
 
-      - name: Wait for AWS Approval (Poll for Policy Attachment)
+      - name: Verify AWS Deployer Role (Poll for Policy Attachment)
         run: |
           while true; do
             if ! ATTACHED_POLICIES=$(aws iam list-attached-role-policies --role-name github-workflow-deployer 2>/dev/null); then
