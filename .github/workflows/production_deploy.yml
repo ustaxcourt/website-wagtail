@@ -10,7 +10,7 @@ on:
 
 jobs:
   production-deploy:
-    environment: production
+    environment: guruparan18_sandbox
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -22,7 +22,8 @@ jobs:
       - name: Set Environment
         id: set_env
         run: |
-          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+          echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+          echo "AWS_ACCOUNT_ID=221082179478" >> $GITHUB_ENV
 
       - name: Checkout specific commit
         uses: actions/checkout@v3
@@ -32,8 +33,21 @@ jobs:
       - name: Configure AWS credentials from Prod account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::727646494184:role/github-workflow-deployer
+          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-workflow-deployer
           aws-region: us-east-1
+
+      - name: Wait for AWS Approval (Poll for Policy Attachment)
+        run: |
+          while true; do
+            # This command asks the IAM service "What policies do I see attached RIGHT NOW?"
+            if aws iam list-attached-role-policies --role-name github-workflow-deployer \
+              | jq -r '.["AttachedPolicies"][].PolicyName' \
+              | grep -q "^deployer-policy$"; then
+                echo "✅ Approval received! The policy change has propagated."
+                break
+            fi
+            sleep 15
+          done
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
@@ -178,3 +192,11 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "$distribution_id" \
             --paths "/*"
+
+      - name: Cleanup Policy Attachment
+        if: always() # Always runs, even if deployment fails
+        run: |
+          echo "Detaching deployer policy as a cleanup step..."
+          aws iam detach-role-policy \
+            --role-name github-workflow-deployer \
+            --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/deployer-policy || echo "Policy was not attached or already detached."
