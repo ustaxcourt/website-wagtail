@@ -74,9 +74,6 @@ The workflow consists of the following jobs and steps:
     * **Functionality:** Builds USWDS assets needed for website.
 
 8.  **Apply Terraform:**
-    * **Environment Variables:**
-        * `AWS_ACCESS_KEY_ID`: Your AWS access key ID, stored as a GitHub secret (`${{ secrets.AWS_ACCESS_KEY_ID }}`).
-        * `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key, stored as a GitHub secret (`${{ secrets.AWS_SECRET_ACCESS_KEY }}`). **Ensure these secrets are properly configured in your repository settings.**
     * **Functionality:**
         * Deploys infrastructure changes using AWS credentials from secrets. Outputs bastion IP, database endpoint, and bucket name.
 
