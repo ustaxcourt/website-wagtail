@@ -10,7 +10,7 @@ on:
 
 jobs:
   production-deploy:
-    environment: guruparan18_sandbox
+    environment: production
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -22,7 +22,7 @@ jobs:
       - name: Set Environment
         id: set_env
         run: |
-          echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
       - name: Checkout specific commit
         uses: actions/checkout@v3
@@ -39,7 +39,7 @@ jobs:
         run: |
           while true; do
             if ! ATTACHED_POLICIES=$(aws iam list-attached-role-policies --role-name github-workflow-deployer 2>/dev/null); then
-              echo "⏳ Waiting for IAM/role: github-workflow-deployer to be granted with deployer-policy."
+              echo "⏳ Waiting for IAM/role: github-workflow-deployer to be granted with policy: deployer-policy."
             else
               if echo "$ATTACHED_POLICIES" | jq -r '.["AttachedPolicies"][].PolicyName' | grep -q "^deployer-policy$"; then
                 echo "✅ Policy change on user has propagated. Good to proceed with deployment."
