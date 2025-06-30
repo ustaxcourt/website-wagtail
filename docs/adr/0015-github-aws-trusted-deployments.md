@@ -17,34 +17,10 @@ Our goal is to migrate to a more secure, keyless, and auditable deployment model
 We will adopt a "Dynamic Policy Elevation" security model. This is a multi-layered strategy where the final, authoritative approval for a deployment is an explicit iam:AttachRolePolicy action performed by an administrator in the AWS environment. This eliminates static credentials and enforces cryptographic and manual verifications for all production deployments.
 
 1.  **Eliminate Static Credentials:** We will permanently remove the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from GitHub secrets.
-2.  **Adopt AWS OIDC:** We will use OpenID Connect (OIDC) to establish a trust relationship between our production AWS account and the GitHub Actions runner. Workflows will assume an IAM Role by exchanging a short-lived OIDC token for temporary AWS credentials.
-3.  **Implement GitHub Environments:** Deployments to `production` environment will require manual approval from designated reviewers and will be restricted to a specific branch.
+2.  **Adopt AWS OIDC:** We will use OpenID Connect (OIDC) to establish a trust relationship between our production AWS account and the GitHub Actions runner. Workflows will assume an IAM Role by exchanging a short-lived OIDC token for temporary AWS credentials. The developer/AWS administrator need to provide the github-workflow-deployer role with permission/policy: "deployer-policy".
+3.  **Implement GitHub Environments:** Deployments to `production` environment will require manual approval from designated reviewers and will be restricted to a specific branch. The Github workflow will detect this policy change and only proceeds to deployment if the deployer-policy is attached.
 
 This approach ensures that a production deployment can only be triggered from the correct branch, after the workflow's integrity is verified, and only after an authorized user explicitly approves the run.
-
-### Control Flow
-
-```mermaid
-graph TD
-    %% Define the two main actors/environments in swimlanes
-    subgraph GitHub Actions
-        A[Start: Developer Triggers Workflow] --> B(1. Initiation with Low Privilege<br>Workflow assumes bare-bones IAM Role via OIDC);
-        B --> C{2. Waiting State<br>Is 'deployer-policy' attached to role?};
-        C -- No --> D((Wait / Poll Again));
-        D --> C;
-        C -- Yes --> E(4. Elevation and Execution<br>Run Terraform, ECS, and other deployment commands);
-        E -- Success or Failure --> F(5. Automatic Deprovisioning<br>Run cleanup step to detach 'deployer-policy');
-        F --> G[End];
-    end
-
-    subgraph AWS Administrator
-        M[3. Out-of-Band AWS Approval<br>Sees waiting job in GitHub UI] --> N(Navigates to AWS IAM Console<br>Manually attaches 'deployer-policy' to the role);
-    end
-
-    %% Style the manual step to highlight it and show its influence on the waiting state
-    style N fill:#f9f,stroke:#333,stroke-width:2px
-    N -.->|Grants Permission| C
-```
 
 ### Consequences
 
