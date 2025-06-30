@@ -55,7 +55,7 @@
             const banner = document.createElement("div");
             banner.className = "admin-env-banner";
             banner.innerHTML = `
-                    <span> ⚠️ You are in the {{ environment|upper }} environment — changes here will not affect production.</span>
+                    <span> ⚠️ You are in the {{ environment|upper }} environment.</span>
                 `;
             const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
             if (header && header.parentNode) {
