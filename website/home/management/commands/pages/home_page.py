@@ -101,6 +101,7 @@ class HomePageInitializer(PageInitializer):
             start_date=datetime(2024, 12, 31, 6, 0),  # Example: 6 AM EST
             end_date=datetime(2025, 1, 1, 23, 59),  # Example: 11.59 PM EST
             persist_to_press_releases=True,
+            sort_order=0,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -111,6 +112,7 @@ class HomePageInitializer(PageInitializer):
             start_date=datetime(2024, 12, 1, 6, 0),
             end_date=datetime(2024, 12, 25, 23, 59),
             persist_to_press_releases=True,
+            sort_order=1,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -121,6 +123,7 @@ class HomePageInitializer(PageInitializer):
             start_date=datetime(2025, 4, 14, 6, 0),
             end_date=None,
             persist_to_press_releases=True,
+            sort_order=2,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -131,6 +134,7 @@ class HomePageInitializer(PageInitializer):
             start_date=datetime(2025, 4, 29, 6, 0),
             end_date=None,
             persist_to_press_releases=True,
+            sort_order=3,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -141,6 +145,7 @@ class HomePageInitializer(PageInitializer):
             start_date=datetime(2025, 4, 14, 6, 0),
             end_date=None,
             persist_to_press_releases=True,
+            sort_order=4,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -151,6 +156,7 @@ class HomePageInitializer(PageInitializer):
             start_date=datetime(2025, 4, 7, 6, 0),
             end_date=datetime(2025, 5, 5, 23, 59),
             persist_to_press_releases=True,
+            sort_order=5,
         )
         HomePageEntry.objects.create(
             homepage=homepage,
@@ -169,6 +175,7 @@ class HomePageInitializer(PageInitializer):
             start_date=None,
             end_date=None,
             persist_to_press_releases=True,
+            sort_order=6,
         )
 
         logger.info("Successfully created the new Home page.")
@@ -208,6 +215,7 @@ class HomePageInitializer(PageInitializer):
                 "start_date": datetime(2025, 5, 5, 6, 0),
                 "end_date": None,
                 "persist_to_press_releases": True,
+                "sort_order": 7,
             },
             # Add more entries as needed
         ]
@@ -224,6 +232,7 @@ class HomePageInitializer(PageInitializer):
                     start_date=entry_data["start_date"],
                     end_date=entry_data["end_date"],
                     persist_to_press_releases=entry_data["persist_to_press_releases"],
+                    sort_order=entry_data["sort_order"],
                 )
                 logger.info(f"{entry_data['title']} entry created successfully.")
             else:

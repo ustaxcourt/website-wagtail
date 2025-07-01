@@ -1,18 +1,37 @@
 {% extends "wagtailadmin/base.html" %}
+{% load static env_tags %}
 {% block extra_css %}
     {{ block.super }}
     <style>
         .pagination {
             margin-bottom: 3rem;
         }
+        #id_entries-ADD {
+            display: none !important;
+        }
+        .admin-env-banner {
+            background-color: #FAA500;
+            color: #020103;
+            padding: 10px 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 15px;
+            border-bottom: 1px solid #ffeeba;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 {% endblock %}
 {% block extra_js %}
-    {{ block.super }}
+{{ block.super }}
+    {% get_environment as current_env %}
     <script>
+    const ENVIRONMENT = "{{ current_env }}";
+
         document.addEventListener("DOMContentLoaded", function() {
             // Create the button
-            var scrollButton = document.createElement("button");
+            const scrollButton = document.createElement("button");
             scrollButton.innerText = "Scroll to Bottom";
             scrollButton.style.position = "fixed";
             scrollButton.style.bottom = "15px";
@@ -38,6 +57,19 @@
 
             // Add the button to the admin dashboard
             document.body.appendChild(scrollButton);
+
+        // Banner only in non-production
+        if (ENVIRONMENT !== "production") {
+            const banner = document.createElement("div");
+            banner.className = "admin-env-banner";
+            banner.innerHTML = `
+                    <span> ⚠️ You are in the ${ENVIRONMENT.toUpperCase()} environment.</span>
+                `;
+            const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
+            if (header && header.parentNode) {
+                header.parentNode.insertBefore(banner, header.nextSibling);
+            }
+        }
         });
     </script>
 {% endblock %}
