@@ -144,6 +144,72 @@ def purge_cache_for_snippet_related_pages(request, instance):
             logger.error(f"Error purging cache for page {page.id}: {e}")
 
 
+def purge_cloudfront_cache_for_file(file_url):
+    """
+    Purge CloudFront cache for a specific file URL.
+    This handles both documents and images served via /files/ path.
+    """
+    try:
+        from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+        if not file_url:
+            logger.warning("No file URL provided for cache purge")
+            return
+
+        batch = PurgeBatch()
+        batch.add_url(file_url)
+        batch.purge()
+        logger.info(f"Purged CloudFront cache for file: {file_url}")
+    except Exception as e:
+        logger.error(f"Error purging CloudFront cache for {file_url}: {e}")
+
+
+@hooks.register("after_edit_document")
+def purge_cache_after_document_edit(request, document):
+    """
+    Purge CloudFront cache when a document is edited/updated.
+    """
+    if hasattr(document, "url") and document.url:
+        purge_cloudfront_cache_for_file(document.url)
+
+
+@hooks.register("after_delete_document")
+def purge_cache_after_document_delete(request, instances):
+    """
+    Purge CloudFront cache when documents are deleted.
+    """
+    for document in instances:
+        if hasattr(document, "url") and document.url:
+            purge_cloudfront_cache_for_file(document.url)
+
+
+@hooks.register("after_edit_image")
+def purge_cache_after_image_edit(request, image):
+    """
+    Purge CloudFront cache when an image is edited/updated.
+    """
+    if hasattr(image, "file") and image.file:
+        try:
+            image_url = image.file.url
+            purge_cloudfront_cache_for_file(image_url)
+        except Exception as e:
+            logger.error(f"Error getting image URL for cache purge: {e}")
+
+
+@hooks.register("after_delete_image")
+def purge_cache_after_image_delete(request, instances):
+    """
+    Purge CloudFront cache when images are deleted.
+    """
+    for image in instances:
+        if hasattr(image, "file") and image.file:
+            try:
+                image_url = image.file.url
+                purge_cloudfront_cache_for_file(image_url)
+            except Exception as e:
+                logger.error(f"Error getting image URL for cache purge: {e}")
+
+
 @hooks.register("register_admin_urls")
 def register_add_entry_above_url():
     return [
