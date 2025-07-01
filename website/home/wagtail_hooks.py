@@ -1,14 +1,17 @@
 from django.contrib import messages
 from django.conf import settings
-from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
-from wagtail.models import Page
-from home.models import NavigationMenu, JudgeRole
-from home.models.snippets.judges import RESTRICTED_ROLES
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.shortcuts import redirect
+from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
-from django.urls import path, reverse
+from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
+from wagtail.documents.models import Document
+from wagtail.models import Page
+from home.models import NavigationMenu, JudgeRole
+from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 
 import logging
@@ -161,26 +164,44 @@ def purge_cloudfront_cache_for_file(file_url):
         batch.purge()
         logger.info(f"Purged CloudFront cache for file: {file_url}")
     except Exception as e:
-        logger.error(f"Error purging CloudFront cache for {file_url}: {e}")
+        logger.error(
+            f"Error purging CloudFront cache for {file_url}: {e}", exc_info=True
+        )
 
 
-@hooks.register("after_edit_document")
-def purge_cache_after_document_edit(request, document):
-    """
-    Purge CloudFront cache when a document is edited/updated.
-    """
-    if hasattr(document, "url") and document.url:
-        purge_cloudfront_cache_for_file(document.url)
+# Document cache invalidation using Django signals since after_edit_document
+# and after_delete_document hooks don't exist in Wagtail 6.4.1
 
 
-@hooks.register("after_delete_document")
-def purge_cache_after_document_delete(request, instances):
+@receiver(post_save, sender=Document)
+def purge_cache_after_document_save(sender, instance, created, **kwargs):
     """
-    Purge CloudFront cache when documents are deleted.
+    Purge CloudFront cache when a document is saved (created or updated).
     """
-    for document in instances:
-        if hasattr(document, "url") and document.url:
-            purge_cloudfront_cache_for_file(document.url)
+    del sender, kwargs  # Unused parameters required by signal signature
+    action = "created" if created else "updated"
+    logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "url") and instance.url:
+        logger.info(f"Document URL: {instance.url}")
+        purge_cloudfront_cache_for_file(instance.url)
+    else:
+        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
+
+
+@receiver(post_delete, sender=Document)
+def purge_cache_after_document_delete(sender, instance, **kwargs):
+    """
+    Purge CloudFront cache when a document is deleted.
+    """
+    del sender, kwargs  # Unused parameters required by signal signature
+    logger.info(f"Document deleted: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "url") and instance.url:
+        logger.info(f"Document URL: {instance.url}")
+        purge_cloudfront_cache_for_file(instance.url)
+    else:
+        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
 
 
 @hooks.register("after_edit_image")
@@ -188,6 +209,7 @@ def purge_cache_after_image_edit(request, image):
     """
     Purge CloudFront cache when an image is edited/updated.
     """
+    del request  # Unused parameter required by hook signature
     if hasattr(image, "file") and image.file:
         try:
             image_url = image.file.url
@@ -201,6 +223,7 @@ def purge_cache_after_image_delete(request, instances):
     """
     Purge CloudFront cache when images are deleted.
     """
+    del request  # Unused parameter required by hook signature
     for image in instances:
         if hasattr(image, "file") and image.file:
             try:
