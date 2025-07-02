@@ -177,13 +177,21 @@ def purge_cache_after_document_save(sender, instance, created, **kwargs):
     """
     del sender, kwargs  # Unused parameters required by signal signature
     action = "created" if created else "updated"
-    logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
+
+    # Use both logger and print to ensure visibility
+    log_msg = f"🔄 Document {action}: {instance.title} (ID: {instance.id})"
+    logger.info(log_msg)
+    print(log_msg)  # Ensure visibility in console
 
     if hasattr(instance, "url") and instance.url:
-        logger.info(f"Document URL: {instance.url}")
+        url_msg = f"📄 Document URL: {instance.url}"
+        logger.info(url_msg)
+        print(url_msg)
         purge_cloudfront_cache_for_file(instance.url)
     else:
-        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
+        warn_msg = f"⚠️ Document {instance.id} has no URL attribute or URL is empty"
+        logger.warning(warn_msg)
+        print(warn_msg)
 
 
 @receiver(post_delete, sender=Document)
@@ -192,13 +200,20 @@ def purge_cache_after_document_delete(sender, instance, **kwargs):
     Purge CloudFront cache when a document is deleted.
     """
     del sender, kwargs  # Unused parameters required by signal signature
-    logger.info(f"Document deleted: {instance.title} (ID: {instance.id})")
+
+    log_msg = f"🗑️ Document deleted: {instance.title} (ID: {instance.id})"
+    logger.info(log_msg)
+    print(log_msg)
 
     if hasattr(instance, "url") and instance.url:
-        logger.info(f"Document URL: {instance.url}")
+        url_msg = f"📄 Document URL: {instance.url}"
+        logger.info(url_msg)
+        print(url_msg)
         purge_cloudfront_cache_for_file(instance.url)
     else:
-        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
+        warn_msg = f"⚠️ Document {instance.id} has no URL attribute or URL is empty"
+        logger.warning(warn_msg)
+        print(warn_msg)
 
 
 @receiver(post_save, sender=Image)
