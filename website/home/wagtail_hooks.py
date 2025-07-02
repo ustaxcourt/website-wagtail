@@ -9,6 +9,7 @@ from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
 from wagtail.documents.models import Document
+from wagtail.images.models import Image
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
@@ -204,33 +205,43 @@ def purge_cache_after_document_delete(sender, instance, **kwargs):
         logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
 
 
-@hooks.register("after_edit_image")
-def purge_cache_after_image_edit(request, image):
+@receiver(post_save, sender=Image)
+def purge_cache_after_image_save(sender, instance, created, **kwargs):
     """
-    Purge CloudFront cache when an image is edited/updated.
+    Purge CloudFront cache when an image is saved (created or updated).
     """
-    del request  # Unused parameter required by hook signature
-    if hasattr(image, "file") and image.file:
+    del sender, kwargs  # Unused parameters required by signal signature
+    action = "created" if created else "updated"
+    logger.info(f"Image {action}: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "file") and instance.file:
         try:
-            image_url = image.file.url
+            image_url = instance.file.url
+            logger.info(f"Image URL: {image_url}")
             purge_cloudfront_cache_for_file(image_url)
         except Exception as e:
             logger.error(f"Error getting image URL for cache purge: {e}")
+    else:
+        logger.warning(f"Image {instance.id} has no file attribute or file is empty")
 
 
-@hooks.register("after_delete_image")
-def purge_cache_after_image_delete(request, instances):
+@receiver(post_delete, sender=Image)
+def purge_cache_after_image_delete(sender, instance, **kwargs):
     """
-    Purge CloudFront cache when images are deleted.
+    Purge CloudFront cache when an image is deleted.
     """
-    del request  # Unused parameter required by hook signature
-    for image in instances:
-        if hasattr(image, "file") and image.file:
-            try:
-                image_url = image.file.url
-                purge_cloudfront_cache_for_file(image_url)
-            except Exception as e:
-                logger.error(f"Error getting image URL for cache purge: {e}")
+    del sender, kwargs  # Unused parameters required by signal signature
+    logger.info(f"Image deleted: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "file") and instance.file:
+        try:
+            image_url = instance.file.url
+            logger.info(f"Image URL: {image_url}")
+            purge_cloudfront_cache_for_file(image_url)
+        except Exception as e:
+            logger.error(f"Error getting image URL for cache purge: {e}")
+    else:
+        logger.warning(f"Image {instance.id} has no file attribute or file is empty")
 
 
 @hooks.register("register_admin_urls")
