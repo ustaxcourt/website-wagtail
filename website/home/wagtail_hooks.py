@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from django.contrib import messages
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
@@ -156,18 +157,33 @@ def purge_cloudfront_cache_for_file(file_url):
     try:
         from wagtail.contrib.frontend_cache.utils import PurgeBatch
 
-        if not file_url:
-            logger.warning("No file URL provided for cache purge")
-            return
+        if file_url.startswith("http"):
+            parsed = urlparse(file_url)
+            cache_path = parsed.path
+            debug_msg = f"🔍 Full URL: {file_url} -> Path: {cache_path}"
+        else:
+            cache_path = file_url if file_url.startswith("/") else f"/{file_url}"
+            debug_msg = f"🔍 Relative URL: {file_url} -> Path: {cache_path}"
+
+        logger.info(debug_msg)
+        print(debug_msg)
+
+        cache_msg = f"☁️ Purging CloudFront cache for path: {cache_path}"
+        logger.info(cache_msg)
+        print(cache_msg)
 
         batch = PurgeBatch()
-        batch.add_url(file_url)
+        batch.add_url(cache_path)  # Use path instead of full URL
         batch.purge()
-        logger.info(f"Purged CloudFront cache for file: {file_url}")
+
+        success_msg = f"✅ Successfully purged CloudFront cache for path: {cache_path}"
+        logger.info(success_msg)
+        print(success_msg)
+
     except Exception as e:
-        logger.error(
-            f"Error purging CloudFront cache for {file_url}: {e}", exc_info=True
-        )
+        error_msg = f"❌ Error purging CloudFront cache for {file_url}: {e}"
+        logger.error(error_msg, exc_info=True)
+        print(error_msg)
 
 
 @receiver(post_save, sender=Document)
