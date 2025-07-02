@@ -170,10 +170,6 @@ def purge_cloudfront_cache_for_file(file_url):
         )
 
 
-# Document cache invalidation using Django signals since after_edit_document
-# and after_delete_document hooks don't exist in Wagtail 6.4.1
-
-
 @receiver(post_save, sender=Document)
 def purge_cache_after_document_save(sender, instance, created, **kwargs):
     """
