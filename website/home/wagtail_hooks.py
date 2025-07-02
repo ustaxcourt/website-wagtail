@@ -152,7 +152,6 @@ def purge_cache_for_snippet_related_pages(request, instance):
 def purge_cloudfront_cache_for_file(file_url):
     """
     Purge CloudFront cache for a specific file URL.
-    This handles both documents and images served via /files/ path.
     """
     try:
         from wagtail.contrib.frontend_cache.utils import PurgeBatch
@@ -160,30 +159,23 @@ def purge_cloudfront_cache_for_file(file_url):
         if file_url.startswith("http"):
             parsed = urlparse(file_url)
             cache_path = parsed.path
-            debug_msg = f"🔍 Full URL: {file_url} -> Path: {cache_path}"
         else:
             cache_path = file_url if file_url.startswith("/") else f"/{file_url}"
-            debug_msg = f"🔍 Relative URL: {file_url} -> Path: {cache_path}"
+            if cache_path.startswith("/files/"):
+                cache_path = cache_path[len("/files/") - 1 :]
 
-        logger.info(debug_msg)
-        print(debug_msg)
-
-        cache_msg = f"☁️ Purging CloudFront cache for path: {cache_path}"
-        logger.info(cache_msg)
-        print(cache_msg)
+        logger.info(f"Purging CloudFront cache for path: {cache_path}")
 
         batch = PurgeBatch()
-        batch.add_url(cache_path)  # Use path instead of full URL
+        batch.add_url(cache_path)
         batch.purge()
 
-        success_msg = f"✅ Successfully purged CloudFront cache for path: {cache_path}"
-        logger.info(success_msg)
-        print(success_msg)
+        logger.info(f"Successfully purged CloudFront cache for path: {cache_path}")
 
     except Exception as e:
-        error_msg = f"❌ Error purging CloudFront cache for {file_url}: {e}"
-        logger.error(error_msg, exc_info=True)
-        print(error_msg)
+        logger.error(
+            f"Error purging CloudFront cache for {file_url}: {e}", exc_info=True
+        )
 
 
 @receiver(post_save, sender=Document)
@@ -191,23 +183,16 @@ def purge_cache_after_document_save(sender, instance, created, **kwargs):
     """
     Purge CloudFront cache when a document is saved (created or updated).
     """
-    del sender, kwargs  # Unused parameters required by signal signature
+    del sender, kwargs
     action = "created" if created else "updated"
 
-    # Use both logger and print to ensure visibility
-    log_msg = f"🔄 Document {action}: {instance.title} (ID: {instance.id})"
-    logger.info(log_msg)
-    print(log_msg)  # Ensure visibility in console
+    logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
 
     if hasattr(instance, "url") and instance.url:
-        url_msg = f"📄 Document URL: {instance.url}"
-        logger.info(url_msg)
-        print(url_msg)
+        logger.info(f"Document URL: {instance.url}")
         purge_cloudfront_cache_for_file(instance.url)
     else:
-        warn_msg = f"⚠️ Document {instance.id} has no URL attribute or URL is empty"
-        logger.warning(warn_msg)
-        print(warn_msg)
+        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
 
 
 @receiver(post_delete, sender=Document)
@@ -215,21 +200,15 @@ def purge_cache_after_document_delete(sender, instance, **kwargs):
     """
     Purge CloudFront cache when a document is deleted.
     """
-    del sender, kwargs  # Unused parameters required by signal signature
+    del sender, kwargs
 
-    log_msg = f"🗑️ Document deleted: {instance.title} (ID: {instance.id})"
-    logger.info(log_msg)
-    print(log_msg)
+    logger.info(f"Document deleted: {instance.title} (ID: {instance.id})")
 
     if hasattr(instance, "url") and instance.url:
-        url_msg = f"📄 Document URL: {instance.url}"
-        logger.info(url_msg)
-        print(url_msg)
+        logger.info(f"Document URL: {instance.url}")
         purge_cloudfront_cache_for_file(instance.url)
     else:
-        warn_msg = f"⚠️ Document {instance.id} has no URL attribute or URL is empty"
-        logger.warning(warn_msg)
-        print(warn_msg)
+        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
 
 
 @receiver(post_save, sender=Image)
@@ -237,7 +216,7 @@ def purge_cache_after_image_save(sender, instance, created, **kwargs):
     """
     Purge CloudFront cache when an image is saved (created or updated).
     """
-    del sender, kwargs  # Unused parameters required by signal signature
+    del sender, kwargs
     action = "created" if created else "updated"
     logger.info(f"Image {action}: {instance.title} (ID: {instance.id})")
 
@@ -257,7 +236,7 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
     """
     Purge CloudFront cache when an image is deleted.
     """
-    del sender, kwargs  # Unused parameters required by signal signature
+    del sender, kwargs
     logger.info(f"Image deleted: {instance.title} (ID: {instance.id})")
 
     if hasattr(instance, "file") and instance.file:
