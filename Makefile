@@ -174,3 +174,16 @@ aws-teardown: destroy
 	# Remove the generated access key file
 	@rm -f ./infra/iam/generated-deployer-access-key.json
 	@echo ".... Cleaned up."
+
+role:
+	@echo "Attaching 'deployer-policy' to role: github-workflow-deployer..."
+	@ACCOUNT_ID=$$(aws sts get-caller-identity --query Account --output text); \
+	aws iam attach-role-policy \
+	  --role-name github-workflow-deployer \
+	  --policy-arn arn:aws:iam::$$ACCOUNT_ID:policy/deployer-policy
+	@echo "... Waiting 3 seconds for IAM policy to propagate."
+	@sleep 3
+	@echo "Current attached policies:"
+	@aws iam list-attached-role-policies --role-name github-workflow-deployer \
+	  --query 'AttachedPolicies[*].[PolicyName, PolicyArn]' --output text | \
+	  awk '{printf "%s: %s\n", $$1, $$2}'
