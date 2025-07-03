@@ -163,7 +163,7 @@ def purge_cloudfront_cache_for_file(file_url):
             cache_path = file_url if file_url.startswith("/") else f"/{file_url}"
 
         if cache_path.startswith("/files/"):
-            cache_path = cache_path.removeprefix("/files/")
+            cache_path = cache_path.removeprefix("/files")
 
         logger.info(f"Purging CloudFront cache for path: {cache_path}")
 
