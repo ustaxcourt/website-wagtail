@@ -241,13 +241,13 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $timestamp"
-          message=$(cat <<EOF
+          message=$(cat <<'EOF'
           Deployment Notification SUCCEEDED
           Environment: Production
           Status: SUCCEEDED
-          Actor: ${GITHUB_ACTOR}
-          Time: ${timestamp}
-          Commit SHA: ${{ github.event.inputs.commit_sha }}
+          Actor: '${GITHUB_ACTOR}'
+          Time: '${timestamp}'
+          Commit SHA: '${{ github.event.inputs.commit_sha }}'
           )
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
@@ -265,13 +265,13 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Production deployment FAILED by ${GITHUB_ACTOR} at $timestamp"
-          message=$(cat <<EOF
+          message=$(cat <<'EOF'
           Deployment Notification FAILED
           Environment: Production
           Status: FAILED
-          Actor: ${GITHUB_ACTOR}
-          Time: ${timestamp}
-          Commit SHA: ${{ github.event.inputs.commit_sha }}
+          Actor: '${GITHUB_ACTOR}'
+          Time: '${timestamp}'
+          Commit SHA: '${{ github.event.inputs.commit_sha }}'
           )
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
