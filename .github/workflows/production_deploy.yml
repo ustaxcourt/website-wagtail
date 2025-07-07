@@ -48,6 +48,7 @@ jobs:
           message="Production deployment STARTED by ${GITHUB_ACTOR} at $timestamp. Commit: ${{ github.event.inputs.commit_sha }}"
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
+            --subject "$subject" \
             --message "$message" \
             --region "$AWS_REGION"
 
@@ -235,6 +236,7 @@ jobs:
           message="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $timestamp. Commit: ${{ github.event.inputs.commit_sha }}"
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
+            --subject "$subject" \
             --message "$message" \
             --region "$AWS_REGION"
 
@@ -251,5 +253,6 @@ jobs:
           message="Production deployment FAILED by ${GITHUB_ACTOR} at $timestamp. Commit: ${{ github.event.inputs.commit_sha }}"
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
+            --subject "$subject" \
             --message "$message" \
             --region "$AWS_REGION"

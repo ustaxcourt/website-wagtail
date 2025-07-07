@@ -42,6 +42,7 @@ jobs:
           message="Sandbox deployment STARTED by ${GITHUB_ACTOR} at $timestamp. Git SHA: $GITHUB_SHA"
           aws sns publish \
             --topic-arn "${{ secrets.SNS_TOPIC_ARN }}" \
+            --subject "$subject" \
             --message "$message" \
             --region us-east-1
         env:
@@ -240,6 +241,7 @@ jobs:
           message="Sandbox deployment FAILED by ${GITHUB_ACTOR} at $timestamp. Git SHA: $GITHUB_SHA"
           aws sns publish \
             --topic-arn "${{ secrets.SNS_TOPIC_ARN }}" \
+            --subject "$subject" \
             --message "$message" \
             --region us-east-1
         env:
