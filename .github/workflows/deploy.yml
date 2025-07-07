@@ -34,6 +34,17 @@ jobs:
             echo "Debug: No matching condition found"
             exit 1
           fi
+      - name: Notify SNS of sandbox deployment start
+        if: ${{ github.ref == 'refs/tags/sandbox' }}
+        run: |
+          message="Sandbox deployment STARTED by ${GITHUB_ACTOR} at $(date -u). Git SHA: $GITHUB_SHA"
+          aws sns publish \
+            --topic-arn "${{ secrets.SNS_SANDBOX_TOPIC_ARN }}" \
+            --message "$message" \
+            --region us-east-1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -218,3 +229,15 @@ jobs:
         run: |
           cd infra
           ./disable-bastion-host.sh
+
+      - name: Notify SNS of sandbox deployment failure
+        if: ${{ github.ref == 'refs/tags/sandbox' && failure() }}
+        run: |
+          message="Sandbox deployment FAILED by ${GITHUB_ACTOR} at $(date -u). Git SHA: $GITHUB_SHA"
+          aws sns publish \
+            --topic-arn "${{ secrets.SNS_SANDBOX_TOPIC_ARN }}" \
+            --message "$message" \
+            --region us-east-1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

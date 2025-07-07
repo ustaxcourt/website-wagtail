@@ -36,6 +36,19 @@ jobs:
         run: |
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
+      - name: Notify SNS of deployment start
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-east-1"
+          SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
+        run: |
+          message="Production deployment STARTED by ${GITHUB_ACTOR} at $(date -u). Commit: ${{ github.event.inputs.commit_sha }}"
+          aws sns publish \
+            --topic-arn "$SNS_TOPIC_ARN" \
+            --message "$message" \
+            --region "$AWS_REGION"
+
       - name: Checkout specific commit
         uses: actions/checkout@v3
         with:
@@ -192,7 +205,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          # Get the CloudFront distribution ID for the environment
           distribution_id=$(aws cloudfront list-distributions \
             --query "DistributionList.Items[?contains(Origins.Items[0].DomainName, '${ENVIRONMENT}')].Id" \
             --output text)
@@ -206,3 +218,31 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "$distribution_id" \
             --paths "/*"
+
+      - name: Notify SNS of deployment success
+        if: success()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-east-1"
+          SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
+        run: |
+          message="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $(date -u). Commit: ${{ github.event.inputs.commit_sha }}"
+          aws sns publish \
+            --topic-arn "$SNS_TOPIC_ARN" \
+            --message "$message" \
+            --region "$AWS_REGION"
+
+      - name: Notify SNS of deployment failure
+        if: failure()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-east-1"
+          SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
+        run: |
+          message="Production deployment FAILED by ${GITHUB_ACTOR} at $(date -u). Commit: ${{ github.event.inputs.commit_sha }}"
+          aws sns publish \
+            --topic-arn "$SNS_TOPIC_ARN" \
+            --message "$message" \
+            --region "$AWS_REGION"
