@@ -50,7 +50,7 @@ jobs:
           Status: STARTED\n\
           Actor: ${GITHUB_ACTOR}\n\
           Time: ${timestamp}\n\
-          Commit SHA: ${{ github.event.inputs.commit_sha }}\n\n\"
+          Commit SHA: ${{ github.event.inputs.commit_sha || github.sha }}"
 
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
@@ -244,7 +244,7 @@ jobs:
           Status: SUCCEEDED\n\
           Actor: ${GITHUB_ACTOR}\n\
           Time: ${timestamp}\n\
-          Commit SHA: ${{ github.event.inputs.commit_sha }}\n\n\"
+          Commit SHA: ${{ github.event.inputs.commit_sha || github.sha }}"
 
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
@@ -267,7 +267,7 @@ jobs:
           Status: FAILED\n\
           Actor: ${GITHUB_ACTOR}\n\
           Time: ${timestamp}\n\
-          Commit SHA: ${{ github.event.inputs.commit_sha }}\n\n\"
+          Commit SHA: ${{ github.event.inputs.commit_sha || github.sha }}"
 
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
