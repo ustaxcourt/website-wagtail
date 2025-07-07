@@ -43,7 +43,9 @@ jobs:
           AWS_REGION: "us-east-1"
           SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
         run: |
-          message="Production deployment STARTED by ${GITHUB_ACTOR} at $(date -u). Commit: ${{ github.event.inputs.commit_sha }}"
+          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
+          subject="Production deployment started by ${GITHUB_ACTOR} at $timestamp"
+          message="Production deployment STARTED by ${GITHUB_ACTOR} at $timestamp. Commit: ${{ github.event.inputs.commit_sha }}"
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
             --message "$message" \
@@ -228,7 +230,9 @@ jobs:
           AWS_REGION: "us-east-1"
           SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
         run: |
-          message="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $(date -u). Commit: ${{ github.event.inputs.commit_sha }}"
+          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
+          subject="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $timestamp"
+          message="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $timestamp. Commit: ${{ github.event.inputs.commit_sha }}"
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
             --message "$message" \
@@ -242,7 +246,9 @@ jobs:
           AWS_REGION: "us-east-1"
           SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
         run: |
-          message="Production deployment FAILED by ${GITHUB_ACTOR} at $(date -u). Commit: ${{ github.event.inputs.commit_sha }}"
+          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
+          subject="Production deployment FAILED by ${GITHUB_ACTOR} at $timestamp"
+          message="Production deployment FAILED by ${GITHUB_ACTOR} at $timestamp. Commit: ${{ github.event.inputs.commit_sha }}"
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
             --message "$message" \
