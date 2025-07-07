@@ -45,15 +45,13 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Production deployment started by ${GITHUB_ACTOR} at $timestamp"
-          message=$(cat <<EOF
-          Deployment Notification STARTED
+          message="Deployment Notification STARTED\n\n\
+          Environment: Production\n\
+          Status: STARTED\n\
+          Actor: ${GITHUB_ACTOR}\n\
+          Time: ${timestamp}\n\
+          Commit SHA: ${{ github.event.inputs.commit_sha }}\n\n\"
 
-          Environment: Production
-          Status: STARTED
-          Actor: ${GITHUB_ACTOR}
-          Time: ${timestamp}
-          Commit SHA: ${{ github.event.inputs.commit_sha }}
-          )
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
             --subject "$subject" \
@@ -241,14 +239,13 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Production deployment SUCCEEDED by ${GITHUB_ACTOR} at $timestamp"
-          message=$(cat <<EOF
-          Deployment Notification SUCCEEDED
-          Environment: Production
-          Status: SUCCEEDED
-          Actor: ${GITHUB_ACTOR}
-          Time: ${timestamp}
-          Commit SHA: ${{ github.event.inputs.commit_sha }}
-          )
+          message="Deployment Notification SUCCEEDED\n\n\
+          Environment: Production\n\
+          Status: SUCCEEDED\n\
+          Actor: ${GITHUB_ACTOR}\n\
+          Time: ${timestamp}\n\
+          Commit SHA: ${{ github.event.inputs.commit_sha }}\n\n\"
+
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
             --subject "$subject" \
@@ -265,14 +262,13 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Production deployment FAILED by ${GITHUB_ACTOR} at $timestamp"
-          message=$(cat <<EOF
-          Deployment Notification FAILED
-          Environment: Production
-          Status: FAILED
-          Actor: ${GITHUB_ACTOR}
-          Time: ${timestamp}
-          Commit SHA: ${{ github.event.inputs.commit_sha }}
-          )
+          message="Deployment Notification FAILED\n\n\
+          Environment: Production\n\
+          Status: FAILED\n\
+          Actor: ${GITHUB_ACTOR}\n\
+          Time: ${timestamp}\n\
+          Commit SHA: ${{ github.event.inputs.commit_sha }}\n\n\"
+
           aws sns publish \
             --topic-arn "$SNS_TOPIC_ARN" \
             --subject "$subject" \
