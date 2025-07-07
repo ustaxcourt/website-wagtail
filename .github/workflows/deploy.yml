@@ -39,7 +39,15 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Sandbox deployment STARTED by ${GITHUB_ACTOR} at $timestamp"
-          message="Sandbox deployment STARTED by ${GITHUB_ACTOR} at $timestamp. Git SHA: $GITHUB_SHA"
+          message=$(cat <<EOF
+          Deployment Notification STARTED
+
+          Environment: Sandbox
+          Status: STARTED
+          Actor: ${GITHUB_ACTOR}
+          Time: ${timestamp}
+          Commit SHA: ${{ github.event.inputs.commit_sha }}
+          )
           aws sns publish \
             --topic-arn "${{ secrets.SNS_TOPIC_ARN }}" \
             --subject "$subject" \
@@ -238,7 +246,14 @@ jobs:
         run: |
           timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
           subject="Sandbox deployment FAILED by ${GITHUB_ACTOR} at $timestamp"
-          message="Sandbox deployment FAILED by ${GITHUB_ACTOR} at $timestamp. Git SHA: $GITHUB_SHA"
+          message=$(cat <<EOF
+          Deployment Notification FAILED
+          Environment: Sandbox
+          Status: FAILED
+          Actor: ${GITHUB_ACTOR}
+          Time: ${timestamp}
+          Commit SHA: ${{ github.event.inputs.commit_sha }}
+          )
           aws sns publish \
             --topic-arn "${{ secrets.SNS_TOPIC_ARN }}" \
             --subject "$subject" \
