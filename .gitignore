@@ -250,3 +250,6 @@ website/static
 website_secrets
 
 .cursorrules
+CLAUDE.md
+GEMINI.md
+tmp/
