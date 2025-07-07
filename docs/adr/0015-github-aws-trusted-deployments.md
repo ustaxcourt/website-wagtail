@@ -58,7 +58,8 @@ These steps should be performed in sequence to configure the production environm
       * In the AWS Console, navigate to **IAM \> Roles** and click **Create role**.
       * **Trusted entity type:** Select **Web identity**.
       * **Identity provider:** Choose the `token.actions.githubusercontent.com` provider you just created.
-      * **Audience:** Choose `sts.amazonaws.com` and click **Next**.
+      * **Audience:** Choose `sts.amazonaws.com`.
+      * **GitHub organization:** Enter `ustaxcourt` and click **Next**.
       * **Add permissions:** Attach the necessary IAM policies that allow your workflow to perform its tasks (e.g., Terraform apply, ECS service updates, CloudFront invalidation).
       * **Name and review:**
           * **Role name:** `github-workflow-deployer`
@@ -95,6 +96,8 @@ These steps should be performed in sequence to configure the production environm
 -----
 
 ### Part 2: GitHub Repository Configuration
+
+The below two steps are optional.
 
 1.  **Configure the `production` Environment**
 
