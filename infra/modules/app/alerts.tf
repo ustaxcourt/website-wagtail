@@ -63,6 +63,10 @@ resource "aws_cloudwatch_metric_alarm" "error_404_alarm" {
   }
 }
 
+resource "aws_sns_topic" "deployment_notifications" {
+  name = "${var.environment}-deployment-notifications"
+}
+
 resource "aws_sns_topic" "error_notifications" {
   name = "${var.environment}-error-notifications"
 }
@@ -115,8 +119,4 @@ resource "aws_cloudwatch_metric_alarm" "rds_error_alarm" {
       threshold
     ]
   }
-}
-
-resource "aws_sns_topic" "deployment_notifications" {
-  name = "${var.environment}-deployment-notifications"
 }
