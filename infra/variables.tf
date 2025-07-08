@@ -45,4 +45,5 @@ variable "prevent_db_deletion" {
 variable "notification_emails" {
   type = list(string)
   default = []
+  sensitive = true
 }

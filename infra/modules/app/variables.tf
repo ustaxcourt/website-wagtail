@@ -49,4 +49,5 @@ variable "social_auth_azuread_tenant_oauth2_tenant_id" {
 variable "notification_emails" {
   description = "List of email addresses to subscribe to deployment notifications"
   type = list(string)
+  sensitive = true
 }

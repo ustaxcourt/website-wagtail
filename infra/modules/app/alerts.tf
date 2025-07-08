@@ -122,7 +122,7 @@ resource "aws_sns_topic" "deployment_notifications" {
 }
 
 resource "aws_sns_topic_subscription" "email_subscription" {
-  for_each = var.environment == "prod" ? {} : toset(var.notification_emails)
+  for_each = var.environment == "prod" ? toset([]) : toset(var.notification_emails)
 
   topic_arn = aws_sns_topic.deployment_notifications.arn
   protocol  = "email"
