@@ -24,5 +24,6 @@ output "bucket_name" {
 }
 
 output "deployment_notifications_topic_arn" {
-  value = module.app.aws_sns_topic.deployment_notifications.arn
+  value = module.app.deployment_notifications_topic_arn
+  sensitive = true
 }
