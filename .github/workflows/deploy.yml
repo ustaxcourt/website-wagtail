@@ -81,7 +81,7 @@ jobs:
           echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
 
           deployment_notifications_topic_arn=$(terraform output -raw deployment_notifications_topic_arn)
-          echo "deployment_notifications_topic_arn=$(terraform output -raw deployment_notifications_topic_arn)" >> $GITHUB_OUTPUT
+          echo "deployment_notifications_topic_arn=${deployment_notifications_topic_arn}" >> $GITHUB_OUTPUT
 
       - name: Notify SNS of sandbox deployment start
         if: ${{ github.ref == 'refs/tags/sandbox' }}
