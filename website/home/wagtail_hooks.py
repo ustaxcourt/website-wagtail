@@ -165,7 +165,7 @@ def purge_cloudfront_cache_for_file(file_url):
         if cache_path.startswith("/files/"):
             cache_path = cache_path.removeprefix("/files")
 
-        logger.info(f"Purging CloudFront cache for path: {cache_path}")
+        logger.debug(f"Purging CloudFront cache for path: {cache_path}")
 
         batch = PurgeBatch()
         batch.add_url(cache_path)
@@ -190,8 +190,10 @@ def purge_cache_after_document_save(sender, instance, created, **kwargs):
     logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
 
     if hasattr(instance, "url") and instance.url and action == "updated":
-        logger.info(f"Document URL: {instance.url}")
+        logger.debug(f"Document URL: {instance.url}")
         purge_cloudfront_cache_for_file(instance.url)
+    elif action == "created":
+        pass
     else:
         logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
 
