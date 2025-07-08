@@ -41,9 +41,3 @@ variable "prevent_db_deletion" {
   type = bool
   default = true
 }
-
-variable "notification_emails" {
-  type = list(string)
-  default = []
-  sensitive = true
-}

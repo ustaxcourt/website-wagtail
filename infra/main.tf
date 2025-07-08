@@ -15,7 +15,6 @@ module "app" {
   social_auth_azuread_tenant_oauth2_secret = var.social_auth_azuread_tenant_oauth2_secret
   social_auth_azuread_tenant_oauth2_tenant_id = var.social_auth_azuread_tenant_oauth2_tenant_id
   prevent_db_deletion = var.prevent_db_deletion
-  notification_emails = var.notification_emails
   providers = {
     docker = docker
   }
