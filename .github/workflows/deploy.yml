@@ -80,33 +80,6 @@ jobs:
           bucket_name=$(terraform output -raw bucket_name)
           echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
 
-          deployment_notifications_topic_arn=$(terraform output -raw deployment_notifications_topic_arn)
-          echo "deployment_notifications_topic_arn=${deployment_notifications_topic_arn}" >> $GITHUB_OUTPUT
-
-      - name: Notify SNS of sandbox deployment start
-        if: ${{ github.ref == 'refs/tags/sandbox' }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
-        run: |
-          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
-          subject="Sandbox deployment STARTED by ${GITHUB_ACTOR} at $timestamp"
-          commit_sha="${{ github.event.inputs.commit_sha || github.sha }}"
-          message=$(echo -e "Deployment Notification STARTED\n\n\
-          Environment: Sandbox\n\
-          Status: STARTED\n\
-          Actor: ${GITHUB_ACTOR}\n\
-          Time: ${timestamp}\n\
-          Commit SHA: ${commit_sha}\n\n\
-            —\n\
-            This is an automated message from the CI/CD pipeline.")
-          aws sns publish \
-            --topic-arn "$SNS_TOPIC_ARN" \
-            --subject "$subject" \
-            --message "$message" \
-            --region us-east-1
-
       - name: Set up SSH Key
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -245,28 +218,3 @@ jobs:
         run: |
           cd infra
           ./disable-bastion-host.sh
-
-      - name: Notify SNS of sandbox deployment failure
-        if: ${{ github.ref == 'refs/tags/sandbox' && failure() }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
-        run: |
-          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
-          subject="Sandbox deployment FAILED by ${GITHUB_ACTOR} at $timestamp"
-          commit_sha="${{ github.event.inputs.commit_sha || github.sha }}"
-          message=$(echo -e "Deployment Notification FAILED\n\n\
-          Environment: Sandbox\n\
-          Status: FAILED\n\
-          Actor: ${GITHUB_ACTOR}\n\
-          Time: ${timestamp}\n\
-          Commit SHA: ${commit_sha}\n\n\
-            —\n\
-            This is an automated message from the CI/CD pipeline.")
-
-          aws sns publish \
-            --topic-arn "$SNS_TOPIC_ARN" \
-            --subject "$subject" \
-            --message "$message" \
-            --region us-east-1
