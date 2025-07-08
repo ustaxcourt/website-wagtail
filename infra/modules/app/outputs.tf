@@ -19,8 +19,3 @@ output "zone_id" {
 output "bucket_name" {
   value = aws_s3_bucket.private_bucket.id
 }
-
-output "deployment_notifications_topic_arn" {
-  value = aws_sns_topic.deployment_notifications.arn
-  description = "SNS topic ARN for deployment notifications"
-}

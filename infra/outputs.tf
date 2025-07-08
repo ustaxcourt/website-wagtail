@@ -22,3 +22,7 @@ output "zone_id" {
 output "bucket_name" {
   value = module.app.bucket_name
 }
+
+output "deployment_notifications_topic_arn" {
+  value = module.app.aws_sns_topic.deployment_notifications.arn
+}
