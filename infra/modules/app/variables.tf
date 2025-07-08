@@ -45,3 +45,8 @@ variable "social_auth_azuread_tenant_oauth2_tenant_id" {
   description = "The Azure AD tenant ID"
   type = string
 }
+
+variable "notification_emails" {
+  description = "List of email addresses to subscribe to deployment notifications"
+  type = list(string)
+}

@@ -49,7 +49,7 @@ jobs:
             —\n\
             This is an automated message from the CI/CD pipeline.")
           aws sns publish \
-            --topic-arn "${{ secrets.SNS_TOPIC_ARN }}" \
+            --topic-arn "${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}" \
             --subject "$subject" \
             --message "$message" \
             --region us-east-1
@@ -257,7 +257,7 @@ jobs:
             This is an automated message from the CI/CD pipeline.")
 
           aws sns publish \
-            --topic-arn "${{ secrets.SNS_TOPIC_ARN }}" \
+            --topic-arn "${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}" \
             --subject "$subject" \
             --message "$message" \
             --region us-east-1

@@ -375,3 +375,22 @@ Or, the following equivalent command.
 ## Support Documents
 
 - To restore RDS database, follow instructions in [RDS-restore-steps.md](./docs/support/RDS-restore-steps.md).
+
+### SNS Deployment Notification Setup
+
+During a production deployment, our CI/CD pipeline uses [AWS SNS] to notify subscribers via email when deployments:
+- Start
+- Succeed
+- Fail
+
+#### One-time setup for team members
+
+To receive these notifications, team members must confirm their email subscription:
+
+1. Watch for an email from **AWS Notifications** during or after a production deployment.
+2. The subject will be: Production deployment Started by "github user" at "date"
+
+For AWS Notification - Subscription Confirmation
+3. Click the **“Confirm subscription”** link in the email.
+
+>  You will not receive deployment notifications unless this step is completed.
