@@ -62,11 +62,16 @@ def extract_text_from_streamfield(stream_value, max_length=300):
 
 def get_search_snippet(page):
     """
-    Get a search snippet from a page's content.
+    Get a search snippet from a page's content, prioritizing search_description.
     """
 
     # Try getting the specific version of the page
     specific_page = page.specific
+
+    # 1️⃣ Prioritize the meta description if present
+    if getattr(specific_page, "search_description", None):
+        return strip_tags(specific_page.search_description)
+    # Fallback logic
 
     if hasattr(specific_page, "body"):
         body = getattr(specific_page, "body")

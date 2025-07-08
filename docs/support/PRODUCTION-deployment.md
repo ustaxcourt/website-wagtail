@@ -4,16 +4,27 @@ This document provides guidance on how to use the `PRODUCTION Deploy` GitHub wor
 
 ### Purpose
 
-The `PRODUCTION Deploy` workflow automates the process of deploying a specific commit to the production environment. It includes checks for authorized deployers, sets up the necessary environment, deploys infrastructure changes using Terraform, runs database migrations, updates the ECS service, and invalidates the CloudFront cache.
+The `PRODUCTION Deploy` workflow automates the process of deploying a specific commit to the production environment. It sets up the necessary environment, interfaces with Github using Open ID connect (OIDC) and deploys infrastructure changes using Terraform, runs database migrations, updates the ECS service, and invalidates the CloudFront cache.
 
 ### Triggering the Workflow
 
 This workflow is triggered manually using `workflow_dispatch`.
 
-> [!IMPORTANT]
-> Ensure `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are in Github environment secrets and are valid.
+#### AWS Role Permission Changes
 
-1.  Navigate to the **Actions** tab in your GitHub repository.
+> [!IMPORTANT]
+> Ensure the IAM role: "github-workflow-deployer" has permissions/policy: "deployer-policy".
+
+1. Navigate to the IAM service in the AWS Management Console.
+2. In the left navigation pane, click on Roles.
+3. Find and click on the role named github-workflow-deployer.
+4. In the Permissions tab, click the Add permissions dropdown and select Attach policies.
+5. In the search box, type deployer-policy to find the powerful managed policy.
+6. Select the checkbox next to deployer-policy and click the Attach policies button.
+
+#### Starting Github Workflow
+
+1.  Navigate to the **Actions** tab in the GitHub repository.
 2.  In the left sidebar, under **Workflows**, click on **[PRODUCTION Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/production_deploy.yml)**.
 3.  On the right side of the page, click the **Run workflow** button.
 4.  A modal window will appear prompting you to provide input:
@@ -36,13 +47,10 @@ The workflow consists of the following jobs and steps:
 
 **Steps:**
 
-1.  **Check deployer permission:**
-    * **Environment Variables:**
-        * `ACTOR`: The GitHub username of the user who triggered the workflow (`${{ github.actor }}`).
-        * `APPROVED`: A comma-separated list of authorized GitHub usernames stored as a repository variable named `APPROVED_DEPLOYERS` (`${{ vars.APPROVED_DEPLOYERS }}`).
-    * **Functionality:** This step verifies if the user who initiated the workflow is authorized to deploy to production. It retrieves the list of approved deployers from the `APPROVED_DEPLOYERS` repository variable and checks if the `github.actor` matches any of the users in the list.
-    * **Outcome:** If the user is authorized, the step exits with a success code (0). If the user is not authorized, the step exits with an error code (1), and the workflow will fail.
-    * **Troubleshooting:** If you are unable to trigger the deployment, ensure your GitHub username is included in the `APPROVED_DEPLOYERS` repository variable. This variable can be managed in your repository settings under "Variables".
+1.  **Configure AWS credentials from Prod account**
+* Functionality: This step uses OIDC to exchange a token from GitHub for temporary AWS credentials. Crucially, it assumes the `github-workflow-deployer` role in its default state, which has no deployment permissions. It can only check its own policies and later detach them.
+
+* Verify AWS Deployer Role (Poll for Policy Attachment): This is the waiting gate. It runs a while true loop that uses the AWS CLI to repeatedly call `iam:list-attached-role-policies` on its own role. It will only break the loop and allow the workflow to continue when it detects that the deployer-policy has been attached by an AWS Administrator.
 
 2.  **Set Environment:**
     * **ID:** `set_env`
@@ -66,9 +74,6 @@ The workflow consists of the following jobs and steps:
     * **Functionality:** Builds USWDS assets needed for website.
 
 8.  **Apply Terraform:**
-    * **Environment Variables:**
-        * `AWS_ACCESS_KEY_ID`: Your AWS access key ID, stored as a GitHub secret (`${{ secrets.AWS_ACCESS_KEY_ID }}`).
-        * `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key, stored as a GitHub secret (`${{ secrets.AWS_SECRET_ACCESS_KEY }}`). **Ensure these secrets are properly configured in your repository settings.**
     * **Functionality:**
         * Deploys infrastructure changes using AWS credentials from secrets. Outputs bastion IP, database endpoint, and bucket name.
 

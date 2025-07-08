@@ -12,24 +12,12 @@ jobs:
   production-deploy:
     environment: production
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     timeout-minutes: 45
 
     steps:
-      - name: Check deployer permission
-        env:
-          ACTOR: ${{ github.actor }}
-          APPROVED: ${{ vars.APPROVED_DEPLOYERS }}
-        run: |
-          echo "Triggered by: $ACTOR"
-          IFS=',' read -ra USERS <<< "$APPROVED"
-          for u in "${USERS[@]}"; do
-            if [[ "$ACTOR" == "$u" ]]; then
-              echo "✅ $ACTOR is authorized"
-              exit 0
-            fi
-          done
-          echo "❌ $ACTOR is not an authorized deployer"
-          exit 1
 
       - name: Set Environment
         id: set_env
@@ -40,6 +28,26 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.commit_sha }}
+
+      - name: Configure AWS credentials from Prod account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-workflow-deployer
+          aws-region: us-east-1
+
+      - name: Verify AWS Deployer Role (Poll for Policy Attachment)
+        run: |
+          while true; do
+            if ! ATTACHED_POLICIES=$(aws iam list-attached-role-policies --role-name github-workflow-deployer 2>/dev/null); then
+              echo "⏳ Waiting for IAM/role: github-workflow-deployer to be granted with policy: deployer-policy."
+            else
+              if echo "$ATTACHED_POLICIES" | jq -r '.["AttachedPolicies"][].PolicyName' | grep -q "^deployer-policy$"; then
+                echo "✅ Policy change on user has propagated. Good to proceed with deployment."
+                break
+              fi
+            fi
+            sleep 15
+          done
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
@@ -57,9 +65,6 @@ jobs:
 
       - name: Apply Terraform
         id: tf_outputs
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           ./setup-tf-buckets.sh
@@ -82,8 +87,6 @@ jobs:
 
       - name: Notify SNS of deployment start
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "us-east-1"
           SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
         run: |
@@ -106,9 +109,6 @@ jobs:
             --region "$AWS_REGION"
 
       - name: Set up SSH Key
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           . ./load-secrets.sh
@@ -127,8 +127,6 @@ jobs:
 
       - name: Perform Production Checks
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
@@ -143,8 +141,6 @@ jobs:
 
       - name: Run Migrations
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
           DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
@@ -169,9 +165,6 @@ jobs:
           make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           taskArn=$(aws ecs list-task-definitions \
             --family-prefix "${ENVIRONMENT}-website-tasks" \
@@ -197,9 +190,6 @@ jobs:
             --region us-east-1
 
       - name: Wait for ECS Service to Stabilize
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo "Waiting for ECS service to stabilize..."
           aws ecs wait services-stable \
@@ -208,17 +198,11 @@ jobs:
             --region us-east-1
 
       - name: Terminate Bastion Host
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
           ./disable-bastion-host.sh
 
       - name: Invalidate CloudFront Distribution
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           # Get the CloudFront distribution ID for the environment
           distribution_id=$(aws cloudfront list-distributions \
@@ -235,11 +219,18 @@ jobs:
             --distribution-id "$distribution_id" \
             --paths "/*"
 
+      - name: Cleanup Policy Attachment
+        if: always() # Always runs, even if deployment fails
+        run: |
+          echo "Detaching deployer policy as a cleanup step..."
+            aws iam detach-role-policy \
+            --role-name github-workflow-deployer \
+            --policy-arn arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:policy/deployer-policy || echo "Policy was not attached or already detached."
+          echo "... Completed."
+
       - name: Notify SNS of deployment success
         if: success()
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "us-east-1"
           SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
         run: |
@@ -264,8 +255,6 @@ jobs:
       - name: Notify SNS of deployment failure
         if: failure()
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "us-east-1"
           SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
         run: |
