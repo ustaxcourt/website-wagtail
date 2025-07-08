@@ -189,7 +189,7 @@ def purge_cache_after_document_save(sender, instance, created, **kwargs):
 
     logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
 
-    if hasattr(instance, "url") and instance.url:
+    if hasattr(instance, "url") and instance.url and action == "updated":
         logger.info(f"Document URL: {instance.url}")
         purge_cloudfront_cache_for_file(instance.url)
     else:
