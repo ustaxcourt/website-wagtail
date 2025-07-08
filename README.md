@@ -383,14 +383,20 @@ During a production deployment, our CI/CD pipeline uses [AWS SNS] to notify subs
 - Succeed
 - Fail
 
-#### One-time setup for team members
+#### One-time setup for team members, Manually add your email to the SNS topic (Admin only)
+An admin can manually add a team member to the SNS topic using the AWS Console:
 
-To receive these notifications, team members must confirm their email subscription:
+1. Go to the **SNS service** in the [AWS Console](https://console.aws.amazon.com/sns/v3/home).
+2. Select the **deployment notifications topic** (e.g., `prod-deployment-notifications`, `sandbox-deployment-notifications`).
+3. Click on the **"Subscriptions"** tab.
+4. Click **“Create subscription”**.
+5. Set:
+    - **Protocol**: `Email`
+    - **Endpoint**: The team member’s email address
+6. Click **“Create subscription”**.
+7. The recipient will receive a confirmation email. They must click the **"Confirm subscription"** link to start receiving alerts.
+
+### To receive these notifications, team members must confirm their email subscription:
 
 1. Watch for an email from **AWS Notifications** during or after a production deployment.
 2. The subject will be: Production deployment Started by "github user" at "date"
-
-For AWS Notification - Subscription Confirmation
-3. Click the **“Confirm subscription”** link in the email.
-
->  You will not receive deployment notifications unless this step is completed.
