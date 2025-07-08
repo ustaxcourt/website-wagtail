@@ -120,11 +120,3 @@ resource "aws_cloudwatch_metric_alarm" "rds_error_alarm" {
 resource "aws_sns_topic" "deployment_notifications" {
   name = "${var.environment}-deployment-notifications"
 }
-
-resource "aws_sns_topic_subscription" "email_subscription" {
-  for_each = var.environment == "prod" ? toset([]) : toset(var.notification_emails)
-
-  topic_arn = aws_sns_topic.deployment_notifications.arn
-  protocol  = "email"
-  endpoint  = each.value
-}
