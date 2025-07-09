@@ -8,7 +8,7 @@ else
 	DOMAIN_NAME := $(env)-web.ustaxcourt.gov
 endif
 
-check-env:
+check-env-is-aws:
 	@if [ $(env) = "local" ]; then \
 		echo "Environment is 'localhost'. Error: Not connected to AWS environment."; \
 		exit 1; \
@@ -16,7 +16,7 @@ check-env:
 
 # this command is used to setting up the bastion ssh keys and the aws secret manager secrets
 # that will be used for the terraform setup during the ci/cd pipeline
-aws-setup: check-env aws-init
+aws-setup: check-env-is-aws aws-init
 	@echo "Setting up AWS environment for $(env)..."
 
 	@if [ -z "$(DOMAIN_NAME)" ]; then \
@@ -87,7 +87,7 @@ init:
 	@echo "Initializing environment: $(env)"
 	@cd infra && ./local_init.sh
 
-aws-init: check-env
+aws-init: check-env-is-aws
 	@echo "Initializing environment: $(env)"
 	@cd infra && ./init.sh && \
 	   . ./load-secrets.sh && \
@@ -174,3 +174,16 @@ aws-teardown: destroy
 	# Remove the generated access key file
 	@rm -f ./infra/iam/generated-deployer-access-key.json
 	@echo ".... Cleaned up."
+
+role: check-env-is-aws
+	@echo "Attaching 'deployer-policy' to role: github-workflow-deployer..."
+	@ACCOUNT_ID=$$(aws sts get-caller-identity --query Account --output text); \
+	aws iam attach-role-policy \
+	  --role-name github-workflow-deployer \
+	  --policy-arn arn:aws:iam::$$ACCOUNT_ID:policy/deployer-policy
+	@echo "... Waiting 3 seconds for IAM policy to propagate."
+	@sleep 3
+	@echo "Current attached policies:"
+	@aws iam list-attached-role-policies --role-name github-workflow-deployer \
+	  --query 'AttachedPolicies[*].[PolicyName, PolicyArn]' --output text | \
+	  awk '{printf "%s: %s\n", $$1, $$2}'

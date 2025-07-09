@@ -1,14 +1,21 @@
+from urllib.parse import urlparse
 from django.contrib import messages
 from django.conf import settings
-from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
-from wagtail.models import Page
-from .models import NavigationMenu, JudgeRole
-from .models.snippets.judges import RESTRICTED_ROLES
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
+from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
+from wagtail.documents.models import Document
+from wagtail.images.models import Image
+from wagtail.models import Page
+from home.models import NavigationMenu, JudgeRole
+from home.models.snippets.judges import RESTRICTED_ROLES
+from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -140,3 +147,118 @@ def purge_cache_for_snippet_related_pages(request, instance):
             logger.info(f"Purged frontend cache for page: {page.url_path}")
         except Exception as e:
             logger.error(f"Error purging cache for page {page.id}: {e}")
+
+
+def purge_cloudfront_cache_for_file(file_url):
+    """
+    Purge CloudFront cache for a specific file URL.
+    """
+    try:
+        from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+        if file_url.startswith("http"):
+            parsed = urlparse(file_url)
+            cache_path = parsed.path
+        else:
+            cache_path = file_url if file_url.startswith("/") else f"/{file_url}"
+
+        if cache_path.startswith("/files/"):
+            cache_path = cache_path.removeprefix("/files")
+
+        logger.debug(f"Purging CloudFront cache for path: {cache_path}")
+
+        batch = PurgeBatch()
+        batch.add_url(cache_path)
+        batch.purge()
+
+        logger.info(f"Successfully purged CloudFront cache for path: {cache_path}")
+
+    except Exception as e:
+        logger.error(
+            f"Error purging CloudFront cache for {file_url}: {e}", exc_info=True
+        )
+
+
+@receiver(post_save, sender=Document)
+def purge_cache_after_document_save(sender, instance, created, **kwargs):
+    """
+    Purge CloudFront cache when a document is saved (created or updated).
+    """
+    del sender, kwargs
+    action = "created" if created else "updated"
+
+    logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "url") and instance.url and action == "updated":
+        logger.debug(f"Document URL: {instance.url}")
+        purge_cloudfront_cache_for_file(instance.url)
+    elif action == "created":
+        pass
+    else:
+        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
+
+
+@receiver(post_delete, sender=Document)
+def purge_cache_after_document_delete(sender, instance, **kwargs):
+    """
+    Purge CloudFront cache when a document is deleted.
+    """
+    del sender, kwargs
+
+    logger.info(f"Document deleted: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "url") and instance.url:
+        logger.info(f"Document URL: {instance.url}")
+        purge_cloudfront_cache_for_file(instance.url)
+    else:
+        logger.warning(f"Document {instance.id} has no URL attribute or URL is empty")
+
+
+@receiver(post_save, sender=Image)
+def purge_cache_after_image_save(sender, instance, created, **kwargs):
+    """
+    Purge CloudFront cache when an image is saved (created or updated).
+    """
+    del sender, kwargs
+    action = "created" if created else "updated"
+    logger.info(f"Image {action}: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "file") and instance.file:
+        try:
+            image_url = instance.file.url
+            logger.info(f"Image URL: {image_url}")
+            purge_cloudfront_cache_for_file(image_url)
+        except Exception as e:
+            logger.error(f"Error getting image URL for cache purge: {e}")
+    else:
+        logger.warning(f"Image {instance.id} has no file attribute or file is empty")
+
+
+@receiver(post_delete, sender=Image)
+def purge_cache_after_image_delete(sender, instance, **kwargs):
+    """
+    Purge CloudFront cache when an image is deleted.
+    """
+    del sender, kwargs
+    logger.info(f"Image deleted: {instance.title} (ID: {instance.id})")
+
+    if hasattr(instance, "file") and instance.file:
+        try:
+            image_url = instance.file.url
+            logger.info(f"Image URL: {image_url}")
+            purge_cloudfront_cache_for_file(image_url)
+        except Exception as e:
+            logger.error(f"Error getting image URL for cache purge: {e}")
+    else:
+        logger.warning(f"Image {instance.id} has no file attribute or file is empty")
+
+
+@hooks.register("register_admin_urls")
+def register_add_entry_above_url():
+    return [
+        path(
+            "add_entry_above/<int:page_id>/<int:sort_order>/",
+            add_entry_above_view,
+            name="add_entry_above_view",
+        ),
+    ]
