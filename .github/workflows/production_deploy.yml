@@ -82,6 +82,32 @@ jobs:
           bucket_name=$(terraform output -raw bucket_name)
           echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
 
+          deployment_notifications_topic_arn=$(terraform output -raw deployment_notifications_topic_arn)
+          echo "deployment_notifications_topic_arn=$(deployment_notifications_topic_arn)" >> $GITHUB_OUTPUT
+
+      - name: Notify SNS of deployment start
+        env:
+          AWS_REGION: "us-east-1"
+          SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
+        run: |
+          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
+          subject="Production deployment started by ${GITHUB_ACTOR} at $timestamp"
+          commit_sha="${{ github.event.inputs.commit_sha || github.sha }}"
+          message=$(echo -e "Deployment Notification STARTED\n\n\
+          Environment: Production\n\
+          Status:STARTED\n\
+          Actor: ${GITHUB_ACTOR}\n\
+          Time: ${timestamp}\n\
+          Commit SHA: ${commit_sha}\n\n\
+            —\n\
+            This is an automated message from the CI/CD pipeline.")
+
+          aws sns publish \
+            --topic-arn "$SNS_TOPIC_ARN" \
+            --subject "$subject" \
+            --message "$message" \
+            --region "$AWS_REGION"
+
       - name: Set up SSH Key
         run: |
           cd infra
@@ -201,3 +227,36 @@ jobs:
             --role-name github-workflow-deployer \
             --policy-arn arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:policy/deployer-policy || echo "Policy was not attached or already detached."
           echo "... Completed."
+
+      - name: Notify SNS of deployment outcome
+        if: always()
+        env:
+          AWS_REGION: "us-east-1"
+          SNS_TOPIC_ARN: ${{ steps.tf_outputs.outputs.deployment_notifications_topic_arn }}
+        run: |
+          # 1. Set status based on the job's outcome
+          if [[ "${{ job.status }}" == "success" ]]; then
+            STATUS="SUCCEEDED"
+          else
+            STATUS="FAILED"
+          fi
+
+          # 2. Prepare notification content
+          timestamp=$(TZ="America/New_York" date "+%Y-%m-%d %H:%M:%S %Z")
+          subject="Production deployment $STATUS by ${GITHUB_ACTOR} at $timestamp"
+          commit_sha="${{ github.event.inputs.commit_sha || github.sha }}"
+          message=$(echo -e "Deployment Notification $STATUS\n\n\
+          Environment: Production\n\
+          Status: $STATUS\n\
+          Actor: ${GITHUB_ACTOR}\n\
+          Time: ${timestamp}\n\
+          Commit SHA: ${commit_sha}\n\n\
+            —\n\
+            This is an automated message from the CI/CD pipeline.")
+
+          # 3. Publish to SNS
+          aws sns publish \
+            --topic-arn "$SNS_TOPIC_ARN" \
+            --subject "$subject" \
+            --message "$message" \
+            --region "$AWS_REGION"
