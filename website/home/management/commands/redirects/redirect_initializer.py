@@ -132,7 +132,6 @@ for old_path in legacy_urls:
 class RedirectInitializer:
     def __init__(self):
         self.logger = logger
-        logger.info("Initializing redirects...")
 
     def create_redirect(self):
         """
@@ -143,6 +142,7 @@ class RedirectInitializer:
             new_path (str): The path to redirect to
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
+        logger.info("Initializing redirects...")
         for redirect in redirects:
             old_path = redirect["old_path"]
             new_path = redirect["new_path"]
