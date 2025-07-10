@@ -144,20 +144,19 @@ class RedirectInitializer:
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
         for redirect in redirects:
-            if Redirect.objects.filter(old_path=redirect["old_path"]).exists():
-                logger.info(f"- Redirect from '{redirect['old_path']}' already exists.")
+            old_path = redirect["old_path"]
+            new_path = redirect["new_path"]
+            is_permanent = redirect["is_permanent"]
+            if Redirect.objects.filter(old_path=old_path).exists():
+                logger.info(f"- Redirect from '{old_path}' already exists.")
                 continue
             else:
                 try:
                     Redirect.objects.create(
-                        old_path=redirect["old_path"],
-                        redirect_link=redirect["new_path"],
-                        is_permanent=redirect["is_permanent"],
+                        old_path=old_path,
+                        redirect_link=new_path,
+                        is_permanent=is_permanent,
                     )
-                    logger.info(
-                        f"Created redirect from '{redirect['old_path']}' to '{redirect['new_path']}'"
-                    )
+                    logger.info(f"Created redirect from '{old_path}' to '{new_path}'")
                 except ValidationError as e:
-                    logger.info(
-                        f"Error creating redirect for '{redirect['old_path']}': {e}"
-                    )
+                    logger.info(f"Error creating redirect for '{old_path}': {e}")
