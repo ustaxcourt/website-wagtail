@@ -157,6 +157,6 @@ class RedirectInitializer:
                         redirect_link=new_path,
                         is_permanent=is_permanent,
                     )
-                    logger.info(f"Created redirect from '{old_path}' to '{new_path}'")
+                    logger.info(f"Created redirect from '{old_path}' → '{new_path}'")
                 except ValidationError as e:
                     logger.info(f"Error creating redirect for '{old_path}': {e}")
