@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-redirects = [
+REDIRECTS = [
     {
         "old_path": "/vacancy_announcements",
         "new_path": "/employment/vacancy-announcements",
@@ -47,7 +47,7 @@ redirects = [
     },
 ]
 
-legacy_urls = [
+LEGACY_URLS = [
     "/administrative_orders.html",
     "/case_procedure.html",
     "/case_related_forms.html",
@@ -116,11 +116,11 @@ legacy_urls = [
     "/zoomgov_zoomgov_proceedings.html",
 ]
 
-for old_path in legacy_urls:
+for old_path in LEGACY_URLS:
     if old_path.endswith(".html"):
         cleaned_path = old_path.replace(".html", "").replace("_", "-")
         new_path = cleaned_path + "/"
-        redirects.append(
+        REDIRECTS.append(
             {
                 "old_path": old_path,
                 "new_path": new_path,
@@ -143,7 +143,7 @@ class RedirectInitializer:
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
         logger.info("Initializing redirects...")
-        for redirect in redirects:
+        for redirect in REDIRECTS:
             old_path = redirect["old_path"]
             new_path = redirect["new_path"]
             is_permanent = redirect["is_permanent"]
