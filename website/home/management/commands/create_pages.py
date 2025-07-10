@@ -51,8 +51,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Initialize redirects first
-        initializer = RedirectInitializer()
-        initializer.create_redirect()
+        redirect_initializer = RedirectInitializer()
+        redirect_initializer.create_redirect()
 
         self.stdout.write(self.style.SUCCESS("All redirects have been initialized."))
 
