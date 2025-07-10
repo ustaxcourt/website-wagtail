@@ -116,7 +116,9 @@
                     {% for message in messages %}
                         {% if "You do not have permission to access the admin" in message.message %}
                             <li class="{{ message.tags }}">
-                                You need permission to access the administrative section of this website. Please contact Web Apps Team <a href="mailto:website-adhoc@ustaxcourt.gov" title="email: website-adhoc@ustaxcourt.gov" style="color: var(--medium-gray);">Website-adhoc@ustaxcourt.gov</a> to be added.
+                                You need permission to access the administrative section of this website. Please contact Web Apps Team <a href="mailto:website-adhoc@ustaxcourt.gov"
+    title="email: website-adhoc@ustaxcourt.gov"
+    style="color: var(--medium-gray)">Website-adhoc@ustaxcourt.gov</a> to be added.
                             </li>
                         {% else %}
                             <li class="{{ message.tags }}">{{ message }}</li>
