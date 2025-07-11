@@ -59,7 +59,7 @@ def fix_petitioner_about_page(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0056_judgecollection_expire_at_judgecollection_expired_and_more"),
-        ("wagtailcore", "0094_alter_page_locale"),
+        ("wagtailcore", "__latest__"),
     ]
 
     operations = [
