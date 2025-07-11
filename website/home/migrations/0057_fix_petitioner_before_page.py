@@ -35,6 +35,10 @@ def fix_petitioner_before_page(apps, schema_editor):
     # Find the page by slug
     petitioner_page = Page.objects.filter(slug="petitioners-about").first()
 
+    if not petitioner_page:
+        logger = logging.getLogger(__name__)
+        logger.warning("The 'petitioners-about' page was not found. This may indicate a deployment or configuration issue.")
+        return
     if petitioner_page:
         # Get the specific page model based on content_type
         content_type = petitioner_page.content_type
