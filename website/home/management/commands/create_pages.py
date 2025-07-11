@@ -1,3 +1,5 @@
+import os
+import re
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -165,6 +167,32 @@ class Command(BaseCommand):
                         "is_permanent": True,
                     }
                 )
+
+        rule_pdf_pattern = re.compile(r"^(Rule-\d+)_Amended_\d{8}\.pdf$", re.IGNORECASE)
+        RULES_DIR = os.getenv(
+            "RULE_PDF_SCAN_PATH", "home/management/documents"
+        )  # fallback path
+        print(f"Looking for PDFs in: {os.path.abspath(RULES_DIR)}")
+        if os.path.exists(RULES_DIR):
+            for filename in os.listdir(RULES_DIR):
+                match = rule_pdf_pattern.match(filename)
+                if match:
+                    base_rule = match.group(1).lower()
+                    old_path = f"/files/documents/{filename}"
+                    new_path = f"/files/documents/{base_rule}.pdf"
+                    redirects.append(
+                        {
+                            "old_path": old_path,
+                            "new_path": new_path,
+                            "is_permanent": True,
+                        }
+                    )
+        else:
+            self.stdout.write(
+                self.style.WARNING(
+                    f"Rule PDF directory not found: {RULES_DIR}. Skipping rule PDF redirects."
+                )
+            )
 
         self.stdout.write("Initializing redirects...")
         for redirect in redirects:
