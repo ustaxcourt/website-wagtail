@@ -67,7 +67,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                                            If you settle your case with the IRS, a settlement document (stipulated decision) will be prepared by the IRS. If you agree with the settlement document, sign it and send it back to the IRS. The IRS attorney will also sign the stipulated decision and then send it to the Tax Court. The Tax Court will enter the decision into the official record and send you a copy of the entered decision. If this occurs before the trial date of your case, you will not be required to appear in court.
                                        </li>
                                    </ol>""",
-                "anchortag": "START1",
+                "anchortag": "BEFORE1",
             },
             {
                 "question": "What happens if I don’t settle my case before trial?",
@@ -87,22 +87,22 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                             <br>
                             <br>
                             You can also stipulate issues that you have settled with the IRS.""",
-                "anchortag": "START2",
+                "anchortag": "BEFORE2",
             },
             {
                 "question": "How can I obtain evidence to prove my case?",
                 "answer": "Because a taxpayer’s tax liability usually turns on the taxpayer’s own activities, transactions, and expenditures, the evidence in many Tax Court trials consists simply of the petitioner’s own testimony and documents. Where the documents of a third party are needed, they are most often obtained by informal requests; and where a third party’s testimony is needed, it is usually obtained simply by asking the person to appear as a witness. However, if a third party refuses to cooperate, then a subpoena may be used to compel the person to appear at the trial.",
-                "anchortag": "START3",
+                "anchortag": "BEFORE3",
             },
             {
                 "question": "What is a subpoena?",
                 "answer": f'A subpoena is an order issued by the Tax Court (1) directing a person to appear and testify at a scheduled Tax Court Trial Session or (2) directing a person to appear at a deposition prearranged at a specific time and location. The subpoena may include directions for the person (witness) to produce specific books, papers, documents, electronically stored information, or tangible things. See Tax Court Rules <strong><a href="{petitioners_docs["Rule-147.pdf"]}" target="_blank" title="Rule 147">147</a>,<a href="{petitioners_docs["Rule-74(amended).pdf"]}" target="_blank" title="Rule 74">74</a></strong> and <strong><a href="{petitioners_docs["Rule-81.pdf"]}" target="_blank" title="Rule 81">81</a></strong>.',
-                "anchortag": "START4",
+                "anchortag": "BEFORE4",
             },
             {
                 "question": "When is it appropriate to use a Tax Court subpoena?",
-                "answer": 'If you can’t get documents you need for Court and/or you need a witness to testify at a deposition or at trial, you can consider serving a subpoena. Most often, the parties agree to documents in the stipulation process and you don’t need a subpoena. (<strong><a href="#START2">See the discussion above about stipulation of facts</a></strong>). Sometimes, however, documents are not readily available or a witness is uncooperative, and a subpoena may be needed to get a witness to testify or to produce a document to assist you in proving your case.',
-                "anchortag": "START5",
+                "answer": 'If you can’t get documents you need for Court and/or you need a witness to testify at a deposition or at trial, you can consider serving a subpoena. Most often, the parties agree to documents in the stipulation process and you don’t need a subpoena. (<strong><a href="#BEFORE2">See the discussion above about stipulation of facts</a></strong>). Sometimes, however, documents are not readily available or a witness is uncooperative, and a subpoena may be needed to get a witness to testify or to produce a document to assist you in proving your case.',
+                "anchortag": "BEFORE5",
             },
             {
                 "question": "How do I obtain and serve a Tax Court subpoena?",
@@ -118,22 +118,22 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                            The person who actually serves the subpoena must complete the “Return of Service” section
                            at the bottom of the subpoena form. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" target="_blank" title="Rule 147">Tax Court Rule 147(c)</a></strong>.
                            You will submit the signed original to the Court only if it is necessary to ask the Court to enforce the subpoena.""",
-                "anchortag": "START6",
+                "anchortag": "BEFORE6",
             },
             {
                 "question": "Is there a cost related to a subpoena?",
                 "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day’s attendance and mileage. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a href="{petitioners_docs["Rule-148.pdf"]}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
-                "anchortag": "START7",
+                "anchortag": "BEFORE7",
             },
             {
                 "question": "Is it possible to serve a subpoena without paying fees and mileage if I only want a person to mail documents to me?",
                 "answer": "No. A subpoena directs a witness to appear at a Tax Court trial session or at a prearranged deposition, and may or may not include a request for books, papers, or documents. You should first attempt to obtain the documents that you need through informal means (e.g., by telephone call or letter). If you believe that you cannot obtain the documents without a subpoena, you will be obliged to pay the fees described above.",
-                "anchortag": "START8",
+                "anchortag": "BEFORE8",
             },
             {
                 "question": "What should I do if I am served with a subpoena? Can I challenge a subpoena?",
                 "answer": f'As a general matter you should comply with a subpoena. If you are served with a subpoena, and you believe it was issued in error, is unreasonable or oppressive, or was not properly served, you may file a Motion To Quash the subpoena with the Court. If you fail to appear as directed by a subpoena, you may be found to be in contempt of Court. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" target="_blank" title="Rule 147">Rule 147(e)</a></strong>.',
-                "anchortag": "START9",
+                "anchortag": "BEFORE9",
             },
             {
                 "question": "How will I know when and where my trial will take place?",
@@ -144,7 +144,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                              in a regular case or a<strong><a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases"> Standing Pretrial Order For Small Tax Cases </a></strong>
                              which will inform you what you need to do to prepare for trial.For information specific to remote proceedings, see
                              <strong><a href="/zoomgov" title="Zoomgov Proceedings" > Remote Proceeding Information </a></strong>.""",
-                "anchortag": "START10",
+                "anchortag": "BEFORE10",
             },
             {
                 "question": "Will the Court send me any instructions telling me what I should do to prepare for trial?",
@@ -152,17 +152,17 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             <br>
             <br>
             Depending upon the city in which your trial will take place, the Tax Court may send you a letter from a tax clinic inviting you to talk with one of the clinic’s attorneys or law students. If you qualify on the basis of certain income standards, the clinic may agree to represent you in your trial. Generally there is no fee for this representation. Many petitioners who are represented by a clinic representative are able to settle their cases with the IRS. The tax clinics are not part of the IRS or the Tax Court; they are totally independent and prepared to help you to fairly resolve your tax dispute with the IRS.""",
-                "anchortag": "START11",
+                "anchortag": "BEFORE11",
             },
             {
                 "question": "What is a pretrial memorandum? Do I need to prepare one?",
                 "answer": f'A pretrial memorandum form is attached as part of the <strong><a href="{petitioners_docs["SPTO_regular_sample.pdf"]}" target="_blank" title="Standing Pretrial Order">Standing Pretrial Order</a></strong> or <strong><a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases">Standing Pretrial Order For Small Tax Cases</a></strong>. You must file a pretrial memorandum in a regular case. You should submit a pretrial memorandum in an S case. The Court encourages all parties to file a pretrial memorandum. Preparing the pretrial memorandum may help you in organizing your case and help the Judge to understand your position. Carefully read the instructions in the Standing Pretrial Order or Notice. Follow the form and instructions. Send your pretrial memorandum to the Court, and send a copy to the IRS attorney.',
-                "anchortag": "START12",
+                "anchortag": "BEFORE12",
             },
             {
                 "question": "After I have received the notice setting my case for trial in a specific city, should I use the address of the place of trial to contact the Tax Court?",
                 "answer": "No. The Tax Court receives all of its mail at the address in Washington, D.C. You should always address mail to: United States Tax Court, 400 Second Street NW, Washington, DC 20217-0002. Keep in mind that, if you send anything by regular mail to the Tax Court in Washington, D.C., within one week before your trial session, it may not be received in time for your trial. You may want to either use a private overnight delivery service or bring the document with you to trial.",
-                "anchortag": "START13",
+                "anchortag": "BEFORE13",
             },
             {
                 "question": "Petitioner (Taxpayer) Trial Preparation Check List",
@@ -183,7 +183,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                        <li> If you need a witness, make sure the witness is available and present in the courtroom at the trial session.</li>
                        <li> Come to court early so you will be ready when your case is called at the calendar call. You may receive a notice from the Court recommending that you arrive at Court by 9:00 a.m. to have the opportunity to meet with clinical and calendar call attorneys. The Court believes it would be in your interest to comply with this recommendation.</li>
                         </ul>""",
-                "anchortag": "START14",
+                "anchortag": "BEFORE14",
             },
         ]
 
