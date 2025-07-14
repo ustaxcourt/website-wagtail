@@ -9,7 +9,7 @@ GOOGLE_ANALYTICS_ID = "G-09HTDLXBMS"
 
 ENVIRONMENT = "production"
 
-BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
+BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash

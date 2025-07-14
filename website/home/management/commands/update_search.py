@@ -225,7 +225,9 @@ class Command(BaseCommand):
                 continue
 
             self.stdout.write(
-                self.style.HTTP_INFO(f"\nProcessing entry {i+1}: Terms {search_terms}")
+                self.style.HTTP_INFO(
+                    f"\nProcessing entry {i + 1}: Terms {search_terms}"
+                )
             )
 
             # Find all page objects first

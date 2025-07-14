@@ -48,7 +48,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
             {
                 "question": "What happens after I finish my trial?",
                 "answer": "The Judge may direct the filing of posttrial briefs or may permit the parties to make oral argument or file memoranda or statements of legal authority. A brief is a legal document in which a party presents proposed findings of fact and legal arguments. At the end of the trial, the Judge will tell you what will be required.",
-                "anchortag": "START1",
+                "anchortag": "AFTER1",
             },
             {
                 "question": "When will the Judge decide my case? (When will I find out whether I’ve won or lost my case?)",
@@ -75,22 +75,22 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                                  The opinions of the Tax Court are posted daily on the Tax Court's website after 3:30 p.m. (Eastern time) under
                                  <strong><a href="https://dawson.ustaxcourt.gov/todays-opinions" target="_blank" title="Today's Opinions">Today's Opinions</a></strong> and categorized as described above. Bench Opinions issued after March 1, 2008, are electronically viewable on the Tax Court's website.
                              </p>""",
-                "anchortag": "START2",
+                "anchortag": "AFTER2",
             },
             {
                 "question": "Does a petitioner (taxpayer) ever win a case?",
                 "answer": "Yes. Sometimes the petitioner wins some or all of the issues. Sometimes the IRS wins some or all of the issues. Sometimes, in a lien or levy case, the case may be sent back to the IRS to reconsider collection alternatives or other matters.",
-                "anchortag": "START3",
+                "anchortag": "AFTER3",
             },
             {
                 "question": "How will I find out whether I won or lost my case?",
                 "answer": "You will receive a copy of the opinion by mail or a notification by electronic service. The Tax Court will also post the opinion on its website after 3:30 p.m. (Eastern time) on the day it is issued. Court personnel may call you to tell you the opinion is on the website. The opinion, written by the Judge, explains the conclusions reached after the trial or hearing. After the opinion is issued, a decision will be entered that is consistent with the opinion issued by the Judge.",
-                "anchortag": "START4",
+                "anchortag": "AFTER4",
             },
             {
                 "question": "What if I disagree with the opinion of the Judge?",
                 "answer": "You may not appeal the Judge's decision in an S case. In a regular (non-S) case, you may appeal the Judge's decision or you may file a motion for reconsideration of an opinion within 30 days after the written opinion was mailed. Your motion for reconsideration should clearly explain what you disagree with and the reasons you believe your disagreement has merit. Normally, the Judge who decided your case will decide the motion for reconsideration. A motion for reconsideration will not usually be granted absent unusual circumstances or substantial error.",
-                "anchortag": "START5",
+                "anchortag": "AFTER5",
             },
             {
                 "question": "How do I file an appeal from the Judge’s decision? Can I appeal my case?",
@@ -104,27 +104,27 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                             <strong><a href="{petitioners_docs["Rule-191.pdf"]}" target="_blank" title="Rule 191">191</a></strong>,
                             <strong><a href="{petitioners_docs["Rule-192.pdf"]}" target="_blank" title="Rule 192">192</a></strong>, and
                             <strong><a href="{petitioners_docs["Rule-193.pdf"]}" target="_blank" title="Rule 193">193</a></strong>.""",
-                "anchortag": "START6",
+                "anchortag": "AFTER6",
             },
             {
                 "question": "Will my documents be returned to me when the case is over?",
                 "answer": 'Documents filed with the Court will not be returned to you. If you did not keep a copy of a document, you may request copies of particular documents by contacting the Court\'s Copywork Section by mail at: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217-0002, or telephone at <a href="tel:+12025214688">(202) 521-4688</a>. There is a fee for copywork. See <strong><a href="/transcripts-and-copies" title="Transcripts & Copies">Transcripts & Copies</a></strong>. You may also view, download, or print any document filed in your case if you have registered for electronic access through <strong><a href="/dawson" title="DAWSON">DAWSON</a></strong>.',
-                "anchortag": "START7",
+                "anchortag": "AFTER7",
             },
             {
                 "question": "Do I need a transcript of the trial and how can I get a transcript?",
                 "answer": 'A transcript of the trial is the typewritten record prepared by the reporting company reflecting everything that is said in court. A transcript is usually required if posttrial briefs are ordered by the Court and/or if your case is being appealed to the U.S. Court of Appeals. Each of the parties (petitioner and respondent) is responsible for ordering and paying for a copy of their own transcript. The reporting company is a private company and is not part of the Tax Court. You should talk with the reporter during the trial session or see <strong><a href="/transcripts-and-copies" title="Transcripts & Copies">Transcripts & Copies</a></strong> for more information. <br> <br>Transcripts are not viewable even to the parties through <strong><a href="/dawson" title="DAWSON">DAWSON</a></strong> until 90 days after the date of the trial (or hearing).',
-                "anchortag": "START8",
+                "anchortag": "AFTER8",
             },
             {
                 "question": "Are there any circumstances where the Court will pay for my transcript?",
                 "answer": "In some very limited circumstances the Judge may direct that the Court pay for a transcript for a pro se petitioner. A pro se petitioner may file a motion requesting that the Court pay the expenses of a transcript. You must satisfy the Court that (1) you need a transcript to prepare posttrial briefs ordered by the Judge; (2) you do not have the financial means to pay for the transcript; and (3) the case presents a substantial question and is not frivolous. A Judge has discretion to grant or deny your motion. <br><br>You may be considered a pro se petitioner with respect to a motion requesting the Court pay the expenses of a transcript, if you represent yourself or if you are receiving assistance from a participating low-income taxpayer clinic or a participating bar-sponsored calendar call program.",
-                "anchortag": "START9",
+                "anchortag": "AFTER9",
             },
             {
                 "question": "Can I get money back from the IRS for my costs (but not taxes) if I win my case?",
                 "answer": "There are some limited circumstances where a petitioner, as a prevailing party, can recover fees and costs from the IRS. In general, a party is not a prevailing party if the IRS establishes that its position was substantially justified. A request for fees and costs cannot be filed until after the parties have settled their dispute or the Tax Court has issued its opinion.",
-                "anchortag": "START10",
+                "anchortag": "AFTER10",
             },
         ]
 

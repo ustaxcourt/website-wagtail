@@ -102,9 +102,9 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                     )
                     if release_date:
                         year = release_date.year
-                        release[
-                            "release_date"
-                        ] = release_date  # Ensure it stays consistent
+                        release["release_date"] = (
+                            release_date  # Ensure it stays consistent
+                        )
                         grouped[year].append(release)
 
                         # Track for duplication prevention
