@@ -166,7 +166,7 @@ class RedirectInitializer:
         except ValidationError as e:
             logger.info(f"Error creating redirect for '{old_path}': {e}")
 
-    def create_redirects(self):
+    def create_redirect(self):
         """
         Create all redirects from the REDIRECTS configuration
         """

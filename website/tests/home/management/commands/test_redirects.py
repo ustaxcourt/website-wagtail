@@ -17,7 +17,7 @@ class TestRedirectBehavior(TestCase):
 
         # Ensure redirects are created before testing
         initializer = RedirectInitializer()
-        initializer.create_redirects()
+        initializer.create_redirect()
 
     def _test_redirect(self, old_path, expected_new_path):
         """Helper method to test redirect behavior."""
