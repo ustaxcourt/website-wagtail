@@ -116,3 +116,6 @@ preregistersuperusers:
 
 setupwagtaillroles:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py setup_wagtail_roles
+
+generateruleredirects:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py generate_rule_redirects

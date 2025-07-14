@@ -2,6 +2,7 @@ import os
 import re
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from wagtail.models import Site
 
 from home.management.commands.pages.about_the_court import (
     about_the_court_pages_to_initialize,
@@ -53,6 +54,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Initialize redirects first
+        site = Site.objects.get(is_default_site=True)
         initializer = RedirectInitializer()
 
         redirects = [
@@ -158,7 +160,7 @@ class Command(BaseCommand):
 
         for old_path in legacy_urls:
             if old_path.endswith(".html"):
-                cleaned_path = old_path.replace(".html", "").replace("_", "-")
+                cleaned_path = old_path.removesuffix(".html").replace("_", "-")
                 new_path = cleaned_path + "/"
                 redirects.append(
                     {
@@ -197,7 +199,10 @@ class Command(BaseCommand):
         self.stdout.write("Initializing redirects...")
         for redirect in redirects:
             initializer.create_redirect(
-                redirect["old_path"], redirect["new_path"], redirect["is_permanent"]
+                redirect["old_path"],
+                redirect["new_path"],
+                redirect["is_permanent"],
+                site=site,
             )
         self.stdout.write(self.style.SUCCESS("All redirects have been initialized."))
 
