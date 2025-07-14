@@ -45,7 +45,18 @@ REDIRECTS = [
         "new_path": "/press-releases/archives",
         "is_permanent": True,
     },
+    {
+        "old_path": "/dawson_faqs.html",
+        "new_path": "/dawson-faqs-basics",
+        "is_permanent": True,
+    },
+    {
+        "old_path": "/tou.html",
+        "new_path": "/dawson-tou",
+        "is_permanent": True,
+    },
 ]
+
 
 LEGACY_URLS = [
     "/administrative_orders.html",
@@ -62,7 +73,6 @@ LEGACY_URLS = [
     "/dawson.html",
     "/dawson_account_petitioner.html",
     "/dawson_account_practitioner.html",
-    "/dawson_faqs.html",
     "/dawson_faqs_account_management.html",
     "/dawson_faqs_basics.html",
     "/dawson_faqs_case_management.html",
@@ -133,30 +143,36 @@ class RedirectInitializer:
     def __init__(self):
         self.logger = logger
 
-    def create_redirect(self):
+    def create(self, old_path, new_path, is_permanent=True):
         """
-        Create a redirect if it doesn't already exist
+        Create a single redirect if it doesn't already exist
 
         Args:
             old_path (str): The path to redirect from
             new_path (str): The path to redirect to
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
+        if Redirect.objects.filter(old_path=old_path).exists():
+            logger.info(f"- Redirect from '{old_path}' already exists.")
+            return
+
+        try:
+            Redirect.objects.create(
+                old_path=old_path,
+                redirect_link=new_path,
+                is_permanent=is_permanent,
+            )
+            logger.info(f"Created redirect from '{old_path}' → '{new_path}'")
+        except ValidationError as e:
+            logger.info(f"Error creating redirect for '{old_path}': {e}")
+
+    def create_redirects(self):
+        """
+        Create all redirects from the REDIRECTS configuration
+        """
         logger.info("Initializing redirects...")
         for redirect in REDIRECTS:
             old_path = redirect["old_path"]
             new_path = redirect["new_path"]
             is_permanent = redirect["is_permanent"]
-            if Redirect.objects.filter(old_path=old_path).exists():
-                logger.info(f"- Redirect from '{old_path}' already exists.")
-                continue
-            else:
-                try:
-                    Redirect.objects.create(
-                        old_path=old_path,
-                        redirect_link=new_path,
-                        is_permanent=is_permanent,
-                    )
-                    logger.info(f"Created redirect from '{old_path}' → '{new_path}'")
-                except ValidationError as e:
-                    logger.info(f"Error creating redirect for '{old_path}': {e}")
+            self.create(old_path, new_path, is_permanent)
