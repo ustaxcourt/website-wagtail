@@ -7,6 +7,8 @@ on:
     paths:
       - 'website/**'
       - 'infra/**'
+    paths-ignore:
+      - 'website/home/migrations/**'
     tags:
       - 'sandbox'
       - 'development'
@@ -212,6 +214,7 @@ jobs:
           make production-checks settings="app.settings.${ENVIRONMENT}"
 
       - name: Terminate Bastion Host
+        if: always()
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

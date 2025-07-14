@@ -1,0 +1,100 @@
+name: Run Migrations
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'website/home/migrations/**'
+    tags:
+      - 'sandbox'
+      - 'development'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  migrate:
+    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Set Environment
+        id: set_env
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/sandbox ]]; then
+            echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/development ]]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          else
+            echo "Debug: No matching condition found"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Setup Python Dependencies
+        run: |
+          cd website
+          make setup
+
+      - name: Enable Bastion Host
+        id: tf_outputs
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./setup-tf-buckets.sh
+          terraform init
+          terraform apply -target=module.app.aws_security_group.bastion_sg -auto-approve
+          bastion_ip=$(terraform output -raw bastion_public_ip)
+          echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
+          db_endpoint=$(terraform output -raw database_endpoint)
+          echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}"
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+        run: |
+          cd website
+          set -e
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make migrate
+
+      - name: Terminate Bastion Host
+        if: always()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./disable-bastion-host.sh
