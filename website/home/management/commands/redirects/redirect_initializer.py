@@ -26,7 +26,7 @@ def get_rule_pdf_redirects():
                 match = rule_pdf_pattern.match(filename)
                 if match:
                     base_rule = match.group(1).lower()
-                    old_path = f"/documents/{filename}"
+                    old_path = f"/files/documents/{filename}"
                     new_path = f"/documents/{base_rule}.pdf"
                     pdf_redirects.append(
                         {
