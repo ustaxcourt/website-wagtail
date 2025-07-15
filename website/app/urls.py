@@ -19,6 +19,12 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
+    request_path = request.path
+    redirect_entry = Redirect.objects.filter(old_path__iexact=request_path).first()
+    if redirect_entry:
+        logger.info(f"Matched Wagtail redirect for: {request_path}")
+        return HttpResponsePermanentRedirect(redirect_entry.redirect_link)
+
     redirect_entry = Redirect.objects.filter(old_path__iendswith=filename).first()
     if redirect_entry:
         logger.info(f"Matched Wagtail redirect for: {filename}")
@@ -101,6 +107,11 @@ urlpatterns = [
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
     ),
+    re_path(
+        r"^documents/(?P<filename>[^/]+\.pdf)$",
+        all_legacy_documents_redirect,
+        name="doc_no_id_pdf_redirect",
+    ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
@@ -118,7 +129,7 @@ if settings.DEBUG:
         path("__debug__/", include("debug_toolbar.urls")),
     ]
 
-urlpatterns = urlpatterns + [
+urlpatterns += [
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
     # the list:

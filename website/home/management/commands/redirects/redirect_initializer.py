@@ -40,7 +40,18 @@ def get_rule_pdf_redirects():
             f"Rule PDF directory not found: {RULES_DIR}. Skipping rule PDF redirects."
         )
 
-    return pdf_redirects
+    document_redirects = []
+    for r in pdf_redirects:
+        filename = r["old_path"].rsplit("/", 1)[-1]
+        document_redirects.append(
+            {
+                "old_path": f"files/documents/{filename}",
+                "new_path": r["new_path"],
+                "is_permanent": r["is_permanent"],
+            }
+        )
+
+    return pdf_redirects + document_redirects
 
 
 REDIRECTS = [
