@@ -1,8 +1,47 @@
+import os
+import re
 from wagtail.contrib.redirects.models import Redirect
 from django.core.exceptions import ValidationError
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def get_rule_pdf_redirects():
+    """
+    Scan a directory for amended rule PDF filenames and generate redirect mappings.
+    Redirects files like:
+        Rule-1_Amended_20230315.pdf → rule-1.pdf
+    """
+
+    pdf_redirects = []
+    rule_pdf_pattern = re.compile(r"^(Rule-\d+)_Amended_\d{8}\.pdf$", re.IGNORECASE)
+    RULES_DIR = os.getenv("RULE_PDF_SCAN_PATH", "home/management/documents")
+
+    logger.info(f"Looking for rule PDFs in: {os.path.abspath(RULES_DIR)}")
+
+    if os.path.exists(RULES_DIR):
+        for filename in os.listdir(RULES_DIR):
+            if filename.lower().endswith(".pdf"):
+                match = rule_pdf_pattern.match(filename)
+                if match:
+                    base_rule = match.group(1).lower()
+                    old_path = f"/files/documents/{filename}"
+                    new_path = f"/files/documents/{base_rule}.pdf"
+                    pdf_redirects.append(
+                        {
+                            "old_path": old_path,
+                            "new_path": new_path,
+                            "is_permanent": True,
+                        }
+                    )
+    else:
+        logger.warning(
+            f"Rule PDF directory not found: {RULES_DIR}. Skipping rule PDF redirects."
+        )
+
+    return pdf_redirects
+
 
 REDIRECTS = [
     {
@@ -133,7 +172,7 @@ class RedirectInitializer:
     def __init__(self):
         self.logger = logger
 
-    def create_redirect(self):
+    def create_redirect(self, old_path=None, new_path=None, is_permanent=True):
         """
         Create a redirect if it doesn't already exist
 
@@ -142,8 +181,19 @@ class RedirectInitializer:
             new_path (str): The path to redirect to
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
+        if old_path and new_path:
+            redirects = [
+                {
+                    "old_path": old_path,
+                    "new_path": new_path,
+                    "is_permanent": is_permanent,
+                }
+            ]
+        else:
+            redirects = REDIRECTS + get_rule_pdf_redirects()
         logger.info("Initializing redirects...")
-        for redirect in REDIRECTS:
+
+        for redirect in redirects:
             old_path = redirect["old_path"]
             new_path = redirect["new_path"]
             is_permanent = redirect["is_permanent"]

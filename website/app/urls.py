@@ -11,11 +11,18 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
+from django.http import HttpResponsePermanentRedirect
+from wagtail.contrib.redirects.models import Redirect
 
 
-def all_legacy_documents_redirect(request, filename):
+def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
+
+    redirect_entry = Redirect.objects.filter(old_path__iendswith=filename).first()
+    if redirect_entry:
+        logger.info(f"Matched Wagtail redirect for: {filename}")
+        return HttpResponsePermanentRedirect(redirect_entry.redirect_link)
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
@@ -77,6 +84,18 @@ urlpatterns = [
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
     path("admin/", include(wagtailadmin_urls)),
+    # with doc_id
+    re_path(
+        r"^files/documents/(?P<doc_id>\d+)/(?P<filename>[^/]+\.pdf)$",
+        all_legacy_documents_redirect,
+        name="legacy_pdf_doc_redirect",
+    ),
+    # without doc_id
+    re_path(
+        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
+        all_legacy_documents_redirect,
+        name="filename_only_redirect",
+    ),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
