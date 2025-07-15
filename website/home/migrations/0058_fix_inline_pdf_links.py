@@ -67,7 +67,7 @@ def fix_inline_pdf_links(apps, schema_editor):
                 replacements.append((filename, document.title, document.id))
 
                 # Create new link with document reference
-                new_link = f'<a linktype="document" id="{document.id}"{other_attrs}>{link_text}</a>'
+                new_link = f'<a linktype="document" id="{document.id}" {other_attrs}>{link_text}</a>'
                 return new_link
             else:
                 print(f"    Document not found for: {filename}")

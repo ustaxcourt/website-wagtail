@@ -265,7 +265,7 @@ class Command(BaseCommand):
                 self.page_replacements.append((filename, document.title, document.id))
 
                 # Create new link with document reference
-                new_link = f'<a linktype="document" id="{document.id}"{other_attrs}>{link_text}</a>'
+                new_link = f'<a linktype="document" id="{document.id}" {other_attrs}>{link_text}</a>'
 
                 if self.dry_run:
                     self.stdout.write(
