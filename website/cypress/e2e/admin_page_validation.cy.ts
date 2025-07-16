@@ -8,7 +8,6 @@
 describe('Admin Page Edit Validation', () => {
   const ADMIN_USERNAME = 'admin';
   const ADMIN_PASSWORD = 'ustcAdminPW!';
-  const BASE_URL = 'http://127.0.0.1:8000';
 
   let allPages: any[] = [];
   let testResults: Array<{
@@ -21,7 +20,7 @@ describe('Admin Page Edit Validation', () => {
 
   it('logs in and collects all page IDs from admin interface', () => {
     // Login to admin first
-    cy.visit(`${BASE_URL}/admin/login/`);
+    cy.visit('/admin/login/');
     cy.get('input[name="username"]').type(ADMIN_USERNAME);
     cy.get('input[name="password"]').type(ADMIN_PASSWORD);
     cy.get('button[type="submit"], input[type="submit"]').click();
@@ -50,7 +49,7 @@ describe('Admin Page Edit Validation', () => {
           // Calculate next page parameters
           const currentOffset = updatedPages.length;
           const limit = pages.length || 20;
-          const nextUrl = `${BASE_URL}/admin/api/main/pages/?offset=${currentOffset}&limit=${limit}`;
+          const nextUrl = `/admin/api/main/pages/?offset=${currentOffset}&limit=${limit}`;
 
           return collectAllPages(nextUrl, updatedPages);
         } else {
@@ -60,7 +59,7 @@ describe('Admin Page Edit Validation', () => {
     };
 
     // Start collecting from all pages (no child_of filter to get all pages)
-    collectAllPages(`${BASE_URL}/admin/api/main/pages/`).then((pages) => {
+    collectAllPages(`/admin/api/main/pages/`).then((pages) => {
       allPages = pages.filter((page: any) => page.id > 1); // Exclude root page
       expect(allPages.length).to.be.greaterThan(0, 'Should find pages to test');
 
@@ -73,7 +72,7 @@ describe('Admin Page Edit Validation', () => {
       const title = page.title || page.meta?.seo_title || `Page ${pageId}`;
 
       // Visit the edit page directly with retry logic
-      cy.visit(`${BASE_URL}/admin/pages/${pageId}/edit/`, {
+      cy.visit(`/admin/pages/${pageId}/edit/`, {
         timeout: 15000,
         failOnStatusCode: false
       });
@@ -121,7 +120,7 @@ describe('Admin Page Edit Validation', () => {
             // Print result to STDOUT immediately with color formatting
             const statusText = status === 'success' ? 'Editable' : `Not Editable (${error})`;
             const coloredOutput = status === 'success'
-              ? `Page ID: ${pageId}, Slug: ${slug}. ${statusText}`
+              ? `Page ID: ${pageId}, Slug: ${slug}. ${statusText}.`
               : `\x1b[31mPage ID: ${pageId}, Slug: ${slug}. ${statusText}\x1b[0m`;
             cy.task('log', coloredOutput);
 
@@ -187,20 +186,6 @@ describe('Admin Page Edit Validation', () => {
           console.log(`  ... and ${results.length - 10} more`);
         }
       });
-
-      console.log('\nRECOMMENDATIONS:');
-      console.log('- Pages with "Server error" likely have HTML structure issues');
-      console.log('- Check for unclosed tags, malformed HTML, or StreamField issues');
-      console.log('- Review page creation code in home/management/commands/pages/');
-      console.log('- Test failed pages manually in the admin interface');
-
-      if (errorGroups['Server error (500)']) {
-        console.log('\nSPECIFIC RECOMMENDATIONS FOR 500 ERRORS:');
-        console.log('- These are likely caused by the recent PDF link conversion work');
-        console.log('- Check for malformed <a linktype="document" id="..."> tags');
-        console.log('- Verify document IDs exist and are properly formatted');
-        console.log('- Review petitioners_start_page.py and similar page creation files');
-      }
     }
 
     // Log final results
@@ -210,15 +195,6 @@ describe('Admin Page Edit Validation', () => {
     if (total === 0) {
       console.log('\n❌ No pages were found to test.');
       throw new Error('No pages found to test');
-    }
-
-    // Check if we should warn about failure rate
-    const maxFailureRate = 25;
-    const failureRate = (failed / total) * 100;
-
-    if (failureRate > maxFailureRate) {
-      console.log(`\n⚠️  High failure rate detected: ${failureRate.toFixed(1)}%`);
-      console.log('This indicates significant issues with page editability in the admin.');
     }
   });
 });
