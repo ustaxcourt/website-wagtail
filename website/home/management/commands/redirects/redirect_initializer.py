@@ -29,7 +29,7 @@ def get_rule_pdf_redirects():
     """
     pdf_redirects = STATIC_PDF_REDIRECTS.copy()
 
-    rule_pdf_pattern = re.compile(r"^(Rule-\d+)_Amended_\d{8}\.pdf$", re.IGNORECASE)
+    rule_pdf_pattern = re.compile(r"^(Rule-\d+)[-_]?.*\.pdf$", re.IGNORECASE)
     RULES_DIR = os.getenv("RULE_PDF_SCAN_PATH", "home/management/documents")
 
     logger.info(f"Looking for rule PDFs in: {os.path.abspath(RULES_DIR)}")
