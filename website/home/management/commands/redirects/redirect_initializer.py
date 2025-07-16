@@ -11,7 +11,7 @@ def get_rule_pdf_redirects():
     """
     Scan a directory for amended rule PDF filenames and generate redirect mappings.
     Redirects files like:
-        Rule-1_Amended_20230315.pdf → rule-1.pdf
+        /files/documents/Rule-1_Amended_20230315.pdf → /documents/rule-1.pdf
     """
 
     pdf_redirects = []
@@ -45,7 +45,7 @@ def get_rule_pdf_redirects():
         filename = r["old_path"].rsplit("/", 1)[-1]
         document_redirects.append(
             {
-                "old_path": f"files/documents/{filename}",
+                "old_path": f"/files/documents/{filename}",
                 "new_path": r["new_path"],
                 "is_permanent": r["is_permanent"],
             }
@@ -195,7 +195,9 @@ class RedirectInitializer:
         if old_path and new_path:
             redirects = [
                 {
-                    "old_path": old_path,
+                    "old_path": old_path
+                    if old_path.startswith("/")
+                    else "/" + old_path,
                     "new_path": new_path,
                     "is_permanent": is_permanent,
                 }
