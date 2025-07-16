@@ -203,31 +203,8 @@ describe('Admin Page Edit Validation', () => {
       }
     }
 
-    // Save detailed report
-    const report = {
-      timestamp: new Date().toISOString(),
-      testType: 'admin_page_edit_validation',
-      summary: {
-        total,
-        successful,
-        failed,
-        successRate
-      },
-      errorGroups,
-      detailedResults: testResults,
-      recommendations: [
-        'Review pages with server errors for HTML structure issues',
-        'Check page creation templates in home/management/commands/pages/',
-        'Validate StreamField configurations for malformed blocks',
-        'Test manual editing of failed pages in admin interface'
-      ]
-    };
-
-    cy.writeFile('cypress/results/admin_edit_validation_report.json', report);
-
     // Log final results
     console.log(`\n✅ Admin edit validation completed! ${successRate}% success rate.`);
-    console.log(`📄 Detailed report: cypress/results/admin_edit_validation_report.json`);
 
     // Only fail if no pages were found at all
     if (total === 0) {
