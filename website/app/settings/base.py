@@ -354,7 +354,7 @@ ALLOWED_HOSTS += _task_ips()
 
 USE_X_FORWARDED_HOST = True
 SECRET_KEY = os.getenv("SECRET_KEY")
-CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("DOMAIN_NAME")}']
+CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('DOMAIN_NAME')}"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CSRF_COOKIE_SECURE = True
