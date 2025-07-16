@@ -18,7 +18,7 @@ class Command(BaseCommand):
         try:
             site = Site.objects.get(is_default_site=True)
         except Site.DoesNotExist:
-            self.stdout.write(self.style.ERROR("❌ Default Wagtail Site not found."))
+            self.stdout.write(self.style.ERROR("Default Wagtail Site not found."))
             return
 
         initializer = RedirectInitializer()

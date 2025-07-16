@@ -6,15 +6,29 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+STATIC_PDF_REDIRECTS = [
+    {
+        "old_path": "/files/documents/complete-rules-2005.pdf",
+        "new_path": "/files/documents/complete-rules.pdf",
+        "is_permanent": True,
+    },
+    {
+        "old_path": "/files/documents/taxcourt-rules-v2.pdf",
+        "new_path": "/files/documents/rules.pdf",
+        "is_permanent": True,
+    },
+]
+
 
 def get_rule_pdf_redirects():
     """
+     Return static + dynamically inferred rule PDF redirects.
     Scan a directory for amended rule PDF filenames and generate redirect mappings.
     Redirects files like:
         /files/documents/Rule-1_Amended_20230315.pdf → /documents/rule-1.pdf
     """
+    pdf_redirects = STATIC_PDF_REDIRECTS.copy()
 
-    pdf_redirects = []
     rule_pdf_pattern = re.compile(r"^(Rule-\d+)_Amended_\d{8}\.pdf$", re.IGNORECASE)
     RULES_DIR = os.getenv("RULE_PDF_SCAN_PATH", "home/management/documents")
 
@@ -27,7 +41,7 @@ def get_rule_pdf_redirects():
                 if match:
                     base_rule = match.group(1).lower()
                     old_path = f"/files/documents/{filename}"
-                    new_path = f"/documents/{base_rule}.pdf"
+                    new_path = f"/files/documents/{base_rule}.pdf"
                     pdf_redirects.append(
                         {
                             "old_path": old_path,
@@ -37,21 +51,10 @@ def get_rule_pdf_redirects():
                     )
     else:
         logger.warning(
-            f"Rule PDF directory not found: {RULES_DIR}. Skipping rule PDF redirects."
+            f"Rule PDF directory not found: {RULES_DIR}. Skipping dynamic rule PDF redirects."
         )
 
-    document_redirects = []
-    for r in pdf_redirects:
-        filename = r["old_path"].rsplit("/", 1)[-1]
-        document_redirects.append(
-            {
-                "old_path": f"/files/documents/{filename}",
-                "new_path": r["new_path"],
-                "is_permanent": r["is_permanent"],
-            }
-        )
-
-    return pdf_redirects + document_redirects
+    return pdf_redirects
 
 
 REDIRECTS = [
