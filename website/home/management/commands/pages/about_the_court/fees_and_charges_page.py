@@ -78,8 +78,8 @@ class FeesAndChargesPageInitializer(PageInitializer):
             {"type": "h2", "value": "Filing Fees"},
             {
                 "type": "paragraph",
-                "value": '<em>(Issued in accordance with 26 U.S.C. sections 7451 and 7470 and </em><strong><em><a href="'
-                + documents["Rule-190.pdf"]
+                "value": '<em>(Issued in accordance with 26 U.S.C. sections 7451 and 7470 and </em><strong><em><a linktype="document" id="'
+                + str(documents_ids["Rule-190.pdf"])
                 + '" target="_blank" title="Rule 190">Rule 190</a></em></strong><em>)</em>',
             },
             {"type": "hr", "value": True},
@@ -105,8 +105,8 @@ class FeesAndChargesPageInitializer(PageInitializer):
             {"type": "h2", "value": "Admission and Membership Fees"},
             {
                 "type": "paragraph",
-                "value": '<em>(Issued in accordance with 26 U.S.C. sections 7451, 7452 and 7470 and </em><strong><em><a href="'
-                + documents["Rule-200(2nd-amended).pdf"]
+                "value": '<em>(Issued in accordance with 26 U.S.C. sections 7451, 7452 and 7470 and </em><strong><em><a linktype="document" id="'
+                + str(documents_ids["Rule-200(2nd-amended).pdf"])
                 + '" target="_blank" title="Rule 200(a) and (g)">Rule 200(a) and (g)</a></em></strong><em>)</em>',
             },
             {"type": "hr", "value": True},
