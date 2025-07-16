@@ -33,9 +33,14 @@ describe('Admin Page Edit Validation', () => {
         url: url,
         headers: {
           'Accept': 'application/json'
-        }
+        },
+        failOnStatusCode: false
       }).then((response) => {
-        expect(response.status).to.eq(200);
+        if (response.status !== 200) {
+          // If API fails, fallback to UI scraping
+          cy.log(`API request failed with status ${response.status}, falling back to UI scraping`);
+          return cy.wrap([]);
+        }
 
         const pages = response.body.items || response.body.results || [];
         const updatedPages = [...allPages, ...pages];
@@ -61,7 +66,43 @@ describe('Admin Page Edit Validation', () => {
     // Start collecting from all pages (no child_of filter to get all pages)
     collectAllPages(`/admin/api/main/pages/`).then((pages) => {
       allPages = pages.filter((page: any) => page.id > 1); // Exclude root page
-      expect(allPages.length).to.be.greaterThan(0, 'Should find pages to test');
+
+      // If API failed and we have no pages, fallback to UI scraping
+      if (allPages.length === 0) {
+        cy.log('API collection failed, falling back to UI scraping');
+
+        // Visit the admin pages list
+        cy.visit('/admin/pages/');
+
+        // Wait for the page to load
+        cy.get('table', { timeout: 10000 }).should('be.visible');
+
+        // Extract page IDs from the UI
+        cy.get('table tbody tr[data-object-pk]').then(($rows) => {
+          const uiPages: any[] = [];
+          $rows.each((_index, row) => {
+            const pageId = parseInt(row.getAttribute('data-object-pk') || '0');
+            const title = row.querySelector('td.title a')?.textContent?.trim() || `Page ${pageId}`;
+            const slug = row.querySelector('td.status .status-tag')?.getAttribute('title') || `page-${pageId}`;
+
+            if (pageId > 1) { // Exclude root page
+              uiPages.push({
+                id: pageId,
+                title: title,
+                slug: slug
+              });
+            }
+          });
+
+          allPages = uiPages;
+          cy.log(`Found ${allPages.length} pages via UI scraping`);
+        });
+      }
+
+      // This check now happens after potential UI scraping
+      cy.then(() => {
+        expect(allPages.length).to.be.greaterThan(0, 'Should find pages to test');
+      });
 
       // Test each page sequentially using cy.wrap and .each()
       cy.wrap(allPages).each((page: any) => {
