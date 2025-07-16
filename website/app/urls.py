@@ -21,24 +21,16 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
     # Updated pattern to extract rule number even with suffixes
-    canonical_pattern = re.compile(r"^rule[-_]?(\d+)[-_]?.*\.pdf$", re.IGNORECASE)
+    canonical_pattern = re.compile(r"^rule[-_]?(\d+)", re.IGNORECASE)
     match = canonical_pattern.match(filename)
     if match:
-        rule_number = match.group(1)
-        normalized_filename = f"rule-{rule_number}.pdf"
-        normalized_path = f"/files/documents/{normalized_filename}"
+        normalized_filename = f"rule-{match.group(1)}.pdf"
+        if filename.lower() != normalized_filename:
+            normalized_path = f"/files/documents/{normalized_filename}"
+            logger.info(f"Redirecting variant filename: {filename} → {normalized_path}")
+            return HttpResponsePermanentRedirect(normalized_path)
 
-    # Only redirect if original filename is not normalized
-    if filename != normalized_filename:
-        logger.info(f"Redirecting legacy filename {filename} → {normalized_path}")
-
-    # Optional: check if normalized file exists in Wagtail
-    if Document.objects.filter(filename__iexact=normalized_filename).exists():
-        return HttpResponsePermanentRedirect(normalized_path)
-    else:
-        logger.warning(f"Normalized file {normalized_filename} not found in Wagtail.")
-        return render_404_util(request)
-
+    # Now safe to use filename directly
     request_path = "/" + request.path.lstrip("/").lower().rstrip("/")
     redirect_entry = Redirect.objects.filter(old_path__iexact=request_path).first()
     if redirect_entry:
