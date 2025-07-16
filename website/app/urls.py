@@ -19,7 +19,7 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    request_path = request.path
+    request_path = "/" + request.path.lstrip("/").lower().rstrip("/")
     redirect_entry = Redirect.objects.filter(old_path__iexact=request_path).first()
     if redirect_entry:
         logger.info(f"Matched Wagtail redirect for: {request_path}")
