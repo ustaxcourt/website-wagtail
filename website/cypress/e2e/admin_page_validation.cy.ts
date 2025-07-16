@@ -71,67 +71,94 @@ describe('Admin Page Edit Validation', () => {
       const slug = page.meta?.slug || page.slug || page.url_path?.split('/').filter(Boolean).pop() || `page-${pageId}`;
       const title = page.title || page.meta?.seo_title || `Page ${pageId}`;
 
-      // Visit the edit page directly with retry logic
-      cy.visit(`/admin/pages/${pageId}/edit/`, {
-        timeout: 15000,
+      // Visit the edit page and capture the response
+      cy.request({
+        url: `/admin/pages/${pageId}/edit/`,
         failOnStatusCode: false
-      });
-
-      // Wait for page to stabilize
-      cy.wait(500);
-
-      // Check response status and content
-      cy.url().then((currentUrl) => {
+      }).then((response) => {
         let status: 'success' | 'failed' = 'success';
         let error: string | undefined;
 
-        if (!currentUrl.includes('/edit/')) {
+        // Check HTTP status code first
+        if (response.status >= 400) {
           status = 'failed';
-          error = 'Page redirected or failed to load edit interface';
+          error = `HTTP ${response.status} error`;
         } else {
-          // Check page content for errors
-          cy.get('body').then(($body) => {
-            // Check if redirected to login (indicates auth failure)
-            if ($body.find('input[name="username"], input[name="password"]').length > 0) {
+          // Visit the page for DOM checks only if HTTP request was successful
+          cy.visit(`/admin/pages/${pageId}/edit/`, {
+            timeout: 15000,
+            failOnStatusCode: false
+          });
+
+          // Wait for page to stabilize
+          cy.wait(500);
+
+          // Check response status and content
+          cy.url().then((currentUrl) => {
+            if (!currentUrl.includes('/edit/')) {
               status = 'failed';
-              error = 'Redirected to login - authentication issue';
+              error = 'Page redirected or failed to load edit interface';
             } else {
-              // Check for actual error pages by looking at more specific indicators
-              const hasErrorPage = $body.find('h1').text().includes('Server Error') ||
-                                   $body.find('h1').text().includes('Not Found') ||
-                                   $body.find('.error-page, .server-error').length > 0;
+              // Check page content for errors
+              cy.get('body').then(($body) => {
+                // Check if redirected to login (indicates auth failure)
+                if ($body.find('input[name="username"], input[name="password"]').length > 0) {
+                  status = 'failed';
+                  error = 'Redirected to login - authentication issue';
+                } else {
+                  // Check for actual error pages by looking at more specific indicators
+                  const hasErrorPage = $body.find('h1').text().includes('Server Error') ||
+                                       $body.find('h1').text().includes('Not Found') ||
+                                       $body.find('.error-page, .server-error').length > 0;
 
-              const hasWagtailEditForm = $body.find('form[action*="/edit/"], .page-editor, .tab-nav, input[name="title"], input[name="slug"]').length > 0;
-              const hasSubmitButton = $body.find('button[type="submit"], input[type="submit"]').length > 0;
+                  const hasWagtailEditForm = $body.find('form[action*="/edit/"], .page-editor, .tab-nav, input[name="title"], input[name="slug"]').length > 0;
+                  const hasSubmitButton = $body.find('button[type="submit"], input[type="submit"]').length > 0;
 
-              if (hasErrorPage) {
-                status = 'failed';
-                error = 'Error page detected';
-              } else if (!hasWagtailEditForm) {
-                status = 'failed';
-                error = 'No Wagtail edit form found on page';
-              } else if (!hasSubmitButton) {
-                status = 'failed';
-                error = 'Edit form missing submit button';
-              }
-              // If we reach here with no errors, status remains 'success'
+                  if (hasErrorPage) {
+                    status = 'failed';
+                    error = 'Error page detected';
+                  } else if (!hasWagtailEditForm) {
+                    status = 'failed';
+                    error = 'No Wagtail edit form found on page';
+                  } else if (!hasSubmitButton) {
+                    status = 'failed';
+                    error = 'Edit form missing submit button';
+                  }
+                  // If we reach here with no errors, status remains 'success'
+                }
+
+                // Print result to STDOUT immediately with color formatting
+                const statusText = status === 'success' ? 'Editable' : `Not Editable (${error}).`;
+                const coloredOutput = status === 'success'
+                  ? `Page ID: ${pageId}, Slug: ${slug}. ${statusText}.`
+                  : `\x1b[31mPage ID: ${pageId}, Slug: ${slug}. ${statusText}\x1b[0m`;
+                cy.task('log', coloredOutput);
+
+                // Record result
+                testResults.push({
+                  pageId,
+                  title,
+                  slug,
+                  status,
+                  error
+                });
+              });
             }
+          });
+        }
 
-            // Print result to STDOUT immediately with color formatting
-            const statusText = status === 'success' ? 'Editable' : `Not Editable (${error})`;
-            const coloredOutput = status === 'success'
-              ? `Page ID: ${pageId}, Slug: ${slug}. ${statusText}.`
-              : `\x1b[31mPage ID: ${pageId}, Slug: ${slug}. ${statusText}\x1b[0m`;
-            cy.task('log', coloredOutput);
+        // If HTTP request failed, record the result immediately
+        if (response.status >= 400) {
+          const statusText = `Not Editable (${error})`;
+          const coloredOutput = `\x1b[31mPage ID: ${pageId}, Slug: ${slug}. ${statusText}\x1b[0m`;
+          cy.task('log', coloredOutput);
 
-            // Record result
-            testResults.push({
-              pageId,
-              title,
-              slug,
-              status,
-              error
-            });
+          testResults.push({
+            pageId,
+            title,
+            slug,
+            status,
+            error
           });
         }
       });
