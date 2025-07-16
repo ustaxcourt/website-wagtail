@@ -1,13 +1,13 @@
-# your_app_name/migrations/0058_rules_document_updates.py
 
 from django.conf import settings
 from django.db import migrations
 from django.core.files import File
+from django.core.exceptions import MultipleObjectsReturned
 import os
 import csv
 
 # --- Helper Function ---
-def update_document_file(Document, doc_id, base_path, source_filename, new_title):
+def update_document_file(Document, current_title, base_path, source_filename, new_title):
     """
     Finds a Wagtail document by its ID, updates its title, and replaces its file
     by uploading a new file from the local filesystem.
@@ -16,13 +16,11 @@ def update_document_file(Document, doc_id, base_path, source_filename, new_title
     """
     full_path = os.path.join(base_path, source_filename)
     try:
-        # Convert doc_id from string (from CSV) to integer
-        doc_id = int(doc_id)
-        
-        # Get the document object using the provided model and ID
-        doc_to_update = Document.objects.get(id=doc_id)
+        # Get the document object using the provided title.
+        # This requires the title to be unique.
+        doc_to_update = Document.objects.get(title=current_title)
 
-        print(f"Updating document ID {doc_id}: '{doc_to_update.title}'...")
+        print(f"Found document by title '{current_title}' (ID: {doc_to_update.id}). Updating...")
 
         # Update the title field
         doc_to_update.title = new_title
@@ -39,13 +37,13 @@ def update_document_file(Document, doc_id, base_path, source_filename, new_title
         print(f"  -> Successfully updated to title '{new_title}' with file '{source_filename}'.")
 
     except Document.DoesNotExist:
-        print(f"  -> ERROR: Document with ID {doc_id} not found. Skipping.")
+        print(f"  -> ERROR: Document with title '{current_title}' not found. Skipping.")
+    except MultipleObjectsReturned:
+        print(f"  -> ERROR: Multiple documents found with title '{current_title}'. Titles must be unique to use this script. Skipping.")
     except FileNotFoundError:
-        print(f"  -> ERROR: Source file not found at '{full_path}'. Skipping document ID {doc_id}.")
-    except ValueError:
-        print(f"  -> ERROR: Invalid document ID '{doc_id}'. Must be an integer. Skipping.")
+        print(f"  -> ERROR: Source file not found at '{full_path}'. Skipping document '{current_title}'.")
     except Exception as e:
-        print(f"  -> ERROR: An unexpected error occurred for doc ID {doc_id}: {e}")
+        print(f"  -> ERROR: An unexpected error occurred for document '{current_title}': {e}")
 
 
 def apply_document_updates_from_csv(apps, schema_editor):
@@ -61,7 +59,8 @@ def apply_document_updates_from_csv(apps, schema_editor):
     # The migration will look for filenames from the CSV inside this directory.
     # PLEASE UPDATE THIS PATH to the correct location on your server.
     BASE_DIR = settings.BASE_DIR
-    LOCAL_FILES_BASE_DIR = os.path.join(BASE_DIR, '/home/management/documents')
+    LOCAL_FILES_BASE_DIR = os.path.join(BASE_DIR, "home/management/documents")
+    print(f"Base directory: {BASE_DIR}, full directory: {LOCAL_FILES_BASE_DIR}")
 
     # Construct the path to the CSV file relative to this migration file
     migration_dir = os.path.dirname(__file__)
@@ -80,11 +79,11 @@ def apply_document_updates_from_csv(apps, schema_editor):
 
             # Process each row in the CSV
             for row in reader:
-                # Expects columns in order: doc_id, source_filename, new_title
-                doc_id, source_filename, new_title = row
+                # Expects columns in order: current_title, source_filename, new_title
+                current_title, source_filename, new_title = row
                 update_document_file(
                     Document,
-                    doc_id.strip(),
+                    current_title.strip(),
                     LOCAL_FILES_BASE_DIR,
                     source_filename.strip(),
                     new_title.strip()
@@ -103,7 +102,6 @@ def apply_document_updates_from_csv(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        # Replace with the actual previous migration for your app
         ('home', '0057_fix_petitioner_about_page'),
         ('wagtaildocs', '0012_uploadeddocument'), # Dependency on wagtaildocs is good practice
     ]
