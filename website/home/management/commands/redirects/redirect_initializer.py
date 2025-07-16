@@ -22,10 +22,10 @@ STATIC_PDF_REDIRECTS = [
 
 def get_rule_pdf_redirects():
     """
-     Return static + dynamically inferred rule PDF redirects.
+    Return static + dynamically inferred rule PDF redirects.
     Scan a directory for amended rule PDF filenames and generate redirect mappings.
     Redirects files like:
-        /files/documents/Rule-1_Amended_20230315.pdf → /documents/rule-1.pdf
+    /files/documents/Rule-1_Amended_20230315.pdf → /files/documents/rule-1.pdf
     """
     pdf_redirects = STATIC_PDF_REDIRECTS.copy()
 
@@ -51,7 +51,7 @@ def get_rule_pdf_redirects():
                     )
     else:
         logger.warning(
-            f"Rule PDF directory not found: {RULES_DIR}. Skipping dynamic rule PDF redirects."
+            f"Rule PDF directory not found: {RULES_DIR}. Skipping rule PDF redirects."
         )
 
     return pdf_redirects
@@ -186,6 +186,9 @@ class RedirectInitializer:
     def __init__(self):
         self.logger = logger
 
+    def normalize_path(self, path: str) -> str:
+        return "/" + path.strip().lstrip("/").rstrip("/")
+
     def create_redirect(self, old_path=None, new_path=None, is_permanent=True):
         """
         Create a redirect if it doesn't already exist
@@ -198,9 +201,7 @@ class RedirectInitializer:
         if old_path and new_path:
             redirects = [
                 {
-                    "old_path": old_path
-                    if old_path.startswith("/")
-                    else "/" + old_path,
+                    "old_path": self.normalize_path(old_path),
                     "new_path": new_path,
                     "is_permanent": is_permanent,
                 }
@@ -210,7 +211,7 @@ class RedirectInitializer:
         logger.info("Initializing redirects...")
 
         for redirect in redirects:
-            old_path = redirect["old_path"]
+            old_path = self.normalize_path(redirect["old_path"])
             new_path = redirect["new_path"]
             is_permanent = redirect["is_permanent"]
             if Redirect.objects.filter(old_path=old_path).exists():

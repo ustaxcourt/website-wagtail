@@ -90,13 +90,6 @@ urlpatterns = [
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
     path("admin/", include(wagtailadmin_urls)),
-    # with doc_id
-    re_path(
-        r"^files/documents/(?P<doc_id>\d+)/(?P<filename>[^/]+\.pdf)$",
-        all_legacy_documents_redirect,
-        name="legacy_pdf_doc_redirect",
-    ),
-    # without doc_id
     re_path(
         r"^files/documents/(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
@@ -106,11 +99,6 @@ urlpatterns = [
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
-    ),
-    re_path(
-        r"^documents/(?P<filename>[^/]+\.pdf)$",
-        all_legacy_documents_redirect,
-        name="doc_no_id_pdf_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),

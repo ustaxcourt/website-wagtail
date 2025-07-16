@@ -15,7 +15,6 @@ class FakeDoc:
 LEGACY_URL_PATHS = [
     "/resources/test.pdf",
     "/files/documents/test.pdf",
-    "/files/documents/123/test.pdf",
     "/documents/test.pdf",
 ]
 
@@ -66,9 +65,9 @@ def test_returns_404_on_multiple_matches(
     mock_redirect, mock_doc, mock_render_404, url_path
 ):
     # Arrange
-    mock_redirect.objects.filter.return_value.first.return_value = None
     doc1 = FakeDoc("test.pdf", "/media/documents/test.pdf")
     doc2 = FakeDoc("test_copy.pdf", "/media/documents/test_copy.pdf")
+    mock_redirect.objects.filter.return_value.first.return_value = None
     mock_doc.objects.filter.return_value = [doc1, doc2]
 
     request = RequestFactory().get(url_path)
@@ -88,8 +87,8 @@ def test_returns_404_on_single_non_exact_match(
     mock_redirect, mock_doc, mock_render_404, url_path
 ):
     # Arrange
-    mock_redirect.objects.filter.return_value.first.return_value = None
     doc = FakeDoc("test_2024.pdf", "/media/documents/test_2024.pdf")
+    mock_redirect.objects.filter.return_value.first.return_value = None
     mock_doc.objects.filter.return_value = [doc]
 
     # Act
