@@ -226,6 +226,19 @@ resource "aws_cloudfront_distribution" "app" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+  # Cache behavior for /files/documents/* path - redirect pdf urls
+  ordered_cache_behavior {
+    path_pattern     = "/files/documents/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "app-origin"
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
+
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
   # Cache behavior for /files/* path
   ordered_cache_behavior {
     path_pattern     = "/files/*"
@@ -260,19 +273,6 @@ resource "aws_cloudfront_distribution" "app" {
   ordered_cache_behavior {
     path_pattern     = "/admin*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "app-origin"
-
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
-
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-  # Cache behavior for /files/documents/* path - redirect pdf urls
-  ordered_cache_behavior {
-    path_pattern     = "/files/documents/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "app-origin"
 
