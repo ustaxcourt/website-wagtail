@@ -118,3 +118,6 @@ setupwagtaillroles:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py setup_wagtail_roles
 createrulespdfredirects:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_rules_pdf_redirects
+
+rollbackmigrate:
+	. $(VENV) && python manage.py migrate home 0057_fix_petitioner_about_page
