@@ -20,14 +20,24 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    canonical_pattern = re.compile(r"^rule-\d+\.pdf$", re.IGNORECASE)
-    if canonical_pattern.match(filename):
-        try:
-            doc = Document.objects.get(file__icontains=filename)
-            return redirect(doc.file.url)
-        except Document.DoesNotExist:
-            logger.warning(f"Canonical file {filename} not found in Document model.")
-            return render_404_util(request)
+    # Updated pattern to extract rule number even with suffixes
+    canonical_pattern = re.compile(r"^rule[-_]?(\d+)[-_]?.*\.pdf$", re.IGNORECASE)
+    match = canonical_pattern.match(filename)
+    if match:
+        rule_number = match.group(1)
+        normalized_filename = f"rule-{rule_number}.pdf"
+        normalized_path = f"/files/documents/{normalized_filename}"
+
+    # Only redirect if original filename is not normalized
+    if filename != normalized_filename:
+        logger.info(f"Redirecting legacy filename {filename} → {normalized_path}")
+
+    # Optional: check if normalized file exists in Wagtail
+    if Document.objects.filter(filename__iexact=normalized_filename).exists():
+        return HttpResponsePermanentRedirect(normalized_path)
+    else:
+        logger.warning(f"Normalized file {normalized_filename} not found in Wagtail.")
+        return render_404_util(request)
 
     request_path = "/" + request.path.lstrip("/").lower().rstrip("/")
     redirect_entry = Redirect.objects.filter(old_path__iexact=request_path).first()
@@ -101,7 +111,7 @@ urlpatterns = [
     ),  # Or your app's urls, adjust path as desired
     path("admin/", include(wagtailadmin_urls)),
     re_path(
-        r"^files/documents/(?P<filename>(?!rule-\d+\.pdf$)[^/]+\.pdf)$",
+        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
         name="filename_only_redirect",
     ),
