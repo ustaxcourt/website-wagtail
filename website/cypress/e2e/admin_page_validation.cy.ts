@@ -39,7 +39,7 @@ describe('Admin Page Edit Validation', () => {
         if (response.status !== 200) {
           // If API fails, fallback to UI scraping
           cy.log(`API request failed with status ${response.status}, falling back to UI scraping`);
-          return cy.wrap([]);
+          return cy.wrap([] as any[]);
         }
 
         const pages = response.body.items || response.body.results || [];
@@ -58,7 +58,7 @@ describe('Admin Page Edit Validation', () => {
 
           return collectAllPages(nextUrl, updatedPages);
         } else {
-          return cy.wrap(updatedPages);
+          return cy.wrap(updatedPages as any[]);
         }
       });
     };
