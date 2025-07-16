@@ -2,44 +2,7 @@
 
 from django.db import migrations
 import re
-
-tags_names = [
-    "Review and approve all content",
-    "Backup publisher",
-    "All things technical",
-    "Administrative Orders",
-    "Cases Commenced in the Court of Appeals",
-    "Citation and Style Manual",
-    "Clinics",
-    "DAWSON Training Guides",
-    "Directory",
-    "Discipline",
-    "Engagement & Outreach",
-    "Events and Webinars",
-    "Fees & Charges",
-    "Forms",
-    "Guidance for Petitioners",
-    "Guidance for Practitioners",
-    "History",
-    "Internship Programs",
-    "Judges & Bios",
-    "Judicial Conduct and Disability Procedures",
-    "Law Clerk Programs",
-    "LITC",
-    "Mission Statement",
-    "Pamphlets",
-    "Press Releases",
-    "Pro Bono Programs",
-    "Records (Transcripts & Copies)",
-    "DAWSON Release Notes",
-    "Remote Proceedings",
-    "Reports & Statistics",
-    "Rules Comments and Suggestions",
-    "Tax Court Reports",
-    "Tax Court Rules",
-    "Trial Sessions",
-    "Vacancy Announcements",
-]
+from home.data.tag_and_collection_names import TAGS_AND_COLLECTION_NAMES
 
 
 def create_slug(name):
@@ -50,7 +13,7 @@ def create_slug(name):
 
 def create_tags(apps, schema_editor):
     Tag = apps.get_model("taggit", "Tag")
-    for tag_name in tags_names:
+    for tag_name in TAGS_AND_COLLECTION_NAMES:
         slug = create_slug(tag_name)
         # Use the slug to check for existence, and provide the name as a default
         # for creation. This avoids the unique constraint error.
@@ -60,7 +23,7 @@ def create_tags(apps, schema_editor):
 def remove_tags(apps, schema_editor):
     Tag = apps.get_model("taggit", "Tag")
     # Create a list of slugs to safely identify the tags to be removed.
-    slugs_to_remove = [create_slug(tag_name) for tag_name in tags_names]
+    slugs_to_remove = [create_slug(tag_name) for tag_name in TAGS_AND_COLLECTION_NAMES]
     Tag.objects.filter(slug__in=slugs_to_remove).delete()
 
 

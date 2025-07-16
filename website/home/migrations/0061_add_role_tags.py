@@ -3,23 +3,7 @@
 from django.db import migrations
 import re
 
-role_tag_names = [
-    "Role Content Manager",
-    "Role Website Manager",
-    "Role Chief Judge",
-    "Role Dawson Contributor",
-    "Role Public Affairs",
-    "Role Clerk Office",
-    "Role Hr Committee",
-    "Role Pro Se Committee",
-    "Role Rules Committee",
-    "Role Admissions Committee",
-    "Role Ethics Committee",
-    "Role Disciplinary Committee",
-    "Role Reporters Office",
-    "Role Appellate Reports",
-    "Role Case Services",
-]
+from home.data.role_tag_names import ROLE_TAGS_NAMES
 
 
 def create_slug(name):
@@ -30,7 +14,7 @@ def create_slug(name):
 
 def create_role_tags(apps, schema_editor):
     Tag = apps.get_model("taggit", "Tag")
-    for tag_name in role_tag_names:
+    for tag_name in ROLE_TAGS_NAMES:
         slug = create_slug(tag_name)
         # Use the slug to check for existence, and provide the name as a default
         # for creation. This avoids the unique constraint error.
@@ -40,7 +24,7 @@ def create_role_tags(apps, schema_editor):
 def remove_role_tags(apps, schema_editor):
     Tag = apps.get_model("taggit", "Tag")
     # Create a list of slugs to safely identify the tags to be removed.
-    slugs_to_remove = [create_slug(tag_name) for tag_name in role_tag_names]
+    slugs_to_remove = [create_slug(tag_name) for tag_name in ROLE_TAGS_NAMES]
     Tag.objects.filter(slug__in=slugs_to_remove).delete()
 
 
