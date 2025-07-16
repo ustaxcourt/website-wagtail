@@ -23,10 +23,15 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     # Updated pattern to extract rule number even with suffixes
     canonical_pattern = re.compile(r"^rule[-_]?(\d+)", re.IGNORECASE)
     match = canonical_pattern.match(filename)
+
+    normalized_filename = None
+    normalized_path = None
+
     if match:
-        normalized_filename = f"rule-{match.group(1)}.pdf"
-        if filename.lower() != normalized_filename:
-            normalized_path = f"/files/documents/{normalized_filename}"
+        rule_number = match.group(1)
+        normalized_filename = f"rule-{rule_number}.pdf"
+        normalized_path = f"/files/documents/{normalized_filename}"
+        if filename.lower() != normalized_filename.lower():
             logger.info(f"Redirecting variant filename: {filename} → {normalized_path}")
             return HttpResponsePermanentRedirect(normalized_path)
 
