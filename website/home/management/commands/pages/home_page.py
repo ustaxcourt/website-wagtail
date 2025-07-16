@@ -189,6 +189,13 @@ class HomePageInitializer(PageInitializer):
             logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
 
+        for document in home_docs.keys():
+            home_docs[document] = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
+
         remote_proceeding_entry = HomePageEntry.objects.filter(
             homepage=homepage, title="Remote Proceedings Info"
         )
