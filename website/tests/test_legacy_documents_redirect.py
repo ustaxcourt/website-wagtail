@@ -97,3 +97,32 @@ def test_returns_404_on_single_non_exact_match(
 
     # Assert
     mock_render_404.assert_called_once_with(request)
+
+
+# ✅ Canonical filename redirect tests
+
+
+@pytest.mark.django_db
+@patch("app.urls.Document")
+def test_canonical_filename_redirect_if_normalized_exists(mock_doc_model):
+    # Simulate: Rule-12superseded.pdf → rule-12.pdf
+    mock_doc_model.objects.filter.return_value.exists.return_value = True
+
+    request = RequestFactory().get("/files/documents/Rule-12superseded.pdf")
+    response = all_legacy_documents_redirect(request, "Rule-12superseded.pdf")
+
+    assert response.status_code == 301 or response.status_code == 302
+    assert response.url == "/files/documents/rule-12.pdf"
+
+
+@pytest.mark.django_db
+@patch("app.urls.Document")
+@patch("app.urls.render_404_util")
+def test_canonical_filename_redirect_not_found(mock_render_404, mock_doc_model):
+    # Simulate: Rule-99junk.pdf → rule-99.pdf not found
+    mock_doc_model.objects.filter.return_value.exists.return_value = False
+
+    request = RequestFactory().get("/files/documents/Rule-99junk.pdf")
+    all_legacy_documents_redirect(request, "Rule-99junk.pdf")
+
+    mock_render_404.assert_called_once_with(request)
