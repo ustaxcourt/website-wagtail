@@ -43,6 +43,7 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
             logger.info(
                 f"Request is already for normalized path: {request.get_full_path()}."
             )
+            return None
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
