@@ -11,7 +11,7 @@ def update_document_file(
     Document, current_title, base_path, source_filename, new_title
 ):
     """
-    Finds a Wagtail document by its ID, updates its title, and replaces its file
+    Finds a Wagtail document by its filename, updates its title, and replaces its file
     by uploading a new file from the local filesystem.
 
     Constructs the full file path from a base path and a source filename.
@@ -31,10 +31,6 @@ def update_document_file(
 
         # Open the new PDF file from the constructed full path
         with open(full_path, "rb") as f:
-            # This is the key step. The .save() method on the FileField will
-            # use your project's default storage backend. If you have django-storages
-            # configured for S3, this line will read the local file and upload
-            # it to your S3 bucket, replacing the old file.
             print(
                 f"  -> Uploading '{source_filename}' to configured storage (e.g., S3)..."
             )
@@ -69,18 +65,17 @@ def apply_document_updates_from_csv(apps, schema_editor):
     Document = apps.get_model("wagtaildocs", "Document")
 
     # --- IMPORTANT ---
-    # Define the absolute base directory where your new source document files are located.
     # The migration will look for filenames from the CSV inside this directory.
     # PLEASE UPDATE THIS PATH to the correct location on your server.
     BASE_DIR = settings.BASE_DIR
-    LOCAL_FILES_BASE_DIR = os.path.join(BASE_DIR, "home/management/documents")
+    LOCAL_FILES_BASE_DIR = os.path.join(BASE_DIR, "home/management/documents/rules")
     print(f"Base directory: {BASE_DIR}, full directory: {LOCAL_FILES_BASE_DIR}")
 
     # Construct the path to the CSV file relative to this migration file
     migration_dir = os.path.dirname(__file__)
     csv_filename = os.path.basename(__file__).replace(
         ".py", ".csv"
-    )  # e.g., 0058_rules_document_updates.csv
+    )
     csv_path = os.path.join(migration_dir, csv_filename)
 
     print(f"\nAttempting to read document updates from: {csv_path}")
@@ -121,11 +116,10 @@ class Migration(migrations.Migration):
         (
             "wagtaildocs",
             "0012_uploadeddocument",
-        ),  # Dependency on wagtaildocs is good practice
+        ),
     ]
 
     operations = [
-        # This tells Django to run our function when applying the migration.
         # The second argument (migrations.RunPython.noop) means Django does nothing
         # when un-migrating, as these file changes are hard to reverse automatically.
         migrations.RunPython(
