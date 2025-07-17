@@ -14,19 +14,37 @@ from search import views as search_views
 from django.http import HttpResponsePermanentRedirect
 from wagtail.contrib.redirects.models import Redirect
 from home.utils.pdf_redirect_utils import normalize_rule_pdf_filename
+from django.core.files.storage import default_storage
 
 
 def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    # Updated pattern to extract rule number even with suffixes
+    # Assign normalized_filename by calling the utility function
     normalized_filename = normalize_rule_pdf_filename(filename)
 
-    if normalized_filename and filename.lower() != normalized_filename.lower():
-        normalized_path = f"/files/documents/{normalized_filename}"
-        logger.info(f"Redirecting variant filename: {filename} → {normalized_path}")
-        return HttpResponsePermanentRedirect(normalized_path)
+    if normalized_filename:
+        normalized_path = f"/files/documents/{normalized_filename}".lower()
+        request_path = request.path.lower().rstrip("/")
+
+        # Relative path used by storage backend
+        normalized_file_key = f"documents/{normalized_filename}"
+
+        if request_path != normalized_path:
+            if default_storage.exists(normalized_file_key):
+                logger.info(
+                    f"Redirecting variant filename: {filename} → {normalized_path}"
+                )
+                return HttpResponsePermanentRedirect(normalized_path)
+            else:
+                logger.warning(
+                    f"⚠ Normalized file not found in S3: {normalized_file_key}"
+                )
+        else:
+            logger.warning(
+                f"Skipping self-redirect for: {filename} → {normalized_path}"
+            )
 
     # Now safe to use filename directly
     request_path = "/" + request.path.lstrip("/").lower().rstrip("/")
