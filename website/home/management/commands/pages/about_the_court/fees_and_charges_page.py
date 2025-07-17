@@ -191,8 +191,8 @@ class FeesAndChargesPageInitializer(PageInitializer):
             {"type": "h2", "value": "Witness Fees"},
             {
                 "type": "paragraph",
-                "value": '<em>(Issued in accordance with 26 U.S.C. section 7457, 28 U.S.C. section 1821, and </em><strong><em><a href="'
-                + documents["Rule-148.pdf"]
+                "value": '<em>(Issued in accordance with 26 U.S.C. section 7457, 28 U.S.C. section 1821, and </em><strong><em><a linktype="document" id="'
+                + str(documents_ids["Rule-148.pdf"])
                 + '" target="_blank" title="Rule 148">Rule 148</a></em></strong><em>)</em>',
             },
             {"type": "hr", "value": True},
@@ -222,8 +222,8 @@ class FeesAndChargesPageInitializer(PageInitializer):
             {"type": "hr", "value": True},
             {
                 "type": "paragraph",
-                "value": 'In accordance with procedures that the Court establishes, payments to the Court for fees or charges may be made electronically through <strong><a href="https://www.pay.gov/public/search/agencyforms?agencyFilters=United+States+Tax+Court&searchCategory=PAYMENT&searchType=AGENCYPAYMENT&agencyId=1392">www.Pay.gov</a></strong>. If a fee is paid by check, money order, or other draft, it should be payable to "Clerk, United States Tax Court". (<strong><em><a href="'
-                + documents["Rule-11(superseded).pdf"]
+                "value": 'In accordance with procedures that the Court establishes, payments to the Court for fees or charges may be made electronically through <strong><a href="https://www.pay.gov/public/search/agencyforms?agencyFilters=United+States+Tax+Court&searchCategory=PAYMENT&searchType=AGENCYPAYMENT&agencyId=1392">www.Pay.gov</a></strong>. If a fee is paid by check, money order, or other draft, it should be payable to "Clerk, United States Tax Court". (<strong><em><a linktype="document" id="'
+                + str(documents_ids["Rule-11(superseded).pdf"])
                 + '" target="_blank" title="Rule 11">Rule 11</a></em></strong>, Tax Court Rules of Practice and Procedure). Cash, checks or money orders may be mailed to: United States Tax Court, 400 Second Street, N.W., Washington, D.C. 20217.<br><br>',
             },
         ]
