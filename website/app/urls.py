@@ -2,7 +2,7 @@ import logging
 import os
 from django.contrib import admin
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
@@ -12,51 +12,37 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
 from django.http import HttpResponsePermanentRedirect
-from wagtail.contrib.redirects.models import Redirect
 from home.utils.pdf_redirect_utils import normalize_rule_pdf_filename
-from django.core.files.storage import default_storage
+
+
+logger = logging.getLogger(__name__)
 
 
 def all_legacy_documents_redirect(request, filename, doc_id=None):
-    logger = logging.getLogger(__name__)
-    logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
+    """
+    Custom view to handle redirects for legacy PDF document URLs that are not
+    caught by Wagtail's built-in redirect middleware.
+    """
+    logger.warning(f"Custom redirect handler hit for: {request.get_full_path()}")
 
-    # Assign normalized_filename by calling the utility function
+    # 1. Attempt dynamic normalization for rule PDFs
     normalized_filename = normalize_rule_pdf_filename(filename)
-
     if normalized_filename:
-        normalized_path = f"/files/documents/{normalized_filename}".lower()
-        request_path = request.path.lower().rstrip("/")
+        # Construct the expected target path for the normalized file
+        target_path = f"/files/documents/{normalized_filename}".lower()
 
-        # Relative path used by storage backend
-        normalized_file_key = f"documents/{normalized_filename}"
+        # Get the current request path, normalized for comparison
+        current_request_path = request.path.lower().rstrip("/")
 
-        if request_path != normalized_path:
-            if default_storage.exists(normalized_file_key):
-                logger.info(
-                    f"Redirecting variant filename: {filename} → {normalized_path}"
-                )
-                return HttpResponsePermanentRedirect(normalized_path)
-            else:
-                logger.warning(
-                    f"⚠ Normalized file not found in S3: {normalized_file_key}"
-                )
-        else:
-            logger.warning(
-                f"Skipping self-redirect for: {filename} → {normalized_path}"
+        if current_request_path != target_path:
+            logger.info(
+                f"Redirecting based on filename normalization: {filename} -> {target_path}"
             )
-
-    # Now safe to use filename directly
-    request_path = "/" + request.path.lstrip("/").lower().rstrip("/")
-    redirect_entry = Redirect.objects.filter(old_path__iexact=request_path).first()
-    if redirect_entry:
-        logger.info(f"Matched Wagtail redirect for: {request_path}")
-        return HttpResponsePermanentRedirect(redirect_entry.redirect_link)
-
-    redirect_entry = Redirect.objects.filter(old_path__iendswith=filename).first()
-    if redirect_entry:
-        logger.info(f"Matched Wagtail redirect for: {filename}")
-        return HttpResponsePermanentRedirect(redirect_entry.redirect_link)
+            return HttpResponsePermanentRedirect(target_path)
+        else:
+            logger.info(
+                f"Request is already for normalized path: {request.get_full_path()}."
+            )
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
@@ -69,7 +55,11 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
         doc
         for doc in possible_matches
         if doc.filename.lower().endswith(ext)
-        and os.path.splitext(doc.filename)[0].startswith(base_filename)
+        and os.path.splitext(doc.filename)[0]
+        .lower()
+        .startswith(
+            base_filename.lower()
+        )  # Ensure base filename comparison is also case-insensitive
     ]
 
     number_of_matches = len(matched_docs)
@@ -77,27 +67,25 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     # Redirect if there is a single match and it is exact (ignoring case)
     if number_of_matches == 1:
         matched_doc = matched_docs[0]
-        if matched_doc.filename.lower() == filename.lower():
+        # Only redirect if the current requested filename is *not* exactly the matched document's filename.
+        if matched_doc.filename.lower() != filename.lower():
             logger.info(
-                f"Successfully redirecting legacy resource request for: {filename}"
+                f"Successfully redirecting legacy resource request (Document Match): {filename} → {matched_doc.file.url}"
             )
-            return redirect(matched_doc.file.url)
+            return HttpResponsePermanentRedirect(matched_doc.file.url)
         else:
-            # Log non-exact match and render 404
-            logger.warning(
-                f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
-            )
-            return render_404_util(request)
+            return render_404_util(
+                request
+            )  # If no redirect, and not a document path handled elsewhere.
 
-    # Log requests with no matches or multiple matches
     if number_of_matches == 0:
-        logger.warning(f"No matches for: {filename}")
+        logger.warning(f"No document matches found for: {filename}. Rendering 404.")
     else:
         logger.warning(
-            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
+            f"Found multiple document matches for: {filename}, matches: {[doc.filename for doc in matched_docs]}. Rendering 404."
         )
 
-    # Not found or multiple matches result in 404
+    # If no redirect logic above was applied, render 404
     return render_404_util(request)
 
 
@@ -114,9 +102,7 @@ urlpatterns = [
         name="robots_file",
     ),
     path("django-admin/", admin.site.urls),
-    path(
-        "admin-tools/role-switcher/", include("app.role_switcher.urls")
-    ),  # Or your app's urls, adjust path as desired
+    path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
     path("admin/", include(wagtailadmin_urls)),
     re_path(
         r"^files/documents/(?P<filename>[^/]+\.pdf)$",
@@ -128,7 +114,9 @@ urlpatterns = [
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
     ),
-    path("documents/", include(wagtaildocs_urls)),
+    path(
+        "documents/", include(wagtaildocs_urls)
+    ),  # Wagtail's default document serving URLs
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
 ]
