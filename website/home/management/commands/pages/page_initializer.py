@@ -6,6 +6,13 @@ from wagtail.images import get_image_model
 from django.core.files import File
 from django.conf import settings
 from django.utils.text import get_valid_filename
+from home.utils.document_collection_and_tag_assignment import get_tags_for_document
+from home.utils.document_collection_and_tag_assignment import (
+    get_collection_for_document,
+)
+from taggit.models import Tag, TaggedItem
+from wagtail.models import ContentType
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -107,6 +114,38 @@ class PageInitializer(ABC):
             )
             document.save()
             logger.debug(f"Document created: {document}")
+
+            # assign tags to document
+            document_tags = get_tags_for_document(document.title)
+
+            doc_content_type = ContentType.objects.get(
+                app_label="wagtaildocs", model="document"
+            )
+
+            for tag_name in document_tags:
+                tag = Tag.objects.get(name=tag_name)
+                if not TaggedItem.objects.filter(
+                    tag_id=tag.pk,
+                    object_id=document.pk,
+                    content_type_id=doc_content_type.pk,
+                ).exists():
+                    TaggedItem.objects.create(
+                        tag_id=tag.pk,
+                        object_id=document.pk,
+                        content_type_id=doc_content_type.pk,
+                    )
+
+            # assign collection
+            collection_name = get_collection_for_document(document.title, document_tags)
+            if collection_name:
+                try:
+                    collection = Collection.objects.get(name=collection_name)
+                    document.collection = collection
+                    document.save()
+                except Collection.DoesNotExist:
+                    logger.warning(
+                        f"Collection '{collection_name}' not found for document '{document.title}'"
+                    )
             return document
 
     def load_image_from_images_dir(self, subdirectory, filename, title=None):

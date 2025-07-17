@@ -1,0 +1,17 @@
+ROLE_TAGS_NAMES = [
+    "Role Content Manager",
+    "Role Website Manager",
+    "Role Chief Judge",
+    "Role Dawson Contributor",
+    "Role Public Affairs",
+    "Role Clerk Office",
+    "Role Hr Committee",
+    "Role Pro Se Committee",
+    "Role Rules Committee",
+    "Role Admissions Committee",
+    "Role Ethics Committee",
+    "Role Disciplinary Committee",
+    "Role Reporters Office",
+    "Role Appellate Reports",
+    "Role Case Services",
+]
