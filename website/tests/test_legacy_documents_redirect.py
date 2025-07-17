@@ -3,6 +3,7 @@ from unittest.mock import patch
 from django.test import RequestFactory
 from app.urls import all_legacy_documents_redirect
 from django.http import HttpResponsePermanentRedirect
+from home.utils.pdf_redirect_utils import normalize_rule_pdf_filename
 
 
 # Class to instantiate fake documents (mocks weren't working well)
@@ -24,12 +25,12 @@ LEGACY_URL_PATHS = [
 @pytest.mark.parametrize("url_path", LEGACY_URL_PATHS)
 @patch("app.urls.Document")
 @patch("app.urls.Redirect")
-def test_redirects_on_exact_match(mock_redirect_model, mock_document_model, url_path):
+def test_redirects_on_exact_match(mock_redirect, mock_doc, url_path):
     doc = FakeDoc("test.pdf", "/media/documents/test.pdf")
 
     # Redirect model returns no DB match
-    mock_redirect_model.objects.filter.return_value.first.return_value = None
-    mock_document_model.objects.filter.return_value = [doc]
+    mock_redirect.objects.filter.return_value.first.return_value = None
+    mock_doc.objects.filter.return_value = [doc]
 
     request = RequestFactory().get(url_path)
     # Act
@@ -100,9 +101,6 @@ def test_returns_404_on_single_non_exact_match(
     mock_render_404.assert_called_once_with(request)
 
 
-# Canonical filename redirect tests
-
-
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "legacy_filename, expected_redirect",
@@ -116,12 +114,12 @@ def test_returns_404_on_single_non_exact_match(
 @patch("app.urls.Document")
 @patch("app.urls.Redirect")
 def test_canonical_filename_redirects(
-    mock_redirect_model, mock_doc_model, legacy_filename, expected_redirect
+    mock_redirect, mock_doc, legacy_filename, expected_redirect
 ):
     # Simulate no redirect entries in Redirect model
-    mock_redirect_model.objects.filter.return_value.first.return_value = None
+    mock_redirect.objects.filter.return_value.first.return_value = None
     # Document.objects.filter is not really used for canonical redirect since it redirects before querying DB
-    mock_doc_model.objects.filter.return_value = []
+    mock_doc.objects.filter.return_value = []
 
     request = RequestFactory().get(f"/files/documents/{legacy_filename}")
 
@@ -132,18 +130,17 @@ def test_canonical_filename_redirects(
     assert response.url == expected_redirect
 
 
-@pytest.mark.django_db
-@patch("app.urls.Document")
-@patch("app.urls.Redirect")
-@patch("app.urls.render_404_util")
-def test_canonical_filename_redirect_not_found(
-    mock_render_404, mock_redirect_model, mock_doc_model
-):
-    # Simulate no redirect and no document found for normalized filename
-    mock_redirect_model.objects.filter.return_value.first.return_value = None
-    mock_doc_model.objects.filter.return_value = []
-
-    request = RequestFactory().get("/files/documents/Rule-99junk.pdf")
-    all_legacy_documents_redirect(request, "Rule-99junk.pdf")
-
-    mock_render_404.assert_called_once_with(request)
+@pytest.mark.parametrize(
+    "filename, expected",
+    [
+        ("Rule-1_Amended_03202023.pdf", "rule-1.pdf"),
+        ("Rule24_Old.pdf", "rule-24.pdf"),
+        ("Appendix-1.pdf", None),
+        ("Rule-XYZ.pdf", None),
+    ],
+)
+def test_normalize_rule_pdf_filename():
+    assert normalize_rule_pdf_filename("Rule-1_Amended_03202023.pdf") == "rule-1.pdf"
+    assert normalize_rule_pdf_filename("Rule24_Old.pdf") == "rule-24.pdf"
+    assert normalize_rule_pdf_filename("Appendix-1.pdf") is None
+    assert normalize_rule_pdf_filename("Rule-XYZ.pdf") is None

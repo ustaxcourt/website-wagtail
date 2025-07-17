@@ -1,8 +1,8 @@
 import os
-import re
 from wagtail.contrib.redirects.models import Redirect
 from django.core.exceptions import ValidationError
 import logging
+from home.utils.pdf_redirect_utils import normalize_rule_pdf_filename
 
 logger = logging.getLogger(__name__)
 
@@ -29,19 +29,16 @@ def get_rule_pdf_redirects():
     """
     pdf_redirects = STATIC_PDF_REDIRECTS.copy()
 
-    rule_pdf_pattern = re.compile(r"^(Rule-\d+)[-_]?.*\.pdf$", re.IGNORECASE)
     RULES_DIR = os.getenv("RULE_PDF_SCAN_PATH", "home/management/documents")
-
     logger.info(f"Looking for rule PDFs in: {os.path.abspath(RULES_DIR)}")
 
     if os.path.exists(RULES_DIR):
         for filename in os.listdir(RULES_DIR):
             if filename.lower().endswith(".pdf"):
-                match = rule_pdf_pattern.match(filename)
-                if match:
-                    base_rule = match.group(1).lower()
+                normalized = normalize_rule_pdf_filename(filename)
+                if normalized and filename.lower() != normalized.lower():
                     old_path = f"/files/documents/{filename}"
-                    new_path = f"/files/documents/{base_rule}.pdf"
+                    new_path = f"/files/documents/{normalized}"
                     pdf_redirects.append(
                         {
                             "old_path": old_path,

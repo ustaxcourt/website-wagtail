@@ -1,6 +1,5 @@
 import logging
 import os
-import re
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -14,6 +13,7 @@ from wagtail.documents.models import Document
 from search import views as search_views
 from django.http import HttpResponsePermanentRedirect
 from wagtail.contrib.redirects.models import Redirect
+from home.utils.pdf_redirect_utils import normalize_rule_pdf_filename
 
 
 def all_legacy_documents_redirect(request, filename, doc_id=None):
@@ -21,19 +21,12 @@ def all_legacy_documents_redirect(request, filename, doc_id=None):
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
     # Updated pattern to extract rule number even with suffixes
-    canonical_pattern = re.compile(r"^rule[-_]?(\d+)", re.IGNORECASE)
-    match = canonical_pattern.match(filename)
+    normalized_filename = normalize_rule_pdf_filename(filename)
 
-    normalized_filename = None
-    normalized_path = None
-
-    if match:
-        rule_number = match.group(1)
-        normalized_filename = f"rule-{rule_number}.pdf"
+    if normalized_filename and filename.lower() != normalized_filename.lower():
         normalized_path = f"/files/documents/{normalized_filename}"
-        if filename.lower() != normalized_filename.lower():
-            logger.info(f"Redirecting variant filename: {filename} → {normalized_path}")
-            return HttpResponsePermanentRedirect(normalized_path)
+        logger.info(f"Redirecting variant filename: {filename} → {normalized_path}")
+        return HttpResponsePermanentRedirect(normalized_path)
 
     # Now safe to use filename directly
     request_path = "/" + request.path.lstrip("/").lower().rstrip("/")
