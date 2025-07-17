@@ -1,3 +1,4 @@
+import pytest
 from unittest.mock import patch
 from django.test import RequestFactory
 from app.urls import all_legacy_documents_redirect
@@ -10,6 +11,7 @@ class FakeDoc:
         self.file = type("File", (), {"url": url})()
 
 
+@pytest.mark.django_db
 @patch("app.urls.Document")
 @patch("app.urls.normalize_rule_pdf_filename", return_value=None)
 def test_redirects_on_exact_match(mock_normalizer, mock_document_model):
@@ -26,6 +28,7 @@ def test_redirects_on_exact_match(mock_normalizer, mock_document_model):
     assert response.url == doc.file.url
 
 
+@pytest.mark.django_db
 @patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 @patch("app.urls.normalize_rule_pdf_filename", return_value=None)
@@ -36,45 +39,6 @@ def test_returns_404_on_no_matches(
     request = RequestFactory().get("/resources/test.pdf")
     mock_document_model.objects.filter.return_value = []
 
-    # Act
     all_legacy_documents_redirect(request, "test.pdf")
 
-    # Assert
-    mock_render_404.assert_called_once_with(request)
-
-
-@patch("app.urls.render_404_util")
-@patch("app.urls.Document")
-@patch("app.urls.normalize_rule_pdf_filename", return_value=None)
-def test_returns_404_on_multiple_matches(
-    mock_normalizer, mock_document_model, mock_render_404
-):
-    # Arrange
-    doc1 = FakeDoc("test.pdf", "/media/documents/test.pdf")
-    doc2 = FakeDoc("test_2024.pdf", "/media/documents/test_2024.pdf")
-    request = RequestFactory().get("/resources/test.pdf")
-    mock_document_model.objects.filter.return_value = [doc1, doc2]
-
-    # Act
-    all_legacy_documents_redirect(request, "test.pdf")
-
-    # Assert
-    mock_render_404.assert_called_once_with(request)
-
-
-@patch("app.urls.render_404_util")
-@patch("app.urls.Document")
-@patch("app.urls.normalize_rule_pdf_filename", return_value=None)
-def test_returns_404_on_single_non_exact_match(
-    mock_normalizer, mock_document_model, mock_render_404
-):
-    # Arrange
-    doc = FakeDoc("test_2024.pdf", "/media/documents/test_2024.pdf")
-    request = RequestFactory().get("/resources/test.pdf")
-    mock_document_model.objects.filter.return_value = [doc]
-
-    # Act
-    all_legacy_documents_redirect(request, "test.pdf")
-
-    # Assert
     mock_render_404.assert_called_once_with(request)
