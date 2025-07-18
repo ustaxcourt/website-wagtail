@@ -106,11 +106,6 @@ urlpatterns = [
     path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
     path("admin/", include(wagtailadmin_urls)),
     re_path(
-        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
-        all_legacy_documents_redirect,
-        name="filename_only_redirect",
-    ),
-    re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
