@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-content=$(aws secretsmanager get-secret-value --region us-east-1 --secret-id "website_secrets" --query "SecretString" --output text)
+content=$(aws secretsmanager get-secret-value --region us-east-1 --secret-id "website_secrets" --query "SecretString" --output text 2>/dev/null || echo "{}")
 echo "${content}" | jq -r 'to_entries|map("\(.key)=\"\(.value)\"")|.[]' > .env
 set -o allexport
 source .env
