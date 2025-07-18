@@ -51,11 +51,11 @@ class Command(BaseCommand):
                     old_path = f"/files/documents/{current_title}"
                     new_path = f"/files/documents/{new_title}"
 
-                    initializer.create_redirect(old_path, new_path, is_permanent=True)
+                    initializer.create(old_path, new_path)
                     created_count += 1
 
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"❌ Error processing CSV: {e}"))
+            self.stdout.write(self.style.ERROR(f"Error processing CSV: {e}"))
             return
 
         # Assign redirects to the default site if missing
