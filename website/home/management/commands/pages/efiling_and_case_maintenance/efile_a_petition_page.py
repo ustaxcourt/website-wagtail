@@ -118,7 +118,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                                                 {
                                                                     "text": (
                                                                         "Complete and upload the Court's standard Petition form. "
-                                                                        f'<a href="{efile_a_petition_docs["Petition_Simplified_Form_2.pdf"].file.url}" '
+                                                                        f'<a linktype="document" id="{efile_a_petition_docs["Petition_Simplified_Form_2.pdf"].id}" '
                                                                         'target="_blank" title="Petition">Petition form (T.C. Form 2)</a>'
                                                                     ),
                                                                 },
@@ -155,7 +155,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                 {
                                     "text": (
                                         "If you are filing on behalf of a business (this includes a corporation, partnership, or LLC), "
-                                        f'<a href="{efile_a_petition_docs["Corporate_Disclosure_Statement_Form.pdf"].file.url}" '
+                                        f'<a linktype="document" id="{efile_a_petition_docs["Corporate_Disclosure_Statement_Form.pdf"].id}" '
                                         'target="_blank" title="Corporate Disclosure Statement Form">Corporate Disclosure Statement</a> (Form 6).'
                                     ),
                                 },
@@ -200,7 +200,7 @@ class EfileAPetitionPageInitializer(PageInitializer):
                                                 {
                                                     "text": (
                                                         "Download and complete the Statement of Taxpayer Identification Number. "
-                                                        f'<a href="{efile_a_petition_docs["Form_4_Statement_of_Taxpayer_Identification_Number.pdf"].file.url}" '
+                                                        f'<a linktype="document" id="{efile_a_petition_docs["Form_4_Statement_of_Taxpayer_Identification_Number.pdf"].id}" '
                                                         'target="_blank" title="Statement of Taxpayer Identification Number">Download the form</a> and fill it out to submit it.'
                                                     ),
                                                 },

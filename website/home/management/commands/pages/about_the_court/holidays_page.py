@@ -34,12 +34,11 @@ class HolidaysPageInitializer(PageInitializer):
         logger.info(f"Creating the '{title}' page.")
 
         for document in docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            docs[document] = uploaded_document.file.url
 
         new_page = home_page.add_child(
             instance=EnhancedStandardPage(
@@ -70,7 +69,7 @@ class HolidaysPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
-                        "value": f'*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a href="{docs["Rule-25_Amended_03202023.pdf"]}" target="_blank" title="Rule 25" >See Rule 25</a></strong>.',
+                        "value": f'*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a linktype="document" id="{docs["Rule-25_Amended_03202023.pdf"].id}" target="_blank" title="Rule 25" >See Rule 25</a></strong>.',
                     },
                 ],
             )
