@@ -95,7 +95,7 @@ class UpdateContactInformationPageInitializer(PageInitializer):
                                 {
                                     "text": (
                                         "REMINDER: Each person admitted to practice before the Court shall promptly notify the Court of any change in contact information. "
-                                        f'<a href="{update_contact_information_docs["Rule-200(2nd-amended).pdf"].file.url}" '
+                                        f'<a linktype="document" id="{update_contact_information_docs["Rule-200(2nd-amended).pdf"].id}" '
                                         'target="_blank" title="Rule 200">Rule 200(e)</a>, Tax Court Rules of Practice and Procedure.'
                                     ),
                                 },

@@ -37,12 +37,11 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
         ).first()
 
         for document in dawson_faqs_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            dawson_faqs_docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            dawson_faqs_docs[document] = uploaded_document.file.url
 
         questions = [
             {
@@ -62,7 +61,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                                  </ul>
                               </li>
                               <li>If you are admitted to practice before the Court, you are generally required to file documents and receive service electronically. See
-                              <strong><a href="{dawson_faqs_docs["Rule-26_Amended_03202023.pdf"]}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.
+                              <strong><a linktype="document" id="{dawson_faqs_docs["Rule-26_Amended_03202023.pdf"].id}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.
                                 <ul>
                                  <li>Petitions may, but are not required to be, filed electronically.</li>
                                  </ul>

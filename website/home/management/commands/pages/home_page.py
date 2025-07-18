@@ -73,12 +73,11 @@ class HomePageInitializer(PageInitializer):
             logger.info("Updated default site root to the new Home page.")
 
         for document in home_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            home_docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            home_docs[document] = uploaded_document.file.url
 
         # delete the wagtail generated page (it doesn't have the mixin)
         wagtailHome = Page.objects.filter(
@@ -129,7 +128,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Tax Court disciplinary matters.",
             body=(
-                f"""See the <a href="{home_docs["04292025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
+                f"""See the <a linktype="document" id="{home_docs["04292025.pdf"].id}" target="_blank" title="Press Release">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 29, 6, 0),
             end_date=None,
@@ -140,7 +139,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
             body=(
-                f"""See the <a href="{home_docs["04162025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
+                f"""See the <a linktype="document" id="{home_docs["04162025.pdf"].id}" target="_blank" title="Press Release">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 14, 6, 0),
             end_date=None,
@@ -151,7 +150,7 @@ class HomePageInitializer(PageInitializer):
             homepage=homepage,
             title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025",
             body=(
-                f"""See the <a href="{home_docs["04072025.pdf"]}" target="_blank" title="Press Release">Press Release</a>."""
+                f"""See the <a linktype="document" id="{home_docs["04072025.pdf"].id}" target="_blank" title="Press Release">Press Release</a>."""
             ),
             start_date=datetime(2025, 4, 7, 6, 0),
             end_date=datetime(2025, 5, 5, 23, 59),
@@ -190,6 +189,13 @@ class HomePageInitializer(PageInitializer):
             logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
 
+        for document in home_docs.keys():
+            home_docs[document] = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
+
         remote_proceeding_entry = HomePageEntry.objects.filter(
             homepage=homepage, title="Remote Proceedings Info"
         )
@@ -211,7 +217,7 @@ class HomePageInitializer(PageInitializer):
                 "body": f"""The United States Tax Court hereby announces that the examination for nonattorney applicants for admission to practice before the Court will be held remotely using the ExamSoft platform on Wednesday, November 5, 2025, 12:30pm Eastern Time.
                 </br>
                 </br>
-                See the <a href="{home_docs["05052025.pdf"]}" target="_blank">Press Release</a>.""",
+                See the <a linktype="document" id="{home_docs["05052025.pdf"].id}" target="_blank">Press Release</a>.""",
                 "start_date": datetime(2025, 5, 5, 6, 0),
                 "end_date": None,
                 "persist_to_press_releases": True,
