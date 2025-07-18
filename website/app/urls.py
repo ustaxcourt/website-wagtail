@@ -19,7 +19,7 @@ CSV_REDIRECTS = {}
 
 
 def load_redirect_map_from_csv():
-    csv_filename = "0058_update_rules_documents.csv"
+    csv_filename = "0060_update_rules_documents.csv"
     csv_path = Path(__file__).resolve().parent / csv_filename
 
     try:
@@ -49,7 +49,7 @@ def all_legacy_documents_redirect(request, filename):
 
     if new_title:
         try:
-            matched_doc = Document.objects.get(title=new_title)
+            matched_doc = Document.objects.get(title__iexact=new_title)
             logger.info(f"Redirecting '{filename}' → '{matched_doc.file.url}'")
             return redirect(matched_doc.file.url)
         except Document.DoesNotExist:
