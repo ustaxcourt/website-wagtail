@@ -40,9 +40,7 @@ def update_document_file(
         )
 
     except Document.DoesNotExist:
-        print(
-            f"  -> Document with filename '{current_filename}' not found. Skipping."
-        )
+        print(f"  -> Document with filename '{current_filename}' not found. Skipping.")
     except MultipleObjectsReturned:
         print(
             f"  -> ERROR: Multiple documents found with filename '{current_filename}'. Titles must be unique to use this script. Skipping."
