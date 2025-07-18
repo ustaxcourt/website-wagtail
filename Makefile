@@ -93,8 +93,10 @@ aws-init: check-env-is-aws
 	@echo "Initializing environment: $(env)"
 	@cd infra && ./init.sh && \
 	   . ./load-secrets.sh && \
-	   echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64 && \
-	   echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64
+	   if [ -n "$$BASTION_PUBLIC_KEY" ] && [ -n "$$BASTION_PRIVATE_KEY" ]; then \
+		 echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64; \
+		 echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64; \
+	   fi
 
 create-db-restore:
 	@echo "Creating database restore for environment: $(env)"
