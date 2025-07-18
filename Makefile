@@ -10,8 +10,10 @@ endif
 
 check-env-is-aws:
 	@if [ $(env) = "local" ]; then \
-		echo "Environment is 'localhost'. Error: Not connected to AWS environment."; \
+		echo "Environment is: 'localhost'.\nError: Not connected to AWS environment."; \
 		exit 1; \
+	else \
+		echo "Environment is: '$(env)'.";\
 	fi
 
 # this command is used to setting up the bastion ssh keys and the aws secret manager secrets
@@ -94,24 +96,28 @@ aws-init: check-env-is-aws
 	   echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64 && \
 	   echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64
 
-create-db-restore:
+create-db-restore: check-env-is-aws
 	@echo "Creating database restore for environment: $(env)"
+	@if [ -z "$(db_instance_id)" ] || [ -z "$(db_snapshot_id)" ]; then \
+		echo "Error: db_instance_id and db_snapshot_id must be present.\n\nUsage:\nmake create-db-restore db_instance_id=<instance> db_snapshot_id=<snapshot>"; \
+		exit 1; \
+	fi
 	@cd infra && ENVIRONMENT=$(env) ./restore-rds.sh $(db_instance_id) $(db_snapshot_id)
 
-start-tunnel:
+start-tunnel: check-env-is-aws
 	@echo "Starting SSH tunnel to bastion host..."
 	@cd infra && ENVIRONMENT=$(env) ./ssh-tunnel.sh
 
-apply-db-restore:
+apply-db-restore: check-env-is-aws
 	@echo "Restoring database for environment: $(env)"
 	@cd infra && ENVIRONMENT=$(env) ./apply-migrations-to-restored-db.sh
 
-deploy:
+deploy: check-env-is-aws
 	@echo "Deploying to environment: $(env)"
 	cd infra && rm -rf .terraform && ENVIRONMENT=$(env) ./init.sh
 	cd infra && ENVIRONMENT=$(env) ./deploy.sh
 
-destroy:
+destroy: check-env-is-aws
 	@echo "Destroying environment: $(env)"
 	cd infra && ENVIRONMENT=$(env) ./destroy.sh
 
@@ -119,7 +125,7 @@ tag:
 	git tag -f $(tag)
 	git push -f origin $(tag)
 
-restore:
+restore: check-env-is-aws
 	@echo "Restoring secrets in AWS environment: $(env)"
 	aws secretsmanager restore-secret --secret-id website_secrets
 
