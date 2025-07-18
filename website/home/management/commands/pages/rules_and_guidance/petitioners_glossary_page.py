@@ -46,17 +46,16 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
         ).first()
 
         for document in petitioners_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            petitioners_docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            petitioners_docs[document] = uploaded_document.file.url
 
         questions = [
             {
                 "question": "Abatement",
-                "answer": f'Abatement cases ask the IRS to lessen the amount of interest owed when certain requirements are met. See I.R.C. section 6404 and <strong><a href="{petitioners_docs["Rule-280(amended).pdf"]}" target="_blank" title="Tax Court Rule 280">Tax Court Rule 280</a></strong> et seq. regarding Actions for Review of Failure to Abate Interest.',
+                "answer": f'Abatement cases ask the IRS to lessen the amount of interest owed when certain requirements are met. See I.R.C. section 6404 and <strong><a linktype="document" id="{petitioners_docs["Rule-280(amended).pdf"].id}" target="_blank" title="Tax Court Rule 280">Tax Court Rule 280</a></strong> et seq. regarding Actions for Review of Failure to Abate Interest.',
                 "anchortag": "ABATEMENT",
             },
             {
@@ -76,7 +75,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "At issue",
-                "answer": f'A case is deemed "at issue" once the petition and answer have been filed. In some very limited circumstances where a reply is required, the case will be at issue after a reply to the answer is filed. See <strong><a href="{petitioners_docs["Rule-37.pdf"]}" target="_blank" title="Rules 37">Rules 37</a></strong> or <strong><a href="{petitioners_docs["Rule-173.pdf"]}" target="_blank" title="173">173</a></strong>.',
+                "answer": f'A case is deemed "at issue" once the petition and answer have been filed. In some very limited circumstances where a reply is required, the case will be at issue after a reply to the answer is filed. See <strong><a linktype="document" id="{petitioners_docs["Rule-37.pdf"].id}" target="_blank" title="Rules 37">Rules 37</a></strong> or <strong><a linktype="document" id="{petitioners_docs["Rule-173.pdf"].id}" target="_blank" title="173">173</a></strong>.',
                 "anchortag": "AT_ISSUE",
             },
             {
@@ -91,7 +90,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Brief",
-                "answer": f'A brief is a formal document normally filed by each party after the trial in a regular case. A brief contains a table of contents, a statement of the issues, proposed findings of facts, points of law relied upon, argument and analysis. See <strong><a href="{petitioners_docs["Rule-151.pdf"]}" target="_blank" title="Rule 151">Rule 151</a></strong>.',
+                "answer": f'A brief is a formal document normally filed by each party after the trial in a regular case. A brief contains a table of contents, a statement of the issues, proposed findings of facts, points of law relied upon, argument and analysis. See <strong><a linktype="document" id="{petitioners_docs["Rule-151.pdf"].id}" target="_blank" title="Rule 151">Rule 151</a></strong>.',
                 "anchortag": "BRIEF",
             },
             {
@@ -146,7 +145,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "eFiling",
-                "answer": f'Persons who are registered for DAWSON and who agree to the <strong><a href="{petitioners_docs["tou.pdf"]}" target="_blank" title="Terms of Use">Terms of Use</a></strong>, consent to eService, and are in good standing with the Court may electronically file (eFile) documents. For more information, petitioners (taxpayers) should consult the <strong>DAWSON Self-Represented (Pro Se) Training Guide</strong>. Counsel admitted to practice before the Tax Court should consult the <strong>DAWSON Practitioner Training Guide</strong>.',
+                "answer": f'Persons who are registered for DAWSON and who agree to the <strong><a linktype="document" id="{petitioners_docs["tou.pdf"].id}" target="_blank" title="Terms of Use">Terms of Use</a></strong>, consent to eService, and are in good standing with the Court may electronically file (eFile) documents. For more information, petitioners (taxpayers) should consult the <strong>DAWSON Self-Represented (Pro Se) Training Guide</strong>. Counsel admitted to practice before the Tax Court should consult the <strong>DAWSON Practitioner Training Guide</strong>.',
                 "anchortag": "EFILING",
             },
             {
@@ -226,12 +225,12 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Passport Certification",
-                "answer": f'Passport certification actions are commenced with respect to notices of certification issued under I.R.C. section 7345, Revocation or Denial of Passport in Case of Certain Tax Delinquencies, effective after December 4, 2015. See also <strong><a href="{petitioners_docs["Rule-350.pdf"]}" target="_blank" title="Tax Court Rule 350">Tax Court Rule 350</a></strong> et seq. regarding Certification and Failure to Reverse Certification Action with Respect to Passports. A passport case has a docket number ending in "P", for example, 77899-17P.',
+                "answer": f'Passport certification actions are commenced with respect to notices of certification issued under I.R.C. section 7345, Revocation or Denial of Passport in Case of Certain Tax Delinquencies, effective after December 4, 2015. See also <strong><a linktype="document" id="{petitioners_docs["Rule-350.pdf"].id}" target="_blank" title="Tax Court Rule 350">Tax Court Rule 350</a></strong> et seq. regarding Certification and Failure to Reverse Certification Action with Respect to Passports. A passport case has a docket number ending in "P", for example, 77899-17P.',
                 "anchortag": "PASSPORT_CERTIFICATION",
             },
             {
                 "question": "Petition",
-                "answer": f'The document a taxpayer files (along with a copy of a Notice of Deficiency or Notice of Determination) explaining to the Court why they disagree with the Internal Revenue Service. A case cannot be heard without a timely filed <strong><a href="{petitioners_docs["Petition_Kit.pdf"]}" target="_blank" title="petition">petition</a></strong>.',
+                "answer": f'The document a taxpayer files (along with a copy of a Notice of Deficiency or Notice of Determination) explaining to the Court why they disagree with the Internal Revenue Service. A case cannot be heard without a timely filed <strong><a linktype="document" id="{petitioners_docs["Petition_Kit.pdf"].id}" target="_blank" title="petition">petition</a></strong>.',
                 "anchortag": "PETITION",
             },
             {
@@ -241,7 +240,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Place of Trial",
-                "answer": f'The <strong><a href="{petitioners_docs["Form_5_Request_for_Place_of_Trial.pdf"]}" target="_blank" title="Request for Place of Trial">Request for Place of Trial</a></strong> (Form 5) and the <a href="/petitioners">Guidance for Petitioners</a> tab on the Court’s Web site provide a list of cities at which the Court holds trials. Trials of S cases are held in several additional cities.',
+                "answer": f'The <strong><a linktype="document" id="{petitioners_docs["Form_5_Request_for_Place_of_Trial.pdf"].id}" target="_blank" title="Request for Place of Trial">Request for Place of Trial</a></strong> (Form 5) and the <a href="/petitioners">Guidance for Petitioners</a> tab on the Court\'s Web site provide a list of cities at which the Court holds trials. Trials of S cases are held in several additional cities.',
                 "anchortag": "PLACE_OF_TRIAL",
             },
             {
@@ -251,7 +250,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Pretrial Memorandum",
-                "answer": f'A written document submitted to the Court by each party providing a brief summary of their case. Petitioners may use the form provided <strong><a href="{petitioners_docs["Pretrial_Memorandum_Form_old.pdf"]}" target="_blank" title="here">here</a></strong>.',
+                "answer": f'A written document submitted to the Court by each party providing a brief summary of their case. Petitioners may use the form provided <strong><a linktype="document" id="{petitioners_docs["Pretrial_Memorandum_Form_old.pdf"].id}" target="_blank" title="here">here</a></strong>.',
                 "anchortag": "PRETRIAL_MEMORANDUM",
             },
             {
@@ -271,12 +270,12 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Reply",
-                "answer": f'In some limited circumstances a petitioner is required to respond to respondent’s answer. A petitioner has 45 days from the date of service of the answer within which to file a reply if one is required. <strong><a href="{petitioners_docs["Rule-37.pdf"]}" target="_blank" title="Rule 37">Rule 37</a></strong> and <strong><a href="{petitioners_docs["Rule-173.pdf"]}" target="_blank" title="Rule 173">Rule 173</a></strong>.',
+                "answer": f'In some limited circumstances a petitioner is required to respond to respondent\'s answer. A petitioner has 45 days from the date of service of the answer within which to file a reply if one is required. <strong><a linktype="document" id="{petitioners_docs["Rule-37.pdf"].id}" target="_blank" title="Rule 37">Rule 37</a></strong> and <strong><a linktype="document" id="{petitioners_docs["Rule-173.pdf"].id}" target="_blank" title="Rule 173">Rule 173</a></strong>.',
                 "anchortag": "REPLY",
             },
             {
                 "question": "Request for Place of Trial",
-                "answer": f'This document (<strong><a href="{petitioners_docs["Form_5_Request_for_Place_of_Trial.pdf"]}" target="_blank" title="Tax Court Form 5">Tax Court Form 5</a></strong>) is filed with a petition and asks the Court for a trial in a particular city.',
+                "answer": f'This document (<strong><a linktype="document" id="{petitioners_docs["Form_5_Request_for_Place_of_Trial.pdf"].id}" target="_blank" title="Tax Court Form 5">Tax Court Form 5</a></strong>) is filed with a petition and asks the Court for a trial in a particular city.',
                 "anchortag": "REQUEST_FOR_PLACE_OF_TRIAL",
             },
             {
@@ -306,7 +305,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Statement of Taxpayer Identification Number",
-                "answer": f'A document (<strong><a href="{petitioners_docs["Form_4_Statement_of_Taxpayer_Identification_Number.pdf"]}" target="_blank" title="Tax Court Form 4">Tax Court Form 4</a></strong>) submitted with a petition providing the taxpayer’s name and Social Security (or other taxpayer ID) number; this document is not filed or made available to the public.',
+                "answer": f'A document (<strong><a linktype="document" id="{petitioners_docs["Form_4_Statement_of_Taxpayer_Identification_Number.pdf"].id}" target="_blank" title="Tax Court Form 4">Tax Court Form 4</a></strong>) submitted with a petition providing the taxpayer\'s name and Social Security (or other taxpayer ID) number; this document is not filed or made available to the public.',
                 "anchortag": "STIN",
             },
             {
@@ -321,7 +320,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Subpoena",
-                "answer": f'A command by the Court for a witness to produce documents or provide testimony at trial or deposition. <strong><a href="{petitioners_docs["Subpoena_Appear_Testify_Hearing_Or_Trial.pdf"]}" target="_blank" title="Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)">Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)</a></strong> and <strong><a href="{petitioners_docs["Subpoena_To_Testify_Deposition.pdf"]}" target="_blank" title="Subpoena to Testify at a Deposition (Form 14B)">Subpoena to Testify at a Deposition (Form 14B)</a></strong> are available on the Court’s Web site. A petitioner must pay fees and expenses to the witness. The $40 attendance fee is subject to change, and you should look to 26 U.S.C. section 1821 for amendments. The relevant regulations for travel expenses appear at 41 C.F.R. section 301-10 (also subject to amendment); and the mileage rate, currently $0.655 per mile, is updated at <a href="http://www.gsa.gov/mileage">http://www.gsa.gov/mileage</a>.',
+                "answer": f'A command by the Court for a witness to produce documents or provide testimony at trial or deposition. <strong><a linktype="document" id="{petitioners_docs["Subpoena_Appear_Testify_Hearing_Or_Trial.pdf"].id}" target="_blank" title="Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)">Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)</a></strong> and <strong><a linktype="document" id="{petitioners_docs["Subpoena_To_Testify_Deposition.pdf"].id}" target="_blank" title="Subpoena to Testify at a Deposition (Form 14B)">Subpoena to Testify at a Deposition (Form 14B)</a></strong> are available on the Court\'s Web site. A petitioner must pay fees and expenses to the witness. The $40 attendance fee is subject to change, and you should look to 26 U.S.C. section 1821 for amendments. The relevant regulations for travel expenses appear at 41 C.F.R. section 301-10 (also subject to amendment); and the mileage rate, currently $0.655 per mile, is updated at <a href="http://www.gsa.gov/mileage">http://www.gsa.gov/mileage</a>.',
                 "anchortag": "SUBPOENA",
             },
             {
