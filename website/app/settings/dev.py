@@ -12,7 +12,7 @@ except ImportError:
     pass
 
 DEBUG = False
-BASE_URL = f'https://{os.getenv("DOMAIN_NAME")}'
+BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 ENVIRONMENT = "dev"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
