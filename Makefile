@@ -13,7 +13,7 @@ check-env-is-aws:
 		echo "Environment is: 'localhost'.\nError: Not connected to AWS environment."; \
 		exit 1; \
 	else \
-		echo "Environment is: '$(env)'.";\
+		echo "Environment is (AWS): '$(env)'.";\
 	fi
 
 # this command is used to setting up the bastion ssh keys and the aws secret manager secrets
