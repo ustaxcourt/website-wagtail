@@ -41,7 +41,7 @@ def update_document_file(
 
     except Document.DoesNotExist:
         print(
-            f"  -> ERROR: Document with filename '{current_filename}' not found. Skipping."
+            f"  -> Document with filename '{current_filename}' not found. Skipping."
         )
     except MultipleObjectsReturned:
         print(
@@ -71,7 +71,6 @@ def apply_document_updates_from_csv(apps, schema_editor):
     # PLEASE UPDATE THIS PATH to the correct location on your server.
     BASE_DIR = settings.BASE_DIR
     LOCAL_FILES_BASE_DIR = os.path.join(BASE_DIR, "home/management/documents/rules")
-    print(f"Base directory: {BASE_DIR}, full directory: {LOCAL_FILES_BASE_DIR}")
 
     # Construct the path to the CSV file relative to this migration file
     migration_dir = os.path.dirname(__file__)

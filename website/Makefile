@@ -1,4 +1,5 @@
 VENV=../.venv/bin/activate
+MIGRATION ?= zero
 
  .DEFAULT:
 	@echo "Falling back to ./website-wagtail/ for '$@'"
@@ -118,4 +119,7 @@ setupwagtaillroles:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py setup_wagtail_roles
 
 rollbackmigrate:
-	. $(VENV) && python manage.py migrate home 0057_fix_petitioner_about_page
+	. $(VENV) && python manage.py migrate home $(MIGRATION)
+
+rollbackall:
+	. $(VENV) && python manage.py migrate home zero
