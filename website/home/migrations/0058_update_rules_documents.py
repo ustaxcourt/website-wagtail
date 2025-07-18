@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import migrations
 from django.core.files import File
 from django.core.exceptions import MultipleObjectsReturned
-from wagtail.models import Collection, CollectionViewRestriction
 import os
 import csv
 
@@ -41,7 +40,9 @@ def update_document_file(
         )
 
     except Document.DoesNotExist:
-        print(f"  -> ERROR: Document with filename '{current_filename}' not found. Skipping.")
+        print(
+            f"  -> ERROR: Document with filename '{current_filename}' not found. Skipping."
+        )
     except MultipleObjectsReturned:
         print(
             f"  -> ERROR: Multiple documents found with filename '{current_filename}'. Titles must be unique to use this script. Skipping."
@@ -74,9 +75,7 @@ def apply_document_updates_from_csv(apps, schema_editor):
 
     # Construct the path to the CSV file relative to this migration file
     migration_dir = os.path.dirname(__file__)
-    csv_filename = os.path.basename(__file__).replace(
-        ".py", ".csv"
-    )
+    csv_filename = os.path.basename(__file__).replace(".py", ".csv")
     csv_path = os.path.join(migration_dir, csv_filename)
 
     print(f"\nAttempting to read document updates from: {csv_path}")
@@ -90,15 +89,15 @@ def apply_document_updates_from_csv(apps, schema_editor):
         # If the collection doesn't exist, we must use the REAL model to create it
         # because the historical model from apps.get_model lacks the 'add_child' method.
         # This is a known workaround for this specific limitation in data migrations.
-        from wagtail.models import Collection as RealCollection        
-        
+        from wagtail.models import Collection as RealCollection
+
         print(f"Collection '{collection_name}' not found. Creating it...")
         try:
             # Use the real model to get the root and create the child
             root_collection_real = RealCollection.objects.get(depth=1)
             new_collection_real = root_collection_real.add_child(name=collection_name)
             print(f"Created new collection: '{collection_name}'")
-            
+
             # Now, fetch the newly created collection using the historical model
             # so the rest of the migration can use it.
             collection = Collection.objects.get(pk=new_collection_real.pk)
