@@ -35,12 +35,11 @@ class PetitionersAboutInitializer(PageInitializer):
         ).first()
 
         for document in petitioners_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            petitioners_docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            petitioners_docs[document] = uploaded_document.file.url
 
         questions = [
             {
@@ -55,12 +54,12 @@ class PetitionersAboutInitializer(PageInitializer):
             },
             {
                 "question": "What is the life cycle of a Tax Court case?",
-                "answer": f'A case in the Tax Court is commenced by the filing of a petition. The petition must be timely filed within the allowable time. The Court cannot extend the time for filing which is set by statute.<br><br>A $60 filing fee must be paid when the petition is filed. Once the petition is filed, payment of the underlying tax ordinarily is postponed until the case has been decided.<br><br>In certain tax disputes involving $50,000 or less, taxpayers may elect to have their case conducted under the Court\'s simplified <strong><a href="{petitioners_docs["Petition_Kit.pdf"]}" target="_blank" title="Petition Kit">small tax case procedure</a></strong>. Trials in small tax cases generally are less formal and result in a speedier disposition. However, decisions entered pursuant to small tax case procedures are not appealable.<br><br>Cases are calendared for trial as soon as practicable (on a first in/ first out basis) after the case becomes at issue. When a case is calendared, the parties are notified by the Court of the date, time, and place of trial. Trials are conducted before one judge, without a jury, and taxpayers are permitted to represent themselves if they desire. Taxpayers may be represented by practitioners admitted to the bar of the Tax Court.<br><br>Most cases are settled by mutual agreement without trial. However, if a trial is conducted, in due course a report is ordinarily issued by the presiding judge setting forth findings of fact and an opinion. The case is then closed in accordance with the judge\'s opinion by entry of a decision.',
+                "answer": f'A case in the Tax Court is commenced by the filing of a petition. The petition must be timely filed within the allowable time. The Court cannot extend the time for filing which is set by statute.<br><br>A $60 filing fee must be paid when the petition is filed. Once the petition is filed, payment of the underlying tax ordinarily is postponed until the case has been decided.<br><br>In certain tax disputes involving $50,000 or less, taxpayers may elect to have their case conducted under the Court\'s simplified <strong><a linktype="document" id="{petitioners_docs["Petition_Kit.pdf"].id}" target="_blank" title="Petition Kit">small tax case procedure</a></strong>. Trials in small tax cases generally are less formal and result in a speedier disposition. However, decisions entered pursuant to small tax case procedures are not appealable.<br><br>Cases are calendared for trial as soon as practicable (on a first in/ first out basis) after the case becomes at issue. When a case is calendared, the parties are notified by the Court of the date, time, and place of trial. Trials are conducted before one judge, without a jury, and taxpayers are permitted to represent themselves if they desire. Taxpayers may be represented by practitioners admitted to the bar of the Tax Court.<br><br>Most cases are settled by mutual agreement without trial. However, if a trial is conducted, in due course a report is ordinarily issued by the presiding judge setting forth findings of fact and an opinion. The case is then closed in accordance with the judge\'s opinion by entry of a decision.',
                 "anchortag": "ABOUT3",
             },
             {
                 "question": "How can I obtain information about the history of the Tax Court?",
-                "answer": f'The revised and expanded <strong><em><a href="{petitioners_docs["Dubroff_Hellwig.pdf"]}" target="_blank" title="The United States Tax Court: An Historical Analysis (Second Edition)">The United States Tax Court: An Historical Analysis (Second Edition)</a></em></strong> by Professors Harold Dubroff and Brant J. Hellwig is available as a <strong><a href="{petitioners_docs["Dubroff_Hellwig.pdf"]}" target="_blank"> PDF download</a></strong> (6MB) or at the <strong><a href="https://bookstore.gpo.gov/user/login?destination=node/10107" target="_blank" title="Government Printing Office bookstore">Government Printing Office bookstore</a></strong> in print and other e-pub formats.',
+                "answer": f'The revised and expanded <strong><em><a linktype="document" id="{petitioners_docs["Dubroff_Hellwig.pdf"].id}" target="_blank" title="The United States Tax Court: An Historical Analysis (Second Edition)">The United States Tax Court: An Historical Analysis (Second Edition)</a></em></strong> by Professors Harold Dubroff and Brant J. Hellwig is available as a <strong><a linktype="document" id="{petitioners_docs["Dubroff_Hellwig.pdf"].id}" target="_blank"> PDF download</a></strong> (6MB) or at the <strong><a href="https://bookstore.gpo.gov/user/login?destination=node/10107" target="_blank" title="Government Printing Office bookstore">Government Printing Office bookstore</a></strong> in print and other e-pub formats.',
                 "anchortag": "ABOUT4",
             },
         ]
