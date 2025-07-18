@@ -16,7 +16,7 @@ class HomePage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
-        InlinePanel("entries", label="Entries"),
+        InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
     ]
 
     search_fields = Page.search_fields + [
