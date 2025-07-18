@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
         # Path to your CSV (adjust if needed)
         base_dir = Path(__file__).resolve().parent.parent.parent.parent
-        csv_path = base_dir / "home" / "migrations" / "0058_update_rules_documents.csv"
+        csv_path = base_dir / "home" / "migrations" / "0060_update_rules_documents.csv"
 
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV file not found at: {csv_path}"))
@@ -70,10 +70,8 @@ class Command(BaseCommand):
                 )
             )
 
-        self.stdout.write(self.style.SUCCESS(f"✅ Created {created_count} redirects."))
+        self.stdout.write(self.style.SUCCESS(f"Created {created_count} redirects."))
         self.stdout.write(
-            self.style.SUCCESS(f"🔗 Linked {updated} redirects to the default site.")
+            self.style.SUCCESS(f"Linked {updated} redirects to the default site.")
         )
-        self.stdout.write(
-            self.style.SUCCESS("🎉 All redirects processed successfully.")
-        )
+        self.stdout.write(self.style.SUCCESS("All redirects processed successfully."))
