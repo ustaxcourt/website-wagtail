@@ -77,8 +77,10 @@ aws-setup: check-env-is-aws aws-init
 	else \
 		echo "Creating policy 'deployer-policy'..."; \
 		aws iam create-policy --policy-name deployer-policy --policy-document file://./infra/iam/deployer-policy.json; \
-	fi;\
-	aws iam create-policy-version --policy-arn "$$POLICY_ARN" --policy-document file://./infra/iam/deployer-policy.json --set-as-default;\
+		@POLICY_ARN=$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text); \
+	fi;
+
+	aws iam create-policy-version --policy-arn "$$POLICY_ARN" --policy-document file://./infra/iam/deployer-policy.json --set-as-default;
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$POLICY_ARN";
 
 	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
