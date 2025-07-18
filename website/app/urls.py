@@ -1,5 +1,6 @@
 import logging
 import os
+import csv
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -11,19 +12,59 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
+from pathlib import Path
+from django.views.defaults import page_not_found
+
+
+# --- Static mapping loaded from CSV ---
+CSV_REDIRECTS = {}
+
+
+def load_redirect_map_from_csv():
+    csv_filename = "0058_update_rules_documents.csv"
+    csv_path = Path(__file__).resolve().parent / csv_filename
+
+    try:
+        with open(csv_path, newline="", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            next(reader)  # Skip header row
+            for current_title, source_filename, new_title in reader:
+                # Store legacy filename (case-insensitive) -> new document title
+                CSV_REDIRECTS[source_filename.strip().lower()] = new_title.strip()
+        print(f"[Redirects] Loaded {len(CSV_REDIRECTS)} entries from CSV.")
+    except Exception as e:
+        print(f"[Redirects] Failed to load CSV redirect map: {e}")
+
+
+# Load once on startup
+load_redirect_map_from_csv()
 
 
 def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    # Remove the extension if present
-    base_filename, ext = os.path.splitext(filename)
+    normalized_filename = filename.strip().lower()
 
-    # Find documents where the filename starts with the base name
+    # Step 1: Check if filename is in the CSV redirect map
+    new_title = CSV_REDIRECTS.get(normalized_filename)
+
+    if new_title:
+        try:
+            matched_doc = Document.objects.get(title=new_title)
+            logger.info(f"Redirecting '{filename}' → '{matched_doc.file.url}'")
+            return redirect(matched_doc.file.url)
+        except Document.DoesNotExist:
+            logger.error(f"Document with title '{new_title}' not found.")
+        except Exception as e:
+            logger.error(f"Unexpected error redirecting '{filename}': {e}")
+        return render_404_util(request)
+
+    # Step 2: Fallback to old logic (if needed)
+    logger.warning(f"No CSV match for: {filename}. Falling back to fuzzy search.")
+    base_filename, ext = os.path.splitext(filename)
     possible_matches = Document.objects.filter(file__icontains=base_filename)
 
-    # Filter down to files with same extension that start with the base filename
     matched_docs = [
         doc
         for doc in possible_matches
@@ -31,29 +72,23 @@ def all_legacy_documents_redirect(request, filename):
         and os.path.splitext(doc.filename)[0].startswith(base_filename)
     ]
 
-    number_of_matches = len(matched_docs)
-
     # Redirect if there is a single match and it is exact (ignoring case)
-    if number_of_matches == 1:
+    if len(matched_docs) == 1:
         matched_doc = matched_docs[0]
         if matched_doc.filename.lower() == filename.lower():
             logger.info(
                 f"Successfully redirecting legacy resource request for: {filename}"
             )
             return redirect(matched_doc.file.url)
-        else:
-            # Log non-exact match and render 404
-            logger.warning(
-                f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
-            )
-            return render_404_util(request)
+        logger.warning(f"Non-exact match found: {matched_doc.filename}")
+        return render_404_util(request)
 
     # Log requests with no matches or multiple matches
-    if number_of_matches == 0:
+    if len(matched_docs) == 0:
         logger.warning(f"No matches for: {filename}")
     else:
         logger.warning(
-            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
+            f"Multiple matches for: {filename} → {[doc.filename for doc in matched_docs]}"
         )
 
     # Not found or multiple matches result in 404
@@ -77,6 +112,11 @@ urlpatterns = [
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
     path("admin/", include(wagtailadmin_urls)),
+    re_path(
+        r"^files/documents/.*\.pdf$",
+        page_not_found,
+        {"exception": Exception("Not Found")},
+    ),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
