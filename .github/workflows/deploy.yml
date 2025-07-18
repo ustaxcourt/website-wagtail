@@ -7,8 +7,6 @@ on:
     paths:
       - 'website/**'
       - 'infra/**'
-    paths-ignore:
-      - 'website/home/migrations/**'
     tags:
       - 'sandbox'
       - 'development'
