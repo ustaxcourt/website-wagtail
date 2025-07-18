@@ -153,7 +153,7 @@ class RedirectInitializer:
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
         if Redirect.objects.filter(old_path=old_path).exists():
-            self.logger.info(f"- Redirect from '{old_path}' already exists.")
+            self.logger.info(f"- Redirect from '{old_path}' to '{new_path}' already exists.")
             return
 
         try:

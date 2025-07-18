@@ -13,8 +13,6 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
 from pathlib import Path
-from django.views.defaults import page_not_found
-
 
 # --- Static mapping loaded from CSV ---
 CSV_REDIRECTS = {}
@@ -111,17 +109,18 @@ urlpatterns = [
     path(
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
-    path("admin/", include(wagtailadmin_urls)),
     re_path(
-        r"^files/documents/.*\.pdf$",
-        page_not_found,
-        {"exception": Exception("Not Found")},
+        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
+        all_legacy_documents_redirect,
+        name="legacy_documents_redirect_files",
     ),
+    # Redirect for legacy /resources/...
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
     ),
+    path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
