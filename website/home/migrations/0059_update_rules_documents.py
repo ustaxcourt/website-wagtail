@@ -137,7 +137,7 @@ def apply_document_updates_from_csv(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0057_fix_petitioner_about_page"),
+        ("home", "0058_fix_inline_pdf_links"),
         (
             "wagtaildocs",
             "0012_uploadeddocument",
