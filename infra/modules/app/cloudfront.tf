@@ -239,10 +239,22 @@ resource "aws_cloudfront_distribution" "app" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+  ordered_cache_behavior {
+    path_pattern     = "/media/*"
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3-${aws_s3_bucket.private_bucket.id}"
+
+    cache_policy_id          = aws_cloudfront_cache_policy.static_content.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.static_content.id
+
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
   # Cache behavior for /files/* path
   ordered_cache_behavior {
     path_pattern     = "/files/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-${aws_s3_bucket.private_bucket.id}"
 
@@ -251,7 +263,8 @@ resource "aws_cloudfront_distribution" "app" {
       function_arn = aws_cloudfront_function.rewrite_uri.arn
     }
 
-    cache_policy_id = aws_cloudfront_cache_policy.static_content.id
+    cache_policy_id          = aws_cloudfront_cache_policy.static_content.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.static_content.id
 
     viewer_protocol_policy = "redirect-to-https"
   }
