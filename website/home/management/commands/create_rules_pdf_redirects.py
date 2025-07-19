@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Generate Wagtail redirects AND CloudFront function JS from CSV"
+    help = "Generate PDF rule redirects from CSV using RedirectInitializer"
 
     def handle(self, *args, **options):
         self.stdout.write("Starting PDF rule redirect creation...")
@@ -27,15 +27,12 @@ class Command(BaseCommand):
 
         base_dir = Path(__file__).resolve().parent.parent.parent.parent
         csv_path = base_dir / "home" / "migrations" / "0060_update_rules_documents.csv"
-        output_js = base_dir / "cloudfront" / "pdf_redirect_function.js"
 
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV file not found at: {csv_path}"))
             return
 
-        redirects = {}
         created_count = 0
-
         try:
             with open(csv_path, newline="", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
@@ -54,7 +51,6 @@ class Command(BaseCommand):
                     new_path = f"/files/documents/{new_title}"
 
                     initializer.create(old_path, new_path)
-                    redirects[old_path] = new_path
                     created_count += 1
 
         except Exception as e:
@@ -71,47 +67,8 @@ class Command(BaseCommand):
                     f"Linked site to redirect: {redirect.old_path} → {redirect.redirect_link}"
                 )
             )
-
-        # Write CloudFront function JS
-        output_js.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            with open(output_js, "w") as f:
-                f.write("function handler(event) {\n")
-                f.write("    var request = event.request;\n")
-                f.write("    var redirects = {\n")
-                for src, dest in redirects.items():
-                    f.write(f'        "{src}": "{dest}",\n')
-                f.write("    };\n")
-                f.write("    var target = redirects[request.uri];\n")
-                f.write("    if (target) {\n")
-                f.write("        return {\n")
-                f.write("            statusCode: 302,\n")
-                f.write('            statusDescription: "Found",\n')
-                f.write("            headers: {\n")
-                f.write("                location: { value: target }\n")
-                f.write("            }\n")
-                f.write("        };\n")
-                f.write("    }\n")
-                f.write("    return request;\n")
-                f.write("}\n")
-
-            self.stdout.write(
-                self.style.SUCCESS(f"CloudFront function JS written to: {output_js}")
-            )
-
-        except Exception as e:
-            self.stdout.write(
-                self.style.ERROR(f" Failed to write CloudFront function JS: {e}")
-            )
-
-        self.stdout.write(
-            self.style.SUCCESS(f"Created {created_count} Wagtail redirects.")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Created {created_count} redirects."))
         self.stdout.write(
             self.style.SUCCESS(f"Linked {updated} redirects to the default site.")
         )
-        self.stdout.write(
-            self.style.SUCCESS(
-                "All redirects and CloudFront function generated successfully."
-            )
-        )
+        self.stdout.write(self.style.SUCCESS("All redirects processed successfully."))
