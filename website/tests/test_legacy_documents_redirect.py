@@ -1,3 +1,4 @@
+import pytest
 from unittest.mock import patch
 from django.test import RequestFactory
 from app.urls import all_legacy_documents_redirect
@@ -10,6 +11,7 @@ class FakeDoc:
         self.file = type("File", (), {"url": url})()
 
 
+@pytest.mark.django_db
 @patch("app.urls.Document")
 def test_redirects_on_exact_match(mock_document_model):
     # Arrange
@@ -25,6 +27,7 @@ def test_redirects_on_exact_match(mock_document_model):
     assert response.url == doc.file.url
 
 
+@pytest.mark.django_db
 @patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 def test_returns_404_on_no_matches(mock_document_model, mock_render_404):
@@ -39,6 +42,7 @@ def test_returns_404_on_no_matches(mock_document_model, mock_render_404):
     mock_render_404.assert_called_once_with(request)
 
 
+@pytest.mark.django_db
 @patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 def test_returns_404_on_multiple_matches(mock_document_model, mock_render_404):
@@ -55,6 +59,7 @@ def test_returns_404_on_multiple_matches(mock_document_model, mock_render_404):
     mock_render_404.assert_called_once_with(request)
 
 
+@pytest.mark.django_db
 @patch("app.urls.render_404_util")
 @patch("app.urls.Document")
 def test_returns_404_on_single_non_exact_match(mock_document_model, mock_render_404):
