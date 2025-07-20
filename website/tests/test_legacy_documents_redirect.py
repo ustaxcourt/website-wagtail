@@ -48,7 +48,7 @@ def test_returns_404_on_no_matches(mock_document_model, mock_render_404):
 def test_returns_404_on_multiple_matches(mock_document_model, mock_render_404):
     # Arrange
     doc1 = FakeDoc("test.pdf", "/media/documents/test.pdf")
-    doc2 = FakeDoc("test_2024.pdf", "/media/documents/test_2024.pdf")
+    doc2 = FakeDoc("test.pdf", "/media/documents/folder/test.pdf")
     request = RequestFactory().get("/resources/test.pdf")
     mock_document_model.objects.filter.return_value = [doc1, doc2]
 

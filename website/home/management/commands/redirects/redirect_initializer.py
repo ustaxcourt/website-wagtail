@@ -152,9 +152,26 @@ class RedirectInitializer:
             new_path (str): The path to redirect to
             is_permanent (bool): Whether this is a permanent (301) or temporary (302) redirect
         """
+        # Prevent self-redirects and loops
+        if old_path.lower() == new_path.lower():
+            self.logger.info(f"Skipping self-redirect: {old_path} -> {new_path}")
+            return
+
+        # Check if redirect already exists
         if Redirect.objects.filter(old_path=old_path).exists():
             self.logger.info(
                 f"- Redirect from '{old_path}' to '{new_path}' already exists."
+            )
+            return
+
+        # Check for potential circular redirects
+        existing_redirect = Redirect.objects.filter(old_path=new_path).first()
+        if (
+            existing_redirect
+            and existing_redirect.redirect_link.lower() == old_path.lower()
+        ):
+            self.logger.warning(
+                f"Preventing circular redirect: {old_path} <-> {new_path}"
             )
             return
 
@@ -166,7 +183,7 @@ class RedirectInitializer:
             )
             self.logger.info(f"Created redirect from '{old_path}' → '{new_path}'")
         except ValidationError as e:
-            self.logger.info(f"Error creating redirect for '{old_path}': {e}")
+            self.logger.error(f"Error creating redirect for '{old_path}': {e}")
 
     def create_redirect(self):
         """

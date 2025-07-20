@@ -19,6 +19,7 @@ def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
+    # First check for database redirects
     redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
     if redirect_entry:
         redirect_target = redirect_entry.redirect_link
@@ -31,21 +32,30 @@ def all_legacy_documents_redirect(request, filename):
             logger.warning(f"Preventing redirect loop for: {request.path}")
             return render_404_util(request)
 
-        logger.info(f"Redirecting from {current_path} to: {redirect_path}")
+        # Additional loop prevention: check if we're redirecting to the same filename
+        current_filename = os.path.basename(current_path)
+        redirect_filename = os.path.basename(redirect_path)
+        if current_filename.lower() == redirect_filename.lower():
+            logger.warning(
+                f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
+            )
+            return render_404_util(request)
+
+        logger.info(f"Database redirect: {current_path} to: {redirect_path}")
         return HttpResponsePermanentRedirect(redirect_target)
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
 
-    # Find documents where the filename starts with the base name
+    # Find documents where the filename matches (case-insensitive)
     possible_matches = Document.objects.filter(file__icontains=base_filename)
 
     # Filter down to files with same extension that start with the base filename
     matched_docs = [
         doc
         for doc in possible_matches
-        if doc.filename.lower().endswith(ext)
-        and os.path.splitext(doc.filename)[0].startswith(base_filename)
+        if doc.filename.lower().endswith(ext.lower())
+        and os.path.splitext(doc.filename.lower())[0] == base_filename.lower()
     ]
 
     number_of_matches = len(matched_docs)
@@ -53,24 +63,23 @@ def all_legacy_documents_redirect(request, filename):
     # Redirect if there is a single match and it is exact (ignoring case)
     if number_of_matches == 1:
         matched_doc = matched_docs[0]
-        if matched_doc.filename.lower() == filename.lower():
-            logger.info(
-                f"Successfully redirecting legacy resource request for: {filename}"
-            )
+        # Check if we're already serving the correct file to prevent loops
+        requested_filename = filename.lower()
+        actual_filename = matched_doc.filename.lower()
+
+        if requested_filename != actual_filename:
+            logger.info(f"Document redirect: {filename} -> {matched_doc.filename}")
             return redirect(matched_doc.file.url)
         else:
-            # Log non-exact match and render 404
-            logger.warning(
-                f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
-            )
-        return render_404_util(request)
+            logger.info(f"Exact match found, serving file directly: {filename}")
+            return redirect(matched_doc.file.url)
 
     # Log requests with no matches or multiple matches
     if number_of_matches == 0:
-        logger.warning(f"No matches for: {filename}")
+        logger.warning(f"No document matches for: {filename}")
     else:
         logger.warning(
-            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
+            f"Multiple document matches for: {filename}, matches: {[doc.filename for doc in matched_docs]}"
         )
 
     # Not found or multiple matches result in 404
