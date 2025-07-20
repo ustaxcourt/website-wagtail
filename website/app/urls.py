@@ -21,8 +21,18 @@ def all_legacy_documents_redirect(request, filename):
 
     redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
     if redirect_entry:
-        logger.info(f"Matched Wagtail redirect for: {request.path}")
-        return HttpResponsePermanentRedirect(redirect_entry.redirect_link)
+        redirect_target = redirect_entry.redirect_link
+
+        current_path = request.path.rstrip("/").lower()
+        redirect_path = redirect_target.rstrip("/").lower()
+
+        # Stronger check — stop redirecting if we're already on the target
+        if current_path == redirect_path:
+            logger.warning(f"Preventing redirect loop for: {request.path}")
+            return render_404_util(request)
+
+        logger.info(f"Redirecting from {current_path} to: {redirect_path}")
+        return HttpResponsePermanentRedirect(redirect_target)
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
