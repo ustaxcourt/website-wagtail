@@ -19,6 +19,7 @@ files_to_remove = [
     "Rule-147.pdf",
 ]
 
+
 def update_document_file(
     Document, current_filename, base_path, source_filename, new_title, collection
 ):
@@ -86,7 +87,9 @@ def delete_documents_from_list(Document, filenames_to_delete):
     Args:
         filenames_to_delete (list): A list of document filenames to delete.
     """
-    logger.info(f"--- Starting bulk deletion of {len(filenames_to_delete)} documents ---")
+    logger.info(
+        f"--- Starting bulk deletion of {len(filenames_to_delete)} documents ---"
+    )
 
     # Counters for the summary
     success_count = 0
@@ -99,9 +102,7 @@ def delete_documents_from_list(Document, filenames_to_delete):
             doc_to_delete = Document.objects.get(file__endswith=filename)
             doc_id = doc_to_delete.id  # Store ID for logging after deletion
 
-            logger.info(
-                f"Found document '{filename}' (ID: {doc_id}). Deleting..."
-            )
+            logger.info(f"Found document '{filename}' (ID: {doc_id}). Deleting...")
 
             # Delete the document object
             doc_to_delete.delete()
@@ -130,8 +131,9 @@ def delete_documents_from_list(Document, filenames_to_delete):
 
     # Log a final summary
     logger.info("--- Bulk deletion process complete ---")
-    logger.info(f"Summary: {success_count} deleted, {not_found_count} not found, {error_count} failed.")
-
+    logger.info(
+        f"Summary: {success_count} deleted, {not_found_count} not found, {error_count} failed."
+    )
 
 
 def apply_document_updates_from_csv(apps, schema_editor):
@@ -203,7 +205,9 @@ def apply_document_updates_from_csv(apps, schema_editor):
                 )
 
     except FileNotFoundError:
-        logger.error(f"\nFATAL ERROR: The CSV file was not found at '{update_csv_path}'.")
+        logger.error(
+            f"\nFATAL ERROR: The CSV file was not found at '{update_csv_path}'."
+        )
         logger.error(
             "Please ensure the CSV is in the same directory as this migration file."
         )
