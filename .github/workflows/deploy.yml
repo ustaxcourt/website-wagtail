@@ -151,12 +151,8 @@ jobs:
             --output text
           )
 
-          # Set desired count based on environment
-          if [[ "${ENVIRONMENT}" == "sandbox" ]]; then
-            desired_count=1
-          else
-            desired_count=2
-          fi
+          # Set desired count
+          desired_count=1
 
           aws ecs update-service \
             --cluster "${ENVIRONMENT}-website-cluster" \
