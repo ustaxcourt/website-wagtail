@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         initializer = RedirectInitializer()
 
-        base_dir = Path(__file__).resolve().parent.parent.parent.parent
+        base_dir = Path(__file__).resolve().parents[3]
         csv_path = base_dir / "home" / "migrations" / "0060_update_rules_documents.csv"
 
         if not csv_path.exists():

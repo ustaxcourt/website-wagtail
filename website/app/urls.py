@@ -20,8 +20,16 @@ def all_legacy_documents_redirect(request, filename):
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
     # First check for database redirects
+    logger.warning(f"Checking for database redirects for path: {request.path}")
     redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
+
     if redirect_entry:
+        logger.warning(
+            f"Found redirect entry: {redirect_entry.old_path} -> {redirect_entry.redirect_link}"
+        )
+        logger.warning(f"Redirect site: {redirect_entry.site}")
+        logger.warning(f"Redirect is_permanent: {redirect_entry.is_permanent}")
+
         redirect_target = redirect_entry.redirect_link
 
         current_path = request.path.rstrip("/").lower()
@@ -41,8 +49,20 @@ def all_legacy_documents_redirect(request, filename):
             )
             return render_404_util(request)
 
-        logger.info(f"Database redirect: {current_path} to: {redirect_path}")
+        logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
         return HttpResponsePermanentRedirect(redirect_target)
+    else:
+        logger.warning(f"No database redirect found for: {request.path}")
+        # Check if there are any similar redirects
+        similar_redirects = Redirect.objects.filter(
+            old_path__icontains=os.path.basename(request.path)
+        )[:5]
+        if similar_redirects:
+            logger.warning(
+                f"Similar redirects found: {[r.old_path for r in similar_redirects]}"
+            )
+        else:
+            logger.warning("No similar redirects found")
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
@@ -68,10 +88,10 @@ def all_legacy_documents_redirect(request, filename):
         actual_filename = matched_doc.filename.lower()
 
         if requested_filename != actual_filename:
-            logger.info(f"Document redirect: {filename} -> {matched_doc.filename}")
+            logger.warning(f"Document redirect: {filename} -> {matched_doc.filename}")
             return redirect(matched_doc.file.url)
         else:
-            logger.info(f"Exact match found, serving file directly: {filename}")
+            logger.warning(f"Exact match found, serving file directly: {filename}")
             return redirect(matched_doc.file.url)
 
     # Log requests with no matches or multiple matches
