@@ -8,8 +8,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+files_to_remove = [
+    "Rule-27.pdf",
+    "Rule-121.pdf",
+    "Rule-74amended.pdf",
+    "Rule-81.pdf",
+    "Rule-280amended.pdf",
+    "Rule-21.pdf",
+    "Rule-151.pdf",
+    "Rule-147.pdf",
+]
 
-# --- Helper Function ---
 def update_document_file(
     Document, current_filename, base_path, source_filename, new_title, collection
 ):
@@ -70,6 +79,61 @@ def update_document_file(
         )
 
 
+def delete_documents_from_list(Document, filenames_to_delete):
+    """
+    Finds and deletes a list of Wagtail documents by their filenames.
+
+    Args:
+        filenames_to_delete (list): A list of document filenames to delete.
+    """
+    logger.info(f"--- Starting bulk deletion of {len(filenames_to_delete)} documents ---")
+
+    # Counters for the summary
+    success_count = 0
+    not_found_count = 0
+    error_count = 0
+
+    for filename in filenames_to_delete:
+        try:
+            # Get the document object using the provided filename
+            doc_to_delete = Document.objects.get(file__endswith=filename)
+            doc_id = doc_to_delete.id  # Store ID for logging after deletion
+
+            logger.info(
+                f"Found document '{filename}' (ID: {doc_id}). Deleting..."
+            )
+
+            # Delete the document object
+            doc_to_delete.delete()
+
+            logger.info(
+                f"  -> Successfully deleted document '{filename}' (formerly ID: {doc_id})."
+            )
+            success_count += 1
+
+        except Document.DoesNotExist:
+            logger.warning(
+                f"  -> Document with filename '{filename}' not found. Skipping."
+            )
+            not_found_count += 1
+        except MultipleObjectsReturned:
+            logger.error(
+                f"  -> ERROR: Multiple documents found with filename '{filename}'. "
+                f"Cannot determine which to delete. Skipping."
+            )
+            error_count += 1
+        except Exception as e:
+            logger.error(
+                f"  -> ERROR: An unexpected error occurred for document '{filename}': {e}"
+            )
+            error_count += 1
+
+    # Log a final summary
+    logger.info("--- Bulk deletion process complete ---")
+    logger.info(f"Summary: {success_count} deleted, {not_found_count} not found, {error_count} failed.")
+
+
+
 def apply_document_updates_from_csv(apps, schema_editor):
     """
     The main migration function. It reads data from a CSV file
@@ -88,9 +152,9 @@ def apply_document_updates_from_csv(apps, schema_editor):
     # Construct the path to the CSV file relative to this migration file
     migration_dir = os.path.dirname(__file__)
     csv_filename = os.path.basename(__file__).replace(".py", ".csv")
-    csv_path = os.path.join(migration_dir, csv_filename)
+    update_csv_path = os.path.join(migration_dir, csv_filename)
 
-    logger.info(f"\nAttempting to read document updates from: {csv_path}")
+    logger.info(f"\nAttempting to read document updates from: {update_csv_path}")
 
     collection_name = "Tax Court Rules"
     try:
@@ -118,7 +182,7 @@ def apply_document_updates_from_csv(apps, schema_editor):
             raise
 
     try:
-        with open(csv_path, mode="r", encoding="utf-8") as f:
+        with open(update_csv_path, mode="r", encoding="utf-8") as f:
             reader = csv.reader(f)
 
             # Skip the header row
@@ -139,7 +203,7 @@ def apply_document_updates_from_csv(apps, schema_editor):
                 )
 
     except FileNotFoundError:
-        logger.error(f"\nFATAL ERROR: The CSV file was not found at '{csv_path}'.")
+        logger.error(f"\nFATAL ERROR: The CSV file was not found at '{update_csv_path}'.")
         logger.error(
             "Please ensure the CSV is in the same directory as this migration file."
         )
@@ -151,10 +215,12 @@ def apply_document_updates_from_csv(apps, schema_editor):
         )
         raise
 
+    delete_documents_from_list(Document, filenames_to_delete=files_to_remove)
+
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0058_fix_inline_pdf_links"),
+        ("home", "0059_update_petitioner_start_doc_references"),
         (
             "wagtaildocs",
             "0012_uploadeddocument",
