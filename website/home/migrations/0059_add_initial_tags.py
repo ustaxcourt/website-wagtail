@@ -29,7 +29,7 @@ def remove_tags(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0059_update_rules_documents"),
+        ("home", "0058_fix_inline_pdf_links"),
         ("taggit", "0001_initial"),
     ]
 

@@ -51,7 +51,7 @@ def assign_tags_to_documents(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0060_add_role_tags"),
+        ("home", "0061_add_role_tags"),
         ("wagtaildocs", "0001_initial"),
         ("taggit", "__latest__"),
     ]

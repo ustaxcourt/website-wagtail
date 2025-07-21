@@ -30,7 +30,7 @@ def remove_role_tags(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0059_add_initial_collections"),
+        ("home", "0060_add_initial_collections"),
         ("taggit", "0001_initial"),
     ]
 

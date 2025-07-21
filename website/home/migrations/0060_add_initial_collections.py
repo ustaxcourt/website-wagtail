@@ -40,7 +40,7 @@ def remove_collections(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0058_add_initial_tags"),
+        ("home", "0059_add_initial_tags"),
         ("wagtailcore", "0094_alter_page_locale"),
     ]
     operations = [
