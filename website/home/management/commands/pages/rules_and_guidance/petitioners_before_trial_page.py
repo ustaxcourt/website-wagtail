@@ -43,12 +43,11 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
         ).first()
 
         for document in petitioners_docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            petitioners_docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            petitioners_docs[document] = uploaded_document.file.url
 
         questions = [
             {
@@ -96,7 +95,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "What is a subpoena?",
-                "answer": f'A subpoena is an order issued by the Tax Court (1) directing a person to appear and testify at a scheduled Tax Court Trial Session or (2) directing a person to appear at a deposition prearranged at a specific time and location. The subpoena may include directions for the person (witness) to produce specific books, papers, documents, electronically stored information, or tangible things. See Tax Court Rules <strong><a href="{petitioners_docs["Rule-147.pdf"]}" target="_blank" title="Rule 147">147</a>,<a href="{petitioners_docs["Rule-74(amended).pdf"]}" target="_blank" title="Rule 74">74</a></strong> and <strong><a href="{petitioners_docs["Rule-81.pdf"]}" target="_blank" title="Rule 81">81</a></strong>.',
+                "answer": f'A subpoena is an order issued by the Tax Court (1) directing a person to appear and testify at a scheduled Tax Court Trial Session or (2) directing a person to appear at a deposition prearranged at a specific time and location. The subpoena may include directions for the person (witness) to produce specific books, papers, documents, electronically stored information, or tangible things. See Tax Court Rules <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" target="_blank" title="Rule 147">147</a>,<a linktype="document" id="{petitioners_docs["Rule-74(amended).pdf"].id}" target="_blank" title="Rule 74">74</a></strong> and <strong><a linktype="document" id="{petitioners_docs["Rule-81.pdf"].id}" target="_blank" title="Rule 81">81</a></strong>.',
                 "anchortag": "BEFORE4",
             },
             {
@@ -106,8 +105,8 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "How do I obtain and serve a Tax Court subpoena?",
-                "answer": f"""You may obtain a form for a <strong><a href="{petitioners_docs["Subpoena_Appear_Testify_Hearing_Or_Trial.pdf"]}" target="_blank" title="Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)">Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)
-                            </a></strong> or a <strong><a href="{petitioners_docs["Subpoena_To_Testify_Deposition.pdf"]}" target="_blank" title="Subpoena to Testify at a Deposition (Form 14B)">Subpoena to Testify at a Deposition (Form 14B)</a>
+                "answer": f"""You may obtain a form for a <strong><a linktype="document" id="{petitioners_docs["Subpoena_Appear_Testify_Hearing_Or_Trial.pdf"].id}" target="_blank" title="Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)">Subpoena to Appear and Testify at a Hearing or Trial (Form 14A)
+                            </a></strong> or a <strong><a linktype="document" id="{petitioners_docs["Subpoena_To_Testify_Deposition.pdf"].id}" target="_blank" title="Subpoena to Testify at a Deposition (Form 14B)">Subpoena to Testify at a Deposition (Form 14B)</a>
                            </strong> under the <strong><a href="/case-related-forms" title="Case Related Forms">“Forms”</a>
                            </strong> tab on the Court’s internet website.You may also obtain a copy of subpoena form 14A from a trial clerk at a trial session.
                            <br>
@@ -116,13 +115,13 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                            served on the witness, in person, by a United States marshal, a deputy marshal, or by any
                            other person who is not a party to the case and who is not less than 18 years of age.
                            The person who actually serves the subpoena must complete the “Return of Service” section
-                           at the bottom of the subpoena form. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" target="_blank" title="Rule 147">Tax Court Rule 147(c)</a></strong>.
+                           at the bottom of the subpoena form. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" target="_blank" title="Rule 147">Tax Court Rule 147(c)</a></strong>.
                            You will submit the signed original to the Court only if it is necessary to ask the Court to enforce the subpoena.""",
                 "anchortag": "BEFORE6",
             },
             {
                 "question": "Is there a cost related to a subpoena?",
-                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day’s attendance and mileage. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a href="{petitioners_docs["Rule-148.pdf"]}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
+                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day\'s attendance and mileage. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a linktype="document" id="{petitioners_docs["Rule-148.pdf"].id}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
                 "anchortag": "BEFORE7",
             },
             {
@@ -132,23 +131,23 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "What should I do if I am served with a subpoena? Can I challenge a subpoena?",
-                "answer": f'As a general matter you should comply with a subpoena. If you are served with a subpoena, and you believe it was issued in error, is unreasonable or oppressive, or was not properly served, you may file a Motion To Quash the subpoena with the Court. If you fail to appear as directed by a subpoena, you may be found to be in contempt of Court. See <strong><a href="{petitioners_docs["Rule-147.pdf"]}" target="_blank" title="Rule 147">Rule 147(e)</a></strong>.',
+                "answer": f'As a general matter you should comply with a subpoena. If you are served with a subpoena, and you believe it was issued in error, is unreasonable or oppressive, or was not properly served, you may file a Motion To Quash the subpoena with the Court. If you fail to appear as directed by a subpoena, you may be found to be in contempt of Court. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" target="_blank" title="Rule 147">Rule 147(e)</a></strong>.',
                 "anchortag": "BEFORE9",
             },
             {
                 "question": "How will I know when and where my trial will take place?",
-                "answer": f"""The Tax Court will issue either a<strong><a href="{petitioners_docs["Sample_Notice_Setting_Case_for_Trial_S_cases.pdf"]}" target="_blank" title = "Notice for S Cases " > notice
-                             for S cases </a></strong>or a <strong><a href="{petitioners_docs["Sample_Notice_Setting_Case_for_Trial_R_cases.pdf"]}" target="_blank" title="Notice for Regular Cases" > notice for regular cases </a></strong>
+                "answer": f"""The Tax Court will issue either a<strong><a linktype="document" id="{petitioners_docs["Sample_Notice_Setting_Case_for_Trial_S_cases.pdf"].id}" target="_blank" title = "Notice for S Cases " > notice
+                             for S cases </a></strong>or a <strong><a linktype="document" id="{petitioners_docs["Sample_Notice_Setting_Case_for_Trial_R_cases.pdf"].id}" target="_blank" title="Notice for Regular Cases" > notice for regular cases </a></strong>
                              setting your case for trial generally about five months before the trial date.The notice setting the case for trial provides information such as where and when to appear for your trial session.The Tax Court will attempt to schedule the trial at the city requested in your request for place of trial, but if no courtroom is available, the Tax Court may schedule it at a city reasonably nearby.The Tax Court will issue a
-                             <strong><a href="{petitioners_docs["SPTO_regular_sample.pdf"]}" target="_blank" title="Standing Pretrial Order" > Standing Pretrial Order </a></strong>
-                             in a regular case or a<strong><a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases"> Standing Pretrial Order For Small Tax Cases </a></strong>
+                             <strong><a linktype="document" id="{petitioners_docs["SPTO_regular_sample.pdf"].id}" target="_blank" title="Standing Pretrial Order" > Standing Pretrial Order </a></strong>
+                             in a regular case or a<strong><a linktype="document" id="{petitioners_docs["SPTO_small_sample.pdf"].id}" target="_blank" title="Standing Pretrial Order For Small Tax Cases"> Standing Pretrial Order For Small Tax Cases </a></strong>
                              which will inform you what you need to do to prepare for trial.For information specific to remote proceedings, see
                              <strong><a href="/zoomgov" title="Zoomgov Proceedings" > Remote Proceeding Information </a></strong>.""",
                 "anchortag": "BEFORE10",
             },
             {
                 "question": "Will the Court send me any instructions telling me what I should do to prepare for trial?",
-                "answer": f"""Yes. The Tax Court will issue a <strong><a href="{petitioners_docs["SPTO_regular_sample.pdf"]}" target="_blank" title="Standing Pretrial Order">Standing Pretrial Order</a></strong> in a regular case or a <strong><a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases">Standing Pretrial Order For Small Tax Cases</a></strong>. Read this order or notice from the Tax Court carefully and keep a copy. The Standing Pretrial Order or Notice has very specific instructions about getting ready for trial. One of the provisions of the Standing Pretrial Order (sent to petitioners in regular cases) is that you must file a pretrial memorandum. The Standing Pretrial Notice (sent to petitioners in S cases) states that you should submit a pretrial memorandum. The Court encourages all parties to submit a pretrial memorandum. You should look at the Standing Pretrial Order or Notice and the form attached, which shows what a pretrial memorandum looks like. The pretrial memorandum can be very helpful in organizing and preparing your case. The pretrial memorandum may also help the Judge to understand your position. The Standing Pretrial Notice also tells you what you need to do to settle your case and how to stipulate facts if you do not settle.
+                "answer": f"""Yes. The Tax Court will issue a <strong><a linktype="document" id="{petitioners_docs["SPTO_regular_sample.pdf"].id}" target="_blank" title="Standing Pretrial Order">Standing Pretrial Order</a></strong> in a regular case or a <strong><a linktype="document" id="{petitioners_docs["SPTO_small_sample.pdf"].id}" target="_blank" title="Standing Pretrial Order For Small Tax Cases">Standing Pretrial Order For Small Tax Cases</a></strong>. Read this order or notice from the Tax Court carefully and keep a copy. The Standing Pretrial Order or Notice has very specific instructions about getting ready for trial. One of the provisions of the Standing Pretrial Order (sent to petitioners in regular cases) is that you must file a pretrial memorandum. The Standing Pretrial Notice (sent to petitioners in S cases) states that you should submit a pretrial memorandum. The Court encourages all parties to submit a pretrial memorandum. You should look at the Standing Pretrial Order or Notice and the form attached, which shows what a pretrial memorandum looks like. The pretrial memorandum can be very helpful in organizing and preparing your case. The pretrial memorandum may also help the Judge to understand your position. The Standing Pretrial Notice also tells you what you need to do to settle your case and how to stipulate facts if you do not settle.
             <br>
             <br>
             Depending upon the city in which your trial will take place, the Tax Court may send you a letter from a tax clinic inviting you to talk with one of the clinic’s attorneys or law students. If you qualify on the basis of certain income standards, the clinic may agree to represent you in your trial. Generally there is no fee for this representation. Many petitioners who are represented by a clinic representative are able to settle their cases with the IRS. The tax clinics are not part of the IRS or the Tax Court; they are totally independent and prepared to help you to fairly resolve your tax dispute with the IRS.""",
@@ -156,7 +155,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "What is a pretrial memorandum? Do I need to prepare one?",
-                "answer": f'A pretrial memorandum form is attached as part of the <strong><a href="{petitioners_docs["SPTO_regular_sample.pdf"]}" target="_blank" title="Standing Pretrial Order">Standing Pretrial Order</a></strong> or <strong><a href="{petitioners_docs["SPTO_small_sample.pdf"]}" target="_blank" title="Standing Pretrial Order For Small Tax Cases">Standing Pretrial Order For Small Tax Cases</a></strong>. You must file a pretrial memorandum in a regular case. You should submit a pretrial memorandum in an S case. The Court encourages all parties to file a pretrial memorandum. Preparing the pretrial memorandum may help you in organizing your case and help the Judge to understand your position. Carefully read the instructions in the Standing Pretrial Order or Notice. Follow the form and instructions. Send your pretrial memorandum to the Court, and send a copy to the IRS attorney.',
+                "answer": f'A pretrial memorandum form is attached as part of the <strong><a linktype="document" id="{petitioners_docs["SPTO_regular_sample.pdf"].id}" target="_blank" title="Standing Pretrial Order">Standing Pretrial Order</a></strong> or <strong><a linktype="document" id="{petitioners_docs["SPTO_small_sample.pdf"].id}" target="_blank" title="Standing Pretrial Order For Small Tax Cases">Standing Pretrial Order For Small Tax Cases</a></strong>. You must file a pretrial memorandum in a regular case. You should submit a pretrial memorandum in an S case. The Court encourages all parties to file a pretrial memorandum. Preparing the pretrial memorandum may help you in organizing your case and help the Judge to understand your position. Carefully read the instructions in the Standing Pretrial Order or Notice. Follow the form and instructions. Send your pretrial memorandum to the Court, and send a copy to the IRS attorney.',
                 "anchortag": "BEFORE12",
             },
             {
