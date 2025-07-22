@@ -2,7 +2,7 @@ import logging
 import os
 from django.contrib import admin
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
@@ -13,7 +13,6 @@ from wagtail.documents.models import Document
 from search import views as search_views
 from wagtail.contrib.redirects.models import Redirect
 from django.http import HttpResponsePermanentRedirect
-from wagtail.documents.views import serve as wagtail_serve
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -49,7 +48,7 @@ def all_legacy_documents_redirect(request, filename):
         logger.warning(f"Checking current filename: {current_filename}")
         logger.warning(f"Checking Redirect filename: {redirect_filename}")
 
-        if current_filename.lower() == redirect_filename.lower():
+        if current_filename == redirect_filename:
             logger.warning(
                 f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
             )
@@ -57,12 +56,16 @@ def all_legacy_documents_redirect(request, filename):
 
         logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
         return HttpResponsePermanentRedirect(redirect_target)
+    else:
+        logger.warning(f"ELSE: No database redirect found for: {request.path}")
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
+    logger.warning(f"base_filename: {base_filename}, ext: {ext}")
 
     # Find documents where the filename matches (case-insensitive)
     possible_matches = Document.objects.filter(file__icontains=base_filename)
+    logger.warning(f"possible_matches: {possible_matches}")
 
     # Filter down to files with same extension that start with the base filename
     matched_docs = [
@@ -71,12 +74,13 @@ def all_legacy_documents_redirect(request, filename):
         if doc.filename.lower().endswith(ext.lower())
         and os.path.splitext(doc.filename.lower())[0] == base_filename.lower()
     ]
+    logger.warning(f"matched_docs: {matched_docs}")
 
     if len(matched_docs) == 1:
         matched_doc = matched_docs[0]
 
-        logger.info(f"✅ Serving document directly via Wagtail: {matched_doc.filename}")
-        return wagtail_serve.serve(request, matched_doc.id, matched_doc.filename)
+        logger.warning(f"Serving document directly via Wagtail: {matched_doc.filename}")
+        return redirect(matched_doc.file.url)
     # Log requests with no matches or multiple matches
     if len(matched_docs) == 0:
         logger.warning(f"No document matches for: {filename}")
