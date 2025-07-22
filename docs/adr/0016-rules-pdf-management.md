@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The Tax Court is consolidating hosted rules files. 
+The Tax Court is consolidating hosted rules files.
 
 ## Decision
 
