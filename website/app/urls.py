@@ -2,7 +2,7 @@ import logging
 import os
 from django.contrib import admin
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
@@ -13,9 +13,7 @@ from wagtail.documents.models import Document
 from search import views as search_views
 from wagtail.contrib.redirects.models import Redirect
 from django.http import HttpResponsePermanentRedirect
-from wagtail.documents.views import serve
-from django.urls import resolve
-from django.urls.exceptions import Resolver404
+from wagtail.documents.views import serve as wagtail_serve
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -52,43 +50,8 @@ def all_legacy_documents_redirect(request, filename):
             )
             return render_404_util(request)
 
-        # Prevent loops where redirect target would be handled by this same function
-        # Check if the redirect target matches our URL patterns
-        try:
-            # Remove domain from redirect_target if it's a full URL
-            if redirect_target.startswith(("http://", "https://")):
-                from urllib.parse import urlparse
-
-                parsed_url = urlparse(redirect_target)
-                target_path = parsed_url.path
-            else:
-                target_path = redirect_target
-
-            # Try to resolve the target path
-            resolved = resolve(target_path)
-            if resolved.func == all_legacy_documents_redirect:
-                logger.warning(
-                    f"Preventing redirect loop - target would trigger same function: {target_path}"
-                )
-                return render_404_util(request)
-        except Resolver404:
-            # Target path doesn't match any patterns, safe to redirect
-            pass
-
         logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
         return HttpResponsePermanentRedirect(redirect_target)
-    else:
-        logger.warning(f"No database redirect found for: {request.path}")
-        # Check if there are any similar redirects
-        similar_redirects = Redirect.objects.filter(
-            old_path__icontains=os.path.basename(request.path)
-        )[:5]
-        if similar_redirects:
-            logger.warning(
-                f"Similar redirects found: {[r.old_path for r in similar_redirects]}"
-            )
-        else:
-            logger.warning("No similar redirects found")
 
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
@@ -104,33 +67,13 @@ def all_legacy_documents_redirect(request, filename):
         and os.path.splitext(doc.filename.lower())[0] == base_filename.lower()
     ]
 
-    number_of_matches = len(matched_docs)
-
-    # Redirect if there is a single match and it is exact (ignoring case)
-    if number_of_matches == 1:
+    if len(matched_docs) == 1:
         matched_doc = matched_docs[0]
-        # Check if we're already serving the correct file to prevent loops
-        requested_filename = filename.lower()
-        actual_filename = matched_doc.filename.lower()
 
-        if requested_filename != actual_filename:
-            logger.warning(f"Document redirect: {filename} -> {matched_doc.filename}")
-            return redirect(matched_doc.file.url)
-        else:
-            logger.warning(f"Exact match found, serving file directly: {filename}")
-            # Check if the document file URL would cause a redirect loop
-            file_url = matched_doc.file.url
-            if (
-                file_url.startswith("/files/documents/")
-                or "/files/documents/" in file_url
-            ):
-                # Use Wagtail's document serving to avoid redirect loops
-                return serve.serve(request, matched_doc.id, matched_doc.filename)
-            else:
-                return redirect(file_url)
-
+        logger.info(f"✅ Serving document directly via Wagtail: {matched_doc.filename}")
+        return wagtail_serve.serve(request, matched_doc.id, matched_doc.filename)
     # Log requests with no matches or multiple matches
-    if number_of_matches == 0:
+    if len(matched_docs) == 0:
         logger.warning(f"No document matches for: {filename}")
     else:
         logger.warning(
@@ -157,11 +100,6 @@ urlpatterns = [
     path(
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
-    re_path(
-        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
-        all_legacy_documents_redirect,
-        name="all_legacy_documents_redirect",
-    ),
     path("admin/", include(wagtailadmin_urls)),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",

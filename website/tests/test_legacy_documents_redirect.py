@@ -14,18 +14,25 @@ class FakeDoc:
 
 @pytest.mark.django_db
 @patch("app.urls.Document")
-def test_redirects_on_exact_match(mock_document_model):
+@patch("wagtail.documents.views.serve.serve")
+def test_redirects_on_exact_match(mock_wagtail_serve, mock_document_model):
     # Arrange
     doc = FakeDoc("test.pdf", "/media/documents/test.pdf")
     mock_document_model.objects.filter.return_value = [doc]
     request = RequestFactory().get("/resources/test.pdf")
 
+    from django.http import HttpResponse
+
+    mock_wagtail_serve.return_value = HttpResponse(
+        b"PDF content", content_type="application/pdf"
+    )
     # Act
     response = all_legacy_documents_redirect(request, "test.pdf")
 
     # Assert
-    assert response.status_code == 302
-    assert response.url == doc.file.url
+    mock_wagtail_serve.assert_called_once_with(request, doc.id, doc.filename)
+    assert response.status_code == 200
+    assert response.content == b"PDF content"
 
 
 @pytest.mark.django_db
@@ -92,7 +99,7 @@ def test_prevents_redirect_loop_for_files_documents_url(
     from django.http import HttpResponse
 
     mock_wagtail_serve.return_value = HttpResponse(
-        "PDF content", content_type="application/pdf"
+        b"PDF content", content_type="application/pdf"
     )
 
     # Act
@@ -110,7 +117,6 @@ def test_prevents_redirect_loop_for_files_documents_url(
 def test_specific_rule_1_redirect_loop_prevention(
     mock_wagtail_serve, mock_document_model
 ):
-    """Test the specific scenario from the debug logs: Rule-1_Amended_03202023.pdf -> rule-1.pdf"""
     # Arrange
     # Simulate the exact scenario from the logs
     doc = FakeDoc("rule-1.pdf", "/files/documents/rule-1.pdf")
@@ -137,31 +143,11 @@ def test_specific_rule_1_redirect_loop_prevention(
 
 
 @pytest.mark.django_db
-@patch("app.urls.Document")
-def test_normal_redirect_still_works(mock_document_model):
-    """Test that normal redirects (non-looping) still work as expected"""
-    # Arrange
-    # Document with normal media URL that won't cause loops
-    doc = FakeDoc("test.pdf", "/media/documents/test.pdf")
-    mock_document_model.objects.filter.return_value = [doc]
-    request = RequestFactory().get("/resources/test.pdf")
-
-    # Act
-    response = all_legacy_documents_redirect(request, "test.pdf")
-
-    # Assert
-    # Should redirect normally since /media/documents/ won't cause loops
-    assert response.status_code == 302
-    assert response.url == "/media/documents/test.pdf"
-
-
-@pytest.mark.django_db
 @patch("app.urls.render_404_util")
 @patch("wagtail.contrib.redirects.models.Redirect.objects")
 def test_prevents_database_redirect_loop_to_same_function(
     mock_redirect_objects, mock_render_404
 ):
-    """Test that database redirects that would trigger the same function are prevented"""
     # Arrange
     from types import SimpleNamespace
 
@@ -189,7 +175,6 @@ def test_prevents_database_redirect_loop_to_same_function(
 def test_prevents_database_redirect_loop_to_relative_path(
     mock_redirect_objects, mock_render_404
 ):
-    """Test that database redirects to relative paths that would trigger the same function are prevented"""
     # Arrange
     from types import SimpleNamespace
 
@@ -214,7 +199,6 @@ def test_prevents_database_redirect_loop_to_relative_path(
 @pytest.mark.django_db
 @patch("wagtail.contrib.redirects.models.Redirect.objects")
 def test_allows_database_redirect_to_safe_url(mock_redirect_objects):
-    """Test that database redirects to URLs that won't cause loops are allowed"""
     # Arrange
     from types import SimpleNamespace
 
@@ -243,7 +227,6 @@ def test_allows_database_redirect_to_safe_url(mock_redirect_objects):
 def test_exact_scenario_from_logs_rule_1_amended(
     mock_redirect_objects, mock_render_404
 ):
-    """Test the exact scenario from the logs: Rule-1_Amended_03202023.pdf redirecting to rule-1.pdf"""
     # Arrange
     from types import SimpleNamespace
 
@@ -272,7 +255,6 @@ def test_exact_scenario_from_logs_rule_1_amended(
 @patch("app.urls.render_404_util")
 @patch("wagtail.contrib.redirects.models.Redirect.objects")
 def test_complete_rules_scenario_from_logs(mock_redirect_objects, mock_render_404):
-    """Test the Complete Rules scenario from logs that was working"""
     # Arrange
     from types import SimpleNamespace
 
