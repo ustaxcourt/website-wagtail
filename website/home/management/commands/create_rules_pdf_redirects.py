@@ -50,7 +50,10 @@ class Command(BaseCommand):
                     old_path = f"/files/documents/{current_title}"
                     new_path = f"/files/documents/{new_title}"
 
-                    initializer.create(old_path, new_path)
+                    # Skip if old and new paths are the same (case-insensitive)
+                    if old_path.lower() == new_path.lower():
+                        continue
+                    initializer.create(old_path, new_path, is_permanent=True)
                     created_count += 1
 
         except Exception as e:
