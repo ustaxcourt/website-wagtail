@@ -13,6 +13,7 @@ from wagtail.documents.models import Document
 from search import views as search_views
 from wagtail.contrib.redirects.models import Redirect
 from django.http import HttpResponsePermanentRedirect
+from wagtail.documents.views import serve
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -92,7 +93,16 @@ def all_legacy_documents_redirect(request, filename):
             return redirect(matched_doc.file.url)
         else:
             logger.warning(f"Exact match found, serving file directly: {filename}")
-            return redirect(matched_doc.file.url)
+            # Check if the document file URL would cause a redirect loop
+            file_url = matched_doc.file.url
+            if (
+                file_url.startswith("/files/documents/")
+                or "/files/documents/" in file_url
+            ):
+                # Use Wagtail's document serving to avoid redirect loops
+                return serve.serve(request, matched_doc.id, matched_doc.filename)
+            else:
+                return redirect(file_url)
 
     # Log requests with no matches or multiple matches
     if number_of_matches == 0:
