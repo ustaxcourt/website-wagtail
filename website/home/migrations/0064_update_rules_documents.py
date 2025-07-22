@@ -224,7 +224,7 @@ def apply_document_updates_from_csv(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0059_update_petitioner_start_doc_references"),
+        ("home", "0063_update_petitioner_start_doc_references"),
         (
             "wagtaildocs",
             "0012_uploadeddocument",
