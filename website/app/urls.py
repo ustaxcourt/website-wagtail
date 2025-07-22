@@ -35,6 +35,8 @@ def all_legacy_documents_redirect(request, filename):
 
         current_path = request.path.rstrip("/").lower()
         redirect_path = redirect_target.rstrip("/").lower()
+        logger.warning(f"Checking current path: {current_path}")
+        logger.warning(f"Checking Redirect path: {redirect_path}")
 
         # Stronger check — stop redirecting if we're already on the target
         if current_path == redirect_path:
@@ -44,6 +46,9 @@ def all_legacy_documents_redirect(request, filename):
         # Additional loop prevention: check if we're redirecting to the same filename
         current_filename = os.path.basename(current_path)
         redirect_filename = os.path.basename(redirect_path)
+        logger.warning(f"Checking current filename: {current_filename}")
+        logger.warning(f"Checking Redirect filename: {redirect_filename}")
+
         if current_filename.lower() == redirect_filename.lower():
             logger.warning(
                 f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
