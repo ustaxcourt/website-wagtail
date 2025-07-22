@@ -229,7 +229,7 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "github-actions@github.com"
           git tag train
-          git push origin train
+          git push --force origin train
 
       - name: Notify SNS of deployment outcome
         if: always()
