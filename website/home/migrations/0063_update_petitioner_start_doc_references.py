@@ -137,7 +137,7 @@ def update_document_references(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0058_fix_inline_pdf_links"),
+        ("home", "0062_assign_tags_and_collections_to_documents"),
         ("wagtaildocs", "0012_uploadeddocument"),
     ]
 
