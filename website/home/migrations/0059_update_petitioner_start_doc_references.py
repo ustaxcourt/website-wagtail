@@ -9,8 +9,6 @@ DOC_REPLACEMENTS = {
     "Rule-121.pdf": "Rule-121_Amended_03202023.pdf",
 }
 
-# --- Helper Functions ---
-
 
 def get_document_id_map(apps):
     """
