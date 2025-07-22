@@ -236,11 +236,6 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, "static"),
-    # Add rules documents directory for static PDF files
-    (
-        "documents/rules",
-        os.path.join(PROJECT_DIR, "home", "management", "documents", "rules"),
-    ),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
