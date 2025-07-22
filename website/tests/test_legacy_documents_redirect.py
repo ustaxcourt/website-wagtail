@@ -153,3 +153,149 @@ def test_normal_redirect_still_works(mock_document_model):
     # Should redirect normally since /media/documents/ won't cause loops
     assert response.status_code == 302
     assert response.url == "/media/documents/test.pdf"
+
+
+@pytest.mark.django_db
+@patch("app.urls.render_404_util")
+@patch("wagtail.contrib.redirects.models.Redirect.objects")
+def test_prevents_database_redirect_loop_to_same_function(
+    mock_redirect_objects, mock_render_404
+):
+    """Test that database redirects that would trigger the same function are prevented"""
+    # Arrange
+    from types import SimpleNamespace
+
+    # Mock a redirect that would cause a loop
+    redirect_entry = SimpleNamespace()
+    redirect_entry.old_path = "/files/documents/Rule-1_Amended_03202023.pdf"
+    redirect_entry.redirect_link = "https://example.com/files/documents/rule-1.pdf"
+    redirect_entry.site = "localhost"
+    redirect_entry.is_permanent = True
+
+    mock_redirect_objects.filter.return_value.first.return_value = redirect_entry
+
+    request = RequestFactory().get("/files/documents/Rule-1_Amended_03202023.pdf")
+
+    # Act
+    all_legacy_documents_redirect(request, "Rule-1_Amended_03202023.pdf")
+
+    # Assert
+    mock_render_404.assert_called_once_with(request)
+
+
+@pytest.mark.django_db
+@patch("app.urls.render_404_util")
+@patch("wagtail.contrib.redirects.models.Redirect.objects")
+def test_prevents_database_redirect_loop_to_relative_path(
+    mock_redirect_objects, mock_render_404
+):
+    """Test that database redirects to relative paths that would trigger the same function are prevented"""
+    # Arrange
+    from types import SimpleNamespace
+
+    # Mock a redirect that would cause a loop with relative path
+    redirect_entry = SimpleNamespace()
+    redirect_entry.old_path = "/files/documents/Rule-1_Amended_03202023.pdf"
+    redirect_entry.redirect_link = "/files/documents/rule-1.pdf"
+    redirect_entry.site = "localhost"
+    redirect_entry.is_permanent = True
+
+    mock_redirect_objects.filter.return_value.first.return_value = redirect_entry
+
+    request = RequestFactory().get("/files/documents/Rule-1_Amended_03202023.pdf")
+
+    # Act
+    all_legacy_documents_redirect(request, "Rule-1_Amended_03202023.pdf")
+
+    # Assert
+    mock_render_404.assert_called_once_with(request)
+
+
+@pytest.mark.django_db
+@patch("wagtail.contrib.redirects.models.Redirect.objects")
+def test_allows_database_redirect_to_safe_url(mock_redirect_objects):
+    """Test that database redirects to URLs that won't cause loops are allowed"""
+    # Arrange
+    from types import SimpleNamespace
+
+    # Mock a redirect to a safe URL (not handled by our function)
+    redirect_entry = SimpleNamespace()
+    redirect_entry.old_path = "/files/documents/old-file.pdf"
+    redirect_entry.redirect_link = "/some/other/path/file.pdf"
+    redirect_entry.site = "localhost"
+    redirect_entry.is_permanent = True
+
+    mock_redirect_objects.filter.return_value.first.return_value = redirect_entry
+
+    request = RequestFactory().get("/files/documents/old-file.pdf")
+
+    # Act
+    response = all_legacy_documents_redirect(request, "old-file.pdf")
+
+    # Assert
+    assert response.status_code == 301  # HttpResponsePermanentRedirect
+    assert response.url == "/some/other/path/file.pdf"
+
+
+@pytest.mark.django_db
+@patch("app.urls.render_404_util")
+@patch("wagtail.contrib.redirects.models.Redirect.objects")
+def test_exact_scenario_from_logs_rule_1_amended(
+    mock_redirect_objects, mock_render_404
+):
+    """Test the exact scenario from the logs: Rule-1_Amended_03202023.pdf redirecting to rule-1.pdf"""
+    # Arrange
+    from types import SimpleNamespace
+
+    # Mock the exact redirect from the logs
+    redirect_entry = SimpleNamespace()
+    redirect_entry.old_path = "/files/documents/Rule-1_Amended_03202023.pdf"
+    redirect_entry.redirect_link = (
+        "https://tbollu-sandbox-web.ustaxcourt.gov/files/documents/rule-1.pdf"
+    )
+    redirect_entry.site = "localhost"
+    redirect_entry.is_permanent = True
+
+    mock_redirect_objects.filter.return_value.first.return_value = redirect_entry
+
+    request = RequestFactory().get("/files/documents/Rule-1_Amended_03202023.pdf")
+
+    # Act
+    all_legacy_documents_redirect(request, "Rule-1_Amended_03202023.pdf")
+
+    # Assert
+    # Should return 404 instead of redirect to prevent infinite loop
+    mock_render_404.assert_called_once_with(request)
+
+
+@pytest.mark.django_db
+@patch("app.urls.render_404_util")
+@patch("wagtail.contrib.redirects.models.Redirect.objects")
+def test_complete_rules_scenario_from_logs(mock_redirect_objects, mock_render_404):
+    """Test the Complete Rules scenario from logs that was working"""
+    # Arrange
+    from types import SimpleNamespace
+
+    # Mock the redirect that should work (redirects to different pattern)
+    redirect_entry = SimpleNamespace()
+    redirect_entry.old_path = (
+        "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf"
+    )
+    redirect_entry.redirect_link = "/files/documents/complete-ropp.pdf"
+    redirect_entry.site = "localhost"
+    redirect_entry.is_permanent = True
+
+    mock_redirect_objects.filter.return_value.first.return_value = redirect_entry
+
+    request = RequestFactory().get(
+        "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf"
+    )
+
+    # Act
+    all_legacy_documents_redirect(
+        request, "Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf"
+    )
+
+    # Assert
+    # This should still trigger the loop prevention since the target is also handled by this function
+    mock_render_404.assert_called_once_with(request)

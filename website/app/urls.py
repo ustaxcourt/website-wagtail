@@ -14,6 +14,8 @@ from search import views as search_views
 from wagtail.contrib.redirects.models import Redirect
 from django.http import HttpResponsePermanentRedirect
 from wagtail.documents.views import serve
+from django.urls import resolve
+from django.urls.exceptions import Resolver404
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -49,6 +51,29 @@ def all_legacy_documents_redirect(request, filename):
                 f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
             )
             return render_404_util(request)
+
+        # Prevent loops where redirect target would be handled by this same function
+        # Check if the redirect target matches our URL patterns
+        try:
+            # Remove domain from redirect_target if it's a full URL
+            if redirect_target.startswith(("http://", "https://")):
+                from urllib.parse import urlparse
+
+                parsed_url = urlparse(redirect_target)
+                target_path = parsed_url.path
+            else:
+                target_path = redirect_target
+
+            # Try to resolve the target path
+            resolved = resolve(target_path)
+            if resolved.func == all_legacy_documents_redirect:
+                logger.warning(
+                    f"Preventing redirect loop - target would trigger same function: {target_path}"
+                )
+                return render_404_util(request)
+        except Resolver404:
+            # Target path doesn't match any patterns, safe to redirect
+            pass
 
         logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
         return HttpResponsePermanentRedirect(redirect_target)
