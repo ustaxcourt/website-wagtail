@@ -91,7 +91,7 @@ class PageInitializer(ABC):
 
         if not os.path.exists(file_path):
             logger.warning(f"Document file not found at {file_path}")
-            return None
+            raise FileNotFoundError(f"Document file not found: {file_path}")
 
         Document = get_document_model()
 

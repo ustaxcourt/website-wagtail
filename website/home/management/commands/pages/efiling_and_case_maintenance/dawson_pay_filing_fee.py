@@ -5,10 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-docs = {
-    "dawson_pay_filing_fee.pdf": "",
-    "Application_for_Waiver_of_Filing_Fee.pdf": "",
-}
+docs = {"Application_for_Waiver_of_Filing_Fee.pdf": ""}
 
 images = {
     "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png": "",
