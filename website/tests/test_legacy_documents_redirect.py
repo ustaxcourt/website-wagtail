@@ -8,7 +8,7 @@ from app.urls import all_legacy_documents_redirect
 class FakeDoc:
     def __init__(self, filename, url):
         self.filename = filename
-        self.file = type("File", (), {"url": url})()
+        self.file = type("File", (), {"url": url, "name": filename})()
 
 
 @pytest.mark.django_db

@@ -143,46 +143,6 @@ class RedirectInitializer:
     def __init__(self):
         self.logger = logger
 
-    def _check_redirect_chain(self, old_path, new_path, max_depth=10):
-        """
-        Check for redirect chains that could create infinite loops.
-
-        Args:
-            old_path (str): The path to redirect from
-            new_path (str): The path to redirect to
-            max_depth (int): Maximum chain depth to check
-
-        Returns:
-            bool: True if a loop is detected, False otherwise
-        """
-        visited = set()
-        current_path = new_path.lower()
-        depth = 0
-
-        while depth < max_depth:
-            if current_path in visited:
-                return True  # Loop detected
-
-            visited.add(current_path)
-
-            # Check if current_path redirects to something else
-            next_redirect = Redirect.objects.filter(
-                old_path__iexact=current_path
-            ).first()
-            if not next_redirect:
-                break  # End of chain
-
-            next_path = next_redirect.redirect_link.lower()
-
-            # Check if this creates a loop back to our starting point
-            if next_path == old_path.lower():
-                return True  # Loop detected
-
-            current_path = next_path
-            depth += 1
-
-        return False  # No loop detected within max_depth
-
     def create(self, old_path, new_path, is_permanent=True):
         """
         Create a single redirect if it doesn't already exist
@@ -200,13 +160,6 @@ class RedirectInitializer:
         # Check if redirect already exists
         if Redirect.objects.filter(old_path=old_path).exists():
             self.logger.info(f"- Redirect from '{old_path}' to '{new_path}' already exists.")
-            return
-
-        # Enhanced loop detection - check for chains
-        if self._check_redirect_chain(old_path, new_path):
-            self.logger.warning(
-                f"Preventing redirect chain loop: {old_path} -> {new_path}"
-            )
             return
 
         # Check for potential circular redirects
