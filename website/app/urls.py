@@ -74,8 +74,9 @@ def all_legacy_documents_redirect(request, filename):
     matched_docs = [
         doc
         for doc in possible_matches
-        if doc.filename.lower().endswith(ext.lower())
-        and os.path.splitext(doc.filename.lower())[0] == base_filename.lower()
+        if os.path.basename(doc.file.name).lower().endswith(ext.lower())
+        and os.path.splitext(os.path.basename(doc.file.name).lower())[0]
+        == base_filename.lower()
     ]
 
     number_of_matches = len(matched_docs)
@@ -85,13 +86,17 @@ def all_legacy_documents_redirect(request, filename):
         matched_doc = matched_docs[0]
         # Check if we're already serving the correct file to prevent loops
         requested_filename = filename.lower()
-        actual_filename = matched_doc.filename.lower()
+        actual_filename = os.path.basename(matched_doc.file.name).lower()
 
         if requested_filename != actual_filename:
-            logger.warning(f"Document redirect: {filename} -> {matched_doc.filename}")
+            logger.warning(
+                f"Document redirect: {filename} -> {os.path.basename(matched_doc.file.name)}"
+            )
+            logger.warning(f"Document file URL: {matched_doc.file.url}")
             return redirect(matched_doc.file.url)
         else:
             logger.warning(f"Exact match found, serving file directly: {filename}")
+            logger.warning(f"Document file URL: {matched_doc.file.url}")
             return redirect(matched_doc.file.url)
 
     # Log requests with no matches or multiple matches
@@ -99,7 +104,7 @@ def all_legacy_documents_redirect(request, filename):
         logger.warning(f"No document matches for: {filename}")
     else:
         logger.warning(
-            f"Multiple document matches for: {filename}, matches: {[doc.filename for doc in matched_docs]}"
+            f"Multiple document matches for: {filename}, matches: {[os.path.basename(doc.file.name) for doc in matched_docs]}"
         )
 
     # Not found or multiple matches result in 404
