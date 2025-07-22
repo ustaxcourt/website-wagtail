@@ -225,6 +225,18 @@ resource "aws_cloudfront_distribution" "app" {
 
     viewer_protocol_policy = "redirect-to-https"
   }
+  # Cache behavior for /files/documents/* path
+  ordered_cache_behavior {
+    path_pattern     = "/files/documents/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "app-origin"  # Route to Django/ALB
+
+    cache_policy_id          = aws_cloudfront_cache_policy.custom_five_minute_app_cache.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
+
+    viewer_protocol_policy = "redirect-to-https"
+  }
   # Cache behavior for /files/* path
   ordered_cache_behavior {
     path_pattern     = "/files/*"
