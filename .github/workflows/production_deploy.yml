@@ -174,12 +174,8 @@ jobs:
             --output text
           )
 
-          # Set desired count based on environment
-          if [[ "${ENVIRONMENT}" == "sandbox" ]]; then
-            desired_count=1
-          else
-            desired_count=2
-          fi
+          # Set desired count for production
+          desired_count=2
 
           aws ecs update-service \
             --cluster "${ENVIRONMENT}-website-cluster" \
@@ -227,6 +223,13 @@ jobs:
             --role-name github-workflow-deployer \
             --policy-arn arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:policy/deployer-policy || echo "Policy was not attached or already detached."
           echo "... Completed."
+
+      - name: Deploy to Training Environment
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git tag train
+          git push --force origin train
 
       - name: Notify SNS of deployment outcome
         if: always()

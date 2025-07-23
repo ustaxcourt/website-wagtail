@@ -34,36 +34,27 @@ aws-setup: check-env-is-aws aws-init
 		cd ~/.ssh && cat wagtail_$(env)_bastion_key_id_rsa.pub | base64 > wagtail_$(env)_bastion_key_id_rsa.pub.base64; \
 	fi
 
-	@if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
+	@SECRET_STRING='{ \
+		"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
+		"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
+		"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
+		"DJANGO_SUPERUSER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+		"DOMAIN_NAME": "$(DOMAIN_NAME)", \
+		"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
+		"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_SSO", \
+		"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_SSO", \
+		"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_SSO", \
+		"DATABASE_HOSTNAME": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_DB_RECOVERY", \
+		"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_DB_RECOVERY", \
+		"USERS_TO_PREREGISTER": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+		"USERS_TO_PREREGISTER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
+	}'; \
+	if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
 		echo "Secret exists. Updating secret..."; \
-		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string '{ \
-			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
-			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
-			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"DJANGO_SUPERUSER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"DATABASE_HOSTNAME": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
-		}'; \
+		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string "$$SECRET_STRING"; \
 	else \
 		echo "Creating new secret..."; \
-		aws secretsmanager create-secret --name website_secrets --region us-east-1 --description "Secrets for website infrastructure" --secret-string '{ \
-			"DATABASE_PASSWORD": "'"$$(head -c 20 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 20)"'", \
-			"BASTION_PUBLIC_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64)"'", \
-			"BASTION_PRIVATE_KEY": "'"$$(cat ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64)"'", \
-			"DJANGO_SUPERUSER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"DOMAIN_NAME": "$(DOMAIN_NAME)", \
-			"SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" , \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"DATABASE_HOSTNAME": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-			"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
-		}'; \
+		aws secretsmanager create-secret --name website_secrets --region us-east-1 --description "Secrets for website infrastructure" --secret-string "$$SECRET_STRING"; \
 	fi
 
 	@if aws iam get-user --user-name deployer > /dev/null 2>&1; then \
@@ -79,6 +70,7 @@ aws-setup: check-env-is-aws aws-init
 	else \
 		echo "Creating policy 'deployer-policy'..."; \
 		aws iam create-policy --policy-name deployer-policy --policy-document file://./infra/iam/deployer-policy.json; \
+		POLICY_ARN=$$(aws iam list-policies --query "Policies[?PolicyName=='deployer-policy'].Arn" --output text); \
 	fi;\
 	aws iam create-policy-version --policy-arn "$$POLICY_ARN" --policy-document file://./infra/iam/deployer-policy.json --set-as-default;\
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$POLICY_ARN";
@@ -93,8 +85,10 @@ aws-init: check-env-is-aws
 	@echo "Initializing environment: $(env)"
 	@cd infra && ./init.sh && \
 	   . ./load-secrets.sh && \
-	   echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64 && \
-	   echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64
+	   if [ -n "$$BASTION_PUBLIC_KEY" ] && [ -n "$$BASTION_PRIVATE_KEY" ]; then \
+		 echo "$$BASTION_PUBLIC_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.pub.base64; \
+		 echo "$$BASTION_PRIVATE_KEY" > ~/.ssh/wagtail_$(env)_bastion_key_id_rsa.base64; \
+	   fi
 
 create-db-restore: check-env-is-aws
 	@echo "Creating database restore for environment: $(env)"
