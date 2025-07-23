@@ -9,7 +9,7 @@ function handler(event) {
     var uri = request.uri;
 
     // Check if the URI starts with /files/ and remove it
-    if (uri.startsWith('/files/') && !uri.startsWith('/files/documents/')) {
+    if (uri.startsWith('/files/')) {
         request.uri = uri.slice(6); // Remove '/files'
     }
 
