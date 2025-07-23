@@ -21,7 +21,7 @@ def rules_documents_redirect(request, filename):
     logger.warning(f"Checking for database redirects for path: {request.path}")
 
     redirect_entry = Redirect.objects.filter(
-        old_path__iexact=f"/files/{request.path}"
+        old_path__iexact=f"/files{request.path}"
     ).first()
     if redirect_entry:
         logger.warning(
@@ -52,7 +52,9 @@ def rules_documents_redirect(request, filename):
             return render_404_util(request)
 
         logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
-        return redirect(redirect_path)
+        # Add a query string to indicate this was redirected
+        redirect_url = f"{redirect_path}?redirected=1"
+        return redirect(redirect_url)
 
     else:
         logger.warning(
