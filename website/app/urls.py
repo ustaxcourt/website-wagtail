@@ -11,6 +11,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
+from .static_url_mapping import static_pdf_files_mapping
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -20,15 +21,25 @@ def all_legacy_documents_redirect(request, filename):
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
 
+    # Updated file name variable incase of mapping
+    uploaded_filename = filename.lower()
+
+    # Check static file mapping for the base filename
+    if base_filename in static_pdf_files_mapping:
+        mapped_value = static_pdf_files_mapping[base_filename]
+        if mapped_value:
+            base_filename = mapped_value
+            uploaded_filename = mapped_value.lower() + ".pdf"
+
     # Find documents where the filename starts with the base name
     possible_matches = Document.objects.filter(file__icontains=base_filename)
 
-    # Filter down to files with same extension that start with the base filename
+    # Filter down to files with same extension and exact base filename match
     matched_docs = [
         doc
         for doc in possible_matches
         if doc.filename.lower().endswith(ext)
-        and os.path.splitext(doc.filename)[0].startswith(base_filename)
+        and os.path.splitext(doc.filename)[0] == base_filename
     ]
 
     number_of_matches = len(matched_docs)
@@ -36,24 +47,24 @@ def all_legacy_documents_redirect(request, filename):
     # Redirect if there is a single match and it is exact (ignoring case)
     if number_of_matches == 1:
         matched_doc = matched_docs[0]
-        if matched_doc.filename.lower() == filename.lower():
+        if matched_doc.filename.lower() == uploaded_filename.lower():
             logger.info(
-                f"Successfully redirecting legacy resource request for: {filename}"
+                f"Successfully redirecting legacy resource request for: {uploaded_filename}"
             )
             return redirect(matched_doc.file.url)
         else:
             # Log non-exact match and render 404
             logger.warning(
-                f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
+                f"Found non-exact match for: {uploaded_filename}, match found: {matched_doc.filename}"
             )
             return render_404_util(request)
 
     # Log requests with no matches or multiple matches
     if number_of_matches == 0:
-        logger.warning(f"No matches for: {filename}")
+        logger.warning(f"No matches for: {uploaded_filename}")
     else:
         logger.warning(
-            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
+            f"Found multiple matches for: {uploaded_filename}, matches found: {[doc.filename for doc in matched_docs]}"
         )
 
     # Not found or multiple matches result in 404

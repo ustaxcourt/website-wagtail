@@ -68,3 +68,24 @@ def test_returns_404_on_single_non_exact_match(mock_document_model, mock_render_
 
     # Assert
     mock_render_404.assert_called_once_with(request)
+
+
+@patch("app.urls.static_pdf_files_mapping", {"Rule-1": "Rule-1_Amended_03202023"})
+@patch("app.urls.Document")
+def test_redirects_on_static_mapping_match(mock_document_model):
+    # Arrange
+    doc = FakeDoc(
+        "Rule-1_Amended_03202023.pdf", "/media/documents/Rule-1_Amended_03202023.pdf"
+    )
+    mock_document_model.objects.filter.return_value = [doc]
+    request = RequestFactory().get("/resources/Rule-1.pdf")
+
+    # Act
+    response = all_legacy_documents_redirect(request, "Rule-1.pdf")
+
+    # Assert
+    mock_document_model.objects.filter.assert_called_once_with(
+        file__icontains="Rule-1_Amended_03202023"
+    )
+    assert response.status_code == 302
+    assert response.url == doc.file.url
