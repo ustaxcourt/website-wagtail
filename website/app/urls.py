@@ -21,7 +21,7 @@ def rules_documents_redirect(request, filename):
     logger.warning(f"Checking for database redirects for path: {request.path}")
 
     redirect_entry = Redirect.objects.filter(
-        old_path__iexact=f"files/{request.path}"
+        old_path__iexact=f"/files/{request.path}"
     ).first()
     if redirect_entry:
         logger.warning(
@@ -52,7 +52,7 @@ def rules_documents_redirect(request, filename):
             return render_404_util(request)
 
         logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
-        return redirect("/")
+        return redirect(redirect_path)
 
     else:
         logger.warning(
@@ -132,7 +132,7 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     re_path(
-        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
+        r"^documents/(?P<filename>[^/]+\.pdf)$",
         rules_documents_redirect,
         name="rules_documents_redirect",
     ),
