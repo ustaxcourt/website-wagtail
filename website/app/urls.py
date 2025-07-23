@@ -11,82 +11,49 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
-from wagtail.contrib.redirects.models import Redirect
-from django.http import HttpResponsePermanentRedirect
 
 
 def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
-    # First check for database redirects
-    logger.warning(f"Checking for database redirects for path: {request.path}")
-    redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
-
-    if redirect_entry:
-        logger.warning(
-            f"Found redirect entry: {redirect_entry.old_path} -> {redirect_entry.redirect_link}"
-        )
-        logger.warning(f"Redirect site: {redirect_entry.site}")
-        logger.warning(f"Redirect is_permanent: {redirect_entry.is_permanent}")
-
-        redirect_target = redirect_entry.redirect_link
-
-        current_path = request.path.rstrip("/").lower()
-        redirect_path = redirect_target.rstrip("/").lower()
-        logger.warning(f"Checking current path: {current_path}")
-        logger.warning(f"Checking Redirect path: {redirect_path}")
-
-        # Stronger check — stop redirecting if we're already on the target
-        if current_path == redirect_path:
-            logger.warning(f"Preventing redirect loop for: {request.path}")
-            return render_404_util(request)
-
-        # Additional loop prevention: check if we're redirecting to the same filename
-        current_filename = os.path.basename(current_path)
-        redirect_filename = os.path.basename(redirect_path)
-        logger.warning(f"Checking current filename: {current_filename}")
-        logger.warning(f"Checking Redirect filename: {redirect_filename}")
-
-        if current_filename == redirect_filename:
-            logger.warning(
-                f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
-            )
-            return render_404_util(request)
-
-        logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
-        return HttpResponsePermanentRedirect(redirect_target)
-    else:
-        logger.warning(f"ELSE: No database redirect found for: {request.path}")
-
     # Remove the extension if present
     base_filename, ext = os.path.splitext(filename)
-    logger.warning(f"base_filename: {base_filename}, ext: {ext}")
 
-    # Find documents where the filename matches (case-insensitive)
+    # Find documents where the filename starts with the base name
     possible_matches = Document.objects.filter(file__icontains=base_filename)
-    logger.warning(f"possible_matches: {possible_matches}")
 
     # Filter down to files with same extension that start with the base filename
     matched_docs = [
         doc
         for doc in possible_matches
-        if doc.filename.lower().endswith(ext.lower())
-        and os.path.splitext(doc.filename.lower())[0] == base_filename.lower()
+        if doc.filename.lower().endswith(ext)
+        and os.path.splitext(doc.filename)[0].startswith(base_filename)
     ]
-    logger.warning(f"matched_docs: {matched_docs}")
 
-    if len(matched_docs) == 1:
+    number_of_matches = len(matched_docs)
+
+    # Redirect if there is a single match and it is exact (ignoring case)
+    if number_of_matches == 1:
         matched_doc = matched_docs[0]
+        if matched_doc.filename.lower() == filename.lower():
+            logger.info(
+                f"Successfully redirecting legacy resource request for: {filename}"
+            )
+            return redirect(matched_doc.file.url)
+        else:
+            # Log non-exact match and render 404
+            logger.warning(
+                f"Found non-exact match for: {filename}, match found: {matched_doc.filename}"
+            )
+            return render_404_util(request)
 
-        logger.warning(f"Serving document directly via Wagtail: {matched_doc.filename}")
-        return redirect(matched_doc.file.url)
     # Log requests with no matches or multiple matches
-    if len(matched_docs) == 0:
-        logger.warning(f"No document matches for: {filename}")
+    if number_of_matches == 0:
+        logger.warning(f"No matches for: {filename}")
     else:
         logger.warning(
-            f"Multiple document matches for: {filename}, matches: {[doc.filename for doc in matched_docs]}"
+            f"Found multiple matches for: {filename}, matches found: {[doc.filename for doc in matched_docs]}"
         )
 
     # Not found or multiple matches result in 404
@@ -109,11 +76,6 @@ urlpatterns = [
     path(
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
-    re_path(
-        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
-        all_legacy_documents_redirect,
-        name="all_legacy_documents_redirect",
-    ),
     path("admin/", include(wagtailadmin_urls)),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
