@@ -20,9 +20,7 @@ def rules_documents_redirect(request, filename):
     # First check for database redirects
     logger.warning(f"Checking for database redirects for path: {request.path}")
 
-    redirect_entry = Redirect.objects.filter(
-        old_path__iexact=f"/files{request.path}"
-    ).first()
+    redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
     if redirect_entry:
         logger.warning(
             f"Found redirect entry: {redirect_entry.old_path} -> {redirect_entry.redirect_link}"
@@ -53,7 +51,7 @@ def rules_documents_redirect(request, filename):
 
         logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
         # Add a query string to indicate this was redirected
-        redirect_url = f"{redirect_path}?redirected=1"
+        redirect_url = f"{redirect_path}?r=1"
         return redirect(redirect_url)
 
     else:
@@ -134,7 +132,7 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     re_path(
-        r"^documents/(?P<filename>[^/]+\.pdf)$",
+        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
         rules_documents_redirect,
         name="rules_documents_redirect",
     ),
