@@ -253,3 +253,5 @@ website_secrets
 CLAUDE.md
 GEMINI.md
 tmp/
+website/documents_object_list.txt
+website/s3_search_results.txt
