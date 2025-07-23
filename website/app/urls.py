@@ -11,6 +11,45 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
+from wagtail.contrib.redirects.models import Redirect
+
+
+def rules_documents_redirect(request, filename):
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
+    # First check for database redirects
+    logger.warning(f"Checking for database redirects for path: {request.path}")
+    redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
+    if redirect_entry:
+        logger.warning(
+            f"Found redirect entry: {redirect_entry.old_path} -> {redirect_entry.redirect_link}"
+        )
+        logger.warning(f"Redirect site: {redirect_entry.site}")
+        logger.warning(f"Redirect is_permanent: {redirect_entry.is_permanent}")
+        redirect_target = redirect_entry.redirect_link
+        current_path = request.path.rstrip("/").lower()
+        redirect_path = redirect_target.rstrip("/").lower()
+        logger.warning(f"Checking current path: {current_path}")
+        logger.warning(f"Checking Redirect path: {redirect_path}")
+        # Stronger check — stop redirecting if we're already on the target
+
+        if current_path == redirect_path:
+            logger.warning(f"Preventing redirect loop for: {request.path}")
+            return render_404_util(request)
+        # Additional loop prevention: check if we're redirecting to the same filename
+        current_filename = os.path.basename(current_path)
+        redirect_filename = os.path.basename(redirect_path)
+        logger.warning(f"Checking current filename: {current_filename}")
+        logger.warning(f"Checking Redirect filename: {redirect_filename}")
+
+        if current_filename.lower() == redirect_filename.lower():
+            logger.warning(
+                f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
+            )
+            return render_404_util(request)
+
+        logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
+        return redirect("/")
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -81,6 +120,11 @@ urlpatterns = [
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
+    ),
+    re_path(
+        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
+        rules_documents_redirect,
+        name="rules_documents_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
