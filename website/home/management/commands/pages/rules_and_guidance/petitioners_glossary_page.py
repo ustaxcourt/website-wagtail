@@ -13,9 +13,9 @@ petitioners_docs = {
     "Petition_Kit.pdf": "",
     "Pretrial_Memorandum_Form_old.pdf": "",
     "rule-37.pdf": "",
-    "Rule-151.pdf": "",
+    "rule-151.pdf": "",
     "rule-173.pdf": "",
-    "Rule-280(amended).pdf": "",
+    "rule-280.pdf": "",
     "rule-350.pdf": "",
     "Subpoena_Appear_Testify_Hearing_Or_Trial.pdf": "",
     "Subpoena_To_Testify_Deposition.pdf": "",
@@ -55,7 +55,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
         questions = [
             {
                 "question": "Abatement",
-                "answer": f'Abatement cases ask the IRS to lessen the amount of interest owed when certain requirements are met. See I.R.C. section 6404 and <strong><a linktype="document" id="{petitioners_docs["Rule-280(amended).pdf"].id}" target="_blank" title="Tax Court Rule 280">Tax Court Rule 280</a></strong> et seq. regarding Actions for Review of Failure to Abate Interest.',
+                "answer": f'Abatement cases ask the IRS to lessen the amount of interest owed when certain requirements are met. See I.R.C. section 6404 and <strong><a linktype="document" id="{petitioners_docs["rule-280.pdf"].id}" target="_blank" title="Tax Court Rule 280">Tax Court Rule 280</a></strong> et seq. regarding Actions for Review of Failure to Abate Interest.',
                 "anchortag": "ABATEMENT",
             },
             {
@@ -90,7 +90,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Brief",
-                "answer": f'A brief is a formal document normally filed by each party after the trial in a regular case. A brief contains a table of contents, a statement of the issues, proposed findings of facts, points of law relied upon, argument and analysis. See <strong><a linktype="document" id="{petitioners_docs["Rule-151.pdf"].id}" target="_blank" title="Rule 151">Rule 151</a></strong>.',
+                "answer": f'A brief is a formal document normally filed by each party after the trial in a regular case. A brief contains a table of contents, a statement of the issues, proposed findings of facts, points of law relied upon, argument and analysis. See <strong><a linktype="document" id="{petitioners_docs["rule-151.pdf"].id}" target="_blank" title="Rule 151">Rule 151</a></strong>.',
                 "anchortag": "BRIEF",
             },
             {
