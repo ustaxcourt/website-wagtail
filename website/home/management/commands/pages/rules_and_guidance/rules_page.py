@@ -190,7 +190,7 @@ body = [
                 {
                     "title": "Rule 22.  Filing",
                     "icon": None,
-                    "document": "Rule-22(amended).pdf",
+                    "document": "rule-22.pdf",
                     "url": None,
                 },
                 {
@@ -202,7 +202,7 @@ body = [
                 {
                     "title": "Rule 24. Appearance and Representation",
                     "icon": None,
-                    "document": "Rule-24(amended-Oct.-6,-2020).pdf",
+                    "document": "-2020).pdf,-2020).pdf",
                     "url": None,
                 },
                 {
@@ -283,7 +283,7 @@ body = [
                 {
                     "title": "Rule 38. Joinder of Issue",
                     "icon": None,
-                    "document": "Rule-38(amended).pdf",
+                    "document": "rule-38.pdf",
                     "url": None,
                 },
                 {
@@ -1090,7 +1090,7 @@ body = [
                 {
                     "title": "Rule 230. General",
                     "icon": None,
-                    "document": "Rule-230(2nd-amended).pdf",
+                    "document": "rule-230.pdf",
                     "url": None,
                 },
                 {
@@ -1210,37 +1210,37 @@ body = [
                 {
                     "title": "Rule 255.2\t. Commencement of Partnership Action",
                     "icon": None,
-                    "document": "Rule-255.2(New).pdf",
+                    "document": "rule-255.2.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 255.3. Request for Place of Trial",
                     "icon": None,
-                    "document": "Rule-255.3(New).pdf",
+                    "document": "rule-255.3.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 255.4. Other Pleadings",
                     "icon": None,
-                    "document": "Rule-255.4(New).pdf",
+                    "document": "rule-255.4.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 255.5. Joinder of Issue in Partnership Action",
                     "icon": None,
-                    "document": "Rule-255.5(New).pdf",
+                    "document": "rule-255.5.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 255.6. Identification and Removal of Partnership Representative",
                     "icon": None,
-                    "document": "Rule-255.6(New).pdf",
+                    "document": "rule-255.6.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 255.7\t. Decisions",
                     "icon": None,
-                    "document": "Rule-255.7(New).pdf",
+                    "document": "rule-255.7.pdf",
                     "url": None,
                 },
             ]
@@ -1255,19 +1255,19 @@ body = [
                 {
                     "title": "Rule 260. Proceeding To Enforce Overpayment Determination",
                     "icon": None,
-                    "document": "Rule-260(amended-Oct.-6,-2020).pdf",
+                    "document": "-2020).pdf,-2020).pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 261. Proceeding To Redetermine Interest",
                     "icon": None,
-                    "document": "Rule-261(amended-Oct.-6,-2020).pdf",
+                    "document": "-2020).pdf,-2020).pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 262. Proceeding To Modify Decision in Estate Tax Case Involving Section 6166 Election",
                     "icon": None,
-                    "document": "Rule-262(amended-Oct.-6,-2020).pdf",
+                    "document": "-2020).pdf,-2020).pdf",
                     "url": None,
                 },
             ]
@@ -1330,7 +1330,7 @@ body = [
                 {
                     "title": "Rule 281. Commencement of Action for Review of Failure To Abate Interest",
                     "icon": None,
-                    "document": "Rule-281(amended).pdf",
+                    "document": "rule-281.pdf",
                     "url": None,
                 },
                 {
