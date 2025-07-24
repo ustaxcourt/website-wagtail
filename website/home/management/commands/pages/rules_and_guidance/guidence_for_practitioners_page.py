@@ -25,7 +25,7 @@ practitioners_docs = {
     "DAWSON_Reminders_for_Practitioners.pdf": "",
     "NonAttorney_Exam_Statistics.pdf": "",
     "Nonattorney_Examination_Procedures_050322.pdf": "",
-    "Rule-200(2nd-amended).pdf": "",
+    "rule-200.pdf": "",
     "rule-201.pdf": "",
     "rule-202.pdf": "",
     "lea_faq.pdf": "",
@@ -111,7 +111,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                                     "title": "Rule 200. Admission to Practice and Periodic Registration Fee",
                                     "icon": IconCategories.PDF,
                                     "document": practitioners_docs[
-                                        "Rule-200(2nd-amended).pdf"
+                                        "rule-200.pdf"
                                     ].id,
                                     "url": None,
                                 },
@@ -145,7 +145,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     {"type": "h3", "value": "Admission of Nonattorneys"},
                     {
                         "type": "paragraph",
-                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a linktype="document" id="{practitioners_docs["Rule-200(2nd-amended).pdf"].id}" title="Rule 200" target="_blank">Rule 200</a>, Tax Court Rules of Practice and Procedure.
+                        "value": f"""A nonattorney may be admitted to practice before the Court provided the requirements outlined in the Tax Court Rules of Practice and Procedure are satisfied. See <a linktype="document" id="{practitioners_docs["rule-200.pdf"].id}" title="Rule 200" target="_blank">Rule 200</a>, Tax Court Rules of Practice and Procedure.
                         <br/><br/><strong>Resources</strong>""",
                     },
                     {
@@ -216,7 +216,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                         "type": "paragraph",
                         "value": f"""
                         <strong>Character and Fitness</strong><br/><br/>
-                        An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a linktype="document" id="{practitioners_docs["Rule-200(2nd-amended).pdf"].id}" title="Rule 200" target="_blank">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
+                        An applicant must establish to the satisfaction of the Court that he or she is of good moral and professional character, including by providing sponsorship letters. See <a linktype="document" id="{practitioners_docs["rule-200.pdf"].id}" title="Rule 200" target="_blank">Rule 200</a>, Tax Court <a href="/rules" title="Rules of Practice and Procedure">Rules of Practice and Procedure</a>. Accordingly, after administration of the Nonattorney Exam, those who pass will be required to undergo a character and fitness review. The review will include requests for additional background information, sponsorship letters, and a remote interview. Any necessary documentation will be requested at that time.""",
                     },
                     {"type": "hr", "value": True},
                     {"type": "h3", "value": "Certificates of Good Standing"},
