@@ -110,9 +110,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                                 {
                                     "title": "Rule 200. Admission to Practice and Periodic Registration Fee",
                                     "icon": IconCategories.PDF,
-                                    "document": practitioners_docs[
-                                        "rule-200.pdf"
-                                    ].id,
+                                    "document": practitioners_docs["rule-200.pdf"].id,
                                     "url": None,
                                 },
                                 {
