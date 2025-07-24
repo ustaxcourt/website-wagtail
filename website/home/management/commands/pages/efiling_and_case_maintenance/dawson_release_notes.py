@@ -10,13 +10,13 @@ docs = {
         "title": "Administrative Order 2023-02 - Expanding Remote Electronic Access to Certain Court Documents",
         "name": "Administrative_Order_2023-02.pdf",
     },
-    "Rule-151_1_Amended_03202023.pdf": {
+    "rule-151.1.pdf": {
         "title": "Rule 151.1. Brief of an Amicus Curiae",
-        "name": "Rule-151_1_Amended_03202023.pdf",
+        "name": "rule-151.1.pdf",
     },
-    "Rule-27_Amended_03202023.pdf": {
+    "rule-27.pdf": {
         "title": "Rule 27. Privacy Protection for Filings Made With the Court",
-        "name": "Rule-27_Amended_03202023.pdf",
+        "name": "rule-27.pdf",
     },
 }
 
@@ -232,7 +232,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-08-01",
-                "description": f'<ul><li>As identified in <a linktype="document" id="{docs["Administrative_Order_2023-02.pdf"]["document"].id}" title="Administrative Order 2023-02" target="_blank">Administrative Order 2023-02</a>, certain documents filed on or after August 1, 2023, in non-sealed cases will now be viewable by the public through DAWSON:<ul><li>Stipulated Decisions</li><li>Post-trial briefs e-filed by practitioners</li><li>Amicus briefs filed pursuant to <a linktype="document" id="{docs["Rule-151_1_Amended_03202023.pdf"]["document"].id}" title="Rule 151.1" target="_blank">Rule 151.1</a></li></ul></li><li>Beginning with the Fall 2023 term, an additional Notice of Trial will be served on pro se petitioners approximately a month before the scheduled trial date.</li></ul>',
+                "description": f'<ul><li>As identified in <a linktype="document" id="{docs["Administrative_Order_2023-02.pdf"]["document"].id}" title="Administrative Order 2023-02" target="_blank">Administrative Order 2023-02</a>, certain documents filed on or after August 1, 2023, in non-sealed cases will now be viewable by the public through DAWSON:<ul><li>Stipulated Decisions</li><li>Post-trial briefs e-filed by practitioners</li><li>Amicus briefs filed pursuant to <a linktype="document" id="{docs["rule-151.1.pdf"]["document"].id}" title="Rule 151.1" target="_blank">Rule 151.1</a></li></ul></li><li>Beginning with the Fall 2023 term, an additional Notice of Trial will be served on pro se petitioners approximately a month before the scheduled trial date.</li></ul>',
             },
             {
                 "release_date": "2023-07-16",
@@ -252,7 +252,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-25",
-                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a linktype="document" id="{docs["Rule-27_Amended_03202023.pdf"]["document"].id}" title="Rule 27" target="_blank">Rule 27</a>.</li></ul>',
+                "description": f'<ul><li>Added a new checkbox for e-filers to acknowledge that their documents have been redacted in accordance with <a linktype="document" id="{docs["rule-27.pdf"]["document"].id}" title="Rule 27" target="_blank">Rule 27</a>.</li></ul>',
             },
             {
                 "release_date": "2023-04-02",

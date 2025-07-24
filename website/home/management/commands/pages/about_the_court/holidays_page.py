@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 docs = {
-    "Rule-25_Amended_03202023.pdf": "",
+    "rule-25.pdf": "",
 }
 
 
@@ -69,7 +69,7 @@ class HolidaysPageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "paragraph",
-                        "value": f'*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a linktype="document" id="{docs["Rule-25_Amended_03202023.pdf"].id}" target="_blank" title="Rule 25" >See Rule 25</a></strong>.',
+                        "value": f'*Although the Tax Court is open on this day, it is a legal holiday for the purpose of computing time. <strong><a linktype="document" id="{docs["rule-25.pdf"].id}" target="_blank" title="Rule 25" >See Rule 25</a></strong>.',
                     },
                 ],
             )

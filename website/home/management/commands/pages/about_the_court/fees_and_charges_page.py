@@ -7,9 +7,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 documents = {
-    "Rule-190.pdf": "",
+    "rule-190.pdf": "",
     "Rule-200(2nd-amended).pdf": "",
-    "Rule-148.pdf": "",
+    "rule-148.pdf": "",
     "Rule-11(superseded).pdf": "",
     "fee_schedule.pdf": "",
 }
@@ -79,7 +79,7 @@ class FeesAndChargesPageInitializer(PageInitializer):
             {
                 "type": "paragraph",
                 "value": '<em>(Issued in accordance with 26 U.S.C. sections 7451 and 7470 and </em><strong><em><a linktype="document" id="'
-                + str(documents_ids["Rule-190.pdf"])
+                + str(documents_ids["rule-190.pdf"])
                 + '" target="_blank" title="Rule 190">Rule 190</a></em></strong><em>)</em>',
             },
             {"type": "hr", "value": True},
@@ -192,7 +192,7 @@ class FeesAndChargesPageInitializer(PageInitializer):
             {
                 "type": "paragraph",
                 "value": '<em>(Issued in accordance with 26 U.S.C. section 7457, 28 U.S.C. section 1821, and </em><strong><em><a linktype="document" id="'
-                + str(documents_ids["Rule-148.pdf"])
+                + str(documents_ids["rule-148.pdf"])
                 + '" target="_blank" title="Rule 148">Rule 148</a></em></strong><em>)</em>',
             },
             {"type": "hr", "value": True},
