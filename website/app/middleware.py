@@ -52,9 +52,9 @@ class CacheControlMiddleware:
         # 'private' indicates the response is for a single user and should not be
         # stored by a shared cache.
         elif request.user.is_authenticated:
-            response[
-                "Cache-Control"
-            ] = "private, no-store, no-cache, must-revalidate, max-age=0"
+            response["Cache-Control"] = (
+                "private, no-store, no-cache, must-revalidate, max-age=0"
+            )
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"
             response["X-Logged-In-User"] = "true"

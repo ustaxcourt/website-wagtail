@@ -30,12 +30,11 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
         logger.info(f"Creating the '{title}' page.")
 
         for document in docs.keys():
-            uploaded_document = self.load_document_from_documents_dir(
+            docs[document] = self.load_document_from_documents_dir(
                 subdirectory=None,
                 filename=document,
                 title=document,
             )
-            docs[document] = uploaded_document.file.url
 
         home_page.add_child(
             instance=EnhancedStandardPage(
@@ -50,7 +49,7 @@ class ClinicsProBonoProgramsPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": f'Tax clinics and Bar sponsored calendar call programs provide important advice and assistance to many low income, self represented taxpayers who have disputes with the Internal Revenue Service. The <strong><a href="{docs["clinics.pdf"]}" target="_blank" title="participating clinics">participating clinics</a></strong> listed are not part of the Internal Revenue Service or the Tax Court. The Tax Court does not endorse or recommend any particular tax clinic or Bar sponsored calendar call program.',
+                        "value": f'Tax clinics and Bar sponsored calendar call programs provide important advice and assistance to many low income, self represented taxpayers who have disputes with the Internal Revenue Service. The <strong><a linktype="document" id="{docs["clinics.pdf"].id}" target="_blank" title="participating clinics">participating clinics</a></strong> listed are not part of the Internal Revenue Service or the Tax Court. The Tax Court does not endorse or recommend any particular tax clinic or Bar sponsored calendar call program.',
                     },
                     {
                         "type": "paragraph",

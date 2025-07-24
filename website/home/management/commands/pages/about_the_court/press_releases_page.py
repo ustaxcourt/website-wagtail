@@ -1516,13 +1516,6 @@ class PressReleasesPageInitializer(PageInitializer):
                                 },
                             },
                             {
-                                "release_date": datetime(2008, 4, 30).date(),
-                                "details": {
-                                    "description": "The Tax Court has issued a press release announcing the date and time of the 2008 written exam for admission to practice for applicants other than attorneys at law.",
-                                    "file": press_releases_docs["043008.pdf"],
-                                },
-                            },
-                            {
                                 "release_date": datetime(2008, 1, 15).date(),
                                 "details": {
                                     "description": "The Court has adopted amendments to its Rules regarding privacy issues and access to its electronic case files, and other amendments to its Rules and forms.",

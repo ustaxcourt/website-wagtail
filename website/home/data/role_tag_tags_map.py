@@ -1,0 +1,52 @@
+ROLE_TAGS_TAG_MAP = {
+    "Role Content Manager": [],
+    "Role Website Manager": [],
+    "Role Chief Judge": [
+        "Administrative Orders",
+        "Remote Proceedings",
+        "Judicial Conduct and Disability Procedures",
+        "Engagement & Outreach",
+    ],
+    "Role Dawson Contributor": ["DAWSON Training Guides", "DAWSON Release Notes"],
+    "Role Public Affairs": [
+        "Press Releases",
+        "Mission Statement",
+        "History",
+        "Engagement & Outreach",
+        "LITC",
+        "Events and Webinars",
+    ],
+    "Role Clerk Office": [
+        "Reports & Statistics",
+        "Judges & Bios",
+        "Directory",
+        "Trial Sessions",
+        "Judicial Conduct and Disability Procedures",
+    ],
+    "Role Hr Committee": [
+        "Vacancy Announcements",
+        "Internship Programs",
+        "Law Clerk Programs",
+    ],
+    "Role Pro Se Committee": [
+        "Clinics",
+        "Pro Bono Programs",
+        "Guidance for Petitioners",
+        "Forms",
+    ],
+    "Role Rules Committee": [
+        "Tax Court Rules",
+        "Forms",
+        "Rules Comments and Suggestions",
+    ],
+    "Role Admissions Committee": ["Guidance for Practitioners", "Discipline"],
+    "Role Ethics Committee": ["Guidance for Practitioners", "Discipline"],
+    "Role Disciplinary Committee": ["Guidance for Practitioners", "Discipline"],
+    "Role Reporters Office": [
+        "Pamphlets",
+        "Tax Court Reports",
+        "Citation and Style Manual",
+    ],
+    "Role Appellate Reports": ["Cases Commenced in the Court of Appeals"],
+    "Role Case Services": ["Fees & Charges", "Forms", "Records (Transcripts & Copies)"],
+}

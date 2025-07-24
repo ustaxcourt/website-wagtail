@@ -6,9 +6,7 @@
         .pagination {
             margin-bottom: 3rem;
         }
-        #id_entries-ADD {
-            display: none !important;
-        }
+
         .admin-env-banner {
             background-color: #FAA500;
             color: #020103;
@@ -21,13 +19,17 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        .inline-panel-no-add-button #id_entries-ADD {
+            display: none !important;
+        }
     </style>
 {% endblock %}
 {% block extra_js %}
-{{ block.super }}
+    {{ block.super }}
     {% get_environment as current_env %}
     <script>
-    const ENVIRONMENT = "{{ current_env }}";
+        const ENVIRONMENT = "{{ current_env }}";
 
         document.addEventListener("DOMContentLoaded", function() {
             // Create the button
@@ -58,18 +60,18 @@
             // Add the button to the admin dashboard
             document.body.appendChild(scrollButton);
 
-        // Banner only in non-production
-        if (ENVIRONMENT !== "production") {
-            const banner = document.createElement("div");
-            banner.className = "admin-env-banner";
-            banner.innerHTML = `
+            // Banner only in non-production
+            if (ENVIRONMENT !== "production") {
+                const banner = document.createElement("div");
+                banner.className = "admin-env-banner";
+                banner.innerHTML = `
                     <span> ⚠️ You are in the ${ENVIRONMENT.toUpperCase()} environment.</span>
                 `;
-            const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
-            if (header && header.parentNode) {
-                header.parentNode.insertBefore(banner, header.nextSibling);
+                const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
+                if (header && header.parentNode) {
+                    header.parentNode.insertBefore(banner, header.nextSibling);
+                }
             }
-        }
         });
     </script>
 {% endblock %}
