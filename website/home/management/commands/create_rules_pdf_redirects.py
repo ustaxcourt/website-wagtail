@@ -26,7 +26,7 @@ class Command(BaseCommand):
         initializer = RedirectInitializer()
 
         base_dir = Path(__file__).resolve().parents[3]
-        csv_path = base_dir / "home" / "migrations" / "0060_update_rules_documents.csv"
+        csv_path = base_dir / "home" / "migrations" / "0064_update_rules_documents.csv"
 
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV file not found at: {csv_path}"))

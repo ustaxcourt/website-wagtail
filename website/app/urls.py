@@ -12,24 +12,33 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
 from wagtail.contrib.redirects.models import Redirect
+from django.http import Http404
 
 
 def rules_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
+
+    # Prevent redirect loop if already redirected
+    if "redirect" in request.GET:
+        logger.warning("Already redirected once, stopping here.")
+        raise Http404("Redirect loop prevention triggered")
+
     # First check for database redirects
     logger.warning(f"Checking for database redirects for path: {request.path}")
-
     redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
+
     if redirect_entry:
         logger.warning(
             f"Found redirect entry: {redirect_entry.old_path} -> {redirect_entry.redirect_link}"
         )
         logger.warning(f"Redirect site: {redirect_entry.site}")
         logger.warning(f"Redirect is_permanent: {redirect_entry.is_permanent}")
+
         redirect_target = redirect_entry.redirect_link
         current_path = request.path.rstrip("/").lower()
         redirect_path = redirect_target.rstrip("/").lower()
+
         logger.warning(f"Checking current path: {current_path}")
         logger.warning(f"Checking Redirect path: {redirect_path}")
         # Stronger check — stop redirecting if we're already on the target
@@ -37,9 +46,11 @@ def rules_documents_redirect(request, filename):
         if current_path == redirect_path:
             logger.warning(f"Preventing redirect loop for: {request.path}")
             return render_404_util(request)
+
         # Additional loop prevention: check if we're redirecting to the same filename
         current_filename = os.path.basename(current_path)
         redirect_filename = os.path.basename(redirect_path)
+
         logger.warning(f"Checking current filename: {current_filename}")
         logger.warning(f"Checking Redirect filename: {redirect_filename}")
 
@@ -49,17 +60,20 @@ def rules_documents_redirect(request, filename):
             )
             return render_404_util(request)
 
-        logger.warning(f"Database redirect: {current_path} to: {redirect_path}")
-        # Add a query string to indicate this was redirected
-        redirect_url = f"{redirect_path}?r=1"
-        return redirect(redirect_url)
+        # Try to find the target document in Wagtail and redirect to its actual file URL
+        try:
+            doc = Document.objects.get(file__icontains=redirect_filename)
+            logger.warning(f"Redirecting to actual file URL for: {redirect_filename}")
+            return redirect(f"{doc.file.url}?redirect=1")
+        except Document.DoesNotExist:
+            logger.warning(f"Document not found for: {redirect_filename}")
+            raise Http404("Document not found")
 
     else:
         logger.warning(
             f"No database redirect found for: {request.path}, checking legacy documents"
         )
-
-    return redirect("/")
+        raise Http404("No matching redirect found")
 
 
 def all_legacy_documents_redirect(request, filename):
