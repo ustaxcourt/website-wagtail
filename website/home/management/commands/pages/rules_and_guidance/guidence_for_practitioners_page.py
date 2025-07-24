@@ -26,8 +26,8 @@ practitioners_docs = {
     "NonAttorney_Exam_Statistics.pdf": "",
     "Nonattorney_Examination_Procedures_050322.pdf": "",
     "Rule-200(2nd-amended).pdf": "",
-    "Rule-201.pdf": "",
-    "Rule-202.pdf": "",
+    "rule-201.pdf": "",
+    "rule-202.pdf": "",
     "lea_faq.pdf": "",
 }
 
@@ -118,13 +118,13 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                                 {
                                     "title": "Rule 201. Conduct of Practice Before the Court",
                                     "icon": IconCategories.PDF,
-                                    "document": practitioners_docs["Rule-201.pdf"].id,
+                                    "document": practitioners_docs["rule-201.pdf"].id,
                                     "url": None,
                                 },
                                 {
                                     "title": "Rule 202. Disciplinary Matters",
                                     "icon": IconCategories.PDF,
-                                    "document": practitioners_docs["Rule-202.pdf"].id,
+                                    "document": practitioners_docs["rule-202.pdf"].id,
                                     "url": None,
                                 },
                             ],

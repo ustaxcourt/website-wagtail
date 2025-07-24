@@ -10,7 +10,7 @@ petitioners_docs = {
     "Rule-74(amended).pdf": "",
     "Rule-81.pdf": "",
     "Rule-147.pdf": "",
-    "Rule-148.pdf": "",
+    "rule-148.pdf": "",
     "Sample_Notice_Setting_Case_for_Trial_R_cases.pdf": "",
     "Sample_Notice_Setting_Case_for_Trial_S_cases.pdf": "",
     "SPTO_regular_sample.pdf": "",
@@ -121,7 +121,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "Is there a cost related to a subpoena?",
-                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day\'s attendance and mileage. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a linktype="document" id="{petitioners_docs["Rule-148.pdf"].id}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
+                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day\'s attendance and mileage. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a linktype="document" id="{petitioners_docs["rule-148.pdf"].id}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
                 "anchortag": "BEFORE7",
             },
             {
