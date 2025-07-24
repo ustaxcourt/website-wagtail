@@ -7,9 +7,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 petitioners_docs = {
-    "Rule-74(amended).pdf": "",
-    "Rule-81.pdf": "",
-    "Rule-147.pdf": "",
+    "rule-74.pdf": "",
+    "rule-81.pdf": "",
+    "rule-147.pdf": "",
     "rule-148.pdf": "",
     "Sample_Notice_Setting_Case_for_Trial_R_cases.pdf": "",
     "Sample_Notice_Setting_Case_for_Trial_S_cases.pdf": "",
@@ -95,7 +95,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "What is a subpoena?",
-                "answer": f'A subpoena is an order issued by the Tax Court (1) directing a person to appear and testify at a scheduled Tax Court Trial Session or (2) directing a person to appear at a deposition prearranged at a specific time and location. The subpoena may include directions for the person (witness) to produce specific books, papers, documents, electronically stored information, or tangible things. See Tax Court Rules <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" target="_blank" title="Rule 147">147</a>,<a linktype="document" id="{petitioners_docs["Rule-74(amended).pdf"].id}" target="_blank" title="Rule 74">74</a></strong> and <strong><a linktype="document" id="{petitioners_docs["Rule-81.pdf"].id}" target="_blank" title="Rule 81">81</a></strong>.',
+                "answer": f'A subpoena is an order issued by the Tax Court (1) directing a person to appear and testify at a scheduled Tax Court Trial Session or (2) directing a person to appear at a deposition prearranged at a specific time and location. The subpoena may include directions for the person (witness) to produce specific books, papers, documents, electronically stored information, or tangible things. See Tax Court Rules <strong><a linktype="document" id="{petitioners_docs["rule-147.pdf"].id}" target="_blank" title="Rule 147">147</a>,<a linktype="document" id="{petitioners_docs["rule-74.pdf"].id}" target="_blank" title="Rule 74">74</a></strong> and <strong><a linktype="document" id="{petitioners_docs["rule-81.pdf"].id}" target="_blank" title="Rule 81">81</a></strong>.',
                 "anchortag": "BEFORE4",
             },
             {
@@ -115,13 +115,13 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                            served on the witness, in person, by a United States marshal, a deputy marshal, or by any
                            other person who is not a party to the case and who is not less than 18 years of age.
                            The person who actually serves the subpoena must complete the “Return of Service” section
-                           at the bottom of the subpoena form. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" target="_blank" title="Rule 147">Tax Court Rule 147(c)</a></strong>.
+                           at the bottom of the subpoena form. See <strong><a linktype="document" id="{petitioners_docs["rule-147.pdf"].id}" target="_blank" title="Rule 147">Tax Court Rule 147(c)</a></strong>.
                            You will submit the signed original to the Court only if it is necessary to ask the Court to enforce the subpoena.""",
                 "anchortag": "BEFORE6",
             },
             {
                 "question": "Is there a cost related to a subpoena?",
-                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day\'s attendance and mileage. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a linktype="document" id="{petitioners_docs["rule-148.pdf"].id}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
+                "answer": f'Yes. If you as a petitioner are serving a subpoena on a witness, you must pay fees to the witness in advance equal to one day\'s attendance and mileage. See <strong><a linktype="document" id="{petitioners_docs["rule-147.pdf"].id}" title="Rule 147">Tax court Rule 147(c)</a></strong>. These fees must be paid to the witness when the subpoena is served. A witness is entitled to the same fees for attendance and transportation as witnesses in the United States District Courts. See <strong><a linktype="document" id="{petitioners_docs["rule-148.pdf"].id}" title="Rule 148" target="_blank">Tax court Rule 148</a></strong>. For more detail as to the amount of the fees and travel allowances go to the definition of Subpoena in the <strong><a href="/petitioners-glossary" title="Glossary">Glossary</a></strong>.',
                 "anchortag": "BEFORE7",
             },
             {
@@ -131,7 +131,7 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
             },
             {
                 "question": "What should I do if I am served with a subpoena? Can I challenge a subpoena?",
-                "answer": f'As a general matter you should comply with a subpoena. If you are served with a subpoena, and you believe it was issued in error, is unreasonable or oppressive, or was not properly served, you may file a Motion To Quash the subpoena with the Court. If you fail to appear as directed by a subpoena, you may be found to be in contempt of Court. See <strong><a linktype="document" id="{petitioners_docs["Rule-147.pdf"].id}" target="_blank" title="Rule 147">Rule 147(e)</a></strong>.',
+                "answer": f'As a general matter you should comply with a subpoena. If you are served with a subpoena, and you believe it was issued in error, is unreasonable or oppressive, or was not properly served, you may file a Motion To Quash the subpoena with the Court. If you fail to appear as directed by a subpoena, you may be found to be in contempt of Court. See <strong><a linktype="document" id="{petitioners_docs["rule-147.pdf"].id}" target="_blank" title="Rule 147">Rule 147(e)</a></strong>.',
                 "anchortag": "BEFORE9",
             },
             {

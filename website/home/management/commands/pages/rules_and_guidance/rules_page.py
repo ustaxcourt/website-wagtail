@@ -148,7 +148,7 @@ body = [
                 {
                     "title": "Rule 11. Payments to the Court",
                     "icon": None,
-                    "document": "Rule-11(superseded).pdf",
+                    "document": "rule-11.pdf",
                     "url": None,
                 },
                 {
@@ -922,7 +922,7 @@ body = [
                 {
                     "title": "Rule 200. Admission to Practice and Periodic Registration Fee",
                     "icon": None,
-                    "document": "Rule-200(2nd-amended).pdf",
+                    "document": "rule-200.pdf",
                     "url": None,
                 },
                 {
