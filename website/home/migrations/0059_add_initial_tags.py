@@ -2,7 +2,41 @@
 
 from django.db import migrations
 import re
-from home.data.tag_and_collection_names import TAGS_AND_COLLECTION_NAMES
+
+TAGS_AND_COLLECTION_NAMES = [
+    "Administrative Orders",
+    "Cases Commenced in the Court of Appeals",
+    "Citation and Style Manual",
+    "Clinics",
+    "DAWSON Training Guides",
+    "Directory",
+    "Discipline",
+    "Engagement & Outreach",
+    "Events and Webinars",
+    "Fees & Charges",
+    "Forms",
+    "Guidance for Petitioners",
+    "Guidance for Practitioners",
+    "History",
+    "Internship Programs",
+    "Judges & Bios",
+    "Judicial Conduct and Disability Procedures",
+    "Law Clerk Programs",
+    "LITC",
+    "Mission Statement",
+    "Pamphlets",
+    "Press Releases",
+    "Pro Bono Programs",
+    "Records (Transcripts & Copies)",
+    "DAWSON Release Notes",
+    "Remote Proceedings",
+    "Reports & Statistics",
+    "Rules Comments and Suggestions",
+    "Tax Court Reports",
+    "Tax Court Rules",
+    "Trial Sessions",
+    "Vacancy Announcements",
+]
 
 
 def create_slug(name):

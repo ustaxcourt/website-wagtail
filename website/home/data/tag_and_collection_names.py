@@ -1,7 +1,4 @@
 TAGS_AND_COLLECTION_NAMES = [
-    "Review and approve all content",
-    "Backup publisher",
-    "All things technical",
     "Administrative Orders",
     "Cases Commenced in the Court of Appeals",
     "Citation and Style Manual",
