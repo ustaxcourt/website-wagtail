@@ -1,5 +1,4 @@
 VENV=../.venv/bin/activate
-MIGRATION ?= zero
 
  .DEFAULT:
 	@echo "Falling back to ./website-wagtail/ for '$@'"
@@ -117,12 +116,5 @@ preregistersuperusers:
 
 setupwagtaillroles:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py setup_wagtail_roles
-
 createrulespdfredirects:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_rules_pdf_redirects
-
-rollbackmigrate:
-	. $(VENV) && python manage.py migrate home $(MIGRATION)
-
-rollbackall:
-	. $(VENV) && python manage.py migrate home zero
