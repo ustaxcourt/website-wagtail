@@ -19,7 +19,7 @@ function handler(event) {
       };
 
       // If the requested URI is in our redirect map, return a 301 response.
-      if (uri in redirects) {
+      if (redirects.hasOwnProperty(uri)) {
           var newUri = redirects[uri];
 
           var response = {
