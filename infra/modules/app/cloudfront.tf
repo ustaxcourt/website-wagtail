@@ -1,5 +1,5 @@
-resource "aws_cloudfront_function" "redirect_and_rewrite_uri" {
-  name    = "${var.environment}-redirect-and-rewrite-uri"
+resource "aws_cloudfront_function" "rewrite_uri" {
+  name    = "${var.environment}-rewrite-uri"
   runtime = "cloudfront-js-1.0"
   comment = "Function to redirect legacy URIs and strip /files prefix from other requests"
   publish = true
