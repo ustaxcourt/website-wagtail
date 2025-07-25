@@ -161,7 +161,7 @@ def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
-def documents_wrapper(request, *args, **kwargs):
+def documents_wrapper(request):
     """Wrapper function to log requests to wagtail documents URLs"""
     logger = logging.getLogger(__name__)
 
@@ -170,31 +170,42 @@ def documents_wrapper(request, *args, **kwargs):
 
     logger.warning(f"Documents wrapper called for path: {request.get_full_path()}")
 
-    # Import here to avoid circular imports
-
     # Get the path after "documents/"
-    path_info = request.path_info
+    path_info = request.path_info if hasattr(request, "path_info") else request.path
+
     if path_info.startswith("/documents/"):
         remaining_path = path_info[11:]  # Remove "/documents/" prefix
 
-        # Create a new request with the modified path for the wagtail docs handler
-        request.path_info = "/" + remaining_path if remaining_path else "/"
-        request.path = request.path_info
+        logger.warning(f"Extracted document path: {remaining_path}")
 
-        # Import wagtail's document serving view
-        from wagtail.documents.views import serve
+        # Parse the remaining path to get document_id and filename if present
+        if remaining_path:
+            path_parts = remaining_path.strip("/").split("/")
+            if path_parts and path_parts[0].isdigit():
+                document_id = int(path_parts[0])
+                filename = path_parts[1] if len(path_parts) > 1 else None
 
-        logger.warning(
-            f"Forwarding to wagtail documents handler with path: {request.path}"
-        )
+                logger.warning(f"Document ID: {document_id}, Filename: {filename}")
 
-        try:
-            return serve(request, *args, **kwargs)
-        except Exception as e:
-            logger.error(f"Error in wagtail documents handler: {str(e)}")
-            raise
+                # Import wagtail's document serving view
+                from wagtail.documents.views import serve
 
-    # If we somehow get here, return 404
+                try:
+                    if filename:
+                        return serve(request, document_id, filename)
+                    else:
+                        return serve(request, document_id)
+                except Exception as e:
+                    logger.error(f"Error in wagtail documents handler: {str(e)}")
+                    logger.error(f"Document ID: {document_id}, Filename: {filename}")
+                    raise
+            else:
+                logger.warning(f"Invalid document path format: {remaining_path}")
+        else:
+            logger.warning("Empty document path")
+
+    # If we get here, return 404
+    logger.warning("No valid document path found, returning 404")
     return render_404_util(request)
 
 
@@ -221,6 +232,11 @@ urlpatterns = [
         name="rules_documents_redirect",
     ),
     re_path(r"^documents/.*", documents_wrapper, name="documents_wrapper"),
+    re_path(
+        r"^documents/(?P<filename>[^/]+\.pdf)$",
+        rules_documents_redirect,
+        name="rules_documents_redirect",
+    ),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
 ]
