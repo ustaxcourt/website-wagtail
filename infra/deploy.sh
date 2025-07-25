@@ -6,6 +6,10 @@ source ./setup_zone.sh
 
 ./update-deployer-policy.sh
 
+if [ -z "${TF_VAR_github_sha}" ]; then
+    export TF_VAR_github_sha="$(git rev-parse HEAD)"
+fi
+
 terraform init \
     -upgrade \
     -backend=true \
