@@ -146,7 +146,7 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     re_path(
-        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
+        r"^documents/(?P<filename>[^/]+\.pdf)$",
         rules_documents_redirect,
         name="rules_documents_redirect",
     ),
