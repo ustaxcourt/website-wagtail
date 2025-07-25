@@ -4,6 +4,9 @@ import os
 import subprocess
 from datetime import date
 
+
+os.environ.setdefault("DEBUG_TOOLBAR_ENABLED", "False")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
