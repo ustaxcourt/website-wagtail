@@ -8,36 +8,33 @@ function handler(event) {
     var request = event.request;
     var uri = request.uri;
 
-    // --- Redirect Map ---
-    // First, check if the incoming request URI needs to be redirected.
-    // This map contains the full, original request paths.
-    var redirects = {
-        "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
-        "/files/documents/Rule-100.pdf": "/files/documents/rule-100.pdf",
-        "/files/documents/Rule-101.pdf": "/files/documents/rule-101.pdf",
-        "/files/documents/Rule-102.pdf": "/files/documents/rule-102.pdf",
-        "/files/documents/Rule-103_Amended_03202023.pdf": "/files/documents/rule-103.pdf"
-    };
+    if (uri.startsWith('/files/')) {
+      // --- Redirect Map ---
+      var redirects = {
+          "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
+          "/files/documents/Rule-100.pdf": "/files/documents/rule-100.pdf",
+          "/files/documents/Rule-101.pdf": "/files/documents/rule-101.pdf",
+          "/files/documents/Rule-102.pdf": "/files/documents/rule-102.pdf",
+          "/files/documents/Rule-103_Amended_03202023.pdf": "/files/documents/rule-103.pdf"
+      };
 
-    // If the requested URI is in our redirect map, return a 301 response.
-    if (uri in redirects) {
-        var newUri = redirects[uri];
+      // If the requested URI is in our redirect map, return a 301 response.
+      if (uri in redirects) {
+          var newUri = redirects[uri];
 
-        var response = {
-            statusCode: 301,
-            statusDescription: 'Moved Permanently',
-            headers: {
-                'location': { 'value': newUri }
-            }
-        };
+          var response = {
+              statusCode: 301,
+              statusDescription: 'Moved Permanently',
+              headers: {
+                  'location': { 'value': newUri }
+              }
+          };
 
-        // Immediately return the redirect response to the browser.
-        return response;
+          return response;
+      }
     }
 
     // --- URI Rewrite ---
-    // If no redirect was triggered, proceed with the original rewrite logic.
-    // Check if the URI starts with /files/ and remove it for the S3 origin request.
     if (uri.startsWith('/files/')) {
         request.uri = uri.slice(6); // Removes '/files' prefix
     }
