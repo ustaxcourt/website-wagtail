@@ -1,5 +1,6 @@
 import logging
 import os
+import json
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -8,15 +9,43 @@ from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
-from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
 from wagtail.contrib.redirects.models import Redirect
 from django.http import Http404
 
 
+def log_request_debug(request, logger):
+    """Helper function to log fully qualified path and formatted request details"""
+    # Get fully qualified path including domain
+    full_url = request.build_absolute_uri()
+
+    # Format request details
+    request_details = {
+        "method": request.method,
+        "full_url": full_url,
+        "path": request.path,
+        "get_full_path": request.get_full_path(),
+        "query_params": dict(request.GET),
+        "headers": {key: value for key, value in request.headers.items()},
+        "user": str(request.user) if hasattr(request, "user") else "Anonymous",
+        "remote_addr": request.META.get("REMOTE_ADDR"),
+        "user_agent": request.META.get("HTTP_USER_AGENT"),
+        "referrer": request.META.get("HTTP_REFERER"),
+        "host": request.META.get("HTTP_HOST"),
+        "scheme": request.scheme,
+    }
+
+    logger.warning(f"FULLY QUALIFIED PATH: {full_url}")
+    logger.warning(f"FORMATTED REQUEST: {json.dumps(request_details, indent=2)}")
+
+
 def rules_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
+
+    # Debug logging: print fully qualified path and formatted request
+    log_request_debug(request, logger)
+
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
     # Prevent redirect loop if already redirected
@@ -78,6 +107,10 @@ def rules_documents_redirect(request, filename):
 
 def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
+
+    # Debug logging: print fully qualified path and formatted request
+    log_request_debug(request, logger)
+
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
     # Remove the extension if present
@@ -128,6 +161,43 @@ def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
+def documents_wrapper(request, *args, **kwargs):
+    """Wrapper function to log requests to wagtail documents URLs"""
+    logger = logging.getLogger(__name__)
+
+    # Debug logging: print fully qualified path and formatted request
+    log_request_debug(request, logger)
+
+    logger.warning(f"Documents wrapper called for path: {request.get_full_path()}")
+
+    # Import here to avoid circular imports
+
+    # Get the path after "documents/"
+    path_info = request.path_info
+    if path_info.startswith("/documents/"):
+        remaining_path = path_info[11:]  # Remove "/documents/" prefix
+
+        # Create a new request with the modified path for the wagtail docs handler
+        request.path_info = "/" + remaining_path if remaining_path else "/"
+        request.path = request.path_info
+
+        # Import wagtail's document serving view
+        from wagtail.documents.views import serve
+
+        logger.warning(
+            f"Forwarding to wagtail documents handler with path: {request.path}"
+        )
+
+        try:
+            return serve(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error in wagtail documents handler: {str(e)}")
+            raise
+
+    # If we somehow get here, return 404
+    return render_404_util(request)
+
+
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
@@ -146,11 +216,11 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     re_path(
-        r"^documents/(?P<filename>[^/]+\.pdf)$",
+        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
         rules_documents_redirect,
         name="rules_documents_redirect",
     ),
-    path("documents/", include(wagtaildocs_urls)),
+    re_path(r"^documents/.*", documents_wrapper, name="documents_wrapper"),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
 ]
