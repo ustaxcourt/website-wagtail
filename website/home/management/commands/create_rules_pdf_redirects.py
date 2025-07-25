@@ -32,28 +32,30 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"CSV file not found at: {csv_path}"))
             return
 
+        redirects = {}
         created_count = 0
         try:
             with open(csv_path, newline="", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
                 header = next(reader, None)
-                if header != ["current_title", "source_filename", "new_title"]:
+                if header != ["current_filename", "source_filename", "new_title"]:
                     self.stdout.write(
                         self.style.WARNING(f"CSV header mismatch: {header}")
                     )
 
-                for current_title, source_filename, new_title in reader:
-                    current_title = current_title.strip()
+                for current_filename, source_filename, new_title in reader:
+                    current_filename = current_filename.strip()
                     new_title = new_title.strip()
 
                     # Build the old and new URL paths
-                    old_path = f"/files/documents/{current_title}"
+                    old_path = f"/files/documents/{current_filename}"
                     new_path = f"/files/documents/{new_title}"
 
                     # Skip if old and new paths are the same (case-insensitive)
                     if old_path.lower() == new_path.lower():
                         continue
                     initializer.create(old_path, new_path, is_permanent=True)
+                    redirects[old_path] = new_path
                     created_count += 1
 
         except Exception as e:
