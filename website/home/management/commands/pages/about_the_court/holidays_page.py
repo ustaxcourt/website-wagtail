@@ -35,7 +35,7 @@ class HolidaysPageInitializer(PageInitializer):
 
         for document in docs.keys():
             docs[document] = self.load_document_from_documents_dir(
-                subdirectory=None,
+                subdirectory='rules',
                 filename=document,
                 title=document,
             )
