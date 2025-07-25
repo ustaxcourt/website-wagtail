@@ -154,7 +154,7 @@ body = [
                 {
                     "title": "Rule 12. Court Records",
                     "icon": None,
-                    "document": "Rule-12(superseded).pdf",
+                    "document": "rule-12.pdf",
                     "url": None,
                 },
                 {
@@ -202,7 +202,7 @@ body = [
                 {
                     "title": "Rule 24. Appearance and Representation",
                     "icon": None,
-                    "document": "-2020).pdf,-2020).pdf",
+                    "document": "rule-24.pdf",
                     "url": None,
                 },
                 {
@@ -379,7 +379,7 @@ body = [
                 {
                     "title": "Rule 60. Proper Parties; Capacity",
                     "icon": None,
-                    "document": "Rule-60(amended).pdf",
+                    "document": "rule-60.pdf",
                     "url": None,
                 },
                 {
@@ -682,7 +682,7 @@ body = [
                 {
                     "title": "Rule 143. Evidence",
                     "icon": None,
-                    "document": "Rule-143(amended).pdf",
+                    "document": "rule-143.pdf",
                     "url": None,
                 },
                 {
@@ -1255,19 +1255,19 @@ body = [
                 {
                     "title": "Rule 260. Proceeding To Enforce Overpayment Determination",
                     "icon": None,
-                    "document": "-2020).pdf,-2020).pdf",
+                    "document": "rule-260.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 261. Proceeding To Redetermine Interest",
                     "icon": None,
-                    "document": "-2020).pdf,-2020).pdf",
+                    "document": "rule-261.pdf",
                     "url": None,
                 },
                 {
                     "title": "Rule 262. Proceeding To Modify Decision in Estate Tax Case Involving Section 6166 Election",
                     "icon": None,
-                    "document": "-2020).pdf,-2020).pdf",
+                    "document": "rule-262.pdf",
                     "url": None,
                 },
             ]
