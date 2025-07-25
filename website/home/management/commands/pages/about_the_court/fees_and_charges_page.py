@@ -55,7 +55,7 @@ class FeesAndChargesPageInitializer(PageInitializer):
 
         for document in rules_documents.keys():
             uploaded_document = self.load_document_from_documents_dir(
-                subdirectory='rules',
+                subdirectory="rules",
                 filename=document,
                 title=document,
             )
