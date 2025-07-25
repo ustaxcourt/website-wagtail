@@ -255,3 +255,5 @@ GEMINI.md
 tmp/
 website/documents_object_list.txt
 website/s3_search_results.txt
+website/home/management/commands/bulk_update.py
+website/home/management/commands/rules_documents_filename_updates.csv

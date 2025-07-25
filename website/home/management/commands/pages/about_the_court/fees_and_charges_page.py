@@ -14,6 +14,14 @@ documents = {
     "fee_schedule.pdf": "",
 }
 
+rules_documents = {
+    "rule-190.pdf": "",
+    "rule-200.pdf": "",
+    "rule-148.pdf": "",
+    "rule-11.pdf": "",
+    "fee_schedule.pdf": "",
+}
+
 documents_ids = {}
 
 
@@ -43,6 +51,15 @@ class FeesAndChargesPageInitializer(PageInitializer):
                 title=document,
             )
             documents[document] = uploaded_document.file.url
+            documents_ids[document] = uploaded_document.id
+
+        for document in rules_documents.keys():
+            uploaded_document = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=document,
+                title=document,
+            )
+            rules_documents[document] = uploaded_document.file.url
             documents_ids[document] = uploaded_document.id
 
         body_content = [
