@@ -1,6 +1,5 @@
 import logging
 import os
-import json
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -9,108 +8,13 @@ from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
+from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
-from wagtail.contrib.redirects.models import Redirect
-from django.http import Http404
-
-
-def log_request_debug(request, logger):
-    """Helper function to log fully qualified path and formatted request details"""
-    # Get fully qualified path including domain
-    full_url = request.build_absolute_uri()
-
-    # Format request details
-    request_details = {
-        "method": request.method,
-        "full_url": full_url,
-        "path": request.path,
-        "get_full_path": request.get_full_path(),
-        "query_params": dict(request.GET),
-        "headers": {key: value for key, value in request.headers.items()},
-        "user": str(request.user) if hasattr(request, "user") else "Anonymous",
-        "remote_addr": request.META.get("REMOTE_ADDR"),
-        "user_agent": request.META.get("HTTP_USER_AGENT"),
-        "referrer": request.META.get("HTTP_REFERER"),
-        "host": request.META.get("HTTP_HOST"),
-        "scheme": request.scheme,
-    }
-
-    logger.warning(f"FULLY QUALIFIED PATH: {full_url}")
-    logger.warning(f"FORMATTED REQUEST: {json.dumps(request_details, indent=2)}")
-
-
-def rules_documents_redirect(request, filename):
-    logger = logging.getLogger(__name__)
-
-    # Debug logging: print fully qualified path and formatted request
-    log_request_debug(request, logger)
-
-    logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
-
-    # Prevent redirect loop if already redirected
-    if "redirect" in request.GET:
-        logger.warning("Already redirected once, stopping here.")
-        raise Http404("Redirect loop prevention triggered")
-
-    # First check for database redirects
-    logger.warning(f"Checking for database redirects for path: {request.path}")
-    redirect_entry = Redirect.objects.filter(old_path__iexact=request.path).first()
-
-    if redirect_entry:
-        logger.warning(
-            f"Found redirect entry: {redirect_entry.old_path} -> {redirect_entry.redirect_link}"
-        )
-        logger.warning(f"Redirect site: {redirect_entry.site}")
-        logger.warning(f"Redirect is_permanent: {redirect_entry.is_permanent}")
-
-        redirect_target = redirect_entry.redirect_link
-        current_path = request.path.rstrip("/").lower()
-        redirect_path = redirect_target.rstrip("/").lower()
-
-        logger.warning(f"Checking current path: {current_path}")
-        logger.warning(f"Checking Redirect path: {redirect_path}")
-        # Stronger check — stop redirecting if we're already on the target
-
-        if current_path == redirect_path:
-            logger.warning(f"Preventing redirect loop for: {request.path}")
-            return render_404_util(request)
-
-        # Additional loop prevention: check if we're redirecting to the same filename
-        current_filename = os.path.basename(current_path)
-        redirect_filename = os.path.basename(redirect_path)
-
-        logger.warning(f"Checking current filename: {current_filename}")
-        logger.warning(f"Checking Redirect filename: {redirect_filename}")
-
-        if current_filename.lower() == redirect_filename.lower():
-            logger.warning(
-                f"Preventing filename redirect loop: {current_filename} -> {redirect_filename}"
-            )
-            return render_404_util(request)
-
-        # Try to find the target document in Wagtail and redirect to its actual file URL
-        try:
-            doc = Document.objects.get(file__icontains=redirect_filename)
-            logger.warning(f"Redirecting to actual file URL for: {redirect_filename}")
-            return redirect(f"{doc.file.url}?redirect=1")
-        except Document.DoesNotExist:
-            logger.warning(f"Document not found for: {redirect_filename}")
-            raise Http404("Document not found")
-
-    else:
-        logger.warning(
-            f"No database redirect found for: {request.path}, checking legacy documents"
-        )
-        raise Http404("No matching redirect found")
 
 
 def all_legacy_documents_redirect(request, filename):
     logger = logging.getLogger(__name__)
-
-    # Debug logging: print fully qualified path and formatted request
-    log_request_debug(request, logger)
-
     logger.warning(f"Attempting to redirect original URL: {request.get_full_path()}")
 
     # Remove the extension if present
@@ -161,54 +65,6 @@ def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
-def documents_wrapper(request):
-    """Wrapper function to log requests to wagtail documents URLs"""
-    logger = logging.getLogger(__name__)
-
-    # Debug logging: print fully qualified path and formatted request
-    log_request_debug(request, logger)
-
-    logger.warning(f"Documents wrapper called for path: {request.get_full_path()}")
-
-    # Get the path after "documents/"
-    path_info = request.path_info if hasattr(request, "path_info") else request.path
-
-    if path_info.startswith("/documents/"):
-        remaining_path = path_info[11:]  # Remove "/documents/" prefix
-
-        logger.warning(f"Extracted document path: {remaining_path}")
-
-        # Parse the remaining path to get document_id and filename if present
-        if remaining_path:
-            path_parts = remaining_path.strip("/").split("/")
-            if path_parts and path_parts[0].isdigit():
-                document_id = int(path_parts[0])
-                filename = path_parts[1] if len(path_parts) > 1 else None
-
-                logger.warning(f"Document ID: {document_id}, Filename: {filename}")
-
-                # Import wagtail's document serving view
-                from wagtail.documents.views import serve
-
-                try:
-                    if filename:
-                        return serve(request, document_id, filename)
-                    else:
-                        return serve(request, document_id)
-                except Exception as e:
-                    logger.error(f"Error in wagtail documents handler: {str(e)}")
-                    logger.error(f"Document ID: {document_id}, Filename: {filename}")
-                    raise
-            else:
-                logger.warning(f"Invalid document path format: {remaining_path}")
-        else:
-            logger.warning("Empty document path")
-
-    # If we get here, return 404
-    logger.warning("No valid document path found, returning 404")
-    return render_404_util(request)
-
-
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
@@ -226,17 +82,7 @@ urlpatterns = [
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
     ),
-    re_path(
-        r"^files/documents/(?P<filename>[^/]+\.pdf)$",
-        rules_documents_redirect,
-        name="rules_documents_redirect",
-    ),
-    re_path(r"^documents/.*", documents_wrapper, name="documents_wrapper"),
-    re_path(
-        r"^documents/(?P<filename>[^/]+\.pdf)$",
-        rules_documents_redirect,
-        name="rules_documents_redirect",
-    ),
+    path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
 ]
