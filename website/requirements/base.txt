@@ -52,5 +52,5 @@ urllib3==2.5.0
 virtualenv==20.28.0
 wagtail==7.0.2
 whitenoise==6.8.2
-Willow==1.9.0
+Willow
 social-auth-app-django==5.4.3
