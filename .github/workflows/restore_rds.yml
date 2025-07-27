@@ -99,6 +99,11 @@ jobs:
           echo "Applying targeted update to Bastion Security Group..."
           # Assuming bastion_sg is within a module named 'app'
           terraform apply -target=module.app.aws_instance.bastion -target=module.app.aws_security_group.bastion_sg -auto-approve
+
+          # Output Bastion Host IP and save to environment file for later steps
+          BASTION_HOST_IP=$(terraform output -raw bastion_host_ip)
+          echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
+          echo "::add-mask::$BASTION_HOST_IP"
           echo "Bastion Security Group update applied."
 
       - name: Load Secrets and Set up SSH Key
@@ -118,8 +123,6 @@ jobs:
           echo "::add-mask::${SECRET_KEY}"
           echo "DATABASE_HOSTNAME=$DATABASE_HOSTNAME" >> $GITHUB_ENV
           echo "::add-mask::${DATABASE_HOSTNAME}"
-          echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
-          echo "::add-mask::${BASTION_HOST_IP}"
           # Create SSH key file
           mkdir -p ~/.ssh # Use ~/.ssh for standard location
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > ~/.ssh/id_rsa
@@ -150,6 +153,8 @@ jobs:
 
           echo "Scanning bastion host key..."
           # Add host key to known_hosts
+          # Use the bastion_host_ip output from the tf_update_sg step
+          BASTION_HOST_IP="${{ steps.tf_update_sg.outputs.bastion_host_ip }}"
           ssh-keyscan -H ${BASTION_HOST_IP} >> ~/.ssh/known_hosts || { echo "ERROR: ssh-keyscan failed for ${BASTION_HOST_IP}"; exit 1; }
           echo "Host key scanned and added."
 
