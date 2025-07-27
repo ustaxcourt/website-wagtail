@@ -166,7 +166,7 @@ jobs:
           echo "DATABASE_URL exported."
 
           echo "Running database migrations (make migrate)..."
-          make migrate settings="app.settings.${ENVIRONMENT}" || { echo "ERROR: 'make migrate' failed"; exit 1; }
+          . ../.venv/bin/activate && DJANGO_SETTINGS_MODULE=app.settings.${ENVIRONMENT} && python manage.py migrate || { echo "ERROR: 'make migrate' failed"; exit 1; }
           echo "'make migrate' completed."
 
           echo "Running custom commands (make createpages)..."

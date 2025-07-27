@@ -156,7 +156,7 @@ jobs:
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
-          make migrate settings="app.settings.${ENVIRONMENT}"
+          make migrate
           make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
