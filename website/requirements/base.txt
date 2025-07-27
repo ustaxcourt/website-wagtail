@@ -15,7 +15,7 @@ django-permissionedforms==0.1
 django-storages==1.14.4
 django-taggit==6.1.0
 django-treebeard==4.7.1
-Django==5.1.7
+Django==5.2
 djangorestframework==3.15.2
 draftjs-exporter==5.0.0
 et_xmlfile==2.0.0
@@ -50,7 +50,7 @@ telepath==0.3.1
 typing_extensions==4.12.2
 urllib3==2.5.0
 virtualenv==20.28.0
-wagtail==6.4.1
+wagtail==7.0.2
 whitenoise==6.8.2
 Willow==1.9.0
 social-auth-app-django==5.4.3
