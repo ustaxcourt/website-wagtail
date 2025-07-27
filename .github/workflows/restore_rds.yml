@@ -102,7 +102,7 @@ jobs:
 
           # Output Bastion Host IP and save to environment file for later steps
           BASTION_HOST_IP=$(terraform output -raw bastion_public_ip)
-          echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
+          echo "bastion_public_ip=${BASTION_HOST_IP}" >> $GITHUB_OUTPUT
           echo "::add-mask::$BASTION_HOST_IP"
           echo "Bastion Security Group update applied."
 
