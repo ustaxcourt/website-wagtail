@@ -101,7 +101,7 @@ jobs:
           terraform apply -target=module.app.aws_instance.bastion -target=module.app.aws_security_group.bastion_sg -auto-approve
 
           # Output Bastion Host IP and save to environment file for later steps
-          BASTION_HOST_IP=$(terraform output -raw bastion_host_ip)
+          BASTION_HOST_IP=$(terraform output -raw bastion_public_ip)
           echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
           echo "::add-mask::$BASTION_HOST_IP"
           echo "Bastion Security Group update applied."
@@ -147,14 +147,13 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_update_sg.outputs.bastion_public_ip }}
         run: |
           echo "Changing to website directory..."
           cd website || { echo "ERROR: Failed to cd into website directory"; exit 1; }
 
           echo "Scanning bastion host key..."
           # Add host key to known_hosts
-          # Use the bastion_host_ip output from the tf_update_sg step
-          BASTION_HOST_IP="${{ steps.tf_update_sg.outputs.bastion_host_ip }}"
           ssh-keyscan -H ${BASTION_HOST_IP} >> ~/.ssh/known_hosts || { echo "ERROR: ssh-keyscan failed for ${BASTION_HOST_IP}"; exit 1; }
           echo "Host key scanned and added."
 
