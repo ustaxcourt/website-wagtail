@@ -94,9 +94,10 @@ if settings.DEBUG:
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += [
-        path("__debug__/", include("debug_toolbar.urls")),
-    ]
-    urlpatterns += [path("", include(wagtail_urls))]
-else:
-    urlpatterns += [path("", include(wagtail_urls))]
+    # Only include debug_toolbar URLs if the app is installed
+    if "debug_toolbar" in settings.INSTALLED_APPS:
+        urlpatterns += [
+            path("__debug__/", include("debug_toolbar.urls")),
+        ]
+
+urlpatterns += [path("", include(wagtail_urls))]
