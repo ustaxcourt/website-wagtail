@@ -1,3 +1,4 @@
 {
-  "profile": "django"
+  "profile": "django",
+  "exclude": "cypress/downloads/"
 }
