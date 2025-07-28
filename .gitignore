@@ -253,3 +253,7 @@ website_secrets
 CLAUDE.md
 GEMINI.md
 tmp/
+
+# Generated redirect data
+redirects/pdf_redirects.json
+/website/redirects/pdf_redirects.json
