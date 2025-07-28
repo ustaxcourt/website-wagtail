@@ -53,6 +53,10 @@ def create_collections(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
     root = Collection.objects.get(name="Root")
     for name in TAGS_AND_COLLECTION_NAMES:
+        collection = Collection.objects.filter(name=name).first()
+        if collection:
+            print(f"Collection '{name}' already exists, skipping creation.")
+            continue
         path = get_next_collection_path(Collection, root)
         obj, created = Collection.objects.get_or_create(
             name=name, defaults={"path": path, "depth": 2, "numchild": 0}
