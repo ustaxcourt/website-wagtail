@@ -18,7 +18,7 @@ EOT
 }
 # CloudFront function to handle PDF redirects
 resource "aws_cloudfront_function" "rewrite_uri_with_redirects" {
-name    = "${var.environment}-rewrite-uri"
+name    = "${var.environment}-rewrite_uri_with_redirects"
 runtime = "cloudfront-js-1.0"
 comment = "Redirects legacy URIs and strips /files prefix"
 publish = true
