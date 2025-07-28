@@ -22,7 +22,7 @@ name    = "${var.environment}-rewrite-uri"
 runtime = "cloudfront-js-1.0"
 comment = "Redirects legacy URIs and strips /files prefix"
 publish = true
-code    = file("${path.module}/redirects/pdf_redirect_function.js")
+code = file("${path.module}/../../../website/redirects/pdf_redirect_function.js")
 }
 # Use AWS managed CachingDisabled policy for dynamic content
 data "aws_cloudfront_cache_policy" "caching_disabled" {
