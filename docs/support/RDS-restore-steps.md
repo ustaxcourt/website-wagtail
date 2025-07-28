@@ -4,6 +4,9 @@
 
 It's possible to perform the core actions of the Database restore workflow (restore, tunnel, migrate) from your local machine using `make` commands. This is useful optional manual action to performing restores outside of GitHub Actions.
 
+> [!WARNING]
+> The local execution process and the GitHub Actions workflow have diverged. The GitHub workflow now includes more dynamic steps (like fetching the DB hostname automatically) and no longer runs `make createpages`.
+
 ### Prerequisites
 
 - **AWS Credentials:** Configure AWS credentials locally with sufficient permissions for RDS restore, EC2 Security Group modifications, and potentially accessing secrets (e.g., via `aws configure`, or setting `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` environment variables).
@@ -51,12 +54,12 @@ The process typically involves three main `make` commands run in sequence:
 > [!IMPORTANT]
 > Check that you have correctly configured `DATABASE_HOSTNAME` in `website_secrets`.
 
-* **Purpose:** Connects to the newly restored database (via the background tunnel established in Step 2) and applies database migrations and any custom setup commands (like `createpages`). Corresponds to the migration execution part of the "Run Migrations" step in the GitHub workflow.
+* **Purpose:** Connects to the newly restored database (via the background tunnel established in Step 2) and applies database migrations.
 * **Command:**
     ```bash
     make apply-db-restore
     ```
-* **Action:** Executes the `infra/apply-migrations-to-restored-db.sh` script. This script likely sets the `DATABASE_URL` environment variable to point to `localhost:5432` and then runs the necessary `make migrate` and `make createpages` commands within the `website` directory context.
+* **Action:** Executes the `infra/apply-migrations-to-restored-db.sh` script. This script likely sets the `DATABASE_URL` environment variable to point to `localhost:5432` and then runs the necessary `make migrate` command.
 * **Prerequisite:** Requires the SSH tunnel from `make start-tunnel` to be running in the background.
 
 **Important Notes for Local Execution:**
@@ -106,7 +109,7 @@ The workflow relies on the following GitHub Actions secrets:
 | `AWS_ACCESS_KEY_ID`     | AWS Access Key ID for authentication. Must have sufficient IAM permissions. | Environment |
 | `AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key associated with the Access Key ID.                    | Environment |
 
-**Note:** Additional sensitive information like `DATABASE_PASSWORD`, `DJANGO_SUPERUSER_PASSWORD`, `SECRET_KEY`, `DATABASE_HOSTNAME`, `BASTION_HOST_IP`, and `BASTION_PRIVATE_KEY` are expected to be fetched dynamically during the workflow execution by the `infra/load-secrets.sh` script, likely from AWS Secrets Manager or Parameter Store based on the selected `environment`.
+**Note:** Additional sensitive information like `DATABASE_PASSWORD`, `DJANGO_SUPERUSER_PASSWORD`, `SECRET_KEY`, and `BASTION_PRIVATE_KEY` are expected to be fetched dynamically during the workflow execution by the `infra/load-secrets.sh` script. Other variables like the DB hostname and bastion IP are determined dynamically within the workflow.
 
 ## Workflow Environment Configuration
 
@@ -201,86 +204,81 @@ Here's a breakdown of each step in the `rds-restore` job:
 ---
 
 **7. Update Bastion SG for Runner Access**
-* **Commands:** `cd infra`, `source ./setup.sh`, `source ./setup_zone.sh`, `./update-deployer-policy.sh`, `terraform init ...`, `terraform refresh`, `terraform apply -target=module.app.aws_security_group.bastion_sg ...`
-* **Description:** This crucial step prepares for SSH access. It navigates to the `infra` directory, configures Terraform backend using environment-specific settings (via `setup.sh`, `setup_zone.sh`), potentially updates an IAM policy (`update-deployer-policy.sh`), initializes Terraform, refreshes state, and then applies a targeted change ONLY to the bastion host's security group (`module.app.aws_security_group.bastion_sg`). This modification likely adds a rule to allow SSH traffic from the GitHub Actions runner's current IP address.
-* **Inputs/Environment:** AWS Credentials, `$ENVIRONMENT`, Terraform state in S3/DynamoDB, local Terraform code (`infra/`), scripts (`setup.sh`, `setup_zone.sh`, `update-deployer-policy.sh`).
-* **Expected Outcome:** The bastion host's security group (`aws_security_group.bastion_sg` within `module.app`) is updated to allow SSH connections from the runner.
+* **Condition:** `if: github.event.inputs.apply_migration == 'Yes'`
+* **Commands:** `cd infra`, `source ./setup.sh`, `...`, `terraform apply ...`
+* **Description:** This crucial step prepares for SSH access. It navigates to the `infra` directory, configures and initializes Terraform, and then applies a targeted change to the bastion host's security group and instance. This modification allows SSH traffic from the GitHub Actions runner's IP address. It concludes by outputting the bastion's public IP (`bastion_public_ip`) for use in later steps.
+* **Inputs/Environment:** AWS Credentials, `$ENVIRONMENT`, Terraform state in S3/DynamoDB.
+* **Expected Outcome:** The bastion host's security group is updated to allow SSH from the runner, and its public IP is available as a step output.
 * **Potential Errors & Troubleshooting:**
-    * *Error:* Script failures (`setup.sh`, `setup_zone.sh`, `update-deployer-policy.sh`).
-        * *Troubleshooting:* Check the logic and execution permissions of these scripts. Ensure they correctly source variables based on `$ENVIRONMENT`.
-    * *Error:* Terraform initialization failure (backend configuration errors, unable to access S3 bucket or DynamoDB table).
-        * *Troubleshooting:* Verify bucket/table names and regions. Check IAM permissions for accessing the Terraform backend state.
-    * *Error:* Terraform refresh/apply failure (state lock, invalid Terraform code, AWS API errors, insufficient IAM permissions for `ec2:AuthorizeSecurityGroupIngress`/`ec2:DescribeSecurityGroups`, etc.).
-        * *Troubleshooting:* Check Terraform logs for details. Release state lock if necessary. Validate Terraform code (`terraform validate`). Ensure AWS credentials have permissions to modify the target security group.
-    * *Error:* Target `module.app.aws_security_group.bastion_sg` not found in Terraform state.
+    * *Error:* Script failures (`setup.sh`, etc.).
+        * *Troubleshooting:* Check the logic and execution permissions of these scripts.
+    * *Error:* Terraform initialization or apply failure (backend access, state lock, invalid code, AWS API errors, insufficient IAM permissions).
+        * *Troubleshooting:* Check Terraform logs. Ensure AWS credentials have permissions to modify the target resources.
+    * *Error:* Target resource not found in Terraform state.
         * *Troubleshooting:* Verify the Terraform module structure and resource naming is correct.
 
 ---
 
 **8. Load Secrets and Set up SSH Key**
-* **Commands:** `cd infra`, `. ./load-secrets.sh`, `cd ..`, export secrets to `$GITHUB_ENV`, decode and save SSH key.
-* **Description:** Executes the `infra/load-secrets.sh` script, which is expected to fetch sensitive data (DB credentials, hostnames, bastion SSH private key) from AWS Secrets Manager or Parameter Store based on `$ENVIRONMENT`. It then exports these fetched values as masked environment variables for subsequent steps and decodes the base64 encoded bastion private key, saving it to `~/.ssh/id_rsa` with appropriate permissions (600).
-* **Inputs/Environment:** AWS Credentials, `$ENVIRONMENT`, script `infra/load-secrets.sh`. Assumes secrets exist in AWS.
-* **Expected Outcome:** Secrets like `$DATABASE_PASSWORD`, `$DATABASE_HOSTNAME`, `$BASTION_HOST_IP`, `$BASTION_PRIVATE_KEY` etc. are fetched and available as environment variables. The SSH private key file `~/.ssh/id_rsa` is created and configured.
+* **Commands:** `cd infra`, `. ./load-secrets.sh`, `cd ..`, decode and save SSH key.
+* **Description:** Executes the `infra/load-secrets.sh` script to fetch sensitive data (DB password, Django secret key, bastion SSH private key) from AWS Secrets Manager. It then exports these fetched values as masked environment variables and decodes the base64 encoded bastion private key, saving it to `~/.ssh/id_rsa` with appropriate permissions (600).
+* **Inputs/Environment:** AWS Credentials, `$ENVIRONMENT`, script `infra/load-secrets.sh`.
+* **Expected Outcome:** Secrets like `$DATABASE_PASSWORD` and `$BASTION_PRIVATE_KEY` are fetched and available. The SSH private key file `~/.ssh/id_rsa` is created and configured.
 * **Potential Errors & Troubleshooting:**
-    * *Error:* `load-secrets.sh` script fails (e.g., cannot connect to AWS, secret not found in Secrets Manager/Parameter Store, permission denied).
-        * *Troubleshooting:* Check the script's logic and logs. Verify the secrets exist in the expected AWS location for the given `$ENVIRONMENT`. Ensure AWS credentials have permissions (`secretsmanager:GetSecretValue` or `ssm:GetParameter`).
+    * *Error:* `load-secrets.sh` script fails (secret not found, permission denied).
+        * *Troubleshooting:* Check the script's logic. Verify the secrets exist in AWS Secrets Manager for the given `$ENVIRONMENT`. Ensure AWS credentials have `secretsmanager:GetSecretValue` permission.
     * *Error:* Base64 decoding fails (invalid `BASTION_PRIVATE_KEY` format).
         * *Troubleshooting:* Ensure the secret stored in AWS is a valid base64 encoded private key.
-    * *Error:* Filesystem errors creating `~/.ssh` directory or writing `id_rsa` file.
-        * *Troubleshooting:* Check runner filesystem permissions (usually not an issue on standard runners).
 
 ---
 
 **9. Run RDS Restore Script (Conditional)**
 * **Condition:** `if: github.event.inputs.create_backup_db == 'Yes'`
 * **Command:** `./infra/restore-rds.sh "${{ github.event.inputs.source_instance_id }}" "${{ github.event.inputs.snapshot_id }}"`
-* **Description:** If the user selected 'Yes' for `create_backup_db`, this step executes the main RDS restore script (`./infra/restore-rds.sh`), passing the source instance ID and target snapshot ID as arguments. The script contains the core logic for interacting with the AWS RDS API to perform the restore operation (likely `aws rds restore-db-instance-from-db-snapshot`). **The exact behavior (e.g., creating a *new* instance vs. restoring over an existing one) depends entirely on the content of `restore-rds.sh`.**
-* **Inputs/Environment:** AWS Credentials, `github.event.inputs.source_instance_id`, `github.event.inputs.snapshot_id`, depends on the implementation within `restore-rds.sh`.
-* **Expected Outcome:** An RDS instance is restored from the specified snapshot. This is often a long-running operation; the script might wait for completion or exit earlier.
+* **Description:** If the user selected 'Yes' for `create_backup_db`, this step executes the main RDS restore script (`./infra/restore-rds.sh`). The script uses the AWS CLI to restore a new DB instance from the specified snapshot, using the configuration of the source instance. The script waits for the new instance to become available.
+* **Inputs/Environment:** AWS Credentials, `github.event.inputs.source_instance_id`, `github.event.inputs.snapshot_id`.
+* **Expected Outcome:** A new RDS instance named `{source_instance_id}-restored` is created and available.
 * **Potential Errors & Troubleshooting:**
     * *Error:* Script `./infra/restore-rds.sh` not found or not executable.
-        * *Troubleshooting:* Ensure the script exists, is checked into the repository, and has execute permissions (`chmod +x`).
-    * *Error:* AWS API errors during restore (snapshot not found, invalid source instance ID, instance identifier already exists, insufficient IAM permissions `rds:RestoreDBInstanceFromDBSnapshot`, RDS limits exceeded, incompatible parameters).
-        * *Troubleshooting:* Check the script's output for AWS error messages. Verify snapshot ID and source instance ID. Ensure the IAM user/role has RDS restore permissions. Check RDS console for conflicting instance names or resource limits.
+        * *Troubleshooting:* Ensure the script exists and has execute permissions (`chmod +x`).
+    * *Error:* AWS API errors during restore (snapshot not found, instance identifier already exists, insufficient IAM permissions `rds:RestoreDBInstanceFromDBSnapshot`).
+        * *Troubleshooting:* Check the script's output for AWS error messages. Verify inputs. Ensure the target instance name doesn't already exist.
     * *Error:* Script timeout if it waits for instance availability, which can take a long time.
-        * *Troubleshooting:* Increase timeout settings if necessary, or modify the script to not wait.
+        * *Troubleshooting:* The job timeout in GitHub Actions might be reached.
 
 ---
 
 **10. Run Migrations (Conditional)**
 * **Condition:** `if: github.event.inputs.apply_migration == 'Yes'`
-* **Commands:** `cd website`, `ssh-keyscan`, `ssh -L ...` (tunnel), `export DATABASE_URL`, `make migrate`, `make createpages`
+* **Commands:** `cd website`, determine `DATABASE_HOSTNAME`, `ssh-keyscan`, `ssh -L ...` (tunnel), `export DATABASE_URL`, `make migrate`
 * **Description:** If the user selected 'Yes' for `apply_migration`, this step performs database migrations:
-    1.  Changes to the `website` directory.
+    1.  **Dynamically determines the new database endpoint address.** It calls `aws rds describe-db-instances` for the newly created instance (`{source_instance_id}-restored`) and extracts its endpoint address.
     2.  Adds the bastion host's SSH key to the runner's `known_hosts` file using `ssh-keyscan`.
-    3.  Establishes an SSH tunnel in the background (`-f -N`). It forwards connections from the runner's `localhost:5432` to the actual database host (`$DATABASE_HOSTNAME:5432`) via the bastion host (`$BASTION_HOST_IP`), using the SSH key set up earlier.
+    3.  Establishes an SSH tunnel in the background (`-f -N`). It forwards connections from the runner's `localhost:5432` to the dynamically discovered database host (`$DATABASE_HOSTNAME:5432`) via the bastion host (`$BASTION_HOST_IP`), using the SSH key set up earlier.
     4.  Exports a `DATABASE_URL` environment variable pointing to `localhost:5432` using the fetched `$DATABASE_PASSWORD`.
     5.  Runs `make migrate` (presumably executing `python manage.py migrate`) to apply Django database migrations using the tunnelled connection.
-    6.  Runs `make createpages settings="app.settings.${ENVIRONMENT}"`, a custom command likely performing post-migration data setup specific to the environment.
-* **Inputs/Environment:** `$BASTION_HOST_IP`, `$DATABASE_HOSTNAME`, `$DATABASE_PASSWORD`, `$ENVIRONMENT`, SSH key (`~/.ssh/id_rsa`), Python environment with dependencies, `website/Makefile`, `manage.py` script. Requires the bastion security group update (Step 7) to have succeeded. Requires the RDS instance (either pre-existing or restored in Step 9) to be available and accessible from the bastion.
-* **Expected Outcome:** Database schema migrations are applied, and any custom post-migration setup (`createpages`) is executed successfully.
+* **Inputs/Environment:** `$BASTION_HOST_IP` (from step 7 output), `$DATABASE_PASSWORD`, `$ENVIRONMENT`, SSH key (`~/.ssh/id_rsa`), Python environment with dependencies.
+* **Expected Outcome:** Database schema migrations are applied successfully to the newly restored database.
 * **Potential Errors & Troubleshooting:**
-    * *Error:* `ssh-keyscan` fails (bastion host unreachable, DNS resolution issues).
-        * *Troubleshooting:* Verify `$BASTION_HOST_IP` is correct and reachable from the runner. Check network ACLs and Security Groups on the bastion.
+    * *Error:* Failed to describe RDS instance to get hostname (instance not found, permissions issue).
+        * *Troubleshooting:* Ensure the restore step completed successfully and the instance name is correct. Check IAM permissions for `rds:DescribeDBInstances`.
+    * *Error:* `ssh-keyscan` fails (bastion host unreachable).
+        * *Troubleshooting:* Verify `$BASTION_HOST_IP` is correct and reachable. Check network ACLs and Security Groups on the bastion.
     * *Error:* SSH tunnel command fails (`ssh -L ...`):
-        * *Permission denied:* SSH key issue (`~/.ssh/id_rsa` incorrect, permissions wrong, key not authorized on bastion). Troubleshooting: Verify key generation/loading (Step 8). Check bastion's `~/.ssh/authorized_keys`.
-        * *Connection refused/timeout:* Bastion host down, port 22 blocked (check bastion SG, network ACLs), incorrect `$BASTION_HOST_IP`. Troubleshooting: Verify bastion status and network paths. Ensure Step 7 successfully allowed runner IP.
-        * *Host key verification failed:* Issue with `known_hosts` file or host key changing. `StrictHostKeyChecking=yes` requires the key scanned by `ssh-keyscan` to be correct. Troubleshooting: Ensure `ssh-keyscan` ran correctly. Clear `~/.ssh/known_hosts` if the key legitimately changed (use caution).
-        * *Address already in use:* Port 5432 on the runner is already bound. Troubleshooting: Unlikely in clean runner environment, but check for conflicting processes if debugging locally.
-    * *Error:* `make migrate` or `make createpages` fails:
-        * *Database connection error:* Tunnel not working, `$DATABASE_HOSTNAME` incorrect, database instance not running or accessible from bastion, incorrect `$DATABASE_PASSWORD`, wrong database name in `DATABASE_URL`. Troubleshooting: Verify tunnel status (`ps aux | grep ssh`). Check database status in AWS console. Ensure bastion's outbound rules allow connection to DB port. Verify credentials.
-        * *Migration script errors:* Syntax errors in Django migrations, logical errors in migration code, data conflicts. Troubleshooting: Examine Django migration logs. Test migrations locally or in a staging environment.
-        * *`createpages` command errors:* Issues specific to the custom logic in that command. Troubleshooting: Check the `make createpages` target in the Makefile and the corresponding Python script/management command.
+        * *Permission denied:* SSH key issue or key not authorized on bastion.
+        * *Connection refused/timeout:* Bastion host down, port 22 blocked, or incorrect `$BASTION_HOST_IP`. Ensure Step 7 successfully allowed the runner's IP.
+    * *Error:* `make migrate` fails:
+        * *Database connection error:* Tunnel not working, dynamically discovered `$DATABASE_HOSTNAME` is incorrect, DB not accessible from bastion, or incorrect credentials.
+        * *Migration script errors:* Syntax or logical errors in Django migrations.
 
 ---
 
 ## Important Considerations
 
 * **Security:** This workflow uses static AWS Access Keys stored as GitHub secrets. Consider migrating to OpenID Connect (OIDC) using `aws-actions/configure-aws-credentials` with `role-to-assume` for enhanced security (eliminates long-lived keys).
-* **Idempotency:** The `restore-rds.sh` script's behavior is critical. If it creates a *new* instance, running the workflow multiple times might create multiple restored instances. If it modifies an existing instance, it might be destructive. Ensure the script's behavior is well-understood.
+* **Idempotency:** The `restore-rds.sh` script creates a new instance with a predictable name (`{source_instance_id}-restored`). Running the workflow multiple times with the same `source_instance_id` will fail on the second run because the target DB instance will already exist.
 * **State Management:** Terraform is used for a targeted SG update. Ensure the Terraform state is managed correctly (S3 backend with locking is good practice, as used here).
-* **External Scripts:** The workflow heavily relies on the correctness and robustness of external scripts (`restore-rds.sh`, `load-secrets.sh`, `setup.sh`, `setup_zone.sh`, Makefiles). Errors within these scripts will cause workflow failures.
+* **External Scripts:** The workflow heavily relies on the correctness and robustness of external scripts (`restore-rds.sh`, `load-secrets.sh`, `setup.sh`, etc.) and Makefiles.
 * **Long-Running Operations:** RDS restore can take significant time. The workflow might time out if scripts wait synchronously without adequate timeout settings.
 * **Bastion Dependency:** Access to the database for migrations relies entirely on the bastion host being available and correctly configured, and the runner's IP being allowed through its security group.
 * **Dynamic Sandbox Environment:** Note that the GitHub Actions environment name for `sandbox` includes the triggering actor's username (`{github.actor}_sandbox`), making it specific to the user running the workflow.
