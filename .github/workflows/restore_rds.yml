@@ -172,9 +172,4 @@ jobs:
           make migrate settings="app.settings.${ENVIRONMENT}" || { echo "ERROR: 'make migrate' failed"; exit 1; }
           echo "'make migrate' completed."
 
-          echo "Running custom commands (make createpages)..."
-          # Ensure settings argument format is correct for your Makefile/manage.py
-          make createpages settings="app.settings.${ENVIRONMENT}" || { echo "ERROR: 'make createpages' failed"; exit 1; }
-          echo "'make createpages' completed."
-
           echo "Migration step finished successfully."
