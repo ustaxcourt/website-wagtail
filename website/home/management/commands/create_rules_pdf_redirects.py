@@ -59,7 +59,7 @@ class Command(BaseCommand):
                     old_path = f"/files/documents/{current_filename}"
                     new_path = f"/files/documents/{new_title}"
 
-                    if old_path.lower() == new_path.lower():
+                    if old_path == new_path:
                         continue
                     # Create the redirect using RedirectInitializer
                     initializer.create(old_path, new_path, is_permanent=True)
