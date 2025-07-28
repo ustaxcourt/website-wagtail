@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 terms_of_use_docs = {
-    "Rule-21.pdf": "",
+    "rule-21.pdf": "",
 }
 
 
@@ -45,7 +45,7 @@ class DawsonTermsOfUsePageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": f"Acceptance of the Terms of Use constitutes an agreement to abide by all Court Rules, policies, and procedures governing the use of the Court's electronic access and filing system (DAWSON). By registering for DAWSON, practitioners and petitioners consent to receive electronic service (eService) of documents pursuant to <strong><a linktype='document' id='{terms_of_use_docs['Rule-21.pdf'].id}' target='_blank'>Rule 21(b)(1)(D)</a></strong>. The notification of service to all parties and persons in the case who have consented to electronic service in conjunction with the entry on the Court's docket record constitutes service on all parties who have consented to electronic service. Practitioners and petitioners who consent to receive eService agree to regularly log on to DAWSON to view served documents. The combination of user name and password serves as the signature of the individual filing the documents. Individuals must protect the security of their login credentials and immediately notify the Court by emailing <strong><a href='mailto:dawson.support@ustaxcourt.gov'>dawson.support@ustaxcourt.gov</a></strong> if they learn that their account has been compromised. The Terms of Use can be changed at any time without notice.",
+                        "value": f"Acceptance of the Terms of Use constitutes an agreement to abide by all Court Rules, policies, and procedures governing the use of the Court's electronic access and filing system (DAWSON). By registering for DAWSON, practitioners and petitioners consent to receive electronic service (eService) of documents pursuant to <strong><a linktype='document' id='{terms_of_use_docs['rule-21.pdf'].id}' target='_blank'>Rule 21(b)(1)(D)</a></strong>. The notification of service to all parties and persons in the case who have consented to electronic service in conjunction with the entry on the Court's docket record constitutes service on all parties who have consented to electronic service. Practitioners and petitioners who consent to receive eService agree to regularly log on to DAWSON to view served documents. The combination of user name and password serves as the signature of the individual filing the documents. Individuals must protect the security of their login credentials and immediately notify the Court by emailing <strong><a href='mailto:dawson.support@ustaxcourt.gov'>dawson.support@ustaxcourt.gov</a></strong> if they learn that their account has been compromised. The Terms of Use can be changed at any time without notice.",
                     },
                     {
                         "type": "paragraph",
@@ -58,7 +58,7 @@ class DawsonTermsOfUsePageInitializer(PageInitializer):
                             "list_type": "unordered",
                             "items": [
                                 {
-                                    "text": f"I must provide accurate and complete information when I register for electronic access to DAWSON. I must promptly notify the Court of any changes to that information. See also <strong><a linktype='document' id='{terms_of_use_docs['Rule-21.pdf'].id}' target='_blank'>Rule 21(b)(4)</a></strong>."
+                                    "text": f"I must provide accurate and complete information when I register for electronic access to DAWSON. I must promptly notify the Court of any changes to that information. See also <strong><a linktype='document' id='{terms_of_use_docs['rule-21.pdf'].id}' target='_blank'>Rule 21(b)(4)</a></strong>."
                                 },
                                 {
                                     "text": "Registration is for my and my authorized agent's use only, and I am responsible for preventing unauthorized use of my user name and password. If I believe there has been unauthorized use, I must notify the Court by emailing <strong><a href='mailto:dawson.support@ustaxcourt.gov'>dawson.support@ustaxcourt.gov</a></strong>."
