@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 class PageInitializer(ABC):
     DOCUMENTS_BASE_PATH = "home/management/documents"
-    DOCUMENTS_UDPATED_RULES_PATH = "home/management/documents/rules"
     IMAGES_BASE_PATH = "home/management/images"
 
     def __init__(self):
