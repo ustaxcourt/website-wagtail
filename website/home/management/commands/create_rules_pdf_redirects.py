@@ -13,18 +13,27 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Generate PDF rule redirects from CSV using RedirectInitializer and output CloudFront redirect map JSON."
+    help = (
+        "Generate PDF rule redirects from CSV and output CloudFront-safe JS + full JSON"
+    )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--limit",
+            type=int,
+            default=100,
+            help="Max redirects for CloudFront Function (default: 100)",
+        )
 
     def handle(self, *args, **options):
-        self.stdout.write("Starting PDF rule redirect creation...")
+        limit = options["limit"]
+        self.stdout.write(f"Starting redirect generation (limit={limit})")
 
         try:
             site = Site.objects.get(is_default_site=True)
         except Site.DoesNotExist:
             self.stdout.write(self.style.ERROR("Default Wagtail Site not found."))
             return
-
-        initializer = RedirectInitializer()
 
         base_dir = Path(__file__).resolve().parent.parent.parent.parent
         csv_path = base_dir / "home" / "migrations" / "0064_update_rules_documents.csv"
@@ -38,38 +47,25 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"CSV file not found at: {csv_path}"))
             return
 
+        initializer = RedirectInitializer()
         redirects = {}
-        created_count = 0
+        cloudfront_redirects = {}
 
-        try:
-            with open(csv_path, newline="", encoding="utf-8") as csvfile:
-                reader = csv.reader(csvfile)
-                header = next(reader, None)
-                expected_header = ["current_filename", "source_filename", "new_title"]
-                if header != expected_header:
-                    self.stdout.write(
-                        self.style.WARNING(f"CSV header mismatch: {header}")
-                    )
+        with open(csv_path, newline="", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for i, row in enumerate(reader):
+                old_path = f"/files/documents/{row['current_filename'].strip()}"
+                new_path = f"/files/documents/{row['new_title'].strip()}"
 
-                for current_filename, source_filename, new_title in reader:
-                    current_filename = current_filename.strip()
-                    new_title = new_title.strip()
+                if old_path == new_path:
+                    continue
 
-                    # Build the old and new URL paths
-                    old_path = f"/files/documents/{current_filename}"
-                    new_path = f"/files/documents/{new_title}"
-
-                    if old_path == new_path:
-                        continue
-                    # Create the redirect using RedirectInitializer
+                redirects[old_path] = new_path
+                if len(cloudfront_redirects) < limit:
+                    cloudfront_redirects[old_path] = new_path
                     initializer.create(old_path, new_path, is_permanent=True)
-                    redirects[old_path] = new_path
-                    created_count += 1
 
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Error processing CSV: {e}"))
-            return
-
+        # Link site to all site-less redirects
         updated = 0
         for redirect in Redirect.objects.filter(site__isnull=True):
             redirect.site = site
@@ -81,48 +77,57 @@ class Command(BaseCommand):
                 )
             )
 
-        # Write JSON
-        try:
-            with open(json_output_path, "w", encoding="utf-8") as jsonfile:
-                json.dump(redirects, jsonfile, indent=2)
-            self.stdout.write(
-                self.style.SUCCESS(f"Wrote redirect map to {json_output_path}")
-            )
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Failed to write redirect JSON: {e}"))
+        # Write full redirect map JSON (for Wagtail debugging or fallback logic)
+        with open(json_output_path, "w", encoding="utf-8") as f:
+            json.dump(redirects, f, indent=2)
 
-        # Write JS Function
-        try:
-            with open(js_output_path, "w", encoding="utf-8") as f:
-                f.write("function handler(event) {\n")
-                f.write("  var request = event.request;\n")
-                f.write("  var redirects = {\n")
-                for i, (src, dest) in enumerate(redirects.items()):
-                    comma = "," if i < len(redirects) - 1 else ""
-                    f.write(f'    "{src}": "{dest}"{comma}\n')
-                f.write("  };\n")
-                f.write("  if (redirects.hasOwnProperty(request.uri)) {\n")
-                f.write("    return {\n")
-                f.write("      statusCode: 302,\n")
-                f.write('      statusDescription: "Found",\n')
-                f.write("      headers: {\n")
-                f.write("        location: { value: redirects[request.uri] }\n")
-                f.write("      }\n")
-                f.write("    };\n")
-                f.write("  }\n")
-                f.write("  if (request.uri.startsWith('/files/')) {\n")
-                f.write("    request.uri = request.uri.slice(6);\n")
-                f.write("  }\n")
-                f.write("  return request;\n")
-                f.write("}\n")
-            self.stdout.write(
-                self.style.SUCCESS(f"Wrote CloudFront JS function to {js_output_path}")
-            )
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Failed to write JS function: {e}"))
+        # Write CloudFront Function JS
+        js_lines = [
+            "function handler(event) {",
+            "  var request = event.request;",
+            "  var redirects = {",
+        ]
+        for i, (src, dst) in enumerate(cloudfront_redirects.items()):
+            comma = "," if i < len(cloudfront_redirects) - 1 else ""
+            js_lines.append(f'    "{src}": "{dst}"{comma}')
+        js_lines += [
+            "  };",
+            "  if (redirects.hasOwnProperty(request.uri)) {",
+            "    return {",
+            "      statusCode: 302,",
+            '      statusDescription: "Found",',
+            "      headers: {",
+            "        location: { value: redirects[request.uri] }",
+            "      }",
+            "    };",
+            "  }",
+            "  if (request.uri.startsWith('/files/')) {",
+            "    request.uri = request.uri.slice(6);",
+            "  }",
+            "  return request;",
+            "}",
+        ]
+        js_code = "\n".join(js_lines)
+        with open(js_output_path, "w", encoding="utf-8") as f:
+            f.write(js_code)
 
-        self.stdout.write(self.style.SUCCESS(f"Created {created_count} redirects."))
+        size_bytes = js_output_path.stat().st_size
+        size_kb = round(size_bytes / 1024, 2)
+        if size_bytes > 10240:
+            self.stderr.write(
+                f"Warning: JS file size is {size_kb} KB (exceeds 10 KB limit)"
+            )
+        else:
+            self.stdout.write(f"JS file generated: {js_output_path} ({size_kb} KB)")
+
         self.stdout.write(
-            self.style.SUCCESS(f"Linked {updated} redirects to the default site.")
+            self.style.SUCCESS(
+                f"{len(cloudfront_redirects)} CloudFront redirects created"
+            )
         )
-        self.stdout.write(self.style.SUCCESS("All redirects processed successfully."))
+        self.stdout.write(
+            self.style.SUCCESS(f"{len(redirects)} total redirects processed")
+        )
+        self.stdout.write(
+            self.style.SUCCESS(f"{updated} existing redirects linked to site")
+        )
