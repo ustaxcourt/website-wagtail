@@ -1,118 +1,31 @@
 function handler(event) {
-  var request = event.request;
-  var redirects = {
-    "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
-    "/files/documents/Rule-100.pdf": "/files/documents/rule-100.pdf",
-    "/files/documents/Rule-101.pdf": "/files/documents/rule-101.pdf",
-    "/files/documents/Rule-102.pdf": "/files/documents/rule-102.pdf",
-    "/files/documents/Rule-103_Amended_03202023.pdf": "/files/documents/rule-103.pdf",
-    "/files/documents/Rule-104.pdf": "/files/documents/rule-104.pdf",
-    "/files/documents/Rule-10_Amended_03202023.pdf": "/files/documents/rule-10.pdf",
-    "/files/documents/Rule-110_Amended_03202023.pdf": "/files/documents/rule-110.pdf",
-    "/files/documents/Rule-11superseded.pdf": "/files/documents/rule-11.pdf",
-    "/files/documents/Rule-120.pdf": "/files/documents/rule-120.pdf",
-    "/files/documents/Rule-121_Amended_03202023.pdf": "/files/documents/rule-121.pdf",
-    "/files/documents/Rule-122.pdf": "/files/documents/rule-122.pdf",
-    "/files/documents/Rule-123.pdf": "/files/documents/rule-123.pdf",
-    "/files/documents/Rule-124.pdf": "/files/documents/rule-124.pdf",
-    "/files/documents/Rule-12superseded.pdf": "/files/documents/rule-12.pdf",
-    "/files/documents/Rule-130.pdf": "/files/documents/rule-130.pdf",
-    "/files/documents/Rule-131.pdf": "/files/documents/rule-131.pdf",
-    "/files/documents/Rule-132.pdf": "/files/documents/rule-132.pdf",
-    "/files/documents/Rule-133_Amended_03202023.pdf": "/files/documents/rule-133.pdf",
-    "/files/documents/Rule-13_amended_08082024.pdf": "/files/documents/rule-13.pdf",
-    "/files/documents/Rule-140_Amended_03202023.pdf": "/files/documents/rule-140.pdf",
-    "/files/documents/Rule-141_Amended_03202023.pdf": "/files/documents/rule-141.pdf",
-    "/files/documents/Rule-142.pdf": "/files/documents/rule-142.pdf",
-    "/files/documents/Rule-143amended.pdf": "/files/documents/rule-143.pdf",
-    "/files/documents/Rule-144.pdf": "/files/documents/rule-144.pdf",
-    "/files/documents/Rule-145.pdf": "/files/documents/rule-145.pdf",
-    "/files/documents/Rule-146.pdf": "/files/documents/rule-146.pdf",
-    "/files/documents/Rule-147_Amended_03202023.pdf": "/files/documents/rule-147.pdf",
-    "/files/documents/Rule-148.pdf": "/files/documents/rule-148.pdf",
-    "/files/documents/Rule-149.pdf": "/files/documents/rule-149.pdf",
-    "/files/documents/Rule-150.pdf": "/files/documents/rule-150.pdf",
-    "/files/documents/Rule-151_1_Amended_03202023.pdf": "/files/documents/rule-151.1.pdf",
-    "/files/documents/Rule-151_Amended_03202023.pdf": "/files/documents/rule-151.pdf",
-    "/files/documents/Rule-152_Amended_03202023.pdf": "/files/documents/rule-152.pdf",
-    "/files/documents/Rule-155.pdf": "/files/documents/rule-155.pdf",
-    "/files/documents/Rule-156.pdf": "/files/documents/rule-156.pdf",
-    "/files/documents/Rule-157.pdf": "/files/documents/rule-157.pdf",
-    "/files/documents/Rule-160.pdf": "/files/documents/rule-160.pdf",
-    "/files/documents/Rule-161_Amended_03202023.pdf": "/files/documents/rule-161.pdf",
-    "/files/documents/Rule-162.pdf": "/files/documents/rule-162.pdf",
-    "/files/documents/Rule-163.pdf": "/files/documents/rule-163.pdf",
-    "/files/documents/Rule-170_Amended_03202023.pdf": "/files/documents/rule-170.pdf",
-    "/files/documents/Rule-171_Amended_03202023.pdf": "/files/documents/rule-171.pdf",
-    "/files/documents/Rule-172.pdf": "/files/documents/rule-172.pdf",
-    "/files/documents/Rule-173.pdf": "/files/documents/rule-173.pdf",
-    "/files/documents/Rule-174.pdf": "/files/documents/rule-174.pdf",
-    "/files/documents/Rule-180_Amended_03202023.pdf": "/files/documents/rule-180.pdf",
-    "/files/documents/Rule-181.pdf": "/files/documents/rule-181.pdf",
-    "/files/documents/Rule-182_Amended_03202023.pdf": "/files/documents/rule-182.pdf",
-    "/files/documents/Rule-183.pdf": "/files/documents/rule-183.pdf",
-    "/files/documents/Rule-190.pdf": "/files/documents/rule-190.pdf",
-    "/files/documents/Rule-191.pdf": "/files/documents/rule-191.pdf",
-    "/files/documents/Rule-192.pdf": "/files/documents/rule-192.pdf",
-    "/files/documents/Rule-193.pdf": "/files/documents/rule-193.pdf",
-    "/files/documents/Rule-1_Amended_03202023.pdf": "/files/documents/rule-1.pdf",
-    "/files/documents/Rule-2.pdf": "/files/documents/rule-2.pdf",
-    "/files/documents/Rule-2002nd-amended.pdf": "/files/documents/rule-200.pdf",
-    "/files/documents/Rule-201.pdf": "/files/documents/rule-201.pdf",
-    "/files/documents/Rule-202.pdf": "/files/documents/rule-202.pdf",
-    "/files/documents/Rule-20_Amended_03202023.pdf": "/files/documents/rule-20.pdf",
-    "/files/documents/Rule-210_amended_08082024.pdf": "/files/documents/rule-210.pdf",
-    "/files/documents/Rule-211.pdf": "/files/documents/rule-211.pdf",
-    "/files/documents/Rule-212.pdf": "/files/documents/rule-212.pdf",
-    "/files/documents/Rule-213_Amended_03202023.pdf": "/files/documents/rule-213.pdf",
-    "/files/documents/Rule-214.pdf": "/files/documents/rule-214.pdf",
-    "/files/documents/Rule-215.pdf": "/files/documents/rule-215.pdf",
-    "/files/documents/Rule-216.pdf": "/files/documents/rule-216.pdf",
-    "/files/documents/Rule-217_Amended_03202023.pdf": "/files/documents/rule-217.pdf",
-    "/files/documents/Rule-218.pdf": "/files/documents/rule-218.pdf",
-    "/files/documents/Rule-21_Amended_03202023.pdf": "/files/documents/rule-21.pdf",
-    "/files/documents/Rule-220_amended_08082024.pdf": "/files/documents/rule-220.pdf",
-    "/files/documents/Rule-221.pdf": "/files/documents/rule-221.pdf",
-    "/files/documents/Rule-222.pdf": "/files/documents/rule-222.pdf",
-    "/files/documents/Rule-223.pdf": "/files/documents/rule-223.pdf",
-    "/files/documents/Rule-224.pdf": "/files/documents/rule-224.pdf",
-    "/files/documents/Rule-225.pdf": "/files/documents/rule-225.pdf",
-    "/files/documents/Rule-226.pdf": "/files/documents/rule-226.pdf",
-    "/files/documents/Rule-227.pdf": "/files/documents/rule-227.pdf",
-    "/files/documents/Rule-228.pdf": "/files/documents/rule-228.pdf",
-    "/files/documents/Rule-229.pdf": "/files/documents/rule-229.pdf",
-    "/files/documents/Rule-229A.pdf": "/files/documents/rule-229A.pdf",
-    "/files/documents/Rule-22amended.pdf": "/files/documents/rule-22.pdf",
-    "/files/documents/Rule-2302nd-amended.pdf": "/files/documents/rule-230.pdf",
-    "/files/documents/Rule-231_Amended_03202023.pdf": "/files/documents/rule-231.pdf",
-    "/files/documents/Rule-232.pdf": "/files/documents/rule-232.pdf",
-    "/files/documents/Rule-233_Amended_03202023.pdf": "/files/documents/rule-233.pdf",
-    "/files/documents/Rule-23_Amended_03202023.pdf": "/files/documents/rule-23.pdf",
-    "/files/documents/Rule-240_amended_08082024.pdf": "/files/documents/rule-240.pdf",
-    "/files/documents/Rule-241.pdf": "/files/documents/rule-241.pdf",
-    "/files/documents/Rule-242.pdf": "/files/documents/rule-242.pdf",
-    "/files/documents/Rule-243.pdf": "/files/documents/rule-243.pdf",
-    "/files/documents/Rule-244.pdf": "/files/documents/rule-244.pdf",
-    "/files/documents/Rule-245.pdf": "/files/documents/rule-245.pdf",
-    "/files/documents/Rule-246.pdf": "/files/documents/rule-246.pdf",
-    "/files/documents/Rule-247.pdf": "/files/documents/rule-247.pdf",
-    "/files/documents/Rule-248.pdf": "/files/documents/rule-248.pdf",
-    "/files/documents/Rule-249.pdf": "/files/documents/rule-249.pdf",
-    "/files/documents/Rule-24amended-Oct.-6-2020.pdf": "/files/documents/rule-24.pdf",
-    "/files/documents/Rule-250.pdf": "/files/documents/rule-250.pdf",
-    "/files/documents/Rule-251.pdf": "/files/documents/rule-251.pdf"
-  };
-  if (redirects.hasOwnProperty(request.uri)) {
-    return {
-      statusCode: 302,
-      statusDescription: "Found",
-      headers: {
-        location: { value: redirects[request.uri] }
-      }
-    };
-  }
-  if (request.uri.startsWith('/files/')) {
-    request.uri = request.uri.slice(6);
-  }
-  return request;
-}
+          var request = event.request;
+          var uri = request.uri;
+          var pattern = /^\/documents\/Rule-\d+[.\-_A-Za-z0-9]*?(amended|Amended|superseded|2nd|2nd-amended|New|new)[^\/]*\.pdf$/;
+          var genericPattern = /^\/documents\/Rule-[\d.]+\.pdf$/;
+
+          if (pattern.test(uri)) {
+            var newUri = uri.replace(/^\/documents\/(Rule-\d+)[^\/]*\.pdf$/, "/documents/$1.pdf").toLowerCase();
+            return {
+              statusCode: 302,
+              statusDescription: "Found",
+              headers: {
+                location: { value: newUri }
+              }
+            };
+          }
+          if (genericPattern.test(uri)) {
+              return {
+                statusCode: 302,
+                statusDescription: "Found",
+                headers: {
+                  location: { value: uri.toLowerCase() }
+                }
+              };
+            }
+          // Strip /files prefix if present (CloudFront origin routing)
+          if (request.uri.startsWith('/files/')) {
+            request.uri = request.uri.slice(6);
+          }
+          return request;
+        }

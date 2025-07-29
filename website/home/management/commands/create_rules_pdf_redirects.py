@@ -14,20 +14,13 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = (
-        "Generate PDF rule redirects from CSV and output CloudFront-safe JS + full JSON"
+        "Generate PDF rule redirects from CSV and output CloudFront-safe JS using regex"
     )
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "--limit",
-            type=int,
-            default=100,
-            help="Max redirects for CloudFront Function (default: 100)",
-        )
-
     def handle(self, *args, **options):
-        limit = options["limit"]
-        self.stdout.write(f"Starting redirect generation (limit={limit})")
+        self.stdout.write(
+            "Starting redirect generation using regex-based CloudFront function..."
+        )
 
         try:
             site = Site.objects.get(is_default_site=True)
@@ -49,11 +42,10 @@ class Command(BaseCommand):
 
         initializer = RedirectInitializer()
         redirects = {}
-        cloudfront_redirects = {}
 
         with open(csv_path, newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
-            for i, row in enumerate(reader):
+            for row in reader:
                 old_path = f"/files/documents/{row['current_filename'].strip()}"
                 new_path = f"/files/documents/{row['new_title'].strip()}"
 
@@ -61,9 +53,7 @@ class Command(BaseCommand):
                     continue
 
                 redirects[old_path] = new_path
-                if len(cloudfront_redirects) < limit:
-                    cloudfront_redirects[old_path] = new_path
-                    initializer.create(old_path, new_path, is_permanent=True)
+                initializer.create(old_path, new_path, is_permanent=True)
 
         # Link site to all site-less redirects
         updated = 0
@@ -77,37 +67,45 @@ class Command(BaseCommand):
                 )
             )
 
-        # Write full redirect map JSON (for Wagtail debugging or fallback logic)
+        # Write full redirect map JSON (for backup or debugging)
         with open(json_output_path, "w", encoding="utf-8") as f:
             json.dump(redirects, f, indent=2)
 
-        # Write CloudFront Function JS
-        js_lines = [
-            "function handler(event) {",
-            "  var request = event.request;",
-            "  var redirects = {",
-        ]
-        for i, (src, dst) in enumerate(cloudfront_redirects.items()):
-            comma = "," if i < len(cloudfront_redirects) - 1 else ""
-            js_lines.append(f'    "{src}": "{dst}"{comma}')
-        js_lines += [
-            "  };",
-            "  if (redirects.hasOwnProperty(request.uri)) {",
-            "    return {",
-            "      statusCode: 302,",
-            '      statusDescription: "Found",',
-            "      headers: {",
-            "        location: { value: redirects[request.uri] }",
-            "      }",
-            "    };",
-            "  }",
-            "  if (request.uri.startsWith('/files/')) {",
-            "    request.uri = request.uri.slice(6);",
-            "  }",
-            "  return request;",
-            "}",
-        ]
-        js_code = "\n".join(js_lines)
+        # Write CloudFront Function JS with regex-based logic
+        js_code = """
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri;
+          var pattern = /^\/documents\/Rule-\d+[.\-_A-Za-z0-9]*?(amended|Amended|superseded|2nd|2nd-amended|New|new)[^\/]*\.pdf$/;
+          var genericPattern = /^\/documents\/Rule-[\d.]+\.pdf$/;
+
+          if (pattern.test(uri)) {
+            var newUri = uri.replace(/^\\/documents\\/(Rule-\\d+)[^\\/]*\\.pdf$/, "/documents/$1.pdf").toLowerCase();
+            return {
+              statusCode: 302,
+              statusDescription: "Found",
+              headers: {
+                location: { value: newUri }
+              }
+            };
+          }
+          if (genericPattern.test(uri)) {
+              return {
+                statusCode: 302,
+                statusDescription: "Found",
+                headers: {
+                  location: { value: uri.toLowerCase() }
+                }
+              };
+            }
+          // Strip /files prefix if present (CloudFront origin routing)
+          if (request.uri.startsWith('/files/')) {
+            request.uri = request.uri.slice(6);
+          }
+          return request;
+        }
+        """.strip()
+
         with open(js_output_path, "w", encoding="utf-8") as f:
             f.write(js_code)
 
@@ -120,11 +118,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write(f"JS file generated: {js_output_path} ({size_kb} KB)")
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"{len(cloudfront_redirects)} CloudFront redirects created"
-            )
-        )
         self.stdout.write(
             self.style.SUCCESS(f"{len(redirects)} total redirects processed")
         )
