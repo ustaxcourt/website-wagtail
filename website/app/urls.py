@@ -95,7 +95,6 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
     # Only include debug_toolbar URLs if the app is installed
     if "debug_toolbar" in settings.INSTALLED_APPS:
         urlpatterns += [

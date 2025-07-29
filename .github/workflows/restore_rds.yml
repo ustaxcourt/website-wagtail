@@ -99,6 +99,10 @@ jobs:
           echo "Applying targeted update to Bastion Security Group..."
           # Assuming bastion_sg is within a module named 'app'
           terraform apply -target=module.app.aws_instance.bastion -target=module.app.aws_security_group.bastion_sg -auto-approve
+          # Output Bastion Host IP and save to environment file for later steps
+          BASTION_HOST_IP=$(terraform output -raw bastion_public_ip)
+          echo "bastion_public_ip=${BASTION_HOST_IP}" >> $GITHUB_OUTPUT
+          echo "::add-mask::$BASTION_HOST_IP"
           echo "Bastion Security Group update applied."
 
       - name: Load Secrets and Set up SSH Key
@@ -116,10 +120,6 @@ jobs:
           echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}"
           echo "SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "::add-mask::${SECRET_KEY}"
-          echo "DATABASE_HOSTNAME=$DATABASE_HOSTNAME" >> $GITHUB_ENV
-          echo "::add-mask::${DATABASE_HOSTNAME}"
-          echo "BASTION_HOST_IP=$BASTION_HOST_IP" >> $GITHUB_ENV
-          echo "::add-mask::${BASTION_HOST_IP}"
           # Create SSH key file
           mkdir -p ~/.ssh # Use ~/.ssh for standard location
           echo "${BASTION_PRIVATE_KEY}" | base64 --decode > ~/.ssh/id_rsa
@@ -144,9 +144,12 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_update_sg.outputs.bastion_public_ip }}
         run: |
           echo "Changing to website directory..."
           cd website || { echo "ERROR: Failed to cd into website directory"; exit 1; }
+          NEW_INSTANCE_NAME="${{ github.event.inputs.source_instance_id }}-restored"
+          DATABASE_HOSTNAME=$(aws rds describe-db-instances   --db-instance-identifier "${NEW_INSTANCE_NAME}" --query 'DBInstances[0].Endpoint' --output json | jq -r '.Address // empty')
 
           echo "Scanning bastion host key..."
           # Add host key to known_hosts
@@ -166,12 +169,7 @@ jobs:
           echo "DATABASE_URL exported."
 
           echo "Running database migrations (make migrate)..."
-          make migrate || { echo "ERROR: 'make migrate' failed"; exit 1; }
+          make migrate settings="app.settings.${ENVIRONMENT}" || { echo "ERROR: 'make migrate' failed"; exit 1; }
           echo "'make migrate' completed."
-
-          echo "Running custom commands (make createpages)..."
-          # Ensure settings argument format is correct for your Makefile/manage.py
-          make createpages settings="app.settings.${ENVIRONMENT}" || { echo "ERROR: 'make createpages' failed"; exit 1; }
-          echo "'make createpages' completed."
 
           echo "Migration step finished successfully."

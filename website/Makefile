@@ -57,7 +57,7 @@ sqlmigrate:
 	. $(VENV) && python manage.py sqlmigrate $(name) $(id)
 
 migrate:
-	. $(VENV) && python manage.py migrate
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py migrate
 
 rmdb:
 	rm ./db.sqlite3 || echo "Local DB file already deleted"
