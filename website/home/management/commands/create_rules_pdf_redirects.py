@@ -80,6 +80,28 @@ class Command(BaseCommand):
           }
 
           var uri = request.uri;
+          var redirects = {
+            "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
+            "/documents/Rule-229A.pdf": "/files/documents/rule-229A.pdf",
+            "/documents/Rule-2302nd-amended.pdf": "/files/documents/rule-230.pdf",
+            "/documents/Rule-255.1_amended_08082024.pdf": "/files/documents/rule-255.1.pdf",
+            "/documents/Rule-255.2New.pdf": "/files/documents/rule-255.2.pdf",
+            "/documents/Rule-255.3New.pdf": "/files/documents/rule-255.3.pdf",
+            "/documents/Rule-255.4New.pdf": "/files/documents/rule-255.4.pdf",
+            "/documents/Rule-255.5New.pdf": "/files/documents/rule-255.5.pdf",
+            "/documents/Rule-255.6New.pdf": "/files/documents/rule-255.6.pdf",
+            "/documents/Rule-255.7New.pdf": "/files/documents/rule-255.7.pdf"
+          };
+
+          if (redirects[uri]) {
+            return {
+              statusCode: 302,
+              statusDescription: "Found",
+              headers: {
+                location: { value: redirects[uri].toLowerCase() }
+              }
+            };
+          }
           var pattern = /^\/documents\/Rule-\d+[.\-_A-Za-z0-9]*?(amended|Amended|superseded|2nd|2nd-amended|New|new)[^\/]*\.pdf$/;
           var genericPattern = /^\/documents\/Rule-[\d.]+\.pdf$/;
 
@@ -89,7 +111,7 @@ class Command(BaseCommand):
               statusCode: 302,
               statusDescription: "Found",
               headers: {
-                location: { value: newUri }
+                location: { value: "/files" + newUri }
               }
             };
           }
@@ -98,7 +120,7 @@ class Command(BaseCommand):
               statusCode: 302,
               statusDescription: "Found",
               headers: {
-                location: { value: uri.toLowerCase() }
+                location: { value: "/files" + uri.toLowerCase() }
               }
             };
           }
