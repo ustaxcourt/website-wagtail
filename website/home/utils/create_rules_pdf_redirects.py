@@ -79,51 +79,55 @@ def main():
             "/documents/Rule-151_1_Amended_03202023.pdf": "/files/documents/rule-151.1.pdf"
           };
 
-          if (redirects[uri]) {
+          // Avoid infinite redirects if already pointing to final URL
+          if (originalUri === redirects[uri]) {
+            return request;
+          }
+
+          if (redirects[uri] && ("/files" + uri) !== redirects[uri]) {
             return {
               statusCode: 301,
-              statusDescription: "Procedure Redirect",
+              statusDescription: "Permanent Redirect",
               headers: {
                 location: { value: redirects[uri] }
               }
             };
           }
 
-          // Use comprehensive regex-based fallback (from test)
-          var rewriteRegex = /^(\/documents\/)(.*?)(?:_?Amended.*|_?amended.*|-?superseded|-?2nd-amended|-?New|-?Oct.*|\.\.)?(\.pdf)$/i;
-          var match = uri.match(rewriteRegex);
+          // Early exit: already normalized (e.g., rule-1.pdf)
+          if (/^\/documents\/rule-[a-z0-9.-]+\.pdf$/i.test(uri)) {
+            return request;
+          }
+
+          // Regex fallback for legacy filenames
+          var pattern = /^\/documents\/(Rule-[\dA-Za-z.]+)(?:_?Amended.*|_?amended.*|-?superseded|-?2nd-amended|-?New|-?Oct.*|\.\.)?\.pdf$/i;
+          var match = uri.match(pattern);
 
           if (match) {
-            var prefix = match[1];
-            var baseName = match[2];
-            var suffix = match[3];
+            var ruleName = match[1];
 
-            // Basic transform logic: convert underscores to hyphens, handle "Rule" and "."
-            baseName = baseName.replace(/_/g, '-');
-            baseName = baseName.replace(/(\d)-(\d[A-Z]?)/g, '$1.$2');
-            if (baseName.toLowerCase().startsWith('rule')) {
-              baseName = 'rule' + baseName.substring(4);
+            // Normalize name
+            ruleName = ruleName.replace(/_/g, "-");
+            ruleName = ruleName.replace(/(\d)-(\d[A-Z.]?)/g, "$1.$2");
+            ruleName = ruleName.replace(/^Rule/i, "rule");
+
+            var newUri = "/files/documents/" + ruleName + ".pdf";
+
+            // Avoid redirecting to self
+        if (originalUri !== newUri) {
+          return {
+            statusCode: 301,
+            statusDescription: "Permanent Redirect",
+            headers: {
+              location: { value: newUri }
             }
-
-            // Remove trailing dash if left behind
-            if (baseName.endsWith('-')) {
-              baseName = baseName.slice(0, -1);
-            }
-
-            var newUri = prefix + baseName + suffix;
-
-            return {
-              statusCode: 301,
-              statusDescription: "Permanent Redirect",
-              headers: {
-                location: { value: "/files" + newUri }
-              }
-            };
+          };
+        }
           }
 
           return request;
         }
-            """.strip()
+        """
 
     with open(js_output_path, "w", encoding="utf-8") as f:
         f.write(js_code)

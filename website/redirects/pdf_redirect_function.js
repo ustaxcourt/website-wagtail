@@ -1,69 +1,73 @@
 function handler(event) {
-          var request = event.request;
+  var request = event.request;
 
-          // Normalize URI by stripping "/files" prefix (for lookup and regex matching)
-          if (request.uri.startsWith('/files/')) {
-            request.uri = request.uri.slice(6);
-          }
+  // Strip /files prefix for uniform matching
+  var originalUri = request.uri;
+  if (request.uri.startsWith("/files/")) {
+    request.uri = request.uri.slice(6);
+  }
 
-          var uri = request.uri;
+  var uri = request.uri;
 
-          // Exact path redirects (manual override)
-          var redirects = {
-            "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
-            "/documents/Rule-229A.pdf": "/files/documents/rule-229A.pdf",
-            "/documents/Rule-2302nd-amended.pdf": "/files/documents/rule-230.pdf",
-            "/documents/Rule-255.1_amended_08082024.pdf": "/files/documents/rule-255.1.pdf",
-            "/documents/Rule-255.2New.pdf": "/files/documents/rule-255.2.pdf",
-            "/documents/Rule-255.3New.pdf": "/files/documents/rule-255.3.pdf",
-            "/documents/Rule-255.4New.pdf": "/files/documents/rule-255.4.pdf",
-            "/documents/Rule-255.5New.pdf": "/files/documents/rule-255.5.pdf",
-            "/documents/Rule-255.6New.pdf": "/files/documents/rule-255.6.pdf",
-            "/documents/Rule-255.7New.pdf": "/files/documents/rule-255.7.pdf",
-            "/documents/Rule-151_1_Amended_03202023.pdf": "/files/documents/rule-151.1.pdf"
-          };
+  // Exact path redirects
+  var redirects = {
+    "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
+    "/documents/Rule-229A.pdf": "/files/documents/rule-229A.pdf",
+    "/documents/Rule-2302nd-amended.pdf": "/files/documents/rule-230.pdf",
+    "/documents/Rule-255.1_amended_08082024.pdf": "/files/documents/rule-255.1.pdf",
+    "/documents/Rule-255.2New.pdf": "/files/documents/rule-255.2.pdf",
+    "/documents/Rule-255.3New.pdf": "/files/documents/rule-255.3.pdf",
+    "/documents/Rule-255.4New.pdf": "/files/documents/rule-255.4.pdf",
+    "/documents/Rule-255.5New.pdf": "/files/documents/rule-255.5.pdf",
+    "/documents/Rule-255.6New.pdf": "/files/documents/rule-255.6.pdf",
+    "/documents/Rule-255.7New.pdf": "/files/documents/rule-255.7.pdf",
+    "/documents/Rule-151_1_Amended_03202023.pdf": "/files/documents/rule-151.1.pdf"
+  };
 
-          if (redirects[uri]) {
-            return {
-              statusCode: 301,
-              statusDescription: "Procedure Redirect",
-              headers: {
-                location: { value: redirects[uri] }
-              }
-            };
-          }
+  // Avoid infinite redirects if already pointing to final URL
+  if (originalUri === redirects[uri]) {
+    return request;
+  }
 
-          // Use comprehensive regex-based fallback (from test)
-          var rewriteRegex = /^(\/documents\/)(.*?)(?:_?Amended.*|_?amended.*|-?superseded|-?2nd-amended|-?New|-?Oct.*|\.\.)?(\.pdf)$/i;
-          var match = uri.match(rewriteRegex);
+  if (redirects[uri] && ("/files" + uri) !== redirects[uri]) {
+    return {
+      statusCode: 301,
+      statusDescription: "Permanent Redirect",
+      headers: {
+        location: { value: redirects[uri] }
+      }
+    };
+  }
 
-          if (match) {
-            var prefix = match[1];
-            var baseName = match[2];
-            var suffix = match[3];
+  // Early exit: already normalized (e.g., rule-1.pdf)
+  if (/^\/documents\/rule-[a-z0-9.-]+\.pdf$/i.test(uri)) {
+    return request;
+  }
 
-            // Basic transform logic: convert underscores to hyphens, handle "Rule" and "."
-            baseName = baseName.replace(/_/g, '-');
-            baseName = baseName.replace(/(\d)-(\d[A-Z]?)/g, '$1.$2');
-            if (baseName.toLowerCase().startsWith('rule')) {
-              baseName = 'rule' + baseName.substring(4);
-            }
+  // Regex fallback for legacy filenames
+  var pattern = /^\/documents\/(Rule-[\dA-Za-z.]+)(?:_?Amended.*|_?amended.*|-?superseded|-?2nd-amended|-?New|-?Oct.*|\.\.)?\.pdf$/i;
+  var match = uri.match(pattern);
 
-            // Remove trailing dash if left behind
-            if (baseName.endsWith('-')) {
-              baseName = baseName.slice(0, -1);
-            }
+  if (match) {
+    var ruleName = match[1];
 
-            var newUri = prefix + baseName + suffix;
+    // Normalize name
+    ruleName = ruleName.replace(/_/g, "-");
+    ruleName = ruleName.replace(/(\d)-(\d[A-Z.]?)/g, "$1.$2");
+    ruleName = ruleName.replace(/^Rule/i, "rule");
 
-            return {
-              statusCode: 301,
-              statusDescription: "Permanent Redirect",
-              headers: {
-                location: { value: "/files" + newUri }
-              }
-            };
-          }
+    var newUri = "/files/documents/" + ruleName + ".pdf";
 
-          return request;
+    // Avoid redirecting to self
+    if (originalUri !== newUri) {
+      return {
+        statusCode: 301,
+        statusDescription: "Permanent Redirect",
+        headers: {
+          location: { value: newUri }
         }
+      };
+    }
+  }
+  return request;
+}
