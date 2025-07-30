@@ -161,7 +161,6 @@ jobs:
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
           make setupwagtaillroles settings="app.settings.${ENVIRONMENT}"
-          make createrulespdfredirects settings="app.settings.${ENVIRONMENT}"
           make updateindex settings="app.settings.${ENVIRONMENT}"
           make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 

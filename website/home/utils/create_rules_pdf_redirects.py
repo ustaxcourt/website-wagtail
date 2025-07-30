@@ -1,4 +1,60 @@
-function handler(event) {
+"""
+This script reads redirects from a CSV file and generates:
+- A JSON mapping of redirects (used for inspection/debugging)
+- A CloudFront-safe JavaScript file with redirect logic
+
+How to run:
+1. Activate your virtual environment
+2. From the project root, run:
+   python home/utils/create_rules_pdf_redirects.py
+"""
+
+import csv
+import json
+import logging
+from pathlib import Path
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+def main():
+    logger.info("Starting redirect generation for CloudFront function...")
+
+    base_dir = Path(__file__).resolve().parent.parent.parent  # points to: website/
+    csv_path = base_dir / "home" / "migrations" / "0064_update_rules_documents.csv"
+    json_output_path = base_dir / "redirects" / "pdf_redirects.json"
+    js_output_path = base_dir / "redirects" / "pdf_redirect_function.js"
+
+    json_output_path.parent.mkdir(parents=True, exist_ok=True)
+    js_output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if not csv_path.exists():
+        logger.error(f"CSV file not found at: {csv_path}")
+        return
+
+    redirects = {}
+
+    with open(csv_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            old_path = f"/files/documents/{row['current_filename'].strip()}"
+            new_path = f"/files/documents/{row['new_title'].strip()}"
+
+            if old_path == new_path:
+                continue
+
+            redirects[old_path] = new_path
+
+    # Write JSON map
+    with open(json_output_path, "w", encoding="utf-8") as f:
+        json.dump(redirects, f, indent=2)
+    logger.info(f"JSON file generated: {json_output_path}")
+
+    # Write CloudFront Function JS with regex-based logic
+    js_code = """
+        function handler(event) {
           var request = event.request;
 
           // Normalize URI by stripping "/files" prefix (for lookup and regex matching)
@@ -67,3 +123,19 @@ function handler(event) {
 
           return request;
         }
+            """.strip()
+
+    with open(js_output_path, "w", encoding="utf-8") as f:
+        f.write(js_code)
+
+    size_bytes = js_output_path.stat().st_size
+    size_kb = round(size_bytes / 1024, 2)
+    if size_bytes > 10240:
+        logger.warning(f"JS file size is {size_kb} KB (exceeds 10 KB limit)")
+    else:
+        logger.info(f"JS file generated: {js_output_path} ({size_kb} KB)")
+        logger.info(f"{len(redirects)} total redirects processed")
+
+
+if __name__ == "__main__":
+    main()
