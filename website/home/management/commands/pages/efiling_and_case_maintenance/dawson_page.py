@@ -16,13 +16,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_environment_specific_dawson_url():
+def get_environment_specific_dawson_url(prefix=None):
     if settings.ENVIRONMENT in ["local", "sandbox", "dev"]:
-        return "dev.ef-cms.ustaxcourt.gov"
+        url = "dev.ef-cms.ustaxcourt.gov"
     elif settings.ENVIRONMENT == "production":
-        return "dawson.ustaxcourt.gov"
+        url = "dawson.ustaxcourt.gov"
     elif settings.ENVIRONMENT == "train":
-        return "test.ef-cms.ustaxcourt.gov"
+        url = "test.ef-cms.ustaxcourt.gov"
+    if prefix:
+        return f"https://{prefix}.{url}"
+    return f"https://{url}"
 
 
 class DawsonPageInitializer(PageInitializer):
@@ -42,14 +45,12 @@ class DawsonPageInitializer(PageInitializer):
                     parent_page=dawson_page
                 ).first()
                 if dawson_fancy_card:
-                    dawson_fancy_card.url = (
-                        f"https://{get_environment_specific_dawson_url()}"
-                    )
+                    dawson_fancy_card.url = get_environment_specific_dawson_url()
                     dawson_fancy_card.save()
                     dawson_petitioner_registration_page = RelatedPage.objects.get(
                         related_page__slug="dawson-petitioner-registration"
                     )
-                    dawson_petitioner_registration_page.url = f"https://app.{get_environment_specific_dawson_url()}/create-account/petitioner"
+                    dawson_petitioner_registration_page.url = f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner"
                     dawson_petitioner_registration_page.save()
                     logger.info("Updated DAWSON page changes.")
 
@@ -244,7 +245,7 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Petitioner Registration",
                     "slug": "dawson-petitioner-registration",
-                    "path": f"https://app.{get_environment_specific_dawson_url()}/create-account/petitioner",
+                    "path": f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner",
                     "depth": 4,
                     "search_description": "Petitioner Registration",
                 },
@@ -346,7 +347,7 @@ class DawsonPageInitializer(PageInitializer):
             related_page__slug="dawson-petitioner-registration"
         )
         dawson_petitioner_registration_page.related_page = None
-        dawson_petitioner_registration_page.url = f"https://app.{get_environment_specific_dawson_url()}/create-account/petitioner"
+        dawson_petitioner_registration_page.url = f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner"
         dawson_petitioner_registration_page.save()
 
         RelatedPage.objects.create(
