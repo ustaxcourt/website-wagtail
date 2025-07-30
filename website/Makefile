@@ -123,3 +123,6 @@ rollbackmigrate:
 
 rollbackall:
 	. $(VENV) && python manage.py migrate home zero
+
+createrulespdfredirects:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_rules_pdf_redirects
