@@ -17,12 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 def get_environment_specific_dawson_url(prefix=None):
-    if settings.ENVIRONMENT in ["local", "sandbox", "dev"]:
-        url = "dev.ef-cms.ustaxcourt.gov"
-    elif settings.ENVIRONMENT == "production":
+    if settings.ENVIRONMENT == "production":
         url = "dawson.ustaxcourt.gov"
     elif settings.ENVIRONMENT == "train":
         url = "test.ef-cms.ustaxcourt.gov"
+    else:  # Default to development [local, dev, sandbox, all others]
+        url = "dev.ef-cms.ustaxcourt.gov"
     if prefix:
         return f"https://{prefix}.{url}"
     return f"https://{url}"
@@ -40,25 +40,25 @@ class DawsonPageInitializer(PageInitializer):
         try:
             dawson_page = Page.objects.get(slug="dawson")
             logger.info("Updating existing page 'dawson'.")
-            if settings.ENVIRONMENT != "production":
-                dawson_fancy_card = FancyCard.objects.filter(
-                    parent_page=dawson_page
-                ).first()
-                if dawson_fancy_card:
-                    dawson_fancy_card.url = get_environment_specific_dawson_url()
-                    dawson_fancy_card.save()
+            dawson_fancy_card = FancyCard.objects.filter(
+                parent_page=dawson_page
+            ).first()
 
-                try:
-                    dawson_petitioner_registration_page = RelatedPage.objects.get(
-                        display_title="Petitioner Registration"
-                    )
-                    dawson_petitioner_registration_page.url = f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner"
-                    dawson_petitioner_registration_page.save()
-                    logger.info("Updated DAWSON page changes.")
-                except RelatedPage.DoesNotExist:
-                    logger.info(
-                        "RelatedPage for Petitioner Registration does not exist, skipping update."
-                    )
+            if dawson_fancy_card:
+                dawson_fancy_card.url = get_environment_specific_dawson_url()
+                dawson_fancy_card.save()
+
+            try:
+                dawson_petitioner_registration_page = RelatedPage.objects.get(
+                    display_title="Petitioner Registration"
+                )
+                dawson_petitioner_registration_page.url = f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner"
+                dawson_petitioner_registration_page.save()
+                logger.info("Updated DAWSON page changes.")
+            except RelatedPage.DoesNotExist:
+                logger.info(
+                    "RelatedPage for Petitioner Registration does not exist, skipping update."
+                )
 
         except Page.DoesNotExist:
             logger.info("Page 'dawson' does not exist.")
