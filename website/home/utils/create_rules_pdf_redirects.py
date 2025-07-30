@@ -57,8 +57,9 @@ def main():
         function handler(event) {
           var request = event.request;
 
-          // Normalize URI by stripping "/files" prefix (for lookup and regex matching)
-          if (request.uri.startsWith('/files/')) {
+          // Strip /files prefix for uniform matching
+          var originalUri = request.uri;
+          if (request.uri.startsWith("/files/")) {
             request.uri = request.uri.slice(6);
           }
 
@@ -94,8 +95,8 @@ def main():
             };
           }
 
-          // Early exit: already normalized (e.g., rule-1.pdf)
-          if (/^\/documents\/rule-[a-z0-9.-]+\.pdf$/i.test(uri)) {
+          // Early exit ONLY if the URI is already clean and lowercase
+          if (/^\/documents\/rule-[a-z0-9.-]+\.pdf$/.test(uri)) {
             return request;
           }
 
@@ -114,15 +115,15 @@ def main():
             var newUri = "/files/documents/" + ruleName + ".pdf";
 
             // Avoid redirecting to self
-        if (originalUri !== newUri) {
-          return {
-            statusCode: 301,
-            statusDescription: "Permanent Redirect",
-            headers: {
-              location: { value: newUri }
+            if (originalUri !== newUri) {
+              return {
+                statusCode: 301,
+                statusDescription: "Permanent Redirect",
+                headers: {
+                  location: { value: newUri }
+                }
+              };
             }
-          };
-        }
           }
 
           return request;
