@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moderation Digest</title>
+</head>
+<body>
+    <h2>Pages Awaiting Your Review</h2>
+    <p>
+        There are <strong>{{ pages|length }}</strong> page(s) waiting for moderation.
+    </p>
+    <hr>
+    <ul>
+        {% for page in pages %}
+            <li>
+                <strong><a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' page.id %}">{{ page.get_admin_display_title }}</a></strong>
+                <br>
+                <em>Submitted by: {{ page.get_latest_revision.user.get_full_name|default:page.get_latest_revision.user.username }}</em>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>
+        Please review them in the <a href="{{ site_url }}/admin/">Wagtail Admin</a>.
+    </p>
+</body>
+</html>

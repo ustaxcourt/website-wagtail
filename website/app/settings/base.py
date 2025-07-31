@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
+    "django_ses_gateway",
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
@@ -417,3 +418,12 @@ LOGGING = {
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
+
+# AWS SES Configuration
+EMAIL_BACKEND = "django_ses_gateway.backends.SESGatewayBackend"
+AWS_SES_REGION_NAME = AWS_S3_REGION_NAME  # e.g., 'us-west-2', 'eu-west-1'
+AWS_SES_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SES_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+
+# This is the "From" address SES will use. It must be a verified identity in your AWS SES console.
+DEFAULT_FROM_EMAIL = "noreply@yourdomain.com"
