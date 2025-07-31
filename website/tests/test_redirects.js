@@ -1,7 +1,5 @@
 function handler(event) {
     var request = event.request;
-    var originalUri = request.uri;
-
     // Remove '/files/' prefix for internal logic processing
     var originalUri = request.uri;
     if (request.uri.startsWith("/files/")) {
@@ -789,7 +787,7 @@ let failed = 0;
 console.log("Running Unit Tests for CloudFront Function...\n");
 
 for (const oldUrl in testCases) {
-    const expectedUrl = testCases[oldUrl];
+    let expectedUrl = testCases[oldUrl];
 
     // Create a mock event object to pass to the handler
     const mockEvent = {
@@ -803,9 +801,14 @@ for (const oldUrl in testCases) {
     let actualUrl;
 
     if (result.statusCode && result.statusCode === 301) {
-        actualUrl = result.headers.location.value;
+        actualUrl = result.headers.location.value;      // For redirects, we expect the full URL with "/files" prefix
     } else {
-        actualUrl = result.uri;
+        actualUrl = result.uri;                         // For direct responses, we expect the URL in the request.uri
+        // For the comparison, we should remove '/files/' from the expected URL
+        // when dealing with direct responses (not redirects)
+        if (expectedUrl.startsWith("/files/")) {
+            expectedUrl = expectedUrl.slice(6);
+        }
     }
 
     if (actualUrl === expectedUrl) {
