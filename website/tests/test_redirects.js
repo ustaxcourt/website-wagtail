@@ -778,7 +778,8 @@ const testCases = {
     "/files/documents/vol-155.pdf": "/files/documents/vol-155.pdf",
     "/files/documents/zoomgov_faqs.pdf": "/files/documents/zoomgov_faqs.pdf",
     "/files/documents/Rule_13_Package-Discussion_of_Comments_Received_8-08-2024.pdf": "/files/documents/Rule_13_Package-Discussion_of_Comments_Received_8-08-2024.pdf",
-    "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf"
+    "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
+    "/files/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.v2.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf"
 };
 
 let passed = 0;
@@ -816,7 +817,7 @@ for (const oldUrl in testCases) {
         const pad = (str, len) => str.padEnd(len, ' ');
         const col1 = pad(oldUrl, 50);
         const col2 = pad(expectedUrl, 50);
-        console.log(`PASS: ${col1}  ->  ${col2}`);
+        console.log(`STATUS: ${result.statusCode ? result.statusCode : '   '}    PASS: ${col1}  ->  ${col2}`);
         passed++;
     } else {
         console.error(`FAIL: ${oldUrl}`);
