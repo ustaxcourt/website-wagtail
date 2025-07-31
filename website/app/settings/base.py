@@ -421,7 +421,7 @@ WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
 
 # AWS SES Configuration
 EMAIL_BACKEND = "django_ses_gateway.backends.SESGatewayBackend"
-AWS_SES_REGION_NAME = AWS_S3_REGION_NAME  # e.g., 'us-west-2', 'eu-west-1'
+AWS_SES_REGION_NAME = "us-east-1"  # e.g., 'us-west-2', 'eu-west-1'
 AWS_SES_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SES_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
