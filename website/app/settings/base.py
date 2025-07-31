@@ -110,6 +110,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
+                "app.context_processors.moderation_data",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
             ],
