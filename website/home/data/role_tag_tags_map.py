@@ -1,6 +1,6 @@
 ROLE_TAGS_TAG_MAP = {
-    "Role Content Manager": ["Review and approve all content"],
-    "Role Website Manager": ["Backup publisher", "All things technical"],
+    "Role Content Manager": [],
+    "Role Website Manager": [],
     "Role Chief Judge": [
         "Administrative Orders",
         "Remote Proceedings",
