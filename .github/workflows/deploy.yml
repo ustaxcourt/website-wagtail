@@ -10,6 +10,7 @@ on:
     tags:
       - 'sandbox'
       - 'development'
+      - 'train'
 
 # Run one job at a time. Subsequent jobs will wait for the previous job to finish.
 concurrency:
@@ -17,7 +18,7 @@ concurrency:
 
 jobs:
   deploy:
-    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || '' }}
+    environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || github.ref == 'refs/tags/train' && 'train' || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -30,6 +31,8 @@ jobs:
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/train ]]; then
+            echo "ENVIRONMENT=train" >> $GITHUB_ENV
           else
             echo "Debug: No matching condition found"
             exit 1
@@ -112,7 +115,7 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           # run migration and other commands
-          make migrate
+          make migrate settings="app.settings.${ENVIRONMENT}"
           make superuser settings="app.settings.${ENVIRONMENT}"|| echo "user already exists, skipping"
           make resetadminpassword settings="app.settings.${ENVIRONMENT}"
           make createpages settings="app.settings.${ENVIRONMENT}"
@@ -148,12 +151,8 @@ jobs:
             --output text
           )
 
-          # Set desired count based on environment
-          if [[ "${ENVIRONMENT}" == "sandbox" ]]; then
-            desired_count=1
-          else
-            desired_count=2
-          fi
+          # Set desired count (sandbox, dev, and train)
+          desired_count=1
 
           aws ecs update-service \
             --cluster "${ENVIRONMENT}-website-cluster" \
