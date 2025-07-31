@@ -11,8 +11,6 @@
           var uri = request.uri;
 
           // Exact path redirects (manual override)
-          // request.uri= /documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf
-          // ORIGINAL URI = /files/documents/Complete-Rules-of-Practice-and-Procedure_Amended_080824.pdf
           var redirects = {
             "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
             "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.v2.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
@@ -51,7 +49,7 @@
             ruleName = ruleName.replace(/(\d)-(\d[A-Z.]?)/g, "$1.$2");
             ruleName = ruleName.replace(/^Rule/i, "rule");
 
-            var newUri = "/documents/" + ruleName + ".pdf";
+            var newUri = "/files/documents/" + ruleName + ".pdf";
 
             // Avoid redirecting to self
             if (originalUri !== newUri) {

@@ -1,36 +1,71 @@
 function handler(event) {
     var request = event.request;
+    var originalUri = request.uri;
+
+    // Remove '/files/' prefix for internal logic processing
+    var originalUri = request.uri;
+    if (request.uri.startsWith("/files/")) {
+        request.uri = request.uri.slice(6);
+    }
+
     var uri = request.uri;
+    // Manual redirect map (exact match overrides)
+    var redirects = {
+        "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
+        "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.v2.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
+        "/documents/Rule-229A.pdf": "/files/documents/rule-229A.pdf",
+        "/documents/Rule-2302nd-amended.pdf": "/files/documents/rule-230.pdf",
+        "/documents/Rule-255.1_amended_08082024.pdf": "/files/documents/rule-255.1.pdf",
+        "/documents/Rule-255.2New.pdf": "/files/documents/rule-255.2.pdf",
+        "/documents/Rule-255.3New.pdf": "/files/documents/rule-255.3.pdf",
+        "/documents/Rule-255.4New.pdf": "/files/documents/rule-255.4.pdf",
+        "/documents/Rule-255.5New.pdf": "/files/documents/rule-255.5.pdf",
+        "/documents/Rule-255.6New.pdf": "/files/documents/rule-255.6.pdf",
+        "/documents/Rule-255.7New.pdf": "/files/documents/rule-255.7.pdf",
+        "/documents/Rule-151_1_Amended_03202023.pdf": "/files/documents/rule-151.1.pdf"
+    };
 
-    if (uri.toLowerCase().startsWith('/files/documents/rule-')) {
-        var rewriteRegex = /^(\/files\/documents\/)(.*?)(?:_?Amended.*|_?amended.*|-?superseded|-?2nd-amended|-?New|-?Oct.*|\.\.)?(\.pdf)$/i;
-        var match = uri.match(rewriteRegex);
-
-        if (match) {
-            var prefix = match[1];
-            var baseName = match[2];
-            var suffix = match[3];
-
-            function customTransform(name) {
-                let newName = name;
-                if (newName.toLowerCase().startsWith('complete')) {
-                    return newName.replace(/_/g, '-');
+    if (redirects[uri]) {
+        if (originalUri !== redirects[uri]) {
+            return {
+                statusCode: 301,
+                statusDescription: "Permanent Redirect",
+                headers: {
+                    location: { value: redirects[uri] }
                 }
-                newName = newName.replace(/_/g, '-');
-                newName = newName.replace(/(\d)-(\d[A-Z]?)$/g, '$1.$2');
-                if (newName.toLowerCase().startsWith('rule')) {
-                    newName = 'rule' + newName.substring(4);
-                }
-                if (newName.endsWith('-')) {
-                    newName = newName.slice(0, -1);
-                }
-                return newName;
-            }
-
-            var transformedBase = customTransform(baseName);
-            var newUri = prefix + transformedBase + suffix;
-            request.uri = newUri;
+            };
+        } else {
             return request;
+        }
+    }
+
+    // Avoid redirecting already-normalized URIs
+    if (/^\/documents\/rule-[a-z0-9.-]+\.pdf$/.test(uri)) {
+        return request;
+    }
+
+    // Regex fallback for legacy names
+    var pattern = /^\/documents\/(Rule-[\dA-Za-z.-]+?)(?:[_-]?(Amended|amended|superseded|2nd-amended|New|Oct)[^\/]*)?\.pdf$/;
+    var match = uri.match(pattern);
+
+    if (match) {
+        var ruleName = match[1];
+
+        // Normalize name
+        ruleName = ruleName.replace(/_/g, "-");
+        ruleName = ruleName.replace(/^Rule/i, "rule");
+        ruleName = ruleName.replace(/(\d)-(\d[A-Z.]?)/g, "$1.$2");
+
+        var newUri = "/files/documents/" + ruleName + ".pdf";
+
+        if (originalUri !== newUri) {
+            return {
+                statusCode: 301,
+                statusDescription: "Permanent Redirect",
+                headers: {
+                    location: { value: newUri }
+                }
+            };
         }
     }
 
@@ -765,17 +800,23 @@ for (const oldUrl in testCases) {
 
     // Run the handler function
     const result = handler(mockEvent);
-    const actualUrl = result.uri;
+    let actualUrl;
+
+    if (result.statusCode && result.statusCode === 301) {
+        actualUrl = result.headers.location.value;
+    } else {
+        actualUrl = result.uri;
+    }
 
     if (actualUrl === expectedUrl) {
         // Format output in three columns: Input URL, Expected, Actual
         const pad = (str, len) => str.padEnd(len, ' ');
         const col1 = pad(oldUrl, 50);
         const col2 = pad(expectedUrl, 50);
-        console.log(`✅ PASS: ${col1}  ->  ${col2}`);
+        console.log(`PASS: ${col1}  ->  ${col2}`);
         passed++;
     } else {
-        console.error(`❌ FAIL: ${oldUrl}`);
+        console.error(`FAIL: ${oldUrl}`);
         console.error(`   - Expected: ${expectedUrl}`);
         console.error(`   - Actual:   ${actualUrl}`);
         failed++;
