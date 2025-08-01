@@ -96,14 +96,3 @@
         });
     </script>
 {% endblock %}
-
-{% block content %}
-    {{ block.super }}
-
-    {% if pending_moderation_items and user.is_staff %}
-    <div class="moderation-notification-bar">
-        <span class="icon">⚠️</span>
-        <span>You have edits waiting for your review</span>
-    </div>
-    {% endif %}
-{% endblock %}
