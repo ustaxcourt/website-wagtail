@@ -10,7 +10,7 @@
             }
 
             .workflow-action-buttons .button {
-                padding: 4px 8px;
+                padding: 1px 8px;
                 font-size: 12px;
                 text-decoration: none;
                 border-radius: 3px;
@@ -35,7 +35,7 @@
 
         <table class="listing listing--dashboard">
             <col />
-            <col width="10%"/>
+            <col width="20%"/>
             <col width="10%"/>
             <col width="15%"/>
             <col width="10%"/>
@@ -72,40 +72,41 @@
                                 <!-- Action buttons added here after Page title -->
                                 <div class="workflow-action-buttons">
                                     <!-- Preview button (default) -->
-                                    {% if obj.is_previewable %}
-                                        <a href="{% url state.workflow_preview_url_name obj.pk|admin_urlquote task_state.task.id %}"
+                                    {% if state.live_revision_id %}
+                                        <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote 'live' revision.id %}"
                                            target="_blank" rel="noreferrer" class="button button-primary">
                                             {% trans 'Preview' %}
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url state.workflow_preview_url_name obj.pk|admin_urlquote task_state.task.id %}"
+                                           target="_blank" rel="noreferrer" class="button button-primary">
+                                            {% trans 'Preview Draft' %}
                                         </a>
                                     {% endif %}
 
                                     <!-- Workflow action buttons -->
                                     {% for action_name, action_label, modal in actions %}
                                         {% if action_name == 'approve' %}
-                                            <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
-                                                    {% if modal %}data-launch-modal{% endif %} class="button">
-                                                {% trans 'Publish' %}
-                                            </button>
+                                            {% ifchanged action_name %}
+                                                <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
+                                                        data-launch-modal class="button">
+                                                    {% trans 'Publish' %}
+                                                </button>
+                                            {% endifchanged %}
                                         {% elif action_name == 'reject' %}
-                                            <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
-                                                    {% if modal %}data-launch-modal{% endif %} class="button">
-                                                {% trans 'Request Changes' %}
-                                            </button>
+                                            {% ifchanged action_name %}
+                                                <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
+                                                        {% if modal %}data-launch-modal{% endif %} class="button">
+                                                    {% trans 'Request changes' %}
+                                                </button>
+                                            {% endifchanged %}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
                             </td>
                             <td class="tasks">  <!-- 3.  Notes -->
                                 {% for task in workflow_tasks %}
-                                    <span data-controller="w-tooltip" data-w-tooltip-content-value="{{ task.name }}: {{ task.status_display }}">
-                                        {% if task.status == 'approved' %}
-                                            {{ task.status_display }}
-                                        {% elif task.status == 'rejected' %}
-                                            {{ task.status_display }}
-                                        {% else %}
-                                            {% icon "radio-empty" title=status_display classname="default" %}
-                                        {% endif %}
-                                    </span>
+                                    {{ task.name }}
                                 {% endfor %}
                             </td>
                             <td> <!-- 4.  Task submitted by-->
