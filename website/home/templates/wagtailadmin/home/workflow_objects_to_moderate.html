@@ -80,11 +80,14 @@
                                     {% else %}
                                         <a href="{% url state.workflow_preview_url_name obj.pk|admin_urlquote task_state.task.id %}"
                                            target="_blank" rel="noreferrer" class="button button-primary">
-                                            {% trans 'Preview Draft' %}
+                                            {% trans 'Preview' %}
                                         </a>
                                     {% endif %}
 
-                                    <!-- Workflow action buttons -->
+                                    <!-- Workflow action buttons in correct order -->
+                                    {% regroup actions by 0 as action_groups %}
+
+                                    <!-- Publish button first (only first approve action) -->
                                     {% for action_name, action_label, modal in actions %}
                                         {% if action_name == 'approve' %}
                                             {% ifchanged action_name %}
@@ -93,7 +96,12 @@
                                                     {% trans 'Publish' %}
                                                 </button>
                                             {% endifchanged %}
-                                        {% elif action_name == 'reject' %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <!-- Request changes button second (only first reject action) -->
+                                    {% for action_name, action_label, modal in actions %}
+                                        {% if action_name == 'reject' %}
                                             {% ifchanged action_name %}
                                                 <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
                                                         {% if modal %}data-launch-modal{% endif %} class="button">
