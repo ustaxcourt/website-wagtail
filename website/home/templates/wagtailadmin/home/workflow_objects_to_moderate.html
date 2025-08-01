@@ -35,9 +35,7 @@
 
         <table class="listing listing--dashboard">
             <col />
-            <col width="20%"/>
             <col width="10%"/>
-            <col width="7%"/>
             <col width="10%"/>
             <col width="15%"/>
             <col width="10%"/>
@@ -46,9 +44,7 @@
                 <tr>
                     <th class="title">{% trans "Title" %}</th>
                     <th>{% trans "Actions" %}</th>
-                    <th>{% trans "Language" %}</th>
-                    <th>{% trans "Privacy and access" %}</th>
-                    <th>{% trans "Tasks" %}</th>
+                    <th>{% trans "Notes" %}</th>
                     <th>{% trans "Task submitted by" %}</th>
                     <th>{% trans "Task started" %}</th>
                     <th aria-hidden="true">{% comment %} added for visual alignment only {% endcomment %}</th>
@@ -62,7 +58,7 @@
                             {% page_permissions obj as page_perms %}
                         {% endif %}
                         <tr>
-                            <td class="title">
+                            <td class="title"> <!-- 1.  Title -->
                                 <div class="title-wrapper">
                                     {% admin_edit_url obj as edit_url %}
                                     {% if page_perms.can_edit or not is_page and edit_url %}
@@ -72,7 +68,7 @@
                                     {% endif %}
                                 </div>
                             </td>
-                            <td>
+                            <td> <!-- 2.  Actions -->
                                 <!-- Action buttons added here after Page title -->
                                 <div class="workflow-action-buttons">
                                     <!-- Preview button (default) -->
@@ -95,46 +91,28 @@
                                                     {% if modal %}data-launch-modal{% endif %} class="button">
                                                 {% trans 'Request Changes' %}
                                             </button>
-                                        {% else %}
-                                            <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
-                                                    {% if modal %}data-launch-modal{% endif %} class="button">
-                                                {{ action_label }}
-                                            </button>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
                             </td>
-                            <td>
-                                {% i18n_enabled as show_locale_labels %}
-                                {% if show_locale_labels and obj.locale_id %}
-                                    {% locale_label_from_id obj.locale_id as locale_label %}
-                                    {% status locale_label classname="w-status--label" %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if is_page %}
-                                    {% include "wagtailadmin/pages/listing/_privacy_indicator.html" with page=obj %}
-                                {% endif %}
-                                {% include "wagtailadmin/pages/listing/_locked_indicator.html" with page=obj %}
-                            </td>
-                            <td class="tasks">
+                            <td class="tasks">  <!-- 3.  Notes -->
                                 {% for task in workflow_tasks %}
                                     <span data-controller="w-tooltip" data-w-tooltip-content-value="{{ task.name }}: {{ task.status_display }}">
                                         {% if task.status == 'approved' %}
-                                            {% icon "success" title=task.status_display classname="default" %}
+                                            {{ task.status_display }}
                                         {% elif task.status == 'rejected' %}
-                                            {% icon "error" title=task.status_display classname="default" %}
+                                            {{ task.status_display }}
                                         {% else %}
                                             {% icon "radio-empty" title=status_display classname="default" %}
                                         {% endif %}
                                     </span>
                                 {% endfor %}
                             </td>
-                            <td>
+                            <td> <!-- 4.  Task submitted by-->
                                 {% if revision.user %}{{ revision.user|user_display_name }}{% endif %}
                             </td>
-                            <td>{% human_readable_date task_state.started_at %}</td>
-                            <td class="actions-container">
+                            <td>{% human_readable_date task_state.started_at %}</td> <!-- 5.  Task started -->
+                            <td class="actions-container"> <!-- 6 -->
                                 {% if actions %}
                                     <ul class="actions">
                                         <li>
