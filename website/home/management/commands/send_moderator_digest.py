@@ -3,8 +3,7 @@ from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from django.template import loader
 from django.conf import settings
-
-from wagtail.models import Page
+from wagtail.models import Revision, TaskState, Page
 
 class Command(BaseCommand):
     help = 'Sends a daily digest of pages awaiting moderation.'
@@ -12,14 +11,20 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # 1. Define your moderators
         # Best practice: Store this in settings.py or a database model
-        moderator_emails = ['Miriam.Miest-Moore.ctr@ustaxcourt.gov']
+        moderator_emails = ['Miriam.Miest-Moore.ctr@ustaxcourt.gov', 'success@simulator.amazonses.com']
         
         # You can get this from the Wagtail Site model for more dynamic sites
         site_url = os.getenv('BASE_URL')
         print(f'Site url{site_url}')
 
         # 2. Query for pages in moderation
-        pages = Page.objects.filter(workflow_state__status='in_progress')
+        pages_awaiting_moderation_ids = (
+            Revision.objects.filter(task_states__status=TaskState.STATUS_IN_PROGRESS)
+            .values('object_id')
+            .distinct()
+        )
+
+        pages = Page.objects.filter(id__in=pages_awaiting_moderation_ids)
 
         if not pages.exists():
             self.stdout.write(self.style.SUCCESS('No pages are currently awaiting moderation.'))
