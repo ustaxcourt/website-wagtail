@@ -74,7 +74,7 @@
                                     <!-- Preview button (default) -->
                                     {% if state.live_revision_id %}
                                         <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote 'live' revision.id %}"
-                                           target="_blank" rel="noreferrer" class="button button-primary">
+                                           class="button button-primary">
                                             {% trans 'Preview' %}
                                         </a>
                                     {% else %}
