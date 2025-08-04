@@ -150,6 +150,11 @@
       "Effect": "Allow",
       "Action": ["scheduler:*"],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ses:*"],
+      "Resource": "*"
     }
   ]
 }

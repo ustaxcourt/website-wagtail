@@ -427,4 +427,4 @@ AWS_SES_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SES_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # This is the "From" address SES will use. It must be a verified identity in your AWS SES console.
-DEFAULT_FROM_EMAIL = "noreply@yourdomain.com"
+DEFAULT_FROM_EMAIL = "Miriam.Miest-Moore.ctr@ustaxcourt.gov"
