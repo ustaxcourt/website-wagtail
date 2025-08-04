@@ -7,10 +7,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 petitioners_docs = {
-    "Rule-190.pdf": "",
-    "Rule-191.pdf": "",
-    "Rule-192.pdf": "",
-    "Rule-193.pdf": "",
+    "rule-190.pdf": "",
+    "rule-191.pdf": "",
+    "rule-192.pdf": "",
+    "rule-193.pdf": "",
 }
 
 
@@ -99,10 +99,10 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                             <br>
                             <br>
                             If your case is a regular case, you may appeal the decision to one of the U.S. Courts of Appeals. You must wait for a decision (as opposed to the opinion) to be entered by the Tax Court before you file an appeal. A decision is a judicial determination that disposes of a case. An opinion is a statement explaining the Tax Court's decision. The notice of appeal must be filed with the Tax Court within 90 days after the decision is entered, or 120 days if the IRS appeals first. The cost for filing a notice of appeal depends on the Federal Circuit Court to which the appeal is being made but generally costs $600-$605.
-                            See <strong><a linktype="document" id="{petitioners_docs["Rule-190.pdf"].id}" target="_blank" title="Rule 190">Tax Court Rules 190</a></strong>,
-                            <strong><a linktype="document" id="{petitioners_docs["Rule-191.pdf"].id}" target="_blank" title="Rule 191">191</a></strong>,
-                            <strong><a linktype="document" id="{petitioners_docs["Rule-192.pdf"].id}" target="_blank" title="Rule 192">192</a></strong>, and
-                            <strong><a linktype="document" id="{petitioners_docs["Rule-193.pdf"].id}" target="_blank" title="Rule 193">193</a></strong>.""",
+                            See <strong><a linktype="document" id="{petitioners_docs["rule-190.pdf"].id}" target="_blank" title="Rule 190">Tax Court Rules 190</a></strong>,
+                            <strong><a linktype="document" id="{petitioners_docs["rule-191.pdf"].id}" target="_blank" title="Rule 191">191</a></strong>,
+                            <strong><a linktype="document" id="{petitioners_docs["rule-192.pdf"].id}" target="_blank" title="Rule 192">192</a></strong>, and
+                            <strong><a linktype="document" id="{petitioners_docs["rule-193.pdf"].id}" target="_blank" title="Rule 193">193</a></strong>.""",
                 "anchortag": "AFTER6",
             },
             {

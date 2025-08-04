@@ -21,7 +21,7 @@ update_contact_information_images = [
 ]
 
 update_contact_information_docs = {
-    "Rule-200(2nd-amended).pdf": "",
+    "rule-200.pdf": "",
 }
 
 
@@ -95,7 +95,7 @@ class UpdateContactInformationPageInitializer(PageInitializer):
                                 {
                                     "text": (
                                         "REMINDER: Each person admitted to practice before the Court shall promptly notify the Court of any change in contact information. "
-                                        f'<a linktype="document" id="{update_contact_information_docs["Rule-200(2nd-amended).pdf"].id}" '
+                                        f'<a linktype="document" id="{update_contact_information_docs["rule-200.pdf"].id}" '
                                         'target="_blank" title="Rule 200">Rule 200(e)</a>, Tax Court Rules of Practice and Procedure.'
                                     ),
                                 },

@@ -1,21 +1,9 @@
 resource "aws_cloudfront_function" "rewrite_uri" {
   name    = "${var.environment}-rewrite-uri"
   runtime = "cloudfront-js-1.0"
-  comment = "Function to strip /files prefix from request URI"
+  comment = "Redirects legacy URIs and strips /files prefix"
   publish = true
-  code    = <<-EOT
-function handler(event) {
-    var request = event.request;
-    var uri = request.uri;
-
-    // Check if the URI starts with /files/ and remove it
-    if (uri.startsWith('/files/')) {
-        request.uri = uri.slice(6); // Remove '/files'
-    }
-
-    return request;
-}
-EOT
+  code = file("${path.module}/../../../website/redirects/pdf_redirect_function.js")
 }
 
 # Use AWS managed CachingDisabled policy for dynamic content
