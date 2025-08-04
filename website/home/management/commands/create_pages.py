@@ -27,6 +27,9 @@ from home.management.commands.redirects.redirect_initializer import RedirectInit
 
 from home.management.commands.pages.documents import UnlistedFiles
 from home.management.commands.pages.about_the_court import JudgesPageInitializer
+from home.management.commands.pages.efiling_and_case_maintenance.dawson_page import (
+    DawsonPageInitializer,
+)
 
 # Initialize home and footer first
 home_page_initialize = [
@@ -43,7 +46,12 @@ pages_to_initialize = home_page_initialize + (
     + efiling_and_case_maintenance_pages_to_initialize
 )
 
-pages_to_update = [HomePageInitializer, FooterInitializer, JudgesPageInitializer]
+pages_to_update = [
+    HomePageInitializer,
+    FooterInitializer,
+    JudgesPageInitializer,
+    DawsonPageInitializer,
+]
 
 
 class Command(BaseCommand):
