@@ -6,9 +6,17 @@ from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
 
+from home.models.mixin import PublishDeadlineMixin
+
 
 @register_snippet
-class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
+class CommonText(
+    PublishDeadlineMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    models.Model,
+):
     name = models.CharField(
         max_length=255, help_text="Name of the text snippet", blank=False
     )
@@ -21,6 +29,7 @@ class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     panels = [
         FieldPanel("name"),
         FieldPanel("text"),
+        *PublishDeadlineMixin.publish_deadline_panels,
         PublishingPanel(),
     ]
 

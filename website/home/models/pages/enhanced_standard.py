@@ -16,6 +16,7 @@ from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.custom_blocks.common import custom_promote_panels
+from home.models.mixin import PublishDeadlineMixin
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -27,7 +28,7 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
-class EnhancedStandardPage(Page):
+class EnhancedStandardPage(PublishDeadlineMixin, Page):
     class Meta:
         verbose_name = "Enhanced Standard Page"
 
@@ -212,6 +213,7 @@ class EnhancedStandardPage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
+        *PublishDeadlineMixin.publish_deadline_panels,
     ]
 
     promote_panels = custom_promote_panels

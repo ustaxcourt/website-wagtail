@@ -11,6 +11,7 @@ from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, Workflo
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.search import index
+from home.models.mixin import PublishDeadlineMixin
 
 
 import logging
@@ -23,7 +24,12 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 @register_snippet
 class JudgeProfile(
-    WorkflowMixin, DraftStateMixin, RevisionMixin, index.Indexed, models.Model
+    PublishDeadlineMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    index.Indexed,
+    models.Model,
 ):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
@@ -61,6 +67,7 @@ class JudgeProfile(
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
+        *PublishDeadlineMixin.publish_deadline_panels,
         PublishingPanel(),
     ]
 
@@ -168,11 +175,20 @@ class JudgeCollectionOrderable(Orderable):
 
 
 @register_snippet
-class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel):
+class JudgeCollection(
+    PublishDeadlineMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    ClusterableModel,
+):
     name = models.CharField(
         max_length=255,
         unique=True,
         help_text="Name of this collection (e.g., 'Featured Judges', 'Tax Court Judges')",
+    )
+    publish_deadline = models.DateTimeField(
+        null=True, blank=True, help_text="Deadline for when this should be published"
     )
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="judgecollection"
@@ -182,6 +198,8 @@ class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, Clusterable
     panels = [
         FieldPanel("name"),
         InlinePanel("ordered_judges", label="Judges"),
+        FieldPanel("publish_deadline"),
+        *PublishDeadlineMixin.publish_deadline_panels,
         PublishingPanel(),
     ]
 
@@ -277,7 +295,9 @@ class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, Clusterable
 
 
 @register_snippet
-class JudgeRole(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
+class JudgeRole(
+    PublishDeadlineMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
+):
     role_name = models.CharField(
         max_length=255,
         unique=True,
@@ -297,6 +317,7 @@ class JudgeRole(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     panels = [
         FieldPanel("role_name"),
         FieldPanel("judge"),
+        *PublishDeadlineMixin.publish_deadline_panels,
         PublishingPanel(),
     ]
 

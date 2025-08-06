@@ -18,6 +18,7 @@ from wagtail.models import (
 )
 from wagtail.fields import StreamField
 from django.core.exceptions import ValidationError
+from home.models.mixin import PublishDeadlineMixin
 
 
 class NavigationRibbonLink(models.Model):
@@ -37,7 +38,13 @@ class NavigationRibbonLink(models.Model):
 
 
 @register_snippet
-class NavigationRibbon(WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel):
+class NavigationRibbon(
+    PublishDeadlineMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    ClusterableModel,
+):
     name = models.CharField(max_length=255)
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="navigation_ribbon"
@@ -47,6 +54,7 @@ class NavigationRibbon(WorkflowMixin, DraftStateMixin, RevisionMixin, Clusterabl
     panels = [
         FieldPanel("name"),
         InlinePanel("links", label="Links"),
+        *PublishDeadlineMixin.publish_deadline_panels,
         PublishingPanel(),
     ]
 

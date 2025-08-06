@@ -1,0 +1,102 @@
+{% load i18n wagtailadmin_tags %}
+{% if workflow_tasks %}
+{% panel id="awaiting-review" heading=_("Awaiting your review") classname="w-panel--dashboard" %}
+<table class="listing listing--dashboard">
+    <col />
+    <col width="10%"/>
+    <col width="7%"/>
+    <col width="10%"/>
+    <col width="15%"/>
+    <col width="10%"/>
+    <col width="10%"/>
+    <thead class="w-sr-only">
+        <tr>
+            <th class="title">{% trans "Title" %}</th>
+            <th>{% trans "Language" %}</th>
+            <th>{% trans "Privacy and access" %}</th>
+            <th>{% trans "Task" %}</th>
+            <th>{% trans "Task submitted by" %}</th>
+            <th>{% trans "Task started" %}</th>
+            <th>{% trans "Deadline" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in workflow_tasks %}
+        {% with state=task.workflow_state %}
+        <tr>
+            <td class="title">
+                <div class="title-wrapper">
+                    {% if task.is_snippet %}
+                        <a href="/admin/snippets/{{ state.content_type.app_label }}/{{ state.content_type.model }}/{{ state.content_object.pk }}/">
+                            {{ state.content_object|truncatechars:50 }}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'wagtailadmin_pages:workflow_task_detail' state.content_object.id state.id %}">
+                            {{ state.content_object.get_admin_display_title }}
+                        </a>
+                    {% endif %}
+                </div>
+            </td>
+            <td>
+                {# Language column - leave empty for now #}
+            </td>
+            <td>
+                {# Privacy/access column - leave empty for now #}
+            </td>
+            <td>
+                {% if task.task.name %}
+                    {{ task.task.name }}
+                {% endif %}
+            </td>
+            <td class="deadline-cell">
+                {# Show publish_deadline from the workflow state (CustomWorkflowState) or content object #}
+                {% if state.publish_deadline %}
+                <span class="deadline-warning">
+                    <strong>Publish By:</strong> {{ state.publish_deadline|date:"m.d.Y, ga" }}
+                </span>
+                {% elif state.content_object.publish_deadline %}
+                <span class="deadline-warning">
+                    <strong>📅</strong> {{ state.content_object.publish_deadline|date:"M d, Y H:i" }}
+                </span>
+                {% else %}
+                <span style="color: #999;">—</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if state.requested_by %}
+                    {{ state.requested_by }}
+                {% endif %}
+            </td>
+            <td>
+                {% if state.created_at %}
+                    {% human_readable_date state.created_at %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endpanel %}
+
+<style>
+.deadline-warning {
+    color: #d63638;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.deadline-cell {
+    min-width: 120px;
+}
+.deadline-cell span{
+    background-color: #feefc3;
+    padding: 10px 18px;
+    border-radius: 6px;
+    display: inline-block;
+    font-size: 16px;
+    color: #222;
+    margin: 6px 0;
+}
+
+</style>
+{% endif %}

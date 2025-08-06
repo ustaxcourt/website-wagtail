@@ -16,6 +16,14 @@ from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 
+from home.models.workflow import CustomWorkflowState
+from home.models import CommonText
+from home.models import EnhancedStandardPage
+from home.models.snippets.judges import JudgeProfile, JudgeCollection
+from home.models.snippets.navigation import NavigationRibbon
+from wagtail.admin.ui.components import Component
+from django.template.loader import render_to_string
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -262,3 +270,181 @@ def register_add_entry_above_url():
             name="add_entry_above_view",
         ),
     ]
+
+
+# List all models using workflow with PublishDeadlineMixin
+MONITORED_MODELS = [
+    # Pages
+    EnhancedStandardPage,
+    # Snippets
+    CommonText,
+    JudgeProfile,
+    JudgeCollection,
+    JudgeRole,
+    NavigationRibbon,
+    NavigationMenu,
+]
+
+
+@receiver(post_save, sender=CustomWorkflowState)
+def sync_deadline_from_content(sender, instance, created, **kwargs):
+    """
+    When a CustomWorkflowState is created, copy the publish_deadline/review_by_date
+    from the related page or snippet into the workflow state object.
+    """
+    # Only on creation
+    if not created:
+        return
+
+    # Get the actual content object
+    content = None
+    if instance.content_type and instance.object_id:
+        model_class = instance.content_type.model_class()
+        try:
+            content = model_class.objects.get(pk=instance.object_id)
+        except model_class.DoesNotExist:
+            pass
+
+    if not content:
+        return
+
+    # Only copy if fields exist on content
+    deadline = getattr(content, "publish_deadline", None)
+    review_by = getattr(content, "review_by_date", None)
+
+    fields_to_update = []
+    if hasattr(instance, "publish_deadline") and deadline is not None:
+        instance.publish_deadline = deadline
+        fields_to_update.append("publish_deadline")
+    if hasattr(instance, "review_by_date") and review_by is not None:
+        instance.review_by_date = review_by
+        fields_to_update.append("review_by_date")
+
+    if fields_to_update:
+        instance.save(update_fields=fields_to_update)
+        logger.info(
+            f"CustomWorkflowState saved: {instance} - publish_deadline: {instance.publish_deadline}"
+        )
+
+
+# Signal receiver to create CustomWorkflowState when standard WorkflowState is created
+@receiver(post_save, sender="wagtailcore.WorkflowState")
+def create_custom_workflow_state(sender, instance, created, **kwargs):
+    """
+    When a standard WorkflowState is created, create a corresponding CustomWorkflowState
+    with deadline information from the content object.
+    """
+    if not created:
+        return
+
+    # Check if CustomWorkflowState already exists for this workflow state
+    try:
+        CustomWorkflowState.objects.get(pk=instance.pk)
+        return  # Already exists
+    except CustomWorkflowState.DoesNotExist:
+        pass
+
+    # Get the content object
+    content = None
+    if instance.content_type and instance.object_id:
+        model_class = instance.content_type.model_class()
+        try:
+            content = model_class.objects.get(pk=instance.object_id)
+        except model_class.DoesNotExist:
+            pass
+
+    # Get deadline from content if available
+    deadline = None
+    if content and hasattr(content, "publish_deadline"):
+        deadline = content.publish_deadline
+
+    # Create CustomWorkflowState record
+    try:
+        custom_state = CustomWorkflowState(
+            workflowstate_ptr_id=instance.pk, publish_deadline=deadline
+        )
+        custom_state.__dict__.update(instance.__dict__)
+        custom_state.save()
+
+        logger.info(
+            f"Created CustomWorkflowState for {instance} with deadline: {deadline}"
+        )
+    except Exception as e:
+        logger.error(f"Error creating CustomWorkflowState for {instance}: {e}")
+
+
+class CustomAwaitingReviewPanel(Component):
+    name = "custom_pages_for_moderation"
+    title = "Awaiting your review"
+    order = 100
+
+    @property
+    def media(self):
+        from django import forms
+
+        return forms.Media()
+
+    def get_workflow_tasks(self, user):
+        """
+        Get all workflow tasks (both pages and snippets) awaiting review.
+        """
+        from home.models.workflow import CustomWorkflowState
+
+        # Get all workflow states that are in progress
+        workflow_states = (
+            CustomWorkflowState.objects.filter(
+                status=CustomWorkflowState.STATUS_IN_PROGRESS
+            )
+            .select_related("content_type", "workflow")
+            .prefetch_related("current_task_state")
+        )
+
+        # Build list of workflow tasks for the template
+        workflow_tasks = []
+        for state in workflow_states:
+            if state.current_task_state:
+                # Create a task object similar to what the page workflow uses
+                task_info = {
+                    "workflow_state": state,
+                    "task": state.current_task_state,
+                    "is_snippet": state.content_type.model_class() != Page,
+                }
+                workflow_tasks.append(task_info)
+
+        return workflow_tasks
+
+    def get_context_data(self, parent_context=None):
+        context = super().get_context_data(parent_context)
+
+        # Get request from parent_context if available
+        if parent_context and "request" in parent_context:
+            request = parent_context["request"]
+        else:
+            # If no request in context, we can't get user-specific data
+            context["workflow_tasks"] = []
+            return context
+
+        # Get all workflow tasks (pages and snippets)
+        workflow_tasks = self.get_workflow_tasks(request.user)
+        context["workflow_tasks"] = workflow_tasks
+
+        return context
+
+    def render_html(self, parent_context=None):
+        context = self.get_context_data(parent_context)
+        return render_to_string("wagtailadmin/home/workflow_tasks.html", context)
+
+
+@hooks.register("construct_homepage_panels")
+def replace_awaiting_review_panel(request, panels):
+    # Find the index of the default pages_for_moderation panel
+    index = next(
+        (i for i, panel in enumerate(panels) if panel.name == "pages_for_moderation"),
+        None,
+    )
+
+    # If found, replace it with your custom panel
+    if index is not None:
+        panels[index] = CustomAwaitingReviewPanel()
+    else:
+        panels.append(CustomAwaitingReviewPanel())
