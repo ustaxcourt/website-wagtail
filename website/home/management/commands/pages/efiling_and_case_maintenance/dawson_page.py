@@ -10,9 +10,22 @@ from home.models import (
     EnhancedStandardPage,
 )
 from home.management.commands.pages.page_initializer import PageInitializer
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def get_environment_specific_dawson_url(prefix=None):
+    if settings.ENVIRONMENT == "production":
+        url = "dawson.ustaxcourt.gov"
+    elif settings.ENVIRONMENT == "train":
+        url = "test.ef-cms.ustaxcourt.gov"
+    else:  # Default to development [local, dev, sandbox, all others]
+        url = "dev.ef-cms.ustaxcourt.gov"
+    if prefix:
+        return f"https://{prefix}.{url}"
+    return f"https://{url}"
 
 
 class DawsonPageInitializer(PageInitializer):
@@ -22,6 +35,34 @@ class DawsonPageInitializer(PageInitializer):
     def create(self):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
+
+    def update(self):
+        try:
+            dawson_page = Page.objects.get(slug="dawson")
+            logger.info("Updating existing page 'dawson'.")
+            dawson_fancy_card = FancyCard.objects.filter(
+                parent_page=dawson_page
+            ).first()
+
+            if dawson_fancy_card:
+                dawson_fancy_card.url = get_environment_specific_dawson_url()
+                dawson_fancy_card.save()
+
+            try:
+                dawson_petitioner_registration_page = RelatedPage.objects.get(
+                    display_title="Petitioner Registration"
+                )
+                dawson_petitioner_registration_page.url = f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner"
+                dawson_petitioner_registration_page.save()
+                logger.info("Updated DAWSON page changes.")
+            except RelatedPage.DoesNotExist:
+                logger.info(
+                    "RelatedPage for Petitioner Registration does not exist, skipping update."
+                )
+
+        except Page.DoesNotExist:
+            logger.info("Page 'dawson' does not exist.")
+            return
 
     def create_related_pages(self, card, related_std_pages, category, standard_pages):
         for a_page in related_std_pages:
@@ -71,7 +112,7 @@ class DawsonPageInitializer(PageInitializer):
         SimpleCardGroup.objects.filter(parent_page=dawson_page).delete()
 
         dawson_fancy_card = FancyCard(
-            url="https://dawson.ustaxcourt.gov/",
+            url=get_environment_specific_dawson_url(),
             text="DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
             parent_page=dawson_page,
         )
@@ -210,7 +251,7 @@ class DawsonPageInitializer(PageInitializer):
                 {
                     "title": "Petitioner Registration",
                     "slug": "dawson-petitioner-registration",
-                    "path": "https://app.dawson.ustaxcourt.gov/create-account/petitioner",
+                    "path": f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner",
                     "depth": 4,
                     "search_description": "Petitioner Registration",
                 },
@@ -312,9 +353,7 @@ class DawsonPageInitializer(PageInitializer):
             related_page__slug="dawson-petitioner-registration"
         )
         dawson_petitioner_registration_page.related_page = None
-        dawson_petitioner_registration_page.url = (
-            "https://app.dawson.ustaxcourt.gov/create-account/petitioner"
-        )
+        dawson_petitioner_registration_page.url = f"{get_environment_specific_dawson_url(prefix='app')}/create-account/petitioner"
         dawson_petitioner_registration_page.save()
 
         RelatedPage.objects.create(

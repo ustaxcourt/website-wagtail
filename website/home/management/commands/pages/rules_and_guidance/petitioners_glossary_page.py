@@ -12,11 +12,11 @@ petitioners_docs = {
     "Form_5_Request_for_Place_of_Trial.pdf": "",
     "Petition_Kit.pdf": "",
     "Pretrial_Memorandum_Form_old.pdf": "",
-    "Rule-37.pdf": "",
-    "Rule-151.pdf": "",
-    "Rule-173.pdf": "",
-    "Rule-280(amended).pdf": "",
-    "Rule-350.pdf": "",
+    "rule-37.pdf": "",
+    "rule-151.pdf": "",
+    "rule-173.pdf": "",
+    "rule-280.pdf": "",
+    "rule-350.pdf": "",
     "Subpoena_Appear_Testify_Hearing_Or_Trial.pdf": "",
     "Subpoena_To_Testify_Deposition.pdf": "",
     "tou.pdf": "",
@@ -55,7 +55,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
         questions = [
             {
                 "question": "Abatement",
-                "answer": f'Abatement cases ask the IRS to lessen the amount of interest owed when certain requirements are met. See I.R.C. section 6404 and <strong><a linktype="document" id="{petitioners_docs["Rule-280(amended).pdf"].id}" target="_blank" title="Tax Court Rule 280">Tax Court Rule 280</a></strong> et seq. regarding Actions for Review of Failure to Abate Interest.',
+                "answer": f'Abatement cases ask the IRS to lessen the amount of interest owed when certain requirements are met. See I.R.C. section 6404 and <strong><a linktype="document" id="{petitioners_docs["rule-280.pdf"].id}" target="_blank" title="Tax Court Rule 280">Tax Court Rule 280</a></strong> et seq. regarding Actions for Review of Failure to Abate Interest.',
                 "anchortag": "ABATEMENT",
             },
             {
@@ -75,7 +75,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "At issue",
-                "answer": f'A case is deemed "at issue" once the petition and answer have been filed. In some very limited circumstances where a reply is required, the case will be at issue after a reply to the answer is filed. See <strong><a linktype="document" id="{petitioners_docs["Rule-37.pdf"].id}" target="_blank" title="Rules 37">Rules 37</a></strong> or <strong><a linktype="document" id="{petitioners_docs["Rule-173.pdf"].id}" target="_blank" title="173">173</a></strong>.',
+                "answer": f'A case is deemed "at issue" once the petition and answer have been filed. In some very limited circumstances where a reply is required, the case will be at issue after a reply to the answer is filed. See <strong><a linktype="document" id="{petitioners_docs["rule-37.pdf"].id}" target="_blank" title="Rules 37">Rules 37</a></strong> or <strong><a linktype="document" id="{petitioners_docs["rule-173.pdf"].id}" target="_blank" title="173">173</a></strong>.',
                 "anchortag": "AT_ISSUE",
             },
             {
@@ -90,7 +90,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Brief",
-                "answer": f'A brief is a formal document normally filed by each party after the trial in a regular case. A brief contains a table of contents, a statement of the issues, proposed findings of facts, points of law relied upon, argument and analysis. See <strong><a linktype="document" id="{petitioners_docs["Rule-151.pdf"].id}" target="_blank" title="Rule 151">Rule 151</a></strong>.',
+                "answer": f'A brief is a formal document normally filed by each party after the trial in a regular case. A brief contains a table of contents, a statement of the issues, proposed findings of facts, points of law relied upon, argument and analysis. See <strong><a linktype="document" id="{petitioners_docs["rule-151.pdf"].id}" target="_blank" title="Rule 151">Rule 151</a></strong>.',
                 "anchortag": "BRIEF",
             },
             {
@@ -225,7 +225,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Passport Certification",
-                "answer": f'Passport certification actions are commenced with respect to notices of certification issued under I.R.C. section 7345, Revocation or Denial of Passport in Case of Certain Tax Delinquencies, effective after December 4, 2015. See also <strong><a linktype="document" id="{petitioners_docs["Rule-350.pdf"].id}" target="_blank" title="Tax Court Rule 350">Tax Court Rule 350</a></strong> et seq. regarding Certification and Failure to Reverse Certification Action with Respect to Passports. A passport case has a docket number ending in "P", for example, 77899-17P.',
+                "answer": f'Passport certification actions are commenced with respect to notices of certification issued under I.R.C. section 7345, Revocation or Denial of Passport in Case of Certain Tax Delinquencies, effective after December 4, 2015. See also <strong><a linktype="document" id="{petitioners_docs["rule-350.pdf"].id}" target="_blank" title="Tax Court Rule 350">Tax Court Rule 350</a></strong> et seq. regarding Certification and Failure to Reverse Certification Action with Respect to Passports. A passport case has a docket number ending in "P", for example, 77899-17P.',
                 "anchortag": "PASSPORT_CERTIFICATION",
             },
             {
@@ -270,7 +270,7 @@ class PetitionersGlossaryPageInitializer(PageInitializer):
             },
             {
                 "question": "Reply",
-                "answer": f'In some limited circumstances a petitioner is required to respond to respondent\'s answer. A petitioner has 45 days from the date of service of the answer within which to file a reply if one is required. <strong><a linktype="document" id="{petitioners_docs["Rule-37.pdf"].id}" target="_blank" title="Rule 37">Rule 37</a></strong> and <strong><a linktype="document" id="{petitioners_docs["Rule-173.pdf"].id}" target="_blank" title="Rule 173">Rule 173</a></strong>.',
+                "answer": f'In some limited circumstances a petitioner is required to respond to respondent\'s answer. A petitioner has 45 days from the date of service of the answer within which to file a reply if one is required. <strong><a linktype="document" id="{petitioners_docs["rule-37.pdf"].id}" target="_blank" title="Rule 37">Rule 37</a></strong> and <strong><a linktype="document" id="{petitioners_docs["rule-173.pdf"].id}" target="_blank" title="Rule 173">Rule 173</a></strong>.',
                 "anchortag": "REPLY",
             },
             {
