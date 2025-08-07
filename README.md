@@ -148,7 +148,7 @@ To check whether you have successfully logged into your account and that the pro
    ```
    This should return the value `sandbox`.  If not, revisit the previous steps or ask someone on the team for help before moving forward.
 
-2. **Check out the `main` branch** of the repository.
+2. **Check out the `main` branch** of the repository.7
 
 3. **From the repository’s root directory**, run:
    ```shell
