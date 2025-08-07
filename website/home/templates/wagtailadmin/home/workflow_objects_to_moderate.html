@@ -83,7 +83,7 @@
                                     {% latest_str obj %}
                                 {% endif %}
                             </div>
-                            {% if state.live_revision_id %}
+                            {% if not state.live_revision_id %}
                                 <span class="yellow-label">{% trans "New page" %}</span>
                             {% endif %}
                         </td>
