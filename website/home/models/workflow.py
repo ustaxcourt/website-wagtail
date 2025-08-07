@@ -7,15 +7,15 @@ from django.core.exceptions import (
 
 class CustomWorkflowState(WorkflowState):
     review_by_date = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Publish Deadline2",  # Consider renaming verbose_name to avoid confusion with publish_deadline
+        null=False, blank=False, verbose_name="Publish Deadline"
     )
     publish_deadline = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="Optional date/time when this item should be published by.",
+        null=False,
+        blank=False,
+        help_text="Required date/time when this item should be published by.",
     )
+
+    note = models.TextField(null=True, blank=True, verbose_name="Editor/Moderator Note")
     note = models.TextField(null=True, blank=True)
 
     class Meta:

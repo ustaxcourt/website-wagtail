@@ -286,6 +286,10 @@ WAGTAIL_SITE_NAME = "USTC Website"
 # Use custom WorkflowState model with extra fields
 WAGTAIL_WORKFLOW_STATE_MODEL = "home.CustomWorkflowState"
 
+# Use custom WorkflowState model with extra fields
+WAGTAIL_WORKFLOW_STATE_MODEL = "home.CustomWorkflowState"
+
+
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
 WAGTAILSEARCH_BACKENDS = {

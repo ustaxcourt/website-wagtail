@@ -313,11 +313,26 @@ def sync_deadline_from_content(sender, instance, created, **kwargs):
     review_by = getattr(content, "review_by_date", None)
 
     fields_to_update = []
-    if hasattr(instance, "publish_deadline") and deadline is not None:
-        instance.publish_deadline = deadline
+    if hasattr(instance, "publish_deadline"):
+        if deadline is not None:
+            instance.publish_deadline = deadline
+        else:
+            # Set default deadline since field is now required (7 days from now)
+            from django.utils import timezone
+            from datetime import timedelta
+
+            instance.publish_deadline = timezone.now() + timedelta(days=7)
         fields_to_update.append("publish_deadline")
-    if hasattr(instance, "review_by_date") and review_by is not None:
-        instance.review_by_date = review_by
+
+    if hasattr(instance, "review_by_date"):
+        if review_by is not None:
+            instance.review_by_date = review_by
+        else:
+            # Set default review date since field is now required (3 days from now)
+            from django.utils import timezone
+            from datetime import timedelta
+
+            instance.review_by_date = timezone.now() + timedelta(days=3)
         fields_to_update.append("review_by_date")
 
     if fields_to_update:
@@ -358,10 +373,19 @@ def create_custom_workflow_state(sender, instance, created, **kwargs):
     if content and hasattr(content, "publish_deadline"):
         deadline = content.publish_deadline
 
+    # Set default deadline if none provided (since field is now required)
+    if deadline is None:
+        from django.utils import timezone
+        from datetime import timedelta
+
+        deadline = timezone.now() + timedelta(days=7)
+
     # Create CustomWorkflowState record
     try:
         custom_state = CustomWorkflowState(
-            workflowstate_ptr_id=instance.pk, publish_deadline=deadline
+            workflowstate_ptr_id=instance.pk,
+            publish_deadline=deadline,
+            review_by_date=timezone.now() + timedelta(days=3),  # Default review date
         )
         custom_state.__dict__.update(instance.__dict__)
         custom_state.save()
@@ -432,7 +456,9 @@ class CustomAwaitingReviewPanel(Component):
 
     def render_html(self, parent_context=None):
         context = self.get_context_data(parent_context)
-        return render_to_string("wagtailadmin/home/workflow_tasks.html", context)
+        return render_to_string(
+            "wagtailadmin/home/workflow_objects_to_moderate.html", context
+        )
 
 
 @hooks.register("construct_homepage_panels")
