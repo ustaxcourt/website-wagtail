@@ -68,9 +68,9 @@
                 banner.innerHTML = `
                     <span> ⚠️ You are in the ${ENVIRONMENT.toUpperCase()} environment.</span>
                 `;
-                const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
+                const header = document.querySelector("main");
                 if (header && header.parentNode) {
-                    header.parentNode.insertBefore(banner, header.nextSibling);
+                    header.parentNode.insertBefore(banner, header);
                 }
             }
         });
