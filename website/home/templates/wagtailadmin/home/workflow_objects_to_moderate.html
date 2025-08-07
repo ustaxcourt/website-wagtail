@@ -40,6 +40,13 @@
         .workflow-action-buttons .button:hover {
             opacity: 0.8;
         }
+
+        .yellow-label {
+            background-color: #faf3cf;
+            color: #000;
+            font-weight: bold;
+            padding: 2px 4px;
+        }
     </style>
     <table class="listing listing--dashboard">
         <col />
@@ -76,6 +83,9 @@
                                     {% latest_str obj %}
                                 {% endif %}
                             </div>
+                            {% if state.live_revision_id %}
+                                <span class="yellow-label">{% trans "New page" %}</span>
+                            {% endif %}
                         </td>
                         <td>
                             <!-- 2.  Actions -->
@@ -83,12 +93,12 @@
                                 <!-- Preview button (default) -->
                                 {% if state.live_revision_id %}
                                     <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote 'live' revision.id %}"
-                                       class="button button-primary">{% trans 'Preview' %}</a>
+                                       class="button button-primary">{% trans 'Review' %}</a>
                                 {% else %}
                                     <a href="{% url state.workflow_preview_url_name obj.pk|admin_urlquote task_state.task.id %}"
                                        target="_blank"
                                        rel="noreferrer"
-                                       class="button button-primary">{% trans 'Preview' %}</a>
+                                       class="button button-primary">{% trans 'Preview new page' %}</a>
                                 {% endif %}
                                 <!-- Workflow action buttons in correct order -->
                                 {% regroup actions by 0 as action_groups %}
@@ -122,33 +132,21 @@
                             <!-- 4.  Task submitted by-->
                             {% if revision.user %}{{ revision.user|user_display_name }}{% endif %}
                         </td>
-                        <td>{% human_readable_date task_state.started_at %}</td>
                         <!-- 5.  Task started -->
+                        <td>{% human_readable_date task_state.started_at %}</td>
                         <td class="actions-container">
                             <!-- 6 -->
                             {% if actions %}
-                                <ul class="actions">
-                                    <li>
-                                        {% dropdown toggle_icon="dots-horizontal" toggle_aria_label=_("Actions") hide_on_click=True keep_mounted=True %}
-                                        {% if page_perms.can_edit or not is_page and edit_url %}
-                                            <a href="{{ edit_url }}">{% trans 'Edit' %}</a>
-                                        {% endif %}
-                                        {% if state.live_revision_id %}
-                                            <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote 'live' revision.id %}">{% trans "Compare with live version" %}</a>
-                                        {% endif %}
-                                        {% if state.previous_revision_id %}
-                                            <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote state.previous_revision_id revision.id %}">{% trans "Compare with previous version" %}</a>
-                                        {% endif %}
-                                    {% enddropdown %}
-                                </li>
-                            </ul>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endwith %}
-        {% endfor %}
-    </tbody>
-</table>
+                                {% if page_perms.can_edit or not is_page and edit_url %}
+                                    <a href="{{ edit_url }}">{% trans 'Edit' %}</a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
 {% endpanel %}
 <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
         data-activate="dashboard"></script>
