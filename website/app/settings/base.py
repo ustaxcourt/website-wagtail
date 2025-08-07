@@ -61,11 +61,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
-    "django_ses",
+    "django_apscheduler",
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
     "app.role_switcher",
+    "app.scheduled_jobs"
 ]
 
 MIDDLEWARE = [
