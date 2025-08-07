@@ -2,24 +2,106 @@
 <html>
 <head>
     <title>Moderation Digest</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dfe2e5;
+            text-align: left;
+            padding: 8px 12px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 25px;
+            font-size: 0.9em;
+            color: #586069;
+        }
+    </style>
 </head>
 <body>
     <h2>Pages Awaiting Your Review</h2>
+
     <p>
-        There are <strong>{{ pages|length }}</strong> page(s) waiting for moderation.
+        <strong>Report Generated:</strong> {% now "F j, Y, g:i a" %}<br>
+        There are <strong>{{ pages|length }}</strong> page(s) that require moderation.
     </p>
-    <hr>
-    <ul>
-        {% for page in pages %}
-            <li>
-                <strong><a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' page.id %}">{{ page.get_admin_display_title }}</a></strong>
-                <br>
-                <em>Submitted by: {{ page.get_latest_revision.user.get_full_name|default:page.get_latest_revision.user.username }}</em>
-            </li>
-        {% endfor %}
-    </ul>
-    <p>
-        Please review them in the <a href="{{ site_url }}/admin/">Wagtail Admin</a>.
+
+    <table>
+        <thead>
+            <tr>
+                <th>Page Title</th>
+                <th>Status</th>
+                <th>Requested By</th>
+                <th>Date Requested</th>
+                <th>Note</th>
+                <th>Review By Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in pages %}
+                {# Use 'with' tags to get the latest revision and its associated workflow task state #}
+                {% with latest_revision=page.get_latest_revision %}
+                {% with task_state=latest_revision.task_states.all|first %}
+                    <tr>
+                        <td>
+                            <a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' page.id %}">{{ page.get_admin_display_title }}</a>
+                        </td>
+                        <td>
+                            {% if task_state %}
+                                {{ task_state.get_status_display }}
+                            {% else %}
+                                In Progress
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ latest_revision.user.get_full_name|default:latest_revision.user.username }}
+                        </td>
+                        <td>
+                            {{ latest_revision.created_at|date:"M d, Y, P" }}
+                        </td>
+                        <td>
+                            {# This accesses the 'comment' field from the workflow task #}
+                            {% if task_state and task_state.comment %}
+                                {{ task_state.comment }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            N/A
+                        </td>
+                    </tr>
+                {% endwith %}
+                {% endwith %}
+            {% empty %}
+                <tr>
+                    <td colspan="6">There are no pages awaiting moderation.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="footer">
+        You can review all pages at the <a href="https://dev-web.ustaxcourt.gov/admin/#awaiting-review-section">Wagtail Admin Review Dashboard</a>.
     </p>
 </body>
 </html>
