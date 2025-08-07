@@ -1,14 +1,6 @@
 {% load i18n wagtailadmin_tags %}
 {% if states %}
-    <script>
-        const pending_workflow_banner = document.createElement("div");
-        pending_workflow_banner.className = "moderation-notification-bar";
-        pending_workflow_banner.innerHTML = `<span>⚠️ You have edits waiting for your review.</span>`;
-        const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
-        if (header && header.parentNode) {
-            header.parentNode.insertBefore(pending_workflow_banner, header.nextSibling);
-        }
-    </script>
+    <div class="moderation-notification-bar"><span>⚠️ You have edits waiting for your review.</span></div>
     {% panel id="awaiting-review" heading=_("Awaiting your review") classname="w-panel--dashboard" %}
     <style>
         .workflow-action-buttons {
