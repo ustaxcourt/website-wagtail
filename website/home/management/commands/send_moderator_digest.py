@@ -4,12 +4,10 @@ from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from django.template import loader
 from django.conf import settings
-# Import Group and User models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from wagtail.models import Revision, TaskState, Page
 
-# Get the currently active User model
 User = get_user_model()
 
 class Command(BaseCommand):
@@ -79,7 +77,7 @@ class Command(BaseCommand):
                         "Data": "Wagtail Daily Moderator Digest",
                     },
                 },
-                Source="noreply@mmiest-moore-sandbox-web.ustaxcourt.gov",
+                Source="noreply@mmiest-moore-sandbox-web.ustaxcourt.gov", #TODO: Update to automatically generate rather than hard-coding
             )
             self.stdout.write(self.style.SUCCESS(f"Email sent! Message ID: {response['MessageId']}"))
         except Exception as e:
