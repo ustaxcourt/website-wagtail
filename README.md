@@ -13,6 +13,19 @@ There are a number of make commands to run the service locally. See Makefile for
 
 ### Pre-reqs
 
+For Windows Laptops (WSL + VS Code)
+Add the Remote – WSL extension for Ubuntu
+- In WSL:
+  - `sudo apt update`
+  - `sudo apt install git`
+- In WSL terminal: Navigate to your home directory and create a project folder:
+  - `cd ~`
+  - `mkdir -p projects`
+  - `cd ~/projects`
+  - `git clone <repo-url>`
+  - `cd website-wagtail/`
+  - `code .`  # opens project in VS Code (WSL mode)
+
 We will use `brew` to install all necessary software for a Mac laptop. To start ensure you have installed brew.
 
 ```shell
