@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
-    "django_apscheduler",
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
