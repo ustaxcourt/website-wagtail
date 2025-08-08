@@ -102,8 +102,8 @@ resource "aws_scheduler_schedule" "run_daily_check" {
   }
 }
 
-resource "aws_scheduler_schedule" "send_moderator_email_digest" {
-  name       = "${var.environment}-daily-moderator-digest-command"
+resource "aws_scheduler_schedule" "send_moderator_digest" {
+  name       = "${var.environment}-send_moderator_digest-command"
   group_name = "default"
 
   schedule_expression = "cron(*/15 * * * ? *)"
@@ -147,7 +147,7 @@ resource "aws_scheduler_schedule" "send_moderator_email_digest" {
           "command": [
             "python",
             "manage.py",
-            "send_moderator_email_digest"
+            "send_moderator_digest"
           ]
         }
       ]
