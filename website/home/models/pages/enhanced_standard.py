@@ -16,6 +16,8 @@ from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.custom_blocks.common import custom_promote_panels
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -27,7 +29,7 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
-class EnhancedStandardPage(Page):
+class EnhancedStandardPage(ModerationMixin, Page):
     class Meta:
         verbose_name = "Enhanced Standard Page"
 
@@ -214,7 +216,9 @@ class EnhancedStandardPage(Page):
         FieldPanel("body"),
     ]
 
-    promote_panels = custom_promote_panels
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),

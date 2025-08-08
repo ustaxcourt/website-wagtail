@@ -3,12 +3,15 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
-from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 
 @register_snippet
-class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
+class CommonText(
+    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
+):
     name = models.CharField(
         max_length=255, help_text="Name of the text snippet", blank=False
     )
@@ -18,11 +21,12 @@ class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     )
     objects = PageQuerySet.as_manager()
 
-    panels = [
+    content_panels = [
         FieldPanel("name"),
         FieldPanel("text"),
-        PublishingPanel(),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     def __str__(self):
         return self.name
