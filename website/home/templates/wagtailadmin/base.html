@@ -7,7 +7,8 @@
             margin-bottom: 3rem;
         }
 
-        .admin-env-banner {
+        .admin-env-banner,
+        .moderation-notification-bar {
             background-color: #FAA500;
             color: #020103;
             padding: 10px 15px;
@@ -62,14 +63,14 @@
 
             // Banner only in non-production
             if (ENVIRONMENT !== "production") {
-                const banner = document.createElement("div");
-                banner.className = "admin-env-banner";
-                banner.innerHTML = `
+                const environment_banner = document.createElement("div");
+                environment_banner.className = "admin-env-banner";
+                environment_banner.innerHTML = `
                     <span> ⚠️ You are in the ${ENVIRONMENT.toUpperCase()} environment.</span>
                 `;
-                const header = document.querySelector(".wagtail-logo") || document.querySelector("header");
+                const header = document.querySelector("main");
                 if (header && header.parentNode) {
-                    header.parentNode.insertBefore(banner, header.nextSibling);
+                    header.parentNode.insertBefore(environment_banner, header);
                 }
             }
         });

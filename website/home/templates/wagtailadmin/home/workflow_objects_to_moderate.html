@@ -1,0 +1,145 @@
+{% load i18n wagtailadmin_tags %}
+{% if states %}
+    <div class="moderation-notification-bar"><span>⚠️ You have edits waiting for your review.</span></div>
+    {% panel id="awaiting-review" heading=_("Awaiting your review") classname="w-panel--dashboard" %}
+    <style>
+        .workflow-action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-action-buttons .button {
+            padding: 1px 8px;
+            font-size: 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            border: 1px solid;
+            cursor: pointer;
+            display: inline-block;
+            background: #fff;
+            color: #666;
+            border-color: #ccc;
+        }
+
+        .workflow-action-buttons .button-primary {
+            background: #007acc;
+            color: white;
+            border-color: #007acc;
+        }
+
+        .workflow-action-buttons .button:hover {
+            opacity: 0.8;
+        }
+
+        .yellow-label {
+            background-color: #faf3cf;
+            color: #000;
+            font-weight: bold;
+            padding: 2px 4px;
+        }
+    </style>
+    <table class="listing listing--dashboard">
+        <col />
+        <col width="25%" />
+        <col width="10%" />
+        <col width="10%" />
+        <col width="10%" />
+        <col width="10%" />
+        <thead class="w-sr-only">
+            <tr>
+                <th class="title">{% trans "Title" %}</th>
+                <th>{% trans "Actions" %}</th>
+                <th>{% trans "Notes" %}</th>
+                <th>{% trans "Task submitted by" %}</th>
+                <th>{% trans "Task started" %}</th>
+                <th aria-hidden="true">{% comment %} added for visual alignment only {% endcomment %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for state in states %}
+                {% with revision=state.task_state.revision obj=state.obj task_state=state.task_state actions=state.actions workflow_tasks=state.workflow_tasks %}
+                    {% is_page obj as is_page %}
+                    {% if is_page %}
+                        {% page_permissions obj as page_perms %}
+                    {% endif %}
+                    <tr>
+                        <td class="title">
+                            <!-- 1.  Title -->
+                            <div class="title-wrapper">
+                                {% admin_edit_url obj as edit_url %}
+                                {% if page_perms.can_edit or not is_page and edit_url %}
+                                    <a href="{{ edit_url }}" title="{% trans 'Edit' %}">{% latest_str obj %}</a>
+                                {% else %}
+                                    {% latest_str obj %}
+                                {% endif %}
+                            </div>
+                            {% if not state.live_revision_id %}
+                                <span class="yellow-label">{% trans "New page" %}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- 2.  Actions -->
+                            <div class="workflow-action-buttons">
+                                <!-- Preview button (default) -->
+                                {% if state.live_revision_id %}
+                                    <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote 'live' revision.id %}"
+                                       class="button button-primary">{% trans 'Review' %}</a>
+                                {% else %}
+                                    <a href="{% url state.workflow_preview_url_name obj.pk|admin_urlquote task_state.task.id %}"
+                                       target="_blank"
+                                       rel="noreferrer"
+                                       class="button button-primary">{% trans 'Preview new page' %}</a>
+                                {% endif %}
+                                <!-- Workflow action buttons in correct order -->
+                                {% regroup actions by 0 as action_groups %}
+                                <!-- Publish button first (only first approve action) -->
+                                {% for action_name, action_label, modal in actions %}
+                                    {% if action_name == 'approve' %}
+                                        {% ifchanged action_name %}
+                                            <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
+                                                    data-launch-modal
+                                                    class="button">{% trans 'Publish' %}</button>
+                                        {% endifchanged %}
+                                    {% endif %}
+                                {% endfor %}
+                                <!-- Request changes button second (only first reject action) -->
+                                {% for action_name, action_label, modal in actions %}
+                                    {% if action_name == 'reject' %}
+                                        {% ifchanged action_name %}
+                                            <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
+                                                    {% if modal %}data-launch-modal{% endif %}
+                                                    class="button">{% trans 'Request changes' %}</button>
+                                        {% endifchanged %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="tasks">
+                            <!-- 3.  Notes -->
+                            {% for task in workflow_tasks %}{{ task.name }}{% endfor %}
+                        </td>
+                        <td>
+                            <!-- 4.  Task submitted by-->
+                            {% if revision.user %}{{ revision.user|user_display_name }}{% endif %}
+                        </td>
+                        <!-- 5.  Task started -->
+                        <td>{% human_readable_date task_state.started_at %}</td>
+                        <td class="actions-container">
+                            <!-- 6 -->
+                            {% if actions %}
+                                {% if page_perms.can_edit or not is_page and edit_url %}
+                                    <a href="{{ edit_url }}">{% trans 'Edit' %}</a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endpanel %}
+<script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
+        data-activate="dashboard"></script>
+{% endif %}
