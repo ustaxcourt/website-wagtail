@@ -106,7 +106,7 @@ resource "aws_scheduler_schedule" "send_moderator_email_digest" {
   name       = "${var.environment}-daily-moderator-digest-command"
   group_name = "default"
 
-  schedule_expression = "cron(0 * * 14 * *)"
+  schedule_expression = "cron(*/15 * * * ? *)"
 
   lifecycle {
     ignore_changes = [schedule_expression]
@@ -154,4 +154,3 @@ resource "aws_scheduler_schedule" "send_moderator_email_digest" {
     })
   }
 }
-

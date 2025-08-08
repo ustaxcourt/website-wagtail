@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     "social_django",
     "wagtail.contrib.frontend_cache",
     "app.role_switcher",
-    "app.scheduled_jobs",
 ]
 
 MIDDLEWARE = [
