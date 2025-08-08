@@ -53,7 +53,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS("No pages are currently awaiting moderation.")
             )
-            return
+            return #TODO: Check with Jenna - do we want an email even if no pages awaiting moderation
 
         # 3. Prepare email context and render the template
         context = {
