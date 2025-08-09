@@ -417,14 +417,3 @@ LOGGING = {
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
-
-# AWS SES Configuration
-EMAIL_BACKEND = "django_ses.SESBackend"
-EMAIL_HOST = "email-smtp.us-east-1.amazonaws.com"
-AWS_SES_REGION_NAME = "us-east-1"  # e.g., 'us-west-2', 'eu-west-1'
-AWS_SES_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SES_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_SES_REGION_ENDPOINT = "email.us-east-1.amazonaws.com"
-
-# This is the "From" address SES will use. It must be a verified identity in your AWS SES console.
-DEFAULT_FROM_EMAIL = "Miriam.Miest-Moore.ctr@ustaxcourt.gov"
