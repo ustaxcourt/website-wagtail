@@ -22,10 +22,10 @@ class Command(BaseCommand):
         except Group.DoesNotExist:
             self.stdout.write(
                 self.style.WARNING(
-                    '"Moderators" group not found. Sending to default email only.'
+                    '"Moderators" group not found.'
                 )
             )
-            moderator_emails = set()
+            return
 
         # Convert set to list for the boto3 client
         recipient_emails = list(moderator_emails)
