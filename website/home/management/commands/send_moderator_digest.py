@@ -39,11 +39,15 @@ class Command(BaseCommand):
         # 2. Query for pages in moderation
         pages_awaiting_moderation_ids = (
             Revision.objects.filter(task_states__status=TaskState.STATUS_IN_PROGRESS)
-            .values("object_id")
+            .values_list(
+                "object_id", flat=True
+            )  # Change: Use values_list to get a flat list of IDs
             .distinct()
         )
 
-        pages = Page.objects.filter(id__in=pages_awaiting_moderation_ids)
+        pages = Page.objects.filter(
+            id__in=[int(id) for id in pages_awaiting_moderation_ids]
+        )
 
         if not pages.exists():
             self.stdout.write(
