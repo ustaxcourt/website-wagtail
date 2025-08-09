@@ -102,7 +102,7 @@ resource "aws_scheduler_schedule" "run_daily_check" {
   }
 }
 
-resource "aws_scheduler_schedule" "send_moderator_digest" {
+resource "aws_scheduler_schedule" "run_send_moderator_digest" {
   name       = "${var.environment}-send_moderator_digest-command"
   group_name = "default"
 
