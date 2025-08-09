@@ -20,11 +20,7 @@ class Command(BaseCommand):
             # Use a set for automatic duplicate handling
             moderator_emails = {user.email for user in moderator_users if user.email}
         except Group.DoesNotExist:
-            self.stdout.write(
-                self.style.WARNING(
-                    '"Moderators" group not found.'
-                )
-            )
+            self.stdout.write(self.style.WARNING('"Moderators" group not found.'))
             return
 
         # Convert set to list for the boto3 client
