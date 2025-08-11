@@ -106,7 +106,7 @@ resource "aws_scheduler_schedule" "run_send_moderator_digest" {
   name       = "${var.environment}-send_moderator_digest-command"
   group_name = "default"
 
-  schedule_expression = "cron(*/15 * * * ? *)"
+  schedule_expression = "cron(*/5 * * * ? *)"
 
   lifecycle {
     ignore_changes = [schedule_expression]
