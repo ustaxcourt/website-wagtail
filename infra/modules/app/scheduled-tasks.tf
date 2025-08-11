@@ -10,6 +10,11 @@ resource "aws_iam_role" "scheduler_for_ecs" {
         Principal = {
           Service = "scheduler.amazonaws.com"
         }
+      },
+      {
+        Effect: "Allow",
+        Action: ["ses:*"],
+        Resource: "*"
       }
     ]
   })
