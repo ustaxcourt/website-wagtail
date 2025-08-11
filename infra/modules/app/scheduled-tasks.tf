@@ -10,11 +10,6 @@ resource "aws_iam_role" "scheduler_for_ecs" {
         Principal = {
           Service = "scheduler.amazonaws.com"
         }
-      },
-      {
-        Effect: "Allow",
-        Action: ["ses:*"],
-        Resource: "*"
       }
     ]
   })
@@ -46,6 +41,27 @@ resource "aws_iam_policy" "scheduler_ecs_run_task" {
       }
     ]
   })
+}
+
+# Policy to allow sending emails via SES
+resource "aws_iam_policy" "ses_send_email_policy" {
+  name   = "${var.environment}-ses-send-email-policy"
+  policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "ses:SendEmail",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach the SES policy to the scheduler role
+resource "aws_iam_role_policy_attachment" "scheduler_ses_attachment" {
+  role       = aws_iam_role.scheduler_for_ecs.name
+  policy_arn = aws_iam_policy.ses_send_email_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "scheduler_ecs_run_task_attachment" {
