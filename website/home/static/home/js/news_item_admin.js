@@ -100,10 +100,21 @@ function setupEventListeners(publishDateInput, expirationDateInput) {
   publishDateInput.addEventListener("input", updateExpirationDate);
 }
 
+// Only run on news item admin pages
+function shouldInitialize() {
+  return window.location.href.includes('admin/snippets/home/newsitem');
+}
+
 // The 'wagtail:load' event is the correct starting point for Wagtail admin JS.
-document.addEventListener("wagtail:load", initializeNewsItemDateLogic);
+document.addEventListener("wagtail:load", function() {
+  if (shouldInitialize()) {
+    initializeNewsItemDateLogic();
+  }
+});
 
 // Fallback for DOMContentLoaded in case wagtail:load doesn't fire
 document.addEventListener("DOMContentLoaded", function() {
-  setTimeout(initializeNewsItemDateLogic, 1000);
+  if (shouldInitialize()) {
+    setTimeout(initializeNewsItemDateLogic, 1000);
+  }
 });
