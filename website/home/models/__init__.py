@@ -10,6 +10,7 @@ from home.models.settings import (
     GoogleAnalyticsSettings,
 )
 from home.models.config import IconCategories
+from home.models.snippets.news_item import NewsItem
 from home.models.snippets.navigation import (
     NavigationRibbon,
     NavigationRibbonLink,
