@@ -6,9 +6,10 @@ from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+from home.forms import ReviewByRequiredOnSubmitSnippetForm
+from wagtail.snippets.views.snippets import SnippetViewSet
 
 
-@register_snippet
 class CommonText(
     ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
 ):
@@ -34,3 +35,12 @@ class CommonText(
     @property
     def revisions(self):
         return self._revisions
+
+
+class CommonTextViewSet(SnippetViewSet):
+    model = CommonText
+    form_class = ReviewByRequiredOnSubmitSnippetForm
+    # Uses CommonText.edit_handler for UI
+
+
+register_snippet(CommonTextViewSet)
