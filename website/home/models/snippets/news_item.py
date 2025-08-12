@@ -86,8 +86,10 @@ class NewsItem(
         FieldPanel("document"),
         FieldPanel("image"),
         FieldPanel("description"),
-        FieldPanel("publish_date"),
-        FieldPanel("homepage_display_expiration_date"),
+        FieldPanel("publish_date", classname="publish-date-picker"),
+        FieldPanel(
+            "homepage_display_expiration_date", classname="expiration-date-picker"
+        ),
         FieldPanel("banner_options"),
         PublishingPanel(),
     ]
