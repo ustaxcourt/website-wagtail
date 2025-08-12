@@ -18,7 +18,7 @@ from home.models.snippets.navigation import (
     SubNavigationLinkBlock,
 )
 from home.models.snippets.common import CommonText
-from home.models.snippets.tagmanager import SnippetViewSet
+from home.models.snippets.tagmanager import TagsSnippetViewSet
 from home.models.pages.standard import StandardPage
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock
@@ -61,5 +61,3 @@ from home.models.pages.dawson import (
 from home.models.pages.external_redirect import ExternalRedirectPage
 from home.models.pages.redirect import RedirectPage
 from home.models.pages.schedule_content import ScheduledPage
-
-from home.models.utils.update_scripts import PostDeploymentUpdate
