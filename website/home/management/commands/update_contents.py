@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from home.models.utils.update_scripts import PostDeploymentScript
+from home.models.utils.update_scripts import PostDeploymentUpdate
 
 
 # List of update script classes to execute
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             script_name = script_class.__name__
 
             # Check if this script has already been executed
-            if PostDeploymentScript.objects.filter(script_name=script_name).exists():
+            if PostDeploymentUpdate.objects.filter(script_name=script_name).exists():
                 self.stdout.write(
                     self.style.WARNING(f"Skipping {script_name} - already executed")
                 )
@@ -36,7 +36,7 @@ class Command(BaseCommand):
                     script_instance.run()
 
                     # Record the execution
-                    PostDeploymentScript.objects.create(script_name=script_name)
+                    PostDeploymentUpdate.objects.create(script_name=script_name)
 
                     self.stdout.write(
                         self.style.SUCCESS(f"Successfully executed {script_name}")

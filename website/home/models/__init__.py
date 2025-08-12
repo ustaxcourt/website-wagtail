@@ -61,4 +61,4 @@ from home.models.pages.external_redirect import ExternalRedirectPage
 from home.models.pages.redirect import RedirectPage
 from home.models.pages.schedule_content import ScheduledPage
 
-from home.models.utils.update_scripts import PostDeploymentScript
+from home.models.utils.update_scripts import PostDeploymentUpdate
