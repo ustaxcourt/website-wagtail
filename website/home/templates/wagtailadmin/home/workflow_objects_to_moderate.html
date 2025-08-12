@@ -1,4 +1,4 @@
-{% load i18n wagtailadmin_tags error_tags %}
+{% load i18n wagtailadmin_tags %}
 {% if states %}
     <div class="moderation-notification-bar">
         <span>⚠️ You have edits waiting for your review.</span>
@@ -53,7 +53,6 @@
             padding: 2px 4px;
         }
     </style>
-    {% safe_block %}
     <table class="listing listing--dashboard">
         <col />
         <col width="25%" />
@@ -200,7 +199,6 @@
             {% endfor %}
         </tbody>
     </table>
-    {% endsafe_block %}
 {% endpanel %}
 <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
         data-activate="dashboard"></script>
