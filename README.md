@@ -14,7 +14,7 @@ There are a number of make commands to run the service locally. See Makefile for
 ### Pre-reqs
 
 For Windows Laptops (WSL + VS Code)
-- Open PowerShell and run: 
+- Open PowerShell and run:
   - `wsl --install`
 - Add the Remote – WSL extension (Search for "WSL" and install the Remote - WSL extension by Microsoft.)
 - In WSL terminal:
