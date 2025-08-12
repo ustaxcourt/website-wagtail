@@ -1,8 +1,13 @@
 // Function to initialize the date update logic
 function initializeNewsItemDateLogic() {
+  console.log("Initializing news item date logic...");
+
   // Try multiple selector strategies
   let publishDatePicker = document.querySelector(".publish-date-picker");
   let expirationDatePicker = document.querySelector(".expiration-date-picker");
+
+  console.log("Found publishDatePicker:", publishDatePicker);
+  console.log("Found expirationDatePicker:", expirationDatePicker);
 
   // Alternative: look for field panels with these names
   if (!publishDatePicker) {
@@ -13,15 +18,21 @@ function initializeNewsItemDateLogic() {
   }
 
   if (!publishDatePicker || !expirationDatePicker) {
+    console.log("Date picker containers not found, trying direct input search");
     // Try to find inputs directly by name patterns
     const publishDateInput = document.querySelector('input[name="publish_date"]');
     const expirationDateInput = document.querySelector('input[name="homepage_display_expiration_date"]');
 
+    console.log("Direct publishDateInput:", publishDateInput);
+    console.log("Direct expirationDateInput:", expirationDateInput);
+
     if (publishDateInput && expirationDateInput) {
+      console.log("Found inputs directly, setting up listeners");
       setupEventListeners(publishDateInput, expirationDateInput);
       return;
     }
 
+    console.log("No inputs found, exiting");
     return;
   }
 
@@ -30,17 +41,26 @@ function initializeNewsItemDateLogic() {
   const publishDateInput = publishDatePicker.querySelector('input[name="publish_date"]');
   const expirationDateInput = expirationDatePicker.querySelector('input[name="homepage_display_expiration_date"]');
 
+  console.log("Found publishDateInput in container:", publishDateInput);
+  console.log("Found expirationDateInput in container:", expirationDateInput);
+
   if (!publishDateInput || !expirationDateInput) {
+    console.log("Inputs not found in containers, exiting");
     return;
   }
 
+  console.log("Setting up event listeners");
   setupEventListeners(publishDateInput, expirationDateInput);
 }
 
 function setupEventListeners(publishDateInput, expirationDateInput) {
+  console.log("setupEventListeners called with:", publishDateInput, expirationDateInput);
+
   // This function calculates and sets the expiration date.
   const updateExpirationDate = () => {
+    console.log("updateExpirationDate triggered");
     const publishDateValue = publishDateInput.value;
+    console.log("Current publish date value:", publishDateValue);
 
     if (publishDateValue) {
       // Try to parse the date value - it might be in various formats
@@ -96,9 +116,34 @@ function setupEventListeners(publishDateInput, expirationDateInput) {
   };
 
   // Attach event listeners to the date input
+  console.log("Adding event listeners to:", publishDateInput);
   publishDateInput.addEventListener("change", updateExpirationDate);
   publishDateInput.addEventListener("input", updateExpirationDate);
+  console.log("Event listeners added successfully");
 }
 
+// Simple script load indicator
+console.log("News item admin script loaded!");
+console.log("Current URL:", window.location.href);
+console.log("Page title:", document.title);
+
 // The 'wagtail:load' event is the correct starting point for Wagtail admin JS.
-document.addEventListener("wagtail:load", initializeNewsItemDateLogic);
+document.addEventListener("wagtail:load", function() {
+  console.log("wagtail:load event fired!");
+  initializeNewsItemDateLogic();
+});
+
+// Fallback for DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("DOMContentLoaded event fired!");
+  setTimeout(function() {
+    console.log("DOMContentLoaded timeout - trying initialization");
+    initializeNewsItemDateLogic();
+  }, 1000);
+});
+
+// Immediate fallback
+setTimeout(function() {
+  console.log("Immediate timeout - trying initialization");
+  initializeNewsItemDateLogic();
+}, 2000);
