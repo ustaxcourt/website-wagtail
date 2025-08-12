@@ -3,6 +3,8 @@ from wagtail import blocks
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 
 
 class ReleaseNotes(EnhancedStandardPage):
@@ -52,6 +54,11 @@ class ReleaseNotes(EnhancedStandardPage):
         index.SearchField("paragraph"),
         index.SearchField("release_entries"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels,
+        promote_panels=custom_promote_panels,
+    )
 
     class Meta:
         verbose_name = "Release Notes"
