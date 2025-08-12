@@ -1,4 +1,4 @@
-{% load i18n wagtailadmin_tags %}
+{% load i18n wagtailadmin_tags error_tags %}
 {% if states %}
     {% comment %}Error handling wrapper for workflow moderation{% endcomment %}
     <div class="moderation-notification-bar">
@@ -54,6 +54,7 @@
             padding: 2px 4px;
         }
     </style>
+    {% safe_block %}
     <table class="listing listing--dashboard">
         <col />
         <col width="25%" />
@@ -200,6 +201,7 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endsafe_block %}
 {% endpanel %}
 <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
         data-activate="dashboard"></script>
