@@ -111,8 +111,16 @@
                                     {% latest_str obj %}
                                 {% endif %}
                             </div>
-                            {% if not state.live_revision_id %}
+                            {% is_page obj as is_page %}
+                            {# Page-only "New page" #}
+                            {% if is_page and not state.live_revision_id %}
                                 <span class="yellow-label">{% trans "New page" %}</span>
+                            {% endif %}
+                            {# Non-page: optional generic "New" (safe default is to NOT show) #}
+                            {% if not is_page %}
+                                {% if obj.live|default_if_none:True == False %}
+                                    <span class="yellow-label">{% trans "New" %}</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td>
