@@ -1,0 +1,50 @@
+{% extends "wagtailadmin/generic/revisions/compare.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .revision-comparison-actions {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007acc;
+            border-radius: 4px;
+        }
+
+        .revision-comparison-actions .button {
+            margin-right: 10px;
+        }
+
+        .revision-comparison-actions .button-primary {
+            background: #007acc;
+            color: white;
+            border-color: #007acc;
+        }
+
+        .revision-comparison-actions .button-primary:hover {
+            background: #0056a3;
+            border-color: #0056a3;
+        }
+    </style>
+{% endblock %}
+
+{% block main_content %}
+    <div class="revision-comparison-actions">
+        <p><strong>{% trans "Reviewing changes" %}</strong></p>
+        <form method="post" action="{% url 'wagtailadmin_pages:edit' object.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action-publish" value="1">
+            <button type="submit" class="button button-primary">
+                {% icon name="upload" %}
+                {% trans "Publish" %}
+            </button>
+        </form>
+        <a href="{% url 'wagtailadmin_pages:edit' object.pk %}" class="button">
+            {% icon name="edit" %}
+            {% trans "Edit" %}
+        </a>
+    </div>
+
+    {{ block.super }}
+{% endblock %}
