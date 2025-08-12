@@ -7,10 +7,10 @@ from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, Workflo
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
+from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.search import index
 
 
-@register_snippet
 class NewsItem(
     WorkflowMixin, DraftStateMixin, RevisionMixin, index.Indexed, models.Model
 ):
@@ -58,6 +58,7 @@ class NewsItem(
         choices=BANNER_CHOICES,
         default="none",
         help_text="Select the banner type for the news article",
+        blank=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -114,3 +115,18 @@ class NewsItem(
     @property
     def revisions(self):
         return self._revisions
+
+    @property
+    def status(self):
+        return self.status_string
+
+    status.fget.short_description = "Status"
+
+
+class NewsItemViewSet(SnippetViewSet):
+    model = NewsItem
+    list_display = ["title", "document", "status", "publish_date", "created_at"]
+    list_filter = ["banner_options"]
+
+
+register_snippet(NewsItem, viewset=NewsItemViewSet)
