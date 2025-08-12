@@ -8,13 +8,16 @@ from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
+from django.utils.safestring import mark_safe
 from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
+from home.models.snippets.news_item import NewsItem
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+from datetime import timedelta
 
 import logging
 
@@ -110,6 +113,35 @@ def protect_special_judge_roles(request, snippets):
                 if referer:
                     return redirect(referer)
                 return redirect(reverse("wagtailsnippets:index"))
+
+
+@hooks.register("before_edit_snippet")
+def populate_news_item_expiration_date(request, instance):
+    """
+    Auto-populate homepage_display_expiration_date with publish_date + 7 days
+    when editing a NewsItem, if expiration date is not already set.
+    """
+    if isinstance(instance, NewsItem):
+        # Only populate if expiration date is not set and publish date exists
+        if not instance.homepage_display_expiration_date and instance.publish_date:
+            instance.homepage_display_expiration_date = (
+                instance.publish_date + timedelta(days=7)
+            )
+            logger.info(
+                f"Auto-populated expiration date for NewsItem '{instance.title}' to {instance.homepage_display_expiration_date}"
+            )
+
+
+@hooks.register("before_create_snippet")
+def populate_new_news_item_expiration_date(request, model):
+    """
+    Auto-populate homepage_display_expiration_date with publish_date + 7 days
+    when creating a new NewsItem, if expiration date is not set.
+    """
+    if model == NewsItem:
+        # This hook runs before the form is displayed for creation
+        # The actual population will be handled by JavaScript or form logic
+        pass
 
 
 @hooks.register("after_edit_snippet")
@@ -262,3 +294,54 @@ def register_add_entry_above_url():
             name="add_entry_above_view",
         ),
     ]
+
+
+@hooks.register("insert_editor_js")
+def news_item_auto_populate_js():
+    """
+    JavaScript to auto-populate homepage_display_expiration_date when publish_date changes
+    in the NewsItem admin form.
+    """
+    return mark_safe("""
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if we're on a NewsItem form
+        if (document.querySelector('input[name="title"]') &&
+            document.querySelector('input[name="publish_date_0"]') &&
+            document.querySelector('input[name="homepage_display_expiration_date_0"]')) {
+
+            const publishDateField = document.querySelector('input[name="publish_date_0"]');
+            const expirationDateField = document.querySelector('input[name="homepage_display_expiration_date_0"]');
+
+            function updateExpirationDate() {
+                const publishDate = publishDateField.value;
+                if (publishDate && !expirationDateField.value) {
+                    // Parse the date and add 7 days
+                    const date = new Date(publishDate);
+                    if (!isNaN(date.getTime())) {
+                        date.setDate(date.getDate() + 7);
+
+                        // Format as YYYY-MM-DD for the date input
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const formattedDate = `${year}-${month}-${day}`;
+
+                        expirationDateField.value = formattedDate;
+
+                        // Trigger change event to ensure Wagtail recognizes the change
+                        expirationDateField.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }
+            }
+
+            // Listen for changes to the publish date field
+            publishDateField.addEventListener('change', updateExpirationDate);
+            publishDateField.addEventListener('blur', updateExpirationDate);
+
+            // Also run on initial load in case publish date is already set
+            updateExpirationDate();
+        }
+    });
+    </script>
+    """)

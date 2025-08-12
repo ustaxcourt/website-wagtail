@@ -1,4 +1,3 @@
-from datetime import timedelta
 from django.db import models
 from django.contrib.auth import get_user_model
 from wagtail.admin.panels import FieldPanel
@@ -101,10 +100,6 @@ class NewsItem(
     ]
 
     def save(self, *args, **kwargs):
-        if not self.homepage_display_expiration_date and self.publish_date:
-            self.homepage_display_expiration_date = self.publish_date + timedelta(
-                days=7
-            )
         self.created_by = get_user_model().objects.first()
         self.updated_by = self.created_by
         super().save(*args, **kwargs)
