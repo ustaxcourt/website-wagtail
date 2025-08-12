@@ -114,7 +114,13 @@
                                     {% endif %}
                                 </div>
                                 {% if not state.live_revision_id %}
-                                    <span class="yellow-label">{% trans "New page" %}</span>
+                                    <span class="yellow-label">
+                                        {% if is_page %}
+                                            {% trans "New page" %}
+                                        {% else %}
+                                            {% trans "New content" %}
+                                        {% endif %}
+                                    </span>
                                 {% endif %}
                             </td>
                             <td>
