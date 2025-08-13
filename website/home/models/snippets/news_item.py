@@ -80,9 +80,7 @@ class NewsItem(
         related_name="+",
     )
 
-    _revisions = GenericRelation(
-        "wagtailcore.Revision", related_query_name="newsarticle"
-    )
+    _revisions = GenericRelation("wagtailcore.Revision", related_query_name="newsitem")
 
     objects = PageQuerySet.as_manager()
 
