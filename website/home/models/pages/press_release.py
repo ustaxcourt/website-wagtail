@@ -17,6 +17,7 @@ from django.template.response import TemplateResponse
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.home_page import HomePageEntry
+from home.models.snippets.news_item import NewsItem
 
 
 def extract_pdf_filename_from_body(html):
@@ -28,6 +29,21 @@ def extract_pdf_filename_from_body(html):
     return None
 
 
+class NewsItemListBlock(blocks.StructBlock):
+    """Block that automatically displays all live NewsItem snippets."""
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        # Get all live NewsItem snippets ordered by publish_date descending
+        context["news_items"] = NewsItem.objects.live().order_by("-publish_date")
+        return context
+
+    class Meta:
+        icon = "list-ul"
+        label = "All News Items"
+        template = "blocks/news_items_list.html"
+
+
 class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     """
     A specialized page for managing press releases with grouping and archive routing.
@@ -36,6 +52,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     press_release_body = StreamField(
         [
             ("button", ButtonBlock()),
+            ("news_items", NewsItemListBlock()),
             (
                 "press_releases",
                 blocks.ListBlock(

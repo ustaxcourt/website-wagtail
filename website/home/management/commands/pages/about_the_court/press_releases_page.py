@@ -1958,4 +1958,38 @@ class PressReleasesPageInitializer(PageInitializer):
                     created_count += 1
                     logger.info(f"Created NewsItem: {news_item.title}")
 
+        # After creating all news items, add the news_items block to the press release page
+        if created_count > 0:
+            # Check if news_items block already exists
+            has_news_items_block = any(
+                block.block_type == "news_items"
+                for block in press_release_page.press_release_body
+            )
+
+            # Add news_items block if it doesn't exist
+            if not has_news_items_block:
+                # Convert existing StreamField to raw data format with proper serialization
+                current_body_data = []
+                for block in press_release_page.press_release_body:
+                    # Use get_prep_value to properly serialize the block value
+                    serialized_value = block.block.get_prep_value(block.value)
+                    current_body_data.append(
+                        {"type": block.block_type, "value": serialized_value}
+                    )
+
+                # Add the news_items block at the beginning
+                current_body_data.insert(
+                    0,
+                    {
+                        "type": "news_items",
+                        "value": {},  # Empty value since NewsItemListBlock auto-fetches all items
+                    },
+                )
+
+                # Update the press release page with the new body data
+                press_release_page.press_release_body = current_body_data
+                press_release_page.save()
+
+                logger.info("Added news_items block to press release page")
+
         logger.info(f"Created {created_count} NewsItem snippets from press releases")
