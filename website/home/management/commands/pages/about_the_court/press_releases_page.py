@@ -1,7 +1,12 @@
+from django.utils import timezone
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PressReleasePage
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.contrib.auth import get_user_model
+from home.models.utils.execute_script import ExecuteScript
+from home.models.snippets.news_item import NewsItem
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -1852,3 +1857,105 @@ class PressReleasesPageInitializer(PageInitializer):
         home_page.add_child(instance=press_release_page)
         press_release_page.save_revision().publish()
         logger.info(f"'{title}' page created and published.")
+
+    def run(self):
+        command_name = "Press release data migration to snippets"
+
+        # Check if script already exists
+        if ExecuteScript.objects.filter(command_name=command_name).exists():
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return False
+
+        # Create ExecuteScript entry
+        script_entry = ExecuteScript.objects.create(
+            command_name=command_name,
+            execution_type="ONETIME",
+            execution_status="pending",
+            datetime=timezone.now(),
+            created_by=get_user_model().objects.filter(is_superuser=True).first(),
+            updated_by=get_user_model().objects.filter(is_superuser=True).first(),
+        )
+
+        try:
+            # Execute the actual script logic here
+            # For now, this is a placeholder that simulates work
+            self._execute_press_release_update_logic()
+
+            # Mark as success
+            script_entry.execution_status = "SUCCESS"
+            script_entry.save()
+            return True
+
+        except Exception as e:
+            # Mark as failure
+            script_entry.execution_status = "FAILURE"
+            script_entry.save()
+            raise e
+
+    def _execute_press_release_update_logic(self):
+        """
+        Iterate through all press release body entries and create NewsItem snippets.
+        """
+        press_release_page = PressReleasePage.objects.first()
+        if not press_release_page or not press_release_page.press_release_body:
+            logger.info("No press release page or press release body found")
+            return
+
+        created_count = 0
+        superuser = get_user_model().objects.filter(is_superuser=True).first()
+
+        for block in press_release_page.press_release_body:
+            if block.block_type == "press_releases":
+                for release in block.value:
+                    release_date = release.get("release_date")
+                    details = release.get("details", {})
+                    description = details.get("description", "")
+                    file = details.get("file")
+
+                    if not release_date or not description:
+                        logger.warning(
+                            f"Skipping release with missing data: date={release_date}, description={bool(description)}"
+                        )
+                        continue
+
+                    # Check if NewsItem already exists to avoid duplicates
+                    existing_news_item = NewsItem.objects.filter(
+                        title=description[:255],  # Truncate to title field max length
+                        publish_date=datetime.combine(
+                            release_date, datetime.min.time()
+                        ).replace(tzinfo=timezone.get_current_timezone()),
+                    ).first()
+
+                    if existing_news_item:
+                        logger.info(
+                            f"NewsItem already exists for: {description[:50]}..."
+                        )
+                        continue
+
+                    # Create NewsItem from press release data
+                    publish_datetime = datetime.combine(
+                        release_date, datetime.min.time()
+                    ).replace(tzinfo=timezone.get_current_timezone())
+                    expiration_datetime = publish_datetime + timedelta(days=7)
+
+                    news_item = NewsItem.objects.create(
+                        title=description[:255],  # Truncate to fit CharField max_length
+                        description=description,
+                        document=file,
+                        publish_date=publish_datetime,
+                        homepage_display_expiration_date=expiration_datetime,
+                        created_by=superuser,
+                        updated_by=superuser,
+                        banner_options="none",
+                        live=True,
+                    )
+
+                    # Update created_at to match publish_date for migrated data
+                    NewsItem.objects.filter(pk=news_item.pk).update(
+                        created_at=publish_datetime
+                    )
+
+                    created_count += 1
+                    logger.info(f"Created NewsItem: {news_item.title}")
+
+        logger.info(f"Created {created_count} NewsItem snippets from press releases")
