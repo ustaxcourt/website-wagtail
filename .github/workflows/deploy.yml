@@ -124,6 +124,7 @@ jobs:
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
           make setupwagtaillroles settings="app.settings.${ENVIRONMENT}"
           make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
+          make updatepages settings="app.settings.${ENVIRONMENT}"
 
       - name: Create GitHub Release (optional)
         if: ${{ github.ref == 'refs/heads/main' }}
