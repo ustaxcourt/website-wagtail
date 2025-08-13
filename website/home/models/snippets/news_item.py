@@ -8,6 +8,11 @@ from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.search import index
+from wagtail.admin.filters import WagtailFilterSet
+import django_filters
+from django.forms import DateInput
+from django.utils import timezone
+from datetime import datetime, time
 
 
 class NewsItem(
@@ -104,7 +109,11 @@ class NewsItem(
     def save(self, *args, **kwargs):
         self.created_by = get_user_model().objects.first()
         self.updated_by = self.created_by
+        self.go_live_at = self.publish_date
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title
@@ -120,10 +129,55 @@ class NewsItem(
     status.fget.short_description = "Status"
 
 
+class NewsItemFilterSet(WagtailFilterSet):
+    status = django_filters.ChoiceFilter(
+        field_name="live",
+        choices=[
+            (True, "Live"),
+            (False, "Draft"),
+        ],
+        label="Status",
+    )
+
+    publish_date_from = django_filters.DateFilter(
+        field_name="publish_date",
+        lookup_expr="gte",
+        label="Publish Date From",
+        widget=DateInput(attrs={"type": "date"}),
+        method="filter_publish_date_from",
+    )
+
+    publish_date_to = django_filters.DateFilter(
+        field_name="publish_date",
+        lookup_expr="lte",
+        label="Publish Date To",
+        widget=DateInput(attrs={"type": "date"}),
+        method="filter_publish_date_to",
+    )
+
+    def filter_publish_date_from(self, queryset, name, value):
+        if value:
+            # Convert date to timezone-aware datetime at start of day
+            start_datetime = timezone.make_aware(datetime.combine(value, time.min))
+            return queryset.filter(publish_date__gte=start_datetime)
+        return queryset
+
+    def filter_publish_date_to(self, queryset, name, value):
+        if value:
+            # Convert date to timezone-aware datetime at end of day
+            end_datetime = timezone.make_aware(datetime.combine(value, time.max))
+            return queryset.filter(publish_date__lte=end_datetime)
+        return queryset
+
+    class Meta:
+        model = NewsItem
+        fields = ["banner_options", "status", "publish_date_from", "publish_date_to"]
+
+
 class NewsItemViewSet(SnippetViewSet):
     model = NewsItem
     list_display = ["title", "document", "status", "publish_date", "created_at"]
-    list_filter = ["banner_options"]
+    filterset_class = NewsItemFilterSet
 
 
 register_snippet(NewsItem, viewset=NewsItemViewSet)
