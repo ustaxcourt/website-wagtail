@@ -36,34 +36,70 @@ class Command(BaseCommand):
         site_url = os.getenv("DOMAIN_NAME")
         self.stdout.write(self.style.SUCCESS(f"Site url: {site_url}"))
 
-        # 2. Query for pages in moderation
-        pages_awaiting_moderation_ids = (
-            Revision.objects.filter(task_states__status=TaskState.STATUS_IN_PROGRESS)
-            .values_list(
-                "object_id", flat=True
-            )  # Change: Use values_list to get a flat list of IDs
+        # 2. Query for pages in moderation and prepare detailed context
+        pages_in_moderation_ids = (
+            Revision.objects.filter(
+                task_states__workflow_state__status__in=["needs_changes", "in_progress"]
+            )
+            # THIS IS THE CORRECTED LINE:
+            .values_list("object_id", flat=True)
             .distinct()
         )
 
-        pages = Page.objects.filter(
-            id__in=[int(id) for id in pages_awaiting_moderation_ids]
+        # The object_id is a string, so we convert it to int for the Page query
+        pages_qs = Page.objects.filter(
+            id__in=[int(id) for id in pages_in_moderation_ids]
         )
 
-        if not pages.exists():
+        # This list will hold the detailed context for each page
+        pages_with_context = []
+
+        for page in pages_qs:
+            # Get the latest revision for displaying user and date info
+            latest_revision = page.get_latest_revision()
+
+            # Find the last time the page was published to get the full history
+            # of the current moderation cycle.
+            live_revision = page.live_revision
+            revisions_since_publish = page.revisions.all()
+            if live_revision:
+                revisions_since_publish = revisions_since_publish.filter(
+                    created_at__gt=live_revision.created_at
+                )
+
+            # Now, get all unique comments from task states on those revisions
+            comments = (
+                TaskState.objects.filter(revision__in=revisions_since_publish)
+                .exclude(comment__isnull=True)
+                .exclude(comment__exact="")
+                .order_by("started_at")
+                .values_list("comment", flat=True)
+                .distinct()
+            )
+
+            pages_with_context.append(
+                {
+                    "page": page,
+                    "latest_revision": latest_revision,
+                    "comments": list(comments),
+                }
+            )
+
+        if not pages_with_context:
             self.stdout.write(
                 self.style.SUCCESS("No pages are currently awaiting moderation.")
             )
             return
 
-        # 3. Prepare email context and render the template
+        # 3. Render the template with the detailed context
         context = {
-            "pages": pages,
+            "pages": pages_with_context,
             "site_url": site_url,
         }
 
         email_html = loader.get_template("mail/moderation_digest.html").render(context)
 
-        # 4. Send the email
+        # 4. Send the email using AWS SES
         client = boto3.client("ses", region_name="us-east-1")
         try:
             response = client.send_email(

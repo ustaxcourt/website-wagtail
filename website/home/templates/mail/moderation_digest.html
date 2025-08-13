@@ -35,10 +35,15 @@
             font-size: 0.9em;
             color: #586069;
         }
+        /* Style for the notes list */
+        td ul {
+            margin: 0;
+            padding-left: 20px;
+        }
     </style>
 </head>
 <body>
-    <h2>Pages Awaiting Your Review</h2>
+    <h2>Pages In Progress</h2>
 
     <p>
         <strong>Report Generated:</strong> {% now "F j, Y, g:i a" %}<br>
@@ -52,46 +57,48 @@
                 <th>Status</th>
                 <th>Requested By</th>
                 <th>Date Requested</th>
-                <th>Note</th>
+                <th>Note(s)</th>
                 <th>Review By Date</th>
             </tr>
         </thead>
         <tbody>
-            {% for page in pages %}
-                {# Use 'with' tags to get the latest revision and its associated workflow task state #}
-                {% with latest_revision=page.get_latest_revision %}
-                {% with task_state=latest_revision.task_states.all|first %}
-                    <tr>
-                        <td>
-                            <a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' page.id %}">{{ page.get_admin_display_title }}</a>
-                        </td>
-                        <td>
-                            {% if task_state %}
-                                {{ task_state.get_status_display }}
+            {% for item in pages %}
+                <tr>
+                    <td>
+                        <a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' item.page.id %}">{{ item.page.get_admin_display_title }}</a>
+                    </td>
+                    <td>
+                        {# Get status from the first task on the latest revision #}
+                        {% with first_task=item.latest_revision.task_states.all|first %}
+                            {% if first_task and first_task.workflow_state %}
+                                {{ first_task.workflow_state.get_status_display }}
                             {% else %}
                                 In Progress
                             {% endif %}
-                        </td>
-                        <td>
-                            {{ latest_revision.user.get_full_name|default:latest_revision.user.username }}
-                        </td>
-                        <td>
-                            {{ latest_revision.created_at|date:"M d, Y, P" }}
-                        </td>
-                        <td>
-                            {# This accesses the 'comment' field from the workflow task #}
-                            {% if task_state and task_state.comment %}
-                                {{ task_state.comment }}
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
-                        <td>
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {{ item.latest_revision.user.get_full_name|default:item.latest_revision.user.username }}
+                    </td>
+                    <td>
+                        {{ item.latest_revision.created_at|date:"M d, Y, P" }}
+                    </td>
+                    <td>
+                        {# The view has already prepared the list of all relevant comments #}
+                        {% if item.comments %}
+                            <ul>
+                                {% for comment in item.comments %}
+                                    <li>{{ comment }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
                             N/A
-                        </td>
-                    </tr>
-                {% endwith %}
-                {% endwith %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        N/A
+                    </td>
+                </tr>
             {% empty %}
                 <tr>
                     <td colspan="6">There are no pages awaiting moderation.</td>
