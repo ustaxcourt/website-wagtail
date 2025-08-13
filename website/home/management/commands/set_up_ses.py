@@ -107,9 +107,11 @@ class Command(BaseCommand):
         """Finds the domain's hosted zone and adds the DKIM CNAME records."""
         if not dkim_tokens:
             self.stdout.write("\nNo DKIM tokens to add. Skipping Route 53 update.")
-            return True # Considered success as there's nothing to do
+            return True  # Considered success as there's nothing to do
 
-        self.stdout.write(f"\n2. Attempting to add records to Route 53 for '{domain}'...")
+        self.stdout.write(
+            f"\n2. Attempting to add records to Route 53 for '{domain}'..."
+        )
         try:
             # Find the Hosted Zone ID for the domain
             zones_response = self.route53_client.list_hosted_zones()
@@ -172,22 +174,30 @@ class Command(BaseCommand):
         self.stdout.write(
             f"\n3. Checking DKIM verification status in SES for '{domain}'..."
         )
-        self.stdout.write(f"   Checking every {delay} seconds for up to {retries * delay / 60:.1f} minutes.")
+        self.stdout.write(
+            f"   Checking every {delay} seconds for up to {retries * delay / 60:.1f} minutes."
+        )
 
         for attempt in range(retries):
             try:
-                response = self.ses_client.get_identity_dkim_attributes(Identities=[domain])
+                response = self.ses_client.get_identity_dkim_attributes(
+                    Identities=[domain]
+                )
                 attributes = response["DkimAttributes"].get(domain)
 
                 if not attributes:
                     self.stdout.write("   Could not get attributes yet. Waiting...")
                 else:
                     status = attributes["DkimVerificationStatus"]
-                    self.stdout.write(f"   Attempt {attempt + 1}/{retries}: Current Status is {status}")
+                    self.stdout.write(
+                        f"   Attempt {attempt + 1}/{retries}: Current Status is {status}"
+                    )
 
                     if status == "Success":
                         self.stdout.write(
-                            self.style.SUCCESS("\n🎉 Domain verified and DKIM setup is complete!")
+                            self.style.SUCCESS(
+                                "\n🎉 Domain verified and DKIM setup is complete!"
+                            )
                         )
                         return
                     elif status == "Failed":
@@ -204,7 +214,7 @@ class Command(BaseCommand):
                         f"❌ SES Error checking status: {e.response['Error']['Message']}"
                     )
                 )
-                return # Exit on API error
+                return  # Exit on API error
 
             time.sleep(delay)
 
