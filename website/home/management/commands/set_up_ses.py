@@ -90,9 +90,7 @@ class Command(BaseCommand):
                 )
                 return []
 
-            self.stdout.write(
-                self.style.SUCCESS("✅ Success! Generated DKIM tokens:")
-            )
+            self.stdout.write(self.style.SUCCESS("✅ Success! Generated DKIM tokens:"))
             return dkim_tokens
 
         except ClientError as e:
@@ -133,7 +131,7 @@ class Command(BaseCommand):
                 )
                 return False
 
-            self.stdout.write(f"   Found Hosted Zone ID")
+            self.stdout.write("   Found Hosted Zone ID")
 
             # Construct the change batch for the API call
             changes = [
