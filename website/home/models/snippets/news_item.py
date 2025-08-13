@@ -19,7 +19,7 @@ class NewsItem(
     WorkflowMixin, DraftStateMixin, RevisionMixin, index.Indexed, models.Model
 ):
     title = models.CharField(
-        max_length=255, help_text="Title of the news article", blank=False
+        max_length=500, help_text="Title of the news article", blank=False
     )
     document = models.ForeignKey(
         "wagtaildocs.Document",
