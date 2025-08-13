@@ -5,7 +5,7 @@ from home.models import EnhancedStandardPage
 import logging
 
 logger = logging.getLogger(__name__)
-docs = ["Rule-21_Amended_03202023.pdf", "Rule-245.pdf"]
+docs = ["rule-21.pdf", "rule-245.pdf"]
 slug = "definitions"
 title = "Definitions"
 
@@ -38,7 +38,7 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
             " practitioner designated to receive service of documents in a case. The"
             " first counsel of record is generally the Designated Service Person, see"
             ' <a linktype="document"'
-            f' id="{definition_docs["Rule-21_Amended_03202023.pdf"].id}"><b>Rule'
+            f' id="{definition_docs["rule-21.pdf"].id}"><b>Rule'
             " 21(b)(2)</b></a>. The ability to designate an additional service person"
             " in DAWSON is coming soon.</p><p>“Document”"
             " means any written matter filed by or with the Court including, but not"
@@ -52,7 +52,7 @@ class DawsonFaqsDefinitionsPageInitializer(PageInitializer):
             " is the spouse or former spouse of a petitioner seeking innocent spouse"
             " relief. “Participant” is a partner who elects to participate in a"
             " partnership action by filing a notice of election to participate under"
-            f' <a linktype="document" id="{definition_docs["Rule-245.pdf"].id}"><b>Rule'
+            f' <a linktype="document" id="{definition_docs["rule-245.pdf"].id}"><b>Rule'
             " 245</b></a>.</p><p>“Party”, for purposes of"
             " electronic access, means either petitioner(s) or respondent"
             " (IRS).</p><p>“PDF” means Portable Document"

@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 dawson_faqs_docs = {
-    "Rule-26_Amended_03202023.pdf": "",
+    "rule-26.pdf": "",
 }
 
 
@@ -61,7 +61,7 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                                  </ul>
                               </li>
                               <li>If you are admitted to practice before the Court, you are generally required to file documents and receive service electronically. See
-                              <strong><a linktype="document" id="{dawson_faqs_docs["Rule-26_Amended_03202023.pdf"].id}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.
+                              <strong><a linktype="document" id="{dawson_faqs_docs["rule-26.pdf"].id}" target="_blank" title="Rule 26(b)">Rule 26(b)</a></strong>, Tax Court Rules of Practice and Procedure. Electronic filing and the electronic service of Court filings will take place through DAWSON.
                                 <ul>
                                  <li>Petitions may, but are not required to be, filed electronically.</li>
                                  </ul>
