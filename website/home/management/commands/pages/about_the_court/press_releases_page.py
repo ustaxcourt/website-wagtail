@@ -1920,7 +1920,7 @@ class PressReleasesPageInitializer(PageInitializer):
 
                     # Check if NewsItem already exists to avoid duplicates
                     existing_news_item = NewsItem.objects.filter(
-                        title=description[:255],  # Truncate to title field max length
+                        title=description[:500],  # Truncate to title field max length
                         publish_date=datetime.combine(
                             release_date, datetime.min.time()
                         ).replace(tzinfo=timezone.get_current_timezone()),
@@ -1939,7 +1939,7 @@ class PressReleasesPageInitializer(PageInitializer):
                     expiration_datetime = publish_datetime + timedelta(days=7)
 
                     news_item = NewsItem.objects.create(
-                        title=description[:255],  # Truncate to fit CharField max_length
+                        title=description[:500],  # Truncate to fit CharField max_length
                         description=description,
                         document=file,
                         publish_date=publish_datetime,
