@@ -1,6 +1,5 @@
 import re
 import os
-from datetime import datetime
 from collections import defaultdict
 from operator import itemgetter
 
@@ -107,29 +106,39 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     def group_press_releases_by_year(self):
         grouped = defaultdict(list)
         seen_press_release_keys = set()  # (title, pdf), (description, file)
+
         for block in self.press_release_body:
-            if block.block_type == "press_releases":
-                for release in block.value:
-                    release_date = release.get("release_date")
-                    # Normalize release_date to `date` type
+            # Handle news_items block (NewsItem snippets)
+            if block.block_type == "news_items":
+                # Get all live NewsItem snippets with publish_date <= current datetime
+                news_items = (
+                    NewsItem.objects.live()
+                    .filter(publish_date__lte=timezone.now())
+                    .order_by("-publish_date")
+                )
+                for news_item in news_items:
                     release_date = (
-                        release_date.date()
-                        if isinstance(release_date, datetime)
-                        else release_date
+                        news_item.publish_date.date()
+                        if news_item.publish_date
+                        else None
                     )
                     if release_date:
                         year = release_date.year
-                        release["release_date"] = (
-                            release_date  # Ensure it stays consistent
-                        )
-                        grouped[year].append(release)
+
+                        # Create release entry from NewsItem
+                        release_entry = {
+                            "is_news_item": True,
+                            "release_date": release_date,
+                            "details": {
+                                "description": news_item.title,
+                                "file": news_item.document,
+                            },
+                        }
+                        grouped[year].append(release_entry)
 
                         # Track for duplication prevention
-                        details = release.get("details", {})
-                        description = strip_tags(
-                            details.get("description", "").strip().lower()
-                        )
-                        file = details.get("file")
+                        description = strip_tags(news_item.title.strip().lower())
+                        file = news_item.document
 
                         if file and hasattr(file, "url"):
                             pdf_filename = os.path.basename(file.url).strip().lower()
