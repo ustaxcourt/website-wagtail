@@ -122,6 +122,7 @@ jobs:
           make updateindex settings="app.settings.${ENVIRONMENT}"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
+          make setupses settings="app.settings.${ENVIRONMENT}"
           make setupwagtaillroles settings="app.settings.${ENVIRONMENT}"
           make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
 
