@@ -53,7 +53,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS("No pages are currently awaiting moderation.")
             )
-            return  # TODO: Check with Jenna - do we want an email even if no pages awaiting moderation
+            return
 
         # 3. Prepare email context and render the template
         context = {
@@ -82,7 +82,7 @@ class Command(BaseCommand):
                         "Data": "Wagtail Daily Moderator Digest",
                     },
                 },
-                Source="noreply@mmiest-moore-sandbox-web.ustaxcourt.gov",  # TODO: Update to automatically generate rather than hard-coding
+                Source=f"noreply@{site_url}",
             )
             self.stdout.write(
                 self.style.SUCCESS(f"Email sent! Message ID: {response['MessageId']}")
