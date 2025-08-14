@@ -38,6 +38,8 @@ def get_moderation_edit_handler_simple(model_class, content_panels=None):
 
     # Add review_by field before PublishingPanel
     content_panels.append(FieldPanel("review_by", widget=AdminDateTimeInput()))
+    if hasattr(model_class, "note"):
+        content_panels.append(FieldPanel("note"))
     content_panels.append(PublishingPanel())
 
     return content_panels
@@ -75,10 +77,10 @@ class ModerationTabbedInterface:
         content_tab = ObjectList(content_panels, heading="Content")
 
         # Moderation tab
-        moderation_panels = [
-            FieldPanel("review_by", widget=AdminDateTimeInput()),
-            PublishingPanel(),
-        ]
+        moderation_panels = [FieldPanel("review_by", widget=AdminDateTimeInput())]
+        if hasattr(model_class, "note"):
+            moderation_panels.append(FieldPanel("note"))
+        moderation_panels.append(PublishingPanel())
         moderation_tab = ObjectList(moderation_panels, heading="Moderation")
 
         tabs = [content_tab, moderation_tab]
@@ -109,10 +111,9 @@ class ModerationTabbedInterface:
         content_tab = ObjectList(content_panels, heading="Content")
 
         # Moderation tab
-        moderation_panels = [
-            FieldPanel("review_by", widget=AdminDateTimeInput()),
-            PublishingPanel(),
-        ]
+        moderation_panels = [FieldPanel("review_by", widget=AdminDateTimeInput())]
+        moderation_panels.append(FieldPanel("note"))
+        moderation_panels.append(PublishingPanel())
         moderation_tab = ObjectList(moderation_panels, heading="Moderation")
 
         return TabbedInterface([content_tab, moderation_tab])
@@ -127,10 +128,9 @@ class ModerationTabbedInterface:
         content_tab = ObjectList(content_panels, heading="Content")
 
         # Moderation tab
-        moderation_panels = [
-            FieldPanel("review_by", widget=AdminDateTimeInput()),
-            PublishingPanel(),
-        ]
+        moderation_panels = [FieldPanel("review_by", widget=AdminDateTimeInput())]
+        moderation_panels.append(FieldPanel("note"))
+        moderation_panels.append(PublishingPanel())
         moderation_tab = ObjectList(moderation_panels, heading="Moderation")
 
         tabs = [content_tab, moderation_tab]

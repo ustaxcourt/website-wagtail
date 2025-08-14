@@ -27,6 +27,13 @@ class ModerationMixin(models.Model):
         verbose_name="Review by date",
     )
 
+    note = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Optional note for moderators when submitting content for review.",
+        verbose_name="Moderation note",
+    )
+
     class Meta:
         abstract = True
 
@@ -192,7 +199,11 @@ class ModerationMixin(models.Model):
                 "review_by",
                 widget=AdminDateTimeInput(),
                 help_text="Target date/time for moderators to complete review.",
-            )
+            ),
+            FieldPanel(
+                "note",
+                help_text="Optional note for moderators when submitting content for review.",
+            ),
         ]
 
     @property

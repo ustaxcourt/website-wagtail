@@ -40,20 +40,44 @@
             margin: 0;
             padding-left: 20px;
         }
+        /* Review-by chips */
+        .review-chip {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #2d3436;
+        }
+        .review-chip-overdue {
+            background-color: #ff6b6b;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .review-chip-soon {
+            background-color: #feefc3;
+            color: #2d3436;
+            font-weight: bold;
+        }
+        .review-chip-ok {
+            color: #2d3436;
+        }
+        .no-deadline {
+            color: #586069;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
-    <h2>Pages In Progress</h2>
+    <h2>Items In Progress</h2>
 
     <p>
         <strong>Report Generated:</strong> {% now "F j, Y, g:i a" %}<br>
-        There are <strong>{{ pages|length }}</strong> page(s) that require moderation.
+        There are <strong>{{ items|length }}</strong> item(s) that require moderation.
     </p>
 
     <table>
         <thead>
             <tr>
-                <th>Page Title</th>
+                <th>Title</th>
                 <th>Status</th>
                 <th>Requested By</th>
                 <th>Date Requested</th>
@@ -62,46 +86,51 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in pages %}
+            {% for it in items %}
                 <tr>
                     <td>
-                        <a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' item.page.id %}">{{ item.page.get_admin_display_title }}</a>
-                    </td>
-                    <td>
-                        {# Get status from the first task on the latest revision #}
-                        {% with first_task=item.latest_revision.task_states.all|first %}
-                            {% if first_task and first_task.workflow_state %}
-                                {{ first_task.workflow_state.get_status_display }}
-                            {% else %}
-                                In Progress
+                        <a href="{{ it.edit_url }}">{{ it.title }}</a>
+                        {% if not it.is_page %}
+                            {% if it.live|default_if_none:True == False %}
+                                <span style="background-color:#faf3cf;color:#000;font-weight:bold;padding:2px 4px;margin-left:8px;border-radius:2px;">New</span>
                             {% endif %}
-                        {% endwith %}
-                    </td>
-                    <td>
-                        {{ item.latest_revision.user.get_full_name|default:item.latest_revision.user.username }}
-                    </td>
-                    <td>
-                        {{ item.latest_revision.created_at|date:"M d, Y, P" }}
-                    </td>
-                    <td>
-                        {# The view has already prepared the list of all relevant comments #}
-                        {% if item.comments %}
-                            <ul>
-                                {% for comment in item.comments %}
-                                    <li>{{ comment }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            N/A
                         {% endif %}
                     </td>
                     <td>
-                        N/A
+                        {{ it.status }}
+                    </td>
+                    <td>
+                        {{ it.user.get_full_name|default:it.user.username }}
+                    </td>
+                    <td>
+                        {{ it.created_at|date:"M d, Y, P" }}
+                    </td>
+                    <td>
+                        {{ it.comment|default:"N/A" }}
+                    </td>
+                    <td>
+                        {% if it.review_by %}
+                            {% if it.is_overdue %}
+                                <span class="review-chip review-chip-overdue">{{ it.review_by|date:"M d, Y, g:i A" }} (OVERDUE)</span>
+                            {% else %}
+                                {% if it.days_until_review or it.days_until_review == 0 %}
+                                    {% if it.days_until_review <= 1 %}
+                                        <span class="review-chip review-chip-soon">{{ it.review_by|date:"M d, Y, g:i A" }} (Due Soon)<br><small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
+                                    {% else %}
+                                        <span class="review-chip review-chip-ok">{{ it.review_by|date:"M d, Y, g:i A" }}<br><small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="review-chip review-chip-ok">{{ it.review_by|date:"M d, Y, g:i A" }}<br><small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <span class="no-deadline">No deadline set</span>
+                        {% endif %}
                     </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="6">There are no pages awaiting moderation.</td>
+                    <td colspan="6">There are no items awaiting moderation.</td>
                 </tr>
             {% endfor %}
         </tbody>

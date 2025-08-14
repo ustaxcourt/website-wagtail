@@ -112,8 +112,8 @@
                                 {% endif %}
                             </div>
                             {% is_page obj as is_page %}
-                            {# Page-only "New page" #}
-                            {% if is_page and not state.live_revision_id %}
+                            {# Page-only "New page": show only if never published #}
+                            {% if is_page and not obj.first_published_at %}
                                 <span class="yellow-label">{% trans "New page" %}</span>
                             {% endif %}
                             {# Non-page: optional generic "New" (safe default is to NOT show) #}
@@ -135,6 +135,11 @@
                                        target="_blank"
                                        rel="noreferrer"
                                        class="button button-primary">{% trans 'Preview new page' %}</a>
+                                {% elif not is_page %}
+                                    {% admin_edit_url obj as edit_url %}
+                                    {% if edit_url %}
+                                        <a href="{{ edit_url }}" class="button button-primary">{% trans 'Review' %}</a>
+                                    {% endif %}
                                 {% endif %}
                                 <!-- Workflow action buttons in correct order -->
                                 {% if state.workflow_action_url_name %}
