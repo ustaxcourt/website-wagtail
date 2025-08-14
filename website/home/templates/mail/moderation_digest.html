@@ -65,7 +65,7 @@
             {% for item in pages %}
                 <tr>
                     <td>
-                        <a href="{{ site_url }}{% url 'wagtailadmin_pages:edit' item.page.id %}">{{ item.page.get_admin_display_title }}</a>
+                        <a href="{{ site_url }}{% url 'wagtailadmin_pages:revisions_compare' item.page.id 'live' item.latest_revision.id %}">{{ item.page.get_admin_display_title }}</a>
                     </td>
                     <td>
                         {# Get status from the first task on the latest revision #}
