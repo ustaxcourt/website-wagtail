@@ -51,7 +51,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     press_release_body = StreamField(
         [
             ("button", ButtonBlock()),
-            ("news_items", NewsItemListBlock()),
             (
                 "press_releases",
                 blocks.ListBlock(
@@ -109,45 +108,41 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
 
         for block in self.press_release_body:
             # Handle news_items block (NewsItem snippets)
-            if block.block_type == "news_items":
-                # Get all live NewsItem snippets with publish_date <= current datetime
-                news_items = (
-                    NewsItem.objects.live()
-                    .filter(publish_date__lte=timezone.now())
-                    .order_by("-publish_date")
+            news_items = (
+                NewsItem.objects.live()
+                .filter(publish_date__lte=timezone.now())
+                .order_by("-publish_date")
+            )
+            for news_item in news_items:
+                release_date = (
+                    news_item.publish_date.date() if news_item.publish_date else None
                 )
-                for news_item in news_items:
-                    release_date = (
-                        news_item.publish_date.date()
-                        if news_item.publish_date
-                        else None
-                    )
-                    if release_date:
-                        year = release_date.year
+                if release_date:
+                    year = release_date.year
 
-                        # Create release entry from NewsItem
-                        release_entry = {
-                            "is_news_item": True,
-                            "release_date": release_date,
-                            "details": {
-                                "description": news_item.title,
-                                "file": news_item.document,
-                            },
-                        }
-                        grouped[year].append(release_entry)
+                    # Create release entry from NewsItem
+                    release_entry = {
+                        "is_news_item": True,
+                        "release_date": release_date,
+                        "details": {
+                            "description": news_item.title,
+                            "file": news_item.document,
+                        },
+                    }
+                    grouped[year].append(release_entry)
 
-                        # Track for duplication prevention
-                        description = strip_tags(news_item.title.strip().lower())
-                        file = news_item.document
+                    # Track for duplication prevention
+                    description = strip_tags(news_item.title.strip().lower())
+                    file = news_item.document
 
-                        if file and hasattr(file, "url"):
-                            pdf_filename = os.path.basename(file.url).strip().lower()
-                            seen_press_release_keys.add(("file", pdf_filename))
+                    if file and hasattr(file, "url"):
+                        pdf_filename = os.path.basename(file.url).strip().lower()
+                        seen_press_release_keys.add(("file", pdf_filename))
 
-                            if description:
-                                seen_press_release_keys.add(
-                                    ("desc+file", description, pdf_filename)
-                                )
+                        if description:
+                            seen_press_release_keys.add(
+                                ("desc+file", description, pdf_filename)
+                            )
 
         # Step 2: Add homepage entries, only if not duplicate
         persisted_entries = HomePageEntry.objects.filter(
