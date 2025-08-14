@@ -1,7 +1,11 @@
+import re
+import os
 from django.utils import timezone
 from wagtail.models import Page
+from wagtail.documents.models import Document
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PressReleasePage
+from home.models.pages.home_page import HomePageEntry
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from home.models.utils.execute_script import ExecuteScript
@@ -10,6 +14,16 @@ from home.models.snippets.news_item import NewsItem
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def extract_pdf_filename_from_body(html):
+    """Extracts the .pdf filename from an anchor tag's href in the HTML string. Returns the filename (e.g., '04072025.pdf') or None."""
+    match = re.search(r'href="([^"]+\.pdf)"', html or "", re.IGNORECASE)
+    if match:
+        pdf_url = match.group(1)
+        return os.path.basename(pdf_url)  # Extract just the filename
+    return None
+
 
 press_releases_docs = {
     "04162025.pdf": "",
@@ -1861,12 +1875,13 @@ class PressReleasesPageInitializer(PageInitializer):
     def run(self):
         # Execute the press release update logic
         self._execute_press_release_update_logic()
+        self._execute_persisted_entries_logic()
 
     def _execute_press_release_update_logic(self):
         """
         Iterate through all press release body entries and create NewsItem snippets.
         """
-        command_name = "Press release data migration to snippets - updates"
+        command_name = "Press release data migration to snippets - Press releases"
 
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
@@ -1884,7 +1899,7 @@ class PressReleasesPageInitializer(PageInitializer):
                 return
 
             created_count = 0
-            superuser = get_user_model().objects.filter(is_superuser=True).first()
+            current_user = get_user_model().objects.filter(is_superuser=True).first()
 
             for block in press_release_page.press_release_body:
                 if block.block_type == "press_releases":
@@ -1930,8 +1945,8 @@ class PressReleasesPageInitializer(PageInitializer):
                             document=file,
                             publish_date=publish_datetime,
                             homepage_display_expiration_date=expiration_datetime,
-                            created_by=superuser,
-                            updated_by=superuser,
+                            created_by=current_user,
+                            updated_by=current_user,
                             banner_options="none",
                             live=True,
                         )
@@ -1945,9 +1960,92 @@ class PressReleasesPageInitializer(PageInitializer):
                         logger.info(f"Created NewsItem: {news_item.title}")
 
             logger.info(
-                f"Created {created_count} NewsItem snippets from press releases"
+                f"Created {created_count} NewsItem snippets from press releases and homepage entries"
             )
 
+            # Mark as success
+            script_entry.execution_status = "SUCCESS"
+            script_entry.save()
+            return True
+
+        except Exception as e:
+            # Mark as failure
+            script_entry.execution_status = "FAILURE"
+            script_entry.save()
+            raise e
+
+    def _execute_persisted_entries_logic(self):
+        command_name = (
+            "Press release data migration to snippets - Homepage persisted entries"
+        )
+
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return False
+
+        # Create ExecuteScript entry
+        script_entry = ExecuteScript.create_script(command_name)
+        created_count = 0
+        current_user = get_user_model().objects.filter(is_superuser=True).first()
+
+        try:
+            # Step 2: Process homepage entries to create NewsItems
+            persisted_entries = HomePageEntry.objects.filter(
+                persist_to_press_releases=True, end_date__lt=timezone.now()
+            ).order_by("-end_date")
+
+            for entry in persisted_entries:
+                # Check if NewsItem already exists to avoid duplicates
+                existing_news_item = NewsItem.objects.filter(
+                    title=entry.title[:500],  # Truncate to title field max length
+                    publish_date=datetime.combine(
+                        entry.end_date.date(), datetime.min.time()
+                    ).replace(tzinfo=timezone.get_current_timezone()),
+                ).first()
+
+                if existing_news_item:
+                    logger.info(
+                        f"NewsItem already exists for homepage entry: {entry.title[:50]}..."
+                    )
+                    continue
+
+                # Extract PDF filename from body
+                pdf_url = extract_pdf_filename_from_body(entry.body)
+
+                # Create NewsItem from homepage entry
+                publish_datetime = datetime.combine(
+                    entry.end_date.date(), datetime.min.time()
+                ).replace(tzinfo=timezone.get_current_timezone())
+                expiration_datetime = publish_datetime + timedelta(days=7)
+
+                # For homepage entries, we need to handle the document differently
+                # since it's embedded in the body HTML rather than a direct file reference
+                document = None
+                if pdf_url:
+                    # Try to find the document by filename
+                    document = Document.objects.filter(
+                        title__icontains=pdf_url.replace(".pdf", "")
+                    ).first()
+
+                news_item = NewsItem.objects.create(
+                    title=entry.title[:500],  # Truncate to fit CharField max_length
+                    description=entry.title,  # Use title as description for homepage entries
+                    document=document,
+                    publish_date=publish_datetime,
+                    homepage_display_expiration_date=expiration_datetime,
+                    created_by=current_user,
+                    updated_by=current_user,
+                    banner_options="none",
+                    live=True,
+                )
+
+                # Update created_at to match publish_date for migrated data
+                NewsItem.objects.filter(pk=news_item.pk).update(
+                    created_at=publish_datetime
+                )
+
+                created_count += 1
+                logger.info(f"Created NewsItem from homepage entry: {news_item.title}")
             # Mark as success
             script_entry.execution_status = "SUCCESS"
             script_entry.save()
