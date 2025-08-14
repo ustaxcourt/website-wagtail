@@ -40,7 +40,6 @@ class Command(BaseCommand):
             Revision.objects.filter(
                 task_states__workflow_state__status__in=["needs_changes", "in_progress"]
             )
-            # THIS IS THE CORRECTED LINE:
             .values_list("object_id", flat=True)
             .distinct()
         )
