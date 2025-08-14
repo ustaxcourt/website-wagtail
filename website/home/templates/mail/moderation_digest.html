@@ -89,38 +89,54 @@
             {% for it in items %}
                 <tr>
                     <td>
-                        <a href="{{ it.edit_url }}">{{ it.title }}</a>
-                        {% if not it.is_page %}
-                            {% if it.live|default_if_none:True == False %}
-                                <span style="background-color:#faf3cf;color:#000;font-weight:bold;padding:2px 4px;margin-left:8px;border-radius:2px;">New</span>
-                            {% endif %}
+                        {% if it.edit_url %}
+                            <a href="{{ it.edit_url }}">{{ it.title }}</a>
+                        {% else %}
+                            {{ it.title }}
                         {% endif %}
                     </td>
                     <td>
                         {# Get status from the first task on the latest revision #}
-                        {% with first_task=it.task_states.all|first %}
-                            {% if first_task and first_task.workflow_state %}
-                                {{ first_task.workflow_state.get_status_display }}
-                            {% else %}
-                                In Progress
-                            {% endif %}
-                        {% endwith %}
+                        {% if it.latest_revision %}
+                            {% with first_task=it.latest_revision.task_states.all|first %}
+                                {% if first_task and first_task.workflow_state %}
+                                    {{ first_task.workflow_state.get_status_display }}
+                                {% else %}
+                                    In Progress
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            In Progress
+                        {% endif %}
                     </td>
                     <td>
-                        {{ it.user.get_full_name|default:it.user.username }}
+                        {% if it.latest_revision and it.latest_revision.user %}
+                            {{ it.latest_revision.user.get_full_name|default:it.latest_revision.user.username }}
+                        {% elif it.obj and it.obj.owner %}
+                            {{ it.obj.owner.get_full_name|default:it.obj.owner.username }}
+                        {% else %}
+                            N/A
+                        {% endif %}
                     </td>
                     <td>
-                        {{ it.created_at|date:"M d, Y, P" }}
+                        {% if it.latest_revision %}
+                            {{ it.latest_revision.created_at|date:"M d, Y, P" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
                     </td>
                     <td>
+                        {% if it.note %}
+                            <div>{{ it.note }}</div>
+                        {% endif %}
                         {# The view has already prepared the list of all relevant comments #}
-                        {% if item.comments %}
+                        {% if it.comments %}
                             <ul>
-                                {% for comment in item.comments %}
-                                    <li>{{ it.comment }}</li>
+                                {% for comment in it.comments %}
+                                    <li>{{ comment }}</li>
                                 {% endfor %}
                             </ul>
-                        {% else %}
+                        {% elif not it.note %}
                             N/A
                         {% endif %}
                     </td>
