@@ -103,10 +103,13 @@ resource "aws_scheduler_schedule" "run_daily_check" {
 }
 
 resource "aws_scheduler_schedule" "run_send_moderator_digest" {
+  count      = contains(var.email_scheduler_enabled_environments, var.environment) ? 1 : 0
   name       = "${var.environment}-send_moderator_digest-command"
   group_name = "default"
 
-  schedule_expression = "cron(*/5 * * * ? *, 0 18 * * ? *)"
+  schedule_expression = "cron(0 14 ? * MON-FRI *)"
+
+  schedule_expression_timezone = "America/New_York"
 
   lifecycle {
     ignore_changes = [schedule_expression]

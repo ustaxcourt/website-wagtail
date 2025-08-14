@@ -97,7 +97,14 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ it.status }}
+                        {# Get status from the first task on the latest revision #}
+                        {% with first_task=it.task_states.all|first %}
+                            {% if first_task and first_task.workflow_state %}
+                                {{ first_task.workflow_state.get_status_display }}
+                            {% else %}
+                                In Progress
+                            {% endif %}
+                        {% endwith %}
                     </td>
                     <td>
                         {{ it.user.get_full_name|default:it.user.username }}
@@ -106,7 +113,16 @@
                         {{ it.created_at|date:"M d, Y, P" }}
                     </td>
                     <td>
-                        {{ it.comment|default:"N/A" }}
+                        {# The view has already prepared the list of all relevant comments #}
+                        {% if item.comments %}
+                            <ul>
+                                {% for comment in item.comments %}
+                                    <li>{{ it.comment }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            N/A
+                        {% endif %}
                     </td>
                     <td>
                         {% if it.review_by %}
@@ -137,7 +153,7 @@
     </table>
 
     <p class="footer">
-        You can review all pages at the <a href="https://dev-web.ustaxcourt.gov/admin/#awaiting-review-section">Wagtail Admin Review Dashboard</a>.
+        You can review all pages at the <a href="{{ site_url }}/admin/#awaiting-review-section">Wagtail Admin Review Dashboard</a>.
     </p>
 </body>
 </html>
