@@ -33,8 +33,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Found {len(recipient_emails)} recipient(s).")
 
         # You can get this from the Wagtail Site model for more dynamic sites
-        site_url = os.getenv("DOMAIN_NAME")
-        self.stdout.write(self.style.SUCCESS(f"Site url: {site_url}"))
+        domain_name = os.getenv("DOMAIN_NAME")
 
         # 2. Query for pages in moderation and prepare detailed context
         pages_in_moderation_ids = (
@@ -94,7 +93,7 @@ class Command(BaseCommand):
         # 3. Render the template with the detailed context
         context = {
             "pages": pages_with_context,
-            "site_url": site_url,
+            "site_url": domain_name,
         }
 
         email_html = loader.get_template("mail/moderation_digest.html").render(context)
@@ -118,7 +117,7 @@ class Command(BaseCommand):
                         "Data": "Wagtail Daily Moderator Digest",
                     },
                 },
-                Source=f"noreply@{site_url}",
+                Source=f"noreply@{domain_name}",
             )
             self.stdout.write(
                 self.style.SUCCESS(f"Email sent! Message ID: {response['MessageId']}")
