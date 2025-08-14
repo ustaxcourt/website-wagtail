@@ -68,6 +68,7 @@ class JudgeProfile(
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
     ]
+    panels = content_panels
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
@@ -192,6 +193,7 @@ class JudgeCollection(
         FieldPanel("name"),
         InlinePanel("ordered_judges", label="Judges"),
     ]
+    panels = content_panels
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 

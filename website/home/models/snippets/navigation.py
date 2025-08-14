@@ -52,6 +52,7 @@ class NavigationRibbon(
         FieldPanel("name"),
         InlinePanel("links", label="Links"),
     ]
+    panels = content_panels
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
@@ -135,6 +136,7 @@ class NavigationMenu(
     content_panels = [
         FieldPanel("menu_items"),
     ]
+    panels = content_panels
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 

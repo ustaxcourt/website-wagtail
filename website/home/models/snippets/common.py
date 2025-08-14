@@ -26,6 +26,7 @@ class CommonText(
         FieldPanel("name"),
         FieldPanel("text"),
     ]
+    panels = content_panels
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
