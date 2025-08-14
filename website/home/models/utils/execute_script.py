@@ -29,15 +29,15 @@ class ExecuteScript(models.Model):
     )
 
     EXECUTION_STATUS_CHOICES = [
-        ("success", "Success"),
-        ("failure", "Failure"),
-        ("pending", "Pending"),
+        ("SUCCESS", "Success"),
+        ("FAILURE", "Failure"),
+        ("PENDING", "Pending"),
     ]
 
     execution_status = models.CharField(
         max_length=20,
         choices=EXECUTION_STATUS_CHOICES,
-        default="pending",
+        default="PENDING",
         help_text="Status of script execution",
     )
 

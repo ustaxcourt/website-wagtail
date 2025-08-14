@@ -163,6 +163,7 @@ jobs:
           make setupwagtaillroles settings="app.settings.${ENVIRONMENT}"
           make updateindex settings="app.settings.${ENVIRONMENT}"
           make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
+          make updatepages settings="app.settings.${ENVIRONMENT}"
 
       - name: Manually Deploy ECS Task (Post-Migration)
         run: |
