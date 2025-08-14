@@ -1859,13 +1859,14 @@ class PressReleasesPageInitializer(PageInitializer):
         logger.info(f"'{title}' page created and published.")
 
     def run(self):
+        # Execute the press release update logic
         self._execute_press_release_update_logic()
 
     def _execute_press_release_update_logic(self):
         """
         Iterate through all press release body entries and create NewsItem snippets.
         """
-        command_name = "Press release data migration to snippets"
+        command_name = "Press release data migration to snippets - updates"
 
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
