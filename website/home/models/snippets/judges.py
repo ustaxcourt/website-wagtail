@@ -1,6 +1,6 @@
 from django.db import models, transaction
 from wagtail.snippets.models import register_snippet
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PublishingPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable
 from django.utils import timezone
@@ -68,7 +68,7 @@ class JudgeProfile(
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
     ]
-    panels = content_panels
+    panels = content_panels + [PublishingPanel()]
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
@@ -193,7 +193,7 @@ class JudgeCollection(
         FieldPanel("name"),
         InlinePanel("ordered_judges", label="Judges"),
     ]
-    panels = content_panels
+    panels = content_panels + [PublishingPanel()]
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
@@ -312,6 +312,8 @@ class JudgeRole(
         FieldPanel("role_name"),
         FieldPanel("judge"),
     ]
+
+    panels = content_panels + [PublishingPanel()]
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 

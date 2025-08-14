@@ -2,7 +2,7 @@ from django.db import models
 from wagtail import blocks
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PublishingPanel
 from wagtail.snippets.models import register_snippet
 from home.models.config import IconCategories
 from home.mixins.moderation import ModerationMixin
@@ -52,7 +52,7 @@ class NavigationRibbon(
         FieldPanel("name"),
         InlinePanel("links", label="Links"),
     ]
-    panels = content_panels
+    panels = content_panels + [PublishingPanel()]
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
@@ -136,7 +136,7 @@ class NavigationMenu(
     content_panels = [
         FieldPanel("menu_items"),
     ]
-    panels = content_panels
+    panels = content_panels + [PublishingPanel()]
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 

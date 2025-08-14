@@ -1,5 +1,5 @@
 from django.db import models
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, PublishingPanel
 from wagtail.fields import RichTextField
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
@@ -26,7 +26,7 @@ class CommonText(
         FieldPanel("name"),
         FieldPanel("text"),
     ]
-    panels = content_panels
+    panels = content_panels + [PublishingPanel()]
 
     edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
