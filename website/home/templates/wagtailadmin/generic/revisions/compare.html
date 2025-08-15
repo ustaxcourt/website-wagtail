@@ -95,9 +95,47 @@
                             {% endfor %}
                         {% endif %}
                     </td>
-                    <td class="editor" valign="top">{{ comp.editor|default:"-" }}</td>
-                    <td class="timestamp" valign="top">{{ comp.timestamp|default:"-" }}</td>
-                    <td class="status" valign="top">{{ comp.status|default:"-" }}</td>
+                    <td class="editor" valign="top">
+                        {% if forloop.first %}
+                            {% if revision_b.pk == object.pk and object.current_workflow_state %}
+                                {% with latest_revision=object.get_latest_revision %}
+                                    {{ latest_revision.user|user_display_name|default:"-" }}
+                                {% endwith %}
+                            {% else %}
+                                {% trans "Live" %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td class="timestamp" valign="top">
+                        {% if forloop.first %}
+                            {% if revision_b.pk == object.pk and object.current_workflow_state %}
+                                {% with latest_revision=object.get_latest_revision %}
+                                    {{ latest_revision.created_at|date:"M j, Y H:i" }}
+                                {% endwith %}
+                            {% else %}
+                                {% trans "Current" %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td class="status" valign="top">
+                        {% if forloop.first %}
+                            {% if object.current_workflow_state %}
+                                {% with status=object.current_workflow_state.status %}
+                                    {% if status == "in_progress" %}
+                                        {% trans "In Progress" %}
+                                    {% elif status == "needs_changes" %}
+                                        {% trans "Needs Changes" %}
+                                    {% else %}
+                                        {{ status|title }}
+                                    {% endif %}
+                                {% endwith %}
+                            {% elif object.live %}
+                                {% trans "Published" %}
+                            {% else %}
+                                {% trans "Draft" %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
                 </tr>
             {% empty %}
                 <tr>
@@ -108,7 +146,9 @@
             {% endfor %}
         </tbody>
     </table>
+
     <div class="workflow-action-buttons">
+
         {% if workflow_state and task_state %}
             <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' task_state.id %}"
                     data-launch-modal
@@ -116,13 +156,31 @@
             <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' task_state.id %}"
                     data-launch-modal
                     class="button">{% trans "Request changes" %}</button>
+        {% elif object.current_workflow_state and object.current_workflow_state.current_task_state %}
+            {% with current_workflow_state=object.current_workflow_state current_task_state=object.current_workflow_state.current_task_state %}
+                {% if current_workflow_state.workflow_action_url_name %}
+                    <button data-workflow-action-url="{% url current_workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' current_task_state.id %}"
+                            data-launch-modal
+                            class="button button-primary">{% trans "Publish" %}</button>
+                    <button data-workflow-action-url="{% url current_workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' current_task_state.id %}"
+                            data-launch-modal
+                            class="button">{% trans "Request changes" %}</button>
+                {% else %}
+                    <button data-workflow-action-url="{% url 'wagtailadmin_pages:workflow_action' object.pk|admin_urlquote 'approve' current_task_state.id %}"
+                            data-launch-modal
+                            class="button button-primary">{% trans "Publish" %}</button>
+                    <button data-workflow-action-url="{% url 'wagtailadmin_pages:workflow_action' object.pk|admin_urlquote 'reject' current_task_state.id %}"
+                            data-launch-modal
+                            class="button">{% trans "Request changes" %}</button>
+                {% endif %}
+            {% endwith %}
         {% else %}
-            <button disabled class="button button-primary">{% trans "Publish" %}</button>
-            <button disabled class="button">{% trans "Request changes" %}</button>
+            <button disabled class="button button-primary">{% trans "Publish" %} (disabled - no workflow)</button>
+            <button disabled class="button">{% trans "Request changes" %} (disabled - no workflow)</button>
         {% endif %}
     </div>
-    Testing data.
 {% endblock %}
 {% block extra_js %}
-    <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"></script>
+    <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
+            data-activate="dashboard"></script>
 {% endblock %}
