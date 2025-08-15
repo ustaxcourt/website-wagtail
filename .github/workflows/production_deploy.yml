@@ -224,12 +224,12 @@ jobs:
             --policy-arn arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:policy/deployer-policy || echo "Policy was not attached or already detached."
           echo "... Completed."
 
-      - name: Deploy to Training Environment
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions@github.com"
-          git tag train
-          git push --force origin train
+      # - name: Deploy to Training Environment
+      #   run: |
+      #     git config user.name "GitHub Actions"
+      #     git config user.email "github-actions@github.com"
+      #     git tag train
+      #     git push --force origin train
 
       - name: Notify SNS of deployment outcome
         if: always()

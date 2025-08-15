@@ -13,6 +13,23 @@ There are a number of make commands to run the service locally. See Makefile for
 
 ### Pre-reqs
 
+#### For Windows Laptops (WSL + VS Code)
+- Open PowerShell and run:
+  - `wsl --install`
+- Add the Remote – WSL extension (Search for "WSL" and install the Remote - WSL extension by Microsoft.)
+- In WSL terminal:
+  - `sudo apt update`
+  - `sudo apt install git`
+- In WSL terminal: Navigate to your home directory and create a project folder:
+  - `cd ~`
+  - `mkdir -p projects`
+  - `cd ~/projects`
+  - `git clone <repo-url>`
+  - `cd website-wagtail/`
+  - `code .`  # opens project in VS Code (WSL mode)
+
+> **Note:** After opening the project in VS Code (WSL), follow the same setup instructions as for Mac/Linux below (installing pyenv, Node, AWS CLI, etc.) inside your WSL terminal. You can use `apt` or install `brew` in WSL to manage dependencies as preferred.
+
 We will use `brew` to install all necessary software for a Mac laptop. To start ensure you have installed brew.
 
 ```shell
