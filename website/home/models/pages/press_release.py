@@ -76,7 +76,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     @property
     def group_press_releases_by_year(self):
         grouped = defaultdict(list)
-        # seen_press_release_keys = set()  # (title, pdf), (description, file)
 
         news_items = (
             NewsItem.objects.live()
