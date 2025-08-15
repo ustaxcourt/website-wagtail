@@ -123,37 +123,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                     }
                     grouped[year].append(release_entry)
 
-        # Step 2: Add homepage entries, only if not duplicate
-        # persisted_entries = HomePageEntry.objects.filter(
-        #     persist_to_press_releases=True, end_date__lt=timezone.now()
-        # ).order_by("-end_date")
-
-        # for entry in persisted_entries:
-        #     pdf_url = extract_pdf_filename_from_body(entry.body)
-        #     pdf_filename = os.path.basename(pdf_url).strip().lower() if pdf_url else ""
-        #     title = entry.title.strip() if entry.title else ""
-        #     is_duplicate = ("file", pdf_filename) in seen_press_release_keys or (
-        #         "desc+file",
-        #         title,
-        #         pdf_filename,
-        #     ) in seen_press_release_keys
-        #     if is_duplicate:
-        #         continue
-
-        #     if not is_duplicate:
-        #         release_date = entry.end_date.date() if entry.end_date else None
-        #         year = release_date.year if release_date else "Unknown"
-        #         grouped[year].append(
-        #             {
-        #                 "is_homepage_entry": True,
-        #                 "release_date": release_date,
-        #                 "id": entry.id,
-        #                 "title": entry.title,
-        #                 "body": entry.body,
-        #                 "file": pdf_filename,
-        #             }
-        #         )
-        # Sort releases in each year by descending date
         sorted_grouped = {
             year: sorted(releases, key=itemgetter("release_date"), reverse=True)
             for year, releases in grouped.items()

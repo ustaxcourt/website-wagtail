@@ -2,7 +2,6 @@ import re
 import os
 from django.utils import timezone
 from wagtail.models import Page
-from wagtail.documents.models import Document
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PressReleasePage
 from home.models.pages.home_page import HomePageEntry
@@ -2009,30 +2008,17 @@ class PressReleasesPageInitializer(PageInitializer):
                     )
                     continue
 
-                # Extract PDF filename from body
-                pdf_url = extract_pdf_filename_from_body(entry.body)
-
                 # Create NewsItem from homepage entry
                 publish_datetime = datetime.combine(
                     entry.end_date.date(), datetime.min.time()
                 ).replace(tzinfo=timezone.get_current_timezone())
-                expiration_datetime = publish_datetime + timedelta(days=7)
-
-                # For homepage entries, we need to handle the document differently
-                # since it's embedded in the body HTML rather than a direct file reference
-                document = None
-                if pdf_url:
-                    # Try to find the document by filename
-                    document = Document.objects.filter(
-                        title__icontains=pdf_url.replace(".pdf", "")
-                    ).first()
 
                 news_item = NewsItem.objects.create(
                     title=entry.title[:500],  # Truncate to fit CharField max_length
-                    description=entry.title,  # Use title as description for homepage entries
-                    document=document,
+                    description=entry.body,
+                    document=None,
                     publish_date=publish_datetime,
-                    homepage_display_expiration_date=expiration_datetime,
+                    homepage_display_expiration_date=entry.end_date,
                     created_by=current_user,
                     updated_by=current_user,
                     banner_options="none",
@@ -2046,6 +2032,7 @@ class PressReleasesPageInitializer(PageInitializer):
 
                 created_count += 1
                 logger.info(f"Created NewsItem from homepage entry: {news_item.title}")
+
             # Mark as success
             script_entry.execution_status = "SUCCESS"
             script_entry.save()
