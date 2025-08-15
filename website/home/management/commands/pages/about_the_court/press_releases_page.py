@@ -1871,19 +1871,32 @@ class PressReleasesPageInitializer(PageInitializer):
 
     def run(self):
         # Execute the press release update logic
-        self._execute_press_release_update_logic()
-        self._execute_persisted_entries_logic()
+        press_release_count = self._execute_press_release_update_logic()
+        persisted_entries_count = self._execute_persisted_entries_logic()
+
+        # Log overall summary
+        total_count = press_release_count + persisted_entries_count
+        logger.info(
+            f"Migration complete. Total items created: {total_count} (Press releases: {press_release_count}, Homepage entries: {persisted_entries_count})"
+        )
+
+        return {
+            "press_release_count": press_release_count,
+            "persisted_entries_count": persisted_entries_count,
+            "total_count": total_count,
+        }
 
     def _execute_press_release_update_logic(self):
         """
         Iterate through all press release body entries and create NewsItem snippets.
+        Returns the number of items created.
         """
         command_name = "Press release data migration to snippets - Press releases"
 
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")
-            return False
+            return 0
 
         # Create ExecuteScript entry
         script_entry = ExecuteScript.create_script(command_name)
@@ -1960,25 +1973,64 @@ class PressReleasesPageInitializer(PageInitializer):
                 f"Created {created_count} NewsItem snippets from press releases and homepage entries"
             )
 
-            # Mark as success
+            # Create execution log in plain text format with HTML line breaks
+            execution_log_text = f"""Press Release Data Migration - Press Releases
+
+Status: SUCCESS
+Items Created: {created_count}
+Completed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Summary:
+- Processed press release body entries
+- Created {created_count} NewsItem snippets
+- Skipped existing duplicates
+
+Operation completed successfully.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            execution_log = execution_log_text.replace("\n", "<br>")
+
+            # Mark as success and save execution log
             script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log
             script_entry.save()
-            return True
+            return created_count
 
         except Exception as e:
-            # Mark as failure
+            # Create failure execution log
+            failure_log_text = f"""Press Release Data Migration - Press Releases
+
+Status: FAILURE
+Items Created: {created_count}
+Failed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Error Details:
+Error: {str(e)}
+Error Type: {type(e).__name__}
+
+Operation failed during execution.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            failure_log = failure_log_text.replace("\n", "<br>")
+
+            # Mark as failure and save execution log
             script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = failure_log
             script_entry.save()
             raise e
 
     def _execute_persisted_entries_logic(self):
+        """
+        Process homepage entries to create NewsItems.
+        Returns the number of items created.
+        """
         command_name = (
             "Press release data migration to snippets - Homepage persisted entries"
         )
 
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")
-            return False
+            return 0
 
         # Create ExecuteScript entry
         script_entry = ExecuteScript.create_script(command_name)
@@ -2047,13 +2099,52 @@ class PressReleasesPageInitializer(PageInitializer):
                 created_count += 1
                 logger.info(f"Created NewsItem from homepage entry: {news_item.title}")
 
-            # Mark as success
+            logger.info(
+                f"Created {created_count} NewsItem snippets from homepage persisted entries"
+            )
+
+            # Create execution log in plain text format with HTML line breaks
+            execution_log_text = f"""Press Release Data Migration - Homepage Persisted Entries
+
+Status: SUCCESS
+Items Created: {created_count}
+Completed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Summary:
+- Processed homepage persisted entries
+- Created {created_count} NewsItem snippets
+- Skipped existing duplicates
+
+Operation completed successfully.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            execution_log = execution_log_text.replace("\n", "<br>")
+
+            # Mark as success and save execution log
             script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log
             script_entry.save()
-            return True
+            return created_count
 
         except Exception as e:
-            # Mark as failure
+            # Create failure execution log
+            failure_log_text = f"""Press Release Data Migration - Homepage Persisted Entries
+
+Status: FAILURE
+Items Created: {created_count}
+Failed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Error Details:
+Error: {str(e)}
+Error Type: {type(e).__name__}
+
+Operation failed during execution.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            failure_log = failure_log_text.replace("\n", "<br>")
+
+            # Mark as failure and save execution log
             script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = failure_log
             script_entry.save()
             raise e

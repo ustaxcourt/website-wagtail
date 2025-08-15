@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel
+from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.admin.filters import WagtailFilterSet
@@ -42,6 +43,11 @@ class ExecuteScript(models.Model):
         help_text="Status of script execution",
     )
 
+    execution_log = RichTextField(
+        blank=True,
+        help_text="Rich text log of script execution output and details",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         get_user_model(),
@@ -63,6 +69,7 @@ class ExecuteScript(models.Model):
         FieldPanel("execution_type"),
         FieldPanel("datetime"),
         FieldPanel("execution_status"),
+        FieldPanel("execution_log"),
     ]
 
     class Meta:
@@ -94,6 +101,7 @@ class ExecuteScript(models.Model):
         execution_type="ONETIME",
         execution_status="PENDING",
         datetime=None,
+        execution_log="",
         created_by=None,
         updated_by=None,
     ):
@@ -105,6 +113,7 @@ class ExecuteScript(models.Model):
             execution_type (str, optional): Either 'ONETIME' or 'EVERYTIME'. Defaults to 'ONETIME'.
             execution_status (str, optional): Status of execution. Defaults to 'PENDING'.
             datetime (datetime, optional): Date and time for script execution. Defaults to now.
+            execution_log (str, optional): Rich text log of execution. Defaults to empty string.
             created_by (User, optional): User who created the script. Defaults to first superuser.
             updated_by (User, optional): User who updated the script. Defaults to first superuser.
 
@@ -141,6 +150,7 @@ class ExecuteScript(models.Model):
             execution_type=execution_type,
             execution_status=execution_status,
             datetime=datetime,
+            execution_log=execution_log,
             created_by=created_by,
             updated_by=updated_by,
         )

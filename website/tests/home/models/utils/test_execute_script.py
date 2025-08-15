@@ -34,6 +34,7 @@ class TestExecuteScriptCommandExists:
             command_name="test_command",
             execution_type="ONETIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         assert ExecuteScript.command_exists("test_command") is True
@@ -50,6 +51,7 @@ class TestExecuteScriptCommandExists:
             command_name="test_command",
             execution_type="EVERYTIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         assert (
@@ -68,6 +70,7 @@ class TestExecuteScriptCommandExists:
             command_name="test_command",
             execution_type="EVERYTIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         assert ExecuteScript.command_exists("test_command", execution_type=None) is True
@@ -84,6 +87,7 @@ class TestExecuteScriptCommandExists:
             command_name="Test_Command",
             execution_type="ONETIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         assert ExecuteScript.command_exists("Test_Command") is True
@@ -105,6 +109,7 @@ class TestExecuteScriptCreateScript:
         assert script.execution_type == "ONETIME"
         assert script.execution_status == "PENDING"
         assert script.datetime == mock_datetime
+        assert script.execution_log == ""
         assert script.created_by == mock_user
         assert script.updated_by == mock_user
 
@@ -120,6 +125,7 @@ class TestExecuteScriptCreateScript:
             execution_type="EVERYTIME",
             execution_status="SUCCESS",
             datetime=mock_datetime,
+            execution_log="<p>Custom execution log</p>",
             created_by=custom_user,
             updated_by=custom_user,
         )
@@ -128,6 +134,7 @@ class TestExecuteScriptCreateScript:
         assert script.execution_type == "EVERYTIME"
         assert script.execution_status == "SUCCESS"
         assert script.datetime == mock_datetime
+        assert script.execution_log == "<p>Custom execution log</p>"
         assert script.created_by == custom_user
         assert script.updated_by == custom_user
 
@@ -210,6 +217,7 @@ class TestExecuteScriptIntegration:
             command_name="test_str_command",
             execution_type="ONETIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         assert str(script) == "test_str_command"
@@ -222,12 +230,14 @@ class TestExecuteScriptIntegration:
             command_name="first_command",
             execution_type="ONETIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         script2 = ExecuteScript.objects.create(
             command_name="second_command",
             execution_type="ONETIME",
             execution_status="PENDING",
+            execution_log="",
         )
 
         # Get all scripts ordered by model's Meta ordering
@@ -236,6 +246,79 @@ class TestExecuteScriptIntegration:
         # Most recent should be first
         assert scripts[0] == script2
         assert scripts[1] == script1
+
+
+class TestExecuteScriptExecutionLog:
+    """Test cases for the execution_log field functionality."""
+
+    @pytest.mark.django_db
+    def test_create_script_with_rich_text_log(self):
+        """Test create_script with rich text execution log."""
+        rich_log = "<p>Execution started at <strong>10:30 AM</strong></p><ul><li>Step 1: Completed</li><li>Step 2: In progress</li></ul>"
+
+        script = ExecuteScript.create_script(
+            command_name="rich_text_test", execution_log=rich_log
+        )
+
+        assert script.execution_log == rich_log
+
+    @pytest.mark.django_db
+    def test_create_script_with_empty_log(self):
+        """Test create_script with empty execution log."""
+        script = ExecuteScript.create_script("empty_log_test")
+
+        assert script.execution_log == ""
+
+    @pytest.mark.django_db
+    def test_execution_log_field_can_be_blank(self):
+        """Test that execution_log field can be blank."""
+        script = ExecuteScript.objects.create(
+            command_name="blank_log_test",
+            execution_type="ONETIME",
+            execution_status="PENDING",
+            execution_log="",
+        )
+
+        assert script.execution_log == ""
+
+    @pytest.mark.django_db
+    def test_execution_log_with_html_content(self):
+        """Test execution_log with various HTML content."""
+        html_content = """
+        <h3>Execution Report</h3>
+        <p>Status: <span style="color: green;">SUCCESS</span></p>
+        <p>Output:</p>
+        <pre><code>
+        $ python manage.py migrate
+        Operations to perform:
+          Apply all migrations: admin, auth, contenttypes, sessions
+        Running migrations:
+          No migrations to apply.
+        </code></pre>
+        <p>Completed at: 2024-01-15 10:30:00</p>
+        """
+
+        script = ExecuteScript.create_script(
+            command_name="html_log_test", execution_log=html_content
+        )
+
+        assert script.execution_log == html_content
+
+    @pytest.mark.django_db
+    def test_execution_log_update(self):
+        """Test updating the execution_log field."""
+        script = ExecuteScript.create_script(
+            command_name="update_log_test", execution_log="<p>Initial log</p>"
+        )
+
+        # Update the log
+        new_log = "<p>Updated log with <em>additional</em> information</p>"
+        script.execution_log = new_log
+        script.save()
+
+        # Refresh from database
+        script.refresh_from_db()
+        assert script.execution_log == new_log
 
 
 class TestExecuteScriptEdgeCases:
@@ -254,7 +337,10 @@ class TestExecuteScriptEdgeCases:
 
         for name in special_names:
             script = ExecuteScript.objects.create(
-                command_name=name, execution_type="ONETIME", execution_status="PENDING"
+                command_name=name,
+                execution_type="ONETIME",
+                execution_status="PENDING",
+                execution_log="",
             )
             assert ExecuteScript.command_exists(name) is True
             assert str(script) == name
@@ -265,7 +351,10 @@ class TestExecuteScriptEdgeCases:
         long_name = "a" * 255  # Max length according to model
 
         script = ExecuteScript.objects.create(
-            command_name=long_name, execution_type="ONETIME", execution_status="PENDING"
+            command_name=long_name,
+            execution_type="ONETIME",
+            execution_status="PENDING",
+            execution_log="",
         )
 
         assert ExecuteScript.command_exists(long_name) is True
