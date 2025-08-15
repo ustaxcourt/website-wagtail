@@ -148,7 +148,6 @@
     </table>
 
     <div class="workflow-action-buttons">
-
         {% if workflow_state and task_state %}
             <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' task_state.id %}"
                     data-launch-modal
@@ -178,6 +177,10 @@
             <button disabled class="button button-primary">{% trans "Publish" %} (disabled - no workflow)</button>
             <button disabled class="button">{% trans "Request changes" %} (disabled - no workflow)</button>
         {% endif %}
+        <!-- History button -->
+        <a href="{% url 'wagtailadmin_pages:history' object.pk %}"
+           class="button">{% trans "History" %}</a>
+
     </div>
 {% endblock %}
 {% block extra_js %}
