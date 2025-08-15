@@ -243,7 +243,7 @@ class Command(BaseCommand):
                         "Data": "Wagtail Daily Moderator Digest",
                     },
                 },
-                Source=f"noreply@{domain_name}" if domain_name else "noreply@localhost",
+                Source=f"noreply@{domain_name}",
             )
             self.stdout.write(
                 self.style.SUCCESS(f"Email sent! Message ID: {response['MessageId']}")
