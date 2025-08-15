@@ -1,5 +1,3 @@
-import re
-import os
 from collections import defaultdict
 from operator import itemgetter
 
@@ -15,15 +13,6 @@ from django.template.response import TemplateResponse
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.snippets.news_item import NewsItem
-
-
-def extract_pdf_filename_from_body(html):
-    """Extracts the .pdf filename from an anchor tag's href in the HTML string. Returns the filename (e.g., '04072025.pdf') or None."""
-    match = re.search(r'href="([^"]+\.pdf)"', html or "", re.IGNORECASE)
-    if match:
-        pdf_url = match.group(1)
-        return os.path.basename(pdf_url)  # Extract just the filename
-    return None
 
 
 class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
