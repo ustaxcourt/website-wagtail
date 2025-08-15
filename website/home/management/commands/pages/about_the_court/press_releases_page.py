@@ -1,3 +1,4 @@
+import re
 from django.utils import timezone
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
@@ -11,6 +12,14 @@ from home.models.snippets.news_item import NewsItem
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def extract_document_id_from_body(html):
+    """Extracts the document ID from an anchor tag with linktype="document" in the HTML string. Returns the document ID or None."""
+    match = re.search(r'linktype="document"\s+id="(\d+)"', html or "", re.IGNORECASE)
+    if match:
+        return int(match.group(1))
+    return None
 
 
 press_releases_docs = {
@@ -1983,12 +1992,15 @@ class PressReleasesPageInitializer(PageInitializer):
             ).order_by("-end_date")
 
             for entry in persisted_entries:
+                # Prepare publish datetime for comparison
+                publish_datetime = datetime.combine(
+                    entry.end_date.date(), datetime.min.time()
+                ).replace(tzinfo=timezone.get_current_timezone())
+
                 # Check if NewsItem already exists to avoid duplicates
                 existing_news_item = NewsItem.objects.filter(
                     title=entry.title[:500],  # Truncate to title field max length
-                    publish_date=datetime.combine(
-                        entry.end_date.date(), datetime.min.time()
-                    ).replace(tzinfo=timezone.get_current_timezone()),
+                    publish_date=publish_datetime,
                 ).first()
 
                 if existing_news_item:
@@ -1997,11 +2009,24 @@ class PressReleasesPageInitializer(PageInitializer):
                     )
                     continue
 
-                # Create NewsItem from homepage entry
-                publish_datetime = datetime.combine(
-                    entry.end_date.date(), datetime.min.time()
-                ).replace(tzinfo=timezone.get_current_timezone())
+                # Extract document ID from body
+                document_id = extract_document_id_from_body(entry.body)
 
+                # Check if NewsItem already exists with the same document (regardless of date)
+                # Since documents should be unique per NewsItem, we prevent duplicates by document ID
+                existing_by_doc_id = None
+                if document_id:
+                    existing_by_doc_id = NewsItem.objects.filter(
+                        document_id=document_id,
+                    ).first()
+
+                if existing_by_doc_id:
+                    logger.info(
+                        f"NewsItem already exists for homepage entry with document {document_id}: {entry.title[:50]}..."
+                    )
+                    continue
+
+                # Create NewsItem from homepage entry
                 news_item = NewsItem.objects.create(
                     title=entry.title[:500],  # Truncate to fit CharField max_length
                     description=entry.body,
