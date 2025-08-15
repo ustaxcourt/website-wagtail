@@ -174,12 +174,12 @@
                 {% endif %}
             {% endwith %}
         {% else %}
-            <button disabled class="button button-primary">{% trans "Publish" %} (disabled - no workflow)</button>
-            <button disabled class="button">{% trans "Request changes" %} (disabled - no workflow)</button>
+            <button disabled class="button button-primary">{% trans "Publish" %}</button>
+            <button disabled class="button">{% trans "Request changes" %}</button>
         {% endif %}
         <!-- History button -->
         <a href="{% url 'wagtailadmin_pages:history' object.pk %}"
-           class="button">{% trans "History" %}</a>
+           class="button">{% trans "View edit history" %}</a>
 
     </div>
 {% endblock %}
