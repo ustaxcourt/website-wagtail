@@ -1,18 +1,54 @@
 {% extends "wagtailadmin/generic/base.html" %}
 {% load i18n wagtailadmin_tags %}
+{% block extra_css %}
+    <style>
+        .workflow-action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
 
+        .workflow-action-buttons .button {
+            padding: 1px 8px;
+            font-size: 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            border: 1px solid;
+            cursor: pointer;
+            display: inline-block;
+            background: #fff;
+            color: #666;
+            border-color: #ccc;
+        }
+
+        .workflow-action-buttons .button-primary {
+            background: #007acc;
+            color: white;
+            border-color: #007acc;
+        }
+
+        .workflow-action-buttons .button:hover {
+            opacity: 0.8;
+        }
+    </style>
+{% endblock %}
 {% block main_content %}
     <table class="listing w-mt-8">
         <col width="15%" />
         <col />
-
+        <col width="12%" />
+        <col width="12%" />
+        <col width="10%" />
         <thead>
             <tr>
                 <th>{% trans "Fields" %}</th>
                 <th>{% trans "Changes" %}</th>
+                <th>{% trans "Editor" %}</th>
+                <th>{% trans "Timestamp" %}</th>
+                <th>{% trans "Status" %}</th>
             </tr>
         </thead>
-
         <tbody>
             {% for comp in comparison %}
                 <tr>
@@ -47,26 +83,46 @@
                                             </div>
                                         {% endif %}
                                     {% endwith %}
-
                                     <dl class="comparison__list">
                                         {% for field_comp in child_comp.get_field_comparisons %}
                                             <dt>{{ field_comp.field_label }}</dt>
-                                            <dd>{{ field_comp.htmldiff }}</dd>
+                                            <dd>
+                                                {{ field_comp.htmldiff }}
+                                            </dd>
                                         {% endfor %}
                                     </dl>
                                 </div>
                             {% endfor %}
                         {% endif %}
                     </td>
+                    <td class="editor" valign="top">{{ comp.editor|default:"-" }}</td>
+                    <td class="timestamp" valign="top">{{ comp.timestamp|default:"-" }}</td>
+                    <td class="status" valign="top">{{ comp.status|default:"-" }}</td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="2" class="no-results-message">
+                    <td colspan="5" class="no-results-message">
                         <p>{% trans "There are no differences between these two versions" %}</p>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <div class="workflow-action-buttons">
+        {% if workflow_state and task_state %}
+            <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' task_state.id %}"
+                    data-launch-modal
+                    class="button button-primary">{% trans "Publish" %}</button>
+            <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' task_state.id %}"
+                    data-launch-modal
+                    class="button">{% trans "Request changes" %}</button>
+        {% else %}
+            <button disabled class="button button-primary">{% trans "Publish" %}</button>
+            <button disabled class="button">{% trans "Request changes" %}</button>
+        {% endif %}
+    </div>
     Testing data.
+{% endblock %}
+{% block extra_js %}
+    <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"></script>
 {% endblock %}
