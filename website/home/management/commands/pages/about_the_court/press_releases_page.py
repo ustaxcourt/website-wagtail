@@ -1,5 +1,3 @@
-import re
-import os
 from django.utils import timezone
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
@@ -13,15 +11,6 @@ from home.models.snippets.news_item import NewsItem
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-def extract_pdf_filename_from_body(html):
-    """Extracts the .pdf filename from an anchor tag's href in the HTML string. Returns the filename (e.g., '04072025.pdf') or None."""
-    match = re.search(r'href="([^"]+\.pdf)"', html or "", re.IGNORECASE)
-    if match:
-        pdf_url = match.group(1)
-        return os.path.basename(pdf_url)  # Extract just the filename
-    return None
 
 
 press_releases_docs = {
