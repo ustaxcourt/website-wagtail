@@ -4,7 +4,7 @@ import re
 register = template.Library()
 
 DEADLINE_RE = re.compile(r"(?<!\w)(DEADLINE FOR FILING:)")
-IMPORTANT_RE = re.compile(r"\s*(IMPORTANT:)")
+DAWSON_BREAK_RE = re.compile(r"\.\s+(DAWSON has been designed\b)")
 
 
 @register.filter
@@ -14,7 +14,5 @@ def highlight_labels(value: str) -> str:
     value = DEADLINE_RE.sub(
         r'<strong class="callout-label">\1</strong>', value, count=1
     )
-    value = IMPORTANT_RE.sub(
-        r'<br>&nbsp;<strong class="callout-label">\1</strong>', value, count=1
-    )
+    value = DAWSON_BREAK_RE.sub(r".<br>&nbsp;\1", value, count=1)
     return value
