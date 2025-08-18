@@ -9,7 +9,7 @@
             font-size: 1rem;
         }
 
-        #dawson-page .important-label {
+        #dawson-page .callout-label {
           color: #990000;
           font-weight: 700;
         }
@@ -147,7 +147,7 @@
                     <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-8 desktop:grid-col-9 light-blue-card">
                         <div class="usa-card__container">
                             <div>
-                                {{ fancy_card.text|highlight_important|safe }}
+                                {{ fancy_card.text|highlight_labels|safe }}
                             </div>
                         </div>
                     </li>
