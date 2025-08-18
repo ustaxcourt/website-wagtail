@@ -2,10 +2,16 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load static %}
+{% load dawson_extras %}
 {% block extra_css %}
     <style>
         #dawson-page body {
             font-size: 1rem;
+        }
+
+        #dawson-page .important-label {
+          color: #990000;
+          font-weight: 700;
         }
 
         #dawson-page .page-body,
@@ -141,8 +147,7 @@
                     <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-8 desktop:grid-col-9 light-blue-card">
                         <div class="usa-card__container">
                             <div>
-                                <strong style="color:#990000;">IMPORTANT:</strong>
-                                <span>{{ fancy_card.text }}</span>
+                                {{ fancy_card.text|highlight_important|safe }}
                             </div>
                         </div>
                     </li>

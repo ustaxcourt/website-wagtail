@@ -101,9 +101,8 @@ class FancyCard(ClusterableModel):
     )
 
     text = models.CharField(
-        max_length=255,
         null=True,
-        blank="True",
+        blank=True,
         help_text="The text to appear next to the image in the light blue card.",
     )
 
