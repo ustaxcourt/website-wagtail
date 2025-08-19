@@ -67,12 +67,9 @@
     </style>
 </head>
 <body>
-    <h2>Items In Progress In {{ site_url }}</h2>
-
-    <p>
-        <strong>Report Generated:</strong> {% now "F j, Y, g:i a" %}<br>
-        There are <strong>{{ items|length }}</strong> item(s) that require moderation.
-    </p>
+    <h2>
+        Hi, there are <strong>{{ items|length }}</strong> item(s) in the moderation workflow.
+    </h2>
     <h3>Items In Progress In {{ site_url }}</h3>
     <table>
         <thead>
