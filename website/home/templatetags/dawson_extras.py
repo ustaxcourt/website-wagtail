@@ -16,5 +16,5 @@ def highlight_labels(value: str) -> str:
     value = DEADLINE_RE.sub(
         r'<strong class="callout-label">\1</strong>', value, count=1
     )
-    value = DAWSON_BREAK_RE.sub(r"\1<br>&nbsp;\2", value, count=1)
+    value = DAWSON_BREAK_RE.sub(r"\1<br>\2", value, count=1)
     return value
