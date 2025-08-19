@@ -67,14 +67,12 @@
     </style>
 </head>
 <body>
-    <h2>
-        Hi, there are <strong>{{ items|length }}</strong> item(s) that require moderation.
-        {% if items.0.latest_revision and items.0.latest_revision.user %}
-        {{ items.0.latest_revision.user.get_full_name|default:items.0.latest_revision.user.username }} has requested your review.
-        {% elif items.0.obj and items.0.obj.owner %}
-        {{ items.0.obj.owner.get_full_name|default:items.0.obj.owner.username }} has requested your review.
-        {% endif %}
-    </h2>
+    <h2>Items In Progress In {{ site_url }}</h2>
+
+    <p>
+        <strong>Report Generated:</strong> {% now "F j, Y, g:i a" %}<br>
+        There are <strong>{{ items|length }}</strong> item(s) that require moderation.
+    </p>
     <h3>Items In Progress In {{ site_url }}</h3>
     <table>
         <thead>
