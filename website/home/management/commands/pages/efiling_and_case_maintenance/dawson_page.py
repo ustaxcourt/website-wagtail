@@ -113,7 +113,7 @@ class DawsonPageInitializer(PageInitializer):
 
         dawson_fancy_card = FancyCard(
             url=get_environment_specific_dawson_url(),
-            text="DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
+            text="A document filed through DAWSON is timely if it is electronically filed by <strong>11:59 p.m., Eastern time,</strong> on the day it is due.<br/>DAWSON has been designed to work with most modern browsers (Chrome, Firefox, Safari, Edge, etc.). Internet Explorer is not supported by this system.",
             parent_page=dawson_page,
         )
         login_image = self.load_image_from_images_dir(
