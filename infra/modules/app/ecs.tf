@@ -70,6 +70,23 @@ resource "aws_iam_role_policy" "ecs_task_cloudfront_invalidation" {
   })
 }
 
+# Add SES policy to the ECS task role
+resource "aws_iam_role_policy" "ses_send_email_policy" {
+  name = "${var.environment}-ses-send-email-policy"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "ses:SendEmail",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
