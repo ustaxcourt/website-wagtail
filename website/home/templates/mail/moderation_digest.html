@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moderation Digest</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dfe2e5;
+            text-align: left;
+            padding: 8px 12px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 25px;
+            font-size: 0.9em;
+            color: #586069;
+        }
+        /* Style for the notes list */
+        td ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Pages In Progress In {{ site_url }}</h2>
+
+    <p>
+        <strong>Report Generated:</strong> {% now "F j, Y, g:i a" %}<br>
+        There are <strong>{{ pages|length }}</strong> page(s) that require moderation.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Page Title</th>
+                <th>Status</th>
+                <th>Requested By</th>
+                <th>Date Requested</th>
+                <th>Note(s)</th>
+                <th>Review By Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pages %}
+                <tr>
+                    <td>
+                        <a href="{{ site_url }}{% url 'wagtailadmin_pages:revisions_compare' item.page.id 'live' item.latest_revision.id %}">{{ item.page.get_admin_display_title }}</a>
+                    </td>
+                    <td>
+                        {# Get status from the first task on the latest revision #}
+                        {% with first_task=item.latest_revision.task_states.all|first %}
+                            {% if first_task and first_task.workflow_state %}
+                                {{ first_task.workflow_state.get_status_display }}
+                            {% else %}
+                                In Progress
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {{ item.latest_revision.user.get_full_name|default:item.latest_revision.user.username }}
+                    </td>
+                    <td>
+                        {{ item.latest_revision.created_at|date:"M d, Y, P" }}
+                    </td>
+                    <td>
+                        {# The view has already prepared the list of all relevant comments #}
+                        {% if item.comments %}
+                            <ul>
+                                {% for comment in item.comments %}
+                                    <li>{{ comment }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        N/A
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">There are no pages awaiting moderation.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="footer">
+        You can review all pages at the <a href="{{ site_url }}/admin/#awaiting-review-section">Wagtail Admin Review Dashboard</a>.
+    </p>
+</body>
+</html>
