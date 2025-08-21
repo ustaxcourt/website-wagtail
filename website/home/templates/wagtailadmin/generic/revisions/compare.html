@@ -1,0 +1,189 @@
+{% extends "wagtailadmin/generic/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block extra_css %}
+    <style>
+        .workflow-action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-action-buttons .button {
+            padding: 1px 8px;
+            font-size: 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            border: 1px solid;
+            cursor: pointer;
+            display: inline-block;
+            background: #fff;
+            color: #666;
+            border-color: #ccc;
+        }
+
+        .workflow-action-buttons .button-primary {
+            background: #007acc;
+            color: white;
+            border-color: #007acc;
+        }
+
+        .workflow-action-buttons .button:hover {
+            opacity: 0.8;
+        }
+    </style>
+{% endblock %}
+{% block main_content %}
+    <table class="listing w-mt-8">
+        <col width="15%" />
+        <col />
+        <col width="12%" />
+        <col width="12%" />
+        <col width="10%" />
+        <thead>
+            <tr>
+                <th>{% trans "Fields" %}</th>
+                <th>{% trans "Changes" %}</th>
+                <th>{% trans "Editor" %}</th>
+                <th>{% trans "Timestamp" %}</th>
+                <th>{% trans "Status" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comp in comparison %}
+                <tr>
+                    <td class="title" valign="top">
+                        <div class="title-wrapper">{{ comp.field_label }}:</div>
+                    </td>
+                    <td class="comparison{% if not comp.is_field %} no-padding{% endif %}">
+                        {% if comp.is_field %}
+                            {{ comp.htmldiff }}
+                        {% elif comp.is_child_relation %}
+                            {% for child_comp in comp.get_child_comparisons %}
+                                <div class="comparison__child-object {% if child_comp.is_addition %}addition{% elif child_comp.is_deletion %}deletion{% endif %}">
+                                    {% with child_comp.get_position_change as move %}
+                                        {% if move %}
+                                            <div class="help-block help-info">
+                                                {% icon name='help' %}
+                                                <p>
+                                                    {% if move > 0 %}
+                                                        {% blocktrans trimmed count counter=move %}
+                                                            Moved down 1 place.
+                                                        {% plural %}
+                                                            Moved down {{ counter }} places.
+                                                        {% endblocktrans %}
+                                                    {% elif move < 0 %}
+                                                        {% blocktrans trimmed count counter=move|abs %}
+                                                            Moved up 1 place.
+                                                        {% plural %}
+                                                            Moved up {{ counter }} places.
+                                                        {% endblocktrans %}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                    <dl class="comparison__list">
+                                        {% for field_comp in child_comp.get_field_comparisons %}
+                                            <dt>{{ field_comp.field_label }}</dt>
+                                            <dd>
+                                                {{ field_comp.htmldiff }}
+                                            </dd>
+                                        {% endfor %}
+                                    </dl>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td class="editor" valign="top">
+                        {% if forloop.first %}
+                            {% if revision_b.pk == object.pk and object.current_workflow_state %}
+                                {% with latest_revision=object.get_latest_revision %}
+                                    {{ latest_revision.user|user_display_name|default:"-" }}
+                                {% endwith %}
+                            {% else %}
+                                {% trans "Live" %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td class="timestamp" valign="top">
+                        {% if forloop.first %}
+                            {% if revision_b.pk == object.pk and object.current_workflow_state %}
+                                {% with latest_revision=object.get_latest_revision %}
+                                    {{ latest_revision.created_at|date:"M j, Y H:i" }}
+                                {% endwith %}
+                            {% else %}
+                                {% trans "Current" %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td class="status" valign="top">
+                        {% if forloop.first %}
+                            {% if object.current_workflow_state %}
+                                {% with status=object.current_workflow_state.status %}
+                                    {% if status == "in_progress" %}
+                                        {% trans "In Progress" %}
+                                    {% elif status == "needs_changes" %}
+                                        {% trans "Needs Changes" %}
+                                    {% else %}
+                                        {{ status|title }}
+                                    {% endif %}
+                                {% endwith %}
+                            {% elif object.live %}
+                                {% trans "Published" %}
+                            {% else %}
+                                {% trans "Draft" %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="no-results-message">
+                        <p>{% trans "There are no differences between these two versions" %}</p>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="workflow-action-buttons">
+        {% if workflow_state and task_state %}
+            <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' task_state.id %}"
+                    data-launch-modal
+                    class="button button-primary">{% trans "Publish" %}</button>
+            <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' task_state.id %}"
+                    data-launch-modal
+                    class="button">{% trans "Request changes" %}</button>
+        {% elif object.current_workflow_state and object.current_workflow_state.current_task_state %}
+            {% with current_workflow_state=object.current_workflow_state current_task_state=object.current_workflow_state.current_task_state %}
+                {% if current_workflow_state.workflow_action_url_name %}
+                    <button data-workflow-action-url="{% url current_workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' current_task_state.id %}"
+                            data-launch-modal
+                            class="button button-primary">{% trans "Publish" %}</button>
+                    <button data-workflow-action-url="{% url current_workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' current_task_state.id %}"
+                            data-launch-modal
+                            class="button">{% trans "Request changes" %}</button>
+                {% else %}
+                    <button data-workflow-action-url="{% url 'wagtailadmin_pages:workflow_action' object.pk|admin_urlquote 'approve' current_task_state.id %}"
+                            data-launch-modal
+                            class="button button-primary">{% trans "Publish" %}</button>
+                    <button data-workflow-action-url="{% url 'wagtailadmin_pages:workflow_action' object.pk|admin_urlquote 'reject' current_task_state.id %}"
+                            data-launch-modal
+                            class="button">{% trans "Request changes" %}</button>
+                {% endif %}
+            {% endwith %}
+        {% else %}
+            <button disabled class="button button-primary">{% trans "Publish" %}</button>
+            <button disabled class="button">{% trans "Request changes" %}</button>
+        {% endif %}
+        <!-- History button -->
+        <a href="{% url 'wagtailadmin_pages:history' object.pk %}"
+           class="button">{% trans "View edit history" %}</a>
+
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
+            data-activate="dashboard"></script>
+{% endblock %}
