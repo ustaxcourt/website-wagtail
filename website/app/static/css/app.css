@@ -16,6 +16,18 @@
     --base-font-size: 17px;
     --container-width: 1440px;
 }
+    /* ==========================================================================
+         Ordered List Styles
+         ========================================================================== */
+    ol {
+        list-style-type: lower-alpha;
+    }
+    ol ol {
+        list-style-type: decimal;
+    }
+    ol ol ol {
+        list-style-type: lower-roman;
+    }
 
 body {
     -webkit-font-smoothing: antialiased;
