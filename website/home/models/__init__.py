@@ -61,3 +61,4 @@ from home.models.pages.dawson import (
 from home.models.pages.external_redirect import ExternalRedirectPage
 from home.models.pages.redirect import RedirectPage
 from home.models.pages.schedule_content import ScheduledPage
+from home.models.utils.execute_script import ExecuteScript

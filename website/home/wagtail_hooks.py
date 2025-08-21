@@ -138,6 +138,7 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationmenu": ["/"],
         "navigationribbon": ["/"],
         "simplecard": ["/"],
+        "newsitem": ["/home/press-releases/"],
     }
 
     affected_prefixes = path_map.get(snippet_type, ["/"])

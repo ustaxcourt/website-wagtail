@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.conf import settings
-from home.utils.secrets import get_secret_from_aws  # Assuming this utility exists
+from home.utils.secrets import get_secret_from_aws
 
 User = get_user_model()
 
