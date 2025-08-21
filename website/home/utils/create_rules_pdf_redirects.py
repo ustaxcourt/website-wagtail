@@ -67,7 +67,6 @@ def main():
 
           // Exact path redirects (manual override)
           var redirects = {
-            "/resources/ropp/Rule-27_Amended_03202023.pdf": "/files/documents/rule-27.pdf",
             "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
             "/documents/Complete_Rules_of_Practice_and_Procedure_Amended_080824.v2.pdf": "/files/documents/Complete-Rules-of-Practice-and-Procedure.pdf",
             "/documents/Rule-229A.pdf": "/files/documents/rule-229A.pdf",
