@@ -230,21 +230,6 @@ resource "aws_cloudfront_distribution" "app" {
 
     viewer_protocol_policy = "redirect-to-https"
   }
-  # NEW: Cache behavior for /resources/* so the function can 301 legacy links
-  ordered_cache_behavior {
-    path_pattern     = "/resources/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.private_bucket.id}"
-
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.rewrite_uri.arn
-    }
-
-    cache_policy_id        = aws_cloudfront_cache_policy.static_content.id
-    viewer_protocol_policy = "redirect-to-https"
-  }
 
   # Cache behavior for /static/* path
   ordered_cache_behavior {
