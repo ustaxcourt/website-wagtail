@@ -1,0 +1,205 @@
+{% load i18n wagtailadmin_tags %}
+{% if states %}
+    <div class="moderation-notification-bar">
+        <span>⚠️ You have edits waiting for your review.</span>
+    </div>
+    {% panel id="awaiting-review" heading=_("Awaiting your review") classname="w-panel--dashboard" %}
+    <style>
+        .workflow-action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-action-buttons .button {
+            padding: 1px 8px;
+            font-size: 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            border: 1px solid;
+            cursor: pointer;
+            display: inline-block;
+            background: #fff;
+            color: #666;
+            border-color: #ccc;
+        }
+
+        .workflow-action-buttons .button-primary {
+            background: #007acc;
+            color: white;
+            border-color: #007acc;
+        }
+
+        .workflow-action-buttons .button:hover {
+            opacity: 0.8;
+        }
+
+        .workflow-action-buttons .button-disabled {
+            background: #f5f5f5;
+            color: #999;
+            border-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .workflow-action-buttons .button-disabled:hover {
+            opacity: 1;
+        }
+
+        .yellow-label {
+            background-color: #faf3cf;
+            color: #000;
+            font-weight: bold;
+            padding: 2px 4px;
+        }
+    </style>
+    <table class="listing listing--dashboard">
+        <col />
+        <col width="25%" />
+        <col width="10%" />
+        <col width="10%" />
+        <col width="10%" />
+        <col width="10%" />
+        <thead class="w-sr-only">
+            <tr>
+                <th class="title">{% trans "Title" %}</th>
+                <th>{% trans "Actions" %}</th>
+                <th>{% trans "Notes" %}</th>
+                <th>{% trans "Task submitted by" %}</th>
+                <th>{% trans "Task started" %}</th>
+                <th aria-hidden="true">{% comment %} added for visual alignment only {% endcomment %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for state in states %}
+                {% with revision=state.task_state.revision obj=state.obj task_state=state.task_state actions=state.actions workflow_tasks=state.workflow_tasks %}
+                    {% is_page obj as is_page %}
+                    {% if is_page %}
+                        {% page_permissions obj as page_perms %}
+                    {% endif %}
+                    {% comment %}Validate required objects exist before rendering{% endcomment %}
+                    {% if not obj or not task_state %}
+                        <tr>
+                            <td colspan="6" class="error-message">
+                                <span style="color: #d63638; font-style: italic;">
+                                    {% trans "Error: Unable to load workflow data for this item." %}
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="title">
+                                <!-- 1.  Title -->
+                                <div class="title-wrapper">
+                                    {% admin_edit_url obj as edit_url %}
+                                    {% if page_perms.can_edit or not is_page and edit_url %}
+                                        <a href="{{ edit_url }}" title="{% trans 'Edit' %}">
+                                            {% if obj.title %}
+                                                {{ obj.title }}
+                                            {% elif obj %}
+                                                {{ obj }}
+                                            {% else %}
+                                                {% trans "Untitled" %}
+                                            {% endif %}
+                                        </a>
+                                    {% else %}
+                                        {% if obj.title %}
+                                            {{ obj.title }}
+                                        {% elif obj %}
+                                            {{ obj }}
+                                        {% else %}
+                                            {% trans "Untitled" %}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                {% if not state.live_revision_id %}
+                                    <span class="yellow-label">
+                                        {% if is_page %}
+                                            {% trans "New page" %}
+                                        {% else %}
+                                            {% trans "New content" %}
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <!-- 2.  Actions -->
+                                <div class="workflow-action-buttons">
+                                    <!-- Preview button (default) -->
+                                    {% if state.live_revision_id and state.revisions_compare_url_name %}
+                                        <a href="{% url state.revisions_compare_url_name obj.pk|admin_urlquote 'live' revision.id %}"
+                                           class="button button-primary">{% trans 'Review' %}</a>
+                                    {% elif state.workflow_preview_url_name %}
+                                        <a href="{% url state.workflow_preview_url_name obj.pk|admin_urlquote task_state.task.id %}"
+                                           target="_blank"
+                                           rel="noreferrer"
+                                           class="button button-primary">{% trans 'Preview new page' %}</a>
+                                    {% else %}
+                                        <span class="button button-disabled">{% trans 'Preview unavailable' %}</span>
+                                    {% endif %}
+                                    <!-- Workflow action buttons in correct order -->
+                                    {% if state.workflow_action_url_name %}
+                                        {% regroup actions by 0 as action_groups %}
+                                        <!-- Publish button first (only first approve action) -->
+                                        {% for action_name, action_label, modal in actions %}
+                                            {% if action_name == 'approve' %}
+                                                {% ifchanged action_name %}
+                                                    <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
+                                                            data-launch-modal
+                                                            class="button">{% trans 'Publish' %}</button>
+                                                {% endifchanged %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <!-- Request changes button second (only first reject action) -->
+                                        {% for action_name, action_label, modal in actions %}
+                                            {% if action_name == 'reject' %}
+                                                {% ifchanged action_name %}
+                                                    <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
+                                                            {% if modal %}data-launch-modal{% endif %}
+                                                            class="button">{% trans 'Request changes' %}</button>
+                                                {% endifchanged %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="button button-disabled">{% trans 'Actions unavailable' %}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="tasks">
+                                <!-- 3.  Notes -->
+                                {% for task in workflow_tasks %}{{ task.name }}{% endfor %}
+                            </td>
+                            <td>
+                                <!-- 4.  Task submitted by-->
+                                {% if revision and revision.user %}
+                                    {{ revision.user|user_display_name }}
+                                {% else %}
+                                    <span style="color: #999; font-style: italic;">{% trans "Unknown" %}</span>
+                                {% endif %}
+                            </td>
+                            <!-- 5.  Task started -->
+                            <td>
+                                {% if task_state.started_at %}
+                                    {% human_readable_date task_state.started_at %}
+                                {% else %}
+                                    <span style="color: #999; font-style: italic;">{% trans "Unknown" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="actions-container">
+                                <!-- 6 -->
+                                {% if actions %}
+                                    {% if page_perms.can_edit or not is_page and edit_url %}
+                                        <a href="{{ edit_url }}">{% trans 'Edit' %}</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endpanel %}
+<script src="{% versioned_static 'wagtailadmin/js/workflow-action.js' %}"
+        data-activate="dashboard"></script>
+{% endif %}

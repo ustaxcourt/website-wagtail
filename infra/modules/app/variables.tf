@@ -45,3 +45,9 @@ variable "social_auth_azuread_tenant_oauth2_tenant_id" {
   description = "The Azure AD tenant ID"
   type = string
 }
+
+variable "email_scheduler_enabled_environments" {
+  description = "A list of environments where the email moderator digest scheduler should be enabled."
+  type        = list(string)
+  default     = ["production", "testing"]
+}
