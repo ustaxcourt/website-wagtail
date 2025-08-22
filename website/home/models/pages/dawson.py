@@ -100,10 +100,9 @@ class FancyCard(ClusterableModel):
         help_text="The URL to link to when the photo is clicked.",
     )
 
-    text = models.CharField(
-        max_length=255,
+    text = RichTextField(
         null=True,
-        blank="True",
+        blank=True,
         help_text="The text to appear next to the image in the light blue card.",
     )
 
