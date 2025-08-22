@@ -19,6 +19,7 @@ from home.models.snippets.navigation import (
 )
 from home.models.snippets.common import CommonText
 from home.models.snippets.tagmanager import TagsSnippetViewSet
+from home.models.snippets.home_page_entry import HomePageEntry
 from home.models.pages.standard import StandardPage
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock
@@ -31,7 +32,7 @@ from home.models.pages.pamphlet import PamphletsPage, PamphletEntry
 from home.models.pages.release_notes import ReleaseNotes
 from home.models.pages.internship import InternshipPrograms
 from home.models.pages.press_release import PressReleasePage
-from home.models.pages.home_page import HomePage, HomePageEntry, HomePageImage
+from home.models.pages.home_page import HomePage, HomePageImage
 from home.models.pages.administrative_orders import (
     AdministrativeOrdersPage,
     PDFs,

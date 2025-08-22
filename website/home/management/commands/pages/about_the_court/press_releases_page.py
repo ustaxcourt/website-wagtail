@@ -2088,7 +2088,9 @@ Operation failed during execution.""".strip()
 
                 # Create NewsItem from homepage entry
                 news_item = NewsItem.objects.create(
-                    title=entry.title[:500],  # Truncate to fit CharField max_length
+                    title=entry.title[:500]
+                    if entry.title
+                    else entry.body[:500],  # Truncate to fit CharField max_length
                     description=entry.body,
                     document=None,
                     publish_date=publish_datetime,

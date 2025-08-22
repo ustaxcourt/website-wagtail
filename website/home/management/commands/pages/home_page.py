@@ -1,7 +1,6 @@
 from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
-from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -91,92 +90,6 @@ class HomePageInitializer(PageInitializer):
         homepage.slug = "home"
         homepage.save_revision().publish()
 
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="Remote Proceedings Info",
-            body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
-            ),
-            start_date=datetime(2024, 12, 31, 6, 0),  # Example: 6 AM EST
-            end_date=datetime(2025, 1, 1, 23, 59),  # Example: 11.59 PM EST
-            persist_to_press_releases=True,
-            sort_order=0,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="Closed for Holidays",
-            body=(
-                "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
-            ),
-            start_date=datetime(2024, 12, 1, 6, 0),
-            end_date=datetime(2024, 12, 25, 23, 59),
-            persist_to_press_releases=True,
-            sort_order=1,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="",
-            body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
-            ),
-            start_date=datetime(2025, 4, 14, 6, 0),
-            end_date=None,
-            persist_to_press_releases=True,
-            sort_order=2,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="Tax Court disciplinary matters.",
-            body=(
-                f"""See the <a linktype="document" id="{home_docs["04292025.pdf"].id}" target="_blank" title="Press Release">Press Release</a>."""
-            ),
-            start_date=datetime(2025, 4, 29, 6, 0),
-            end_date=None,
-            persist_to_press_releases=True,
-            sort_order=3,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="The Tax Court announced that Chief Special Trial Judge Lewis R. Carluzzo has decided to step down as Chief Special Trial Judge, effective May 2, 2025, and that Special Trial Judge Zachary S. Fried has been named Chief Special Trial Judge, effective May 3, 2025.",
-            body=(
-                f"""See the <a linktype="document" id="{home_docs["04162025.pdf"].id}" target="_blank" title="Press Release">Press Release</a>."""
-            ),
-            start_date=datetime(2025, 4, 14, 6, 0),
-            end_date=None,
-            persist_to_press_releases=True,
-            sort_order=4,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="Tax Court Judge Julian I. Jacobs passed away on April 5, 2025",
-            body=(
-                f"""See the <a linktype="document" id="{home_docs["04072025.pdf"].id}" target="_blank" title="Press Release">Press Release</a>."""
-            ),
-            start_date=datetime(2025, 4, 7, 6, 0),
-            end_date=datetime(2025, 5, 5, 23, 59),
-            persist_to_press_releases=True,
-            sort_order=5,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="U.S. Tax Court Warning about Tax Scams",
-            body=(
-                "<p>Some people may receive unsolicited phone calls, emails, or other communications from individuals fraudulently claiming to be from the Tax Court, the Internal Revenue Service (IRS), or Federal government agencies and demanding immediate payment by money order, gift card, debit card, or other means to settle a tax debt.</p>"
-                "<p>The Tax Court does not want anyone to be victimized by a tax scam. It is important that you know that the Tax Court will never do any of the following:</p>"
-                "<ul>"
-                "<li>call or email demanding payment of immigration visa application fees or taxes;</li>"
-                "<li>call or email threatening arrest;</li>"
-                "<li>call or email insisting that a specific payment method be used to pay Court fees, a tax debt, or requesting credit or debit card numbers over the phone.</li>"
-                "</ul>"
-                "<p>The IRS posts current <a href='https://www.irs.gov/newsroom/tax-scams-consumer-alerts' target='_blank'>warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href='https://www.ftc.gov' target='_blank'>Federal Trade Commission</a> (FTC) or the <a href='https://www.ic3.gov' target='_blank' title='Report Fraud'>Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI — government agencies that are unrelated to the Tax Court.</p>"
-                "<p>If you would like to verify that the communication you received is really from the Tax Court, please call the Court at (202) 521-0700.</p>"
-            ),
-            start_date=None,
-            end_date=None,
-            persist_to_press_releases=True,
-            sort_order=6,
-        )
-
         logger.info("Successfully created the new Home page.")
 
     def update(self):
@@ -210,40 +123,5 @@ class HomePageInitializer(PageInitializer):
             logger.info(
                 "Remote Proceedings Info entry does not exist. Nothing to update."
             )
-
-        entries_to_add = [
-            {
-                "title": "2025 Nonattorney Examination",
-                "body": f"""The United States Tax Court hereby announces that the examination for nonattorney applicants for admission to practice before the Court will be held remotely using the ExamSoft platform on Wednesday, November 5, 2025, 12:30pm Eastern Time.
-                </br>
-                </br>
-                See the <a linktype="document" id="{home_docs["05052025.pdf"].id}" target="_blank">Press Release</a>.""",
-                "start_date": datetime(2025, 5, 5, 6, 0),
-                "end_date": None,
-                "persist_to_press_releases": True,
-                "sort_order": 7,
-            },
-            # Add more entries as needed
-        ]
-
-        # 🔁 Loop through entries and create them if they don't exist
-        for entry_data in entries_to_add:
-            if not HomePageEntry.objects.filter(
-                homepage=homepage, title=entry_data["title"]
-            ).exists():
-                HomePageEntry.objects.create(
-                    homepage=homepage,
-                    title=entry_data["title"],
-                    body=entry_data["body"],
-                    start_date=entry_data["start_date"],
-                    end_date=entry_data["end_date"],
-                    persist_to_press_releases=entry_data["persist_to_press_releases"],
-                    sort_order=entry_data["sort_order"],
-                )
-                logger.info(f"{entry_data['title']} entry created successfully.")
-            else:
-                logger.info(
-                    f"{entry_data['title']} entry already exists. No action taken."
-                )
 
         logger.info("Finished updating Home page entries.")
