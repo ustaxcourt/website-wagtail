@@ -8,6 +8,8 @@ from django.shortcuts import render
 from django.http import Http404
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.search import index
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 from home.models.snippets.judges import JudgeProfile, JudgeRole
 from home.models.custom_blocks.common import custom_promote_panels
@@ -29,7 +31,7 @@ class JudgeColumns(blocks.StructBlock):
     column = blocks.ListBlock(JudgeColumnBlock())
 
 
-class JudgeIndex(RoutablePageMixin, Page):
+class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
     """
     A specialized page for displaying judges categorized by their titles.
     Only one instance of this page can exist in the site.
@@ -51,6 +53,10 @@ class JudgeIndex(RoutablePageMixin, Page):
         FieldPanel("title"),
         FieldPanel("body"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     promote_panels = custom_promote_panels
 

@@ -8,9 +8,12 @@ from wagtail.search import index
 
 from django.utils import timezone
 from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 
 
-class HomePage(Page):
+class HomePage(ModerationMixin, Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
 
     content_panels = Page.content_panels + [
@@ -18,6 +21,10 @@ class HomePage(Page):
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField("intro"),
