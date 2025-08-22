@@ -2,9 +2,10 @@ from django.db import models
 from django.contrib import messages
 
 from wagtail.admin.panels import FieldPanel, InlinePanel
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page, Orderable, ParentalKey
 from wagtail.search import index
+from wagtail import blocks
 
 from django.utils import timezone
 from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
@@ -17,6 +18,7 @@ class HomePage(Page):
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
+        InlinePanel("static_text_card_group", label="Static Text Card Group"),
     ]
 
     search_fields = Page.search_fields + [
@@ -26,10 +28,8 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context["now"] = timezone.now()
-        live_entries = HomePageEntry.objects.filter(homepage=self).filter(
-            models.Q(end_date__isnull=True) | models.Q(end_date__gte=timezone.now())
-        )
-        context["entries"] = live_entries
+        live_entries = []
+        context["static_text_cards"] = live_entries
         return context
 
 
@@ -100,3 +100,39 @@ class HomePageEntry(Orderable):
         FieldPanel("end_date"),
         FieldPanel("persist_to_press_releases"),
     ]
+
+
+class StaticTextCardBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=2000, required=False, help_text="Card title")
+    body = blocks.RichTextBlock(required=False, help_text="Card content")
+
+    class Meta:
+        icon = "doc-full"
+        label = "Static Text Card"
+
+    def __str__(self):
+        return self.title or self.body or "None"
+
+
+class StaticTextCardGroup(Orderable):
+    homepage = ParentalKey(
+        "HomePage", related_name="static_text_card_group", on_delete=models.CASCADE
+    )
+    title = models.CharField(
+        max_length=255, blank=True, help_text="Group title (optional)"
+    )
+    contents = StreamField(
+        [
+            ("card", StaticTextCardBlock()),
+        ],
+        blank=True,
+        help_text="Add multiple static text cards to this group",
+    )
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("contents"),
+    ]
+
+    def __str__(self):
+        return self.title or "None"

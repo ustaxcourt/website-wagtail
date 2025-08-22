@@ -19,7 +19,6 @@ from home.models.snippets.navigation import (
 )
 from home.models.snippets.common import CommonText
 from home.models.snippets.tagmanager import TagsSnippetViewSet
-from home.models.snippets.home_page_special_entry import HomePageSpecialEntry
 from home.models.pages.standard import StandardPage
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.common import CommonBlock, link_obj, ColumnBlock
