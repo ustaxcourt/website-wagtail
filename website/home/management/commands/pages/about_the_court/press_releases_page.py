@@ -2040,21 +2040,13 @@ Operation failed during execution.""".strip()
         try:
             # Step 2: Process homepage entries to create NewsItems
             persisted_entries = HomePageEntry.objects.filter(
-                persist_to_press_releases=True
+                persist_to_press_releases=True, end_date__lt=timezone.now()
             ).order_by("-end_date")
 
             for entry in persisted_entries:
-                # Check for entries without both end_date and start_date
-                date_to_use = entry.end_date if entry.end_date else entry.start_date
-                if not date_to_use:
-                    logger.warning(
-                        f"Entry missing both end_date and start_date: id={entry.id}, title={entry.title}, start_date={entry.start_date}, end_date={entry.end_date}, sort_order={entry.sort_order}"
-                    )
-                    continue
-
                 # Prepare publish datetime for comparison
                 publish_datetime = datetime.combine(
-                    date_to_use.date(), datetime.min.time()
+                    entry.end_date.date(), datetime.min.time()
                 ).replace(tzinfo=timezone.get_current_timezone())
 
                 # Check if NewsItem already exists to avoid duplicates
@@ -2088,9 +2080,7 @@ Operation failed during execution.""".strip()
 
                 # Create NewsItem from homepage entry
                 news_item = NewsItem.objects.create(
-                    title=entry.title[:500]
-                    if entry.title
-                    else entry.body[:500],  # Truncate to fit CharField max_length
+                    title=entry.title[:500],  # Truncate to fit CharField max_length
                     description=entry.body,
                     document=None,
                     publish_date=publish_datetime,
