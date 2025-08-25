@@ -14,7 +14,7 @@ from wagtail.admin.menu import MenuItem
 from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
-from wagtail.models import Page, WorkflowState
+from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
@@ -266,47 +266,26 @@ def register_add_entry_above_url():
         ),
     ]
 
+
 @hooks.register("after_edit_page")
-def notify_submitter_on_superseding_edit(request, page):
+def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
+    request, page
+):
     """
     Checks if a page edit supersedes a revision currently in moderation.
     If the editor is not the original submitter, send a notification.
     """
-    logger.info(
-        "after_edit_page hook caught.",
-    )
-
-    in_moderation_revision = page.current_workflow_state.revisions().latest('created_at')
-    # want workflow_state.revisions()
-    original_submitter = in_moderation_revision.user
-    current_editor = request.user
-    page_edit_url = reverse('wagtailadmin_pages:edit', args=[page.id])
-
-    context={
-        'page': page,
-        'editor': current_editor, # The user who just saved the page
-        'submitter': original_submitter, # The user we are emailing
-        'page_edit_url': page_edit_url,
-    }
-
-    html_content = render_to_string('wagtailadmin/mail/superseded_revision.html', context)
-    plain_text_content = strip_tags(html_content)
-    
-    send_mail(
-        subject=f"'{page.get_admin_display_title()}' has been updated while in review",
-        recipient_list=[original_submitter.email],
-        message=plain_text_content,
-        html_message=html_content
-    )
 
     # 1. Check if the page is in an active workflow
-    if not hasattr(page, 'workflow_state') or not page.workflow_in_progress:
+    if not page.workflow_in_progress:
         return
 
     # A page in moderation must have a revision that is the 'content_object' of the workflow state
-    in_moderation_revision = page.workflow_state.content_object
+    in_moderation_revision = page.current_workflow_state.revisions().latest(
+        "created_at"
+    )
     if not in_moderation_revision or not in_moderation_revision.user:
-        return # Cannot proceed without a revision or original user
+        return
 
     # 2. Get the original submitter and the current editor
     original_submitter = in_moderation_revision.user
@@ -317,16 +296,23 @@ def notify_submitter_on_superseding_edit(request, page):
         return
 
     # 4. If they are different, send the email notification
-    page_edit_url = reverse('wagtailadmin_pages:edit', args=[page.id])
+    page_edit_url = reverse("wagtailadmin_pages:edit", args=[page.id])
+
+    context = {
+        "page": page,
+        "editor": current_editor,
+        "submitter": original_submitter,
+        "page_edit_url": page_edit_url,
+    }
+
+    html_content = render_to_string(
+        "wagtailadmin/mail/superseded_revision.html", context
+    )
+    plain_text_content = strip_tags(html_content)
 
     send_mail(
         subject=f"'{page.get_admin_display_title()}' has been updated while in review",
         recipient_list=[original_submitter.email],
-        template_name='wagtailadmin/mail/superseded_revision.html', # We will create this template next
-        context={
-            'page': page,
-            'editor': current_editor, # The user who just saved the page
-            'submitter': original_submitter, # The user we are emailing
-            'page_edit_url': page_edit_url,
-        }
+        message=plain_text_content,
+        html_message=html_content,
     )
