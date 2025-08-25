@@ -1,8 +1,13 @@
+from django.utils import timezone
+from django.db import models
 from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
+from home.models.pages.home_page import StaticTextCardGroup
 from datetime import datetime
 import logging
+from home.models.utils.execute_script import ExecuteScript
+
 
 logger = logging.getLogger(__name__)
 
@@ -247,3 +252,132 @@ class HomePageInitializer(PageInitializer):
                 )
 
         logger.info("Finished updating Home page entries.")
+
+    def run(self):
+        # Execute the press release update logic
+        home_page_entry_count = self._execute_home_page_entry_update_logic()
+
+        # Log overall summary
+        logger.info(
+            f"Migration complete. Total items created: {home_page_entry_count}."
+        )
+
+        return
+
+    def _execute_home_page_entry_update_logic(self):
+        """
+        Iterate through all home page entry body entries and create
+        Returns the number of items created.
+        """
+        command_name = "Home page entry data migration to Static Text Card Group"
+
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        # Create ExecuteScript entry
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            created_count = 0
+
+            # Get active HomePageEntry objects (end_date in future or not set)
+            now = timezone.now()
+            active_entries = HomePageEntry.objects.filter(
+                models.Q(end_date__isnull=True) | models.Q(end_date__gt=now)
+            ).order_by("sort_order")
+
+            if not active_entries.exists():
+                logger.info("No active HomePageEntry objects found")
+                return 0
+
+            # Get the homepage
+            homepage = active_entries.first().homepage
+
+            # Check if "Current Entries" group already exists
+            existing_group = StaticTextCardGroup.objects.filter(
+                homepage=homepage, title="Current Entries"
+            ).first()
+
+            if existing_group:
+                logger.info("Current Entries group already exists. Skipping migration.")
+                return 0
+
+            # Create cards data from active entries
+            cards_data = []
+            for entry in active_entries:
+                card_data = {
+                    "type": "card",
+                    "value": {
+                        "title": entry.title or "",
+                        "body": entry.body or "",
+                        "start_date": entry.start_date.isoformat()
+                        if entry.start_date
+                        else None,
+                        "end_date": entry.end_date.isoformat()
+                        if entry.end_date
+                        else None,
+                    },
+                }
+                cards_data.append(card_data)
+                created_count += 1
+
+            # Create StaticTextCardGroup with StreamField content
+            StaticTextCardGroup.objects.create(
+                homepage=homepage, title="Current Entries", contents=cards_data
+            )
+
+            logger.info(
+                f"Created StaticTextCardGroup 'Current Entries' with {created_count} cards"
+            )
+
+            logger.info(
+                f"Created StaticTextCardGroup with {created_count} cards from active homepage entries"
+            )
+
+            # Create execution log in plain text format with HTML line breaks
+            execution_log_text = f"""Static Text Card Group Migration - Homepage Active Entries
+
+Status: SUCCESS
+Items Created: {created_count}
+Completed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Summary:
+- Processed active homepage entries
+- Created StaticTextCardGroup 'Current Entries' with {created_count} cards
+- Migrated entries with future end dates or no end date
+
+Operation completed successfully.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            execution_log = execution_log_text.replace("\n", "<br>")
+
+            # Mark as success and save execution log
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log
+            script_entry.save()
+            return created_count
+
+        except Exception as e:
+            # Create failure execution log
+            failure_log_text = f"""Static Text Card Group Migration - Homepage Active Entries
+
+Status: FAILURE
+Items Created: 0
+Failed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Error Details:
+Error: {str(e)}
+Error Type: {type(e).__name__}
+
+Operation failed during execution.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            failure_log = failure_log_text.replace("\n", "<br>")
+
+            # Mark as failure and save execution log
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = failure_log
+            script_entry.save()
+            raise e

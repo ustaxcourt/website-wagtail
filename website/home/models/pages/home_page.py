@@ -105,13 +105,14 @@ class HomePageEntry(Orderable):
 class StaticTextCardBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=2000, required=False, help_text="Card title")
     body = blocks.RichTextBlock(required=False, help_text="Card content")
+    start_date = blocks.DateTimeBlock(
+        required=False, help_text="Start date for display"
+    )
+    end_date = blocks.DateTimeBlock(required=False, help_text="End date for display")
 
     class Meta:
         icon = "doc-full"
         label = "Static Text Card"
-
-    def __str__(self):
-        return self.title or self.body or "None"
 
 
 class StaticTextCardGroup(Orderable):
