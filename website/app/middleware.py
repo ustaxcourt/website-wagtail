@@ -22,6 +22,9 @@ class JSONExceptionMiddleware:
                 "method": request.method,
                 "exception": str(exception),
                 "traceback": trace,
+                "referrer": request.META.get("HTTP_REFERRER", ""),
+                "user_agent": request.META.get("HTTP_USER_AGENT", ""),
+                "remote_addr": request.META.get("REMOTE_ADDR", ""),
             },
         )
 

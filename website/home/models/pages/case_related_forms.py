@@ -1,6 +1,8 @@
 from django.db import models
 from wagtail.models import Page, ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
+from home.models.custom_blocks.common import custom_promote_panels
+from home.admin.moderation import ModerationTabbedInterface
 
 
 from home.models.pages.standard import StandardPage
@@ -10,6 +12,12 @@ class CaseRelatedFormsPage(StandardPage):
     content_panels = Page.content_panels + [
         InlinePanel("forms", label="Forms"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels,
+        promote_panels=custom_promote_panels,
+        settings_panels=StandardPage.settings_panels,
+    )
 
 
 class CaseRelatedFormsEntry(models.Model):
