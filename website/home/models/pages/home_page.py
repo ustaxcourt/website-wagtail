@@ -109,7 +109,6 @@ class StaticTextCardBlock(blocks.StructBlock):
     end_date = blocks.DateTimeBlock(required=False, help_text="End date for display")
 
     class Meta:
-        icon = "doc-full"
         label = "Static Text Card"
 
 
