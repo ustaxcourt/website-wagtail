@@ -131,18 +131,19 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "simplecard": ["/"],
     }
 
-    # Purge cache for all live pages when navigation menu changes
+    # Purge CloudFront cache for all pages using wildcard when navigation menu changes
     if snippet_type == "navigationmenu":
-        affected_pages = Page.objects.live().all()
-        if not affected_pages:
-            logger.info("No live pages found to purge cache for navigation menu.")
-            return
-        for page in affected_pages:
-            try:
-                purge_page_from_cache(page)
-                logger.info(f"Purged frontend cache for page: {page.url_path}")
-            except Exception as e:
-                logger.error(f"Error purging cache for page {page.id}: {e}")
+        try:
+            from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+            batch = PurgeBatch()
+            batch.add_url("/*")
+            batch.purge()
+            logger.info(
+                "Purged CloudFront cache for all pages using wildcard /* after navigation menu change."
+            )
+        except Exception as e:
+            logger.error(f"Error purging CloudFront cache for all pages: {e}")
         return
 
     affected_prefixes = path_map.get(snippet_type, ["/"])
