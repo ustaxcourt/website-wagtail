@@ -131,17 +131,18 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "simplecard": ["/"],
     }
 
-    # Only purge homepage for navigation menu changes for speed
+    # Purge cache for all live pages when navigation menu changes
     if snippet_type == "navigationmenu":
-        homepage = Page.objects.live().filter(url_path="/").first()
-        if homepage:
+        affected_pages = Page.objects.live().all()
+        if not affected_pages:
+            logger.info("No live pages found to purge cache for navigation menu.")
+            return
+        for page in affected_pages:
             try:
-                purge_page_from_cache(homepage)
-                logger.info(f"Purged frontend cache for homepage: {homepage.url_path}")
+                purge_page_from_cache(page)
+                logger.info(f"Purged frontend cache for page: {page.url_path}")
             except Exception as e:
-                logger.error(f"Error purging cache for homepage: {e}")
-        else:
-            logger.info("No homepage found to purge cache for navigation menu.")
+                logger.error(f"Error purging cache for page {page.id}: {e}")
         return
 
     affected_prefixes = path_map.get(snippet_type, ["/"])
