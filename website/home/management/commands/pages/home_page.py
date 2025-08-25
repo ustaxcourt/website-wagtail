@@ -312,12 +312,8 @@ class HomePageInitializer(PageInitializer):
                     "value": {
                         "title": entry.title or "",
                         "body": entry.body or "",
-                        "start_date": entry.start_date.isoformat()
-                        if entry.start_date
-                        else None,
-                        "end_date": entry.end_date.isoformat()
-                        if entry.end_date
-                        else None,
+                        "start_date": entry.start_date if entry.start_date else None,
+                        "end_date": entry.end_date if entry.end_date else None,
                     },
                 }
                 cards_data.append(card_data)
@@ -330,10 +326,6 @@ class HomePageInitializer(PageInitializer):
 
             logger.info(
                 f"Created StaticTextCardGroup 'Current Entries' with {created_count} cards"
-            )
-
-            logger.info(
-                f"Created StaticTextCardGroup with {created_count} cards from active homepage entries"
             )
 
             # Create execution log in plain text format with HTML line breaks
