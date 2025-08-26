@@ -321,7 +321,7 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 ENVIRONMENT = "dev"
 
 # BASE_URL = "http://127.0.0.1:8000" TODO: Why is this like this and where are we really supposed to override?
-BASE_URL = ht
+BASE_URL = f"https://{os.getenv("DOMAIN_NAME")}"
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
