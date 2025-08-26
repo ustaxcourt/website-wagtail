@@ -145,10 +145,15 @@ class EnhancedStandardPage(ModerationMixin, Page):
                                     ("unindented", IndentStyle.UNINDENTED),
                                 ],
                                 default=IndentStyle.INDENTED,
+                                label="List style",
                             ),
                         ),
-                        ("links", link_obj),
-                    ]
+                        (
+                            "links",
+                            blocks.ListBlock(link_obj.child_block, label="Add Entry"),
+                        ),
+                    ],
+                    label="Add Entry",
                 ),
             ),
             (
