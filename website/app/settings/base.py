@@ -320,7 +320,7 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 
 ENVIRONMENT = "dev"
 
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = f"https://{os.getenv("DOMAIN_NAME")}"
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
