@@ -77,21 +77,19 @@
             <div class="content">
                 <div class="entries-list">
                     {% now "c" as current_time %}
-                    {% for card_group in page.static_text_card_group.all %}
-                        {% for card_block in card_group.contents %}
-                            {% with card=card_block.value %}
-                                {% if not card.end_date or card.end_date >= current_time %}
-                                    <div class="entry shadow-2">
-                                        {% if card.title %}
-                                            <h3>{{ card.title }}</h3>
-                                        {% else %}
-                                            <br />
-                                        {% endif %}
-                                        <div>{{ card.body|richtext }}</div>
-                                    </div>
-                                {% endif %}
-                            {% endwith %}
-                        {% endfor %}
+                    {% for card_block in page.static_text_cards %}
+                        {% with card=card_block.value %}
+                            {% if not card.end_date or card.end_date >= current_time %}
+                                <div class="entry shadow-2">
+                                    {% if card.title %}
+                                        <h3>{{ card.title }}</h3>
+                                    {% else %}
+                                        <br />
+                                    {% endif %}
+                                    <div>{{ card.body|richtext }}</div>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                     {% endfor %}
                 </div>
             </div>

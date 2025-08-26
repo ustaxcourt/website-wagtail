@@ -3,7 +3,6 @@ from django.db import models
 from wagtail.models import Page, Site
 from home.models import HomePage, HomePageEntry, HomePageImage
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models.pages.home_page import StaticTextCardGroup
 from datetime import datetime
 import logging
 from home.models.utils.execute_script import ExecuteScript
@@ -269,7 +268,7 @@ class HomePageInitializer(PageInitializer):
         Iterate through all home page entry body entries and create
         Returns the number of items created.
         """
-        command_name = "Home page entry data migration to Static Text Card Group"
+        command_name = "Home page entry data migration to Static Text Cards"
 
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
@@ -295,13 +294,11 @@ class HomePageInitializer(PageInitializer):
             # Get the homepage
             homepage = active_entries.first().homepage
 
-            # Check if "Current Entries" group already exists
-            existing_group = StaticTextCardGroup.objects.filter(
-                homepage=homepage, title="Current Entries"
-            ).first()
-
-            if existing_group:
-                logger.info("Current Entries group already exists. Skipping migration.")
+            # Check if static_text_cards already has content
+            if homepage.static_text_cards:
+                logger.info(
+                    "Homepage static_text_cards already has content. Skipping migration."
+                )
                 return 0
 
             # Create cards data from active entries
@@ -319,17 +316,16 @@ class HomePageInitializer(PageInitializer):
                 cards_data.append(card_data)
                 created_count += 1
 
-            # Create StaticTextCardGroup with StreamField content
-            StaticTextCardGroup.objects.create(
-                homepage=homepage, title="Current Entries", contents=cards_data
-            )
+            # Update homepage's static_text_cards StreamField
+            homepage.static_text_cards = cards_data
+            homepage.save_revision().publish()
 
             logger.info(
-                f"Created StaticTextCardGroup 'Current Entries' with {created_count} cards"
+                f"Updated homepage static_text_cards with {created_count} cards"
             )
 
             # Create execution log in plain text format with HTML line breaks
-            execution_log_text = f"""Static Text Card Group Migration - Homepage Active Entries
+            execution_log_text = f"""Static Text Card Migration - Homepage Active Entries
 
 Status: SUCCESS
 Items Created: {created_count}
@@ -337,7 +333,7 @@ Completed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 Summary:
 - Processed active homepage entries
-- Created StaticTextCardGroup 'Current Entries' with {created_count} cards
+- Updated homepage static_text_cards StreamField with {created_count} cards
 - Migrated entries with future end dates or no end date
 
 Operation completed successfully.""".strip()
@@ -353,7 +349,7 @@ Operation completed successfully.""".strip()
 
         except Exception as e:
             # Create failure execution log
-            failure_log_text = f"""Static Text Card Group Migration - Homepage Active Entries
+            failure_log_text = f"""Static Text Card Migration - Homepage Active Entries
 
 Status: FAILURE
 Items Created: 0

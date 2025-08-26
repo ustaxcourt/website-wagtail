@@ -11,14 +11,33 @@ from django.utils import timezone
 from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
 
 
+class StaticTextCardBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=2000, required=False, help_text="Card title")
+    body = blocks.RichTextBlock(required=False, help_text="Card content")
+    start_date = blocks.DateTimeBlock(
+        required=False, help_text="Start date for display"
+    )
+    end_date = blocks.DateTimeBlock(required=False, help_text="End date for display")
+
+    class Meta:
+        label = "Static Text Card"
+
+
 class HomePage(Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+    static_text_cards = StreamField(
+        [
+            ("card", StaticTextCardBlock()),
+        ],
+        blank=True,
+        help_text="Add multiple static text cards",
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
-        InlinePanel("static_text_card_group", label="Static Text Card Group"),
+        FieldPanel("static_text_cards"),
     ]
 
     search_fields = Page.search_fields + [
@@ -98,39 +117,3 @@ class HomePageEntry(Orderable):
         FieldPanel("end_date"),
         FieldPanel("persist_to_press_releases"),
     ]
-
-
-class StaticTextCardBlock(blocks.StructBlock):
-    title = blocks.CharBlock(max_length=2000, required=False, help_text="Card title")
-    body = blocks.RichTextBlock(required=False, help_text="Card content")
-    start_date = blocks.DateTimeBlock(
-        required=False, help_text="Start date for display"
-    )
-    end_date = blocks.DateTimeBlock(required=False, help_text="End date for display")
-
-    class Meta:
-        label = "Static Text Card"
-
-
-class StaticTextCardGroup(Orderable):
-    homepage = ParentalKey(
-        "HomePage", related_name="static_text_card_group", on_delete=models.CASCADE
-    )
-    title = models.CharField(
-        max_length=255, blank=True, help_text="Group title (optional)"
-    )
-    contents = StreamField(
-        [
-            ("card", StaticTextCardBlock()),
-        ],
-        blank=True,
-        help_text="Add multiple static text cards to this group",
-    )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("contents"),
-    ]
-
-    def __str__(self):
-        return self.title or "None"
