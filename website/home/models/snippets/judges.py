@@ -1,6 +1,6 @@
 from django.db import models, transaction
 from wagtail.snippets.models import register_snippet
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PublishingPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable
 from django.utils import timezone
@@ -9,8 +9,9 @@ from modelcluster.models import ClusterableModel
 from django.core.exceptions import ValidationError
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
-from wagtail.admin.panels import PublishingPanel
 from wagtail.search import index
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 
 import logging
@@ -23,7 +24,12 @@ RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 @register_snippet
 class JudgeProfile(
-    WorkflowMixin, DraftStateMixin, RevisionMixin, index.Indexed, models.Model
+    ModerationMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    index.Indexed,
+    models.Model,
 ):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
@@ -52,7 +58,7 @@ class JudgeProfile(
     )
     objects = PageQuerySet.as_manager()
 
-    panels = [
+    content_panels = [
         FieldPanel("first_name"),
         FieldPanel("middle_initial"),
         FieldPanel("last_name"),
@@ -61,8 +67,10 @@ class JudgeProfile(
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
-        PublishingPanel(),
     ]
+    panels = content_panels + [PublishingPanel()]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     search_fields = [
         index.SearchField("last_name", partial_match=True),
@@ -168,7 +176,9 @@ class JudgeCollectionOrderable(Orderable):
 
 
 @register_snippet
-class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel):
+class JudgeCollection(
+    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel
+):
     name = models.CharField(
         max_length=255,
         unique=True,
@@ -179,11 +189,13 @@ class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, Clusterable
     )
     objects = PageQuerySet.as_manager()
 
-    panels = [
+    content_panels = [
         FieldPanel("name"),
         InlinePanel("ordered_judges", label="Judges"),
-        PublishingPanel(),
     ]
+    panels = content_panels + [PublishingPanel()]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     def _reorder_judges(self):
         """
@@ -277,7 +289,9 @@ class JudgeCollection(WorkflowMixin, DraftStateMixin, RevisionMixin, Clusterable
 
 
 @register_snippet
-class JudgeRole(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
+class JudgeRole(
+    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
+):
     role_name = models.CharField(
         max_length=255,
         unique=True,
@@ -294,11 +308,14 @@ class JudgeRole(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     _revisions = GenericRelation("wagtailcore.Revision", related_query_name="judgerole")
     objects = PageQuerySet.as_manager()
 
-    panels = [
+    content_panels = [
         FieldPanel("role_name"),
         FieldPanel("judge"),
-        PublishingPanel(),
     ]
+
+    panels = content_panels + [PublishingPanel()]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     def clean(self):
         if self.pk:

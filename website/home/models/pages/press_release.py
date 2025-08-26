@@ -17,6 +17,8 @@ from django.template.response import TemplateResponse
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.home_page import HomePageEntry
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 
 
 def extract_pdf_filename_from_body(html):
@@ -72,6 +74,11 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     search_fields = EnhancedStandardPage.search_fields + [
         index.SearchField("press_release_body"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels,
+        promote_panels=custom_promote_panels,
+    )
 
     @route("archives/")
     def archive_view(self, request):

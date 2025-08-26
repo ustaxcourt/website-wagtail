@@ -5,6 +5,8 @@ from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, PublishingPanel
 from wagtail.snippets.models import register_snippet
 from home.models.config import IconCategories
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 from wagtail.blocks import PageChooserBlock
 from django.contrib.contenttypes.fields import GenericRelation
@@ -37,18 +39,22 @@ class NavigationRibbonLink(models.Model):
 
 
 @register_snippet
-class NavigationRibbon(WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel):
+class NavigationRibbon(
+    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel
+):
     name = models.CharField(max_length=255)
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="navigation_ribbon"
     )
     objects = PageQuerySet.as_manager()
 
-    panels = [
+    content_panels = [
         FieldPanel("name"),
         InlinePanel("links", label="Links"),
-        PublishingPanel(),
     ]
+    panels = content_panels + [PublishingPanel()]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     def __str__(self):
         return self.name
@@ -73,6 +79,7 @@ class SubNavigationLinkBlock(blocks.StructBlock):
 
 @register_snippet
 class NavigationMenu(
+    ModerationMixin,
     WorkflowMixin,
     PreviewableMixin,
     DraftStateMixin,
@@ -126,10 +133,12 @@ class NavigationMenu(
         "wagtailcore.Revision", related_query_name="navigation_menu"
     )
 
-    panels = [
+    content_panels = [
         FieldPanel("menu_items"),
-        PublishingPanel(),
     ]
+    panels = content_panels + [PublishingPanel()]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     @property
     def revisions(self):
