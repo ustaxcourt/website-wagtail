@@ -320,7 +320,8 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 
 ENVIRONMENT = "dev"
 
-BASE_URL = "http://127.0.0.1:8000"
+# BASE_URL = "http://127.0.0.1:8000" TODO: Why is this like this and where are we really supposed to override?
+BASE_URL = ht
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
@@ -425,3 +426,4 @@ WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
 AWS_SES_REGION_NAME = "us-east-1"
 DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+WAGTAILADMIN_BASE_URL = 
