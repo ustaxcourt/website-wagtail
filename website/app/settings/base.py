@@ -426,3 +426,5 @@ AWS_SES_REGION_NAME = "us-east-1"
 DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
 WAGTAILADMIN_BASE_URL =  "https://mmiest-moore-sandbox-web.ustaxcourt.gov" #f"https://{os.getenv("DOMAIN_NAME")}"
+
+print(f"Wagtail admin base url: {WAGTAILADMIN_BASE_URL}, base url: {BASE_URL}")
