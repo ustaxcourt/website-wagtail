@@ -21,6 +21,7 @@ def update_site_forward(apps, schema_editor):
             "hostname": hostname,
             "port": port,
             "site_name": site_name,
+            "root_url": hostname
         },
     )
 

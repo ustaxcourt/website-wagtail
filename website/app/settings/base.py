@@ -425,3 +425,16 @@ DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
 WAGTAILADMIN_BASE_URL = f"https://{os.getenv("DOMAIN_NAME")}"
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
+print(f"WAGTAILADMIN_BASE_URL: {WAGTAILADMIN_BASE_URL}")
+
+# Tell Django to trust the X-Forwarded-Host header from the load balancer
+USE_X_FORWARDED_HOST = True
+
+# Tell Django to trust the X-Forwarded-Proto header for SSL
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Recommended for security when behind a proxy
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
