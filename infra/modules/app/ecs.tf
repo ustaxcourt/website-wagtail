@@ -101,7 +101,7 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "WAGTAILADMIN_BASE_URL",
         value = var.wagtailadmin_base_url
-      }
+      },
       {
         name = "AWS_STORAGE_BUCKET_NAME",
         value = aws_s3_bucket.private_bucket.id
