@@ -153,7 +153,7 @@ class EnhancedStandardPage(ModerationMixin, Page):
                             blocks.ListBlock(link_obj.child_block, label="Add Entry"),
                         ),
                     ],
-                    label="Add Entry",
+                    label="List of Links",
                 ),
             ),
             (
