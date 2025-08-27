@@ -45,7 +45,7 @@ See: https://github.com/octoenergy/public-conventions/blob/main/conventions/terr
 
 ## Git Naming Conventions
 
-We are using Monday.com as an issue tracking system for project management. In order to get better metrics for performance and connect the code with the issues, we are requiring the following naming conventions for branches and pull requests. We are also welcoming, but not requiring, the following naming convention for commits:
+We are using Monday.com as an issue tracking system for project management. In order to get better metrics for performance and connect the code with the issues, we are requiring the following naming conventions for branches and pull requests:
 
 ### Branch Names
 
@@ -54,10 +54,6 @@ Please use a branch name that includes the Task ID in the name. **It must be upp
 ### Pull Request Titles
 
 Please reference the Task ID in the Title or Description of any pull request. This way the Github integration will automatically connect a task in Monday.com with the Pull Request. Again, **it must be uppercase**. This will give us better insights and help drive decision making. For example, when you create a PR, please give it the title "Introduce Git Naming Conventions - WAG-375" or mention it in the description.
-
-### Commit Messages
-
-Please consider using the Task ID in the commit messages themselves. If you do this, please use it as a prefix. For example, "WAG-375: introduce git naming convention to contributing notes" would connect this commit with our project management system.
 
 ## Reference
 
