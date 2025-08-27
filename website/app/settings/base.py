@@ -320,12 +320,11 @@ GOOGLE_ANALYTICS_ID = "G-3T6ZS0FHZ8"
 
 ENVIRONMENT = "dev"
 
-BASE_URL = f"https://{os.getenv("DOMAIN_NAME")}"
+BASE_URL = "http://127.0.0.1:8000"
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" TODO: Make environment specific (only prod and testing should send emails)
 EMAIL_BACKEND = "django_ses.SESBackend"
 
 ALLOWED_HOSTS = [
@@ -334,7 +333,6 @@ ALLOWED_HOSTS = [
     os.getenv("DOMAIN_NAME"),
     f"www.{os.getenv('DOMAIN_NAME')}",
 ]
-
 
 def _task_ips():
     """Return the task's IPv4 address(es) from the ECS metadata API."""
@@ -425,6 +423,5 @@ WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
 AWS_SES_REGION_NAME = "us-east-1"
 DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
-WAGTAILADMIN_BASE_URL =  "https://mmiest-moore-sandbox-web.ustaxcourt.gov" #f"https://{os.getenv("DOMAIN_NAME")}"
-
-print(f"Wagtail admin base url: {WAGTAILADMIN_BASE_URL}, base url: {BASE_URL}")
+WAGTAILADMIN_BASE_URL = f"https://{os.getenv("DOMAIN_NAME")}"
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
