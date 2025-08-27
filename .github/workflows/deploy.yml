@@ -20,7 +20,7 @@ jobs:
   deploy:
     environment: ${{ github.ref == 'refs/tags/development' && 'development' || github.ref == 'refs/tags/sandbox' && format('{0}_sandbox', github.actor) || github.ref == 'refs/heads/main' && 'development' || github.ref == 'refs/tags/train' && 'train' || '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 60
     steps:
       - name: Set Environment
         id: set_env
