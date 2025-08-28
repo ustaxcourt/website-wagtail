@@ -12,14 +12,7 @@ class ReviewByRequiredOnSubmitForm(WagtailAdminPageForm):
         cleaned = super().clean()
         if self._is_submit_for_moderation():
             review_by = cleaned.get("review_by")
-            if not review_by:
-                self.add_error(
-                    "review_by",
-                    ValidationError(
-                        "Please set a Review by date before submitting to moderation."
-                    ),
-                )
-            else:
+            if review_by:
                 aware = (
                     timezone.make_aware(review_by)
                     if timezone.is_naive(review_by)
@@ -91,14 +84,7 @@ class ReviewByRequiredOnSubmitSnippetForm(WagtailAdminModelForm):
         cleaned = super().clean()
         if self._is_submit_for_moderation():
             review_by = cleaned.get("review_by")
-            if not review_by:
-                self.add_error(
-                    "review_by",
-                    ValidationError(
-                        "Please set a Review by date before submitting to moderation."
-                    ),
-                )
-            else:
+            if review_by:
                 aware = (
                     timezone.make_aware(review_by)
                     if timezone.is_naive(review_by)
