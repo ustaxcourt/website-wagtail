@@ -129,3 +129,6 @@ rollbackmigrate:
 
 rollbackall:
 	. $(VENV) && python manage.py migrate home zero
+
+backfillliverevisions:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py backfill_live_revisions

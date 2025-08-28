@@ -51,20 +51,56 @@
             color: #000;
             font-weight: bold;
             padding: 2px 4px;
+            margin-left: 8px;
+            border-radius: 2px;
+        }
+
+        .overdue-label {
+            background-color: #ff6b6b;
+            color: white;
+            font-weight: bold;
+            padding: 2px 6px;
+            margin-left: 8px;
+            border-radius: 2px;
+            font-size: 11px;
+        }
+
+        .review-date-cell {
+            padding: 8px;
+        }
+
+        .review-date-span {
+            background-color: #feefc3;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 12px;
+            color: #222;
+            padding: 4px 8px;
+            margin: 2px 0;
+        }
+
+        .task-name {
+            font-style: italic;
+            color: #666;
+        }
+
+        .no-review-date {
+            color: #999;
+            font-style: italic;
         }
     </style>
     <table class="listing listing--dashboard">
         <col />
         <col width="25%" />
+        <col width="15%" />
         <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
+        <col width="7%" />
+        <col width="8%" />
         <thead class="w-sr-only">
             <tr>
                 <th class="title">{% trans "Title" %}</th>
                 <th>{% trans "Actions" %}</th>
-                <th>{% trans "Notes" %}</th>
+                <th>{% trans "Review By" %}</th>
                 <th>{% trans "Task submitted by" %}</th>
                 <th>{% trans "Task started" %}</th>
                 <th aria-hidden="true">{% comment %} added for visual alignment only {% endcomment %}</th>
@@ -165,9 +201,16 @@
                                     {% endif %}
                                 </div>
                             </td>
-                            <td class="tasks">
-                                <!-- 3.  Notes -->
-                                {% for task in workflow_tasks %}{{ task.name }}{% endfor %}
+                            <td class="review-date-cell">
+                                <!-- 3.  Notes / Review By -->
+                                {% if obj.review_by %}
+                                <span class="review-date-span">Review by: {{ obj.review_by|date:"M j, Y" }}</span>
+                                {% if obj.is_review_overdue %}
+                                <span class="overdue-label">OVERDUE</span>
+                                {% endif %}
+                                {% else %}
+                                    <span class="no-review-date">No review date set</span>
+                                {% endif %}
                             </td>
                             <td>
                                 <!-- 4.  Task submitted by-->

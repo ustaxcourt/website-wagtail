@@ -9,6 +9,9 @@ from wagtail import blocks
 
 from django.utils import timezone
 from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 
 
 class StaticTextCardBlock(blocks.StructBlock):
@@ -23,7 +26,7 @@ class StaticTextCardBlock(blocks.StructBlock):
         label = "Static Text Card"
 
 
-class HomePage(Page):
+class HomePage(ModerationMixin, Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
     static_text_cards = StreamField(
         [
@@ -39,6 +42,10 @@ class HomePage(Page):
         InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
         FieldPanel("static_text_cards"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField("intro"),

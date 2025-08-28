@@ -3,6 +3,8 @@ from wagtail import blocks
 from wagtail.blocks import RawHTMLBlock
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
@@ -58,6 +60,11 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
     search_fields = EnhancedStandardPage.search_fields + [
         index.SearchField("raw_html_body"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels,
+        promote_panels=custom_promote_panels,
+    )
 
     class Meta:
         verbose_name = "Enhanced Raw HTML Page"
