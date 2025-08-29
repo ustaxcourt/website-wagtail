@@ -49,5 +49,5 @@ variable "social_auth_azuread_tenant_oauth2_tenant_id" {
 variable "email_scheduler_enabled_environments" {
   description = "A list of environments where the email moderator digest scheduler should be enabled."
   type        = list(string)
-  default     = ["production"]
+  default     = ["production", "testing"]
 }

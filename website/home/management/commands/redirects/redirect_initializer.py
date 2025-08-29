@@ -55,6 +55,16 @@ REDIRECTS = [
         "new_path": "/dawson-tou",
         "is_permanent": True,
     },
+    {
+        "old_path": "/taxpayers_start.html",
+        "new_path": "/petitioners-start/",
+        "is_permanent": True,
+    },
+    {
+        "old_path": "/resources/ropp/Rule-27_Amended_03202023.pdf",
+        "new_path": "/files/documents/rule-27.pdf",
+        "is_permanent": True,
+    },
 ]
 
 

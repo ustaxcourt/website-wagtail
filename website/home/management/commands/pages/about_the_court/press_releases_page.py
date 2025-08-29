@@ -1748,14 +1748,14 @@ class PressReleasesPageInitializer(PageInitializer):
                             {
                                 "release_date": datetime(2003, 4, 22).date(),
                                 "details": {
-                                    "description": "Judge Robert A. Wherry, Jr. Sworn In",
+                                    "description": "Judge Joseph Robert Goeke Sworn In",
                                     "file": press_releases_docs["042203_Goeke.pdf"],
                                 },
                             },
                             {
                                 "release_date": datetime(2003, 4, 22).date(),
                                 "details": {
-                                    "description": "Judge Joseph Robert Goeke Sworn In",
+                                    "description": "Judge Harry A. Haines Sworn In",
                                     "file": press_releases_docs["042203_Haines.pdf"],
                                 },
                             },
