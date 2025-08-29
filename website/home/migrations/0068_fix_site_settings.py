@@ -30,7 +30,7 @@ def update_site_backward(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0066_commontext_note_commontext_review_by_and_more"),
+        ("home", "0067_alter_enhancedstandardpage_body"),
     ]
 
     operations = [
