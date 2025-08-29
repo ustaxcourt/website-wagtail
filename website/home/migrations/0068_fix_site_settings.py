@@ -1,6 +1,7 @@
 import os
 from django.db import migrations
 
+
 def update_site_forward(apps, schema_editor):
     """
     Update the default Wagtail Site object with the correct hostname,
@@ -21,12 +22,14 @@ def update_site_forward(apps, schema_editor):
             "hostname": hostname,
             "port": port,
             "site_name": site_name,
-            "root_url": hostname
+            "root_url": hostname,
         },
     )
 
+
 def update_site_backward(apps, schema_editor):
     pass
+
 
 class Migration(migrations.Migration):
     dependencies = [

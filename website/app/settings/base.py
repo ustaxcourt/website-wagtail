@@ -334,6 +334,7 @@ ALLOWED_HOSTS = [
     f"www.{os.getenv('DOMAIN_NAME')}",
 ]
 
+
 def _task_ips():
     """Return the task's IPv4 address(es) from the ECS metadata API."""
     meta = os.getenv("ECS_CONTAINER_METADATA_URI_V4") or os.getenv(

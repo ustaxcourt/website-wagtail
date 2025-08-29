@@ -17,7 +17,7 @@ ENVIRONMENT = "dev"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = f"https://{os.getenv("DOMAIN_NAME")}"
+WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 print(f"WAGTAILADMIN_BASE_URL in dev.py: {WAGTAILADMIN_BASE_URL}")
