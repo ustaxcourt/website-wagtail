@@ -59,4 +59,4 @@ USER wagtail
 RUN python manage.py collectstatic --noinput --clear
 
 # Run the service
-CMD set -xe; gunicorn app.wsgi:application
+CMD ["gunicorn", "--env", "DJANGO_SETTINGS_MODULE=app.settings.$ENVIRONMENT", "app.wsgi:application"]
