@@ -6,7 +6,7 @@ def run_backfill_live_revisions(apps, schema_editor):
     "Run custom backfill_live_revisions management command"
 
     try:
-        call_command("backfill_live_revisions", "--dry-run=False")
+        call_command("backfill_live_revisions")
     except Exception as e:
         print(f"Warning: backfill_live_revisions failed: {e}")
 
