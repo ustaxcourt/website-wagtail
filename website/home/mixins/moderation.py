@@ -148,6 +148,10 @@ class ModerationMixin(models.Model):
                 )
                 # Direct model save; Django's save() doesn't call full_clean
                 super().save(update_fields=["review_by"])
+            else:
+                if not review_by_from_revision:
+                    self.review_by = None
+                    super().save(update_fields=["review_by"])
         return revision
 
     def on_workflow_cancelled(self):
