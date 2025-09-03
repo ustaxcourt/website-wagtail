@@ -1,6 +1,3 @@
-import re
-import os
-from datetime import datetime
 from collections import defaultdict
 from operator import itemgetter
 
@@ -11,23 +8,13 @@ from wagtail.fields import StreamField
 from wagtail.search import index
 from wagtail.admin.panels import FieldPanel
 from django.utils import timezone
-from django.utils.html import strip_tags
 from django.template.response import TemplateResponse
 
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
-from home.models.pages.home_page import HomePageEntry
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
-
-
-def extract_pdf_filename_from_body(html):
-    """Extracts the .pdf filename from an anchor tag's href in the HTML string. Returns the filename (e.g., '04072025.pdf') or None."""
-    match = re.search(r'href="([^"]+\.pdf)"', html or "", re.IGNORECASE)
-    if match:
-        pdf_url = match.group(1)
-        return os.path.basename(pdf_url)  # Extract just the filename
-    return None
+from home.models.snippets.news_item import NewsItem
 
 
 class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
@@ -96,71 +83,41 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     @property
     def group_press_releases_by_year(self):
         grouped = defaultdict(list)
-        seen_press_release_keys = set()  # (title, pdf), (description, file)
-        for block in self.press_release_body:
-            if block.block_type == "press_releases":
-                for release in block.value:
-                    release_date = release.get("release_date")
-                    # Normalize release_date to `date` type
-                    release_date = (
-                        release_date.date()
-                        if isinstance(release_date, datetime)
-                        else release_date
-                    )
-                    if release_date:
-                        year = release_date.year
-                        release["release_date"] = (
-                            release_date  # Ensure it stays consistent
-                        )
-                        grouped[year].append(release)
 
-                        # Track for duplication prevention
-                        details = release.get("details", {})
-                        description = strip_tags(
-                            details.get("description", "").strip().lower()
-                        )
-                        file = details.get("file")
+        news_items = (
+            NewsItem.objects.live()
+            .filter(publish_date__lte=timezone.now())
+            .order_by("-publish_date")
+        )
+        for news_item in news_items:
+            release_date = (
+                news_item.publish_date.date() if news_item.publish_date else None
+            )
+            if release_date:
+                year = release_date.year
 
-                        if file and hasattr(file, "url"):
-                            pdf_filename = os.path.basename(file.url).strip().lower()
-                            seen_press_release_keys.add(("file", pdf_filename))
-
-                            if description:
-                                seen_press_release_keys.add(
-                                    ("desc+file", description, pdf_filename)
-                                )
-
-        # Step 2: Add homepage entries, only if not duplicate
-        persisted_entries = HomePageEntry.objects.filter(
-            persist_to_press_releases=True, end_date__lt=timezone.now()
-        ).order_by("-end_date")
-
-        for entry in persisted_entries:
-            pdf_url = extract_pdf_filename_from_body(entry.body)
-            pdf_filename = os.path.basename(pdf_url).strip().lower() if pdf_url else ""
-            title = entry.title.strip() if entry.title else ""
-            is_duplicate = ("file", pdf_filename) in seen_press_release_keys or (
-                "desc+file",
-                title,
-                pdf_filename,
-            ) in seen_press_release_keys
-            if is_duplicate:
-                continue
-
-            if not is_duplicate:
-                release_date = entry.end_date.date() if entry.end_date else None
-                year = release_date.year if release_date else "Unknown"
-                grouped[year].append(
-                    {
+                # Create release entry from NewsItem
+                if news_item.document:
+                    release_entry = {
+                        "is_news_item": True,
+                        "release_date": release_date,
+                        "details": {
+                            "description": news_item.title,
+                            "file": news_item.document,
+                        },
+                    }
+                    grouped[year].append(release_entry)
+                else:
+                    release_entry = {
+                        "id": news_item.id,
                         "is_homepage_entry": True,
                         "release_date": release_date,
-                        "id": entry.id,
-                        "title": entry.title,
-                        "body": entry.body,
-                        "file": pdf_filename,
+                        "title": news_item.title,
+                        "body": news_item.description,
+                        "file": None,
                     }
-                )
-        # Sort releases in each year by descending date
+                    grouped[year].append(release_entry)
+
         sorted_grouped = {
             year: sorted(releases, key=itemgetter("release_date"), reverse=True)
             for year, releases in grouped.items()

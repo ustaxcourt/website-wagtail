@@ -8,6 +8,8 @@ from django.template.loader import render_to_string
 from django.urls import path, reverse
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
+from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
@@ -115,6 +117,13 @@ def protect_special_judge_roles(request, snippets):
                 return redirect(reverse("wagtailsnippets:index"))
 
 
+@hooks.register("insert_global_admin_js")
+def global_admin_js():
+    return format_html(
+        '<script src="{}"></script>', static("home/js/news_item_admin.js")
+    )
+
+
 @hooks.register("after_edit_snippet")
 def purge_cache_for_snippet_related_pages(request, instance):
     """
@@ -132,6 +141,7 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationmenu": ["/"],
         "navigationribbon": ["/"],
         "simplecard": ["/"],
+        "newsitem": ["/home/press-releases/"],
     }
 
     # Purge CloudFront cache for all pages using wildcard when navigation menu changes
