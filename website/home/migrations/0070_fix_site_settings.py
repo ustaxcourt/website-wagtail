@@ -31,7 +31,7 @@ def update_site_backward(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0067_alter_enhancedstandardpage_body"),
+        ("home", "0069_homepage_static_text_cards"),
     ]
 
     operations = [
