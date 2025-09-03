@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import include, path, re_path
+from app.role_switcher.views import LocalLoginView
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -76,6 +77,9 @@ urlpatterns = [
     path(
         "admin-tools/role-switcher/", include("app.role_switcher.urls")
     ),  # Or your app's urls, adjust path as desired
+    path(
+        "admin/local-login/", LocalLoginView.as_view(), name="wagtailadmin_local_login"
+    ),
     path("admin/", include(wagtailadmin_urls)),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",

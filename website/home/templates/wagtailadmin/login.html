@@ -25,15 +25,6 @@
         transition: background-color 0.2s;
     }
     .azure-login:hover { background-color: #106ebe; color: white; }
-
-    .divider {
-        display: flex; align-items: center; text-align: center;
-        margin: 2rem 0; color: #666;
-    }
-    @media (prefers-color-scheme: dark) { .divider { color: #999; } }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #ddd; }
-    @media (prefers-color-scheme: dark) { .divider::before, .divider::after { border-bottom-color: #444; } }
-    .divider span { margin: 0 1rem; text-transform: uppercase; font-size: 0.8rem; font-weight: 500; }
 </style>
 {% endblock extra_css %}
 
@@ -44,7 +35,6 @@
     </div>
 
     <div class="messages" role="status">
-        {# Always show messages div so it can be appended to by JS #}
         {% if messages or form.errors %}
         <ul>
             {% if form.errors %}
@@ -68,53 +58,10 @@
 
     {% block above_login %}{% endblock %}
 
-    {# --- Always show SSO on both URLs --- #}
+    {# SSO only on the main login page #}
     <a href="{% url "social:begin" "azuread-tenant-oauth2" %}" class="azure-login">
-    {% trans "Login with Court SSO credentials" %}
+    {% trans "Login With Court SSO Credentials" %}
     </a>
-
-    {# --- Show the username/password form ONLY on the emergency local-login route --- #}
-    {% if request.resolver_match and request.resolver_match.url_name == 'wagtailadmin_local_login' %}
-    <div class="divider"><span>{% trans "or" %}</span></div>
-    <form class="login-form"
-          action=""  {# post back to this same route #}
-          method="post"
-          autocomplete="off"
-          novalidate>
-        {% block login_form %}
-        {% csrf_token %}
-        {% url 'wagtailadmin_home' as home_url %}
-        <input type="hidden" name="next" value="{{ next|default:home_url }}" />
-        {% block fields %}
-        {% formattedfield form.username %}
-        {% formattedfield form.password %}
-        {% if show_password_reset %}
-        <a class="reset-password" href="{% url 'wagtailadmin_password_reset' %}">
-            {% trans "Forgotten password?" %}
-        </a>
-        {% endif %}
-        {% block extra_fields %}
-        {% for field_name, field in form.extra_fields %}
-        {% formattedfield field %}
-        {% endfor %}
-        {% endblock extra_fields %}
-        {% include "wagtailadmin/shared/forms/single_checkbox.html" with label_classname="remember-me" name="remember" text=_("Remember me") %}
-        {% endblock %}
-        {% endblock %}
-        <footer class="form-actions">
-            {% block submit_buttons %}
-            <button type="submit"
-                    class="button button-longrunning"
-                    data-controller="w-progress"
-                    data-action="w-progress#activate"
-                    data-w-progress-active-value="{% trans 'Signing in…' %}">
-                {% icon name="spinner" %}
-                <em data-w-progress-target="label">{% trans 'Sign in' %}</em>
-            </button>
-            {% endblock %}
-        </footer>
-    </form>
-    {% endif %}
 
     {% block below_login %}{% endblock %}
 </main>
