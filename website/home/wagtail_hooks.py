@@ -311,8 +311,9 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
         return
 
     # 4. If they are different, send the email notification
-    page_edit_url = reverse("wagtailadmin_pages:edit", args=[page.id])
-
+    page_edit_url = request.build_absolute_uri(
+        reverse("wagtailadmin_pages:edit", args=[page.id])
+    )
     context = {
         "page": page,
         "editor": current_editor,
