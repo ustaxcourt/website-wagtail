@@ -37,7 +37,7 @@ class SSOOnlyUserCreationForm(WagtailUserCreationForm):
         super().__init__(*args, **kwargs)
         # Remove any password fields (e.g., password1/password2)
         for name in list(self.fields):
-            if name.startswith("password"):
+            if name.lower().startswith("password"):
                 self.fields.pop(name, None)
 
     def save(self, commit: bool = True):
@@ -59,5 +59,5 @@ class SSOOnlyUserEditForm(WagtailUserEditForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name in list(self.fields):
-            if name.startswith("password"):
+            if name.lower().startswith("password"):
                 self.fields.pop(name, None)

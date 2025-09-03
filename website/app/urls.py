@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import include, path, re_path
-from app.role_switcher.views import LocalLoginView
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -12,6 +11,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from search import views as search_views
+from app.role_switcher.views import LocalLoginView
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -94,6 +94,17 @@ urlpatterns = [
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    from django.views.generic import RedirectView
+
+    # 🔒 Dev-only convenience redirect so you can type /local-login/
+    # (Does NOT exist in prod; no path leakage.)
+    urlpatterns.insert(
+        0,
+        path(
+            "local-login/",
+            RedirectView.as_view(url="/admin/local-login/", permanent=False),
+        ),
+    )
 
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
