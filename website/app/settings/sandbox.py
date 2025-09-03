@@ -21,6 +21,6 @@ MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
-print(f"WAGTAILADMIN_BASE_URL in dev.py: {WAGTAILADMIN_BASE_URL}")
+print(f"WAGTAILADMIN_BASE_URL in sandbox.py: {WAGTAILADMIN_BASE_URL}")
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
