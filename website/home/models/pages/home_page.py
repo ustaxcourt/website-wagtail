@@ -2,22 +2,50 @@ from django.db import models
 from django.contrib import messages
 
 from wagtail.admin.panels import FieldPanel, InlinePanel
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page, Orderable, ParentalKey
 from wagtail.search import index
+from wagtail import blocks
 
 from django.utils import timezone
 from home.models.custom_blocks.add_entry_custom_button import AddEntryButton
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 
 
-class HomePage(Page):
+class StaticTextCardBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=2000, required=False, help_text="Card title")
+    body = blocks.RichTextBlock(required=False, help_text="Card content")
+    start_date = blocks.DateTimeBlock(
+        required=False, help_text="Start date for display"
+    )
+    end_date = blocks.DateTimeBlock(required=False, help_text="End date for display")
+
+    class Meta:
+        label = "Static Text Card"
+
+
+class HomePage(ModerationMixin, Page):
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+    static_text_cards = StreamField(
+        [
+            ("card", StaticTextCardBlock()),
+        ],
+        blank=True,
+        help_text="Add multiple static text cards",
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
+        FieldPanel("static_text_cards"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField("intro"),
@@ -26,10 +54,6 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context["now"] = timezone.now()
-        live_entries = HomePageEntry.objects.filter(homepage=self).filter(
-            models.Q(end_date__isnull=True) | models.Q(end_date__gte=timezone.now())
-        )
-        context["entries"] = live_entries
         return context
 
 

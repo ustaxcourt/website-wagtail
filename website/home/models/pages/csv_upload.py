@@ -2,6 +2,8 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 from django.db import models
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
+from home.models.custom_blocks.common import custom_promote_panels
+from home.admin.moderation import ModerationTabbedInterface
 
 
 class CSVUploadPage(EnhancedStandardPage):
@@ -14,6 +16,11 @@ class CSVUploadPage(EnhancedStandardPage):
     search_fields = EnhancedStandardPage.search_fields + [
         index.SearchField("csv_file"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels,
+        promote_panels=custom_promote_panels,
+    )
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

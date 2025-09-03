@@ -106,6 +106,9 @@ production-checks:
 createpages:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_pages
 
+updatepages:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py update_pages
+
 collectstatic:
 	. $(VENV) && python manage.py collectstatic --noinput --clear
 
@@ -126,3 +129,6 @@ rollbackmigrate:
 
 rollbackall:
 	. $(VENV) && python manage.py migrate home zero
+
+backfillliverevisions:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py backfill_live_revisions

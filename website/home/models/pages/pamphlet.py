@@ -2,6 +2,8 @@ from home.models.pages.standard import StandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.fields import RichTextField
 from wagtail.models import ParentalKey
+from home.admin.moderation import ModerationTabbedInterface
+from home.models.custom_blocks.common import custom_promote_panels
 from django.db import models
 
 
@@ -12,6 +14,12 @@ class PamphletsPage(StandardPage):
     content_panels = StandardPage.content_panels + [
         InlinePanel("entries", label="Entries"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels,
+        promote_panels=custom_promote_panels,
+        settings_panels=StandardPage.settings_panels,
+    )
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
