@@ -19,3 +19,7 @@ ENVIRONMENT = "sandbox"
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
+
+#  Wagtail to use the password-less forms
+WAGTAIL_USER_CREATION_FORM = "app.role_switcher.forms.SSOOnlyUserCreationForm"
+WAGTAIL_USER_EDIT_FORM = "app.role_switcher.forms.SSOOnlyUserEditForm"
