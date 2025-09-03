@@ -28,3 +28,7 @@ about_the_court_pages_to_initialize = [
     PressReleasesPageInitializer,
     InternshipProgramsPageInitializer,
 ]
+
+about_the_court_pages_to_update = [
+    PressReleasesPageInitializer,
+]

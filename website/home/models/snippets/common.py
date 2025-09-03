@@ -1,14 +1,18 @@
 from django.db import models
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, PublishingPanel
 from wagtail.fields import RichTextField
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
-from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
+from home.forms import ReviewByRequiredOnSubmitSnippetForm
+from wagtail.snippets.views.snippets import SnippetViewSet
 
 
-@register_snippet
-class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
+class CommonText(
+    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
+):
     name = models.CharField(
         max_length=255, help_text="Name of the text snippet", blank=False
     )
@@ -18,11 +22,13 @@ class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     )
     objects = PageQuerySet.as_manager()
 
-    panels = [
+    content_panels = [
         FieldPanel("name"),
         FieldPanel("text"),
-        PublishingPanel(),
     ]
+    panels = content_panels + [PublishingPanel()]
+
+    edit_handler = ModerationTabbedInterface.create_for_snippet(content_panels)
 
     def __str__(self):
         return self.name
@@ -30,3 +36,12 @@ class CommonText(WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model):
     @property
     def revisions(self):
         return self._revisions
+
+
+class CommonTextViewSet(SnippetViewSet):
+    model = CommonText
+    form_class = ReviewByRequiredOnSubmitSnippetForm
+    # Uses CommonText.edit_handler for UI
+
+
+register_snippet(CommonTextViewSet)

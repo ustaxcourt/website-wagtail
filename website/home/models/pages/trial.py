@@ -4,6 +4,8 @@ from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
 from home.models.custom_blocks.common import custom_promote_panels
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 from home.models.custom_blocks.alert_message import AlertMessageBlock
 
@@ -25,7 +27,7 @@ class TrialStateBlock(blocks.StructBlock):
     cities = blocks.ListBlock(TrialCityBlock())
 
 
-class PlacesOfTrialPage(Page):
+class PlacesOfTrialPage(ModerationMixin, Page):
     places_of_trial = StreamField(
         [("state", TrialStateBlock())],
         use_json_field=True,
@@ -46,6 +48,10 @@ class PlacesOfTrialPage(Page):
         FieldPanel("body"),
         FieldPanel("places_of_trial"),
     ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),

@@ -4,15 +4,23 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
 from django.utils.html import strip_tags
 from home.models.custom_blocks.common import custom_promote_panels
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 
-class StandardPage(Page):
+class StandardPage(ModerationMixin, Page):
     class Meta:
         abstract = False
 
     body = RichTextField(blank=True, help_text="Insert text here.")
 
-    content_panels = Page.content_panels + [FieldPanel("body")]
+    content_panels = Page.content_panels + [
+        FieldPanel("body"),
+    ]
+
+    edit_handler = ModerationTabbedInterface.create_for_page(
+        content_panels=content_panels, promote_panels=custom_promote_panels
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),

@@ -1,4 +1,5 @@
 # Code Styles
+
 This is a collection of code styles for Python, Django, Testing and IaC. This is a work in progress document and we intend to keep it updated.
 
 ## Python
@@ -41,6 +42,18 @@ Requirements are installed using `pip`. Local/development requirements go to `lo
 ## Terraform
 
 See: https://github.com/octoenergy/public-conventions/blob/main/conventions/terraform.md
+
+## Git Naming Conventions
+
+We are using Monday.com as an issue tracking system for project management. In order to get better metrics for performance and connect the code with the issues, we are requiring the following naming conventions for branches and pull requests:
+
+### Branch Names
+
+Please use a branch name that includes the Task ID in the name. **It must be uppercase** for it to properly link to the issue. For example, if the Task ID is "WAG-123" then the branch name should begin with "WAG-123-..." After that please use a brief summary of the work that the branch will do.
+
+### Pull Request Titles
+
+Please reference the Task ID in the Title or Description of any pull request. This way the Github integration will automatically connect a task in Monday.com with the Pull Request. Again, **it must be uppercase**. This will give us better insights and help drive decision making. For example, when you create a PR, please give it the title "Introduce Git Naming Conventions - WAG-375" or mention it in the description.
 
 ## Reference
 
