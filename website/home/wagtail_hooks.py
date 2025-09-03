@@ -319,6 +319,8 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
         "editor": current_editor,
         "submitter": original_submitter,
         "page_edit_url": page_edit_url,
+        "user": original_submitter,  # The 'user' is the recipient of the email
+        "base_url": request.build_absolute_uri("/")[:-1],
     }
 
     html_content = render_to_string(
