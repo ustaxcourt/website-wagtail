@@ -1,0 +1,34 @@
+<!--{% extends "wagtailadmin/base.html" %}-->
+<!--{% load i18n %}-->
+
+<!--{% block titletag %}{% trans "Emergency Login" %}{% endblock %}-->
+
+<!--{% block content %}-->
+<!--<div class="w-wrap">-->
+<!--    <div class="w-grid">-->
+<!--        <div class="w-col">-->
+<!--            <h1 class="w-header__title">{% trans "Emergency Admin Login" %}</h1>-->
+<!--            <div class="w-panel">-->
+<!--                {% if form.errors %}-->
+<!--                <p class="error">{% trans "Please check your credentials and try again." %}</p>-->
+<!--                {% endif %}-->
+<!--                <form method="post" novalidate>-->
+<!--                    {% csrf_token %}-->
+<!--                    <div class="field">-->
+<!--                        <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>-->
+<!--                        {{ form.username }}-->
+<!--                    </div>-->
+<!--                    <div class="field">-->
+<!--                        <label for="{{ form.password.id_for_label }}">{% trans "Password" %}</label>-->
+<!--                        {{ form.password }}-->
+<!--                    </div>-->
+<!--                    <button class="button button-primary" type="submit">{% trans "Log in" %}</button>-->
+<!--                </form>-->
+<!--                <p class="help">-->
+<!--                    {% trans "This endpoint is for break-glass access only. It is not linked anywhere and is blocked from indexing." %}-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--{% endblock %}-->
