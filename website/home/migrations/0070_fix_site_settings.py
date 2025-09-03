@@ -12,6 +12,7 @@ def update_site_forward(apps, schema_editor):
     # Get values from environment variables, with sensible defaults
     hostname = os.getenv("DOMAIN_NAME")
     port = os.getenv("WAGTAIL_PORT", 80)
+    site_name = os.getenv("WAGTAIL_SITE_NAME", "Lower environment site")
 
     # Use update_or_create to safely update the default site,
     # or create it if it doesn't exist.
@@ -21,6 +22,7 @@ def update_site_forward(apps, schema_editor):
             "hostname": hostname,
             "port": port,
             "root_url": hostname,
+            "site_name": site_name,
         },
     )
 
