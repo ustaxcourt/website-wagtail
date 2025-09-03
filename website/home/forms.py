@@ -8,25 +8,6 @@ class ReviewByRequiredOnSubmitForm(WagtailAdminPageForm):
     def _is_submit_for_moderation(self) -> bool:
         return any(k.startswith("action-submit") for k in self.data.keys())
 
-    def clean(self):
-        cleaned = super().clean()
-        if self._is_submit_for_moderation():
-            review_by = cleaned.get("review_by")
-            if review_by:
-                aware = (
-                    timezone.make_aware(review_by)
-                    if timezone.is_naive(review_by)
-                    else review_by
-                )
-                if aware <= timezone.now():
-                    self.add_error(
-                        "review_by",
-                        ValidationError(
-                            "Review by date and time cannot be in the past."
-                        ),
-                    )
-        return cleaned
-
 
 class ReviewByRequiredOnSubmitSnippetForm(WagtailAdminModelForm):
     """

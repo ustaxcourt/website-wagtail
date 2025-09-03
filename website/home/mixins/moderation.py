@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel
 from wagtail.admin.widgets import AdminDateTimeInput
@@ -37,98 +36,6 @@ class ModerationMixin(models.Model):
     class Meta:
         abstract = True
 
-    def _should_validate_review_by(self) -> bool:
-        """Only enforce 'required' when explicitly requested by submit flow."""
-        if getattr(self, "_skip_review_by_validation", False):
-            return False
-        return bool(getattr(self, "_require_review_by", False))
-
-    def clean(self):
-        """Validate review_by only when required; always sanity-check if provided."""
-        super().clean()
-
-        # Enforce "required" only when submit flow set the flag
-        if self._should_validate_review_by() and not self.review_by:
-            raise ValidationError(
-                {
-                    "review_by": "Review by date and time is required when submitting for moderation."
-                }
-            )
-
-        # If provided, ensure not in the past (safe to check anytime)
-        if self.review_by:
-            review_by_aware = (
-                timezone.make_aware(self.review_by)
-                if timezone.is_naive(self.review_by)
-                else self.review_by
-            )
-            grace_period = timezone.now() - timezone.timedelta(minutes=1)
-            if review_by_aware <= grace_period:
-                raise ValidationError(
-                    {"review_by": "Review by date and time cannot be in the past."}
-                )
-
-    def full_clean(self, exclude=None, validate_unique=True):
-        """
-        Override full_clean to detect preview operations and set _skip_review_by_validation.
-        We do NOT enforce 'required' here—only set the skip flag for previews.
-        """
-        import inspect
-
-        frame = inspect.currentframe()
-        is_likely_preview = False
-
-        try:
-            for _ in range(15):
-                frame = frame.f_back
-                if not frame:
-                    break
-
-                code = frame.f_code
-                filename = (code.co_filename or "").lower()
-                function_name = (code.co_name or "").lower()
-
-                if ("preview" in function_name) and ("wagtail" in filename):
-                    is_likely_preview = True
-                    break
-
-                if (
-                    ("wagtail" in filename)
-                    and ("admin" in filename)
-                    and ("view" in filename)
-                ):
-                    try:
-                        local_vars = frame.f_locals
-                        request = local_vars.get("request")
-                        if request and hasattr(request, "POST"):
-                            post_data = request.POST
-                            if (post_data.get("action") == "preview") or (
-                                "preview" in post_data.get("submit", "")
-                            ):
-                                is_likely_preview = True
-                                break
-                    except Exception:
-                        # Ignore frame parsing errors
-                        pass
-
-                if any(
-                    tag in filename
-                    for tag in [
-                        "test_",
-                        "pytest",
-                        "unittest",
-                        "test_preview_validation",
-                    ]
-                ):
-                    is_likely_preview = False
-                    break
-        finally:
-            del frame
-
-        self._skip_review_by_validation = bool(is_likely_preview)
-
-        return super().full_clean(exclude=exclude, validate_unique=validate_unique)
-
     def save_revision(self, *args, **kwargs):
         """
         Allow callers to pass clean=False (e.g., after we clear review_by post-submit).
@@ -149,9 +56,8 @@ class ModerationMixin(models.Model):
                 # Direct model save; Django's save() doesn't call full_clean
                 super().save(update_fields=["review_by"])
             else:
-                if not review_by_from_revision:
-                    self.review_by = None
-                    super().save(update_fields=["review_by"])
+                self.review_by = None
+                super().save(update_fields=["review_by"])
         return revision
 
     def on_workflow_cancelled(self):
