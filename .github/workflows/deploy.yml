@@ -212,6 +212,32 @@ jobs:
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make production-checks settings="app.settings.${ENVIRONMENT}"
 
+          echo "--- Starting URL redirect check ---"
+          # Install script dependencies
+          pip install requests
+
+          # Run the URL checker script
+          cd utilities
+          python redirect_validator/url_checker.py "https://${DOMAIN_NAME}" "redirect_validator/paths_for_validation.csv" "url_check_results.csv"
+
+          # Optional: Check for 404s and fail the build if any are found
+          # The '!' before grep inverts the match, so it fails if '❌' is found.
+          if grep -q '❌' url_check_results.csv; then
+            echo "❌ Critical error: Found 404 Not Found errors."
+            exit 1
+          else
+            echo "✅ No 404 errors found."
+          fi
+
+
+      - name: Upload URL Check Results
+        if: ${{ always() && env.ENVIRONMENT == 'dev' }} # always() ensures this runs even if previous steps fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: url-check-results-${{ github.run_id }}
+          path: website/url_check_results.csv
+
+
       - name: Terminate Bastion Host
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
