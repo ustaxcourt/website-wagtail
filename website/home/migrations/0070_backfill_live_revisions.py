@@ -19,7 +19,7 @@ def reverse_backfill_live_revisions(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("home", "0067_alter_enhancedstandardpage_body")]
+    dependencies = [("home", "0069_homepage_static_text_cards")]
     operations = [
         migrations.RunPython(
             run_backfill_live_revisions,
