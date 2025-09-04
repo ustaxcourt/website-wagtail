@@ -22,8 +22,6 @@ if not os.getenv("GITHUB_SHA"):
         or "development"
     )
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
 
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 

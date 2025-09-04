@@ -15,8 +15,6 @@ DEBUG = False
 BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 ENVIRONMENT = "dev"
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
