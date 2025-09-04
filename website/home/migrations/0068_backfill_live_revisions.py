@@ -12,6 +12,9 @@ def run_backfill_live_revisions(apps, schema_editor):
 
 
 def reverse_backfill_live_revisions(apps, schema_editor):
+    # Reverse migration does nothing - we aren't making any schema changes and it is
+    # a bit hard to un-backfill the data in this scenario because it'd be difficult
+    # to figure out which records were added to original backfill operation
     pass
 
 
