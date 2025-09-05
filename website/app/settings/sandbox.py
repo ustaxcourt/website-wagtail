@@ -21,4 +21,6 @@ WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
 
-EMAIL_BACKEND = "django_ses.SESBackend"  # TODO: Update to logging after testing
+logger.info(f"Email backend: {EMAIL_BACKEND}")
+
+WAGTAILADMIN_NOTIFICATION_USE_HTML = False
