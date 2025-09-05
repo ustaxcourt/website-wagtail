@@ -2,7 +2,6 @@
 
 import django.db.models.deletion
 import wagtail.fields
-import wagtail.models.workflows
 import wagtail.search.index
 from django.conf import settings
 from django.db import migrations, models
@@ -264,7 +263,7 @@ class Migration(migrations.Migration):
                 "ordering": ["-created_at"],
             },
             bases=(
-                wagtail.models.workflows.WorkflowMixin,
+                wagtail.models.WorkflowMixin,
                 wagtail.search.index.Indexed,
                 models.Model,
             ),

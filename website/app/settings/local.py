@@ -41,3 +41,5 @@ SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 logger.info(f"Email backend: {EMAIL_BACKEND}")
+
+WAGTAILADMIN_NOTIFICATION_USE_HTML = False
