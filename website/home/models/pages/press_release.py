@@ -6,14 +6,11 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.fields import StreamField
 from wagtail.search import index
-from wagtail.admin.panels import FieldPanel
 from django.utils import timezone
 from django.template.response import TemplateResponse
 
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
-from home.admin.moderation import ModerationTabbedInterface
-from home.models.custom_blocks.common import custom_promote_panels
 from home.models.snippets.news_item import NewsItem
 
 
@@ -54,18 +51,9 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
         null=True,
     )
 
-    content_panels = EnhancedStandardPage.content_panels + [
-        FieldPanel("press_release_body"),
-    ]
-
     search_fields = EnhancedStandardPage.search_fields + [
         index.SearchField("press_release_body"),
     ]
-
-    edit_handler = ModerationTabbedInterface.create_for_page(
-        content_panels=content_panels,
-        promote_panels=custom_promote_panels,
-    )
 
     @route("archives/")
     def archive_view(self, request):
