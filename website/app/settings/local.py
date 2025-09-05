@@ -3,6 +3,9 @@ from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 from datetime import date
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 os.environ.setdefault("DEBUG_TOOLBAR_ENABLED", "False")
@@ -34,3 +37,7 @@ LOGGING["loggers"]["home"]["level"] = "DEBUG"
 LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+logger.info(f"Email backend: {EMAIL_BACKEND}")

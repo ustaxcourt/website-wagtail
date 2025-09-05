@@ -325,8 +325,6 @@ BASE_URL = "http://127.0.0.1:8000"
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
 
-EMAIL_BACKEND = "django_ses.SESBackend"
-
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
