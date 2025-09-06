@@ -176,6 +176,7 @@ key.pem
 
 # infra
 infra/execution-plan
+infra/terraform.tfvars
 infra/destructive-plan
 infra/iam/*generated-deployer-access-key.json
 
