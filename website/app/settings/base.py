@@ -122,9 +122,6 @@ ENABLE_LOCAL_LOGIN = os.getenv("ENABLE_LOCAL_LOGIN", "false").lower() == "true"
 LOCAL_LOGIN_TOKEN = os.getenv("LOCAL_LOGIN_TOKEN", "")
 CYPRESS_LOCAL_LOGIN_TOKEN = os.getenv("CYPRESS_LOCAL_LOGIN_TOKEN", "")
 
-# Make Wagtail user create/edit forms password-less and set unusable passwords by default
-WAGTAIL_USER_CREATION_FORM = "app.role_switcher.forms.SSOOnlyUserCreationForm"
-WAGTAIL_USER_EDIT_FORM = "app.role_switcher.forms.SSOOnlyUserEditForm"
 
 # Azure AD (python-social-auth) configuration
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(

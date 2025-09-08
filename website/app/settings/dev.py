@@ -22,3 +22,6 @@ WAGTAILADMIN_BASE_URL = f"http://{ENVIRONMENT}-web.ustaxcourt.com"
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
+
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+WAGTAILUSERS_PASSWORD_ENABLED = False

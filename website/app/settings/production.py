@@ -15,3 +15,6 @@ BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = "http://ustaxcourt.com"
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
+
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+WAGTAILUSERS_PASSWORD_ENABLED = False

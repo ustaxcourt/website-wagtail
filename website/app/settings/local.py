@@ -1,8 +1,8 @@
-from .base import *  # noqa: F403
-from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 from datetime import date
+
+from .base import LOGGING  # noqa: F403
 
 # ------------------------------------------------------------
 # Local/dev toggles
@@ -40,12 +40,9 @@ ENABLE_LOCAL_LOGIN = True
 LOCAL_LOGIN_TOKEN = ""  # e.g., "dev-secret-123" to require ?token=dev-secret-123
 CYPRESS_LOCAL_LOGIN_TOKEN = ""  # set only in e2e runs if needed
 
-# ------------------------------------------------------------
-# Make Wagtail Add/Edit User password-less for new users
-# (New users get an unusable password -> cannot use local creds; must use SSO)
-# ------------------------------------------------------------
-WAGTAIL_USER_CREATION_FORM = "app.role_switcher.forms.SSOOnlyUserCreationForm"
-WAGTAIL_USER_EDIT_FORM = "app.role_switcher.forms.SSOOnlyUserEditForm"
+# settings.py
+WAGTAILUSERS_PASSWORD_REQUIRED = True
+WAGTAILUSERS_PASSWORD_ENABLED = True
 
 # ------------------------------------------------------------
 # Logging: use the simple (human-readable) logger locally
