@@ -11,7 +11,8 @@ ENVIRONMENT = "production"
 
 BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://ustaxcourt.com"
+WAGTAIL_SITE_NAME = "Official Site of the United States Tax Court."
+
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
+
+EMAIL_BACKEND = "django_ses.SESBackend"
