@@ -17,12 +17,6 @@ from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
-from app.role_switcher.forms import (
-    SSOOnlyUserCreationForm,
-    SSOOnlyUserEditForm,
-)
-from wagtail.users.views import users as user_views
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -300,6 +294,13 @@ def force_passwordless_user_forms():
     Ensure the Wagtail Users > Add/Edit forms never show password fields.
     Works across Wagtail versions by trying both view class names.
     """
+    # Lazy import
+    from app.role_switcher.forms import (
+        SSOOnlyUserCreationForm,
+        SSOOnlyUserEditForm,
+    )
+    from wagtail.users.views import users as user_views
+
     for create_name, edit_name in [
         ("UserCreateView", "UserEditView"),
         ("CreateView", "EditView"),

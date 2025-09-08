@@ -25,19 +25,18 @@ class RevertRoleForm(forms.Form):
 
 
 class SSOOnlyUserCreationForm(WagtailUserCreationForm):
-    """
-    Add User without password fields. New users get an unusable password
-    so they cannot log in with credentials; they must use SSO.
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Remove any password fields (case-insensitive)
         for name in list(self.fields):
             if name.lower().startswith("password"):
                 self.fields.pop(name, None)
 
-    def save(self, commit: bool = True):
+    def clean(self):
+        # bypass UserCreationForm password validation
+        return forms.ModelForm.clean(self)
+
+    def save(self, commit=True):
+        # bypass parent save() (expects password1)
         user = forms.ModelForm.save(self, commit=False)
         user.set_unusable_password()
         if commit:
@@ -47,10 +46,6 @@ class SSOOnlyUserCreationForm(WagtailUserCreationForm):
 
 
 class SSOOnlyUserEditForm(WagtailUserEditForm):
-    """
-    Edit User without password fields.
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name in list(self.fields):
