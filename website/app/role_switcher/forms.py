@@ -9,6 +9,7 @@ from wagtail.users.forms import (
 User = get_user_model()
 
 
+# ---- Role switcher forms (unchanged) ----
 class RoleSwitchForm(forms.Form):
     role = forms.ModelChoiceField(
         queryset=Group.objects.all(),
@@ -20,29 +21,24 @@ class RoleSwitchForm(forms.Form):
 
 
 class RevertRoleForm(forms.Form):
-    # This is a dummy form, primarily for the CSRF token and button
     pass
 
 
-# -------------------------------------------------------
-# Wagtail user forms: SSO-only, no password fields shown
-# -------------------------------------------------------
 class SSOOnlyUserCreationForm(WagtailUserCreationForm):
     """
-    Wagtail 'Add user' form without password fields.
-    New users get an unusable password so they cannot log in with credentials.
+    Add User without password fields. New users get an unusable password
+    so they cannot log in with credentials; they must use SSO.
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Remove any password fields (e.g., password1/password2)
+        # Remove any password fields (case-insensitive)
         for name in list(self.fields):
             if name.lower().startswith("password"):
                 self.fields.pop(name, None)
 
     def save(self, commit: bool = True):
-        user = super().save(commit=False)
-        # Ensure they cannot authenticate with username/password
+        user = forms.ModelForm.save(self, commit=False)
         user.set_unusable_password()
         if commit:
             user.save()
@@ -52,8 +48,7 @@ class SSOOnlyUserCreationForm(WagtailUserCreationForm):
 
 class SSOOnlyUserEditForm(WagtailUserEditForm):
     """
-    Wagtail 'Edit user' form without password fields.
-    Password management should be handled explicitly by an admin if ever needed.
+    Edit User without password fields.
     """
 
     def __init__(self, *args, **kwargs):

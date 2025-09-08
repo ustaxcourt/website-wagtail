@@ -117,10 +117,6 @@ TEMPLATES = [
     },
 ]
 
-# ------------------------------
-# SSO (Azure) + hidden local-login split
-# ------------------------------
-
 # Env flags for the hidden local (emergency) login page. Keep disabled in prod.
 ENABLE_LOCAL_LOGIN = os.getenv("ENABLE_LOCAL_LOGIN", "false").lower() == "true"
 LOCAL_LOGIN_TOKEN = os.getenv("LOCAL_LOGIN_TOKEN", "")

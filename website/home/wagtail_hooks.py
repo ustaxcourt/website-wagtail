@@ -17,6 +17,11 @@ from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+from app.role_switcher.forms import (
+    SSOOnlyUserCreationForm,
+    SSOOnlyUserEditForm,
+)
+from wagtail.users.views import users as user_views
 
 import logging
 
@@ -287,3 +292,24 @@ def register_add_entry_above_url():
             name="add_entry_above_view",
         ),
     ]
+
+
+@hooks.register("register_admin_urls")
+def force_passwordless_user_forms():
+    """
+    Ensure the Wagtail Users > Add/Edit forms never show password fields.
+    Works across Wagtail versions by trying both view class names.
+    """
+    for create_name, edit_name in [
+        ("UserCreateView", "UserEditView"),
+        ("CreateView", "EditView"),
+    ]:
+        create_cls = getattr(user_views, create_name, None)
+        edit_cls = getattr(user_views, edit_name, None)
+        if create_cls and edit_cls:
+            create_cls.form_class = SSOOnlyUserCreationForm
+            edit_cls.form_class = SSOOnlyUserEditForm
+            break
+
+    # No URLs added by this hook, return an empty list
+    return []
