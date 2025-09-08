@@ -25,13 +25,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
 - **Database authentication:** Choose "Password authentication".
 - Launch the instance and wait for it to become available.
 
-### 3. Inspect and Prepare the Restored Database
-
-- Connect to the restored database (via SSH tunnel, or psql).
-- Run migrations or repair scripts as needed.
-- Verify data integrity.
-
-### 4. Update Website Secrets
+### 3. Update Website Secrets
 
 **Before making any changes to secrets, save the current database password and any other secret information that will be changed. Store these values in a secure location (such as a password manager or encrypted file) so you can revert to the previous database instance if the process fails.**
 
@@ -41,7 +35,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
   - Update `DATABASE_PASSWORD` to the new RDS master password you set or generated during the restore or modification process. If you used the auto-generate option, copy the password when prompted and save it in your secrets or environment configuration. This password is not managed by AWS Secrets Manager for the RDS instance itself, but your application still needs it in its own secrets store.
 - Save changes.
 
-### 4a. (Optional) Auto-Generate and Retrieve RDS Password
+### 3a. (Optional) Auto-Generate and Retrieve RDS Password
 
 - If you need to generate a new password for your RDS instance:
   - Go to **AWS Console > RDS > Databases**.
@@ -53,7 +47,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
   - Immediately update your secret in **Secrets Manager** with the new password value.
   - Save changes.
 
-### 4b. Import the New RDS Instance into Terraform
+### 3b. Import the New RDS Instance into Terraform
 
 - After creating or restoring your RDS instance, import it into Terraform state:
   1. Get the new RDS instance identifier from the AWS Console.
@@ -63,24 +57,24 @@ This document describes the steps to manually replace the Wagtail website’s RD
      ```
   3. Run `terraform plan` to verify Terraform recognizes the imported instance.
 
-### 5. Redeploy ECS Service
+### 4. Redeploy ECS Service
 
 - Go to **ECS > Clusters > [your cluster] > Services > [your service]**.
 - Click **Update Service > Force new deployment**.
 - Confirm redeployment.
 
-### 6. Verify Website Functionality
+### 5. Verify Website Functionality
 
 - Check website and admin for expected data.
 - Review ECS logs for database connection errors.
 - Confirm users can access the site.
 
-### 7. Rollback (if needed)
+### 6. Rollback (if needed)
 
 - If issues occur, revert secrets/config to previous database values.
 - Redeploy ECS service again.
 
-### 8. Cleanup and Documentation
+### 7. Cleanup and Documentation
 
 - Optionally, delete the old RDS instance after confirming the new one works.
 - Delete old database if no longer needed.
