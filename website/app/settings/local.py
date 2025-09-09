@@ -26,10 +26,8 @@ if not os.getenv("GITHUB_SHA"):
         or "development"
     )
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://localhost:8000"
-BASE_URL = "http://localhost:8000"
+
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 WAGTAILUSERS_PASSWORD_REQUIRED = True
 WAGTAILUSERS_PASSWORD_ENABLED = True
@@ -47,3 +45,7 @@ LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"
 
 # Local/dev site should not be treated as live
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+WAGTAILADMIN_NOTIFICATION_USE_HTML = False
