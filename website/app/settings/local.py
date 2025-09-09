@@ -1,5 +1,3 @@
-from .base import *  # noqa: F403
-from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 from datetime import date
@@ -39,12 +37,12 @@ BASE_URL = "http://localhost:8000"
 # If you want to gate it with a token, set LOCAL_LOGIN_TOKEN to a non-empty value
 # and pass ?token=YOUR_VALUE on the URL.
 # ------------------------------------------------------------
-ENABLE_LOCAL_LOGIN = True
-LOCAL_LOGIN_TOKEN = ""
-CYPRESS_LOCAL_LOGIN_TOKEN = ""
+# ENABLE_LOCAL_LOGIN = True
+# LOCAL_LOGIN_TOKEN = ""
+# CYPRESS_LOCAL_LOGIN_TOKEN = ""
 
-WAGTAILUSERS_PASSWORD_REQUIRED = False
-WAGTAILUSERS_PASSWORD_ENABLED = False
+WAGTAILUSERS_PASSWORD_REQUIRED = True
+WAGTAILUSERS_PASSWORD_ENABLED = True
 
 
 # ------------------------------------------------------------

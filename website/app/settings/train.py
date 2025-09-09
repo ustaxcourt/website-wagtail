@@ -18,7 +18,8 @@ ENVIRONMENT = "train"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
-SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
-
+# settings.py
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
+
+SITE_IS_LIVE = date.today() >= date(2999, 6, 1)

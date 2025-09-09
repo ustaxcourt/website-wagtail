@@ -18,12 +18,8 @@ ENVIRONMENT = "sandbox"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
-SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
-
-ENABLE_LOCAL_LOGIN = True
-LOCAL_LOGIN_TOKEN = os.getenv("LOCAL_LOGIN_TOKEN", "")
-CYPRESS_LOCAL_LOGIN_TOKEN = os.getenv("CYPRESS_LOCAL_LOGIN_TOKEN", "")
-
 # settings.py
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
+
+SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
