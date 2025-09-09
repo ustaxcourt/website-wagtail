@@ -1,3 +1,5 @@
+from .base import *  # noqa: F403
+from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 from datetime import date
@@ -34,15 +36,16 @@ BASE_URL = "http://localhost:8000"
 # ------------------------------------------------------------
 # Enable the hidden local (emergency) login page in dev
 # Visit: http://127.0.0.1:8000/admin/local-login/
-# If you set a token below, append ?token=YOUR_VALUE to the URL.
+# If you want to gate it with a token, set LOCAL_LOGIN_TOKEN to a non-empty value
+# and pass ?token=YOUR_VALUE on the URL.
 # ------------------------------------------------------------
 ENABLE_LOCAL_LOGIN = True
-LOCAL_LOGIN_TOKEN = ""  # e.g., "dev-secret-123" to require ?token=dev-secret-123
-CYPRESS_LOCAL_LOGIN_TOKEN = ""  # set only in e2e runs if needed
+LOCAL_LOGIN_TOKEN = ""
+CYPRESS_LOCAL_LOGIN_TOKEN = ""
 
-# settings.py
-WAGTAILUSERS_PASSWORD_REQUIRED = True
-WAGTAILUSERS_PASSWORD_ENABLED = True
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+WAGTAILUSERS_PASSWORD_ENABLED = False
+
 
 # ------------------------------------------------------------
 # Logging: use the simple (human-readable) logger locally

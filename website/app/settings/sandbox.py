@@ -1,24 +1,23 @@
+from .base import *  # noqa: F403
+from .base import MIDDLEWARE
 import os
 from datetime import date
 
-from .base import MIDDLEWARE
 
-# Pull in any local overrides first (if present)
 try:
     from .local import *  # noqa: F403
+
 except ImportError:
     pass
 
-# --- Core sandbox settings ---
 SECRET_KEY = os.getenv("SECRET_KEY")
+
 DEBUG = False
 BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 ENVIRONMENT = "sandbox"
 
-# Prepend any sandbox-only middleware
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
-# Sandbox site should not be treated as live
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
 
 ENABLE_LOCAL_LOGIN = True
