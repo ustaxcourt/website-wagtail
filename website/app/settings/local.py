@@ -1,8 +1,8 @@
+from .base import *  # noqa: F403
+from .base import LOGGING  # noqa: F403
 import os
 import subprocess
 from datetime import date
-
-from .base import LOGGING  # noqa: F403
 
 # ------------------------------------------------------------
 # Local/dev toggles
