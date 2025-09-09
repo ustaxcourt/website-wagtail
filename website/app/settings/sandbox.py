@@ -3,7 +3,6 @@ from .base import MIDDLEWARE
 import os
 from datetime import date
 
-
 try:
     from .local import *  # noqa: F403
 
@@ -18,4 +17,10 @@ ENVIRONMENT = "sandbox"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+WAGTAILADMIN_NOTIFICATION_USE_HTML = False

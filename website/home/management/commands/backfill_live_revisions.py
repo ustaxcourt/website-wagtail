@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 
 from wagtail.models import Page as LivePage
 
@@ -54,8 +55,10 @@ class Command(BaseCommand):
         dry = opts["dry_run"]
         limit = opts["limit"]
 
-        qs = LivePage.objects.filter(live=True, live_revision__isnull=True).order_by(
-            "id"
+        qs = (
+            LivePage.objects.filter(live=True)
+            .filter(Q(live_revision__isnull=True) | Q(first_published_at__isnull=True))
+            .order_by("id")
         )
         if limit:
             qs = qs[:limit]
@@ -111,13 +114,27 @@ class Command(BaseCommand):
                     }
                     rev = REVISION_IMPL.objects.create(**kwargs)
 
+                published_ts = (
+                    page.first_published_at
+                    or getattr(page, "last_published_at", None)
+                    or created_at
+                )
+
                 # Point the page at this revision as live without touching drafts
                 page.live_revision = rev
 
                 # Only set latest_revision_created_at if it's currently null
+                if not page.first_published_at:
+                    page.first_published_at = published_ts
                 if not page.latest_revision_created_at:
                     page.latest_revision_created_at = created_at
 
-                page.save(update_fields=["live_revision", "latest_revision_created_at"])
+                page.save(
+                    update_fields=[
+                        "live_revision",
+                        "first_published_at",
+                        "latest_revision_created_at",
+                    ]
+                )
 
         self.stdout.write(self.style.SUCCESS("Backfill complete."))
