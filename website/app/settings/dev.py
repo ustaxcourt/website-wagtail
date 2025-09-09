@@ -15,9 +15,7 @@ DEBUG = False
 BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 ENVIRONMENT = "dev"
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = f"http://{ENVIRONMENT}-web.ustaxcourt.com"
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
@@ -25,3 +23,7 @@ WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+WAGTAILADMIN_NOTIFICATION_USE_HTML = False

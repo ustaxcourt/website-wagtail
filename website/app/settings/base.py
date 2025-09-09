@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
+    "django_ses",
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
@@ -285,6 +286,8 @@ if aws_bucket_name:
     if os.getenv("AWS_ACCESS_KEY_ID"):
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+        AWS_SES_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+        AWS_SES_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # Wagtail settings
 WAGTAIL_SITE_NAME = "USTC Website"
@@ -327,8 +330,6 @@ BASE_URL = "http://127.0.0.1:8000"
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -423,3 +424,9 @@ LOGGING = {
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
+
+AWS_SES_REGION_NAME = "us-east-1"
+DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
+WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+
+WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
