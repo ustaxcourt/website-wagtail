@@ -10,17 +10,12 @@ class JSONExceptionMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
+        # Check for 404 responses
         if response.status_code == 404:
-            referer = (request.META.get("HTTP_REFERRER", ""),)
-            user_agent = (request.META.get("HTTP_USER_AGENT", ""),)
+            referer = request.META.get("HTTP_REFERER", "")
+            # user_agent = request.META.get("HTTP_USER_AGENT", "")
             self.logger.warning(
-                "404 Not Found",
-                extra={
-                    "path": request.path,
-                    "method": request.method,
-                    "referer": referer,
-                    "user_agent": user_agent,
-                },
+                f"404 Not Found: path={request.path}, referer={referer}, user_agent={request.META.get('HTTP_USER_AGENT', '')}"
             )
         return response
 
