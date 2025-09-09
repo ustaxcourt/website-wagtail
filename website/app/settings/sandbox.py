@@ -1,8 +1,7 @@
-from .base import *  # noqa: F403
-from .base import MIDDLEWARE
 import os
 from datetime import date
 
+from .base import MIDDLEWARE
 
 try:
     from .local import *  # noqa: F403

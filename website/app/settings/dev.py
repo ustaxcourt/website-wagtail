@@ -1,7 +1,7 @@
-from .base import *  # noqa: F403
-from .base import MIDDLEWARE  # noqa: F403
 import os
 from datetime import date
+
+from .base import MIDDLEWARE  # noqa: F403
 
 os.environ.setdefault("DJANGO_SUPERUSER_PASSWORD", "ustcAdminPW!")
 
