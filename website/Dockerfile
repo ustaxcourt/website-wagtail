@@ -58,5 +58,10 @@ USER wagtail
 # Collect static files.
 RUN python manage.py collectstatic --noinput --clear
 
-# Run the service
-CMD set -xe; gunicorn app.wsgi:application
+# 💡 Set the DJANGO_SETTINGS_MODULE environment variable.
+# This correctly substitutes the $ENVIRONMENT variable set at build time.
+ENV DJANGO_SETTINGS_MODULE=app.settings.$ENVIRONMENT
+
+# Run the service using the exec form without the --env flag.
+# Gunicorn will automatically pick up the DJANGO_SETTINGS_MODULE from the environment.
+CMD ["gunicorn", "app.wsgi:application"]
