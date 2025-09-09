@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0069_homepage_static_text_cards"),
+        ("home", "0070_backfill_live_revisions"),
     ]
 
     operations = [
