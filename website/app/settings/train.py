@@ -18,8 +18,6 @@ ENVIRONMENT = "train"
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 ENABLE_LOCAL_LOGIN = True
-LOCAL_LOGIN_TOKEN = ""
-CYPRESS_LOCAL_LOGIN_TOKEN = ""
 
 # settings.py
 WAGTAILUSERS_PASSWORD_REQUIRED = False

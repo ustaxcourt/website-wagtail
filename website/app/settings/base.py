@@ -119,8 +119,6 @@ TEMPLATES = [
 ]
 
 ENABLE_LOCAL_LOGIN = os.getenv("ENABLE_LOCAL_LOGIN", "False").lower() in ("true", "1")
-LOCAL_LOGIN_TOKEN = os.getenv("LOCAL_LOGIN_TOKEN", "")
-CYPRESS_LOCAL_LOGIN_TOKEN = os.getenv("CYPRESS_LOCAL_LOGIN_TOKEN", "")
 
 
 # Azure AD (python-social-auth) configuration

@@ -30,8 +30,6 @@ if not os.getenv("GITHUB_SHA"):
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 ENABLE_LOCAL_LOGIN = True
-LOCAL_LOGIN_TOKEN = ""
-CYPRESS_LOCAL_LOGIN_TOKEN = ""
 
 LOGIN_URL = "/admin/"
 
