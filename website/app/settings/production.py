@@ -15,6 +15,10 @@ BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = "http://ustaxcourt.com"
 
+ENABLE_LOCAL_LOGIN = True
+LOCAL_LOGIN_TOKEN = ""
+CYPRESS_LOCAL_LOGIN_TOKEN = ""
+
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
 
