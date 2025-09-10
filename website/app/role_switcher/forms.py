@@ -13,4 +13,5 @@ class RoleSwitchForm(forms.Form):
 
 
 class RevertRoleForm(forms.Form):
+    # This is a dummy form, primarily for the CSRF token and button
     pass
