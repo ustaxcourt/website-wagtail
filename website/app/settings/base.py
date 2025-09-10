@@ -118,8 +118,8 @@ TEMPLATES = [
     },
 ]
 
+# Enables local login for prod and prevents leak
 ENABLE_LOCAL_LOGIN = os.getenv("ENABLE_LOCAL_LOGIN", "False").lower() in ("true", "1")
-
 
 # Azure AD (python-social-auth) configuration
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(

@@ -15,8 +15,10 @@ BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = "http://ustaxcourt.com"
 
+# Enables local login
 ENABLE_LOCAL_LOGIN = True
 
+# Disable password when new users are being created in admin console
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
 

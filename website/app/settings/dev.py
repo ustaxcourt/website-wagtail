@@ -19,8 +19,10 @@ WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
+# Enables local login
 ENABLE_LOCAL_LOGIN = True
 
+# Disable password when new users are being created in admin console
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
 

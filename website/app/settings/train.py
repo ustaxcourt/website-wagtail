@@ -19,7 +19,7 @@ MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 ENABLE_LOCAL_LOGIN = True
 
-# settings.py
+# Disable password when new users are being created in admin console
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
 
