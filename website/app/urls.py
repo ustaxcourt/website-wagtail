@@ -69,7 +69,6 @@ def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
-# --- Base URL patterns (shared across envs) ---
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
@@ -79,25 +78,21 @@ urlpatterns = [
     ),
     path("django-admin/", admin.site.urls),
     path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
-    # Hidden local/emergency login endpoint (view enforces ENABLE_LOCAL_LOGIN)
     path(
         "admin/local-login/", LocalLoginView.as_view(), name="wagtailadmin_local_login"
     ),
-    # Wagtail admin
     path("admin/", include(wagtailadmin_urls)),
-    # Legacy resource redirect
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
         all_legacy_documents_redirect,
         name="all_legacy_documents_redirect",
     ),
-    # Docs / SSO / search
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
 ]
 
-# --- Local env override: make /admin/login/ go to the local username/password page ---
+# Redirects localhost:8000/admin to local-login
 if getattr(settings, "ENVIRONMENT", "") == "local":
     # Ensure our override is evaluated before Wagtail's admin/login
     urlpatterns.insert(
@@ -109,12 +104,11 @@ if getattr(settings, "ENVIRONMENT", "") == "local":
         ),
     )
 
-# --- Dev-only convenience: short /local-login/ helper and static serving ---
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-    # Type /local-login/ in dev; redirects to the real admin/local-login
+    # /local-login/ in dev redirects to the real admin/local-login
     urlpatterns.insert(
         0,
         path(
@@ -134,6 +128,12 @@ if settings.DEBUG:
             path("__debug__/", include("debug_toolbar.urls")),
         ]
 
-urlpatterns += [
+urlpatterns = urlpatterns + [
+    # For anything not caught by a more specific rule above, hand over to
+    # Wagtail's page serving mechanism. This should be the last pattern in
+    # the list:
     path("", include(wagtail_urls)),
+    # Alternatively, if you want Wagtail pages to be served from a subpath
+    # of your site, rather than the site root:
+    #    path("pages/", include(wagtail_urls)),
 ]
