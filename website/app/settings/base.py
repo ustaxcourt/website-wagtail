@@ -70,7 +70,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "app.middleware.JSONExceptionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -403,7 +402,7 @@ LOGGING = {
         "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
         "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
-        "django.request": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        "django.request": {"level": "INFO", "propagate": False, "handlers": ["aws"]},
         # topmost logger for wagtail-specific messages
         "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"

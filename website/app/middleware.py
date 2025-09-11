@@ -12,7 +12,7 @@ class JSONExceptionMiddleware:
 
         # Check for 404 responses
         if response.status_code == 404:
-            self.logger.warning(
+            self.logger.info(
                 "404 Not Found",
                 extra={
                     "path": request.path,
