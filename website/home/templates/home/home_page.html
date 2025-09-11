@@ -1,98 +1,157 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags wagtailimages_tags %}
-{% load static %}
+{% load static tz %}
+
 {% block body_class %}template-homepage{% endblock %}
-{% load tz %}
+
 {% block extra_css %}
-    {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
-    <style>
-        #home-page .entries-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+<style>
+    :root{
+      --masthead-h: 0px;       /* computed by JS */
+      --welcome-h: 136px;      /* target band height; measured post-render */
+      --container-w: 1120px;
+    }
 
-        #home-page .entries-list .entry {
-            border: 1px solid #BBB;
-            padding: 0px 30px;
-            padding-bottom: 40px;
-        }
+    /* Source Sans Pro per spec */
+    @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap");
+    .ssans { font-family: "Source Sans Pro", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; }
 
-        #home-page .content {
-            padding: 40px 0;
-        }
+    #home-page { background: #fff; }
+    .container { width: min(var(--container-w), 92vw); margin: 0 auto; }
 
-        #home-page .carousel {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-            max-height: 300px;
-            overflow: hidden;
-        }
+    /* HERO background canvas */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: clamp(420px, 56vh, 560px);
+      overflow: hidden;
+      background: #e6e6e6;
+    }
+    .hero img.hero-image {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+      display: block;
+    }
 
-        #home-page .hero-image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
-        }
+    /* FULL-WIDTH solid white strip under the menu bar */
+    .welcome-strip {
+      position: absolute;
+      top: var(--masthead-h);
+      left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid #dcdcdc;
+      border-bottom: 1px solid #dcdcdc;
+      z-index: 2;
+    }
+    .welcome-inner {
+      min-height: 136px;              /* spec: approx 136px */
+      padding: 16px 0;
+      display: flex;
+      align-items: center;            /* vertically center text */
+    }
+    .welcome-title {
+      margin: 0 0 6px 0;
+      font-weight: 400;               /* Regular */
+      font-size: 32px;                /* spec */
+      line-height: 38px;              /* spec */
+      color: #111;
+    }
+    .welcome-body,
+    .welcome-body p {
+      margin: 0;
+      font-weight: 400;               /* Regular */
+      font-size: 17px;                /* spec */
+      line-height: 20px;              /* spec */
+      color: #222;
+      font-family: "Source Sans Pro", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
 
-        #home-page .hero-image.active {
-            opacity: 1;
-        }
-    </style>
+    @media (max-width: 640px) {
+      .welcome-title { font-size: 28px; line-height: 34px; }
+      .tiles-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 1024px) and (min-width: 641px) {
+      .tiles-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
 {% endblock %}
+
 {% block extra_js %}
-    <script>
-        const rotationPeriod = 5000
+<script>
+    // Auto-fit white strip to hug the header stack; measure its height for tile overlap
+    function setWelcomeOffsets() {
+      const hero = document.querySelector('.hero');
+      const strip = document.querySelector('.welcome-strip');
+      if (!hero || !strip) return;
 
-        function rotateImages() {
-            const images = document.querySelectorAll('.hero-image')
-            let currentIndex = 0
+      const selectors = [
+        '.usa-banner',
+        '.testing-banner',
+        'header.site-header',
+        'header.global-header',
+        'header',
+        '#site-header',
+        '.global-header',
+        '.main-navigation',
+        '.nav-primary',
+        '.subnav',
+        '.nav-secondary'
+      ];
+      const heads = selectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
+      let headerBottom = 0;
+      heads.forEach(el => {
+        const r = el.getBoundingClientRect();
+        headerBottom = Math.max(headerBottom, r.bottom);
+      });
 
-            setInterval(() => {
-                images.forEach((img) => img.classList.remove('active'))
-                currentIndex = (currentIndex + 1) % images.length
-                images[currentIndex].classList.add('active')
-            }, rotationPeriod)
-        }
+      const heroTop = hero.getBoundingClientRect().top;
+      const offset = Math.max(headerBottom - heroTop, 0);
+      document.documentElement.style.setProperty('--masthead-h', Math.ceil(offset) + 'px');
 
-        document.addEventListener('DOMContentLoaded', rotateImages)
-    </script>
+      requestAnimationFrame(() => {
+        const h = strip.offsetHeight || 136;
+        document.documentElement.style.setProperty('--welcome-h', Math.ceil(h) + 'px');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', setWelcomeOffsets);
+    window.addEventListener('load', setWelcomeOffsets);
+    window.addEventListener('resize', setWelcomeOffsets);
+</script>
 {% endblock %}
+
 {% block content %}
-    <div id="home-page">
-        <div class="carousel">
-            {% for picture in page.images.all %}
-                {% image picture.image fill-2000x400-c80  as myrendition %}
-                <img src="{{ myrendition.url }}"
-                     alt="{{ myrendition.title }}"
-                     class="hero-image {% if forloop.first %}active{% endif %}"
-                     {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
-            {% endfor %}
-        </div>
-        <div class="grid-container">
-            <div class="content">
-                <div class="entries-list">
-                    {% now "c" as current_time %}
-                    {% for card_block in page.static_text_cards %}
-                        {% with card=card_block.value %}
-                            {% if not card.end_date or card.end_date >= current_time %}
-                                <div class="entry shadow-2">
-                                    {% if card.title %}
-                                        <h3>{{ card.title }}</h3>
-                                    {% else %}
-                                        <br />
-                                    {% endif %}
-                                    <div>{{ card.body|richtext }}</div>
-                                </div>
-                            {% endif %}
-                        {% endwith %}
-                    {% endfor %}
+<div id="home-page">
+
+    <!-- Static hero image from MEDIA (Wagtail) -->
+    {% get_media_prefix as MEDIA_URL %}
+    <section class="hero" role="region" aria-label="Court background">
+        <img
+                class="hero-image"
+                alt="U.S. Tax Court building exterior"
+                src="{{ MEDIA_URL }}images/building_tree.2e16d0ba.fill-3000x1200-c80.jpg"
+        />
+
+        <!-- FULL-WIDTH solid white strip (≈136px) under the menu bar -->
+        <div class="welcome-strip">
+            <div class="container welcome-inner ssans" role="region" aria-label="Welcome">
+                <div>
+                    <h1 class="welcome-title">
+                        {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
+                    </h1>
+                    <div class="welcome-body">
+                        {% if page.hero_body %}
+                        {{ page.hero_body|richtext }}
+                        {% else %}
+                        We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a federal trial court established under Article I of the Constitution.
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+</div>
 {% endblock %}
