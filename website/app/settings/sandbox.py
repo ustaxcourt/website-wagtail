@@ -17,6 +17,8 @@ ENVIRONMENT = "sandbox"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
 ENABLE_LOCAL_LOGIN = True
 
 # Disable password when new users are being created in admin console

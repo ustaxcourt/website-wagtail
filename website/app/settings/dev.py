@@ -19,6 +19,8 @@ WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
 # Enables local login
 ENABLE_LOCAL_LOGIN = True
 
