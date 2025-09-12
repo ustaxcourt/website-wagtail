@@ -21,8 +21,28 @@ This document describes the steps to manually replace the Wagtail website’s RD
 - Go to **RDS > Snapshots**.
 - Select the desired snapshot.
 - Click **Actions > Restore snapshot** to create a new RDS instance.
-- Configure instance details (Availability and durability, DB instance identifier, instance class, VPC, subnet group, security groups, etc.).
-- **Database authentication:** Choose "Password authentication".
+- Configure instance details (you get the values from your existing DB instance to ensure your restored snapshot has the same configuration.)
+    - RDS Console → Databases → click your DB → Configuration tab
+        - DB instance settings → DB engine
+        - Availability and durability → Deployment options
+        - Settings → DB instance identifier - shows current DB instance ID (Enter a uniq ID)
+        - Instance configuration → DB instance class
+        - Storage → Storage type
+        - Storage → Allocated storage
+        - Connectivity → Availability Zone
+        - Certificate authority (optional)
+        - Database authentication → Database authentication options
+        - Additional configuration (Database options, Backup, IAM role, Maintenance.)
+
+    - Under Connectivity & Security tab
+        - Connectivity → Virtual private cloud (VPC)
+        - Connectivity → DB subnet group
+        - Connectivity → Public access
+        - Connectivity → Existing VPC security groups
+
+    - Under Tags tab
+        - Tags – optional
+
 - Launch the instance and wait for it to become available.
 
 ### 3. Update Website Secrets
@@ -35,9 +55,9 @@ This document describes the steps to manually replace the Wagtail website’s RD
   - Update `DATABASE_PASSWORD` to the new RDS master password you set or generated during the restore or modification process. If you used the auto-generate option, copy the password when prompted and save it in your secrets or environment configuration. This password is not managed by AWS Secrets Manager for the RDS instance itself, but your application still needs it in its own secrets store.
 - Save changes.
 
-### 3a. (Optional) Auto-Generate and Retrieve RDS Password
+### 3a.Auto-Generate and Retrieve RDS Password
 
-- If you need to generate a new password for your RDS instance:
+- You need to generate a new password for your RDS instance:
   - Go to **AWS Console > RDS > Databases**.
   - Select your RDS instance.
   - Click **Modify**.
@@ -53,6 +73,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
   1. Get the new RDS instance identifier from the AWS Console.
   2. In your `infra` directory, run:
      ```bash
+     terraform state rm module.app.aws_db_instance.defualt
      terraform import 'module.app.aws_db_instance.default' <your-rds-identifier>
      ```
   3. Run `terraform plan` to verify Terraform recognizes the imported instance.
