@@ -118,7 +118,10 @@ TEMPLATES = [
     },
 ]
 
-# Enables local login for prod and prevents leak
+# Looks for an environment variable named ENABLE_LOCAL_LOGIN.
+# If it doesn’t exist, it defaults to "False" (a string).
+# Checks whether the lowercase string is either "true" or "1".
+# If yes → returns True else False
 ENABLE_LOCAL_LOGIN = os.getenv("ENABLE_LOCAL_LOGIN", "False").lower() in ("true", "1")
 
 # Azure AD (python-social-auth) configuration
