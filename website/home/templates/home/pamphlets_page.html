@@ -91,7 +91,7 @@
                                 <div class="pamphlet-image">
                                     <img src="{% static 'images/pamphlet.png' %}" alt="Tax Court Pamphlet">
                                 </div>
-                                <div class="entry-code">{{ pamphlet.code }}</div>
+                                <div class="entry-code">{{ pamphlet.page_range }}</div>
                             </a>
                         </div>
                         <div class="entry-right">
@@ -103,7 +103,7 @@
                                 </h2>
                             </div>
                             <span class="date-range">{{ pamphlet.date_range }}</span>
-                            <div class="entry-body">{{ pamphlet.citation|richtext }}</div>
+                            <div class="entry-body">{{ pamphlet.cases|richtext }}</div>
                         </div>
                     </div>
                     <hr />

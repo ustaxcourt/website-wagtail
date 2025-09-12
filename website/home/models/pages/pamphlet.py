@@ -1,7 +1,7 @@
 from home.models.pages.standard import StandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.fields import RichTextField
-from wagtail.models import ParentalKey
+from wagtail.models import ParentalKey, Orderable
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from django.db import models
@@ -23,12 +23,13 @@ class PamphletsPage(StandardPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        entries = PamphletEntry.objects.all().order_by("-volume_number")
+        entries = self.entries.all().order_by("sort_order")
         context["entries"] = entries
         return context
 
 
-class PamphletEntry(models.Model):
+# class PamphletEntry(models.Model):
+class PamphletEntry(Orderable):
     title = models.CharField(max_length=255)
     pdf = models.ForeignKey(
         "wagtaildocs.Document",
@@ -37,10 +38,9 @@ class PamphletEntry(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    code = models.CharField(max_length=255, blank=True)
+    page_range = models.CharField("Page Range", max_length=255, blank=True)
     date_range = models.CharField(max_length=255)
-    citation = RichTextField(blank=True)
-    volume_number = models.FloatField(default=0)
+    cases = RichTextField("Cases", blank=True)
 
     parentpage = ParentalKey(
         "PamphletsPage", related_name="entries", on_delete=models.CASCADE
@@ -49,8 +49,10 @@ class PamphletEntry(models.Model):
     panels = [
         FieldPanel("title"),
         FieldPanel("pdf"),
-        FieldPanel("code"),
+        FieldPanel("page_range"),
         FieldPanel("date_range"),
-        FieldPanel("citation"),
-        FieldPanel("volume_number"),
+        FieldPanel("cases"),
     ]
+
+    class Meta:
+        ordering = ["sort_order"]
