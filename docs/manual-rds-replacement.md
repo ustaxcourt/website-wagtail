@@ -50,7 +50,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
 **Before making any changes to secrets, save the current database password and any other secret information that will be changed. Store these values in a secure location (such as a password manager or encrypted file) so you can revert to the previous database instance if the process fails.**
 
 - Go to **Secrets Manager**.
-- Edit the Secrets for website infrastructure:
+- Edit the Secrets (`website_secrets`) for website infrastructure:
   - Update `DATABASE_HOSTNAME` to the restored RDS endpoint. (Find this in RDS > Databases > [your restored DB] > Connectivity & security -> Endpoint)
   - Update `DATABASE_PASSWORD` to the new RDS master password you set or generated during the restore or modification process. If you used the auto-generate option, copy the password when prompted and save it in your secrets or environment configuration. This password is not managed by AWS Secrets Manager for the RDS instance itself, but your application still needs it in its own secrets store.
 - Save changes.
