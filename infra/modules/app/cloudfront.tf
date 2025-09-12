@@ -6,14 +6,6 @@ resource "aws_cloudfront_function" "rewrite_uri" {
   code = file("${path.module}/../../../website/redirects/pdf_redirect_function.js")
 }
 
-resource "aws_cloudfront_function" "log_404s" {
-  name    = "${var.environment}-log-404s"
-  runtime = "cloudfront-js-1.0"
-  comment = "Log referrer and context for missing documents"
-  publish = true
-  code = file("${path.module}/../../../website/redirects/log_404s_function.js")
-}
-
 # Use AWS managed CachingDisabled policy for dynamic content
 data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
@@ -232,11 +224,6 @@ resource "aws_cloudfront_distribution" "app" {
     function_association {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.rewrite_uri.arn
-    }
-
-    function_association {
-      event_type   = "viewer-response"
-      function_arn = aws_cloudfront_function.log_404s.arn
     }
 
     cache_policy_id = aws_cloudfront_cache_policy.static_content.id
