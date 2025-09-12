@@ -57,7 +57,7 @@
       font-size: 32px;                /* spec */
       line-height: 38px;              /* spec */
       color: #111;
-<!--      font-family: "Source Sans Pro";-->
+      font-family: "Source Sans Pro";
     }
 
     .welcome-body,
@@ -81,7 +81,7 @@
 
 {% block extra_js %}
 <script>
-    // Auto-fit white strip to hug the header stack; measure its height for tile overlap
+    // Auto-fit white strip to hug the header/menu stack; measure its height for tile overlap
     function setWelcomeOffsets() {
       const hero = document.querySelector('.hero');
       const strip = document.querySelector('.welcome-strip');
@@ -137,16 +137,20 @@
 
         <!-- FULL-WIDTH solid white strip (≈136px) under the menu bar -->
         <div class="welcome-strip">
-            <div class="container welcome-inner ssans" role="region" aria-label="Welcome">
+            <div class="container welcome-inner sans" role="region" aria-label="Welcome">
                 <div>
                     <h1 class="welcome-title">
                         {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
                     </h1>
                     <div class="welcome-body">
                         {% if page.hero_body %}
-                        {{ page.hero_body|richtext }}
+                        {{ page.hero_body | richtext }}
                         {% else %}
-                        We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a federal trial court established under Article I of the Constitution.
+                        We are a national court that helps quickly resolve disputes between
+                        taxpayers and the IRS. Our online system, DAWSON allows users to file
+                        documents and track case status. The US Tax Court is an Article I federal
+                        trail court established by Congress under Article 1 of the U.S.
+                        Constitution, Section 8.
                         {% endif %}
                     </div>
                 </div>
