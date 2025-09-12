@@ -20,6 +20,7 @@ from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+
 import logging
 
 logger = logging.getLogger(__name__)
