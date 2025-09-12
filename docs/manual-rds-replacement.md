@@ -98,7 +98,6 @@ This document describes the steps to manually replace the Wagtail website’s RD
 ### 7. Cleanup and Documentation
 
 - Optionally, delete the old RDS instance after confirming the new one works.
-- Delete old database if no longer needed.
 - Update this document with any changes or lessons learned.
 
 ---
