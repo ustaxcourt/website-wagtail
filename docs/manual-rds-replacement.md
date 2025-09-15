@@ -21,7 +21,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
 - Go to **RDS > Snapshots**.
 - Select the desired snapshot.
 - Click **Actions > Restore snapshot** to create a new RDS instance.
-- Configure instance details (you get the values from your existing DB instance to ensure your restored snapshot has the same configuration.)
+- Configure instance details. Ensure that the configuration settings of the restored snapshot match the original/existing configuration.
     - RDS Console → Databases → click your DB → Configuration tab
         - DB instance settings → DB engine
         - Availability and durability → Deployment options
@@ -39,6 +39,7 @@ This document describes the steps to manually replace the Wagtail website’s RD
         - Connectivity → DB subnet group
         - Connectivity → Public access
         - Connectivity → Existing VPC security groups
+          - **Important**: Ensure that you specify the same security group(s) that were specified in the database you are replacing. This will also be the same security group used by the websites ECS Cluster.  You can find the secuity group used by the ECS Cluster in the AWS console under `Amazon Elastic Container Service -> Clusters -> [your cluster] -> Services -> [your service] -> Configuration`
 
     - Under Tags tab
         - Tags – optional
@@ -54,29 +55,9 @@ This document describes the steps to manually replace the Wagtail website’s RD
   - Update `DATABASE_HOSTNAME` to the restored RDS endpoint. (Find this in RDS > Databases > [your restored DB] > Connectivity & security -> Endpoint)
   - Update `DATABASE_PASSWORD` to the new RDS master password you set or generated during the restore or modification process. If you used the auto-generate option, copy the password when prompted and save it in your secrets or environment configuration. This password is not managed by AWS Secrets Manager for the RDS instance itself, but your application still needs it in its own secrets store.
 - Save changes.
+- Now edit the secret with the prefix `ecs-task-secrets-`.
+  - update `DATABASE_URL` by replacing the password portion (the string before the `@` symbol) with value used in `DATABASE_PASSWORD`, and the endpoint portion with the value used in `DATABASE_HOSTNAME`
 
-### 3a.Auto-Generate and Retrieve RDS Password
-
-- You need to generate a new password for your RDS instance:
-  - Go to **AWS Console > RDS > Databases**.
-  - Select your RDS instance.
-  - Click **Modify**.
-  - In the password section, select **Auto generate a password**.
-  - Copy the generated password before confirming the modification (you will not be able to see it again).
-  - Complete the modification process.
-  - Immediately update your secret in **Secrets Manager** with the new password value.
-  - Save changes.
-
-### 3b. Import the New RDS Instance into Terraform
-
-- After creating or restoring your RDS instance, import it into Terraform state:
-  1. Get the new RDS instance identifier from the AWS Console.
-  2. In your `infra` directory, run:
-     ```bash
-     terraform state rm module.app.aws_db_instance.defualt
-     terraform import 'module.app.aws_db_instance.default' <your-rds-identifier>
-     ```
-  3. Run `terraform plan` to verify Terraform recognizes the imported instance.
 
 ### 4. Redeploy ECS Service
 
@@ -99,18 +80,3 @@ This document describes the steps to manually replace the Wagtail website’s RD
 
 - Optionally, delete the old RDS instance after confirming the new one works.
 - Update this document with any changes or lessons learned.
-
----
-
-## DynamoDB State Digest Troubleshooting
-
-If you encounter a Terraform remote state error related to DynamoDB digest mismatch (for example, after restoring or manually editing state), update the digest value in the DynamoDB table:
-
-1. Open the AWS Console and navigate to **DynamoDB** > Tables.
-2. Find the table used for Terraform state locking (e.g., `terraform-lock`).
-3. Select the Table > Actions > Explore items.
-4. Locate the item for your workspace/environment.
-5. Edit the `digest` attribute to match the value shown in the Terraform error message.
-6. Save the changes and retry your Terraform command.
-
-This step is sometimes necessary after manual RDS replacement or state restoration to resolve Terraform state errors.
