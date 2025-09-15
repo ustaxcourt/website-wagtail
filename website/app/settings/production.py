@@ -1,5 +1,6 @@
 import os
 from .base import *  # noqa: F403
+from .base import MIDDLEWARE  # noqa: F403
 from datetime import date
 
 DEBUG = False
@@ -23,6 +24,8 @@ ENABLE_LOCAL_LOGIN = True
 # Disable password when new users are being created in admin console
 WAGTAILUSERS_PASSWORD_REQUIRED = False
 WAGTAILUSERS_PASSWORD_ENABLED = False
+
+MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 
