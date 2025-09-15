@@ -12,10 +12,6 @@
       --container-w: 1120px;
     }
 
-    /* Source Sans Pro per spec */
-    @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap");
-    .ssans { font-family: "Source Sans Pro", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; }
-
     #home-page { background: #fff; }
     .container { width: min(var(--container-w), 92vw); margin: 0 auto; }
 
@@ -57,7 +53,6 @@
       font-size: 32px;                /* spec */
       line-height: 38px;              /* spec */
       color: #111;
-      font-family: "Source Sans Pro";
     }
 
     .welcome-body,
@@ -126,25 +121,24 @@
 {% block content %}
 <div id="home-page">
 
-    <!-- Static hero image from MEDIA (Wagtail) -->
-    {% get_media_prefix as MEDIA_URL %}
+    <!-- Hero section with background image -->
     <section class="hero" role="region" aria-label="Court background">
         <img
                 class="hero-image"
                 alt="U.S. Tax Court building exterior"
-                src="{{ MEDIA_URL }}images/building_tree.2e16d0ba.fill-3000x1200-c80.jpg"
+                src="/home/management/images/home/building_tree.jpg"
         />
 
         <!-- FULL-WIDTH solid white strip (≈136px) under the menu bar -->
         <div class="welcome-strip">
-            <div class="container welcome-inner sans" role="region" aria-label="Welcome">
+            <div class="container welcome-inner ssans" role="region" aria-label="Welcome">
                 <div>
                     <h1 class="welcome-title">
                         {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
                     </h1>
                     <div class="welcome-body">
                         {% if page.hero_body %}
-                        {{ page.hero_body | richtext }}
+                        {{ page.hero_body|richtext }}
                         {% else %}
                         We are a national court that helps quickly resolve disputes between
                         taxpayers and the IRS. Our online system, DAWSON allows users to file

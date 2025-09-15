@@ -27,6 +27,29 @@ class StaticTextCardBlock(blocks.StructBlock):
 
 
 class HomePage(ModerationMixin, Page):
+    # Hero section fields for CMS editing
+    hero_title = models.CharField(
+        max_length=255,
+        default="Welcome to the United States Tax Court",
+        help_text="Main welcome title displayed on the homepage hero section",
+    )
+    hero_body = RichTextField(
+        blank=True,
+        default="We are a national court that helps quickly resolve disputes between taxpayers "
+        "and the IRS. Our online system, DAWSON allows users to file documents and "
+        "track case status. The US Tax Court is an Article I federal trail court "
+        "established by Congress under Article 1 of the U.S. Constitution, Section 8.",
+        help_text="Welcome text displayed below the title in the hero section",
+    )
+    hero_background_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Background image for the hero section (recommended size: 3000x1200px)",
+    )
+
     intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
     static_text_cards = StreamField(
         [
@@ -37,6 +60,10 @@ class HomePage(ModerationMixin, Page):
     )
 
     content_panels = Page.content_panels + [
+        # Hero section panel
+        FieldPanel("hero_title"),
+        FieldPanel("hero_body"),
+        FieldPanel("hero_background_image"),
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
         InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
@@ -49,6 +76,8 @@ class HomePage(ModerationMixin, Page):
 
     search_fields = Page.search_fields + [
         index.SearchField("intro"),
+        index.SearchField("hero_title"),
+        index.SearchField("hero_body"),
     ]
 
     def get_context(self, request):
