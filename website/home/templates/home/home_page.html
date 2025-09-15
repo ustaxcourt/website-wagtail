@@ -121,13 +121,23 @@
 {% block content %}
 <div id="home-page">
 
-    <!-- Hero section with background image -->
+    <!-- Hero section with CMS-editable background image -->
     <section class="hero" role="region" aria-label="Court background">
+        {% if page.hero_background_image %}
+        {% image page.hero_background_image fill-3000x1200-c80 as hero_img %}
+        <img
+                class="hero-image"
+                alt="U.S. Tax Court background"
+                src="{{ hero_img.url }}"
+        />
+        {% else %}
+        <!-- Fallback to static image -->
         <img
                 class="hero-image"
                 alt="U.S. Tax Court building exterior"
-                src="/home/management/images/home/building_tree.jpg"
+                src="{% static 'home/images/home/building_tree.jpg' %}"
         />
+        {% endif %}
 
         <!-- FULL-WIDTH solid white strip (≈136px) under the menu bar -->
         <div class="welcome-strip">

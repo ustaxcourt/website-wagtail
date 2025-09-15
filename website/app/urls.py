@@ -13,7 +13,6 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
-from pathlib import Path
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -98,10 +97,6 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(
-        "/home/management/images/",
-        document_root=Path(settings.BASE_DIR) / "home" / "management" / "images",
-    )
     # Only include debug_toolbar URLs if the app is installed
     if "debug_toolbar" in settings.INSTALLED_APPS:
         urlpatterns += [
