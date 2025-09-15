@@ -30,6 +30,15 @@ class PamphletsPage(StandardPage):
 
 # class PamphletEntry(models.Model):
 class PamphletEntry(Orderable):
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            if self.parentpage_id:
+                PamphletEntry.objects.filter(parentpage_id=self.parentpage_id).update(
+                    sort_order=models.F("sort_order") + 1
+                )
+            self.sort_order = 0
+        super().save(*args, **kwargs)
+
     title = models.CharField(max_length=255)
     pdf = models.ForeignKey(
         "wagtaildocs.Document",
