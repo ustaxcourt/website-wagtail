@@ -12,6 +12,10 @@
       --container-w: 1120px;
     }
 
+    /* Source Sans Pro per spec */
+    @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap");
+    .ssans { font-family: "Source Sans Pro", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; }
+
     #home-page { background: #fff; }
     .container { width: min(var(--container-w), 92vw); margin: 0 auto; }
 
@@ -135,7 +139,7 @@
         <img
                 class="hero-image"
                 alt="U.S. Tax Court building exterior"
-                src="{% static 'home/images/home/building_tree.jpg' %}"
+                src="{% static 'home/images/home/background_building_tree.jpg' %}"
         />
         {% endif %}
 
