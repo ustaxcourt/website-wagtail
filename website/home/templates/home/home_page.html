@@ -78,50 +78,6 @@
 </style>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    // Auto-fit white strip to hug the header/menu stack; measure its height for tile overlap
-    function setWelcomeOffsets() {
-      const hero = document.querySelector('.hero');
-      const strip = document.querySelector('.welcome-strip');
-      if (!hero || !strip) return;
-
-      const selectors = [
-        '.usa-banner',
-        '.testing-banner',
-        'header.site-header',
-        'header.global-header',
-        'header',
-        '#site-header',
-        '.global-header',
-        '.main-navigation',
-        '.nav-primary',
-        '.subnav',
-        '.nav-secondary'
-      ];
-      const heads = selectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
-      let headerBottom = 0;
-      heads.forEach(el => {
-        const r = el.getBoundingClientRect();
-        headerBottom = Math.max(headerBottom, r.bottom);
-      });
-
-      const heroTop = hero.getBoundingClientRect().top;
-      const offset = Math.max(headerBottom - heroTop, 0);
-      document.documentElement.style.setProperty('--masthead-h', Math.ceil(offset) + 'px');
-
-      requestAnimationFrame(() => {
-        const h = strip.offsetHeight || 136;
-        document.documentElement.style.setProperty('--welcome-h', Math.ceil(h) + 'px');
-      });
-    }
-
-    window.addEventListener('DOMContentLoaded', setWelcomeOffsets);
-    window.addEventListener('load', setWelcomeOffsets);
-    window.addEventListener('resize', setWelcomeOffsets);
-</script>
-{% endblock %}
-
 {% block content %}
 <div id="home-page">
 
