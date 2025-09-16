@@ -118,6 +118,18 @@ TEMPLATES = [
     },
 ]
 
+# Looks for an environment variable named ENABLE_LOCAL_LOGIN.
+# If it doesn’t exist, it defaults to "False" (a string).
+# Checks whether the lowercase string is either "true" or "1".
+# If yes → returns True else False
+ENABLE_LOCAL_LOGIN = True
+
+# Disable/enables password when new users are being created in admin console.
+# Default : False
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+WAGTAILUSERS_PASSWORD_ENABLED = False
+
+# Azure AD (python-social-auth) configuration
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(
     "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY"
 )

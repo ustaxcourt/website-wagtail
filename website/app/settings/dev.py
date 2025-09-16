@@ -19,6 +19,8 @@ WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
