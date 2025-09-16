@@ -13,10 +13,17 @@ import django_filters
 from django.forms import DateInput
 from django.utils import timezone
 from datetime import datetime, time
+from home.mixins.moderation import ModerationMixin
+from home.admin.moderation import ModerationTabbedInterface
 
 
 class NewsItem(
-    WorkflowMixin, DraftStateMixin, RevisionMixin, index.Indexed, models.Model
+    ModerationMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    index.Indexed,
+    models.Model,
 ):
     title = models.CharField(
         max_length=500, help_text="Title of the news article", blank=False
@@ -96,6 +103,7 @@ class NewsItem(
         FieldPanel("banner_options"),
         PublishingPanel(),
     ]
+    edit_handler = ModerationTabbedInterface.create_for_snippet(panels)
 
     search_fields = [
         index.SearchField("title", partial_match=True),
