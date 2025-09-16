@@ -7,73 +7,192 @@
 {% block extra_css %}
 <style>
     :root{
-      --masthead-h: 0px;       /* computed by JS */
-      --welcome-h: 136px;      /* target band height; measured post-render */
       --container-w: 1120px;
     }
-
-    /* Source Sans Pro per spec */
-    @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap");
-    .ssans { font-family: "Source Sans Pro", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; }
 
     #home-page { background: #fff; }
     .container { width: min(var(--container-w), 92vw); margin: 0 auto; }
 
-    /* HERO background canvas */
+    /* HERO section container */
     .hero {
       position: relative;
       width: 100%;
-      height: clamp(420px, 56vh, 560px);
       overflow: hidden;
       background: #e6e6e6;
     }
-    .hero img.hero-image {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      filter: brightness(0.7);
-      display: block;
-    }
 
-    /* FULL-WIDTH solid white strip under the menu bar */
-    .welcome-strip {
+    /* Welcome content container */
+    .welcome-container {
       position: relative;
-      top: var(--masthead-h);
-      left: 0; right: 0;
+      width: 100%;
       background: #fff;
       border-top: 1px solid #dcdcdc;
       border-bottom: 1px solid #dcdcdc;
       z-index: 2;
     }
+
     .welcome-inner {
-      min-height: 136px;              /* spec: approx 136px */
+      min-height: 136px;
       padding: 16px 0;
       display: flex;
-      align-items: center;            /* vertically center text */
+      align-items: center;
     }
+
     .welcome-title {
       margin: 0 0 6px 0;
-      font-weight: 400;               /* Regular */
-      font-size: 32px;                /* spec */
-      line-height: 38px;              /* spec */
+      font-weight: 400;
+      font-size: 32px;
+      line-height: 38px;
       color: #111;
     }
 
     .welcome-body,
     .welcome-body p {
       margin: 0;
-      font-weight: 400;               /* Regular */
-      font-size: 17px;                /* spec */
-      line-height: 20px;              /* spec */
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 20px;
       color: #222;
     }
 
-    @media (max-width: 640px) {
-      .welcome-title { font-size: 28px; line-height: 34px; }
-      .tiles-grid { grid-template-columns: 1fr; }
+    /* Background image container - now empty */
+    .hero-background {
+      position: relative;
+      width: 100%;
+      height: clamp(200px, 20vh, 300px);
+      background: #e6e6e6;
     }
-    @media (max-width: 1024px) and (min-width: 641px) {
-      .tiles-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Navigation Cards Grid - now has the hero background */
+    .nav-cards {
+      padding: 40px 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(0.8);
+      position: relative;
+    }
+
+    /* Dark overlay for better card readability */
+    .nav-cards::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+
+    /* Ensure cards appear above overlay */
+    .nav-cards .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .nav-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(222, 226, 230, 0.8);
+      border-radius: 8px;
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      transition: box-shadow 0.2s;
+      backdrop-filter: blur(5px);
+    }
+
+    .nav-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .nav-card .icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px;
+      background: #0066cc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+
+    .nav-card h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #1a1a1a;
+    }
+
+    .nav-card p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .nav-card .step-number {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 30px;
+      height: 30px;
+      background: #ff6b35;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    /* Second row cards */
+    .cards-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    /* Footer Info */
+    .footer-info {
+      background: #2c5aa0;
+      color: white;
+      padding: 40px 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 15px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .cards-grid,
+      .cards-grid-2,
+      .news-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome-title {
+        font-size: 28px;
+        line-height: 34px;
+      }
+
     }
 </style>
 {% endblock %}
@@ -81,26 +200,10 @@
 {% block content %}
 <div id="home-page">
 
-    <!-- Hero section with CMS-editable background image -->
+    <!-- Hero section -->
     <section class="hero" role="region" aria-label="Court background">
-        {% if page.hero_background_image %}
-        {% image page.hero_background_image fill-3000x1200-c80 as hero_img %}
-        <img
-                class="hero-image"
-                alt="U.S. Tax Court background"
-                src="{{ hero_img.url }}"
-        />
-        {% else %}
-        <!-- Fallback to static image -->
-        <img
-                class="hero-image"
-                alt="U.S. Tax Court building exterior"
-                src="{% static 'home/images/home/building_tree.jpg' %}"
-        />
-        {% endif %}
-
-        <!-- FULL-WIDTH solid white strip (≈136px) under the menu bar -->
-        <div class="welcome-strip">
+        <!-- Welcome content container -->
+        <div class="welcome-container">
             <div class="container welcome-inner" role="region" aria-label="Welcome">
                 <div>
                     <h1 class="welcome-title">
@@ -110,13 +213,102 @@
                         {% if page.hero_body %}
                         {{ page.hero_body|richtext }}
                         {% else %}
-                        We are a national court that helps quickly resolve disputes between
-                        taxpayers and the IRS. Our online system, DAWSON allows users to file
-                        documents and track case status. The US Tax Court is an Article I federal
-                        trail court established by Congress under Article 1 of the U.S.
-                        Constitution, Section 8.
+                        We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a federal trial court established under Article I of the Constitution.
                         {% endif %}
                     </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Navigation Cards Section with CMS Editable Background -->
+    <section class="nav-cards"
+             {% if page.hero_background_image %}
+             {% image page.hero_background_image fill-3000x1200 as bg_image %}
+             style="background-image: url('{{ bg_image.url }}');"
+             {% endif %}
+    >
+        <div class="container">
+            <!-- First row of cards -->
+            <div class="cards-grid">
+                <div class="nav-card">
+                    <div class="step-number">1</div>
+                    <div class="icon">📄</div>
+                    <h3>Begin the Petition Filing Process</h3>
+                    <p>Start your case on DAWSON or by filing your petition.</p>
+                </div>
+
+                <div class="nav-card">
+                    <div class="step-number">2</div>
+                    <div class="icon">🎓</div>
+                    <h3>Learn How to Start a Case</h3>
+                    <p>Read these FAQs before filing to prepare for starting your case.</p>
+                </div>
+
+                <div class="nav-card">
+                    <div class="icon">💻</div>
+                    <h3>DAWSON Case Management</h3>
+                    <p>Our online system, DAWSON, allows users to file documents and track their case status.</p>
+                </div>
+            </div>
+
+            <!-- Second row of cards -->
+            <div class="cards-grid-2">
+                <div class="nav-card">
+                    <div class="icon">📋</div>
+                    <h3>Tax Court Rules</h3>
+                    <p>The Court's current Rules of Practice & Procedure, forms, and fee schedule.</p>
+                </div>
+
+                <div class="nav-card">
+                    <div class="icon">⚖️</div>
+                    <h3>Today's Opinions</h3>
+                    <p>Access the most recent court opinions issued by Tax Court judges.</p>
+                </div>
+
+                <div class="nav-card">
+                    <div class="icon">📑</div>
+                    <h3>Today's Orders</h3>
+                    <p>Access the most recent court orders issued by Tax Court judges.</p>
+                </div>
+            </div>
+
+            <!-- Third row of cards -->
+            <div class="cards-grid-2">
+                <div class="nav-card">
+                    <div class="icon">👥</div>
+                    <h3>Guidance for Practitioners</h3>
+                    <p>Resources for attorneys and practitioners, including DAWSON access, and practice notes.</p>
+                </div>
+
+                <div class="nav-card">
+                    <div class="icon">📄</div>
+                    <h3>Case Related Forms</h3>
+                    <p>Forms for filing petitions, motions, and other court documents.</p>
+                </div>
+
+                <div class="nav-card">
+                    <div class="icon">🏛️</div>
+                    <h3>Find a Trial Session</h3>
+                    <p>Search for scheduled trial sessions by location, type, or judge.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Info Section -->
+    <section class="footer-info">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>Technical Questions?</h4>
+                    <p>For assistance on DAWSON, view the FAQs and other materials here. To contact the Webmaster for technical issues or problems with the website, send an email to <a href="mailto:webmaster@ustaxcourt.gov" style="color: #87ceeb;">webmaster@ustaxcourt.gov</a>. No documents can be filed with the Court at this email address.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Other Questions?</h4>
+                    <p>For all non-technical questions, contact the Office of the Clerk of the Court at <strong>(202) 521-0700</strong>.</p>
                 </div>
             </div>
         </div>
