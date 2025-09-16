@@ -21,13 +21,6 @@ MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
-# Enables local login
-ENABLE_LOCAL_LOGIN = True
-
-# Disable password when new users are being created in admin console
-WAGTAILUSERS_PASSWORD_REQUIRED = False
-WAGTAILUSERS_PASSWORD_ENABLED = False
-
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

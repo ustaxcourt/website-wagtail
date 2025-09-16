@@ -17,13 +17,6 @@ WAGTAIL_SITE_NAME = "Official Site of the United States Tax Court."
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = "http://ustaxcourt.com"
 
-# Enables local login
-ENABLE_LOCAL_LOGIN = True
-
-# Disable password when new users are being created in admin console
-WAGTAILUSERS_PASSWORD_REQUIRED = False
-WAGTAILUSERS_PASSWORD_ENABLED = False
-
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 
 EMAIL_BACKEND = "django_ses.SESBackend"

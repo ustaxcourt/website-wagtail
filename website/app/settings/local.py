@@ -25,9 +25,6 @@ if not os.getenv("GITHUB_SHA"):
 
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
-# This enables local login
-ENABLE_LOCAL_LOGIN = True
-
 # Uses localhost:8000/admin
 LOGIN_URL = "/admin/"
 
