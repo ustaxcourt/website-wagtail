@@ -39,7 +39,7 @@ class HomePage(ModerationMixin, Page):
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         InlinePanel("images", label="Full Width Carousel Image"),
-        InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
+        # InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
         FieldPanel("static_text_cards"),
     ]
 

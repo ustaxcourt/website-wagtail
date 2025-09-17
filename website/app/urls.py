@@ -1,16 +1,20 @@
 import logging
 import os
+
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import include, path, re_path
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
+
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
+
 from search import views as search_views
+from app.admin_local.views import LocalLoginView
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -73,9 +77,10 @@ urlpatterns = [
         name="robots_file",
     ),
     path("django-admin/", admin.site.urls),
+    path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
     path(
-        "admin-tools/role-switcher/", include("app.role_switcher.urls")
-    ),  # Or your app's urls, adjust path as desired
+        "admin/local-login/", LocalLoginView.as_view(), name="wagtailadmin_local_login"
+    ),
     path("admin/", include(wagtailadmin_urls)),
     re_path(
         r"^resources/(?:.*/)?(?P<filename>[^/]+\.pdf)$",
@@ -87,14 +92,36 @@ urlpatterns = [
     path("search/", search_views.search, name="search"),
 ]
 
+# Redirects localhost:8000/admin to local-login
+if getattr(settings, "ENVIRONMENT", "") == "local":
+    # Ensure our override is evaluated before Wagtail's admin/login
+    urlpatterns.insert(
+        0,
+        path(
+            "admin/login/",
+            RedirectView.as_view(url="/admin/local-login/", permanent=False),
+            name="wagtailadmin_login",
+        ),
+    )
+
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    # /local-login/ in dev redirects to the real admin/local-login
+    urlpatterns.insert(
+        0,
+        path(
+            "local-login/",
+            RedirectView.as_view(url="/admin/local-login/", permanent=False),
+        ),
+    )
 
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
     # Only include debug_toolbar URLs if the app is installed
     if "debug_toolbar" in settings.INSTALLED_APPS:
         urlpatterns += [

@@ -13,7 +13,7 @@ from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
-from wagtail.contrib.frontend_cache.utils import purge_page_from_cache
+from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
@@ -169,12 +169,11 @@ def purge_cache_for_snippet_related_pages(request, instance):
         logger.info(f"No affected pages found for snippet type '{snippet_type}'")
         return
 
-    for page in affected_pages:
-        try:
-            purge_page_from_cache(page)
-            logger.info(f"Purged frontend cache for page: {page.url_path}")
-        except Exception as e:
-            logger.error(f"Error purging cache for page {page.id}: {e}")
+    try:
+        purge_pages_from_cache(affected_pages)
+        logger.info(f"Purged frontend cache for pages: {affected_pages}")
+    except Exception as e:
+        logger.error(f"Error purging cache for pages: {affected_pages}: {e}")
 
 
 def purge_cloudfront_cache_for_file(file_url):
