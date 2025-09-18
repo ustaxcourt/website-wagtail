@@ -16,11 +16,13 @@ class FooterInitializer(PageInitializer):
         if not settings:
             Footer.objects.create(
                 technicalQuestions=(
-                    "For assistance with DAWSON, view the FAQs and other materials "
-                    '<a href="/faqs" target="_blank">here</a>. '
-                    "To contact the Webmaster for technical issues or problems with the website, "
-                    'send an email to <a href="mailto:webmaster@ustaxcourt.gov">webmaster@ustaxcourt.gov</a>. '
-                    "No documents can be filed with the Court at this email address."
+                    "For assistance with DAWSON, the Court's Electronic Filing and Case Management System, "
+                    "refer to the "
+                    '<a href="/dawson">DAWSON</a> page or email '
+                    '<a href="mailto:dawson.support@ustaxcourt.gov?subject=Assistance%20for%20Dawson"> dawson.support@ustaxcourt.gov</a>.<br>'
+                    '<span class="spacing-fix"></span>'
+                    "Be sure to include your case docket number in your email. For all other questions contact the Office of the Clerk of Court at "
+                    '(<a style="text-decoration: underline;" href="tel:+2025210700">202) 521-0700</a>.'
                 ),
                 otherQuestions="For all non-technical questions, contact the Office of the Clerk of the Court at (202) 521-0700.",
             )
@@ -37,11 +39,13 @@ class FooterInitializer(PageInitializer):
 
         footer = Footer.objects.first()
         footer.technicalQuestions = (
-            "For assistance with DAWSON, view the FAQs and other materials "
-            '<a href="/dawson">here</a>. '
-            "To contact the Webmaster for technical issues or problems with the website, "
-            'send an email to <a href="mailto:webmaster@ustaxcourt.gov">webmaster@ustaxcourt.gov</a>. '
-            "No documents can be filed with the Court at this email address."
+            "For assistance with DAWSON, the Court's Electronic Filing and Case Management System, "
+            "refer to the "
+            '<a href="/dawson">DAWSON</a> page or email '
+            '<a href="mailto:dawson.support@ustaxcourt.gov?subject=Assistance%20for%20Dawson"> dawson.support@ustaxcourt.gov</a>.<br>'
+            '<span class="spacing-fix"></span>'
+            "Be sure to include your case docket number in your email. For all other questions contact the Office of the Clerk of Court at "
+            '(<a style="text-decoration: underline;" href="tel:+2025210700">202) 521-0700</a>.'
         )
         footer.otherQuestions = """For all non-technical questions, contact the Office of the Clerk of the Court at <a href="tel:+12025210700">(202) 521-0700</a>."""
         footer.save()
