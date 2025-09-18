@@ -8,6 +8,8 @@ from wagtail.contrib.search_promotions.models import Query, SearchPromotion
 
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
+from django.shortcuts import render
+
 
 SEARCH_EXCLUSION_PAGES = ["Press Releases & News"]
 
@@ -184,3 +186,7 @@ def search(request):
             "search_promotions": search_promotions,  # Pass promotions to the template
         },
     )
+
+
+def download_reports_view(request):
+    return render(request, "download_reports.html", {"title": "Download Reports"})

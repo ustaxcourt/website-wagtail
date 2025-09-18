@@ -20,6 +20,9 @@ from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+from wagtail.permissions import (
+    page_permission_policy,
+)
 
 import logging
 
@@ -342,4 +345,23 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
         recipient_list=[original_submitter.email],
         message=plain_text_content,
         html_message=html_content,
+    )
+
+
+class PageTypesReportMenuItem(MenuItem):
+    def is_shown(self, request):
+        return page_permission_policy.user_has_any_permission(
+            request.user, ["add", "change", "publish"]
+        )
+
+
+@hooks.register("register_reports_menu_item")
+def register_page_types_report_menu_item():
+    return PageTypesReportMenuItem(
+        _("Download Reports"),
+        # reverse("wagtailadmin_reports:download_reports"),
+        "/admin/reports/download-reports/",
+        name="download-reports",
+        icon_name="download",
+        order=1300,
     )
