@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
+    "django_ses",
     "fontawesomefree",
     "social_django",
     "wagtail.contrib.frontend_cache",
@@ -117,6 +118,18 @@ TEMPLATES = [
     },
 ]
 
+# Looks for an environment variable named ENABLE_LOCAL_LOGIN.
+# If it doesn’t exist, it defaults to "False" (a string).
+# Checks whether the lowercase string is either "true" or "1".
+# If yes → returns True else False
+ENABLE_LOCAL_LOGIN = True
+
+# Disable/enables password when new users are being created in admin console.
+# Default : False
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+WAGTAILUSERS_PASSWORD_ENABLED = False
+
+# Azure AD (python-social-auth) configuration
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(
     "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY"
 )
@@ -279,6 +292,8 @@ if aws_bucket_name:
     if os.getenv("AWS_ACCESS_KEY_ID"):
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+        AWS_SES_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+        AWS_SES_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # Wagtail settings
 WAGTAIL_SITE_NAME = "USTC Website"
@@ -321,8 +336,6 @@ BASE_URL = "http://127.0.0.1:8000"
 
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -401,7 +414,7 @@ LOGGING = {
         "": {"level": "WARNING", "handlers": ["aws"]},
         # topmost logger for django-specific messages
         "django": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
-        "django.request": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
+        "django.request": {"level": "INFO", "propagate": False, "handlers": ["aws"]},
         # topmost logger for wagtail-specific messages
         "wagtail": {"level": "WARNING", "propagate": False, "handlers": ["aws"]},
         # topmost logger our project-specific messages"
@@ -417,3 +430,9 @@ LOGGING = {
 
 SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
+
+AWS_SES_REGION_NAME = "us-east-1"
+DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
+WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+
+WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"

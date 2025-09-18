@@ -80,7 +80,7 @@ resource "aws_iam_role_policy" "ses_send_email_policy" {
     Statement = [
       {
         Effect   = "Allow",
-        Action   = "ses:SendEmail",
+        Action   = "ses:*",
         Resource = "*"
       }
     ]
