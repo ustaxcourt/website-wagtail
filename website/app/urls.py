@@ -85,11 +85,11 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
-    path(
-        "admin/reports/download-reports/",
-        search_views.download_reports_view,
-        name="download_reports",
-    ),
+    # path(
+    #     "admin/reports/download-reports/",
+    #     search_views.download_reports_view,
+    #     name="download_reports",
+    # ),
     # path('admin/reports/download-reports/', TemplateView.as_view(template_name='download_reports.html'), name='download_reports'),
 ]
 

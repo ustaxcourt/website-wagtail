@@ -23,7 +23,8 @@ from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 from wagtail.permissions import (
     page_permission_policy,
 )
-
+from search import views as search_views
+from wagtail.admin.menu import AdminOnlyMenuItem
 import logging
 
 logger = logging.getLogger(__name__)
@@ -356,8 +357,8 @@ class PageTypesReportMenuItem(MenuItem):
 
 
 @hooks.register("register_reports_menu_item")
-def register_page_types_report_menu_item():
-    return PageTypesReportMenuItem(
+def register_download_report_report_menu_item():
+    return AdminOnlyMenuItem(
         _("Download Reports"),
         # reverse("wagtailadmin_reports:download_reports"),
         "/admin/reports/download-reports/",
@@ -365,3 +366,14 @@ def register_page_types_report_menu_item():
         icon_name="download",
         order=1300,
     )
+
+
+@hooks.register("register_admin_urls")
+def register_download_reports_report_url():
+    return [
+        path(
+            "admin/reports/download-reports/",
+            search_views.download_reports_view,
+            name="download_reports",
+        ),
+    ]
