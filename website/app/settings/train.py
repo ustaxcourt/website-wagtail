@@ -19,3 +19,5 @@ ENVIRONMENT = "train"
 MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
+
+EMAIL_BACKEND = "django_ses.SESBackend"

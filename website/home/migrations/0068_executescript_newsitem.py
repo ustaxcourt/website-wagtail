@@ -2,8 +2,8 @@
 
 import django.db.models.deletion
 import wagtail.fields
-import wagtail.models.workflows
 import wagtail.search.index
+import wagtail.models.workflows
 from django.conf import settings
 from django.db import migrations, models
 

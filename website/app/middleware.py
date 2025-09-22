@@ -8,7 +8,19 @@ class JSONExceptionMiddleware:
         self.logger = logging.getLogger("django.request")
 
     def __call__(self, request):
-        return self.get_response(request)
+        response = self.get_response(request)
+
+        # Check for 404 responses
+        if response.status_code == 404:
+            self.logger.info(
+                "404 Not Found",
+                extra={
+                    "path": request.path,
+                    "referer": request.META.get("HTTP_REFERER", ""),
+                    "user_agent": request.META.get("HTTP_USER_AGENT", ""),
+                },
+            )
+        return response
 
     def process_exception(self, request, exception):
         """
@@ -22,6 +34,7 @@ class JSONExceptionMiddleware:
                 "method": request.method,
                 "exception": str(exception),
                 "traceback": trace,
+                "remote_addr": request.META.get("REMOTE_ADDR", ""),
             },
         )
 

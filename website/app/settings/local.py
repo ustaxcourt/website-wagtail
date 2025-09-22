@@ -4,7 +4,6 @@ import os
 import subprocess
 from datetime import date
 
-
 os.environ.setdefault("DEBUG_TOOLBAR_ENABLED", "False")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -14,6 +13,7 @@ DEBUG = True
 SECRET_KEY = "django-insecure-eygp9+*6&f+f)@u&qw#u4lue&%6j)95l!*1god6dw7i@yy13fn"
 
 os.environ.setdefault("DJANGO_SUPERUSER_PASSWORD", "ustcAdminPW!")
+
 ENVIRONMENT = "local"
 
 if not os.getenv("GITHUB_SHA"):
@@ -22,10 +22,15 @@ if not os.getenv("GITHUB_SHA"):
         or "development"
     )
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://localhost:8000"
-BASE_URL = "http://localhost:8000"
+
+WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
+# Uses localhost:8000/admin
+LOGIN_URL = "/admin/"
+
+# Enables password for creating users since sso does not work in local
+WAGTAILUSERS_PASSWORD_REQUIRED = True
+WAGTAILUSERS_PASSWORD_ENABLED = True
 
 # Use the simple logger when running local
 LOGGING["root"]["handlers"] = ["simple"]
@@ -36,3 +41,7 @@ LOGGING["loggers"]["home"]["level"] = "DEBUG"
 LOGGING["loggers"]["home.management.commands"]["level"] = "DEBUG"
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+WAGTAILADMIN_NOTIFICATION_USE_HTML = False
