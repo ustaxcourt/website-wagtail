@@ -234,14 +234,6 @@ jobs:
           fi
 
 
-      - name: Upload URL Check Results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: url-check-results-${{ github.run_id }}
-          path: website/url_check_results.csv
-
-
       - name: Terminate Bastion Host
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
