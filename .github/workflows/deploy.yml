@@ -215,12 +215,6 @@ jobs:
 
 
       - name: Validate urls
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
-          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
-          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           echo "--- Starting URL redirect check ---"
           # Install script dependencies
