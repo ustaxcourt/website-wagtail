@@ -151,7 +151,7 @@ class NavigationInitializer(PageInitializer):
                         },
                     ],
                 },
-            )
+            ),
         ]
 
     def create(self):
