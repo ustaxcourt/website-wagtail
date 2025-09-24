@@ -351,7 +351,7 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
 @hooks.register("register_reports_menu_item")
 def register_unpublished_changes_report_menu_item():
     return AdminOnlyMenuItem(
-        "Newsitems Reports",
+        "Press Release & Notices publish report",
         reverse("newsitem_report"),
         icon_name="clipboard-list",
         order=700,
@@ -359,13 +359,16 @@ def register_unpublished_changes_report_menu_item():
 
 
 @hooks.register("register_admin_urls")
-def register_unpublished_changes_report_url():
+def register_newsitem_report_url():
     return [
         path(
             "reports/newsitem-report/",
             NewsItemReportView.as_view(),
             name="newsitem_report",
         ),
-        # Add a results-only view to add support for AJAX-based filtering
-        # path('reports/unpublished-changes/results/', UnpublishedChangesReportView.as_view(results_only=True), name='unpublished_changes_report_results'),
+        path(
+            "reports/newsitem-report/results/",
+            NewsItemReportView.as_view(results_only=True),
+            name="newsitem_report_results",
+        ),
     ]
