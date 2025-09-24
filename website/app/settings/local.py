@@ -28,10 +28,6 @@ WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 # Uses localhost:8000/admin
 LOGIN_URL = "/admin/"
 
-# Enables password for creating users since sso does not work in local
-WAGTAILUSERS_PASSWORD_REQUIRED = True
-WAGTAILUSERS_PASSWORD_ENABLED = True
-
 # Use the simple logger when running local
 LOGGING["root"]["handlers"] = ["simple"]
 LOGGING["loggers"]["django"]["handlers"] = ["simple"]
