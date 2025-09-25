@@ -8,6 +8,7 @@ from wagtail.admin.filters import (
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
+from django.conf import settings
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -36,6 +37,18 @@ class NewsItemReportView(ReportView):
                 '<div style="font-weight: bold;">{}</div>',
                 obj.title if obj.title else "-",
             ),
+        ),
+        Column(
+            "document",
+            label="Document",
+            # accessor=lambda obj: obj.document.url if obj.document else "-"
+            accessor=lambda obj: format_html(
+                '<a href="{}" target="_blank">{}</a>',
+                obj.document.url,
+                obj.document.filename,
+            )
+            if obj.document
+            else "-",
         ),
         Column(
             "publish_date",
@@ -71,7 +84,39 @@ class NewsItemReportView(ReportView):
         "publish_date",
         "homepage_display_expiration_date",
         "banner_options",
+        "document",
+        #'<a href="{document.url}" target="_blank">{document}</a>',
     ]
+
+    # custom_value_preprocess = {
+    #     "document_url": lambda obj: obj.document.url if obj.document else "-"
+    # }
+    # custom_value_preprocess = {
+    #     datetime.datetime: {
+    #         FORMAT_XLSX: lambda value: (
+    #             value
+    #             if timezone.is_naive(value)
+    #             else timezone.make_naive(value, datetime.timezone.utc)
+    #         )
+    #     },
+    #     (datetime.date, datetime.time): {FORMAT_XLSX: None},
+    #     list: {FORMAT_CSV: list_to_str, FORMAT_XLSX: list_to_str},
+
+    # }
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # self.user_model = get_user_model()
+        self.custom_field_preprocess = self.custom_field_preprocess.copy()
+        self.custom_field_preprocess["document"] = {
+            self.FORMAT_CSV: self.document_url,
+            self.FORMAT_XLSX: "Hello Moon!",
+        }
 
     def get_queryset(self):
         return NewsItem.objects.all()
+
+    def document_url(self, obj):
+        # For CSV export - just the URL
+        return settings.WAGTAILADMIN_BASE_URL + obj.url if obj else "-"
