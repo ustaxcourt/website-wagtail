@@ -1,0 +1,70 @@
+<style>
+    /* ---- Give Feedback (Rotated per Figma spec) ---- */
+    .give-feedback-btn {
+      position: fixed;         /* stick to screen while scrolling */
+      right: -57px;            /* hug the right edge */
+      top: 40vh;               /* vertical placement, tweak as needed */
+
+      width: 152px;
+      height: 39px;
+
+      background: #005EA2;     /* theme-color-primary */
+      color: #fff;
+      border-radius: 4px;
+      text-decoration: none;
+
+      font-family: "Public Sans", sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 95%;
+      text-align: center;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      /* Rotation */
+      transform: rotate(-90deg);
+      transform-origin: center center;  /* keeps it on-screen */
+      z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+        .give-feedback-btn {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 20px;
+            text-align: center;
+            gap: 8px;
+            white-space: nowrap;
+
+            position: fixed;
+            right: -40px;
+            width: 116px;
+            height: 38px;
+
+            top: 40vh;
+            font-size: 14px;
+
+            border-radius: var(--component-button-radius, 4px) 4px 0 0;
+            background: var(--theme-color-primary, #005EA2);
+        }
+    }
+
+    .give-feedback-btn,
+    .give-feedback-btn:visited,
+    .give-feedback-btn:hover,
+    .give-feedback-btn:active,
+    .give-feedback-btn:focus {
+        color: #fff;
+        background: #005EA2;
+        text-decoration: none;
+    }
+
+</style>
+
+<a class="give-feedback-btn" href="https://forms.office.com/r/45R5iAguPG" aria-label="Give Feedback">
+    Give Feedback
+</a>

@@ -18,6 +18,7 @@ from home.models import (
     JudgeRole,
     NavigationRibbon,
     NavigationMenu,
+    NewsItem,
 )
 
 
@@ -245,6 +246,7 @@ class Command(BaseCommand):
             JudgeRole,
             NavigationRibbon,
             NavigationMenu,
+            NewsItem,
         ]
 
         # Define groups and their snippet permissions
@@ -350,6 +352,7 @@ class Command(BaseCommand):
             JudgeRole,
             NavigationRibbon,
             NavigationMenu,
+            NewsItem,
         ]
 
         # Get the workflow

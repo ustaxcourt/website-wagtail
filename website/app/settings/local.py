@@ -4,7 +4,6 @@ import os
 import subprocess
 from datetime import date
 
-
 os.environ.setdefault("DEBUG_TOOLBAR_ENABLED", "False")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -14,6 +13,7 @@ DEBUG = True
 SECRET_KEY = "django-insecure-eygp9+*6&f+f)@u&qw#u4lue&%6j)95l!*1god6dw7i@yy13fn"
 
 os.environ.setdefault("DJANGO_SUPERUSER_PASSWORD", "ustcAdminPW!")
+
 ENVIRONMENT = "local"
 
 if not os.getenv("GITHUB_SHA"):
@@ -24,6 +24,13 @@ if not os.getenv("GITHUB_SHA"):
 
 
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
+
+# Uses localhost:8000/admin
+LOGIN_URL = "/admin/"
+
+# Enables password for creating users since sso does not work in local
+WAGTAILUSERS_PASSWORD_REQUIRED = True
+WAGTAILUSERS_PASSWORD_ENABLED = True
 
 # Use the simple logger when running local
 LOGGING["root"]["handlers"] = ["simple"]
