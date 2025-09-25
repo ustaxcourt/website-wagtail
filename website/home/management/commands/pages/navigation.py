@@ -152,14 +152,6 @@ class NavigationInitializer(PageInitializer):
                     ],
                 },
             ),
-            (
-                "section",
-                {
-                    "title": "GIVE FEEDBACK",
-                    "external_url": "https://forms.office.com/r/45R5iAguPG",
-                    "sub_links": [],
-                },
-            ),
         ]
 
     def create(self):
