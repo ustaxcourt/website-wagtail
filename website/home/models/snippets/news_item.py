@@ -15,6 +15,7 @@ from django.utils import timezone
 from datetime import datetime, time
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+from django.conf import settings
 
 
 class NewsItem(
@@ -131,6 +132,12 @@ class NewsItem(
     @property
     def status(self):
         return self.status_string
+
+    @property
+    def document_url(self):
+        if self.document and self.document.url:
+            return f"{settings.WAGTAILADMIN_BASE_URL}/{self.document.url}"
+        return "-"
 
     status.fget.short_description = "Status"
 

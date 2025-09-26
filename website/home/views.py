@@ -84,35 +84,8 @@ class NewsItemReportView(ReportView):
         "publish_date",
         "homepage_display_expiration_date",
         "banner_options",
-        "document",
-        #'<a href="{document.url}" target="_blank">{document}</a>',
+        "document_url",
     ]
-
-    # custom_value_preprocess = {
-    #     "document_url": lambda obj: obj.document.url if obj.document else "-"
-    # }
-    # custom_value_preprocess = {
-    #     datetime.datetime: {
-    #         FORMAT_XLSX: lambda value: (
-    #             value
-    #             if timezone.is_naive(value)
-    #             else timezone.make_naive(value, datetime.timezone.utc)
-    #         )
-    #     },
-    #     (datetime.date, datetime.time): {FORMAT_XLSX: None},
-    #     list: {FORMAT_CSV: list_to_str, FORMAT_XLSX: list_to_str},
-
-    # }
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        # self.user_model = get_user_model()
-        self.custom_field_preprocess = self.custom_field_preprocess.copy()
-        self.custom_field_preprocess["document"] = {
-            self.FORMAT_CSV: self.document_url,
-            self.FORMAT_XLSX: "Hello Moon!",
-        }
 
     def get_queryset(self):
         return NewsItem.objects.all()
