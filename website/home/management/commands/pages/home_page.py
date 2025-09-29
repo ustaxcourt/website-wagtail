@@ -57,15 +57,15 @@ class HomePageInitializer(PageInitializer):
             seo_title="United States Tax Court",
         )
 
-        loaded_images = []
-        for image in carousel_images:
-            image_uploaded = self.load_image_from_images_dir(
-                "home", image["filename"], image["title"]
-            )
-            loaded_images.append(HomePageImage(image=image_uploaded))
+        # loaded_images = []
+        # for image in carousel_images:
+        #     image_uploaded = self.load_image_from_images_dir(
+        #         "home", image["filename"], image["title"]
+        #     )
+        #     loaded_images.append(HomePageImage(image=image_uploaded))
 
-        if loaded_images:
-            homepage.images = loaded_images
+        # if loaded_images:
+        #     homepage.images = loaded_images
 
         root.add_child(instance=homepage)
         homepage.save_revision().publish()
@@ -95,39 +95,39 @@ class HomePageInitializer(PageInitializer):
         homepage.slug = "home"
         homepage.save_revision().publish()
 
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="Remote Proceedings Info",
-            body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
-            ),
-            start_date=datetime(2024, 12, 31, 6, 0),  # Example: 6 AM EST
-            end_date=datetime(2025, 1, 1, 23, 59),  # Example: 11.59 PM EST
-            persist_to_press_releases=True,
-            sort_order=0,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="Closed for Holidays",
-            body=(
-                "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
-            ),
-            start_date=datetime(2024, 12, 1, 6, 0),
-            end_date=datetime(2024, 12, 25, 23, 59),
-            persist_to_press_releases=True,
-            sort_order=1,
-        )
-        HomePageEntry.objects.create(
-            homepage=homepage,
-            title="",
-            body=(
-                'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
-            ),
-            start_date=datetime(2025, 4, 14, 6, 0),
-            end_date=None,
-            persist_to_press_releases=True,
-            sort_order=2,
-        )
+        # HomePageEntry.objects.create(
+        #     homepage=homepage,
+        #     title="Remote Proceedings Info",
+        #     body=(
+        #         'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
+        #     ),
+        #     start_date=datetime(2024, 12, 31, 6, 0),  # Example: 6 AM EST
+        #     end_date=datetime(2025, 1, 1, 23, 59),  # Example: 11.59 PM EST
+        #     persist_to_press_releases=True,
+        #     sort_order=0,
+        # )
+        # HomePageEntry.objects.create(
+        #     homepage=homepage,
+        #     title="Closed for Holidays",
+        #     body=(
+        #         "In addition to observing the Christmas Day holiday on Wednesday, December 25, 2024, the Court will be closed on Tuesday, December 24, 2024. DAWSON will remain available for electronic access and electronic filing."
+        #     ),
+        #     start_date=datetime(2024, 12, 1, 6, 0),
+        #     end_date=datetime(2024, 12, 25, 23, 59),
+        #     persist_to_press_releases=True,
+        #     sort_order=1,
+        # )
+        # HomePageEntry.objects.create(
+        #     homepage=homepage,
+        #     title="",
+        #     body=(
+        #         'Guidance on remote (virtual) proceedings and example videos of various procedures in a virtual courtroom can be found <a target="_blank" href="/zoomgov">here.</a>'
+        #     ),
+        #     start_date=datetime(2025, 4, 14, 6, 0),
+        #     end_date=None,
+        #     persist_to_press_releases=True,
+        #     sort_order=2,
+        # )
         HomePageEntry.objects.create(
             homepage=homepage,
             title="Tax Court disciplinary matters.",
