@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.db import models
 from wagtail.models import Page, Site
-from home.models import HomePage, HomePageEntry, HomePageImage
+from home.models import HomePage, HomePageEntry
 from home.management.commands.pages.page_initializer import PageInitializer
 from datetime import datetime
 import logging
