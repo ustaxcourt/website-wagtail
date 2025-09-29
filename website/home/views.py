@@ -8,7 +8,7 @@ from wagtail.admin.filters import (
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
-from django.conf import settings
+from django.utils import timezone
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -16,9 +16,17 @@ class NewsItemReportFilterSet(WagtailFilterSet):
         label=_("Created at"), widget=DateRangePickerWidget
     )
 
+    title = django_filters.CharFilter(lookup_expr="icontains", label="Title")
+
     class Meta:
         model = NewsItem
-        fields = ["created_at", "banner_options"]
+        fields = [
+            "title",
+            "created_at",
+            "banner_options",
+            "publish_date",
+            "homepage_display_expiration_date",
+        ]
 
 
 class NewsItemReportView(ReportView):
@@ -41,7 +49,6 @@ class NewsItemReportView(ReportView):
         Column(
             "document",
             label="Document",
-            # accessor=lambda obj: obj.document.url if obj.document else "-"
             accessor=lambda obj: format_html(
                 '<a href="{}" target="_blank">{}</a>',
                 obj.document.url,
@@ -87,9 +94,27 @@ class NewsItemReportView(ReportView):
         "document_url",
     ]
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.custom_field_preprocess = self.custom_field_preprocess.copy()
+        self.custom_field_preprocess["publish_date"] = {
+            self.FORMAT_CSV: to_default_tz,
+            self.FORMAT_XLSX: to_default_tz,
+        }
+        self.custom_field_preprocess["homepage_display_expiration_date"] = {
+            self.FORMAT_CSV: to_default_tz,
+            self.FORMAT_XLSX: to_default_tz,
+        }
+
     def get_queryset(self):
         return NewsItem.objects.all()
 
-    def document_url(self, obj):
-        # For CSV export - just the URL
-        return settings.WAGTAILADMIN_BASE_URL + obj.url if obj else "-"
+
+def to_default_tz(dt):
+    current_tz = timezone.get_current_timezone()
+    if dt is None:
+        return dt
+    if timezone.is_aware(dt):
+        return dt.astimezone(current_tz)
+    return dt
