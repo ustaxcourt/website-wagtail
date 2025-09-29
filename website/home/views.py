@@ -91,7 +91,7 @@ class NewsItemReportView(ReportView):
         "publish_date",
         "homepage_display_expiration_date",
         "banner_options",
-        "document_url",
+        "document.urldocument_url",
     ]
 
     def __init__(self, **kwargs):
