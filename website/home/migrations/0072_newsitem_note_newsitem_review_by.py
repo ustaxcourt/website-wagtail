@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0070_backfill_live_revisions"),
+        ("home", "0071_homepage_hero_background_image_homepage_hero_body_and_more"),
     ]
 
     operations = [
