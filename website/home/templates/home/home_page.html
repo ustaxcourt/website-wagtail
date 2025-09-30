@@ -13,6 +13,18 @@
     #home-page { background: #fff; }
     .container { width: min(var(--container-w), 92vw); margin: 0 auto; }
 
+    #home-page .entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #home-page .entries-list .entry {
+      border: 1px solid #BBB;
+      padding: 0px 30px;
+      padding-bottom: 40px;
+    }
+
     /* HERO section container */
     .hero {
       position: relative;
@@ -251,6 +263,25 @@
                 </div>
             </div>
 
+        </div>
+    </section>
+
+    <section class="static-cards">
+      <div class="grid-container">
+            <div class="content">
+                <div class="entries-list">
+                    {% for card in live_static_text_cards %}
+                        <div class="entry shadow-2">
+                            {% if card.title %}
+                                <h3>{{ card.title }}</h3>
+                            {% else %}
+                                <br />
+                            {% endif %}
+                            <div>{{ card.body|richtext }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </section>
 
