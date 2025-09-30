@@ -135,7 +135,6 @@ class NewsItem(
     @property
     def document_url(self):
         if self.document and self.document.url:
-            # return f"{settings.WAGTAILADMIN_BASE_URL}/{self.document.url}"
             return f"{self.document.url}"
         return "-"
 
