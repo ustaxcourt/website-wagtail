@@ -113,8 +113,11 @@ class NewsItemReportView(ReportView):
 
 def to_default_tz(dt):
     current_tz = timezone.get_current_timezone()
+
     if dt is None:
         return dt
     if timezone.is_aware(dt):
-        return dt.astimezone(current_tz)
+        dt = dt.astimezone(current_tz)
+        dt_naive = dt.astimezone().replace(tzinfo=None)
+        return dt_naive
     return dt
