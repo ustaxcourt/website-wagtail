@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib import messages
 
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page, Orderable, ParentalKey
 from wagtail.search import index
@@ -50,7 +50,6 @@ class HomePage(ModerationMixin, Page):
         help_text="Background image for the hero section (recommended size: 3000x1200px)",
     )
 
-    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
     static_text_cards = StreamField(
         [
             ("card", StaticTextCardBlock()),
@@ -64,9 +63,6 @@ class HomePage(ModerationMixin, Page):
         FieldPanel("hero_title"),
         FieldPanel("hero_body"),
         FieldPanel("hero_background_image"),
-        FieldPanel("intro"),
-        InlinePanel("images", label="Full Width Carousel Image"),
-        # InlinePanel("entries", label="Entries", classname="inline-panel-no-add-button"),
         FieldPanel("static_text_cards"),
     ]
 
