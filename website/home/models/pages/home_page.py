@@ -78,7 +78,22 @@ class HomePage(ModerationMixin, Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        context["now"] = timezone.now()
+
+        # Filter static text cards based on start/end dates
+        live_static_text_cards = []
+        now = timezone.now()
+        for card_block in self.static_text_cards:
+            card = card_block.value
+
+            # Check if card should be displayed
+            start_valid = not card.get("start_date") or card.get("start_date") <= now
+            end_valid = not card.get("end_date") or card.get("end_date") >= now
+
+            if start_valid and end_valid:
+                live_static_text_cards.append(card)
+
+        context["live_static_text_cards"] = live_static_text_cards
+
         return context
 
 
