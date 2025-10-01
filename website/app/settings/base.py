@@ -118,6 +118,15 @@ TEMPLATES = [
     },
 ]
 
+# If True, allow non-SSO users to login. Otherwise prevent login w/ wagtail credentials.
+ENABLE_LOCAL_LOGIN = True
+
+# Disable/enables password when new users are being created in admin console.
+# Default : False
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+WAGTAILUSERS_PASSWORD_ENABLED = True
+
+# Azure AD (python-social-auth) configuration
 SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY = os.getenv(
     "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY"
 )
