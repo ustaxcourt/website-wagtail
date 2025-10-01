@@ -2,11 +2,34 @@
 {% load i18n wagtailadmin_tags %}
 {% block extra_css %}
     <style>
+       .button +.button {
+            margin-inline-start: 0;
+        }
+
         .workflow-action-buttons {
             display: flex;
             gap: 8px;
             margin-top: 16px;
             flex-wrap: wrap;
+            padding: 1rem 1rem 1rem 5rem;
+            background-color: var(--w-color-surface-header);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid var(--w-color-border-furniture);
+        }
+
+        @media (min-width: 800px){
+            .workflow-action-buttons {
+                margin-left: -5rem;
+            }
+        }
+
+        @media (max-width: 799px) {
+            .workflow-action-buttons {
+                left: 0;
+                right: 0;
+            }
         }
 
         .workflow-action-buttons .button {
