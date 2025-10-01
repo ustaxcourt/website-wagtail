@@ -132,6 +132,12 @@ class NewsItem(
     def status(self):
         return self.status_string
 
+    @property
+    def document_url(self):
+        if self.document and self.document.url:
+            return f"{self.document.url}"
+        return "-"
+
     status.fget.short_description = "Status"
 
 
