@@ -171,6 +171,11 @@
     margin-top: 30px;
   }
 
+  .content .entries-list{
+    border: 1px solid #97D4EA;
+    background: var(--color-primary-alt-lightest);
+  }
+
   /* Responsive Design */
   @media (max-width: 768px) {
 
@@ -251,7 +256,7 @@
           {% for card in live_static_text_cards %}
           <div class="entry shadow-2">
             {% if card.title %}
-            <h3>{{ card.title }}</h3>
+            <h2>{{ card.title }}</h2>
             {% else %}
             <br />
             {% endif %}
