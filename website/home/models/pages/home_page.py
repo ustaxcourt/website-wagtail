@@ -28,6 +28,7 @@ class StaticTextCardBlock(blocks.StructBlock):
 
 class HomePage(ModerationMixin, Page):
     # Hero section fields for CMS editing
+    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
     hero_title = models.CharField(
         max_length=255,
         default="Welcome to the United States Tax Court",
@@ -59,7 +60,7 @@ class HomePage(ModerationMixin, Page):
     )
 
     content_panels = Page.content_panels + [
-        # Hero section panel
+        FieldPanel("intro"),
         FieldPanel("hero_title"),
         FieldPanel("hero_body"),
         FieldPanel("hero_background_image"),
