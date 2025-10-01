@@ -3,7 +3,6 @@ from django.utils import timezone
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PressReleasePage
-from home.models.pages.home_page import HomePageEntry
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from home.models.utils.execute_script import ExecuteScript
@@ -1872,19 +1871,11 @@ class PressReleasesPageInitializer(PageInitializer):
     def run(self):
         # Execute the press release update logic
         press_release_count = self._execute_press_release_update_logic()
-        persisted_entries_count = self._execute_persisted_entries_logic()
 
         # Log overall summary
-        total_count = press_release_count + persisted_entries_count
-        logger.info(
-            f"Migration complete. Total items created: {total_count} (Press releases: {press_release_count}, Homepage entries: {persisted_entries_count})"
-        )
+        logger.info(f"Migration complete. Total items created: {press_release_count})")
 
-        return {
-            "press_release_count": press_release_count,
-            "persisted_entries_count": persisted_entries_count,
-            "total_count": total_count,
-        }
+        return {"press_release_count": press_release_count}
 
     def _execute_press_release_update_logic(self):
         """
@@ -1999,136 +1990,6 @@ Operation completed successfully.""".strip()
         except Exception as e:
             # Create failure execution log
             failure_log_text = f"""Press Release Data Migration - Press Releases
-
-Status: FAILURE
-Items Created: {created_count}
-Failed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
-
-Error Details:
-Error: {str(e)}
-Error Type: {type(e).__name__}
-
-Operation failed during execution.""".strip()
-
-            # Convert line breaks to HTML for RichTextField
-            failure_log = failure_log_text.replace("\n", "<br>")
-
-            # Mark as failure and save execution log
-            script_entry.execution_status = "FAILURE"
-            script_entry.execution_log = failure_log
-            script_entry.save()
-            raise e
-
-    def _execute_persisted_entries_logic(self):
-        """
-        Process homepage entries to create NewsItems.
-        Returns the number of items created.
-        """
-        command_name = (
-            "Press release data migration to snippets - Homepage persisted entries"
-        )
-
-        if ExecuteScript.command_exists(command_name):
-            logger.info(f"Script '{command_name}' already exists. Skipping.")
-            return 0
-
-        # Create ExecuteScript entry
-        script_entry = ExecuteScript.create_script(command_name)
-        created_count = 0
-        current_user = get_user_model().objects.filter(is_superuser=True).first()
-
-        try:
-            # Step 2: Process homepage entries to create NewsItems
-            persisted_entries = HomePageEntry.objects.filter(
-                persist_to_press_releases=True, end_date__lt=timezone.now()
-            ).order_by("-end_date")
-
-            for entry in persisted_entries:
-                # Prepare publish datetime for comparison
-                publish_datetime = datetime.combine(
-                    entry.end_date.date(), datetime.min.time()
-                ).replace(tzinfo=timezone.get_current_timezone())
-
-                # Check if NewsItem already exists to avoid duplicates
-                existing_news_item = NewsItem.objects.filter(
-                    title=entry.title[:500],  # Truncate to title field max length
-                    publish_date=publish_datetime,
-                ).first()
-
-                if existing_news_item:
-                    logger.info(
-                        f"NewsItem already exists for homepage entry: {entry.title[:50]}..."
-                    )
-                    continue
-
-                # Extract document ID from body
-                document_id = extract_document_id_from_body(entry.body)
-
-                # Check if NewsItem already exists with the same document (regardless of date)
-                # Since documents should be unique per NewsItem, we prevent duplicates by document ID
-                existing_by_doc_id = None
-                if document_id:
-                    existing_by_doc_id = NewsItem.objects.filter(
-                        document_id=document_id,
-                    ).first()
-
-                if existing_by_doc_id:
-                    logger.info(
-                        f"NewsItem already exists for homepage entry with document {document_id}: {entry.title[:50]}..."
-                    )
-                    continue
-
-                # Create NewsItem from homepage entry
-                news_item = NewsItem.objects.create(
-                    title=entry.title[:500],  # Truncate to fit CharField max_length
-                    description=entry.body,
-                    document=None,
-                    publish_date=publish_datetime,
-                    homepage_display_expiration_date=entry.end_date,
-                    created_by=current_user,
-                    updated_by=current_user,
-                    banner_options="none",
-                    live=True,
-                )
-
-                # Update created_at to match publish_date for migrated data
-                NewsItem.objects.filter(pk=news_item.pk).update(
-                    created_at=publish_datetime
-                )
-
-                created_count += 1
-                logger.info(f"Created NewsItem from homepage entry: {news_item.title}")
-
-            logger.info(
-                f"Created {created_count} NewsItem snippets from homepage persisted entries"
-            )
-
-            # Create execution log in plain text format with HTML line breaks
-            execution_log_text = f"""Press Release Data Migration - Homepage Persisted Entries
-
-Status: SUCCESS
-Items Created: {created_count}
-Completed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
-
-Summary:
-- Processed homepage persisted entries
-- Created {created_count} NewsItem snippets
-- Skipped existing duplicates
-
-Operation completed successfully.""".strip()
-
-            # Convert line breaks to HTML for RichTextField
-            execution_log = execution_log_text.replace("\n", "<br>")
-
-            # Mark as success and save execution log
-            script_entry.execution_status = "SUCCESS"
-            script_entry.execution_log = execution_log
-            script_entry.save()
-            return created_count
-
-        except Exception as e:
-            # Create failure execution log
-            failure_log_text = f"""Press Release Data Migration - Homepage Persisted Entries
 
 Status: FAILURE
 Items Created: {created_count}
