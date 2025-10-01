@@ -10,20 +10,6 @@ from home.models.utils.execute_script import ExecuteScript
 
 logger = logging.getLogger(__name__)
 
-carousel_images = [
-    {
-        "title": "image of the united states tax court building far away",
-        "filename": "building_far.jpg",
-    },
-    {
-        "title": "image of the united states tax court building from the front",
-        "filename": "building_front.jpg",
-    },
-    {
-        "title": "image of the united states tax court building with trees",
-        "filename": "building_tree.jpg",
-    },
-]
 
 home_docs = {
     "05052025.pdf": "",
@@ -49,23 +35,36 @@ class HomePageInitializer(PageInitializer):
             logger.info(f"- {title} page already exists.")
             return
 
+        static_cards = [
+            {
+                "type": "card",
+                "value": {
+                    "title": "U.S. Tax Court Warning about Tax Scams",
+                    "body": '<p data-block-key="apxhb">Some people may receive unsolicited phone calls, emails, or other communications from individuals fraudulently claiming to be from the Tax Court, the Internal Revenue Service (IRS), or Federal government agencies and demanding immediate payment by money order, gift card, debit card, or other means to settle a tax debt.\u2028\u2028</p><p data-block-key="1ecb5">The Tax Court does not want anyone to be victimized by a tax scam. It is important that you know that the Tax Court will never do any of the following:\u2028</p><ul><li data-block-key="btkfc">call or email demanding payment of immigration visa application fees or taxes;</li><li data-block-key="8hah0">call or email threatening arrest;</li><li data-block-key="c9b1h">call or email insisting that a specific payment method be used to pay Court fees, a tax debt, or requesting credit or debit card numbers over the phone.</li></ul><p data-block-key="15feq">The IRS posts current <a href="https://ustaxcourt.gov/redirect_irs_tax_scams.html">warnings and alerts</a> about all types of tax scams on its website (including information about how to report tax scams). In addition, you may file a consumer complaint about a tax scam with the <a href="https://reportfraud.ftc.gov/">Federal Trade Commission </a>(FTC) or the <a href="https://www.ic3.gov/">Federal Bureau of Investigation</a> (FBI). These websites are maintained by the FTC and FBI \u2014 government agencies that are unrelated to the Tax Court.\u2028\u2028If you would like to verify that the communication you received is really from the Tax Court please call the Court at (202) 521-0700.</p>',
+                    "start_date": "2025-10-01T11:54:00-04:00",
+                    "end_date": None,
+                },
+            }
+        ]
+
+        hero_background = {
+            "title": "image of the united states tax court building far away",
+            "filename": "home-hero-bg.jpg",
+        }
+
+        image_uploaded = self.load_image_from_images_dir(
+            "home", hero_background["filename"], hero_background["title"]
+        )
+
         homepage = HomePage(
             title=title,
             draft_title="Home",
             slug=None,
             search_description="Official Site of the United States Tax Court",
             seo_title="United States Tax Court",
+            static_text_cards=static_cards,
+            hero_background_image=image_uploaded,
         )
-
-        # loaded_images = []
-        # for image in carousel_images:
-        #     image_uploaded = self.load_image_from_images_dir(
-        #         "home", image["filename"], image["title"]
-        #     )
-        #     loaded_images.append(HomePageImage(image=image_uploaded))
-
-        # if loaded_images:
-        #     homepage.images = loaded_images
 
         root.add_child(instance=homepage)
         homepage.save_revision().publish()
@@ -214,43 +213,6 @@ class HomePageInitializer(PageInitializer):
             logger.info(
                 "Remote Proceedings Info entry does not exist. Nothing to update."
             )
-
-        entries_to_add = [
-            {
-                "title": "2025 Nonattorney Examination",
-                "body": f"""The United States Tax Court hereby announces that the examination for nonattorney applicants for admission to practice before the Court will be held remotely using the ExamSoft platform on Wednesday, November 5, 2025, 12:30pm Eastern Time.
-                </br>
-                </br>
-                See the <a linktype="document" id="{home_docs["05052025.pdf"].id}" target="_blank">Press Release</a>.""",
-                "start_date": datetime(2025, 5, 5, 6, 0),
-                "end_date": None,
-                "persist_to_press_releases": True,
-                "sort_order": 7,
-            },
-            # Add more entries as needed
-        ]
-
-        # 🔁 Loop through entries and create them if they don't exist
-        for entry_data in entries_to_add:
-            if not HomePageEntry.objects.filter(
-                homepage=homepage, title=entry_data["title"]
-            ).exists():
-                HomePageEntry.objects.create(
-                    homepage=homepage,
-                    title=entry_data["title"],
-                    body=entry_data["body"],
-                    start_date=entry_data["start_date"],
-                    end_date=entry_data["end_date"],
-                    persist_to_press_releases=entry_data["persist_to_press_releases"],
-                    sort_order=entry_data["sort_order"],
-                )
-                logger.info(f"{entry_data['title']} entry created successfully.")
-            else:
-                logger.info(
-                    f"{entry_data['title']} entry already exists. No action taken."
-                )
-
-        logger.info("Finished updating Home page entries.")
 
     def run(self):
         # Execute the press release update logic
