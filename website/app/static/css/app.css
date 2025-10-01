@@ -51,7 +51,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font);
     font-weight: bold;
-    line-height: 2rem;
+    line-height: 38px;
     margin-bottom: 8px;
     -webkit-font-smoothing: antialiased;
 }

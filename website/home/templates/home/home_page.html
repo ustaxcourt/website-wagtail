@@ -79,22 +79,9 @@
     .nav-cards {
       padding: 40px 0;
       background-size: cover;
-      background-position: center;
+      background-position: top;
       background-repeat: no-repeat;
-      filter: brightness(0.8);
       position: relative;
-    }
-
-    /* Dark overlay for better card readability */
-    .nav-cards::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
     }
 
     /* Ensure cards appear above overlay */
@@ -238,7 +225,7 @@
     <section class="nav-cards"
              {% if page.hero_background_image %}
              {% image page.hero_background_image fill-3000x1200 as bg_image %}
-             style="background-image: url('{{ bg_image.url }}');"
+             style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');"
              {% endif %}
     >
         <div class="container">
