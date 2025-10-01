@@ -76,20 +76,15 @@
         <div class="grid-container">
             <div class="content">
                 <div class="entries-list">
-                    {% now "c" as current_time %}
-                    {% for card_block in page.static_text_cards %}
-                        {% with card=card_block.value %}
-                            {% if not card.end_date or card.end_date >= current_time %}
-                                <div class="entry shadow-2">
-                                    {% if card.title %}
-                                        <h3>{{ card.title }}</h3>
-                                    {% else %}
-                                        <br />
-                                    {% endif %}
-                                    <div>{{ card.body|richtext }}</div>
-                                </div>
+                    {% for card in live_static_text_cards %}
+                        <div class="entry shadow-2">
+                            {% if card.title %}
+                                <h3>{{ card.title }}</h3>
+                            {% else %}
+                                <br />
                             {% endif %}
-                        {% endwith %}
+                            <div>{{ card.body|richtext }}</div>
+                        </div>
                     {% endfor %}
                 </div>
             </div>

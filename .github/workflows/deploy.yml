@@ -7,6 +7,7 @@ on:
     paths:
       - 'website/**'
       - 'infra/**'
+      - 'utilities/**'
     tags:
       - 'sandbox'
       - 'development'
@@ -211,6 +212,27 @@ jobs:
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
           make production-checks settings="app.settings.${ENVIRONMENT}"
+
+
+      - name: Validate urls
+        run: |
+          echo "--- Starting URL redirect check ---"
+          # Install script dependencies
+          cd utilities
+          pip install requests
+
+          # Run the URL checker script
+          python redirect_validator/url_checker.py "https://${DOMAIN_NAME}" "redirect_validator/paths_for_validation.csv" "url_check_results.csv"
+
+          # Optional: Check for 404s and fail the build if any are found
+          # The '!' before grep inverts the match, so it fails if '❌' is found.
+          if grep -q '❌' url_check_results.csv; then
+            echo "❌ Critical error: Found 404 Not Found errors."
+            exit 1
+          else
+            echo "✅ No 404 errors found."
+          fi
+
 
       - name: Terminate Bastion Host
         env:
