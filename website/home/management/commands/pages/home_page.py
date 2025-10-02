@@ -86,14 +86,3 @@ class HomePageInitializer(PageInitializer):
         else:
             logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
-
-    def run(self):
-        # Execute the press release update logic
-        home_page_entry_count = self._execute_home_page_entry_update_logic()
-
-        # Log overall summary
-        logger.info(
-            f"Migration complete. Total items created: {home_page_entry_count}."
-        )
-
-        return
