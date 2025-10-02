@@ -1873,7 +1873,7 @@ class PressReleasesPageInitializer(PageInitializer):
         press_release_count = self._execute_press_release_update_logic()
 
         # Log overall summary
-        logger.info(f"Migration complete. Total items created: {press_release_count})")
+        logger.info(f"Migration complete. Total items created: {press_release_count}")
 
         return {"press_release_count": press_release_count}
 
