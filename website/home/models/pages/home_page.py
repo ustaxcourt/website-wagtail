@@ -36,7 +36,7 @@ class HomePage(ModerationMixin, Page):
         blank=True,
         default="We are a national court that helps quickly resolve disputes between taxpayers "
         "and the IRS. Our online system, DAWSON allows users to file documents and "
-        "track case status. The US Tax Court is an Article I federal trail court "
+        "track case status. The US Tax Court is an Article I federal trial court "
         "established by Congress under Article 1 of the U.S. Constitution, Section 8.",
         help_text="Welcome text displayed below the title in the hero section",
     )
