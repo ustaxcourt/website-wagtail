@@ -221,7 +221,19 @@
   <!-- Navigation Cards Section with CMS Editable Background -->
   <section class="nav-cards" {% if page.hero_background_image %} {% image page.hero_background_image fill-3000x1200 as bg_image %} style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');" {% endif %}>
     <div class="container">
-      <!-- Second row of cards -->
+    {% image tile.value.icon max-320x200 as img %}
+        <div class="entries-list">
+          {% for tile in page.quick_access_tiles %}
+            <div class="nav-card">
+              <div class="icon"><img src="{{ tile.value.icon.file.url }}" alt="{{ tile.value.title }} icon" style="width: 60px; height: 60px; object-fit: contain;" /></div>
+              <h3>{{ tile.value.title }}</h3>
+              <p>{{ tile.value.description|richtext }}</p>
+            </div>
+          {% endfor %}
+        </div>
+
+
+      {% comment %} <!-- Second row of cards -->
       <div class="cards-grid-2">
         <div class="nav-card">
           <div class="icon">📋</div>
@@ -240,7 +252,7 @@
           <h3>Today's Orders</h3>
           <p>Access the most recent court orders issued by Tax Court judges.</p>
         </div>
-      </div>
+      </div> {% endcomment %}
 
     </div>
   </section>
