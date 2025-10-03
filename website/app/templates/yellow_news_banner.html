@@ -72,11 +72,7 @@
 {% if has_yellow_news %}
     <!-- Embed news data as JSON for client-side processing -->
     <script id="yellow-news-data" type="application/json">
-        {
-            {
-                yellow_priority_news_json | safe
-            }
-        }
+{{ yellow_priority_news_json | safe }}
     </script>
     <div id="yellow-news-banner-container"></div>
     <script type="text/javascript">
