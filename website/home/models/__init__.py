@@ -31,7 +31,7 @@ from home.models.pages.pamphlet import PamphletsPage, PamphletEntry
 from home.models.pages.release_notes import ReleaseNotes
 from home.models.pages.internship import InternshipPrograms
 from home.models.pages.press_release import PressReleasePage
-from home.models.pages.home_page import HomePage, HomePageEntry, HomePageImage
+from home.models.pages.home_page import HomePage
 from home.models.pages.administrative_orders import (
     AdministrativeOrdersPage,
     PDFs,

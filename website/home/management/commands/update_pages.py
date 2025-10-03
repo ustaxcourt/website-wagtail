@@ -3,10 +3,9 @@ from django.core.management.base import BaseCommand
 from home.management.commands.pages.about_the_court import (
     about_the_court_pages_to_update,
 )
-from home.management.commands.pages.home_page import HomePageInitializer
 
 # Ensure Home Page is initialized first
-pages_to_update = about_the_court_pages_to_update + [HomePageInitializer]
+pages_to_update = about_the_court_pages_to_update
 
 
 class Command(BaseCommand):
