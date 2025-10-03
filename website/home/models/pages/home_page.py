@@ -1,32 +1,25 @@
 from django.db import models
 
 from wagtail.admin.panels import FieldPanel
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
 from wagtail.search import index
 from wagtail import blocks
 
 from django.utils import timezone
-from django.core.validators import FileExtensionValidator
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 
 
 class QuickAccessTileBlock(blocks.StructBlock):
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    icon = models.FileField(
-        upload_to="icons/",
-        validators=[FileExtensionValidator(allowed_extensions=["svg"])],
-    )
+    title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    description = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    icon = DocumentChooserBlock(required=True)
 
-    related_page = models.ForeignKey(
-        "EnhancedStandardPage",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
+    related_page = blocks.PageChooserBlock(
+        required=True,
     )
 
     class Meta:
