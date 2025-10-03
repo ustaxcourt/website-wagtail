@@ -1,0 +1,169 @@
+{% load static %}
+<style>
+    #yellow-news-banner-container {
+        background-color: #FAF3D1;
+        width: 100%;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner {
+        color: #000000;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 17px;
+        font-weight: 400;
+        display: none;
+        /* Hidden by default, shown by JavaScript if not dismissed and within date range */
+    }
+
+    #yellow-news-banner-container .yellow-news-banner p {
+        margin: 0;
+        padding: 0;
+        line-height: 1.5;
+        color: #000000;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner a {
+        color: #000000;
+        text-decoration: underline;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner a:hover {
+        color: #333333;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 0;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-text {
+        flex: 1;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .close-btn {
+        flex-shrink: 0;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        padding: 4px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .close-btn:hover {
+        opacity: 0.7;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .close-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+</style>
+{% if has_yellow_news %}
+    <!-- Embed news data as JSON for client-side processing -->
+    <script id="yellow-news-data" type="application/json">
+        {
+            {
+                yellow_priority_news_json | safe
+            }
+        }
+    </script>
+    <div id="yellow-news-banner-container"></div>
+    <script type="text/javascript">
+        (function() {
+            // Parse the news data from the JSON script tag
+            const newsDataElement = document.getElementById('yellow-news-data');
+            if (!newsDataElement) return;
+
+            let newsItems;
+            try {
+                newsItems = JSON.parse(newsDataElement.textContent);
+            } catch (e) {
+                console.error('Failed to parse yellow news data:', e);
+                return;
+            }
+
+            // Get current date/time in user's local timezone
+            const now = new Date();
+
+            // Filter news items based on start/end dates
+            const activeNewsItems = newsItems.filter(function(item) {
+                // If no dates are set, show the item
+                if (!item.banner_start_date && !item.banner_end_date) {
+                    return true;
+                }
+
+                // Parse ISO dates - these will be converted to user's local timezone automatically
+                const startDate = item.banner_start_date ? new Date(item.banner_start_date) : null;
+                const endDate = item.banner_end_date ? new Date(item.banner_end_date) : null;
+
+                // Check if current time is within the date range
+                const afterStart = !startDate || now >= startDate;
+                const beforeEnd = !endDate || now <= endDate;
+
+                return afterStart && beforeEnd;
+            });
+
+            // If no active items, don't render anything
+            if (activeNewsItems.length === 0) return;
+
+            // Only show the most recent one (they're already ordered by publish_date DESC)
+            const itemToShow = activeNewsItems[0];
+
+            // Create banner HTML
+            const container = document.getElementById('yellow-news-banner-container');
+            const bannerId = 'yellowNewsBanner-' + itemToShow.id;
+
+            const bannerHTML = `
+            <div class="yellow-news-banner" id="${bannerId}">
+                <div class="grid-container">
+                    <div class="alert-content">
+                        <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <div class="alert-text">
+                            ${itemToShow.description}
+                        </div>
+                        <button class="close-btn" onclick="closeYellowBanner(${itemToShow.id})" aria-label="Close banner">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            container.innerHTML = bannerHTML;
+
+            // Check if banner was previously dismissed
+            const dismissKey = 'yellowNewsBanner-' + itemToShow.id + '-dismissed';
+            if (localStorage.getItem(dismissKey) !== 'true') {
+                document.getElementById(bannerId).style.display = 'block';
+            }
+        })();
+
+        // Global function to close banner
+        function closeYellowBanner(newsItemId) {
+            const banner = document.getElementById('yellowNewsBanner-' + newsItemId);
+            if (banner) {
+                banner.style.display = 'none';
+                // Store dismissal in localStorage keyed to the unique news item ID
+                localStorage.setItem('yellowNewsBanner-' + newsItemId + '-dismissed', 'true');
+            }
+        }
+    </script>
+{% endif %}

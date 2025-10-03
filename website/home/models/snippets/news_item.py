@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
@@ -72,6 +73,18 @@ class NewsItem(
         blank=True,
     )
 
+    banner_start_date = models.DateTimeField(
+        help_text="Date/time when the banner should start appearing",
+        blank=True,
+        null=True,
+    )
+
+    banner_end_date = models.DateTimeField(
+        help_text="Date/time when the banner should stop appearing",
+        blank=True,
+        null=True,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         get_user_model(),
@@ -101,6 +114,8 @@ class NewsItem(
             "homepage_display_expiration_date", classname="expiration-date-picker"
         ),
         FieldPanel("banner_options"),
+        FieldPanel("banner_start_date", classname="banner-start-date-picker"),
+        FieldPanel("banner_end_date", classname="banner-end-date-picker"),
         PublishingPanel(),
     ]
     edit_handler = ModerationTabbedInterface.create_for_snippet(panels)
@@ -111,6 +126,48 @@ class NewsItem(
         index.SearchField("description", partial_match=True),
         index.AutocompleteField("description"),
     ]
+
+    def clean(self):
+        """
+        Validate that high priority banners don't overlap with other high priority banners.
+        """
+        super().clean()
+
+        # Only validate if this is a high priority banner with dates set
+        if (
+            self.banner_options == "high"
+            and self.banner_start_date
+            and self.banner_end_date
+        ):
+            # Check for overlapping high priority banners
+            overlapping = (
+                NewsItem.objects.filter(banner_options="high", live=True)
+                .exclude(
+                    id=self.id  # Exclude self when editing
+                )
+                .filter(
+                    models.Q(banner_start_date__isnull=False),
+                    models.Q(banner_end_date__isnull=False),
+                    # Check for any overlap: start before other ends AND end after other starts
+                    models.Q(banner_start_date__lt=self.banner_end_date),
+                    models.Q(banner_end_date__gt=self.banner_start_date),
+                )
+            )
+
+            if overlapping.exists():
+                conflicting = overlapping.first()
+                raise ValidationError(
+                    {
+                        "banner_start_date": ValidationError(
+                            f"A high priority banner is already scheduled during this time period. "
+                            f'Conflicting banner: "{conflicting.title}" '
+                            f"({conflicting.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
+                            f"{conflicting.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
+                            f"Please choose a different time period or edit the conflicting banner.",
+                            code="banner_conflict",
+                        )
+                    }
+                )
 
     def save(self, *args, **kwargs):
         self.created_by = get_user_model().objects.first()

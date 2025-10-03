@@ -18,6 +18,7 @@ from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
+from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 
@@ -162,6 +163,23 @@ def purge_cache_for_snippet_related_pages(request, instance):
             logger.error(f"Error purging CloudFront cache for all pages: {e}")
         return
 
+    # Purge CloudFront cache for all pages when high priority news item changes
+    # (since yellow banners appear on all pages)
+    if snippet_type == "newsitem" and isinstance(instance, NewsItem):
+        if instance.banner_options == "high":
+            try:
+                from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+                batch = PurgeBatch()
+                batch.add_url("/*")
+                batch.purge()
+                logger.info(
+                    f"Purged CloudFront cache for all pages using wildcard /* after high priority news item change (ID: {instance.id})."
+                )
+            except Exception as e:
+                logger.error(f"Error purging CloudFront cache for all pages: {e}")
+            return
+
     affected_prefixes = path_map.get(snippet_type, ["/"])
     affected_pages = []
     for prefix in affected_prefixes:
@@ -281,6 +299,65 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
             logger.error(f"Error getting image URL for cache purge: {e}")
     else:
         logger.warning(f"Image {instance.id} has no file attribute or file is empty")
+
+
+@receiver(post_save, sender=NewsItem)
+def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
+    """
+    Purge CloudFront cache for all pages when a high priority news item is created or updated.
+    High priority news items appear as yellow banners on all pages.
+    """
+    del sender, kwargs
+
+    # Only purge cache for high priority banners
+    if instance.banner_options == "high":
+        action = "created" if created else "updated"
+        logger.info(
+            f"High priority NewsItem {action}: {instance.title} (ID: {instance.id})"
+        )
+
+        try:
+            from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+            batch = PurgeBatch()
+            batch.add_url("/*")
+            batch.purge()
+            logger.info(
+                f"Purged CloudFront cache for all pages using wildcard /* after high priority news item {action} (ID: {instance.id})."
+            )
+        except Exception as e:
+            logger.error(
+                f"Error purging CloudFront cache for all pages after NewsItem {action}: {e}"
+            )
+
+
+@receiver(post_delete, sender=NewsItem)
+def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
+    """
+    Purge CloudFront cache for all pages when a high priority news item is deleted.
+    High priority news items appear as yellow banners on all pages.
+    """
+    del sender, kwargs
+
+    # Only purge cache for high priority banners
+    if instance.banner_options == "high":
+        logger.info(
+            f"High priority NewsItem deleted: {instance.title} (ID: {instance.id})"
+        )
+
+        try:
+            from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+            batch = PurgeBatch()
+            batch.add_url("/*")
+            batch.purge()
+            logger.info(
+                f"Purged CloudFront cache for all pages using wildcard /* after high priority news item deletion (ID: {instance.id})."
+            )
+        except Exception as e:
+            logger.error(
+                f"Error purging CloudFront cache for all pages after NewsItem deletion: {e}"
+            )
 
 
 @hooks.register("register_admin_urls")
