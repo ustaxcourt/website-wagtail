@@ -10,11 +10,13 @@ from wagtail.models import (
     Orderable,
 )
 from wagtail.snippets.models import register_snippet
-from wagtail.admin.panels import FieldPanel, PublishingPanel
+from wagtail.admin.panels import FieldPanel, PublishingPanel, PageChooserPanel
 from wagtail.search import index
 
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+
+from django.core.validators import FileExtensionValidator
 
 import logging
 
@@ -36,7 +38,18 @@ class QuickAccessTile(
 
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
-    icon = models.ImageField(upload_to="icons/")
+    icon = models.FileField(
+        upload_to="icons/",
+        validators=[FileExtensionValidator(allowed_extensions=["svg"])],
+    )
+
+    related_page = models.ForeignKey(
+        "EnhancedStandardPage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="quickaccesstile"
@@ -48,6 +61,7 @@ class QuickAccessTile(
         FieldPanel("title"),
         FieldPanel("description"),
         FieldPanel("icon"),
+        PageChooserPanel("related_page"),
     ]
 
     panels = content_panels + [PublishingPanel()]
