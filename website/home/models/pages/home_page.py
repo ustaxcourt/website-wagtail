@@ -7,9 +7,30 @@ from wagtail.search import index
 from wagtail import blocks
 
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
+
+
+class QuickAccessTileBlock(blocks.StructBlock):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    icon = models.FileField(
+        upload_to="icons/",
+        validators=[FileExtensionValidator(allowed_extensions=["svg"])],
+    )
+
+    related_page = models.ForeignKey(
+        "EnhancedStandardPage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    class Meta:
+        label = "Quick Access Tile"
 
 
 class StaticTextCardBlock(blocks.StructBlock):
@@ -57,12 +78,21 @@ class HomePage(ModerationMixin, Page):
         help_text="Add multiple static text cards",
     )
 
+    quick_access_tiles = StreamField(
+        [
+            ("tile", QuickAccessTileBlock()),
+        ],
+        blank=True,
+        help_text="Add multiple quick access tiles",
+    )
+
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         FieldPanel("hero_title"),
         FieldPanel("hero_body"),
         FieldPanel("hero_background_image"),
         FieldPanel("static_text_cards"),
+        FieldPanel("quick_access_tiles"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
