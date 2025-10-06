@@ -224,11 +224,13 @@
     {% image tile.value.icon max-320x200 as img %}
         <div class="entries-list">
           {% for tile in page.quick_access_tiles %}
+          <a href="{{ tile.value.related_page.url }}" class="nav-link" aria-label="{{ tile.value.title }}">
             <div class="nav-card">
               <div class="icon"><img src="{{ tile.value.icon.file.url }}" alt="{{ tile.value.title }} icon" style="width: 60px; height: 60px; object-fit: contain;" /></div>
               <h3>{{ tile.value.title }}</h3>
               <p>{{ tile.value.description|richtext }}</p>
             </div>
+          </a>
           {% endfor %}
         </div>
 
