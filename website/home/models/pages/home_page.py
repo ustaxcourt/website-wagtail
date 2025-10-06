@@ -8,15 +8,51 @@ from wagtail.search import index
 from wagtail import blocks
 
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 
 
+class SVGChooserBlock(blocks.StructBlock):
+    """A custom block that validates that the selected document is an SVG."""
+
+    # This is the standard chooser that the editor will see.
+    svg_file = DocumentChooserBlock(help_text="Select an SVG file.")
+
+    def clean(self, value):
+        """
+        Adds custom validation to the block. This method is called when the
+        form is submitted.
+        """
+        # Run the parent block's validation first.
+        cleaned_data = super().clean(value)
+
+        # Get the chosen document object from the cleaned data.
+        chosen_document = cleaned_data.get("svg_file")
+
+        # Check if a document was actually selected.
+        if not chosen_document:
+            return cleaned_data  # No document, so no validation needed.
+
+        # Check if the filename ends with .svg (case-insensitive).
+        if not chosen_document.file.name.lower().endswith(".svg"):
+            # If not, raise a validation error that will be displayed to the user.
+            raise ValidationError(
+                "Incorrect file type. Please select an SVG file.",
+            )
+
+        return cleaned_data
+
+    class Meta:
+        label = "SVG Icon"
+        icon = "image"  # Sets a nice icon in the admin UI
+
+
 class QuickAccessTileBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
     description = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
-    icon = DocumentChooserBlock(required=True)
+    icon = SVGChooserBlock(required=True)
 
     related_page = blocks.PageChooserBlock(
         required=True,
