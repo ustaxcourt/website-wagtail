@@ -103,6 +103,7 @@
     </head>
     <body class="{% block body_class %}  {% endblock %}">
         {% include 'banner.html' %}
+        {% include 'red_news_banner.html' %}
         {% get_environment as environment %}
         {% if environment != "production" %}
             {% include 'alert_banner.html' %}

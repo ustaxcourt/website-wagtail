@@ -112,6 +112,7 @@ TEMPLATES = [
                 "wagtail.contrib.settings.context_processors.settings",
                 "app.context_processors.build_info",
                 "app.context_processors.yellow_priority_news",
+                "app.context_processors.critical_priority_news",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
             ],

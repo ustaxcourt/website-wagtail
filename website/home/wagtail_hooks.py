@@ -304,16 +304,17 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
 @receiver(post_save, sender=NewsItem)
 def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
     """
-    Purge CloudFront cache for all pages when a high priority news item is created or updated.
-    High priority news items appear as yellow banners on all pages.
+    Purge CloudFront cache for all pages when a high or critical priority news item is created or updated.
+    High priority news items appear as yellow banners and critical priority items appear as red banners on all pages.
     """
     del sender, kwargs
 
-    # Only purge cache for high priority banners
-    if instance.banner_options == "high":
+    # Only purge cache for high or critical priority banners
+    if instance.banner_options in ["high", "critical"]:
         action = "created" if created else "updated"
+        priority_type = "High" if instance.banner_options == "high" else "Critical"
         logger.info(
-            f"High priority NewsItem {action}: {instance.title} (ID: {instance.id})"
+            f"{priority_type} priority NewsItem {action}: {instance.title} (ID: {instance.id})"
         )
 
         try:
@@ -323,7 +324,7 @@ def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
             batch.add_url("/*")
             batch.purge()
             logger.info(
-                f"Purged CloudFront cache for all pages using wildcard /* after high priority news item {action} (ID: {instance.id})."
+                f"Purged CloudFront cache for all pages using wildcard /* after {priority_type.lower()} priority news item {action} (ID: {instance.id})."
             )
         except Exception as e:
             logger.error(
@@ -334,15 +335,16 @@ def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=NewsItem)
 def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
     """
-    Purge CloudFront cache for all pages when a high priority news item is deleted.
-    High priority news items appear as yellow banners on all pages.
+    Purge CloudFront cache for all pages when a high or critical priority news item is deleted.
+    High priority news items appear as yellow banners and critical priority items appear as red banners on all pages.
     """
     del sender, kwargs
 
-    # Only purge cache for high priority banners
-    if instance.banner_options == "high":
+    # Only purge cache for high or critical priority banners
+    if instance.banner_options in ["high", "critical"]:
+        priority_type = "High" if instance.banner_options == "high" else "Critical"
         logger.info(
-            f"High priority NewsItem deleted: {instance.title} (ID: {instance.id})"
+            f"{priority_type} priority NewsItem deleted: {instance.title} (ID: {instance.id})"
         )
 
         try:
