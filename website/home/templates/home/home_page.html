@@ -19,6 +19,7 @@
     margin: 0 auto;
   }
 
+  /* This style now correctly applies ONLY to the static text cards section */
   #home-page .entries-list {
     display: flex;
     flex-direction: column;
@@ -78,14 +79,6 @@
     color: #222;
   }
 
-  /* Background image container - now empty */
-  .hero-background {
-    position: relative;
-    width: 100%;
-    height: clamp(200px, 20vh, 300px);
-    background: #ffffff;
-  }
-
   /* Navigation Cards Grid - now has the hero background */
   .nav-cards {
     padding: 40px 0;
@@ -101,11 +94,18 @@
     z-index: 2;
   }
 
+  /* This is the main grid for your navigation cards */
   .cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     margin-top: 30px;
+  }
+
+  /* It's good practice to remove default link styles */
+  .nav-link {
+    text-decoration: none;
+    color: inherit;
   }
 
   .nav-card {
@@ -117,6 +117,7 @@
     position: relative;
     transition: box-shadow 0.2s;
     backdrop-filter: blur(5px);
+    height: 100%; /* Makes cards in the same row equal height */
   }
 
   .nav-card:hover {
@@ -148,37 +149,15 @@
     line-height: 1.5;
   }
 
-  .nav-card .step-number {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 30px;
-    height: 30px;
-    background: #ff6b35;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  /* Second row cards */
-  .cards-grid-2 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    margin-top: 30px;
-  }
-
   /* Responsive Design */
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+  }
 
-    .cards-grid,
-    .cards-grid-2,
-    .news-grid,
-    .footer-grid {
+  @media (max-width: 768px) {
+    .cards-grid {
       grid-template-columns: 1fr;
     }
 
@@ -186,22 +165,15 @@
       font-size: 28px;
       line-height: 34px;
     }
-
-
   }
-  .row {
-    display: flex;
-    gap: 1rem; /* Optional: Adds space between your cards */
-  }
+
 </style>
 {% endblock %}
 
 {% block content %}
 <div id="home-page">
 
-  <!-- Hero section -->
   <section class="hero" role="region" aria-label="Court background">
-    <!-- Welcome content container -->
     <div class="welcome-container">
       <div class="welcome-inner" role="region" aria-label="Welcome">
         <div>
@@ -223,55 +195,23 @@
 
   </section>
 
-  <!-- Navigation Cards Section with CMS Editable Background -->
   <section class="nav-cards" {% if page.hero_background_image %} {% image page.hero_background_image fill-3000x1200 as bg_image %} style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');" {% endif %}>
-    <div class="container">
-    {% image tile.value.icon max-320x200 as img %}
-      <div class="entries-list">
-        {% for tile in page.quick_access_tiles %}
-          {# At the start of a new row (on the 1st, 4th, 7th item, etc.), open a div #}
-          {% if forloop.counter0|divisibleby:3 %}
-            <div class="row">
-          {% endif %}
-
-          {# Your card HTML - this part is unchanged #}
-          <a href="{{ tile.value.related_page.url }}" class="nav-link" aria-label="{{ tile.value.title }}">
-            <div class="nav-card">
-              <div class="icon"><img src="{{ tile.value.icon.file.url }}" alt="{{ tile.value.title }} icon" style="width: 60px; height: 60px; object-fit: contain;" /></div>
-              <h3>{{ tile.value.title }}</h3>
-              <p>{{ tile.value.description|richtext }}</p>
-            </div>
-          </a>
-
-          {# At the end of a row (on the 3rd, 6th, 9th item, etc.), OR if it's the last item in the list, close the div #}
-          {% if forloop.counter|divisibleby:3 or forloop.last %}
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-
-      {% comment %} <!-- Second row of cards -->
-      <div class="cards-grid-2">
-        <div class="nav-card">
-          <div class="icon">📋</div>
-          <h3>Tax Court Rules</h3>
-          <p>The Court's current Rules of Practice & Procedure, forms, and fee schedule.</p>
+    <div class="grid-container">
+        <div class="cards-grid">
+            {% for tile in page.quick_access_tiles %}
+                <a href="{{ tile.value.related_page.url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                    <div class="nav-card">
+                        {% if tile.value.icon %}
+                            <div class="icon">
+                                <img src="{{ tile.value.icon.url }}" alt="{{ tile.value.title }} icon" />
+                            </div>
+                        {% endif %}
+                        <h3>{{ tile.value.title }}</h3>
+                        <p>{{ tile.value.description|richtext }}</p>
+                    </div>
+                </a>
+            {% endfor %}
         </div>
-
-        <div class="nav-card">
-          <div class="icon">⚖️</div>
-          <h3>Today's Opinions</h3>
-          <p>Access the most recent court opinions issued by Tax Court judges.</p>
-        </div>
-
-        <div class="nav-card">
-          <div class="icon">📑</div>
-          <h3>Today's Orders</h3>
-          <p>Access the most recent court orders issued by Tax Court judges.</p>
-        </div>
-      </div> {% endcomment %}
-
     </div>
   </section>
 
