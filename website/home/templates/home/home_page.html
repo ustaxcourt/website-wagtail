@@ -19,7 +19,6 @@
     margin: 0 auto;
   }
 
-  /* This style now correctly applies ONLY to the static text cards section */
   #home-page .entries-list {
     display: flex;
     flex-direction: column;
@@ -33,7 +32,6 @@
     background: var(--color-primary-alt-lightest);
   }
 
-  /* HERO section container */
   .hero {
     position: relative;
     width: 100%;
@@ -41,7 +39,6 @@
     background: #ffffff;
   }
 
-  /* Welcome content container */
   .welcome-container {
     position: relative;
     width: 100%;
@@ -79,7 +76,6 @@
     color: #222;
   }
 
-  /* Navigation Cards Grid - now has the hero background */
   .nav-cards {
     padding: 40px 0;
     background-size: cover;
@@ -88,13 +84,11 @@
     position: relative;
   }
 
-  /* Ensure cards appear above overlay */
   .nav-cards .container {
     position: relative;
     z-index: 2;
   }
 
-  /* This is the main grid for your navigation cards */
   .cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -102,22 +96,23 @@
     margin-top: 30px;
   }
 
-  /* It's good practice to remove default link styles */
   .nav-link {
     text-decoration: none;
     color: inherit;
   }
 
   .nav-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(222, 226, 230, 0.8);
-    border-radius: 8px;
+    background: var(--color-white, #FFF);
+    border: 1px solid var(--theme-color-base-light, #A9AEB1);
+    border-radius: 5px;
     padding: 30px 20px;
     text-align: center;
     position: relative;
     transition: box-shadow 0.2s;
     backdrop-filter: blur(5px);
-    height: 100%; /* Makes cards in the same row equal height */
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
   }
 
   .nav-card:hover {
@@ -137,19 +132,13 @@
     font-size: 24px;
   }
 
-  .nav-card h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #1a1a1a;
-  }
-
   .nav-card p {
-    color: #666;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
   }
 
-  /* Responsive Design */
   @media (max-width: 992px) {
     .cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -206,7 +195,7 @@
                                 <img src="{{ tile.value.icon.url }}" alt="{{ tile.value.title }} icon" />
                             </div>
                         {% endif %}
-                        <h3>{{ tile.value.title }}</h3>
+                        <h2>{{ tile.value.title }}</h2>
                         <p>{{ tile.value.description|richtext }}</p>
                     </div>
                 </a>
