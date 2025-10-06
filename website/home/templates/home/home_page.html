@@ -187,6 +187,11 @@
       line-height: 34px;
     }
 
+
+  }
+  .row {
+    display: flex;
+    gap: 1rem; /* Optional: Adds space between your cards */
   }
 </style>
 {% endblock %}
@@ -222,8 +227,14 @@
   <section class="nav-cards" {% if page.hero_background_image %} {% image page.hero_background_image fill-3000x1200 as bg_image %} style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');" {% endif %}>
     <div class="container">
     {% image tile.value.icon max-320x200 as img %}
-        <div class="entries-list">
-          {% for tile in page.quick_access_tiles %}
+      <div class="entries-list">
+        {% for tile in page.quick_access_tiles %}
+          {# At the start of a new row (on the 1st, 4th, 7th item, etc.), open a div #}
+          {% if forloop.counter0|divisibleby:3 %}
+            <div class="row">
+          {% endif %}
+
+          {# Your card HTML - this part is unchanged #}
           <a href="{{ tile.value.related_page.url }}" class="nav-link" aria-label="{{ tile.value.title }}">
             <div class="nav-card">
               <div class="icon"><img src="{{ tile.value.icon.file.url }}" alt="{{ tile.value.title }} icon" style="width: 60px; height: 60px; object-fit: contain;" /></div>
@@ -231,8 +242,13 @@
               <p>{{ tile.value.description|richtext }}</p>
             </div>
           </a>
-          {% endfor %}
-        </div>
+
+          {# At the end of a row (on the 3rd, 6th, 9th item, etc.), OR if it's the last item in the list, close the div #}
+          {% if forloop.counter|divisibleby:3 or forloop.last %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
 
 
       {% comment %} <!-- Second row of cards -->
