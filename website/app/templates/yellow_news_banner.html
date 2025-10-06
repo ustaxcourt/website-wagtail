@@ -120,6 +120,11 @@
             const container = document.getElementById('yellow-news-banner-container');
             const bannerId = 'yellowNewsBanner-' + itemToShow.id;
 
+            // Build the document link if available
+            const documentLink = itemToShow.document_url
+                ? ` <a href="${itemToShow.document_url}">See the Press Release</a>.`
+                : '';
+
             const bannerHTML = `
             <div class="yellow-news-banner" id="${bannerId}">
                 <div class="grid-container">
@@ -130,7 +135,7 @@
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
                         <div class="alert-text">
-                            ${itemToShow.description}
+                            ${itemToShow.description}${documentLink}
                         </div>
                         <button class="close-btn" onclick="closeYellowBanner(${itemToShow.id})" aria-label="Close banner">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
