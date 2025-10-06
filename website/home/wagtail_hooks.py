@@ -20,6 +20,7 @@ from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+from .views import svg_chooser_viewset
 
 import logging
 
@@ -343,3 +344,8 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
         message=plain_text_content,
         html_message=html_content,
     )
+
+
+@hooks.register("register_admin_viewset")
+def register_viewset():
+    return svg_chooser_viewset
