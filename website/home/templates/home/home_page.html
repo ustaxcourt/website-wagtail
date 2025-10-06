@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load static tz %}
+{% load custom_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
@@ -123,7 +124,6 @@
     width: 60px;
     height: 60px;
     margin: 0 auto 20px;
-    background: #0066cc;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -190,11 +190,12 @@
             {% for tile in page.quick_access_tiles %}
                 <a href="{{ tile.value.related_page.url }}" class="nav-link" aria-label="{{ tile.value.title }}">
                     <div class="nav-card">
-                        {% if tile.value.icon %}
-                            <div class="icon">
-                                <img src="{{ tile.value.icon.url }}" alt="{{ tile.value.title }} icon" />
+                      {% if tile.value.icon %}
+                          <div class="icon">
+                              {# Use the custom template tag to render the SVG inline #}
+                              {% include_svg tile.value.icon.svg_file %}
                             </div>
-                        {% endif %}
+                      {% endif %}
                         <h2>{{ tile.value.title }}</h2>
                         <p>{{ tile.value.description|richtext }}</p>
                     </div>
