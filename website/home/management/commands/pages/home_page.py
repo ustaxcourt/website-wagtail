@@ -131,10 +131,83 @@ class HomePageInitializer(PageInitializer):
                     "title": "Begin the Petition Filing Process",
                     "description": "Start your case on DAWSON to file and track your petition.",
                     "icon": {"svg_file": home_page_documents["start_icon.svg"].pk},
+                    "related_page": self.get_page("dawson").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Learn How to Start a Case",
+                    "description": "Read these FAQ’s before filing to prepare for starting your case.",
+                    "icon": {"svg_file": home_page_documents["learn_icon.svg"].pk},
+                    "related_page": self.get_page("petitioners-start").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "DAWSON Case Management",
+                    "description": "Our online system, DAWSON, allows users to file documents and track their case status.",
+                    "icon": {"svg_file": home_page_documents["DAWSON_icon.svg"].pk},
                     "related_page": self.get_page("efile-a-petition").pk,
                 },
-            }
-            # Add other tiles as needed...
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Tax Court Rules",
+                    "description": "The Court's current Rules of Practice & Procedure, forms, and fee schedule.",
+                    "icon": {"svg_file": home_page_documents["rules_icon.svg"].pk},
+                    "related_page": self.get_page("rules").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "The Court's current Rules of Practice & Procedure, forms, and fee schedule.",
+                    "description": "Access the most recent court opinions issued by Tax Court judges.",
+                    "icon": {"svg_file": home_page_documents["opinions_icon.svg"].pk},
+                    "related_page": self.get_page("dawson").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Today’s Orders",
+                    "description": "Access the most recent court orders issued by Tax Court judges.",
+                    "icon": {"svg_file": home_page_documents["orders_icon.svg"].pk},
+                    "related_page": self.get_page("dawson").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Guidance for Practitioners",
+                    "description": "Resources for attorneys and practitioners, including DAWSON access, and practice rules.",
+                    "icon": {
+                        "svg_file": home_page_documents["practitioners_icon.svg"].pk
+                    },
+                    "related_page": self.get_page("practitioners").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Case Related Forms",
+                    "description": "Forms for filing petitions, motions, and other court documents.",
+                    "icon": {"svg_file": home_page_documents["PDF_icon.svg"].pk},
+                    "related_page": self.get_page("case-related-forms").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Find a Trial Session",
+                    "description": "Search for scheduled trial sessions by location, type, or judge.",
+                    "icon": {"svg_file": home_page_documents["calendar_icon.svg"].pk},
+                    "related_page": self.get_page("dawson").pk,
+                },
+            },
         ]
 
         # Get the homepage
