@@ -6,6 +6,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+home_page_documents = {
+    "calendar_icon.svg": "",
+    "DAWSON_icon.svg": "",
+    "learn_icon.svg": "",
+    "opinions_icon.svg": "",
+    "orders_icon.svg": "",
+    "PDF_icon.svg": "",
+    "practitioners_icon.svg": "",
+    "rules_icon.svg": "",
+    "search_icon.svg": "",
+    "start_icon.svg": "",
+}
+
 
 class HomePageInitializer(PageInitializer):
     def __init__(self):
@@ -86,3 +99,54 @@ class HomePageInitializer(PageInitializer):
         else:
             logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
+
+    def get_page(self, slug):
+        try:
+            page = Page.objects.live().filter(slug=slug).first()
+            if page:
+                return page.specific
+            logger.info(f"WARNING: Page with slug '{slug}' not found")
+            return None
+        except Page.DoesNotExist:
+            logger.info(f"WARNING: Page with slug '{slug}' not found")
+            return None
+
+    def update_home_page(self):
+        logger.info("Updating Home page quick access tiles...")
+
+        # Load icon documents and store the actual Document objects
+        for doc_name in home_page_documents:
+            doc_object = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=doc_name,
+                title=doc_name,
+            )
+            home_page_documents[doc_name] = doc_object
+
+        # Build the StreamField data with the correct structure
+        quick_access_tiles = [
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Begin the Petition Filing Process",
+                    "description": "Start your case on DAWSON to file and track your petition.",
+                    "icon": {"svg_file": home_page_documents["start_icon.svg"].pk},
+                    "related_page": self.get_page("efile-a-petition").pk,
+                },
+            }
+            # Add other tiles as needed...
+        ]
+
+        # Get the homepage
+        homepage = self.get_page("home")
+
+        if homepage:
+            # Assign the list of data to the StreamField
+            homepage.quick_access_tiles = quick_access_tiles
+
+            # Save a new revision and publish the changes to make them live
+            homepage.save_revision().publish()
+
+            logger.info("Successfully updated Home page with quick access tiles.")
+        else:
+            logger.warning("Could not find Home page to update.")
