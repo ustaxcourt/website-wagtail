@@ -68,6 +68,7 @@ def critical_priority_news(request):
                 "banner_end_date": item.banner_end_date.isoformat()
                 if item.banner_end_date
                 else None,
+                "document_url": item.document.url if item.document else None,
             }
         )
 

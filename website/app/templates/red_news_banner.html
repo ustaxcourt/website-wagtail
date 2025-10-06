@@ -24,6 +24,7 @@
     #red-news-banner-container .red-news-banner a {
         color: #FFFFFF;
         text-decoration: underline;
+        font-weight: 400;
     }
 
     #red-news-banner-container .red-news-banner a:hover {
@@ -45,6 +46,14 @@
 
     #red-news-banner-container .red-news-banner .alert-text {
         flex: 1;
+    }
+
+    #red-news-banner-container .red-news-banner .alert-text p {
+        display: inline;
+    }
+
+    #red-news-banner-container .red-news-banner .alert-text strong {
+        display: inline;
     }
 </style>
 {% if has_critical_news %}
@@ -98,6 +107,11 @@
             const container = document.getElementById('red-news-banner-container');
             const bannerId = 'redNewsBanner-' + itemToShow.id;
 
+            // Build the document link if available
+            const documentLink = itemToShow.document_url
+                ? ` <a href="${itemToShow.document_url}">See the Press Release</a>.`
+                : '';
+
             const bannerHTML = `
             <div class="red-news-banner" id="${bannerId}">
                 <div class="grid-container">
@@ -108,7 +122,7 @@
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
                         <div class="alert-text">
-                            ${itemToShow.description}
+                            <strong>Important Notice:</strong> ${itemToShow.description}${documentLink}
                         </div>
                     </div>
                 </div>
