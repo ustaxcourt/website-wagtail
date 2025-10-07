@@ -129,7 +129,6 @@
     border-radius: 5px;
     box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
     height: 100%;
-    margin-top: 30px;
     transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
     color: #162E51;
   }
@@ -187,10 +186,21 @@
     line-height: 20px;
   }
 
+  .dual-nav-card {
+    display:none;
+  }
+
   @media (max-width: 992px) {
     .cards-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .wide-nav-cards {
+      display:none;
+    }
+    .dual-nav-card {
+      display:block;
+    }
+
   }
 
   @media (max-width: 768px) {
@@ -203,6 +213,7 @@
       line-height: 34px;
     }
   }
+
 
 </style>
 {% endblock %}
@@ -249,7 +260,20 @@
                     </div>
                 </a>
             {% endfor %}
-        </div>
+            {% for tile in page.full_width_quick_access_tile %}
+              <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                  <div class="nav-card dual-nav-card">
+                    {% if tile.value.icon %}
+                      <div class="icon">
+                          {# Use the custom template tag to render the SVG inline #}
+                          {% include_svg tile.value.icon.svg_file %}
+                      </div>
+                    {% endif %}
+                    <h2>{{ tile.value.title }}</h2>
+                  </div>
+              </a>
+            {% endfor %}
+          </div>
         <div class="wide-nav-cards">
           {% for tile in page.full_width_quick_access_tile %}
             <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
