@@ -164,7 +164,7 @@ class HomePageInitializer(PageInitializer):
             {
                 "type": "tile",
                 "value": {
-                    "title": "The Court's current Rules of Practice & Procedure, forms, and fee schedule.",
+                    "title": "Today's Opinions",
                     "description": "Access the most recent court opinions issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["opinions_icon.svg"].pk},
                     "external_url": "https://dawson.ustaxcourt.gov/todays-opinions",
