@@ -13,8 +13,8 @@
     --link-blue: rgb(0, 94, 162);
     --color-primary-alt-lightest: #F1F9FC;
     --color-accent-cool-light: #97D4EA;
-    --heading-font: "Source Sans Pro";
-    --body-font: 'Source Sans Pro';
+    --heading-font: "Source Sans 3";
+    --body-font: 'Source Sans 3';
     --base-font-size: 17px;
     --container-width: 1440px;
 }
@@ -39,19 +39,19 @@ body {
    Typography
    ========================================================================== */
 .font-heading {
-    font-family: var(--heading-font);
+    font-family: var(--heading-font), sans-serif;
 }
 
 body {
     line-height: 24px;
-    font-family: var(--body-font);
+    font-family: var(--body-font), sans-serif;
     font-size: var(--base-font-size);
     -webkit-font-smoothing: antialiased;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--heading-font);
+    font-family: var(--heading-font), sans-serif;
     font-weight: bold;
     line-height: 38px;
     margin-bottom: 8px;
@@ -73,13 +73,13 @@ h2 {
 h3 {
     font-size: 1.25rem;
     line-height: 1.563rem;
-    font-family: 'Source Sans Pro';
+    font-family: 'Source Sans 3', sans-serif;
 }
 
 h4 {
     font-size: 1.063rem;
     line-height: 1.5rem;
-    font-family: 'Source Sans Pro';
+    font-family: 'Source Sans 3', sans-serif;
 }
 
 /* Links */
