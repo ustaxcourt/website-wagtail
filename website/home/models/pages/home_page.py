@@ -28,6 +28,20 @@ class QuickAccessTileBlock(blocks.StructBlock):
         label = "Quick Access Tile"
 
 
+class FullWidthQuickAccessTileBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    icon = SVGChooserBlock(required=True)
+
+    related_page = blocks.PageChooserBlock(
+        required=False,
+    )
+
+    external_url = blocks.URLBlock(required=False, help_text="External link URL")
+
+    class Meta:
+        label = "Quick Access Tile"
+
+
 class StaticTextCardBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=2000, required=False, help_text="Card title")
     body = blocks.RichTextBlock(required=False, help_text="Card content")
@@ -81,6 +95,16 @@ class HomePage(ModerationMixin, Page):
         help_text="Add multiple quick access tiles",
     )
 
+    full_width_quick_access_tile = StreamField(
+        [
+            ("tile", FullWidthQuickAccessTileBlock()),
+        ],
+        max_num=1,  # This ensures only one can be added
+        blank=True,
+        use_json_field=True,  # Modern best practice for StreamField
+        help_text="Add one optional full-width quick access tile.",
+    )
+
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         FieldPanel("hero_title"),
@@ -88,6 +112,7 @@ class HomePage(ModerationMixin, Page):
         FieldPanel("hero_background_image"),
         FieldPanel("static_text_cards"),
         FieldPanel("quick_access_tiles"),
+        FieldPanel("full_width_quick_access_tile"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
