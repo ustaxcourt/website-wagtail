@@ -19,8 +19,10 @@ class QuickAccessTileBlock(blocks.StructBlock):
     icon = SVGChooserBlock(required=True)
 
     related_page = blocks.PageChooserBlock(
-        required=True,
+        required=False,
     )
+
+    external_url = blocks.URLBlock(required=False, help_text="External link URL")
 
     class Meta:
         label = "Quick Access Tile"

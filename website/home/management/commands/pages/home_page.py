@@ -167,7 +167,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "The Court's current Rules of Practice & Procedure, forms, and fee schedule.",
                     "description": "Access the most recent court opinions issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["opinions_icon.svg"].pk},
-                    "related_page": self.get_page("dawson").pk,
+                    "external_url": "https://dawson.ustaxcourt.gov/todays-opinions",
                 },
             },
             {
@@ -176,7 +176,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "Today’s Orders",
                     "description": "Access the most recent court orders issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["orders_icon.svg"].pk},
-                    "related_page": self.get_page("dawson").pk,
+                    "external_url": "https://dawson.ustaxcourt.gov/todays-orders",
                 },
             },
             {
@@ -205,7 +205,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "Find a Trial Session",
                     "description": "Search for scheduled trial sessions by location, type, or judge.",
                     "icon": {"svg_file": home_page_documents["calendar_icon.svg"].pk},
-                    "related_page": self.get_page("dawson").pk,
+                    "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                 },
             },
         ]

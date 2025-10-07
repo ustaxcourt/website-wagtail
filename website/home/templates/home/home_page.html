@@ -188,7 +188,7 @@
     <div class="grid-container">
         <div class="cards-grid">
             {% for tile in page.quick_access_tiles %}
-                <a href="{{ tile.value.related_page.url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
                     <div class="nav-card">
                       {% if tile.value.icon %}
                           <div class="icon">
