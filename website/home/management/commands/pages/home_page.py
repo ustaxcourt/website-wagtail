@@ -209,6 +209,17 @@ class HomePageInitializer(PageInitializer):
                 },
             },
         ]
+        full_width_quick_access_tile = [
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Find a Case, Order, Opinion or Practitioner",
+                    "description": "Find a Case, Order, Opinion or Practitioner",
+                    "icon": {"svg_file": home_page_documents["search_icon.svg"].pk},
+                    "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
+                },
+            },
+        ]
 
         # Get the homepage
         homepage = self.get_page("home")
@@ -216,6 +227,7 @@ class HomePageInitializer(PageInitializer):
         if homepage:
             # Assign the list of data to the StreamField
             homepage.quick_access_tiles = quick_access_tiles
+            homepage.full_width_quick_access_tile = full_width_quick_access_tile
 
             # Save a new revision and publish the changes to make them live
             homepage.save_revision().publish()
