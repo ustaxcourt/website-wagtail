@@ -203,9 +203,7 @@
 
     .nav-card {
       display: grid;
-      /* Create two columns: one for the icon, one for the text */
       grid-template-columns: auto 1fr;
-      /* Align items in the first row vertically */
       align-items: center;
       text-align: left;
       padding: 20px 25px;
@@ -220,8 +218,6 @@
     }
 
     .nav-card p {
-      /* This is the key: it makes the paragraph span all columns,
-        forcing it onto a new row. */
       grid-column: 1 / -1;
       margin: 0px;
     }
