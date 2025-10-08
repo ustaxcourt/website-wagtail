@@ -70,17 +70,16 @@ class NewsItem(
         choices=BANNER_CHOICES,
         default="none",
         help_text="Select the banner type for the news article",
-        blank=True,
     )
 
     banner_start_date = models.DateTimeField(
-        help_text="Date/time when the banner should start appearing",
+        help_text="Date/time when the banner should start appearing (required for high and critical priority banners)",
         blank=True,
         null=True,
     )
 
     banner_end_date = models.DateTimeField(
-        help_text="Date/time when the banner should stop appearing",
+        help_text="Date/time when the banner should stop appearing (optional - leave blank for indefinite display until replaced by a new banner)",
         blank=True,
         null=True,
     )
@@ -131,80 +130,158 @@ class NewsItem(
         """
         Validate that high priority banners don't overlap with other high priority banners,
         and critical priority banners don't overlap with other critical priority banners.
+        Start date is required for high and critical banners. End date is optional.
         """
         super().clean()
 
-        # Only validate if this is a high priority banner with dates set
-        if (
-            self.banner_options == "high"
-            and self.banner_start_date
-            and self.banner_end_date
-        ):
+        # Require start date for high and critical priority banners
+        if self.banner_options in ["high", "critical"] and not self.banner_start_date:
+            raise ValidationError(
+                {
+                    "banner_start_date": ValidationError(
+                        f"Start date and time are required for {self.banner_options} priority banners.",
+                        code="required_start_date",
+                    )
+                }
+            )
+
+        # Only validate if this is a high priority banner with start date set
+        if self.banner_options == "high" and self.banner_start_date:
             # Check for overlapping high priority banners
-            overlapping = (
+            other_banners = (
                 NewsItem.objects.filter(banner_options="high", live=True)
-                .exclude(
-                    id=self.id  # Exclude self when editing
-                )
-                .filter(
-                    models.Q(banner_start_date__isnull=False),
-                    models.Q(banner_end_date__isnull=False),
-                    # Check for any overlap: start before other ends AND end after other starts
-                    models.Q(banner_start_date__lt=self.banner_end_date),
-                    models.Q(banner_end_date__gt=self.banner_start_date),
-                )
+                .exclude(id=self.id)  # Exclude self when editing
+                .filter(banner_start_date__isnull=False)
             )
 
-            if overlapping.exists():
-                conflicting = overlapping.first()
-                raise ValidationError(
-                    {
-                        "banner_start_date": ValidationError(
-                            f"A high priority banner is already scheduled during this time period. "
-                            f'Conflicting banner: "{conflicting.title}" '
-                            f"({conflicting.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
-                            f"{conflicting.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
-                            f"Please choose a different time period or edit the conflicting banner.",
-                            code="banner_conflict",
+            for other in other_banners:
+                # Check if there's an overlap
+                # Case 1: Other banner has no end date (indefinite) - conflicts if it starts before this one ends (or this one is indefinite)
+                if other.banner_end_date is None:
+                    # If other starts before this ends (or this is indefinite), there's a conflict
+                    if (
+                        self.banner_end_date is None
+                        or other.banner_start_date < self.banner_end_date
+                    ):
+                        # But only if this starts before other ends (which is never, so always conflicts if we reach here)
+                        end_text = "indefinite"
+                        raise ValidationError(
+                            {
+                                "banner_start_date": ValidationError(
+                                    f"A high priority banner is already scheduled during this time period. "
+                                    f'Conflicting banner: "{other.title}" '
+                                    f"({other.banner_start_date.strftime('%Y-%m-%d %H:%M')} to {end_text}). "
+                                    f"Please choose a different time period or edit the conflicting banner.",
+                                    code="banner_conflict",
+                                )
+                            }
                         )
-                    }
-                )
+                # Case 2: Other banner has an end date
+                elif other.banner_end_date:
+                    # Standard overlap check: this starts before other ends AND this ends after other starts
+                    # If this banner has no end date, it's indefinite, so check if it starts before other ends
+                    if self.banner_end_date is None:
+                        # This is indefinite, conflicts if other ends after this starts
+                        if other.banner_end_date > self.banner_start_date:
+                            raise ValidationError(
+                                {
+                                    "banner_start_date": ValidationError(
+                                        f"A high priority banner is already scheduled during this time period. "
+                                        f'Conflicting banner: "{other.title}" '
+                                        f"({other.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
+                                        f"{other.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
+                                        f"Please choose a different time period or edit the conflicting banner.",
+                                        code="banner_conflict",
+                                    )
+                                }
+                            )
+                    else:
+                        # Both have end dates, standard overlap check
+                        if (
+                            self.banner_start_date < other.banner_end_date
+                            and self.banner_end_date > other.banner_start_date
+                        ):
+                            raise ValidationError(
+                                {
+                                    "banner_start_date": ValidationError(
+                                        f"A high priority banner is already scheduled during this time period. "
+                                        f'Conflicting banner: "{other.title}" '
+                                        f"({other.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
+                                        f"{other.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
+                                        f"Please choose a different time period or edit the conflicting banner.",
+                                        code="banner_conflict",
+                                    )
+                                }
+                            )
 
-        # Only validate if this is a critical priority banner with dates set
-        if (
-            self.banner_options == "critical"
-            and self.banner_start_date
-            and self.banner_end_date
-        ):
+        # Only validate if this is a critical priority banner with start date set
+        if self.banner_options == "critical" and self.banner_start_date:
             # Check for overlapping critical priority banners
-            overlapping = (
+            other_banners = (
                 NewsItem.objects.filter(banner_options="critical", live=True)
-                .exclude(
-                    id=self.id  # Exclude self when editing
-                )
-                .filter(
-                    models.Q(banner_start_date__isnull=False),
-                    models.Q(banner_end_date__isnull=False),
-                    # Check for any overlap: start before other ends AND end after other starts
-                    models.Q(banner_start_date__lt=self.banner_end_date),
-                    models.Q(banner_end_date__gt=self.banner_start_date),
-                )
+                .exclude(id=self.id)  # Exclude self when editing
+                .filter(banner_start_date__isnull=False)
             )
 
-            if overlapping.exists():
-                conflicting = overlapping.first()
-                raise ValidationError(
-                    {
-                        "banner_start_date": ValidationError(
-                            f"A critical priority banner is already scheduled during this time period. "
-                            f'Conflicting banner: "{conflicting.title}" '
-                            f"({conflicting.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
-                            f"{conflicting.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
-                            f"Please choose a different time period or edit the conflicting banner.",
-                            code="banner_conflict",
+            for other in other_banners:
+                # Check if there's an overlap
+                # Case 1: Other banner has no end date (indefinite) - conflicts if it starts before this one ends (or this one is indefinite)
+                if other.banner_end_date is None:
+                    # If other starts before this ends (or this is indefinite), there's a conflict
+                    if (
+                        self.banner_end_date is None
+                        or other.banner_start_date < self.banner_end_date
+                    ):
+                        # But only if this starts before other ends (which is never, so always conflicts if we reach here)
+                        end_text = "indefinite"
+                        raise ValidationError(
+                            {
+                                "banner_start_date": ValidationError(
+                                    f"A critical priority banner is already scheduled during this time period. "
+                                    f'Conflicting banner: "{other.title}" '
+                                    f"({other.banner_start_date.strftime('%Y-%m-%d %H:%M')} to {end_text}). "
+                                    f"Please choose a different time period or edit the conflicting banner.",
+                                    code="banner_conflict",
+                                )
+                            }
                         )
-                    }
-                )
+                # Case 2: Other banner has an end date
+                elif other.banner_end_date:
+                    # Standard overlap check: this starts before other ends AND this ends after other starts
+                    # If this banner has no end date, it's indefinite, so check if it starts before other ends
+                    if self.banner_end_date is None:
+                        # This is indefinite, conflicts if other ends after this starts
+                        if other.banner_end_date > self.banner_start_date:
+                            raise ValidationError(
+                                {
+                                    "banner_start_date": ValidationError(
+                                        f"A critical priority banner is already scheduled during this time period. "
+                                        f'Conflicting banner: "{other.title}" '
+                                        f"({other.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
+                                        f"{other.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
+                                        f"Please choose a different time period or edit the conflicting banner.",
+                                        code="banner_conflict",
+                                    )
+                                }
+                            )
+                    else:
+                        # Both have end dates, standard overlap check
+                        if (
+                            self.banner_start_date < other.banner_end_date
+                            and self.banner_end_date > other.banner_start_date
+                        ):
+                            raise ValidationError(
+                                {
+                                    "banner_start_date": ValidationError(
+                                        f"A critical priority banner is already scheduled during this time period. "
+                                        f'Conflicting banner: "{other.title}" '
+                                        f"({other.banner_start_date.strftime('%Y-%m-%d %H:%M')} to "
+                                        f"{other.banner_end_date.strftime('%Y-%m-%d %H:%M')}). "
+                                        f"Please choose a different time period or edit the conflicting banner.",
+                                        code="banner_conflict",
+                                    )
+                                }
+                            )
 
     def save(self, *args, **kwargs):
         self.created_by = get_user_model().objects.first()
