@@ -17,7 +17,7 @@
 
     header#top-navigation #desktop-search-form {
         display: flex;
-        gap: 8px;
+        {% comment %} gap: 8px; {% endcomment %}
         margin: 0 20px;
     }
 
@@ -31,8 +31,8 @@
 
     header#top-navigation .search-form input {
         padding: 8px 12px;
-        border: 1px solid var(--light-blue);
-        border-radius: 4px;
+        border: 1px solid #565C65;
+        {% comment %} border-radius: 4px; {% endcomment %}
         min-width: 200px;
     }
 
@@ -40,7 +40,7 @@
         background-color: var(--light-blue);
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 0px 4px 4px 0px;
         padding: 8px 16px;
         cursor: pointer;
         display: flex;
