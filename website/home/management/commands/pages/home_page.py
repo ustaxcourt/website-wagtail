@@ -214,7 +214,6 @@ class HomePageInitializer(PageInitializer):
                 "type": "tile",
                 "value": {
                     "title": "Find a Case, Order, Opinion or Practitioner",
-                    "description": "Find a Case, Order, Opinion or Practitioner",
                     "icon": {"svg_file": home_page_documents["search_icon.svg"].pk},
                     "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                 },
