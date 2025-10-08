@@ -24,6 +24,9 @@ from .views import svg_chooser_viewset
 
 import logging
 
+from home.views import NewsItemReportView
+from wagtail.admin.menu import AdminOnlyMenuItem
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -344,6 +347,32 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
         message=plain_text_content,
         html_message=html_content,
     )
+
+
+@hooks.register("register_reports_menu_item")
+def register_unpublished_changes_report_menu_item():
+    return AdminOnlyMenuItem(
+        "Press Release & Notices publish report",
+        reverse("newsitem_report"),
+        icon_name="clipboard-list",
+        order=700,
+    )
+
+
+@hooks.register("register_admin_urls")
+def register_newsitem_report_url():
+    return [
+        path(
+            "reports/newsitem-report/",
+            NewsItemReportView.as_view(),
+            name="newsitem_report",
+        ),
+        path(
+            "reports/newsitem-report/results/",
+            NewsItemReportView.as_view(results_only=True),
+            name="newsitem_report_results",
+        ),
+    ]
 
 
 @hooks.register("register_admin_viewset")

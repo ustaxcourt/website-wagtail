@@ -22,4 +22,6 @@ SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
 
 EMAIL_BACKEND = "django_ses.SESBackend"
 
+WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
+
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
