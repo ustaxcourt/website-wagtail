@@ -161,7 +161,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "DAWSON Case Management",
                     "description": "Our online system, DAWSON, allows users to file documents and track their case status.",
                     "icon": {"svg_file": home_page_documents["DAWSON_icon.svg"].pk},
-                    "related_page": self.get_page("efile-a-petition").pk,
+                    "external_url": self.get_environment_specific_dawson_url(),
                 },
             },
             {

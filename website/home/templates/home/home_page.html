@@ -79,7 +79,7 @@
 
   .nav-cards {
     padding: 40px 0;
-    background-size: cover;
+    background-size: contain;
     background-position: top;
     background-repeat: no-repeat;
     position: relative;
@@ -170,7 +170,7 @@
   .nav-card .icon {
     width: 60px;
     height: 60px;
-    margin: 0px auto 20px;
+    margin: 0px auto 12px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -180,7 +180,7 @@
   }
 
   .nav-card h2 {
-    margin: 0px 0px 20px 0px;
+    margin: 0px 0px 12px 0px;
   }
 
   .nav-card p {
@@ -193,6 +193,16 @@
 
   .toggle-on-at-or-below-tablet-size {
     display:none;
+  }
+  .toggle-on-at-or-below-mobile-size {
+    display:none;
+    }
+
+  .welcome-inner-card{
+      margin: 0px 0px 20px 0px;
+      background: var(--color-white, #FFF);
+      padding: 15px 22px 11px;
+      border-radius: 3px;
   }
 
   @media (max-width: 992px) {
@@ -231,6 +241,10 @@
   }
 
   @media (max-width: 768px) {
+    .grid-container{
+      margin: 0px 12px;
+    }
+
     .cards-grid {
       grid-template-columns: 1fr;
     }
@@ -246,6 +260,14 @@
 
     .toggle-on-at-or-below-tablet-size {
       display: block;
+    }
+
+    .hero{
+      display: none;
+    }
+
+    .toggle-on-at-or-below-mobile-size {
+    display:block;
     }
   }
 
@@ -279,6 +301,24 @@
   </section>
 
   <section class="nav-cards" {% if page.hero_background_image %} {% image page.hero_background_image fill-3000x1200 as bg_image %} style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');" {% endif %}>
+    <div class="grid-container toggle-on-at-or-below-mobile-size">
+      <div class="welcome-inner-card" role="region" aria-label="Welcome">
+        <div>
+          <h1 class="welcome-title">
+            {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
+          </h1>
+          <div class="welcome-body">
+            {% if page.hero_body %}
+            {{ page.hero_body|richtext }}
+            {% else %}
+            We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case
+            management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a
+            federal trial court established under Article I of the Constitution.
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="grid-container">
         <div class="cards-grid">
             {% for tile in page.quick_access_tiles %}
