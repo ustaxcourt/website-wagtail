@@ -186,7 +186,7 @@
     line-height: 20px;
   }
 
-  .dual-nav-card {
+  .toggle-on-at-or-below-tablet-size {
     display:none;
   }
 
@@ -194,18 +194,46 @@
     .cards-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    .wide-nav-cards {
-      display:none;
-    }
-    .dual-nav-card {
-      display:block;
+
+    .nav-card {
+      display: grid;
+      /* Create two columns: one for the icon, one for the text */
+      grid-template-columns: auto 1fr;
+      /* Align items in the first row vertically */
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+      padding: 20px 25px;
     }
 
+    .nav-card .icon {
+      /* Override the desktop margin for proper alignment */
+      margin: 0;
+    }
+
+    .nav-card p {
+      /* This is the key: it makes the paragraph span all columns,
+        forcing it onto a new row. */
+      grid-column: 1 / -1;
+      margin-top: 10px; /* Add some space above the description */
+    }
+
+    .wide-nav-cards {
+      display: none;
+    }
+
+    .toggle-on-at-or-below-tablet-size {
+      display: flex;
+    }
   }
 
   @media (max-width: 768px) {
     .cards-grid {
       grid-template-columns: 1fr;
+    }
+
+    .nav-card {
+      padding: 16px 16px;
     }
 
     .welcome-title {
@@ -262,7 +290,7 @@
             {% endfor %}
             {% for tile in page.full_width_quick_access_tile %}
               <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
-                  <div class="nav-card dual-nav-card">
+                  <div class="nav-card toggle-on-at-or-below-tablet-size">
                     {% if tile.value.icon %}
                       <div class="icon">
                           {# Use the custom template tag to render the SVG inline #}
