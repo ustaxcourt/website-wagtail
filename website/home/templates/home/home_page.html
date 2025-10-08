@@ -179,11 +179,16 @@
     font-size: 24px;
   }
 
+  .nav-card h2 {
+    margin: 0px 0px 20px 0px;
+  }
+
   .nav-card p {
     font-size: 17px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+    margin: 0px;
   }
 
   .toggle-on-at-or-below-tablet-size {
@@ -201,21 +206,23 @@
       grid-template-columns: auto 1fr;
       /* Align items in the first row vertically */
       align-items: center;
-      gap: 16px;
       text-align: left;
       padding: 20px 25px;
     }
 
     .nav-card .icon {
-      /* Override the desktop margin for proper alignment */
-      margin: 0;
+      margin: 0px 16px 0px 0px;
+    }
+
+    .nav-card h2 {
+      margin: 0px;
     }
 
     .nav-card p {
       /* This is the key: it makes the paragraph span all columns,
         forcing it onto a new row. */
       grid-column: 1 / -1;
-      margin-top: 10px; /* Add some space above the description */
+      margin: 0px;
     }
 
     .wide-nav-cards {
