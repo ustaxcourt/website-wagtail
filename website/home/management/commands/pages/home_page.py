@@ -2,7 +2,7 @@ from wagtail.models import Page, Site
 from home.models import HomePage
 from home.management.commands.pages.page_initializer import PageInitializer
 import logging
-
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +111,18 @@ class HomePageInitializer(PageInitializer):
             logger.info(f"WARNING: Page with slug '{slug}' not found")
             return None
 
+    @staticmethod
+    def get_environment_specific_dawson_url(prefix=None):
+        if settings.ENVIRONMENT == "production":
+            url = "dawson.ustaxcourt.gov"
+        elif settings.ENVIRONMENT == "train":
+            url = "test.ef-cms.ustaxcourt.gov"
+        else:  # Default to development [local, dev, sandbox, all others]
+            url = "dev.ef-cms.ustaxcourt.gov"
+        if prefix:
+            return f"https://{prefix}.{url}"
+        return f"https://{url}"
+
     def update_home_page(self):
         logger.info("Updating Home page quick access tiles...")
 
@@ -167,7 +179,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "Today's Opinions",
                     "description": "Access the most recent court opinions issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["opinions_icon.svg"].pk},
-                    "external_url": "https://dawson.ustaxcourt.gov/todays-opinions",
+                    "external_url": f"{self.get_environment_specific_dawson_url()}/todays-opinions",
                 },
             },
             {
@@ -176,7 +188,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "Today’s Orders",
                     "description": "Access the most recent court orders issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["orders_icon.svg"].pk},
-                    "external_url": "https://dawson.ustaxcourt.gov/todays-orders",
+                    "external_url": f"{self.get_environment_specific_dawson_url()}/todays-orders",
                 },
             },
             {
@@ -205,7 +217,7 @@ class HomePageInitializer(PageInitializer):
                     "title": "Find a Trial Session",
                     "description": "Search for scheduled trial sessions by location, type, or judge.",
                     "icon": {"svg_file": home_page_documents["calendar_icon.svg"].pk},
-                    "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
+                    "external_url": f"{self.get_environment_specific_dawson_url()}/trial-sessions",
                 },
             },
         ]
@@ -215,7 +227,7 @@ class HomePageInitializer(PageInitializer):
                 "value": {
                     "title": "Find a Case, Order, Opinion or Practitioner",
                     "icon": {"svg_file": home_page_documents["search_icon.svg"].pk},
-                    "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
+                    "external_url": self.get_environment_specific_dawson_url(),
                 },
             },
         ]
