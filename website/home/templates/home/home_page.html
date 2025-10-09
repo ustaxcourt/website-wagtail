@@ -175,7 +175,7 @@
   /* News and Notices Section */
   .news-notices-section {
     padding: 60px 0;
-    background: #f8f9fa;
+    background: white;
   }
 
   .news-notices-header {
@@ -190,7 +190,7 @@
 
   .news-notices-header h2 a {
     color: #111;
-    text-decoration: none;
+    text-decoration: underline;
   }
 
   .news-notices-header h2 a:hover {
@@ -393,8 +393,8 @@
   </section>
   {% endif %}
 
-  <section class="static-cards">
-    <div class="grid-container">
+  <div class="container">
+    <section class="static-cards">
       <div class="content">
         <div class="entries-list">
           {% for card in live_static_text_cards %}
@@ -411,7 +411,6 @@
       </div>
     </div>
   </section>
-
 
 </div>
 {% endblock %}
