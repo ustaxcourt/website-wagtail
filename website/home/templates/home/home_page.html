@@ -77,12 +77,51 @@
     color: #222;
   }
 
-  .nav-cards {
-    padding: 40px 0;
+  .hero-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* .pseudo-background-image {
     background-size: contain;
     background-position: top;
     background-repeat: no-repeat;
     position: relative;
+    width: 100%;
+  } */
+
+  .pseudo-background-image {
+  position: absolute; /* Establishes a positioning context for the overlay */
+  display: block; /* Ensures it takes up the full width */
+  z-index: -1;
+
+    /* These rules stretch it to fill the entire parent (.nav-cards) */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  }
+
+  .pseudo-background-image::after {
+    content: ''; /* A pseudo-element must have content */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Apply your gradient to the overlay */
+    background: linear-gradient(rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0));
+  }
+
+  .nav-cards {
+    padding: 40px 0;
+      /* Establishes a positioning and stacking context for its children. */
+  position: relative;
+
+  /* Prevents the negative z-index background from hiding behind the parent. */
+  isolation: isolate;
   }
 
   .cards-grid {
@@ -205,6 +244,10 @@
       border-radius: 3px;
   }
 
+  .grid-container{
+    position: relative;
+  }
+
   @media (max-width: 992px) {
     .cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -243,6 +286,10 @@
   @media (max-width: 768px) {
     .grid-container{
       margin: 0px 12px;
+    }
+
+    .pseudo-background-image::after {
+      background: none;
     }
 
     .cards-grid {
@@ -300,7 +347,14 @@
 
   </section>
 
-  <section class="nav-cards" {% if page.hero_background_image %} {% image page.hero_background_image fill-3000x1200 as bg_image %} style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');" {% endif %}>
+  <section class="nav-cards">
+    <div class="pseudo-background-image">
+      {% if page.hero_background_image %}
+        {% image page.hero_background_image fill-3000x1200 as bg_image %}
+
+        <img class="hero-image" src="{{ bg_image.url }}" alt="{{ bg_image.alt }}">
+      {% endif %}
+    </div>
     <div class="grid-container toggle-on-at-or-below-mobile-size">
       <div class="welcome-inner-card" role="region" aria-label="Welcome">
         <div>
