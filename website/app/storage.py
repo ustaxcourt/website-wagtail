@@ -1,10 +1,39 @@
 from django.core.files.storage import FileSystemStorage
 from django.utils.deconstruct import deconstructible
 from django.apps import apps
+import os
 
 
 # Shared patching flag for all storage classes
 _wagtail_patched = False
+
+
+def invalidate_cloudfront_cache():
+    """
+    Invalidate the entire CloudFront cache using a wildcard path.
+    Uses Wagtail's PurgeBatch utility for consistency with model-based cache purging.
+    """
+    distribution_id = os.getenv("CLOUDFRONT_DISTRIBUTION_ID")
+
+    if not distribution_id:
+        # No CloudFront configured, skip invalidation
+        return
+
+    try:
+        from wagtail.contrib.frontend_cache.utils import PurgeBatch
+
+        batch = PurgeBatch()
+        batch.add_url("/*")
+        batch.purge()
+
+        print("☁️  CloudFront cache invalidated with /* after image update")
+
+    except ImportError:
+        print(
+            "⚠ Wagtail frontend_cache not available, skipping CloudFront invalidation"
+        )
+    except Exception as e:
+        print(f"⚠ Failed to invalidate CloudFront cache: {e}")
 
 
 def patch_wagtail():
@@ -61,6 +90,9 @@ def patch_wagtail():
                         print(f"⚠ Error during rendition cleanup: {e}")
                         # Still try to delete DB records if file deletion fails
                         self.instance.renditions.all().delete()
+
+                    # Invalidate CloudFront cache after image and renditions are deleted
+                    invalidate_cloudfront_cache()
 
                 search_index.insert_or_update_object(self.instance)
 
