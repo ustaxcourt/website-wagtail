@@ -36,8 +36,31 @@ def patch_wagtail():
                     if old_file_name != new_file_name:
                         self.original_file.storage.delete(self.original_file.name)
 
-                    # Always delete renditions when file changes
-                    self.instance.renditions.all().delete()
+                    # **CRITICAL FIX**: Delete rendition FILES from S3 first, then DB records
+                    # This must happen ONLY when file changes and commit=True
+                    try:
+                        rendition_count = 0
+                        # Delete the actual files from storage (S3/filesystem)
+                        for rendition in self.instance.renditions.all():
+                            try:
+                                if rendition.file:
+                                    rendition.file.delete(save=False)
+                                    rendition_count += 1
+                            except Exception as e:
+                                print(f"⚠ Failed to delete rendition file: {e}")
+
+                        if rendition_count > 0:
+                            print(
+                                f"🗑️  Deleted {rendition_count} rendition files from storage"
+                            )
+
+                        # Now delete the database records
+                        self.instance.renditions.all().delete()
+
+                    except Exception as e:
+                        print(f"⚠ Error during rendition cleanup: {e}")
+                        # Still try to delete DB records if file deletion fails
+                        self.instance.renditions.all().delete()
 
                 search_index.insert_or_update_object(self.instance)
 
@@ -45,7 +68,7 @@ def patch_wagtail():
 
         BaseImageForm.save = patched_save
         _wagtail_patched = True
-        print("✓ Wagtail patched for overwrite storage behavior")
+        print("✅ Wagtail patched for overwrite storage behavior with file deletion")
 
     except ImportError:
         # Wagtail not installed, skip patching
