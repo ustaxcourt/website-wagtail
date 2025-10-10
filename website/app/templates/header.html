@@ -30,7 +30,7 @@
     }
 
     header#top-navigation .search-form input {
-        padding: 8px 12px;
+        padding: 11px 10px;
         border: 1px solid #565C65;
         {% comment %} border-radius: 4px; {% endcomment %}
         min-width: 200px;
@@ -46,6 +46,7 @@
         display: flex;
         align-items: center;
         gap: 4px;
+        font-weight: 700;
     }
 
     header#top-navigation .search-form button:hover {
@@ -94,7 +95,7 @@
         border: none;
         padding: 0 30px;
         font: inherit;
-        color: var(--light-blue);
+        color: var(--color-white);
         cursor: pointer;
         width: 100%;
         height: 100%;
@@ -208,13 +209,9 @@
     }
 
     @media (max-width: 639px) {
-        header#top-navigation #desktop-search-form {
+        {% comment %} header#top-navigation #desktop-search-form {
             display: none;
-        }
-
-        header#top-navigation #mobile-search-form {
-            display: flex;
-        }
+        } {% endcomment %}
 
         header#top-navigation .blue-banner {
             height: auto;
@@ -280,6 +277,13 @@
             cursor: pointer;
         }
 
+        header#top-navigation #mobile-search-form {
+            display: flex;
+        }
+        header#top-navigation #desktop-search-form {
+            display: none;
+        }
+
         header#top-navigation .navigation-bar .navigation {
             flex-direction: column;
             gap: 0px;
@@ -340,6 +344,7 @@
             flex-direction: column;
             width: 100%;
             line-height: 44px;
+            background-color: var(--light-blue);
         }
 
         header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header .navigation-list {
@@ -384,11 +389,11 @@
                           method="get">
                         <input type="text"
                                name="query"
-                               placeholder="Search..."
+                               placeholder="Enter search text"
                                aria-label="Search"
                                data-testid="search-input">
                         <button type="submit" data-testid="search-button">
-                            <i class="fa-solid fa-magnifying-glass"></i>
+                            {% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
                             Search
                         </button>
                     </form>
@@ -399,20 +404,6 @@
                     </a>
                 </div>
             </div>
-            <form id="mobile-search-form"
-                  class="search-form"
-                  action="/search/"
-                  method="get">
-                <input type="text"
-                       name="query"
-                       placeholder="Search..."
-                       aria-label="Search"
-                       data-testid="search-input">
-                <button type="submit" data-testid="search-button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    Search
-                </button>
-            </form>
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
@@ -423,6 +414,22 @@
         </button>
         <ul class="navigation">
             {% get_navigation_menu as nav %}
+            <li class="navigation-header">
+                <form id="mobile-search-form"
+                    class="search-form"
+                    action="/search/"
+                    method="get">
+                    <input type="text"
+                        name="query"
+                        placeholder="Search..."
+                        aria-label="Search"
+                        data-testid="search-input">
+                    <button type="submit" data-testid="search-button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Search
+                    </button>
+                </form>
+            </li>
             {% for section in nav.menu_items %}
                 <li class="navigation-header">
                     {% if section.value.external_url %}
