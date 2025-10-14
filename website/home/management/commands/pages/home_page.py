@@ -2,9 +2,22 @@ from wagtail.models import Page, Site
 from home.models import HomePage
 from home.management.commands.pages.page_initializer import PageInitializer
 import logging
-
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
+
+home_page_documents = {
+    "calendar_icon.svg": "",
+    "DAWSON_icon.svg": "",
+    "learn_icon.svg": "",
+    "opinions_icon.svg": "",
+    "orders_icon.svg": "",
+    "PDF_icon.svg": "",
+    "practitioners_icon.svg": "",
+    "rules_icon.svg": "",
+    "search_icon.svg": "",
+    "start_icon.svg": "",
+}
 
 
 class HomePageInitializer(PageInitializer):
@@ -86,3 +99,150 @@ class HomePageInitializer(PageInitializer):
         else:
             logger.info("Page does not exist. Nothing to update. STOPPING.")
             return
+
+    def get_page(self, slug):
+        try:
+            page = Page.objects.live().filter(slug=slug).first()
+            if page:
+                return page.specific
+            logger.info(f"WARNING: Page with slug '{slug}' not found")
+            return None
+        except Page.DoesNotExist:
+            logger.info(f"WARNING: Page with slug '{slug}' not found")
+            return None
+
+    @staticmethod
+    def get_environment_specific_dawson_url(prefix=None):
+        if settings.ENVIRONMENT == "production":
+            url = "dawson.ustaxcourt.gov"
+        elif settings.ENVIRONMENT == "train":
+            url = "test.ef-cms.ustaxcourt.gov"
+        else:  # Default to development [local, dev, sandbox, all others]
+            url = "dev.ef-cms.ustaxcourt.gov"
+        if prefix:
+            return f"https://{prefix}.{url}"
+        return f"https://{url}"
+
+    def update_home_page(self):
+        logger.info("Updating Home page quick access tiles...")
+
+        # Load icon documents and store the actual Document objects
+        for doc_name in home_page_documents:
+            doc_object = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=doc_name,
+                title=doc_name,
+            )
+            home_page_documents[doc_name] = doc_object
+
+        # Build the StreamField data with the correct structure
+        quick_access_tiles = [
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Begin the Petition Filing Process",
+                    "description": "Start your case on DAWSON to file and track your petition.",
+                    "icon": {"svg_file": home_page_documents["start_icon.svg"].pk},
+                    "related_page": self.get_page("dawson").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Learn How to Start a Case",
+                    "description": "Read these FAQ’s before filing to prepare for starting your case.",
+                    "icon": {"svg_file": home_page_documents["learn_icon.svg"].pk},
+                    "related_page": self.get_page("petitioners-start").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "DAWSON Case Management",
+                    "description": "Our online system, DAWSON, allows users to file documents and track their case status.",
+                    "icon": {"svg_file": home_page_documents["DAWSON_icon.svg"].pk},
+                    "external_url": self.get_environment_specific_dawson_url(),
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Tax Court Rules",
+                    "description": "The Court's current Rules of Practice & Procedure, forms, and fee schedule.",
+                    "icon": {"svg_file": home_page_documents["rules_icon.svg"].pk},
+                    "related_page": self.get_page("rules").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Today's Opinions",
+                    "description": "Access the most recent court opinions issued by Tax Court judges.",
+                    "icon": {"svg_file": home_page_documents["opinions_icon.svg"].pk},
+                    "external_url": f"{self.get_environment_specific_dawson_url()}/todays-opinions",
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Today’s Orders",
+                    "description": "Access the most recent court orders issued by Tax Court judges.",
+                    "icon": {"svg_file": home_page_documents["orders_icon.svg"].pk},
+                    "external_url": f"{self.get_environment_specific_dawson_url()}/todays-orders",
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Guidance for Practitioners",
+                    "description": "Resources for attorneys and practitioners, including DAWSON access, and practice rules.",
+                    "icon": {
+                        "svg_file": home_page_documents["practitioners_icon.svg"].pk
+                    },
+                    "related_page": self.get_page("practitioners").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Case Related Forms",
+                    "description": "Forms for filing petitions, motions, and other court documents.",
+                    "icon": {"svg_file": home_page_documents["PDF_icon.svg"].pk},
+                    "related_page": self.get_page("case-related-forms").pk,
+                },
+            },
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Find a Trial Session",
+                    "description": "Search for scheduled trial sessions by location, type, or judge.",
+                    "icon": {"svg_file": home_page_documents["calendar_icon.svg"].pk},
+                    "external_url": f"{self.get_environment_specific_dawson_url()}/trial-sessions",
+                },
+            },
+        ]
+        full_width_quick_access_tile = [
+            {
+                "type": "tile",
+                "value": {
+                    "title": "Find a Case, Order, Opinion or Practitioner",
+                    "icon": {"svg_file": home_page_documents["search_icon.svg"].pk},
+                    "external_url": self.get_environment_specific_dawson_url(),
+                },
+            },
+        ]
+
+        # Get the homepage
+        homepage = self.get_page("home")
+
+        if homepage:
+            # Assign the list of data to the StreamField
+            homepage.quick_access_tiles = quick_access_tiles
+            homepage.full_width_quick_access_tile = full_width_quick_access_tile
+
+            # Save a new revision and publish the changes to make them live
+            homepage.save_revision().publish()
+
+            logger.info("Successfully updated Home page with quick access tiles.")
+        else:
+            logger.warning("Could not find Home page to update.")
