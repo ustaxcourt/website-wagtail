@@ -29,7 +29,34 @@
         #home-page .entries-list .entry {
             padding: 0px 30px;
             border: 1px solid #97D4EA;
-            background: var(--color-primary-alt-lightest);
+            border-radius: 0;
+            background: #F1F9FC;
+            box-shadow: none;
+        }
+
+        #home-page .entries-list .entry h2 {
+            font-family: 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 30px;
+        }
+
+        #home-page .entries-list .entry div,
+        #home-page .entries-list .entry p {
+            font-family: 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-weight: 400;
+            font-size: 17px;
+            line-height: 20px;
+        }
+
+        #home-page .entries-list .entry a {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 400;
+        }
+
+        #home-page .entries-list .entry a:hover {
+            font-weight: bold;
         }
 
   .hero {
@@ -429,7 +456,7 @@
       <div class="content">
         <div class="entries-list">
           {% for card in live_static_text_cards %}
-          <div class="entry shadow-2">
+          <div class="entry">
             {% if card.title %}
             <h2>{{ card.title }}</h2>
             {% else %}
