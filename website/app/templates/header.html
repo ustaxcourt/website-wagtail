@@ -58,7 +58,7 @@
     }
 
     header#top-navigation .navigation {
-        background-color: transparent;
+        background-color: #005EA2;
         padding: 0 1rem;
         margin: 0 auto;
         display: flex;
@@ -160,6 +160,10 @@
     }
 
     @media (min-width: 854px) {
+        header#top-navigation .navigation {
+            background-color: transparent;
+        }
+
         header#top-navigation .nav-hamburger {
             display: none;
         }
@@ -270,7 +274,7 @@
             overflow-y: auto;
             transition: left 0.3s ease-in-out;
             z-index: 1000;
-            padding-top: 0;
+            padding: 0;
             justify-content: flex-start;
         }
 
@@ -333,6 +337,10 @@
             justify-content: flex-start;
             font-size: 18px;
             text-transform: uppercase;
+        }
+
+        header#top-navigation .navigation-header.active .link {
+            background-color: #1A4480;
         }
 
         header#top-navigation .navigation-header .link .chevron-down,
