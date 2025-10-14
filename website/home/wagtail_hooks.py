@@ -21,6 +21,7 @@ from home.models import NavigationMenu, JudgeRole
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+from .views import svg_chooser_viewset
 
 import logging
 
@@ -451,3 +452,8 @@ def register_newsitem_report_url():
             name="newsitem_report_results",
         ),
     ]
+
+
+@hooks.register("register_admin_viewset")
+def register_viewset():
+    return svg_chooser_viewset

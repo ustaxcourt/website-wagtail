@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load static tz %}
+{% load custom_tags %}
+
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
     <style>
@@ -30,23 +32,21 @@
             background: var(--color-primary-alt-lightest);
         }
 
-        /* HERO section container */
-        .hero {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            background: #ffffff;
-        }
+  .hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+  }
 
-        /* Welcome content container */
-        .welcome-container {
-            position: relative;
-            width: 100%;
-            background: #fff;
-            border-top: 1px solid #dcdcdc;
-            border-bottom: 1px solid #dcdcdc;
-            z-index: 2;
-        }
+  .welcome-container {
+    position: relative;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+    z-index: 2;
+  }
 
         .welcome-inner {
             min-height: 136px;
@@ -76,181 +76,372 @@
             color: #222;
         }
 
-        /* Background image container - now empty */
-        .hero-background {
-            position: relative;
-            width: 100%;
-            height: clamp(200px, 20vh, 300px);
-            background: #ffffff;
-        }
+  .hero-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 
-        /* Navigation Cards Grid - now has the hero background */
-        .nav-cards {
-            padding: 40px 0;
-            background-size: cover;
-            background-position: top;
-            background-repeat: no-repeat;
-            position: relative;
-        }
+  .pseudo-background-image {
+  position: absolute; /* Establishes a positioning context for the overlay */
+  display: block; /* Ensures it takes up the full width */
+  z-index: -1;
 
-        /* Ensure cards appear above overlay */
-        .nav-cards .container {
-            position: relative;
-            z-index: 2;
-        }
+    /* These rules stretch it to fill the entire parent (.nav-cards) */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin-top: 30px;
-        }
+  .pseudo-background-image::after {
+    content: ''; /* A pseudo-element must have content */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
-        .nav-card {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(222, 226, 230, 0.8);
-            border-radius: 8px;
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-            transition: box-shadow 0.2s;
-            backdrop-filter: blur(5px);
-        }
+    /* Apply your gradient to the overlay */
+    background: linear-gradient(rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0));
+  }
 
-        .nav-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+  .nav-cards {
+    padding: 40px 0;
+      /* Establishes a positioning and stacking context for its children. */
+  position: relative;
 
-        .nav-card .icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 20px;
-            background: #0066cc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
+  /* Prevents the negative z-index background from hiding behind the parent. */
+  isolation: isolate;
+  }
 
-        .nav-card h3 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #1a1a1a;
-        }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 30px;
+  }
 
-        .nav-card p {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+  .nav-link {
+    text-decoration: none;
+    color: inherit;
+  }
 
-        .nav-card .step-number {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 30px;
-            height: 30px;
-            background: #ff6b35;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-        }
+  a:active.nav-link {
+    text-decoration: none;
+    color: inherit;
+  }
 
-        /* Second row cards */
-        .cards-grid-2 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin-top: 30px;
-        }
+  .nav-card {
+    background: var(--color-white, #FFF);
+    border: 1px solid var(--theme-color-base-light, #A9AEB1);
+    border-radius: 5px;
+    padding: 23px 20px 34px;
+    text-align: center;
+    position: relative;
+    transition: box-shadow 0.2s;
+    backdrop-filter: blur(5px);
+    height: 100%;
+    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
+    color: #162E51;
+  }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
 
-            .cards-grid,
-            .cards-grid-2,
-            .news-grid,
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
+  .wide-nav-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px 20px;
+    background: var(--color-white, #FFF);
+    border: 1px solid var(--theme-color-base-light, #A9AEB1);
+    border-radius: 5px;
+    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
+    height: 100%;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+    color: #162E51;
+    margin-top: 30px;
+  }
+
+  a.nav-link{
+    display: block;
+  }
+
+  .wide-nav-card .icon {
+    width: 40px;
+    height: 40px;
+    color: #0066cc;
+    background: none;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .wide-nav-card .icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .wide-nav-card .icon svg path {
+    fill: currentColor;
+  }
+
+  .wide-nav-card h2 {
+    margin: 0;
+  }
+
+  .nav-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .wide-nav-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-card .icon {
+    width: 60px;
+    height: 60px;
+    margin: 0px auto 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+  }
+
+  .nav-card h2 {
+    margin: 0px 0px 12px 0px;
+  }
+
+  .nav-card p {
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 0px;
+  }
+
+  .toggle-on-at-or-below-tablet-size {
+    display:none;
+  }
+  .toggle-on-at-or-below-mobile-size {
+    display:none;
+    }
+
+  .welcome-inner-card{
+      margin: 0px 0px 20px 0px;
+      background: var(--color-white, #FFF);
+      padding: 15px 22px 11px;
+      border-radius: 3px;
+  }
+
+  .grid-container{
+    position: relative;
+  }
+
+  @media (max-width: 992px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nav-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      text-align: left;
+      padding: 20px 25px;
+    }
+
+    .nav-card .icon {
+      margin: 0px 16px 0px 0px;
+    }
+
+    .nav-card h2 {
+      margin: 0px;
+    }
+
+    .nav-card p {
+      grid-column: 1 / -1;
+      margin: 0px;
+    }
+
+    .wide-nav-cards {
+      display: none;
+    }
+
+    .toggle-on-at-or-below-tablet-size {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .grid-container{
+      margin: 0px 12px;
+    }
+
+    .pseudo-background-image::after {
+      background: none;
+    }
+
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-card {
+      padding: 16px 16px;
+    }
+
+    .nav-card h2 {
+      line-height: 20px;
+      font-size: 20px;
+    }
+
+    .nav-card p {
+      font-size: 16px;
+    }
 
             .welcome-title {
                 font-size: 28px;
                 line-height: 34px;
             }
 
-        }
-    </style>
+    .toggle-on-at-or-below-tablet-size {
+      display: block;
+    }
+
+    .hero{
+      display: none;
+    }
+
+    .toggle-on-at-or-below-mobile-size {
+    display:block;
+    }
+
+  }
+
+
+</style>
 {% endblock %}
 {% block content %}
-    <div id="home-page">
-        <!-- Hero section -->
-        <section class="hero" role="region" aria-label="Court background">
-            <!-- Welcome content container -->
-            <div class="welcome-container">
-                <div class="welcome-inner" role="region" aria-label="Welcome">
-                    <div>
-                        <h1 class="welcome-title">{{ page.hero_title|default:"Welcome to the United States Tax Court" }}</h1>
-                        <div class="welcome-body">
-                            {% if page.hero_body %}
-                                {{ page.hero_body|richtext }}
-                            {% else %}
-                                We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case
-                                management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a
-                                federal trial court established under Article I of the Constitution.
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Navigation Cards Section with CMS Editable Background -->
-        <section class="nav-cards"
-                 {% if page.hero_background_image %} {% image page.hero_background_image fill-3000x1200 as bg_image %} style="background-image: linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,1.0) ), url('{{ bg_image.url }}');" {% endif %}>
-            <div class="container">
-                <!-- Second row of cards -->
-                <div class="cards-grid-2">
-                    <div class="nav-card">
-                        <div class="icon">📋</div>
-                        <h3>Tax Court Rules</h3>
-                        <p>The Court's current Rules of Practice & Procedure, forms, and fee schedule.</p>
-                    </div>
-                    <div class="nav-card">
-                        <div class="icon">⚖️</div>
-                        <h3>Today's Opinions</h3>
-                        <p>Access the most recent court opinions issued by Tax Court judges.</p>
-                    </div>
-                    <div class="nav-card">
-                        <div class="icon">📑</div>
-                        <h3>Today's Orders</h3>
-                        <p>Access the most recent court orders issued by Tax Court judges.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="static-cards">
-            <div class="grid-container">
-                <div class="content">
-                    <div class="entries-list">
-                        {% for card in live_static_text_cards %}
-                            <div class="entry shadow-2">
-                                {% if card.title %}
-                                    <h2>{{ card.title }}</h2>
-                                {% else %}
-                                    <br />
-                                {% endif %}
-                                <div>{{ card.body|richtext }}</div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </section>
+<div id="home-page">
+
+  <section class="hero" role="region" aria-label="Court background">
+    <div class="welcome-container">
+      <div class="welcome-inner" role="region" aria-label="Welcome">
+        <div>
+          <h1 class="welcome-title">
+            {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
+          </h1>
+          <div class="welcome-body">
+            {% if page.hero_body %}
+            {{ page.hero_body|richtext }}
+            {% else %}
+            We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case
+            management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a
+            federal trial court established under Article I of the Constitution.
+            {% endif %}
+          </div>
+        </div>
+      </div>
     </div>
+
+  </section>
+
+  <section class="nav-cards">
+    <div class="pseudo-background-image">
+      {% if page.hero_background_image %}
+        {% image page.hero_background_image fill-3000x1200 as bg_image %}
+
+        <img class="hero-image" src="{{ bg_image.url }}" alt="{{ bg_image.alt }}">
+      {% endif %}
+    </div>
+    <div class="grid-container toggle-on-at-or-below-mobile-size">
+      <div class="welcome-inner-card" role="region" aria-label="Welcome">
+        <div>
+          <h1 class="welcome-title">
+            {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
+          </h1>
+          <div class="welcome-body">
+            {% if page.hero_body %}
+            {{ page.hero_body|richtext }}
+            {% else %}
+            We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case
+            management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a
+            federal trial court established under Article I of the Constitution.
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-container">
+        <div class="cards-grid">
+            {% for tile in page.quick_access_tiles %}
+                <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                    <div class="nav-card">
+                      {% if tile.value.icon %}
+                          <div class="icon">
+                              {# Use the custom template tag to render the SVG inline #}
+                              {% include_svg tile.value.icon.svg_file %}
+                            </div>
+                      {% endif %}
+                        <h2>{{ tile.value.title }}</h2>
+                        <p>{{ tile.value.description|richtext }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+            {% for tile in page.full_width_quick_access_tile %}
+            <div class="toggle-on-at-or-below-tablet-size">
+              <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                  <div class="nav-card">
+                    {% if tile.value.icon %}
+                      <div class="icon">
+                          {# Use the custom template tag to render the SVG inline #}
+                          {% include_svg tile.value.icon.svg_file %}
+                      </div>
+                    {% endif %}
+                    <h2>{{ tile.value.title }}</h2>
+                  </div>
+              </a>
+            </div>
+
+            {% endfor %}
+          </div>
+        <div class="wide-nav-cards">
+          {% for tile in page.full_width_quick_access_tile %}
+            <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                <div class="wide-nav-card">
+                  {% if tile.value.icon %}
+                    <div class="icon">
+                        {# Use the custom template tag to render the SVG inline #}
+                        {% include_svg tile.value.icon.svg_file %}
+                    </div>
+                  {% endif %}
+                  <h2>{{ tile.value.title }}</h2>
+                </div>
+            </a>
+          {% endfor %}
+        </div>
+    </div>
+  </section>
+
+  <section class="static-cards">
+    <div class="grid-container">
+      <div class="content">
+        <div class="entries-list">
+          {% for card in live_static_text_cards %}
+          <div class="entry shadow-2">
+            {% if card.title %}
+            <h2>{{ card.title }}</h2>
+            {% else %}
+            <br />
+            {% endif %}
+            <div>{{ card.body|richtext }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
 {% endblock %}

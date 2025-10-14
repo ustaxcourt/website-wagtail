@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0072_remove_homepageimage_image_remove_homepageimage_page_and_more"),
+        ("home", "0073_alter_homepage_hero_body"),
     ]
 
     operations = [

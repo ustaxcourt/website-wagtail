@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0074_alter_newsitem_banner_end_date_and_more"),
+        ("home", "0075_alter_newsitem_banner_end_date_and_more"),
     ]
 
     operations = [
