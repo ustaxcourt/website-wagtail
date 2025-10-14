@@ -53,14 +53,19 @@
     }
 
     /* Desktop Navigation Styles */
-    header#top-navigation .navigation {
+    header#top-navigation .navigation-bar {
         background-color: #005EA2;
-        padding: 0;
-        margin: 0;
+    }
+
+    header#top-navigation .navigation {
+        background-color: transparent;
+        padding: 0 1rem;
+        margin: 0 auto;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         height: 50px;
         list-style: none;
+        max-width: var(--container-width);
     }
 
     header#top-navigation .navigation-header {
