@@ -76,11 +76,11 @@ export function checkHeaderOrder() {
 
 export function checkHeaderStyles() {
     const headerStyles = {
-        h1: { fontFamily: 'Source Sans Pro', fontSize: '32px', lineHeight: '40px' },
-        'h2:not(footer h2)': { fontFamily: 'Source Sans Pro', fontSize: '24px', lineHeight: '30px' },
-        'footer h2': { fontFamily: 'Source Sans Pro', fontSize: '20px', lineHeight:'normal'},
-        h3: { fontFamily: 'Source Sans Pro', fontSize: '20px', lineHeight: '25px' },
-        h4: { fontFamily: 'Source Sans Pro', fontSize: '17px', lineHeight: '24px' },
+        h1: { fontFamily: 'Source Sans 3', fontSize: '32px', lineHeight: '40px' },
+        'h2:not(footer h2)': { fontFamily: 'Source Sans 3', fontSize: '24px', lineHeight: '30px' },
+        'footer h2': { fontFamily: 'Source Sans 3', fontSize: '20px', lineHeight:'normal'},
+        h3: { fontFamily: 'Source Sans 3', fontSize: '20px', lineHeight: '25px' },
+        h4: { fontFamily: 'Source Sans 3', fontSize: '17px', lineHeight: '24px' },
     };
     Object.entries(headerStyles).forEach(([header, styles]) => {
         cy.get('body').then(($body) => {

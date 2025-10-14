@@ -9,7 +9,7 @@
 
     footer#app-footer .main .title {
         font-size: 1.4rem;
-        font-family: var(--heading-font);
+        font-family: var(--heading-font), sans-serif;
         font-weight: 600;
         line-height: 2rem;
         margin-bottom: 8px;
@@ -65,9 +65,10 @@
         color: white;
     }
 
-    .main p{
+    .main p {
         color: white;
     }
+
     .main a {
         color: white;
         font-weight: inherit;
@@ -77,15 +78,18 @@
     footer#app-footer p {
         margin-top: 0px;
     }
+
     .address {
         display: flex;
         flex-direction: column;
         text-align: left;
     }
+
     .footer-address a {
         color: white;
         font-weight: inherit;
     }
+
     .footer-item-container {
         display: flex;
         flex-direction: row;
@@ -93,6 +97,7 @@
         gap: 20px;
         text-align: right;
     }
+
     .footer-time-container {
         display: flex;
         flex-direction: column;
@@ -101,6 +106,7 @@
         max-width: 60ch;
         text-align: center;
     }
+
     @media (max-width: 1024px) {
         footer#app-footer .footer-address .content {
             grid-template-columns: 1fr;
@@ -114,19 +120,23 @@
             gap: 20px;
             text-align: center;
         }
+
         .footer-time-container {
             align-items: center;
             text-align: center;
         }
+
         footer#app-footer .footer-time-container p {
             display: inline;
             margin: 0px;
             padding: 0px;
             font-size: 16px;
         }
+
         .court-hours {
             font-weight: bold;
         }
+
         .spacing-fix {
             display: block;
             height: 1em;
@@ -152,37 +162,43 @@
                 <div class="footer-item-container">
                     <a href="/">
                         <img alt="US Tax Court Logo"
-                            class="seal"
-                            src="{% static 'images/footer/ustc-seal.svg' %}" />
+                             class="seal"
+                             src="{% static 'images/footer/ustc-seal.svg' %}" />
                     </a>
                     <div class="address">
-                        <p class="font-heading">United States Tax Court<br>
+                        <p class="font-heading">
+                            United States Tax Court
+                            <br>
                             <a href="https://www.google.com/maps/place/US+Tax+Court/@38.8951679,-77.0149345,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b788e9a932e5:0x33d2d11766456bca!8m2!3d38.8951679!4d-77.0149345!16zL20vMDVzZDE0?entry=ttu&g_ep=EgoyMDI1MDYxNy4wIKXMDSoASAFQAw%3D%3D">
                                 <span style="color: white;">
-                                    400 Second Street, NW<br>
+                                    400 Second Street, NW
+                                    <br>
                                     Washington, DC 20217
                                 </span>
                             </a>
-                    </p>
+                        </p>
                     </div>
                 </div>
                 <div class="footer-time-container">
-                <p> <span class="court-hours">Tax Court Hours of Operation:</span> 8 a.m. to 4:30 p.m. (EST)
-                 on all days except Saturdays, Sundays, and
-                 <a href="/holidays"> <span style="text-decoration: underline; color:white;">legal holidays</span> </a>
-                    in the District of Columbia.
-                </p>
+                    <p>
+                        <span class="court-hours">Tax Court Hours of Operation:</span> 8 a.m. to 4:30 p.m. (EST)
+                        on all days except Saturdays, Sundays, and
+                        <a href="/holidays"> <span style="text-decoration: underline; color:white;">legal holidays</span> </a>
+                        in the District of Columbia.
+                    </p>
                 </div>
                 <div class="footer-item-container">
                     <p>
-                        (<a class="phone" href="tel:+2025210700">202) 521-0700</a><br>
-                        All rights reserved<br>
+                        (<a class="phone" href="tel:+2025210700">202) 521-0700</a>
+                        <br>
+                        All rights reserved
+                        <br>
                         Build: {{ build_sha }}
                     </p>
                     <a href="https://dawson.ustaxcourt.gov/">
                         <img alt="Dawson Logo"
-                            class="dawson"
-                            src="{% static 'images/footer/dawson-logo.svg' %}" />
+                             class="dawson"
+                             src="{% static 'images/footer/dawson-logo.svg' %}" />
                     </a>
                 </div>
             </div>
