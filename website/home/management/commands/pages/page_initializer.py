@@ -185,5 +185,4 @@ class PageInitializer(ABC):
                 file=File(image_file, name=filename),
             )
             image.save()
-            logger.debug(f"Image created: {image}")
             return image
