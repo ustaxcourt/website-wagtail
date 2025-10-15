@@ -11,6 +11,7 @@ from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from home.blocks import SVGChooserBlock
+from home.models.snippets.news_item import NewsItem
 
 
 class QuickAccessTileBlock(blocks.StructBlock):
@@ -142,5 +143,25 @@ class HomePage(ModerationMixin, Page):
                 live_static_text_cards.append(card)
 
         context["live_static_text_cards"] = live_static_text_cards
+
+        # Fetch active news items for homepage
+        news_items = (
+            NewsItem.objects.live()
+            .filter(publish_date__lte=now)
+            .filter(
+                models.Q(homepage_display_expiration_date__gte=now)
+                | models.Q(homepage_display_expiration_date__isnull=True)
+            )
+            .order_by("-publish_date")
+        )
+        context["news_items"] = news_items
+
+        # Get Press Release page URL
+        from home.models.pages.press_release import PressReleasePage
+
+        press_release_page = PressReleasePage.objects.live().first()
+        context["press_release_page_url"] = (
+            press_release_page.url if press_release_page else "/press-releases/"
+        )
 
         return context
