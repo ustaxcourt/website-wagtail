@@ -2,10 +2,24 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.deconstruct import deconstructible
 from django.apps import apps
 import os
+import threading
 
 
 # Shared patching flag for all storage classes
 _wagtail_patched = False
+
+# Thread-local storage to track if we're replacing an existing image
+_thread_local = threading.local()
+
+
+def set_replacing_existing_file(value):
+    """Mark that we're replacing an existing file (not creating new)."""
+    _thread_local.replacing_existing = value
+
+
+def is_replacing_existing_file():
+    """Check if we're currently replacing an existing file."""
+    return getattr(_thread_local, "replacing_existing", False)
 
 
 def invalidate_cloudfront_cache():
@@ -51,11 +65,22 @@ def patch_wagtail():
         from wagtail.search import index as search_index
 
         def patched_save(self, commit=True):
+            print("patched_save")
             if "file" in self.changed_data:
                 self.instance._set_image_file_metadata()
 
             old_file_name = self.original_file.name if self.original_file else None
-            super(BaseImageForm, self).save(commit=commit)
+
+            # Set flag if we're replacing an existing image's file
+            # (has pk = existing image, and file is changing)
+            is_replacing = self.instance.pk is not None and "file" in self.changed_data
+            set_replacing_existing_file(is_replacing)
+
+            try:
+                super(BaseImageForm, self).save(commit=commit)
+            finally:
+                # Always clear the flag after save completes
+                set_replacing_existing_file(False)
 
             if commit:
                 if "file" in self.changed_data and self.original_file:
@@ -110,28 +135,35 @@ def patch_wagtail():
 @deconstructible
 class OverwriteFileSystemStorage(FileSystemStorage):
     """
-    Custom FileSystemStorage that overwrites files with the same name.
+    Custom FileSystemStorage that overwrites files with the same name when replacing.
+    For new images with duplicate names, adds a suffix like the default behavior.
     Automatically patches Wagtail on first use.
     """
 
     def get_available_name(self, name, max_length=None):
         """
-        Return the filename as-is, deleting any existing file first.
+        Return the filename as-is if replacing an existing image, otherwise use default behavior.
         Patches Wagtail on first call (when apps are ready).
         """
         # Patch Wagtail the first time this method is called (apps are ready by then)
         if not _wagtail_patched and apps.apps_ready:
             patch_wagtail()
 
-        if self.exists(name):
-            self.delete(name)
-        return name
+        # Only overwrite if we're explicitly replacing an existing image
+        if is_replacing_existing_file():
+            if self.exists(name):
+                self.delete(name)
+            return name
+
+        # For new images, use default behavior (adds suffix if file exists)
+        return super().get_available_name(name, max_length)
 
 
 @deconstructible
 class OverwriteS3Storage:
     """
-    Custom S3 storage that overwrites files with the same name.
+    Custom S3 storage that overwrites files with the same name when replacing.
+    For new images with duplicate names, adds a suffix like the default behavior.
     Automatically patches Wagtail on first use.
 
     This is a mixin-style class that adds overwrite behavior to S3Boto3Storage.
@@ -139,18 +171,23 @@ class OverwriteS3Storage:
 
     def get_available_name(self, name, max_length=None):
         """
-        Return the filename as-is, deleting any existing file first.
+        Return the filename as-is if replacing an existing image, otherwise use default behavior.
         Patches Wagtail on first call (when apps are ready).
         """
         # Patch Wagtail the first time this method is called (apps are ready by then)
         if not _wagtail_patched and apps.apps_ready:
             patch_wagtail()
 
-        # For S3, we simply return the name and let S3 overwrite
-        # This is more efficient than explicitly deleting first
-        if self.exists(name):
-            self.delete(name)
-        return name
+        # Only overwrite if we're explicitly replacing an existing image
+        if is_replacing_existing_file():
+            # For S3, we simply return the name and let S3 overwrite
+            # This is more efficient than explicitly deleting first
+            if self.exists(name):
+                self.delete(name)
+            return name
+
+        # For new images, use default behavior (adds suffix if file exists)
+        return super().get_available_name(name, max_length)
 
 
 # Import S3Boto3Storage and create a combined class

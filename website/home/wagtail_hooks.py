@@ -157,9 +157,6 @@ def purge_cache_for_snippet_related_pages(request, instance):
             batch = PurgeBatch()
             batch.add_url("/*")
             batch.purge()
-            logger.info(
-                "Purged CloudFront cache for all pages using wildcard /* after navigation menu change."
-            )
         except Exception as e:
             logger.error(f"Error purging CloudFront cache for all pages: {e}")
         return
@@ -188,12 +185,10 @@ def purge_cache_for_snippet_related_pages(request, instance):
         affected_pages.extend(pages)
 
     if not affected_pages:
-        logger.info(f"No affected pages found for snippet type '{snippet_type}'")
         return
 
     try:
         purge_pages_from_cache(affected_pages)
-        logger.info(f"Purged frontend cache for pages: {affected_pages}")
     except Exception as e:
         logger.error(f"Error purging cache for pages: {affected_pages}: {e}")
 
@@ -214,13 +209,9 @@ def purge_cloudfront_cache_for_file(file_url):
         if cache_path.startswith("/files/"):
             cache_path = cache_path.removeprefix("/files")
 
-        logger.debug(f"Purging CloudFront cache for path: {cache_path}")
-
         batch = PurgeBatch()
         batch.add_url(cache_path)
         batch.purge()
-
-        logger.info(f"Successfully purged CloudFront cache for path: {cache_path}")
 
     except Exception as e:
         logger.error(
@@ -236,10 +227,7 @@ def purge_cache_after_document_save(sender, instance, created, **kwargs):
     del sender, kwargs
     action = "created" if created else "updated"
 
-    logger.info(f"Document {action}: {instance.title} (ID: {instance.id})")
-
     if hasattr(instance, "url") and instance.url and action == "updated":
-        logger.debug(f"Document URL: {instance.url}")
         purge_cloudfront_cache_for_file(instance.url)
     elif action == "created":
         pass
@@ -269,13 +257,10 @@ def purge_cache_after_image_save(sender, instance, created, **kwargs):
     Purge CloudFront cache when an image is saved (created or updated).
     """
     del sender, kwargs
-    action = "created" if created else "updated"
-    logger.info(f"Image {action}: {instance.title} (ID: {instance.id})")
 
     if hasattr(instance, "file") and instance.file:
         try:
             image_url = instance.file.url
-            logger.info(f"Image URL: {image_url}")
             purge_cloudfront_cache_for_file(image_url)
         except Exception as e:
             logger.error(f"Error getting image URL for cache purge: {e}")
@@ -289,12 +274,10 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
     Purge CloudFront cache when an image is deleted.
     """
     del sender, kwargs
-    logger.info(f"Image deleted: {instance.title} (ID: {instance.id})")
 
     if hasattr(instance, "file") and instance.file:
         try:
             image_url = instance.file.url
-            logger.info(f"Image URL: {image_url}")
             purge_cloudfront_cache_for_file(image_url)
         except Exception as e:
             logger.error(f"Error getting image URL for cache purge: {e}")
