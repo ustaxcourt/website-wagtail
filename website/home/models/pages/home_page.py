@@ -11,6 +11,36 @@ from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from home.models.snippets.news_item import NewsItem
+from home.blocks import SVGChooserBlock
+
+
+class QuickAccessTileBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    description = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    icon = SVGChooserBlock(required=True)
+
+    related_page = blocks.PageChooserBlock(
+        required=False,
+    )
+
+    external_url = blocks.URLBlock(required=False, help_text="External link URL")
+
+    class Meta:
+        label = "Quick Access Tile"
+
+
+class FullWidthQuickAccessTileBlock(blocks.StructBlock):
+    title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    icon = SVGChooserBlock(required=True)
+
+    related_page = blocks.PageChooserBlock(
+        required=False,
+    )
+
+    external_url = blocks.URLBlock(required=False, help_text="External link URL")
+
+    class Meta:
+        label = "Quick Access Tile"
 
 
 class StaticTextCardBlock(blocks.StructBlock):
@@ -58,12 +88,32 @@ class HomePage(ModerationMixin, Page):
         help_text="Add multiple static text cards",
     )
 
+    quick_access_tiles = StreamField(
+        [
+            ("tile", QuickAccessTileBlock()),
+        ],
+        blank=True,
+        help_text="Add multiple quick access tiles",
+    )
+
+    full_width_quick_access_tile = StreamField(
+        [
+            ("tile", FullWidthQuickAccessTileBlock()),
+        ],
+        max_num=1,  # This ensures only one can be added
+        blank=True,
+        use_json_field=True,  # Modern best practice for StreamField
+        help_text="Add one optional full-width quick access tile.",
+    )
+
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         FieldPanel("hero_title"),
         FieldPanel("hero_body"),
         FieldPanel("hero_background_image"),
         FieldPanel("static_text_cards"),
+        FieldPanel("quick_access_tiles"),
+        FieldPanel("full_width_quick_access_tile"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(

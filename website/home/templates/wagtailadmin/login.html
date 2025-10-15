@@ -1,68 +1,101 @@
 {% extends "wagtailadmin/admin_base.html" %}
 {% load i18n wagtailadmin_tags static %}
-{% block titletag %}{% trans "Sign in" %}{% endblock %}
+{% block titletag %}
+    {% trans "Sign in" %}
+{% endblock %}
 {% block bodyclass %}login{% endblock %}
-
 {% block extra_css %}
-<style>
-    .login { background: #f0f0f0; }
-    @media (prefers-color-scheme: dark) { .login { background: #1a1a1a; } }
+    <style>
+        .login {
+            background: #f0f0f0;
+        }
 
-    .login .content-wrapper { background: #FFF; }
-    @media (prefers-color-scheme: dark) {
-        .login .content-wrapper { background: #2d2d2d; color: #fff; }
-    }
+        @media (prefers-color-scheme: dark) {
+            .login {
+                background: #1a1a1a;
+            }
+        }
 
-    .court-seal { width: 150px; height: 150px; filter: grayscale(100%); }
-    @media (prefers-color-scheme: dark) { .court-seal { filter: grayscale(100%) invert(1); } }
+        .login .content-wrapper {
+            background: #FFF;
+        }
 
-    .court-seal-container { text-align: center; }
+        @media (prefers-color-scheme: dark) {
+            .login .content-wrapper {
+                background: #2d2d2d;
+                color: #fff;
+            }
+        }
 
-    .azure-login {
-        display: block; text-align: center; margin-top: 1rem;
-        padding: 0.75rem 1.5rem; background-color: #0078d4; color: white;
-        text-decoration: none; border-radius: 4px; font-weight: bold;
-        transition: background-color 0.2s;
-    }
-    .azure-login:hover { background-color: #106ebe; color: white; }
-</style>
+        .court-seal {
+            width: 150px;
+            height: 150px;
+            filter: grayscale(100%);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .court-seal {
+                filter: grayscale(100%) invert(1);
+            }
+        }
+
+        .court-seal-container {
+            text-align: center;
+        }
+
+        .azure-login {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #0078d4;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .azure-login:hover {
+            background-color: #106ebe;
+            color: white;
+        }
+    </style>
 {% endblock extra_css %}
-
 {% block furniture %}
-<main class="content-wrapper" id="main">
-    <div class="court-seal-container">
-        <img src="{% static 'images/footer/seal.png' %}" alt="United States Tax Court Seal" class="court-seal">
-    </div>
-
-    <div class="messages" role="status">
-        {% if messages or form.errors %}
-        <ul>
-            {% if form.errors %}
-            {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
+    <main class="content-wrapper" id="main">
+        <div class="court-seal-container">
+            <img src="{% static 'images/footer/seal.png' %}"
+                 alt="United States Tax Court Seal"
+                 class="court-seal">
+        </div>
+        <div class="messages" role="status">
+            {% if messages or form.errors %}
+                <ul>
+                    {% if form.errors %}
+                        {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
+                    {% endif %}
+                    {% for message in messages %}
+                        {% if "You do not have permission to access the admin" in message.message %}
+                            <li class="{{ message.tags }}">
+                                You need permission to access the administrative section of this website.
+                                Please contact Web Apps Team
+                                <a href="mailto:website-adhoc@ustaxcourt.gov"
+                                   title="email: website-adhoc@ustaxcourt.gov"
+                                   style="color: var(--medium-gray)">Website-adhoc@ustaxcourt.gov</a>
+                                to be added.
+                            </li>
+                        {% else %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
             {% endif %}
-            {% for message in messages %}
-            {% if "You do not have permission to access the admin" in message.message %}
-            <li class="{{ message.tags }}">
-                You need permission to access the administrative section of this website.
-                Please contact Web Apps Team
-                <a href="mailto:website-adhoc@ustaxcourt.gov" title="email: website-adhoc@ustaxcourt.gov" style="color: var(--medium-gray)">Website-adhoc@ustaxcourt.gov</a>
-                to be added.
-            </li>
-            {% else %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-
-    {% block above_login %}{% endblock %}
-
-    {# SSO only on the main login page #}
-    <a href="{% url "social:begin" "azuread-tenant-oauth2" %}" class="azure-login">
-    {% trans "Login with Court SSO Credentials" %}
-    </a>
-
-    {% block below_login %}{% endblock %}
-</main>
+        </div>
+        {% block above_login %}{% endblock %}
+        {# SSO only on the main login page #}
+        <a href="{% url "social:begin" "azuread-tenant-oauth2" %}"
+           class="azure-login">{% trans "Login with Court SSO Credentials" %}</a>
+        {% block below_login %}{% endblock %}
+    </main>
 {% endblock %}
