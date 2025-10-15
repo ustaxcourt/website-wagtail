@@ -12,6 +12,7 @@ from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from home.models.snippets.news_item import NewsItem
 from home.blocks import SVGChooserBlock
+from home.models.pages.press_release import PressReleasePage
 
 
 class QuickAccessTileBlock(blocks.StructBlock):
@@ -155,9 +156,6 @@ class HomePage(ModerationMixin, Page):
             .order_by("-publish_date")
         )
         context["news_items"] = news_items
-
-        # Get Press Release page URL
-        from home.models.pages.press_release import PressReleasePage
 
         press_release_page = PressReleasePage.objects.live().first()
         context["press_release_page_url"] = (
