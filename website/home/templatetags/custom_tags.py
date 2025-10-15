@@ -1,4 +1,6 @@
 from django import template
+from django.utils.safestring import mark_safe
+
 import re
 
 register = template.Library()
@@ -22,3 +24,20 @@ def judge_display_name(judge):
         role = judge.roles.first()
         return f"{role.role_name} {judge.display_name}"
     return f"{judge.title} {judge.display_name}"
+
+
+@register.simple_tag
+def include_svg(document):
+    """
+    Renders the content of an SVG document inline.
+    """
+    if document and document.file.name.lower().endswith(".svg"):
+        try:
+            document.file.open("r")
+            svg_content = document.file.read()
+            document.file.close()
+            return mark_safe(svg_content)
+        except IOError:
+            pass
+
+    return ""
