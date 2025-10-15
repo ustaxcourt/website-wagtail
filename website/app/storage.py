@@ -1,4 +1,4 @@
-from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import FileSystemStorage, Storage
 from django.utils.deconstruct import deconstructible
 from django.apps import apps
 import os
@@ -149,14 +149,25 @@ class OverwriteFileSystemStorage(FileSystemStorage):
         if not _wagtail_patched and apps.apps_ready:
             patch_wagtail()
 
+        is_replacing = is_replacing_existing_file()
+        file_exists = self.exists(name)
+
+        print(
+            f"🔍 FS get_available_name: name={name}, is_replacing={is_replacing}, exists={file_exists}"
+        )
+
         # Only overwrite if we're explicitly replacing an existing image
-        if is_replacing_existing_file():
-            if self.exists(name):
+        if is_replacing:
+            if file_exists:
                 self.delete(name)
+                print(f"🗑️  FS: Deleted existing file for replacement: {name}")
             return name
 
         # For new images, use default behavior (adds suffix if file exists)
-        return super().get_available_name(name, max_length)
+        print("📝 FS: Calling super().get_available_name for new image")
+        result = super().get_available_name(name, max_length)
+        print(f"📝 FS: super() returned: {result}")
+        return result
 
 
 @deconstructible
@@ -178,16 +189,28 @@ class OverwriteS3Storage:
         if not _wagtail_patched and apps.apps_ready:
             patch_wagtail()
 
+        is_replacing = is_replacing_existing_file()
+        file_exists = self.exists(name)
+
+        print(
+            f"🔍 S3 get_available_name: name={name}, is_replacing={is_replacing}, exists={file_exists}"
+        )
+
         # Only overwrite if we're explicitly replacing an existing image
-        if is_replacing_existing_file():
+        if is_replacing:
             # For S3, we simply return the name and let S3 overwrite
             # This is more efficient than explicitly deleting first
-            if self.exists(name):
+            if file_exists:
                 self.delete(name)
+                print(f"🗑️  S3: Deleted existing file for replacement: {name}")
             return name
 
-        # For new images, use default behavior (adds suffix if file exists)
-        return super().get_available_name(name, max_length)
+        # For new images, use Django's base Storage class to add suffix
+        # (S3Boto3Storage may have file_overwrite=True which doesn't add suffixes)
+        print("📝 S3: Using Django base Storage.get_available_name for new image")
+        result = Storage.get_available_name(self, name, max_length)
+        print(f"📝 S3: Django Storage returned: {result}")
+        return result
 
 
 # Import S3Boto3Storage and create a combined class
