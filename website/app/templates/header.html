@@ -34,6 +34,7 @@
         border: 1px solid #565C65;
         {% comment %} border-radius: 4px; {% endcomment %}
         min-width: 200px;
+        height: 34px;
     }
 
     header#top-navigation .search-form button {
@@ -47,6 +48,8 @@
         align-items: center;
         gap: 4px;
         font-weight: 700;
+        width: 89px;
+        height: 34px;
     }
 
     header#top-navigation .search-form button:hover {
@@ -279,9 +282,26 @@
 
         header#top-navigation #mobile-search-form {
             display: flex;
+            margin: 13px 16px 18px 16px;
+            {% comment %} visibility: hidden; {% endcomment %}
         }
-        header#top-navigation #desktop-search-form {
-            display: none;
+
+        header#top-navigation #mobile-search-form button {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: var(--color-white) 1px solid;
+        }
+        header#top-navigation #mobile-search-form button i {
+            font-size: 22px;
+        }
+        header#top-navigation #mobile-search-form input {
+            height: 44px;
+            width: 250px;
+            border-radius: 3px 0px 0px 3px;
+            padding: 11px 10px;
         }
 
         header#top-navigation .navigation-bar .navigation {
@@ -344,7 +364,6 @@
             flex-direction: column;
             width: 100%;
             line-height: 44px;
-            background-color: var(--light-blue);
         }
 
         header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header .navigation-list {
@@ -367,6 +386,36 @@
 
         header#top-navigation .navigation-bar .navigation .navigation-header .nav-link:hover a i {
             color: var(--light-blue);
+        }
+    }
+
+    {% comment %} Styles below here apply the correct breakpoints (Tablet and Mobile) and can be combined with the above styles when updated {% endcomment %}
+
+    {% comment %} header#top-navigation #navigation-search-form {
+        visibility: hidden;
+    } {% endcomment %}
+
+    header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        line-height: 44px;
+    }
+
+    @media (max-width: 992px) {
+        header#top-navigation .search-form input {
+            min-width: 172px;
+            height: 26px;
+        }
+
+        header#top-navigation .search-form button {
+            width: 78px;
+            height: 26px;
+        }
+    }
+    @media (max-width: 768px) {
+        header#top-navigation #desktop-search-form {
+            display: none;
         }
     }
 </style>
@@ -414,19 +463,18 @@
         </button>
         <ul class="navigation">
             {% get_navigation_menu as nav %}
-            <li class="navigation-header">
+            <li id="navigation-search-form" class="navigation-header">
                 <form id="mobile-search-form"
                     class="search-form"
                     action="/search/"
                     method="get">
                     <input type="text"
                         name="query"
-                        placeholder="Search..."
+                        placeholder="Enter search text"
                         aria-label="Search"
                         data-testid="search-input">
                     <button type="submit" data-testid="search-button">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        Search
                     </button>
                 </form>
             </li>
@@ -484,6 +532,9 @@
         navigationHeaders.forEach(header => {
             header.classList.toggle('displayed-navigation-header');
         });
+
+        {% comment %} const navigationSearch = document.querySelector('#navigation-search-form');
+        navigationSearch.classList.toggle('displayed-navigation-header'); {% endcomment %}
     }
 
     function toggleMenuItems(button) {
@@ -497,11 +548,15 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const navigationHeaders = document.querySelectorAll('.navigation-header');
+        document.querySelectorAll('.navigation-header:not(#navigation-search-form)');
 
         navigationHeaders.forEach(header => {
             // Handle clicks
             header.addEventListener('click', function(e) {
                 navigationHeaders.forEach(h => {
+                    // if navigation-search-form
+                    // skip
+                    //else do the thing
                     if (h !== header) h.classList.remove('active');
                 });
                 header.classList.toggle('active');
