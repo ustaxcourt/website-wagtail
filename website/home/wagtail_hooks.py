@@ -254,7 +254,7 @@ def purge_cache_after_document_delete(sender, instance, **kwargs):
 @receiver(post_save, sender=Image)
 def purge_cache_after_image_save(sender, instance, created, **kwargs):
     """
-    Purge CloudFront cache when an image is saved (created or updated).
+    Purge CloudFront cache when an image is saved (created or updated)..
     """
     del sender, kwargs
 
