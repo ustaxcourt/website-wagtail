@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
-from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
+from wagtail.models import DraftStateMixin, PageQuerySet, RevisionMixin, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
@@ -100,6 +100,8 @@ class NewsItem(
     )
 
     _revisions = GenericRelation("wagtailcore.Revision", related_query_name="newsitem")
+
+    objects = PageQuerySet.as_manager()
 
     panels = [
         FieldPanel("title"),
