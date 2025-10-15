@@ -260,7 +260,7 @@ MEDIA_URL = "/media/"
 # See https://docs.djangoproject.com/en/5.1/ref/settings/#std-setting-STORAGES
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "app.storage.OverwriteFileSystemStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -271,7 +271,7 @@ aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
 if aws_bucket_name:
     print(f"Loading from base config, bucket: {aws_bucket_name}")
     STORAGES["default"] = {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "BACKEND": "app.storage.OverwriteS3Boto3Storage",
         "OPTIONS": {
             "bucket_name": os.getenv("AWS_STORAGE_BUCKET_NAME"),
             "custom_domain": f"{os.getenv('DOMAIN_NAME')}/files",
@@ -285,7 +285,7 @@ if aws_bucket_name:
     WAGTAILDOCS_SERVE_METHOD = "direct"
     AWS_DEFAULT_ACL = None
     AWS_S3_ADDRESSING_STYLE = "path"
-    AWS_S3_FILE_OVERWRITE = False
+    # AWS_S3_FILE_OVERWRITE handled by our custom storage class
 
     # when running in github actions, we use access keys instead of assumed roles like on ECS
     if os.getenv("AWS_ACCESS_KEY_ID"):
