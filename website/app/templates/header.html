@@ -227,13 +227,13 @@
 
         header#top-navigation .search-form {
             margin: 10px 0;
-            width: 100%;
+            {% comment %} width: 100%; {% endcomment %}
             order: 2;
         }
 
-        header#top-navigation .search-form input {
+        {% comment %} header#top-navigation .search-form input {
             flex: 1;
-        }
+        } {% endcomment %}
 
         header#top-navigation .dawson-link {
             order: 3;
@@ -346,7 +346,10 @@
             top: 14px;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header:hover {
+        {% comment %} header#top-navigation .navigation-bar .navigation .navigation-header:hover {
+            background-color: var(--light-blue);
+        } {% endcomment %}
+        header#top-navigation .navigation-bar .navigation .navigation-header:not(#navigation-search-form):hover {
             background-color: var(--light-blue);
         }
 
@@ -386,6 +389,9 @@
 
         header#top-navigation .navigation-bar .navigation .navigation-header .nav-link:hover a i {
             color: var(--light-blue);
+        }
+
+        header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header mobile-search-form {
         }
     }
 
@@ -548,15 +554,11 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const navigationHeaders = document.querySelectorAll('.navigation-header');
-        document.querySelectorAll('.navigation-header:not(#navigation-search-form)');
 
         navigationHeaders.forEach(header => {
             // Handle clicks
             header.addEventListener('click', function(e) {
                 navigationHeaders.forEach(h => {
-                    // if navigation-search-form
-                    // skip
-                    //else do the thing
                     if (h !== header) h.classList.remove('active');
                 });
                 header.classList.toggle('active');
