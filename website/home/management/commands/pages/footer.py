@@ -2,6 +2,8 @@ from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import Footer
 import logging
 
+from home.models.utils.execute_script import ExecuteScript
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,6 +31,7 @@ class FooterInitializer(PageInitializer):
             logger.info("Successfully created Footer settings.")
 
     def update(self):
+        logger.info("Footer update called.")
         settings = Footer.objects.all().first()
 
         if settings:
@@ -50,3 +53,28 @@ class FooterInitializer(PageInitializer):
         footer.otherQuestions = """For all non-technical questions, contact the Office of the Clerk of the Court at <a href="tel:+12025210700">(202) 521-0700</a>."""
         footer.save()
         logger.info("Successfully updated Footer settings.")
+
+    def run(self):
+        """Update the footer as an execution script"""
+        command_name = "Footer update for homepage redesign"
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update()
+            execution_log_text = "Footer updated for homepage redesign"
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+
+        except Exception as e:
+            logger.error("something bad happened")
+            execution_log_text = f"footer update failed: {e}"
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+            raise e
