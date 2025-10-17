@@ -2,6 +2,10 @@
 {% load wagtailcore_tags navigation_tags wagtailsettings_tags %}
 {% get_settings %}
 <style>
+    header#top-navigation {
+        position: relative;
+    }
+
     header#top-navigation .blue-banner {
         background-color: var(--header-dark-blue);
     }
@@ -24,6 +28,11 @@
         line-height: 30px;
         margin: 0px;
         color: var(--color-white);
+    }
+
+    header#top-navigation .logo-heading:active,
+    header#top-navigation .logo-heading:hover {
+        text-decoration: none;
     }
 
     header#top-navigation .logo-subheading {
@@ -81,10 +90,14 @@
         font-family: var(--noto-serif-jp), serif;
         font-size: 14px;
         font-weight: 400;
-        line-height: 1.2;
+        line-height: 1.5;
         margin: 0;
         text-align: left;
         color: var(--color-white);
+    }
+
+    header#top-navigation #navigation-search-form {
+        display: none;
     }
 
     header#top-navigation #desktop-search-form {
@@ -152,6 +165,7 @@
         list-style: none;
         max-width: var(--container-width);
     }
+
 
     header#top-navigation .navigation-header {
         white-space: nowrap;
@@ -261,6 +275,10 @@
 
      /* Mobile Navigation Styles */
      @media (max-width: 879px) {
+        header#top-navigation #navigation-search-form {
+            display: flex;
+        }
+
         header#top-navigation .navigation-bar {
             background-color: #005EA2;
             position: relative;
@@ -569,7 +587,6 @@
                 <button class="nav-hamburger"
                     aria-label="Toggle mobile menu"
                     onclick="toggleMobileMenu()">
-                    <!-- <i class="fa-solid fa-bars"></i> -->
                     <img src="{% static 'images/menu.svg' %}" alt="Menu"></img>
                 </button>
 
@@ -581,7 +598,7 @@
                             alt="US Tax Court Logo" />
                     </a>
 
-                    <p class="logo-heading">United States Tax Court</p>
+                    <a class="logo-heading" href="/">United States Tax Court</a>
                     <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
                     <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
                 </div>
@@ -594,7 +611,7 @@
                             alt="US Tax Court Logo" />
                     </a>
                     <div class="logo-content">
-                        <h1 class="logo-heading">United States Tax Court</h1>
+                        <a href="/" class="logo-heading">United States Tax Court</a>
                         <div class="logo-subheadings">
                             <div>
                                 <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
@@ -640,11 +657,6 @@
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
-        <!-- <button class="nav-hamburger"
-                aria-label="Toggle mobile menu"
-                onclick="toggleMobileMenu()">
-            <i class="fa-solid fa-bars"></i>
-        </button> -->
         <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
         <ul class="navigation">
             <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
