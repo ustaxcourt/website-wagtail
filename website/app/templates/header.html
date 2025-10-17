@@ -339,9 +339,6 @@
             top: 14px;
         }
 
-        {% comment %} header#top-navigation .navigation-bar .navigation .navigation-header:hover {
-            background-color: var(--light-blue);
-        } {% endcomment %}
         header#top-navigation .navigation-bar .navigation .navigation-header:not(#navigation-search-form):hover {
             background-color: var(--light-blue);
         }
@@ -388,11 +385,6 @@
         }
     }
 
-    {% comment %} Styles below here apply the correct breakpoints (Tablet and Mobile) and can be combined with the above styles when updated {% endcomment %}
-
-    {% comment %} header#top-navigation #navigation-search-form {
-        visibility: hidden;
-    } {% endcomment %}
 
     header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
         display: flex;
@@ -441,7 +433,6 @@
                                aria-label="Search"
                                data-testid="search-input">
                         <button type="submit" data-testid="search-button">
-                            {% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
                             Search
                         </button>
                     </form>
