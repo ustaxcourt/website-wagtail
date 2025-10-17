@@ -1,5 +1,6 @@
 {% load static wagtailcore_tags %}
-{% load wagtailcore_tags navigation_tags %}
+{% load wagtailcore_tags navigation_tags wagtailsettings_tags %}
+{% get_settings %}
 <style>
     header#top-navigation .blue-banner {
         background-color: var(--header-dark-blue);
@@ -78,7 +79,7 @@
 
     header#top-navigation .desktop-header-logo-section .logo-subheading {
         font-family: var(--noto-serif-jp), serif;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 400;
         line-height: 1.2;
         margin: 0;
@@ -518,6 +519,10 @@
         header#top-navigation .desktop-header-logo-section .logo-heading {
             font-size: 24px;
         }
+
+        header#top-navigation .desktop-header-logo-section .logo-subheading {
+            font-size: 12px;
+        }
     }
 
     @media (min-width: 880px) {
@@ -577,8 +582,8 @@
                     </a>
 
                     <p class="logo-heading">United States Tax Court</p>
-                    <p class="logo-subheading">Patrick J. Urda, Chief Judge</p>
-                    <p class="logo-subheading">Charles G. Jeane, Clerk of the Court</p>
+                    <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                    <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
                 </div>
 
                 <!-- desktop -->
@@ -592,8 +597,8 @@
                         <h1 class="logo-heading">United States Tax Court</h1>
                         <div class="logo-subheadings">
                             <div>
-                                <p class="logo-subheading">Patrick J. Urda, Chief Judge</p>
-                                <p class="logo-subheading">Charles G. Jeane, Clerk of the Court</p>
+                                <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                                <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
                             </div>
                             <div>
                                 <form id="tablet-search-form"
