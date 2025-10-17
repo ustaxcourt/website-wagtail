@@ -21,7 +21,88 @@
     }
 
     header#top-navigation .logo-seal {
+<<<<<<< Updated upstream
         width: 70px;
+=======
+        width: 45px;
+    }
+
+    header#top-navigation .logo-heading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0px;
+        color: var(--color-white);
+    }
+
+    header#top-navigation .logo-subheading {
+        text-align: center;
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 80%;
+        margin: 4px;
+        color: var(--color-white);
+    }
+
+    /* Desktop logo section styles */
+    header#top-navigation .desktop-header-logo-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 10px;
+        flex: 1;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-seal {
+        width: 95px;
+        margin-top: 7px;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-grow: 1;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-heading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 1.4;
+        margin: 0;
+        text-align: left;
+        color: var(--color-white);
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-heading:active,
+    header#top-navigation .desktop-header-logo-section .logo-heading:hover {
+        text-decoration: none;
+    }
+
+
+    header#top-navigation .desktop-header-logo-section .logo-subheadings {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin-top: 4px;
+        justify-content: space-between;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-subheading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        margin: 0;
+        text-align: left;
+        color: var(--color-white);
+>>>>>>> Stashed changes
     }
 
     header#top-navigation #desktop-search-form {
@@ -75,6 +156,10 @@
         height: 50px;
         list-style: none;
         max-width: var(--container-width);
+    }
+
+    header#top-navigation #navigation-search-form {
+        display: none;
     }
 
     header#top-navigation .navigation-header {
@@ -224,6 +309,7 @@
         }
     }
 
+<<<<<<< Updated upstream
     @media (max-width: 940px) {
         #logo-link {
             max-width: 400px;
@@ -253,6 +339,14 @@
 
     /* Mobile Navigation Styles */
     @media (max-width: 853px) {
+=======
+     /* Mobile Navigation Styles */
+     @media (max-width: 879px) {
+        header#top-navigation #navigation-search-form {
+            display: flex;
+        }
+
+>>>>>>> Stashed changes
         header#top-navigation .navigation-bar {
             background-color: #005EA2;
             position: relative;
@@ -424,6 +518,7 @@
     <div class="blue-banner">
         <div class="grid-container padding-1">
             <div class="usa-header__inner display-flex flex-justify flex-align-center">
+<<<<<<< Updated upstream
                 <a id="logo-link" href="/">
                     <img class="tablet:display-none logo-seal"
                          src="{% static 'images/header/logo_seal.webp' %}"
@@ -433,6 +528,62 @@
                          alt="US Tax Court Logo" />
                 </a>
                 <div class="display-flex flex-justify flex-align-center">
+=======
+                <button class="nav-hamburger"
+                    aria-label="Toggle mobile menu"
+                    onclick="toggleMobileMenu()">
+                    <img src="{% static 'images/menu.svg' %}" alt="Menu"></img>
+                </button>
+
+                <!-- mobile -->
+                <div class="mobile-header-logo-section">
+                    <a id="logo-link" href="/">
+                        <img class="logo-seal"
+                            src="{% static 'images/header/logo_seal.webp' %}"
+                            alt="US Tax Court Logo" />
+                    </a>
+
+                    <a href="/" class="logo-heading">United States Tax Court</a>
+                    <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                    <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                </div>
+
+                <!-- desktop -->
+                <div class="desktop-header-logo-section">
+                    <a id="logo-link" href="/">
+                        <img class="logo-seal"
+                            src="{% static 'images/header/logo_seal.webp' %}"
+                            alt="US Tax Court Logo" />
+                    </a>
+                    <div class="logo-content">
+                        <a href="/" class="logo-heading">United States Tax Court</a>
+                        <div class="logo-subheadings">
+                            <div>
+                                <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                                <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                            </div>
+                            <div>
+                                <form id="tablet-search-form"
+                                    class="search-form tablet-search-form"
+                                    action="/search/"
+                                    method="get">
+                                <input type="text"
+                                        name="query"
+                                        placeholder="Enter search text"
+                                        aria-label="Search"
+                                        data-testid="search-input">
+                                <button type="submit" data-testid="search-button">
+                                    {% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
+                                    Search
+                                </button>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="desktop-search-container" class="display-flex flex-justify flex-align-end">
+>>>>>>> Stashed changes
                     <form id="desktop-search-form"
                           class="search-form"
                           action="/search/"
@@ -471,11 +622,14 @@
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
+<<<<<<< Updated upstream
         <button class="nav-hamburger"
                 aria-label="Toggle mobile menu"
                 onclick="toggleMobileMenu()">
             <i class="fa-solid fa-bars"></i>
         </button>
+=======
+>>>>>>> Stashed changes
         <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
         <ul class="navigation">
             <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
