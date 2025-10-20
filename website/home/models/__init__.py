@@ -6,6 +6,7 @@ from home.models.snippets.judges import (
     JudgeRole,
 )
 from home.models.settings import (
+    Header,
     Footer,
     GoogleAnalyticsSettings,
 )

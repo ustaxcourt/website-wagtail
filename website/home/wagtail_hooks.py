@@ -13,11 +13,11 @@ from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
-from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache
+from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBatch
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
-from home.models import NavigationMenu, JudgeRole
+from home.models import NavigationMenu, JudgeRole, Header
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
@@ -44,6 +44,22 @@ def environment_is_prod():
     try:
         return settings.ENVIRONMENT == "production"
     except (AttributeError, KeyError):
+        return False
+
+
+def purge_cloudflare_root():
+    """
+    Purge CloudFront cache for all pages using wildcard /* path.
+    Used when content that appears on all pages is updated (e.g., header, navigation menu, high-priority news items).
+    """
+    try:
+        batch = PurgeBatch()
+        batch.add_url("/*")
+        batch.purge()
+        logger.info("Purged CloudFront cache for all pages using wildcard /*")
+        return True
+    except Exception as e:
+        logger.error(f"Error purging CloudFront cache for all pages: {e}")
         return False
 
 
@@ -151,34 +167,14 @@ def purge_cache_for_snippet_related_pages(request, instance):
 
     # Purge CloudFront cache for all pages using wildcard when navigation menu changes
     if snippet_type == "navigationmenu":
-        try:
-            from wagtail.contrib.frontend_cache.utils import PurgeBatch
-
-            batch = PurgeBatch()
-            batch.add_url("/*")
-            batch.purge()
-            logger.info(
-                "Purged CloudFront cache for all pages using wildcard /* after navigation menu change."
-            )
-        except Exception as e:
-            logger.error(f"Error purging CloudFront cache for all pages: {e}")
+        purge_cloudflare_root()
         return
 
     # Purge CloudFront cache for all pages when high priority news item changes
     # (since yellow banners appear on all pages)
     if snippet_type == "newsitem" and isinstance(instance, NewsItem):
         if instance.banner_options == "high":
-            try:
-                from wagtail.contrib.frontend_cache.utils import PurgeBatch
-
-                batch = PurgeBatch()
-                batch.add_url("/*")
-                batch.purge()
-                logger.info(
-                    f"Purged CloudFront cache for all pages using wildcard /* after high priority news item change (ID: {instance.id})."
-                )
-            except Exception as e:
-                logger.error(f"Error purging CloudFront cache for all pages: {e}")
+            purge_cloudflare_root()
             return
 
     affected_prefixes = path_map.get(snippet_type, ["/"])
@@ -203,8 +199,6 @@ def purge_cloudfront_cache_for_file(file_url):
     Purge CloudFront cache for a specific file URL.
     """
     try:
-        from wagtail.contrib.frontend_cache.utils import PurgeBatch
-
         if file_url.startswith("http"):
             parsed = urlparse(file_url)
             cache_path = parsed.path
@@ -317,20 +311,7 @@ def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
         logger.info(
             f"{priority_type} priority NewsItem {action}: {instance.title} (ID: {instance.id})"
         )
-
-        try:
-            from wagtail.contrib.frontend_cache.utils import PurgeBatch
-
-            batch = PurgeBatch()
-            batch.add_url("/*")
-            batch.purge()
-            logger.info(
-                f"Purged CloudFront cache for all pages using wildcard /* after {priority_type.lower()} priority news item {action} (ID: {instance.id})."
-            )
-        except Exception as e:
-            logger.error(
-                f"Error purging CloudFront cache for all pages after NewsItem {action}: {e}"
-            )
+        purge_cloudflare_root()
 
 
 @receiver(post_delete, sender=NewsItem)
@@ -347,20 +328,20 @@ def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
         logger.info(
             f"{priority_type} priority NewsItem deleted: {instance.title} (ID: {instance.id})"
         )
+        purge_cloudflare_root()
 
-        try:
-            from wagtail.contrib.frontend_cache.utils import PurgeBatch
 
-            batch = PurgeBatch()
-            batch.add_url("/*")
-            batch.purge()
-            logger.info(
-                f"Purged CloudFront cache for all pages using wildcard /* after high priority news item deletion (ID: {instance.id})."
-            )
-        except Exception as e:
-            logger.error(
-                f"Error purging CloudFront cache for all pages after NewsItem deletion: {e}"
-            )
+@receiver(post_save, sender=Header)
+def purge_cache_after_header_save(sender, instance, created, **kwargs):
+    """
+    Purge CloudFront cache for all pages when the header settings are updated.
+    Header appears on all pages, so we need to purge all pages.
+    """
+    del sender, kwargs
+
+    action = "created" if created else "updated"
+    logger.info(f"Header settings {action} (ID: {instance.id})")
+    purge_cloudflare_root()
 
 
 @hooks.register("register_admin_urls")

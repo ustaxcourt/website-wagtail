@@ -1,8 +1,13 @@
 {% load static wagtailcore_tags %}
-{% load wagtailcore_tags navigation_tags %}
+{% load wagtailcore_tags navigation_tags wagtailsettings_tags %}
+{% get_settings %}
 <style>
+    header#top-navigation {
+        position: relative;
+    }
+
     header#top-navigation .blue-banner {
-        background-color: var(--dark-blue);
+        background-color: var(--header-dark-blue);
     }
 
     header#top-navigation .blue-banner .dawson {
@@ -12,12 +17,103 @@
     }
 
     header#top-navigation .logo-seal {
-        width: 70px;
+        width: 45px;
+    }
+
+    header#top-navigation .logo-heading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0px;
+        color: var(--color-white);
+    }
+
+    header#top-navigation .logo-heading:active,
+    header#top-navigation .logo-heading:hover {
+        text-decoration: none;
+    }
+
+    header#top-navigation .logo-subheading {
+        text-align: center;
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 80%;
+        margin: 4px;
+        color: var(--color-white);
+    }
+
+    /* Desktop logo section styles */
+    header#top-navigation .desktop-header-logo-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 10px;
+        flex: 1;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-seal {
+        width: 95px;
+        margin-top: 7px;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-grow: 1;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-heading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 1.4;
+        margin: 0;
+        text-align: left;
+        color: var(--color-white);
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-subheadings {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin-top: 4px;
+        justify-content: space-between;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-subheading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        margin: 0;
+        text-align: left;
+        color: var(--color-white);
+    }
+
+    header#top-navigation #navigation-search-form {
+        display: none;
     }
 
     header#top-navigation #desktop-search-form {
         display: flex;
         margin: 0 20px;
+        position: relative;
+        bottom: 0px;
+        align-self: flex-end;
+    }
+
+    header#top-navigation #tablet-search-form {
+        display: flex;
+        margin: 0 20px;
+        position: relative;
+        bottom: 0px;
+        align-self: flex-end;
     }
 
     header#top-navigation #mobile-search-form {
@@ -69,6 +165,7 @@
         list-style: none;
         max-width: var(--container-width);
     }
+
 
     header#top-navigation .navigation-header {
         white-space: nowrap;
@@ -161,80 +258,27 @@
         font-weight: 600;
     }
 
-    @media (min-width: 854px) {
-        header#top-navigation .navigation {
-            background-color: transparent;
-        }
-
-        header#top-navigation .nav-hamburger {
-            display: none;
-        }
-
-        header#top-navigation .mobile-menu-close {
-            display: none;
-        }
-
-        header#top-navigation .mobile-menu-overlay {
-            display: none !important;
-        }
-
-        header#top-navigation .navigation-header .link:focus {
-            outline: 2px solid white;
-            outline-offset: -2px;
-        }
+    header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        line-height: 44px;
     }
 
-    @media (max-width: 639px) {
-
-        header#top-navigation .blue-banner {
-            height: auto;
-            padding: 10px 0;
-        }
-
-        header#top-navigation .usa-header__inner {
-            gap: 10px;
-        }
-
-        header#top-navigation .search-form {
-            margin: 10px 0;
-            order: 2;
-        }
-
-
-        header#top-navigation .dawson-link {
-            order: 3;
-        }
+    header#top-navigation .mobile-header-logo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
     }
 
-    @media (max-width: 940px) {
-        #logo-link {
-            max-width: 400px;
+     /* Mobile Navigation Styles */
+     @media (max-width: 879px) {
+        header#top-navigation #navigation-search-form {
+            display: flex;
         }
-    }
 
-    @media (max-width: 830px) {
-        #logo-link {
-            max-width: 250px;
-        }
-    }
-
-    @media (max-width: 690px) {
-        #logo-link {
-            max-width: 200px;
-        }
-    }
-
-    /* Tablet Navigation Styles */
-    @media (min-width: 854px) and (max-width: 1115px) {
-        header#top-navigation .navigation-header .link,
-        header#top-navigation .navigation-header > a {
-            font-size: 16px;
-            padding: 0 12px;
-        }
-    }
-
-    /* Mobile Navigation Styles */
-    @media (max-width: 853px) {
         header#top-navigation .navigation-bar {
             background-color: #005EA2;
             position: relative;
@@ -250,6 +294,22 @@
             padding: 15px 20px;
             color: white;
             font-size: 24px;
+
+            position: absolute;
+            left: 10px;
+            top: -2px;
+
+        }
+
+        /* Mobile menu drawer */
+        header#top-navigation .navigation {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background-color: #005EA2;
         }
 
         header#top-navigation #mobile-search-form {
@@ -278,15 +338,7 @@
             color: #71767A;
         }
 
-        /* Mobile menu drawer */
-        header#top-navigation .navigation {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            max-width: 400px;
-            height: 100vh;
-            background-color: #005EA2;
+        header#top-navigation .navigation-bar .navigation {
             flex-direction: column;
             overflow-y: auto;
             transition: left 0.3s ease-in-out;
@@ -345,9 +397,6 @@
         header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header {
             display: flex;
             flex-direction: column;
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
@@ -469,33 +518,62 @@
         header#top-navigation .navigation-header.active:hover .navigation-list {
             display: block;
         }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header mobile-search-form {
-        }
     }
 
 
-    header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        line-height: 44px;
-    }
-
-    @media (max-width: 992px) {
-        header#top-navigation .search-form input {
-            min-width: 172px;
-            height: 26px;
-        }
-
-        header#top-navigation .search-form button {
-            width: 78px;
-            height: 26px;
-        }
-    }
-    @media (max-width: 768px) {
+    @media (max-width: 879px) {
         header#top-navigation #desktop-search-form {
             display: none;
+        }
+        header#top-navigation .desktop-header-logo-section {
+            display: none;
+        }
+    }
+
+    @media (max-width: 905px) {
+        header#top-navigation .desktop-header-logo-section .logo-heading {
+            font-size: 24px;
+        }
+
+        header#top-navigation .desktop-header-logo-section .logo-subheading {
+            font-size: 12px;
+        }
+    }
+
+    @media (min-width: 880px) {
+        header#top-navigation .mobile-header-logo-section {
+            display: none;
+        }
+
+        header#top-navigation .nav-hamburger {
+            display: none;
+        }
+
+        header#top-navigation .mobile-menu-close {
+            display: none;
+        }
+
+        header#top-navigation .navigation-header .link,
+        header#top-navigation .navigation-header > a {
+            font-size: 16px;
+        }
+    }
+
+
+    @media (min-width: 1024px) {
+        header#top-navigation #tablet-search-form {
+            display: none;
+        }
+    }
+
+    @media (max-width: 1023px) {
+        header#top-navigation #desktop-search-container {
+            display: none;
+        }
+
+        header#top-navigation .desktop-header-logo-section .logo-subheadings {
+            display: flex;
+            flex-direction: row;
         }
     }
 </style>
@@ -503,43 +581,78 @@
     <div class="blue-banner">
         <div class="grid-container padding-1">
             <div class="usa-header__inner display-flex flex-justify flex-align-center">
-                <a id="logo-link" href="/">
-                    <img class="tablet:display-none logo-seal"
-                         src="{% static 'images/header/logo_seal.webp' %}"
-                         alt="US Tax Court Logo" />
-                    <img class="display-none tablet:display-block"
-                         src="{% static 'images/header/logo.webp' %}"
-                         alt="US Tax Court Logo" />
-                </a>
-                <div class="display-flex flex-justify flex-align-center">
+                <button class="nav-hamburger"
+                    aria-label="Toggle mobile menu"
+                    onclick="toggleMobileMenu()">
+                    <img src="{% static 'images/menu.svg' %}" alt="Menu"></img>
+                </button>
+
+                <!-- mobile -->
+                <div class="mobile-header-logo-section">
+                    <a id="logo-link" href="/">
+                        <img class="logo-seal"
+                            src="{% static 'images/header/logo_seal.webp' %}"
+                            alt="US Tax Court Logo" />
+                    </a>
+
+                    <a class="logo-heading" href="/">United States Tax Court</a>
+                    <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                    <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                </div>
+
+                <!-- desktop -->
+                <div class="desktop-header-logo-section">
+                    <a id="logo-link" href="/">
+                        <img class="logo-seal"
+                            src="{% static 'images/header/logo_seal.webp' %}"
+                            alt="US Tax Court Logo" />
+                    </a>
+                    <div class="logo-content">
+                        <a href="/" class="logo-heading">United States Tax Court</a>
+                        <div class="logo-subheadings">
+                            <div>
+                                <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                                <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                            </div>
+                            <div>
+                                <form id="tablet-search-form"
+                                    class="search-form tablet-search-form"
+                                    action="/search/"
+                                    method="get">
+                                <input type="text"
+                                        name="query"
+                                        placeholder="Enter search text"
+                                        aria-label="Search"
+                                        data-testid="search-input">
+                                <button type="submit" data-testid="search-button">
+                                    {% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
+                                    Search
+                                </button>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="desktop-search-container" class="display-flex flex-justify flex-align-end">
                     <form id="desktop-search-form"
-                          class="search-form"
-                          action="/search/"
-                          method="get">
+                            class="search-form"
+                            action="/search/"
+                            method="get">
                         <input type="text"
-                               name="query"
-                               placeholder="Enter search text"
-                               aria-label="Search"
-                               data-testid="search-input">
+                                name="query"
+                                placeholder="Enter search text"
+                                aria-label="Search"
+                                data-testid="search-input">
                         <button type="submit" data-testid="search-button">
                             Search
                         </button>
                     </form>
-                    <a href="https://dawson.ustaxcourt.gov/" class="dawson-link">
-                        <img class="dawson"
-                             src="{% static 'images/header/dawson.webp' %}"
-                             alt="Dawson Logo" />
-                    </a>
                 </div>
             </div>
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
-        <button class="nav-hamburger"
-                aria-label="Toggle mobile menu"
-                onclick="toggleMobileMenu()">
-            <i class="fa-solid fa-bars"></i>
-        </button>
         <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
         <ul class="navigation">
             <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
