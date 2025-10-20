@@ -149,6 +149,113 @@
         color: inherit;
       }
 
+      /* News and Notices Section */
+      .news-notices-section {
+        padding: 60px 0;
+        background: white;
+      }
+
+      .news-notices-header {
+        margin-bottom: 40px;
+      }
+
+      .news-notices-header h2 {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .news-notices-header h2 a {
+        color: #111;
+        text-decoration: underline;
+      }
+
+      .news-notices-header h2 a:hover {
+        color: #0066cc;
+        text-decoration: underline;
+      }
+
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+      }
+
+      .news-card {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .news-card-image {
+        width: 100%;
+        height: 135px;
+        object-fit: cover;
+        background: #e9ecef;
+      }
+
+      .news-card-image-placeholder {
+        width: 100%;
+        height: 135px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 48px;
+      }
+
+      .news-card-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111;
+        margin: 0 0 12px 0;
+        line-height: 1.4;
+      }
+
+      .news-card-description {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.5;
+        flex: 1;
+      }
+
+      .news-card-description p {
+        margin: 0 0 10px 0;
+      }
+
+      .news-card-description p:last-child {
+        margin-bottom: 0;
+      }
+
+      .news-card-link {
+        color: #555;
+        text-decoration: underline;
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 12px;
+        display: inline-block;
+      }
+
+      .news-card-link:hover {
+        text-decoration: underline;
+      }
+
       .nav-card {
         background: var(--color-white, #FFF);
         border: 1px solid var(--theme-color-base-light, #A9AEB1);
@@ -162,7 +269,6 @@
         box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
         color: #162E51;
       }
-
 
       .wide-nav-card {
         display: flex;
@@ -333,6 +439,18 @@
         .toggle-on-at-or-below-mobile-size {
           display:block;
         }
+
+        .news-notices-section {
+          padding: 40px 0;
+        }
+
+        .news-notices-header h2 {
+          font-size: 24px;
+        }
+
+        .news-grid {
+          grid-template-columns: 1fr;
+        }
       }
 </style>
 {% endblock %}
@@ -438,8 +556,41 @@
     </div>
   </section>
 
-  <section class="static-cards">
-    <div class="grid-container">
+
+  <!-- News and Notices Section -->
+  {% if news_items %}
+  <section class="news-notices-section">
+    <div class="container">
+      <div class="news-notices-header">
+        <h2><a href="{{ press_release_page_url }}">News and Notices</a></h2>
+      </div>
+      <div class="news-grid">
+        {% for news_item in news_items %}
+        <div class="news-card">
+          {% if news_item.image %}
+            {% image news_item.image fill-370x135 as news_image %}
+            <img src="{{ news_image.url }}" alt="{{ news_item.title }}" class="news-card-image">
+          {% else %}
+            <img src="{% static 'images/home/news.jpeg' %}" alt="Default news image" class="news-card-image">
+          {% endif %}
+          <div class="news-card-content">
+            <h3 class="news-card-title">{{ news_item.title }}</h3>
+            <div class="news-card-description">
+              {{ news_item.description|richtext }}
+            </div>
+            {% if news_item.document %}
+            <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Press Release.</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="grid-container">
+    <section class="static-cards">
       <div class="content">
         <div class="entries-list">
           {% for card in live_static_text_cards %}
