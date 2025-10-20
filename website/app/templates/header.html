@@ -1,8 +1,13 @@
 {% load static wagtailcore_tags %}
-{% load wagtailcore_tags navigation_tags %}
+{% load wagtailcore_tags navigation_tags wagtailsettings_tags %}
+{% get_settings %}
 <style>
+    header#top-navigation {
+        position: relative;
+    }
+
     header#top-navigation .blue-banner {
-        background-color: var(--dark-blue);
+        background-color: var(--header-dark-blue);
     }
 
     header#top-navigation .blue-banner .dawson {
@@ -12,13 +17,103 @@
     }
 
     header#top-navigation .logo-seal {
-        width: 70px;
+        width: 45px;
+    }
+
+    header#top-navigation .logo-heading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0px;
+        color: var(--color-white);
+    }
+
+    header#top-navigation .logo-heading:active,
+    header#top-navigation .logo-heading:hover {
+        text-decoration: none;
+    }
+
+    header#top-navigation .logo-subheading {
+        text-align: center;
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 80%;
+        margin: 4px;
+        color: var(--color-white);
+    }
+
+    /* Desktop logo section styles */
+    header#top-navigation .desktop-header-logo-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 10px;
+        flex: 1;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-seal {
+        width: 95px;
+        margin-top: 7px;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-grow: 1;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-heading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 1.4;
+        margin: 0;
+        text-align: left;
+        color: var(--color-white);
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-subheadings {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin-top: 4px;
+        justify-content: space-between;
+    }
+
+    header#top-navigation .desktop-header-logo-section .logo-subheading {
+        font-family: var(--noto-serif-jp), serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        margin: 0;
+        text-align: left;
+        color: var(--color-white);
+    }
+
+    header#top-navigation #navigation-search-form {
+        display: none;
     }
 
     header#top-navigation #desktop-search-form {
         display: flex;
-        gap: 8px;
         margin: 0 20px;
+        position: relative;
+        bottom: 0px;
+        align-self: flex-end;
+    }
+
+    header#top-navigation #tablet-search-form {
+        display: flex;
+        margin: 0 20px;
+        position: relative;
+        bottom: 0px;
+        align-self: flex-end;
     }
 
     header#top-navigation #mobile-search-form {
@@ -30,129 +125,197 @@
     }
 
     header#top-navigation .search-form input {
-        padding: 8px 12px;
-        border: 1px solid var(--light-blue);
-        border-radius: 4px;
+        padding: 11px 10px;
+        border: 1px solid #565C65;
         min-width: 200px;
+        height: 34px;
     }
 
     header#top-navigation .search-form button {
         background-color: var(--light-blue);
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 0px 4px 4px 0px;
         padding: 8px 16px;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 4px;
+        font-weight: 700;
+        width: 89px;
+        height: 34px;
     }
 
     header#top-navigation .search-form button:hover {
-        background-color: var(--dark-blue);
+        text-decoration: underline;
+    }
+
+    /* Desktop Navigation Styles */
+    header#top-navigation .navigation-bar {
+        background-color: #005EA2;
     }
 
     header#top-navigation .navigation {
-        border: solid var(--light-blue);
-        background-color: #f2f4f4;
-        border-width: 5px 0px 1px 0px;
-        padding: 0px 0px;
-        margin: 0;
+        background-color: #005EA2;
+        padding: 0 1rem;
+        margin: 0 auto;
         display: flex;
-        justify-content: center;
-        min-height: 52px;
+        justify-content: space-between;
+        height: 50px;
+        list-style: none;
+        max-width: var(--container-width);
     }
 
-    header#top-navigation .navigation i {
-        font-size: 0.7rem;
-    }
 
     header#top-navigation .navigation-header {
         white-space: nowrap;
-    }
-
-    header#top-navigation .navigation-header:hover {
-        background-color: var(--light-gray-hover);
+        position: relative;
+        display: flex;
+        align-items: center;
     }
 
     header#top-navigation .navigation-header .link,
-    header#top-navigation .navigation-header a {
+    header#top-navigation .navigation-header > a {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 8px;
         text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        height: 50px;
+        padding: 0 20px;
+        font-family: 'Source Sans 3', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        text-transform: uppercase;
     }
 
     header#top-navigation .navigation-header .link:hover,
-    header#top-navigation .navigation-header a:hover {
+    header#top-navigation .navigation-header > a:hover {
         text-decoration: none;
-        color: var(--link-blue);
     }
 
-    header#top-navigation .navigation-header .link {
-        background: none;
-        border: none;
-        padding: 0 30px;
-        font: inherit;
-        color: var(--light-blue);
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-        justify-content: flex-start;
-        font-weight: bold;
-        font-size: 1rem;
+    header#top-navigation .navigation-header .link .chevron-down {
+        display: inline;
     }
 
-    header#top-navigation .navigation-header .link>div {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        width: 100%;
+    header#top-navigation .navigation-header .link .chevron-up {
+        display: none;
     }
 
+    header#top-navigation .navigation-header.active .link .chevron-down,
+    header#top-navigation .navigation-header:hover .link .chevron-down {
+        display: none;
+    }
+
+    header#top-navigation .navigation-header.active .link .chevron-up,
+    header#top-navigation .navigation-header:hover .link .chevron-up {
+        display: inline;
+    }
+
+    /* Dropdown Styles */
     header#top-navigation .navigation-list {
         display: none;
         list-style-type: none;
-        background-color: var(--light-blue);
+        background-color: #005EA2;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        z-index: 500;
+        padding: 0;
+        margin: 0;
+        min-width: max-content;
+        border-top: 6px solid #1A4480;
+    }
+
+    header#top-navigation .navigation-header:hover .navigation-list,
+    header#top-navigation .navigation-header.active .navigation-list {
+        display: block;
+    }
+
+    header#top-navigation .navigation-header:hover {
+        z-index: 501;
     }
 
     header#top-navigation .navigation-list .nav-link {
-        color: #FFFFFF;
-        font-weight: bold;
-    }
-
-    header#top-navigation .navigation-list .nav-link:hover {
-        background: white;
-        border-radius: 6px;
+        padding: 0 23px;
     }
 
     header#top-navigation .navigation-list .nav-link a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #FFFFFF;
+        display: block;
+        color: white;
+        font-family: 'Source Sans 3', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 30px;
+        text-decoration: none;
+        padding: 5px 0;
     }
 
     header#top-navigation .navigation-list .nav-link a:hover {
-        color: var(--light-blue);
+        font-weight: 600;
     }
 
-    @media (min-width: 854px) {
-        header#top-navigation .nav-hamburger {
-            height: 16px;
-            display: none;
-        }
+    header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        line-height: 44px;
+    }
 
-        header#top-navigation .navigation-header {
-            height: 55px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            padding: 0;
-        }
+    header#top-navigation .mobile-header-logo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+
+    header#top-navigation li.navigation-header.get-feedback {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        justify-content: center;
+        background: none;
+        cursor: pointer;
+        height: 64px;
+        font-family: 'Source Sans 3', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        text-transform: uppercase;
+    }
+
+     /* Mobile Navigation Styles */
+     @media (max-width: 879px) {
 
         header#top-navigation li.navigation-header.get-feedback {
-            display: none;
+            display: flex;
+        }
+
+        header#top-navigation #navigation-search-form {
+            display: flex;
+        }
+
+        header#top-navigation .navigation-bar {
+            background-color: #005EA2;
+            position: relative;
+        }
+
+        header#top-navigation .nav-hamburger {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 15px 20px;
+            color: white;
+            font-size: 24px;
         }
 
         header#top-navigation .navigation-header:hover .navigation-list,
@@ -168,136 +331,62 @@
 
         header#top-navigation .navigation-header .navigation-list {
             position: absolute;
-            min-width: 320px;
-            top: 55px;
-            left: 0;
-            z-index: 500;
-            flex-direction: column;
-            padding: 10px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
+            left: 10px;
+            top: -2px;
         }
 
-        header#top-navigation .navigation-header .navigation-list .nav-link a {
-            padding: 3px 10px;
-        }
-
-        header#top-navigation .navigation-header .link:focus {
-            outline: 2px solid var(--link-blue);
-            outline-offset: -2px;
-        }
-    }
-
-    @media (min-width: 854px) and (max-width: 1086px) {
-        header#top-navigation .navigation .navigation-header .link {
-            padding: 0 15px;
-            font-size: 0.9rem;
-        }
-
-        header#top-navigation .navigation .navigation-header .link>div {
-            gap: 2px;
-        }
-    }
-
-    @media (min-width: 961px) {
-        header#top-navigation .navigation-header .link {
-            padding: 0 30px;
-            font-size: 1rem;
-        }
-
-        header#top-navigation .navigation-header .link>div {
-            gap: 4px;
-        }
-    }
-
-    @media (max-width: 639px) {
-        header#top-navigation #desktop-search-form {
-            display: none;
+        /* Mobile menu drawer */
+        header#top-navigation .navigation {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background-color: #005EA2;
         }
 
         header#top-navigation #mobile-search-form {
             display: flex;
+            margin: 13px 16px 18px 16px;
         }
 
-        header#top-navigation .blue-banner {
-            height: auto;
-            padding: 10px 0;
-        }
-
-        header#top-navigation .usa-header__inner {
-            gap: 10px;
-        }
-
-        header#top-navigation .search-form {
-            margin: 10px 0;
-            width: 100%;
-            order: 2;
-        }
-
-        header#top-navigation .search-form input {
-            flex: 1;
-        }
-
-        header#top-navigation .dawson-link {
-            order: 3;
-        }
-    }
-
-    @media (max-width: 940px) {
-        #logo-link {
-            max-width: 400px;
-        }
-    }
-
-    @media (max-width: 830px) {
-        #logo-link {
-            max-width: 250px;
-        }
-    }
-
-    @media (max-width: 690px) {
-        #logo-link {
-            max-width: 200px;
-        }
-    }
-
-    @media (max-width: 853px) {
-        header#top-navigation .navigation-bar {
-            border: solid var(--light-blue);
-            background-color: #f2f4f4;
-            border-width: 5px 0px 1px 0px;
-            display: flex;
-            flex-direction: column;
-            align-items: normal;
-            justify-content: center;
-        }
-
-        header#top-navigation .navigation-bar .nav-hamburger {
+        header#top-navigation #mobile-search-form button {
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 24px;
-            margin: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
+            border: var(--color-white) 1px solid;
+            border-radius: 0px 3px 3px 0px;
+        }
+        header#top-navigation #mobile-search-form button i {
+            font-size: 22px;
+        }
+        header#top-navigation #mobile-search-form input {
+            height: 44px;
+            width: 250px;
+            border-radius: 3px 0px 0px 3px;
+            padding: 11px 10px;
+            font-size: 20px;
+            color: #71767A;
         }
 
         header#top-navigation .navigation-bar .navigation {
             flex-direction: column;
-            gap: 0px;
-            border-width: 0;
-            min-height: 0;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header {
-            display: none;
-            background-color: #efefef;
+            overflow-y: auto;
+            transition: left 0.3s ease-in-out;
+            z-index: 1000;
             padding: 0;
+            justify-content: flex-start;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header .navigation-list {
+        header#top-navigation .navigation.mobile-menu-open {
+            left: 0;
+        }
+
+        /* Mobile menu overlay */
+        header#top-navigation .mobile-menu-overlay {
             display: none;
         }
 
@@ -326,7 +415,7 @@
             top: 14px;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header:hover {
+        header#top-navigation .navigation-bar .navigation .navigation-header:not(#navigation-search-form):hover {
             background-color: var(--light-blue);
         }
 
@@ -343,114 +432,299 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            line-height: 44px;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header .navigation-list {
-            display: none;
+        header#top-navigation .mobile-menu-overlay.active {
+            display: block;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header .navigation-list.displayed-navigation-list {
+        /* Close button in mobile menu */
+        header#top-navigation .mobile-menu-close {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header#top-navigation .navigation-header {
             display: flex;
             flex-direction: column;
-            padding-left: 10px;
+            align-items: stretch;
+            border-bottom: 2px solid #162E51;
+            height: auto;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header .nav-link:hover {
-            background: white;
+        header#top-navigation .navigation-header:first-of-type {
+            margin-top: 60px;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header .nav-link:hover a {
-            color: var(--light-blue) !important;
+        header#top-navigation .navigation-header .link,
+        header#top-navigation .navigation-header > a {
+            width: 100%;
+            height: auto;
+            padding: 15px 20px;
+            text-align: left;
+            justify-content: flex-start;
+            font-size: 18px;
+            text-transform: uppercase;
         }
 
-        header#top-navigation .navigation-bar .navigation .navigation-header .nav-link:hover a i {
-            color: var(--light-blue);
+        header#top-navigation .navigation-header.active .link {
+            background-color: #1A4480;
         }
-    }
 
-    @media (min-width: 768px) {
-        header#top-navigation .navigation-header .get-feedback{
+        header#top-navigation .navigation-header .link .chevron-down,
+        header#top-navigation .navigation-header .link .chevron-up {
+            font-size: 16px;
+        }
+
+        /* Override hover behavior on mobile - only use .active class */
+        header#top-navigation .navigation-header .link .chevron-down {
+            display: inline;
+        }
+
+        header#top-navigation .navigation-header .link .chevron-up {
+            display: none;
+        }
+
+        header#top-navigation .navigation-header:hover .link .chevron-down {
+            display: inline;
+        }
+
+        header#top-navigation .navigation-header:hover .link .chevron-up {
+            display: none;
+        }
+
+        header#top-navigation .navigation-header.active .link .chevron-down {
+            display: none;
+        }
+
+        header#top-navigation .navigation-header.active .link .chevron-up {
+            display: inline;
+        }
+
+        header#top-navigation .navigation-list {
+            position: static;
+            display: none;
+            width: 100%;
+            background-color: #1A4480;
+            border-top: none;
+            padding-left: 20px;
+        }
+
+        header#top-navigation .navigation-header.active .navigation-list {
+            display: block;
+        }
+
+        header#top-navigation .navigation-list .nav-link {
+            padding: 0;
+            border: none;
+        }
+
+        header#top-navigation .navigation-list .nav-link a {
+            padding: 12px 20px;
+            font-size: 18px;
+            line-height: 24px;
+        }
+
+        header#top-navigation .navigation-list .nav-link a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Remove hover effects on mobile */
+        header#top-navigation .navigation-header:hover .navigation-list {
+            display: none;
+        }
+
+        header#top-navigation .navigation-header.active:hover .navigation-list {
+            display: block;
+        }
+
+        header#top-navigation #desktop-search-form {
+            display: none;
+        }
+
+        header#top-navigation .desktop-header-logo-section {
             display: none;
         }
     }
+
+    @media (max-width: 905px) {
+        header#top-navigation .desktop-header-logo-section .logo-heading {
+            font-size: 24px;
+        }
+
+        header#top-navigation .desktop-header-logo-section .logo-subheading {
+            font-size: 12px;
+        }
+    }
+
+    @media (min-width: 880px) {
+        header#top-navigation .mobile-header-logo-section {
+            display: none;
+        }
+
+        header#top-navigation .nav-hamburger {
+            display: none;
+        }
+
+        header#top-navigation .mobile-menu-close {
+            display: none;
+        }
+
+        header#top-navigation .navigation-header .link,
+        header#top-navigation .navigation-header > a {
+            font-size: 16px;
+        }
+    }
+
+
+    @media (min-width: 1024px) {
+        header#top-navigation #tablet-search-form {
+            display: none;
+        }
+    }
+
+    @media (max-width: 1023px) {
+        header#top-navigation #desktop-search-container {
+            display: none;
+        }
+
+        header#top-navigation .desktop-header-logo-section .logo-subheadings {
+            display: flex;
+            flex-direction: row;
+        }
+    }
+
 </style>
 <header id="top-navigation">
     <div class="blue-banner">
         <div class="grid-container padding-1">
             <div class="usa-header__inner display-flex flex-justify flex-align-center">
-                <a id="logo-link" href="/">
-                    <img class="tablet:display-none logo-seal"
-                         src="{% static 'images/header/logo_seal.webp' %}"
-                         alt="US Tax Court Logo" />
-                    <img class="display-none tablet:display-block"
-                         src="{% static 'images/header/logo.webp' %}"
-                         alt="US Tax Court Logo" />
-                </a>
-                <div class="display-flex flex-justify flex-align-center">
+                <button class="nav-hamburger"
+                    aria-label="Toggle mobile menu"
+                    onclick="toggleMobileMenu()">
+                    <img src="{% static 'images/menu.svg' %}" alt="Menu"></img>
+                </button>
+
+                <!-- mobile -->
+                <div class="mobile-header-logo-section">
+                    <a id="logo-link" href="/">
+                        <img class="logo-seal"
+                            src="{% static 'images/header/logo_seal.webp' %}"
+                            alt="US Tax Court Logo" />
+                    </a>
+
+                    <a class="logo-heading" href="/">United States Tax Court</a>
+                    <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                    <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                </div>
+
+                <!-- desktop -->
+                <div class="desktop-header-logo-section">
+                    <a id="logo-link" href="/">
+                        <img class="logo-seal"
+                            src="{% static 'images/header/logo_seal.webp' %}"
+                            alt="US Tax Court Logo" />
+                    </a>
+                    <div class="logo-content">
+                        <a href="/" class="logo-heading">United States Tax Court</a>
+                        <div class="logo-subheadings">
+                            <div>
+                                <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
+                                <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                            </div>
+                            <div>
+                                <form id="tablet-search-form"
+                                    class="search-form tablet-search-form"
+                                    action="/search/"
+                                    method="get">
+                                <input type="text"
+                                        name="query"
+                                        placeholder="Enter search text"
+                                        aria-label="Search"
+                                        data-testid="search-input">
+                                <button type="submit" data-testid="search-button">
+                                    {% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
+                                    Search
+                                </button>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="desktop-search-container" class="display-flex flex-justify flex-align-end">
                     <form id="desktop-search-form"
-                          class="search-form"
-                          action="/search/"
-                          method="get">
+                            class="search-form"
+                            action="/search/"
+                            method="get">
                         <input type="text"
-                               name="query"
-                               placeholder="Search..."
-                               aria-label="Search"
-                               data-testid="search-input">
+                                name="query"
+                                placeholder="Enter search text"
+                                aria-label="Search"
+                                data-testid="search-input">
                         <button type="submit" data-testid="search-button">
-                            <i class="fa-solid fa-magnifying-glass"></i>
                             Search
                         </button>
                     </form>
-                    <a href="https://dawson.ustaxcourt.gov/" class="dawson-link">
-                        <img class="dawson"
-                             src="{% static 'images/header/dawson.webp' %}"
-                             alt="Dawson Logo" />
-                    </a>
                 </div>
             </div>
-            <form id="mobile-search-form"
-                  class="search-form"
-                  action="/search/"
-                  method="get">
-                <input type="text"
-                       name="query"
-                       placeholder="Search..."
-                       aria-label="Search"
-                       data-testid="search-input">
-                <button type="submit" data-testid="search-button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    Search
-                </button>
-            </form>
         </div>
     </div>
     <div class="navigation-bar" data-testid="navigation-bar">
-        <button class="nav-hamburger"
-                aria-label="Toggle mobile menu"
-                onclick="toggleHeaders()">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+        <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
         <ul class="navigation">
+            <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
+                <i class="fa-solid fa-times"></i>
+            </button>
             {% get_navigation_menu as nav %}
+            <li id="navigation-search-form" class="navigation-header">
+                <form id="mobile-search-form"
+                    class="search-form"
+                    action="/search/"
+                    method="get">
+                    <input type="text"
+                        name="query"
+                        placeholder="Enter search text"
+                        aria-label="Search"
+                        data-testid="search-input">
+                    <button type="submit" data-testid="search-button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+            </li>
             {% for section in nav.menu_items %}
                 <li class="navigation-header">
                     {% if section.value.external_url %}
                         <a href="{{ section.value.external_url }}"
                            target="_blank"
-                           class="link"
                            data-testid="nav-button-{{ section.value.title|slugify }}">
-                            <div>{{ section.value.title }}</div>
+                            {{ section.value.title }}
                         </a>
                     {% else %}
                         <button aria-expanded="false"
                                 class="link"
                                 data-testid="nav-button-{{ section.value.title|slugify }}"
                                 onclick="toggleMenuItems(this)">
-                            <div>
-                                {{ section.value.title }}
-                                <i class="fa-solid fa-chevron-right"></i>
-                            </div>
+                            <span>{{ section.value.title }}</span>
+                            <span>
+                                <i class="fa-solid fa-caret-down chevron-down"></i>
+                                <i class="fa-solid fa-caret-up chevron-up"></i>
+                            </span>
                         </button>
                     {% endif %}
                     {% if section.value.sub_links %}
@@ -462,14 +736,12 @@
                                         <a target="_blank"
                                            href="{{ sub_link.external_url }}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            <i class="fa-solid fa-chevron-right"></i>
-                                            {{ sub_link.title }}
+                                            {{ sub_link.title|title }}
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            <i class="fa-solid fa-chevron-right"></i>
-                                            {{ sub_link.title }}
+                                            {{ sub_link.title|title }}
                                         </a>
                                     {% endif %}
                                 </li>
@@ -490,80 +762,111 @@
     </div>
 </header>
 <script>
-    function toggleHeaders() {
+    function toggleMobileMenu() {
+        const navigation = document.querySelector('.navigation');
+        const overlay = document.querySelector('.mobile-menu-overlay');
+        navigation.classList.toggle('mobile-menu-open');
+        overlay.classList.toggle('active');
+
+        // Prevent body scroll when mobile menu is open
+        if (navigation.classList.contains('mobile-menu-open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    function closeMobileMenu() {
+        const navigation = document.querySelector('.navigation');
+        const overlay = document.querySelector('.mobile-menu-overlay');
+        navigation.classList.remove('mobile-menu-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        // Close all open submenus
         const navigationHeaders = document.querySelectorAll('.navigation-header');
         navigationHeaders.forEach(header => {
-            header.classList.toggle('displayed-navigation-header');
+            header.classList.remove('active');
         });
     }
 
     function toggleMenuItems(button) {
-        const navigationList = button.nextElementSibling;
-        navigationList.classList.toggle('displayed-navigation-list');
+        const header = button.closest('.navigation-header');
+        const isActive = header.classList.contains('active');
 
         // Update aria-expanded attribute
-        const isExpanded = navigationList.classList.contains('displayed-navigation-list');
-        button.setAttribute('aria-expanded', isExpanded);
+        button.setAttribute('aria-expanded', !isActive);
+
+        // Toggle active state
+        header.classList.toggle('active');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         const navigationHeaders = document.querySelectorAll('.navigation-header');
 
+        // Check if we're on mobile
+        function isMobile() {
+            return window.innerWidth <= 853;
+        }
+
         navigationHeaders.forEach(header => {
-            // Handle clicks
-            header.addEventListener('click', function(e) {
-                navigationHeaders.forEach(h => {
-                    if (h !== header) h.classList.remove('active');
-                });
-                header.classList.toggle('active');
-            });
+            const button = header.querySelector('.link');
 
-            // Handle hover
-            header.addEventListener('mouseenter', function() {
-                const hasSubLinks = header.querySelector('.navigation-list li');
-                if (hasSubLinks) {
-                    navigationHeaders.forEach(h => {
-                        if (h !== header) h.classList.remove('active');
-                    });
-                    header.classList.add('active');
+            // Handle desktop hover (only for headers with sublinks)
+            const handleMouseEnter = function() {
+                if (!isMobile()) {
+                    const hasSubLinks = header.querySelector('.navigation-list li');
+                    if (hasSubLinks) {
+                        navigationHeaders.forEach(h => {
+                            if (h !== header) h.classList.remove('active');
+                        });
+                        header.classList.add('active');
+                    }
                 }
-            });
+            };
 
-            header.addEventListener('mouseleave', function() {
-                header.classList.remove('active');
-            });
+            const handleMouseLeave = function() {
+                if (!isMobile()) {
+                    header.classList.remove('active');
+                }
+            };
+
+            header.addEventListener('mouseenter', handleMouseEnter);
+            header.addEventListener('mouseleave', handleMouseLeave);
 
             // Add keyboard navigation for dropdown items
-            header.addEventListener('keydown', function(e) {
-                const activeList = header.querySelector('.navigation-list');
-                const links = activeList?.querySelectorAll('.nav-link a');
-                if (!links?.length) return;
+            if (button) {
+                button.addEventListener('keydown', function(e) {
+                    const activeList = header.querySelector('.navigation-list');
+                    const links = activeList?.querySelectorAll('.nav-link a');
+                    if (!links?.length) return;
 
-                const currentFocus = document.activeElement;
-                let currentIndex = Array.from(links).indexOf(currentFocus);
+                    const currentFocus = document.activeElement;
+                    let currentIndex = Array.from(links).indexOf(currentFocus);
 
-                switch (e.key) {
-                    case 'ArrowDown':
-                        e.preventDefault();
-                        if (currentIndex === -1) {
-                            links[0].focus();
-                        } else {
-                            const nextIndex = (currentIndex + 1) % links.length;
-                            links[nextIndex].focus();
-                        }
-                        break;
+                    switch (e.key) {
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            if (currentIndex === -1) {
+                                links[0].focus();
+                            } else {
+                                const nextIndex = (currentIndex + 1) % links.length;
+                                links[nextIndex].focus();
+                            }
+                            break;
 
-                    case 'ArrowUp':
-                        e.preventDefault();
-                        if (currentIndex === -1) {
-                            links[links.length - 1].focus();
-                        } else {
-                            const prevIndex = (currentIndex - 1 + links.length) % links.length;
-                            links[prevIndex].focus();
-                        }
-                        break;
-                }
-            });
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            if (currentIndex === -1) {
+                                links[links.length - 1].focus();
+                            } else {
+                                const prevIndex = (currentIndex - 1 + links.length) % links.length;
+                                links[prevIndex].focus();
+                            }
+                            break;
+                    }
+                });
+            }
         });
 
         // Close dropdown when clicking outside
@@ -572,29 +875,32 @@
             if (!isInsideNavigation) {
                 navigationHeaders.forEach(header => {
                     header.classList.remove('active');
-                    header.classList.remove('displayed-navigation-header');
-                    const navList = header.querySelector('.navigation-list');
-                    if (navList) {
-                        navList.classList.remove('displayed-navigation-list');
-                    }
                 });
             }
         });
 
-        // Close dropdown when pressing Escape key
+        // Close dropdown/mobile menu when pressing Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 // Close desktop dropdowns
                 navigationHeaders.forEach(header => {
                     header.classList.remove('active');
-                    // Close mobile menu
-                    header.classList.remove('displayed-navigation-header');
-                    const navigationList = header.querySelector('.navigation-list');
-                    if (navigationList) {
-                        navigationList.classList.remove('displayed-navigation-list');
-                    }
                 });
+
+                // Close mobile menu
+                closeMobileMenu();
             }
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (!isMobile()) {
+                    closeMobileMenu();
+                }
+            }, 250);
         });
     });
 </script>
