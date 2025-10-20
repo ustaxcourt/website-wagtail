@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0077_homepage_full_width_quick_access_tile_and_more"),
+        ("home", "0078_header"),
     ]
 
     operations = [

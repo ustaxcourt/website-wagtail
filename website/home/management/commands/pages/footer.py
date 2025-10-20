@@ -26,7 +26,6 @@ class FooterInitializer(PageInitializer):
                     "Be sure to include your case docket number in your email. For all other questions contact the Office of the Clerk of Court at "
                     '(<a style="text-decoration: underline;" href="tel:+2025210700">202) 521-0700</a>.'
                 ),
-                otherQuestions="For all non-technical questions, contact the Office of the Clerk of the Court at (202) 521-0700.",
             )
             logger.info("Successfully created Footer settings.")
 
@@ -50,7 +49,6 @@ class FooterInitializer(PageInitializer):
             "Be sure to include your case docket number in your email. For all other questions contact the Office of the Clerk of Court at "
             '(<a style="text-decoration: underline;" href="tel:+2025210700">202) 521-0700</a>.'
         )
-        footer.otherQuestions = ""
         footer.save()
         logger.info("Successfully updated Footer settings.")
 
