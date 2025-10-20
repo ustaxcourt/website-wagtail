@@ -15,11 +15,9 @@ class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
         blank=True, help_text="Content for technical questions."
     )
-    otherQuestions = RichTextField(blank=True, help_text="Content for other questions.")
 
     content_panels = Page.content_panels + [
         FieldPanel("technicalQuestions"),
-        FieldPanel("otherQuestions"),
     ]
 
 
