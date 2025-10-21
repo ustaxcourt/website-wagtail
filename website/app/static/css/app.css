@@ -6,87 +6,60 @@
     --heading-font: "Source Sans 3";
     --body-font: 'Source Sans 3';
     --noto-serif-jp: 'Noto Serif JP', serif;
-    --base-font-size: 17px;
 
     /* Layout */
     --container-width: 1440px;
+    --component-button-radius: 4px;
 
-    /* Primary Brand Colors */
-    --primary-blue: #005EA2;
-    --header-blue: #1A4480;
-    --dark-blue: #003366;
-    --navy-blue: #162E51;
-    --very-dark-blue: #07294D;
-    --link-blue: #005ea2;
-    --link-hover-blue: #003256;
-    --hover-blue: #0066cc;
-    --header-dark-blue: #1A4480;
+    /* Brand Colors */
+    --color-primary: #005EA2;
+    --theme-color-primary: #005EA2;
+    --color-secondary: #1A4480;
+    --color-dark: #003366;
+    --color-navy: #162E51;
+    --color-darker: #07294D;
+    --color-link: #005ea2;
+    --color-link-hover: #003256;
+    --color-hover: #0066cc;
 
     /* Background Colors */
     --color-white: #FFFFFF;
     --bg-white: #fff;
-    --bg-off-white: #f8fafc;
-    --bg-light-gray: #f0f0f0;
-    --bg-lighter-gray: #f2f4f4;
-    --bg-pale-gray: #e9ecef;
-    --bg-light-blue: #F1F9FC;
-    --bg-light-blue-hover: #e6f0fa;
-    --bg-pale-blue: #E1F3F8;
-    --bg-light-green: #ecf3ec;
-    --bg-pale-yellow: #fef0c8;
-    --bg-yellow-alert: #faf3cf;
-    --bg-yellow-banner: #FAF3D1;
+    --bg-muted: #e9ecef;
+    --bg-info: #F1F9FC;
+    --bg-info-alt: #E1F3F8;
+    --bg-warning: #faf3cf;
+    --bg-notice: #FAF3D1;
 
     /* Text Colors */
     --text-black: #000;
-    --text-near-black: #111;
-    --text-dark: #222;
-    --text-dark-gray: #333;
-    --text-medium-gray: #555;
-    --text-gray: #666;
-    --text-light-gray: #888;
-    --text-lighter-gray: #999;
+    --text-primary: #111;
+    --text-secondary: #222;
+    --text-muted: #333;
+    --text-subtle: #555;
     --text-white: #fff;
 
     /* Border Colors */
-    --border-light-gray: #dcdcdc;
-    --border-gray: #dee2e6;
-    --border-medium-gray: #e2e8f0;
-    --border-light-blue: #97D4EA;
-    --border-medium-blue: #A9AEB1;
-    --border-dark-gray: #dfe1e2;
-    --border-input: #565C65;
+    --border-light: #dcdcdc;
+    --border-base: #dee2e6;
+    --border-accent: #97D4EA;
+    --border-medium: #A9AEB1;
 
     /* Alert/Status Colors */
-    --alert-red: #B50909;
-    --error-red: #b50909;
-    --danger-red: #990000;
-    --alert-yellow: #ecf3ce;
-    --alert-yellow-border: #e4eeba;
-    --alert-info-bg: #f1f9fc;
-    --alert-info-border: #d4ecf6;
+    --color-danger: #B50909;
+    --color-error: #b50909;
+    --color-danger-dark: #990000;
 
     /* Shadow Colors */
     --shadow-light: rgba(0, 0, 0, 0.1);
     --shadow-medium: rgba(0, 0, 0, 0.17);
     --shadow-dark: rgba(0, 0, 0, 0.33);
-    --shadow-search: rgba(0, 0, 0, 0.07);
-    --shadow-blue: rgba(0, 113, 188, 0.10);
     --shadow-card: rgba(86, 92, 101, 0.10);
 
-    /* Overlay Colors */
-    --overlay-dark: rgba(0, 0, 0, 0.5);
-    --overlay-white-hover: rgba(255, 255, 255, 0.1);
-
     /* Legacy/Deprecated (for compatibility) */
-    --medium-gray: rgb(240, 240, 240);
-    --dark-gray: rgb(220, 222, 224);
-    --light-gray-hover: rgb(231, 231, 231);
-    --faint-gray: #eee;
-    --light-blue: rgba(0, 94, 162, 1.00);
-    --faint-blue: rgba(0, 94, 162, 0.1);
-    --color-primary-alt-lightest: #F1F9FC;
-    --color-accent-cool-light: #97D4EA;
+    --bg-neutral: rgb(240, 240, 240);
+    --border-faint: #eee;
+    --color-primary-legacy: rgba(0, 94, 162, 1.00);
 }
 
 /* ==========================================================================
@@ -166,7 +139,7 @@ h6 {
 
 /* Links */
 a {
-    color: var(--link-blue);
+    color: var(--color-link);
     font-weight: bold;
     text-decoration: none;
     cursor: pointer;
@@ -182,7 +155,7 @@ a.font-normal {
 
 a:hover {
     text-decoration: underline;
-    color: var(--link-hover-blue);
+    color: var(--color-link-hover);
 }
 
 /* Links inside headings - no underline by default, underline on hover */
@@ -196,15 +169,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 
 /* Link utility classes */
 .link-blue {
-    color: var(--link-blue);
+    color: var(--color-link);
 }
 
 .link-blue:hover {
-    color: var(--link-hover-blue);
+    color: var(--color-link-hover);
 }
 
 .font-light-blue {
-    color: var(--light-blue)
+    color: var(--color-primary-legacy)
 }
 
 /* ==========================================================================
@@ -252,14 +225,14 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid var(--faint-gray);
+    border-top: 1px solid var(--border-faint);
     margin: 1em 0;
     padding: 0;
 }
 
 .foundry-divider-simple {
     margin: 17px 0 17px 0;
-    border-top: 1px solid var(--faint-gray);
+    border-top: 1px solid var(--border-faint);
     height: 0;
 }
 
@@ -296,7 +269,7 @@ button.link:hover {
 
 .blue-page-links-bar {
     display: flex;
-    background-color: var(--light-blue);
+    background-color: var(--color-primary-legacy);
     border-radius: 5px;
     gap: 10px;
 }
