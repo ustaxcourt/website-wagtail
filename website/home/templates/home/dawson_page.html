@@ -38,9 +38,9 @@
         #dawson-page .usa-card-group .usa-card .usa-card__container {
             border-width: 1px;
             border-radius: 0;
-            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.17);
+            box-shadow: 0px 3px 5px var(--shadow-medium);
             transition: box-shadow 0.2s;
-            background-color: rgba(255, 255, 255, 1.00);
+            background-color: var(--bg-white);
         }
 
         #dawson-page .usa-card-group .usa-card .usa-card__container .usa-card__header {
@@ -53,7 +53,7 @@
         }
 
         #dawson-page .usa-card-group .usa-card .usa-card__container:hover {
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 10px var(--shadow-medium);
         }
 
         #dawson-page .dedication {
@@ -73,8 +73,8 @@
         #dawson-page .dedication .dedication-image img {
             border-style: none;
             margin: 0;
-            border: 1px solid rgba(0, 0, 0, 1.00);
-            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.33);
+            border: 1px solid var(--text-black);
+            box-shadow: 0px 0px 6px var(--shadow-dark);
         }
 
         #dawson-page .dedication .dedication-text {
@@ -99,13 +99,13 @@
         }
 
         #dawson-page .fancy-card-group .dark-blue-card.usa-card .usa-card__container {
-            background-color: #07294D !important;
-            color: #fff !important;
+            background-color: var(--very-dark-blue) !important;
+            color: var(--text-white) !important;
         }
 
         #dawson-page .fancy-card-group .light-blue-card.usa-card .usa-card__container {
-            background-color: #E1F3F8 !important;
-            color: #000 !important;
+            background-color: var(--bg-pale-blue) !important;
+            color: var(--text-black) !important;
         }
 
         #dawson-page .dark-blue-card .usa-card__container {
@@ -138,7 +138,7 @@
                     <li class="usa-card mobile-lg:grid-col-12 tablet:grid-col-8 desktop:grid-col-9 light-blue-card">
                         <div class="usa-card__container">
                             <div>
-                                <strong style="color:#990000;">DEADLINE FOR FILING:</strong>
+                                <strong style="color:var(--danger-red);">DEADLINE FOR FILING:</strong>
                                 <span>{{ fancy_card.text | richtext }}</span>
                             </div>
                         </div>

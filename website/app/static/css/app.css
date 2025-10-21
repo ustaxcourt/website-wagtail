@@ -2,24 +2,91 @@
    CSS Variables / Root Settings
    ========================================================================== */
 :root {
-    --dark-blue: rgb(18, 33, 64);
-    --header-dark-blue: #1A4480;
-    --light-blue: rgba(0, 94, 162, 1.00);
-    --faint-blue: rgba(0, 94, 162, 0.1);
-    --medium-gray: rgb(240, 240, 240);
-    --dark-gray: rgb(220, 222, 224);
-    --link-hover-blue: #003256;
-    --light-gray-hover: rgb(231, 231, 231);
-    --faint-gray: #eee;
-    --link-blue: #005ea2;
-    --noto-serif-jp: 'Noto Serif JP', serif;
-    --color-primary-alt-lightest: #F1F9FC;
-    --color-accent-cool-light: #97D4EA;
-    --color-white: #FFFFFF;
+    /* Fonts */
     --heading-font: "Source Sans 3";
     --body-font: 'Source Sans 3';
+    --noto-serif-jp: 'Noto Serif JP', serif;
     --base-font-size: 17px;
+
+    /* Layout */
     --container-width: 1440px;
+
+    /* Primary Brand Colors */
+    --primary-blue: #005EA2;
+    --header-blue: #1A4480;
+    --dark-blue: #003366;
+    --navy-blue: #162E51;
+    --very-dark-blue: #07294D;
+    --link-blue: #005ea2;
+    --link-hover-blue: #003256;
+    --hover-blue: #0066cc;
+    --header-dark-blue: #1A4480;
+
+    /* Background Colors */
+    --color-white: #FFFFFF;
+    --bg-white: #fff;
+    --bg-off-white: #f8fafc;
+    --bg-light-gray: #f0f0f0;
+    --bg-lighter-gray: #f2f4f4;
+    --bg-pale-gray: #e9ecef;
+    --bg-light-blue: #F1F9FC;
+    --bg-light-blue-hover: #e6f0fa;
+    --bg-pale-blue: #E1F3F8;
+    --bg-light-green: #ecf3ec;
+    --bg-pale-yellow: #fef0c8;
+    --bg-yellow-alert: #faf3cf;
+    --bg-yellow-banner: #FAF3D1;
+
+    /* Text Colors */
+    --text-black: #000;
+    --text-near-black: #111;
+    --text-dark: #222;
+    --text-dark-gray: #333;
+    --text-medium-gray: #555;
+    --text-gray: #666;
+    --text-light-gray: #888;
+    --text-lighter-gray: #999;
+    --text-white: #fff;
+
+    /* Border Colors */
+    --border-light-gray: #dcdcdc;
+    --border-gray: #dee2e6;
+    --border-medium-gray: #e2e8f0;
+    --border-light-blue: #97D4EA;
+    --border-medium-blue: #A9AEB1;
+    --border-dark-gray: #dfe1e2;
+    --border-input: #565C65;
+
+    /* Alert/Status Colors */
+    --alert-red: #B50909;
+    --error-red: #b50909;
+    --danger-red: #990000;
+    --alert-yellow: #ecf3ce;
+    --alert-yellow-border: #e4eeba;
+    --alert-info-bg: #f1f9fc;
+    --alert-info-border: #d4ecf6;
+
+    /* Shadow Colors */
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.17);
+    --shadow-dark: rgba(0, 0, 0, 0.33);
+    --shadow-search: rgba(0, 0, 0, 0.07);
+    --shadow-blue: rgba(0, 113, 188, 0.10);
+    --shadow-card: rgba(86, 92, 101, 0.10);
+
+    /* Overlay Colors */
+    --overlay-dark: rgba(0, 0, 0, 0.5);
+    --overlay-white-hover: rgba(255, 255, 255, 0.1);
+
+    /* Legacy/Deprecated (for compatibility) */
+    --medium-gray: rgb(240, 240, 240);
+    --dark-gray: rgb(220, 222, 224);
+    --light-gray-hover: rgb(231, 231, 231);
+    --faint-gray: #eee;
+    --light-blue: rgba(0, 94, 162, 1.00);
+    --faint-blue: rgba(0, 94, 162, 0.1);
+    --color-primary-alt-lightest: #F1F9FC;
+    --color-accent-cool-light: #97D4EA;
 }
 
 /* ==========================================================================

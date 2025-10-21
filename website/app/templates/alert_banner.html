@@ -1,8 +1,8 @@
 {% load static %}
 <style>
     .alert-banner {
-        background-color: #faf3cf;
-        color: #000;
+        background-color: var(--bg-yellow-alert);
+        color: var(--text-black);
         font-weight: bold;
     }
 
@@ -11,18 +11,18 @@
     }
 
     .alert-banner a {
-        color: #000;
+        color: var(--text-black);
         text-decoration: underline;
     }
 
     .alert-banner .close-btn {
         cursor: pointer;
         border: none;
-        background-color: #0000;
+        background-color: transparent;
     }
 
     .alert-banner .close-btn:hover {
-        color: #333;
+        color: var(--text-dark-gray);
     }
 
     .alert-banner .alert-content {
