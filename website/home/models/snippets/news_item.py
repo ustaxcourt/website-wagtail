@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
-from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
+from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin, PageQuerySet
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
@@ -25,6 +25,8 @@ class NewsItem(
     index.Indexed,
     models.Model,
 ):
+    objects = PageQuerySet.as_manager()
+
     title = models.CharField(
         max_length=500, help_text="Title of the news article", blank=False
     )
