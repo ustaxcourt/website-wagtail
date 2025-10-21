@@ -34,19 +34,6 @@
           box-shadow: none;
       }
 
-      #home-page .entries-list .entry h2 {
-          font-family: 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          font-weight: 600;
-          line-height: 30px;
-      }
-
-      #home-page .entries-list .entry div,
-      #home-page .entries-list .entry p {
-          font-family: 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          font-weight: 400;
-          line-height: 20px;
-      }
-
       #home-page .entries-list .entry a {
           color: inherit;
           text-decoration: underline;
@@ -81,18 +68,11 @@
       }
 
       .welcome-title {
-          margin: 0 0 6px 0;
-          font-weight: 400;
-          font-size: 32px;
-          line-height: 38px;
           color: #111;
       }
 
       .welcome-body,
       .welcome-body p {
-          margin: 0;
-          font-weight: 400;
-          line-height: 20px;
           color: #222;
       }
 
@@ -162,17 +142,14 @@
       .news-notices-header h2 {
         font-size: 28px;
         font-weight: 600;
-        margin: 0;
       }
 
       .news-notices-header h2 a {
         color: #111;
-        text-decoration: underline;
       }
 
       .news-notices-header h2 a:hover {
         color: #0066cc;
-        text-decoration: underline;
       }
 
       .news-grid {
@@ -224,7 +201,6 @@
         font-size: 18px;
         font-weight: 600;
         color: #111;
-        margin: 0 0 12px 0;
         line-height: 1.4;
       }
 
@@ -233,14 +209,6 @@
         font-size: 15px;
         line-height: 1.5;
         flex: 1;
-      }
-
-      .news-card-description p {
-        margin: 0 0 10px 0;
-      }
-
-      .news-card-description p:last-child {
-        margin-bottom: 0;
       }
 
       .news-card-link {
@@ -308,10 +276,6 @@
         fill: currentColor;
       }
 
-      .wide-nav-card h2 {
-        margin: 0;
-      }
-
       .nav-card:hover {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
@@ -332,15 +296,8 @@
         font-size: 24px;
       }
 
-      .nav-card h2 {
-        margin: 0px 0px 12px 0px;
-      }
-
       .nav-card p {
         font-style: normal;
-        font-weight: 400;
-        line-height: 20px;
-        margin: 0px;
       }
 
       .toggle-on-at-or-below-tablet-size {
@@ -363,6 +320,10 @@
       }
 
       @media (max-width: 992px) {
+        .news-notices-header {
+          margin-bottom: 20px;
+        }
+
         .cards-grid {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -379,13 +340,8 @@
           margin: 0px 16px 0px 0px;
         }
 
-        .nav-card h2 {
-          margin: 0px;
-        }
-
         .nav-card p {
           grid-column: 1 / -1;
-          margin: 0px;
         }
 
         .wide-nav-cards {
@@ -414,20 +370,6 @@
           padding: 16px 16px;
         }
 
-        .nav-card h2 {
-          line-height: 20px;
-          font-size: 20px;
-        }
-
-        .nav-card p {
-          font-size: 16px;
-        }
-
-        .welcome-title {
-            font-size: 28px;
-            line-height: 34px;
-        }
-
         .toggle-on-at-or-below-tablet-size {
           display: block;
         }
@@ -442,10 +384,6 @@
 
         .news-notices-section {
           padding: 40px 0;
-        }
-
-        .news-notices-header h2 {
-          font-size: 24px;
         }
 
         .news-grid {

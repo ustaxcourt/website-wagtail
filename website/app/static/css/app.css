@@ -46,45 +46,55 @@ ol ol ol {
     font-family: var(--noto-serif-jp), serif;
 }
 
-body {
+body, p {
     -webkit-font-smoothing: antialiased;
-    line-height: 24px;
     font-family: var(--body-font), sans-serif;
-    font-size: var(--base-font-size);
-    -webkit-font-smoothing: antialiased;
+    font-size: 17px;
+    line-height: 20px;
+    font-weight: 400;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font), sans-serif;
-    font-weight: bold;
-    line-height: 38px;
     margin-bottom: 8px;
     -webkit-font-smoothing: antialiased;
 }
 
 h1 {
-    font-size: 2rem;
-    line-height: 2.5rem;
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: 400;
 }
 
 h2 {
-    font-size: 1.5rem;
-    margin-bottom: 8.5px;
+    font-size: 24px;
     line-height: 30px;
     font-weight: 600;
 }
 
 h3 {
-    font-size: 1.25rem;
-    line-height: 1.563rem;
-    font-family: 'Source Sans 3', sans-serif;
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
 }
 
 h4 {
-    font-size: 1.063rem;
-    line-height: 1.5rem;
-    font-family: 'Source Sans 3', sans-serif;
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
+}
+
+h5 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
+}
+
+h6 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
 }
 
 /* Links */
@@ -105,6 +115,24 @@ a.font-normal {
 
 a:hover {
     text-decoration: underline;
+    color: var(--link-hover-blue);
+}
+
+/* Links inside headings - no underline by default, underline on hover */
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    text-decoration: none;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+    text-decoration: underline;
+}
+
+/* Link utility classes */
+.link-blue {
+    color: var(--link-blue);
+}
+
+.link-blue:hover {
     color: var(--link-hover-blue);
 }
 
@@ -229,7 +257,35 @@ button.link:hover {
     font-size: 2rem;
 }
 
-@media (min-width: 320px) and (max-width: 768px) {
+/* ==========================================================================
+   Responsive Typography - Mobile
+   ========================================================================== */
+@media (max-width: 768px) {
+    body, p {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    h2 {
+        font-size: 20px;
+        line-height: 22px;
+    }
+
+    h3 {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
+    h4, h5, h6 {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
     .blue-page-links-bar {
         gap: 5px;
         border-radius: 3px;
@@ -246,14 +302,6 @@ button.link:hover {
     }
 
     .blue-page-links-bar i {
-        font-size: 20px;
-    }
-
-    body {
-        font-size: 16px;
-    }
-
-    h2 {
         font-size: 20px;
     }
 }
