@@ -1,32 +1,4 @@
 
-/***
- * Scroll to top button handler which is used to scroll to the top of the page when the button is clicked
- */
-function refreshScrollToTopButton() {
-    const button = document.getElementById('scroll-to-top');
-    const footer = document.getElementById('app-footer');
-
-    const buttonRect = button.getBoundingClientRect();
-    const footerRect = footer.getBoundingClientRect();
-
-    const viewportHeight = window.innerHeight;
-    const distanceFromBottom = viewportHeight - footerRect.top;
-
-
-    if (window.scrollY > 100) {
-        button.classList.add('visible');
-
-        if (buttonRect.bottom > footerRect.top) {
-            //console.log(footerRect.top);
-
-            button.style.bottom = `${20 + distanceFromBottom}px`;
-        } else {
-            button.style.bottom = '20px';
-        }
-    } else {
-        button.classList.remove('visible');
-    }
-}
 
 window.addEventListener('scroll', () => {
     refreshScrollToTopButton();
@@ -35,3 +7,38 @@ window.addEventListener('scroll', () => {
 document.getElementById('scroll-to-top').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+
+/***
+ * Scroll to top button handler which is used to scroll to the top of the page when the button is clicked
+ */
+function refreshScrollToTopButton() {
+    const button = document.getElementById('scroll-to-top');
+    const footer = document.getElementById('app-footer');
+    const buttonRect = button.getBoundingClientRect();
+    const footerRect = footer.getBoundingClientRect();
+
+    if(window.scrollY <= 100) {
+        button.classList.remove('visible');
+        return;
+    }
+    button.classList.add('visible');
+
+    // whenever the goback button is visible, it should either be:
+    // - 20px above the viewport bottom, or
+    // - 20px above the footer top.
+
+    //when the footer top is closer to the top of the viewport than  the bottom of the viewport is to the top of the viewport, we need to scootch
+    let scootchNeeded = (footerRect.top < window.innerHeight) ;
+    if(scootchNeeded) {
+        console.log('scootch needed');
+        //to complicate things, button.style.bottom is measured from bottom of page, but footerRect.top is measured from top of viewport
+        // button.style.bottom = `${window.innerHeight - footerRect.top + buttonRect.height - 20}px`;
+        button.style.bottom = `${window.innerHeight - footerRect.top + 20}px`;
+    } else {
+        button.style.bottom = '20px'
+    }
+
+
+
+}
