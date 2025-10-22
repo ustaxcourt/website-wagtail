@@ -104,6 +104,12 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                     "url": None,
                                 },
                                 {
+                                    "title": "Definitions",
+                                    "icon": IconCategories.INFO,
+                                    "document": None,
+                                    "url": "/definitions",
+                                },
+                                {
                                     "title": " Clinic Program Information",
                                     "icon": IconCategories.INFO,
                                     "document": None,

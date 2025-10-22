@@ -13,7 +13,6 @@ from .searches_and_public_access_page import SearchesAndPublicAccessPageInitiali
 from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitializer
 from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 from .dashboard_page import DashboardPageInitializer
-from .definitions_page import DawsonFaqsDefinitionsPageInitializer
 from .find_order_page import DawsonFindAnOrderPageInitializer
 from .find_an_opinion import DawsonFindAnOpinionPageInitializer
 from .dawson_find_a_case import FindACasePageInitializer
@@ -25,6 +24,9 @@ from .efile_a_petition_page import EfileAPetitionPageInitializer
 from .update_contact_information_page import UpdateContactInformationPageInitializer
 from .dawson_release_notes import DawsonReleaseNotesInitializer
 from .dawson_terms_of_use import DawsonTermsOfUsePageInitializer
+from .combined_definitions_glossary_page import (
+    CombinedDefinitionsGlossaryPageInitializer,
+)
 from .places_of_trial_page import PlacesOfTrialPageInitializer
 
 efiling_and_case_maintenance_pages_to_initialize = [
@@ -40,10 +42,10 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFaqsAccountManagementPageInitializer,
     DawsonFaqsTrainingAndSupportPageInitializer,
     DawsonFaqsCaseManagementPageInitializer,
-    DawsonFaqsDefinitionsPageInitializer,
     NoticeRegardingPrivacyPageInitializer,
     DawsonFindAnOrderPageInitializer,
     DawsonFindAnOpinionPageInitializer,
+    CombinedDefinitionsGlossaryPageInitializer,
     DawsonReleaseNotesInitializer,
     FindACasePageInitializer,
     DawsonPayFilingFeeInitializer,
