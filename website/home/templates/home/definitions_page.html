@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        #definitions-page {
+            width: 100%;
+        }
+
+        #definitions-page .page-intro {
+            margin-bottom: 2rem;
+            color: #1b1b1b;
+        }
+
+        #definitions-page .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        #definitions-page .alphabet-nav a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 45px;
+            height: 45px;
+            padding: 0 8px;
+            background-color: white;
+            color: var(--dark-blue);
+            text-decoration: none;
+            font-weight: normal;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        #definitions-page .alphabet-nav a:hover {
+            background-color: var(--medium-gray);
+            border-color: #bbb;
+        }
+
+        #definitions-page .letter-section {
+            margin-bottom: 3rem;
+        }
+
+        #definitions-page .letter-heading {
+            font-size: 2rem;
+            font-weight: 500;
+            font-family: 'Source Sans Pro', var(--body-font);
+            color: #1b1b1b;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #definitions-page .definitions-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        #definitions-page .definition-card {
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #definitions-page .definition-term {
+            font-size: 1.25rem;
+            line-height: 1.563rem;
+            font-family: 'Source Sans Pro';
+            font-weight: normal;
+            color: white;
+            background-color: var(--link-blue);
+            padding: 1rem 1.5rem;
+            margin: 0;
+        }
+
+        #definitions-page .definition-description {
+            padding: 1.5rem;
+            background-color: white;
+        }
+
+        #definitions-page .definition-description p {
+            margin-bottom: 0.5rem;
+        }
+
+        #definitions-page .definition-description p:last-child {
+            margin-bottom: 0;
+        }
+
+        #definitions-page .definition-description a {
+            color: var(--link-blue);
+            text-decoration: underline;
+        }
+
+        #definitions-page .definition-description a:hover {
+            color: var(--link-hover-blue);
+        }
+
+        #definitions-page .definition-description strong {
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            #definitions-page .alphabet-nav {
+                gap: 0.3rem;
+            }
+
+            #definitions-page .alphabet-nav a {
+                min-width: 38px;
+                height: 38px;
+                font-size: 14px;
+            }
+
+            #definitions-page .letter-heading {
+                font-size: 1.5rem;
+            }
+
+            #definitions-page .definition-term {
+                font-size: 1.1rem;
+                padding: 0.75rem 1rem;
+            }
+
+            #definitions-page .definition-description {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+{% block body_class %}template-definitions_page{% endblock %}
+{% block content %}
+    <div id="definitions-page" class="grid-container padding-bottom-2 padding-top-2">
+        <h1 data-testid="page-title">{{ page.title }}</h1>
+        <hr />
+
+        <div class="page-intro">
+            <p>This page defines key terms used throughout the site to help individuals representing themselves before the Tax Court. It clarifies common legal and procedural language, ensuring readers can navigate the process with greater understanding, even without formal training.</p>
+        </div>
+
+        {% if available_letters %}
+            <div class="alphabet-nav">
+                {% for letter in available_letters %}
+                    <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for letter, definitions in grouped_definitions %}
+            <div class="letter-section" id="letter-{{ letter }}">
+                <h2 class="letter-heading">{{ letter }}</h2>
+                <div class="definitions-grid">
+                    {% for definition in definitions %}
+                        <div class="definition-card">
+                            <h3 class="definition-term">{{ definition.question }}</h3>
+                            <div class="definition-description">{{ definition.answer|richtext }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
