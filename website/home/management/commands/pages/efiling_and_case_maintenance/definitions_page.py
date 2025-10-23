@@ -464,6 +464,28 @@ class DefinitionsPageInitializer(PageInitializer):
             logger.error(f"Error updating Reference Materials card: {str(e)}")
             return (False, f"Error: {str(e)}")
 
+    def _delete_petitioners_glossary_page(self):
+        """
+        Delete the petitioners-glossary page as it's being replaced by definitions page.
+        Returns a tuple (success: bool, message: str)
+        """
+        try:
+            # Find and delete petitioners-glossary page
+            glossary_page = Page.objects.filter(slug="petitioners-glossary").first()
+
+            if glossary_page:
+                page_title = glossary_page.title
+                glossary_page.delete()
+                logger.info(f"Deleted petitioners-glossary page: {page_title}")
+                return (True, f"Deleted petitioners-glossary page: {page_title}")
+            else:
+                logger.info("No petitioners-glossary page found to delete")
+                return (True, "No petitioners-glossary page found (already deleted)")
+
+        except Exception as e:
+            logger.error(f"Error deleting petitioners-glossary page: {str(e)}")
+            return (False, f"Error: {str(e)}")
+
     def _recreate_definitions_page(self):
         """
         Delete the existing definitions page and recreate it with correct data.
@@ -633,6 +655,7 @@ class DefinitionsPageInitializer(PageInitializer):
         2. Updates Guidance for Petitioners page navigation and Additional Resources
         3. Updates Reference Materials card to point to /definitions
         4. Recreates the definitions page with correct data
+        5. Deletes the old petitioners-glossary page
         """
         command_name = "Update definitions links across pages"
 
@@ -661,6 +684,10 @@ class DefinitionsPageInitializer(PageInitializer):
             # Step 4: Recreate the definitions page
             success, message = self._recreate_definitions_page()
             updates_made.append(f"Definitions Page: {message}")
+
+            # Step 5: Delete the petitioners-glossary page
+            success, message = self._delete_petitioners_glossary_page()
+            updates_made.append(f"Petitioners Glossary Page: {message}")
 
             # Create execution log
             execution_log_text = f"""Definitions Links Update
