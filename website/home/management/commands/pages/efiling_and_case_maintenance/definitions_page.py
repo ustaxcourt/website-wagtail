@@ -1,6 +1,16 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import DefinitionsPage
+from home.models import (
+    DefinitionsPage,
+    NavigationRibbon,
+    NavigationRibbonLink,
+    EnhancedStandardPage,
+    IconCategories,
+    SimpleCard,
+    RelatedPage,
+)
+from home.models.utils.execute_script import ExecuteScript
+from django.utils import timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -374,3 +384,330 @@ class DefinitionsPageInitializer(PageInitializer):
         logger.info(
             f"Created the '{title}' page with {len(all_definitions)} definitions."
         )
+
+    def _update_petitioners_ribbon(self):
+        """
+        Remove the glossary link from the Guidance for Petitioners Ribbon.
+        Returns a tuple (success: bool, message: str)
+        """
+        try:
+            ribbon = NavigationRibbon.objects.filter(
+                name="Guidance for Petitioners Ribbon"
+            ).first()
+
+            if not ribbon:
+                return (False, "Guidance for Petitioners Ribbon not found")
+
+            # Find and delete any glossary links
+            deleted_count = NavigationRibbonLink.objects.filter(
+                navigation_ribbon=ribbon, url__in=["/petitioners-glossary", "/glossary"]
+            ).delete()[0]
+
+            if deleted_count > 0:
+                # Save revision and publish
+                revision = ribbon.save_revision()
+                revision.publish()
+                logger.info(
+                    f"Removed {deleted_count} glossary link(s) from Guidance for Petitioners Ribbon"
+                )
+                return (
+                    True,
+                    f"Removed {deleted_count} glossary link(s) from Guidance for Petitioners Ribbon",
+                )
+            else:
+                logger.info(
+                    "No glossary links found in Guidance for Petitioners Ribbon"
+                )
+                return (True, "No glossary links found in ribbon (already clean)")
+
+        except Exception as e:
+            logger.error(f"Error updating Guidance for Petitioners Ribbon: {str(e)}")
+            return (False, f"Error: {str(e)}")
+
+    def _update_reference_materials_card(self):
+        """
+        Update the "Reference Materials" SimpleCard to add /definitions URL to the Definitions link.
+        Returns a tuple (success: bool, message: str)
+        """
+        try:
+            # Find the SimpleCard with card_title "Reference Materials"
+            reference_card = SimpleCard.objects.filter(
+                card_title="Reference Materials"
+            ).first()
+
+            if not reference_card:
+                return (False, "Reference Materials card not found")
+
+            # Find the RelatedPage with display_title "Definitions"
+            definitions_related_page = RelatedPage.objects.filter(
+                card=reference_card, display_title="Definitions"
+            ).first()
+
+            if not definitions_related_page:
+                return (False, "Definitions link not found in Reference Materials card")
+
+            # Update the URL to /definitions
+            if definitions_related_page.url != "/definitions":
+                definitions_related_page.url = "/definitions"
+                definitions_related_page.save()
+                logger.info(
+                    "Updated Definitions URL in Reference Materials card to /definitions"
+                )
+                return (True, "Updated Definitions URL in Reference Materials card")
+            else:
+                return (
+                    True,
+                    "Definitions URL already correct in Reference Materials card",
+                )
+
+        except Exception as e:
+            logger.error(f"Error updating Reference Materials card: {str(e)}")
+            return (False, f"Error: {str(e)}")
+
+    def _recreate_definitions_page(self):
+        """
+        Delete the existing definitions page and recreate it with correct data.
+        Returns a tuple (success: bool, message: str)
+        """
+        try:
+            # Find and delete existing definitions page
+            definitions_page = Page.objects.filter(slug="definitions").first()
+
+            if definitions_page:
+                page_title = definitions_page.title
+                definitions_page.delete()
+                logger.info(f"Deleted existing definitions page: {page_title}")
+            else:
+                logger.info("No existing definitions page found to delete")
+
+            # Recreate the definitions page using the initializer's create method
+            self.create()
+            logger.info("Recreated definitions page with correct data")
+
+            return (True, "Deleted old definitions page and recreated it")
+
+        except Exception as e:
+            logger.error(f"Error recreating definitions page: {str(e)}")
+            return (False, f"Error: {str(e)}")
+
+    def _update_petitioners_page(self):
+        """
+        Update the Guidance for Petitioners page:
+        1. Remove "Definition of terms (Glossary)" link from first links block
+        2. Remove the glossary sentence from paragraph block
+        3. Add Definitions link to second links block (Additional Resources)
+        Returns a tuple (success: bool, message: str)
+        """
+        try:
+            petitioners_page = Page.objects.filter(slug="petitioners").first()
+
+            if not petitioners_page:
+                return (False, "Guidance for Petitioners page not found")
+
+            petitioners_page = petitioners_page.specific
+
+            if not isinstance(petitioners_page, EnhancedStandardPage):
+                return (False, "Petitioners page is not an EnhancedStandardPage")
+
+            updated = False
+            new_body = []
+            links_block_count = 0
+
+            for block in petitioners_page.body:
+                # Step 2: Remove the glossary sentence from paragraph blocks
+                if block.block_type == "paragraph":
+                    paragraph_str = str(block.value)
+
+                    # Remove the sentence about glossary using regex
+                    if "Glossary" in paragraph_str:
+                        # Split paragraph on periods and remove the first sentence
+                        sentences = paragraph_str.split(".")
+
+                        # Remove the first sentence (including empty strings from split)
+                        if len(sentences) > 1:
+                            # Join remaining sentences, add back periods except for the last one
+                            updated_paragraph = ".".join(sentences[1:]).strip()
+                            # Ensure the paragraph ends with a period if it had content
+                            if updated_paragraph and not updated_paragraph.endswith(
+                                "."
+                            ):
+                                updated_paragraph += "."
+
+                            new_body.append((block.block_type, updated_paragraph))
+                            updated = True
+                            logger.info("Removed first sentence from paragraph")
+                        else:
+                            new_body.append((block.block_type, block.value))
+                    else:
+                        new_body.append((block.block_type, block.value))
+
+                # Handle links blocks
+                elif block.block_type == "links":
+                    links_block_count += 1
+                    links_value = block.value
+
+                    if "links" in links_value:
+                        links_list = list(links_value["links"])
+
+                        # Step 1: Remove glossary link from FIRST links block
+                        if links_block_count == 1:
+                            # Filter out the glossary link
+                            filtered_links = [
+                                link
+                                for link in links_list
+                                if link.get("url") != "/petitioners-glossary"
+                                and "Glossary" not in link.get("title", "")
+                            ]
+
+                            if len(filtered_links) != len(links_list):
+                                new_body.append(
+                                    (block.block_type, {"links": filtered_links})
+                                )
+                                updated = True
+                                logger.info(
+                                    "Removed glossary link from first links block"
+                                )
+                            else:
+                                new_body.append((block.block_type, block.value))
+
+                        # Step 3: Add Definitions link to SECOND links block
+                        elif links_block_count == 2:
+                            # Check if Definitions link already exists
+                            has_definitions = any(
+                                link.get("url") == "/definitions" for link in links_list
+                            )
+
+                            if not has_definitions:
+                                # Insert Definitions as the second item (index 1)
+                                definitions_link = {
+                                    "title": "Definitions",
+                                    "icon": IconCategories.INFO,
+                                    "document": None,
+                                    "url": "/definitions",
+                                }
+
+                                if len(links_list) >= 2:
+                                    links_list.insert(1, definitions_link)
+                                else:
+                                    links_list.append(definitions_link)
+
+                                new_body.append(
+                                    (block.block_type, {"links": links_list})
+                                )
+                                updated = True
+                                logger.info(
+                                    "Added Definitions link to second links block (position 2)"
+                                )
+                            else:
+                                new_body.append((block.block_type, block.value))
+                        else:
+                            # Keep other links blocks unchanged
+                            new_body.append((block.block_type, block.value))
+                    else:
+                        new_body.append((block.block_type, block.value))
+
+                else:
+                    new_body.append((block.block_type, block.value))
+
+            if updated:
+                petitioners_page.body = new_body
+                revision = petitioners_page.save_revision()
+                revision.publish()
+                logger.info("Updated Guidance for Petitioners page")
+                return (
+                    True,
+                    "Removed glossary link and sentence, added Definitions link",
+                )
+            else:
+                return (True, "No updates needed (already correct)")
+
+        except Exception as e:
+            logger.error(f"Error updating Guidance for Petitioners page: {str(e)}")
+            return (False, f"Error: {str(e)}")
+
+    def run(self):
+        """
+        Update definitions-related links across the site.
+        Currently updates:
+        1. Removes glossary link from Guidance for Petitioners Ribbon
+        2. Updates Guidance for Petitioners page navigation and Additional Resources
+        3. Updates Reference Materials card to point to /definitions
+        4. Recreates the definitions page with correct data
+        """
+        command_name = "Update definitions links across pages"
+
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        # Create ExecuteScript entry
+        script_entry = ExecuteScript.create_script(command_name)
+        updates_made = []
+
+        try:
+            # Step 1: Update the Guidance for Petitioners Ribbon
+            success, message = self._update_petitioners_ribbon()
+            updates_made.append(f"Petitioners Ribbon: {message}")
+
+            # Step 2: Update the Guidance for Petitioners page
+            success, message = self._update_petitioners_page()
+            updates_made.append(f"Petitioners Page: {message}")
+
+            # Step 3: Update Reference Materials card
+            success, message = self._update_reference_materials_card()
+            updates_made.append(f"Reference Materials Card: {message}")
+
+            # Step 4: Recreate the definitions page
+            success, message = self._recreate_definitions_page()
+            updates_made.append(f"Definitions Page: {message}")
+
+            # Create execution log
+            execution_log_text = f"""Definitions Links Update
+
+Status: SUCCESS
+Completed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Updates Made:
+{chr(10).join(f"- {update}" for update in updates_made)}
+
+Operation completed successfully.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            execution_log = execution_log_text.replace("\n", "<br>")
+
+            # Mark as success and save execution log
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log
+            script_entry.save()
+
+            logger.info(
+                f"Definitions links update complete. {len(updates_made)} updates made."
+            )
+            return len(updates_made)
+
+        except Exception as e:
+            # Create failure execution log
+            failure_log_text = f"""Definitions Links Update
+
+Status: FAILURE
+Failed at: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Error Details:
+Error: {str(e)}
+Error Type: {type(e).__name__}
+
+Updates Made Before Failure:
+{chr(10).join(f"- {update}" for update in updates_made) if updates_made else "- None"}
+
+Operation failed during execution.""".strip()
+
+            # Convert line breaks to HTML for RichTextField
+            failure_log = failure_log_text.replace("\n", "<br>")
+
+            # Mark as failure and save execution log
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = failure_log
+            script_entry.save()
+            logger.error(f"Error in definitions update: {str(e)}")
+            raise e

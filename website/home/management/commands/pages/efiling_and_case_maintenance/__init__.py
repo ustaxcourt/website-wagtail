@@ -56,3 +56,8 @@ efiling_and_case_maintenance_pages_to_initialize = [
     FillInFormsInstructionsPageInitializer,
     SearchesAndPublicAccessPageInitializer,
 ]
+
+
+efiling_and_case_maintenance_pages_to_update = [
+    DefinitionsPageInitializer,
+]
