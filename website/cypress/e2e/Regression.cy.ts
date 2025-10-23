@@ -1,6 +1,6 @@
 describe('Tax Court Website Regression', () => {
   it('passes', () => {
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/')
+    cy.visit('/')
     cy.get('[data-testid="nav-link-mission"]').click({ force: true });
     cy.get('[data-testid="nav-link-history"]').click({ force: true });
     cy.get('[data-testid="nav-link-reports-statistics"]').click({ force: true });
