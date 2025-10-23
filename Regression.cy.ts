@@ -1,6 +1,6 @@
 describe('Tax Court Website Menu Bar', () => {
   it('passes', () => {
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/')
+    cy.visit('/')
     cy.get('[data-testid="nav-link-mission"]').click({ force: true });
     cy.get('[data-testid="nav-link-history"]').click({ force: true });
     cy.get('[data-testid="nav-link-reports-statistics"]').click({ force: true });
@@ -30,7 +30,7 @@ describe('Tax Court Website Menu Bar', () => {
 
   it('Tax Court Quick Access Tiles', function() {
   
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/');
+    cy.visit('/');
     cy.get('[href="/dawson/"] > .nav-card > h2').click();
     cy.get('.desktop-header-logo-section > #logo-link > .logo-seal').click();
     cy.get('[href="/petitioners-start/"] > .nav-card > h2').click();
@@ -51,7 +51,7 @@ describe('Tax Court Website Menu Bar', () => {
 
   it('Tax Court Search Bar', function() {
    
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/');
+    cy.visit('/');
     cy.get('#tablet-search-form > [data-testid="search-input"]').clear('j');
     cy.get('#tablet-search-form > [data-testid="search-input"]').type('judge');
     cy.get('#tablet-search-form > [data-testid="search-button"]').click();
@@ -67,7 +67,7 @@ describe('Tax Court Website Menu Bar', () => {
   });
 
   it('Tax Court Header', function() {
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/');
+    cy.visit('/');
     cy.get('.logo-content > .logo-heading').should('have.text', 'United States Tax Court');
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(1)').should('have.text', 'Patrick J. Urda, Chief Judge');
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(1)').should('have.class', 'logo-subheading');
@@ -83,7 +83,7 @@ describe('Tax Court Website Menu Bar', () => {
 
 
   it('Tax Court Warning about Tax Scams', function() {
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/');
+    cy.visit('/');
     cy.get('.entry > h2').should('have.text', 'U.S. Tax Court Warning about Tax Scams');
     cy.get('.entry > h2').should('be.visible');
     cy.get('[data-block-key="wffhy"]').should('have.attr', 'data-block-key', 'wffhy');
@@ -111,7 +111,7 @@ describe('Tax Court Website Menu Bar', () => {
   });
 
   it('Tax Court Questions?', function() {
-    cy.visit('https://jtdevos-sandbox-web.ustaxcourt.gov/');
+    cy.visit('/');
     cy.get('.grid-col-12 > h2').should('have.text', 'Questions?');
     cy.get('.grid-col-12 > h2').should('be.visible');
     cy.get('[data-block-key="m2xtc"]').should('have.attr', 'data-block-key', 'm2xtc');
