@@ -15,7 +15,6 @@ document.getElementById('scroll-to-top').addEventListener('click', () => {
 function refreshScrollToTopButton() {
     const button = document.getElementById('scroll-to-top');
     const footer = document.getElementById('app-footer');
-    const buttonRect = button.getBoundingClientRect();
     const footerRect = footer.getBoundingClientRect();
 
     if(window.scrollY <= 100) {
@@ -24,21 +23,19 @@ function refreshScrollToTopButton() {
     }
     button.classList.add('visible');
 
-    // whenever the goback button is visible, it should either be:
-    // - 20px above the viewport bottom, or
-    // - 20px above the footer top.
+    const img = button.querySelector('img');
+    const screenWidth = window.screen.width;
+    //only do this on desktop
+    if(screenWidth < 768) {
+        button.style.bottom = '70px'
+        return;
+    }
 
     //when the footer top is closer to the top of the viewport than  the bottom of the viewport is to the top of the viewport, we need to scootch
     let scootchNeeded = (footerRect.top < window.innerHeight) ;
     if(scootchNeeded) {
-        console.log('scootch needed');
-        //to complicate things, button.style.bottom is measured from bottom of page, but footerRect.top is measured from top of viewport
-        // button.style.bottom = `${window.innerHeight - footerRect.top + buttonRect.height - 20}px`;
         button.style.bottom = `${window.innerHeight - footerRect.top + 20}px`;
     } else {
         button.style.bottom = '20px'
     }
-
-
-
 }

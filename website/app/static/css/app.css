@@ -139,6 +139,21 @@ a:hover {
     filter: brightness(0) invert(1);
 }
 
+@media (max-width: 768px) {
+    #scroll-to-top {
+        /* bottom: 70px; */
+        width: 24px;
+        height: 24px;
+        border: white solid 1px;
+    }
+
+    #scroll-to-top img {
+        width: 20px;
+        height: 24px;
+        max-width: none;
+    }
+}
+
 /* Fade Animation */
 .fade-in {
     opacity: 0;
