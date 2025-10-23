@@ -131,12 +131,17 @@ a:hover {
 #scroll-to-top {
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: 8px;
     padding: 8px 10px;
+    height: 35px;
+    width: 35px;
 }
 
 #scroll-to-top img {
     filter: brightness(0) invert(1);
+    width: 25px;
+    height: 25px;
+    max-width: none;
 }
 
 @media (max-width: 768px) {
@@ -144,6 +149,7 @@ a:hover {
         width: 24px;
         height: 24px;
         border: white solid 1px;
+        right: 4px;
     }
 
     #scroll-to-top img {
