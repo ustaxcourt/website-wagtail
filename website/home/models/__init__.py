@@ -27,6 +27,7 @@ from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.enhanced_standard import IndentStyle
 from home.models.pages.trial import PlacesOfTrialPage
+from home.models.pages.definitions import DefinitionsPage
 from home.models.pages.pamphlet import PamphletsPage, PamphletEntry
 from home.models.pages.release_notes import ReleaseNotes
 from home.models.pages.internship import InternshipPrograms
