@@ -144,7 +144,7 @@ a:hover {
     max-width: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1025px) {
     #scroll-to-top {
         width: 24px;
         height: 24px;

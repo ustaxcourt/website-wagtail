@@ -26,7 +26,7 @@ function refreshScrollToTopButton() {
     const img = button.querySelector('img');
     const screenWidth = window.screen.width;
     //only do this on desktop
-    if(screenWidth < 768) {
+    if(screenWidth < 1025) {
         button.style.bottom = '70px'
         return;
     }
