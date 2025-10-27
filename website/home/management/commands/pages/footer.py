@@ -3,6 +3,8 @@ from home.models import Footer
 import logging
 
 from home.models.utils.execute_script import ExecuteScript
+from django.db import DatabaseError
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -69,10 +71,40 @@ class FooterInitializer(PageInitializer):
             script_entry.execution_log = execution_log_text
             script_entry.save()
 
-        except Exception as e:
-            logger.error("something bad happened")
-            execution_log_text = f"footer update failed: {e}"
+        except Footer.DoesNotExist:
+            error_msg = "Footer settings not found in database. Cannot update non-existent footer."
+            logger.error(error_msg)
             script_entry.execution_status = "FAILURE"
-            script_entry.execution_log = execution_log_text
+            script_entry.execution_log = f"<strong>Error:</strong> {error_msg}"
             script_entry.save()
-            raise e
+            raise
+
+        except DatabaseError as e:
+            error_msg = f"Database error occurred while updating footer: {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Database Error:</strong> {error_msg}"
+            script_entry.save()
+            raise
+
+        except ValidationError as e:
+            error_msg = f"Validation error occurred while saving footer: {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = (
+                f"<strong>Validation Error:</strong> {error_msg}"
+            )
+            script_entry.save()
+            raise
+
+        except Exception as e:
+            error_msg = (
+                f"Unexpected error during footer update: {type(e).__name__} - {str(e)}"
+            )
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = (
+                f"<strong>Unexpected Error:</strong> {error_msg}"
+            )
+            script_entry.save()
+            raise
