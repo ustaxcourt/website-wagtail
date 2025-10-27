@@ -1,93 +1,540 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags wagtailimages_tags %}
-{% load static %}
+{% load static tz %}
+{% load custom_tags %}
+
 {% block body_class %}template-homepage{% endblock %}
-{% load tz %}
 {% block extra_css %}
-    {% comment %}Delete the line below if you're just getting started and want to remove the welcome screen!{% endcomment %}
     <style>
-        #home-page .entries-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+      :root {
+          --container-w: 1120px;
+      }
+
+      #home-page {
+          background: var(--bg-white);
+      }
+
+      .container {
+          width: min(var(--container-w), 92vw);
+          margin: 0 auto;
+      }
+
+      #home-page .entries-list {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin: 20px 0;
+      }
+
+      #home-page .entries-list .entry {
+          padding: 0px 30px;
+          border: 1px solid var(--border-accent);
+          border-radius: 0;
+          background: var(--bg-info);
+          box-shadow: none;
+      }
+
+      #home-page .entries-list .entry a {
+          color: inherit;
+          text-decoration: underline;
+          font-weight: 400;
+      }
+
+      .hero {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: var(--bg-white);
+      }
+
+      .welcome-container {
+        position: relative;
+        width: 100%;
+        background: var(--bg-white);
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+        z-index: 2;
+      }
+
+      .welcome-inner {
+          min-height: 136px;
+          padding: 16px 0;
+          display: flex;
+          align-items: center;
+          max-width: var(--container-width);
+          margin: 0 auto;
+          padding-left: 2rem;
+          padding-right: 2rem;
+      }
+
+      .welcome-title {
+          color: var(--text-primary);
+      }
+
+      .welcome-body,
+      .welcome-body p {
+          color: var(--text-secondary);
+      }
+
+      .hero-image {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .pseudo-background-image {
+        position: absolute; /* Establishes a positioning context for the overlay */
+        display: block; /* Ensures it takes up the full width */
+        z-index: -1;
+
+          /* These rules stretch it to fill the entire parent (.nav-cards) */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+      }
+
+      .pseudo-background-image::after {
+        content: ''; /* A pseudo-element must have content */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        /* Apply your gradient to the overlay */
+        background: linear-gradient(rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0));
+      }
+
+      .nav-cards {
+        padding: 12px 0;
+        position: relative;
+        isolation: isolate;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-top: 30px;
+      }
+
+      .nav-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      a:active.nav-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* News and Notices Section */
+      .news-notices-section {
+        padding: 60px 0;
+        background: var(--bg-white);
+      }
+
+      .news-notices-header {
+        margin-bottom: 40px;
+      }
+
+      .news-notices-header h2 a {
+        color: var(--text-primary);
+      }
+
+      .news-notices-header h2 a:hover {
+        color: var(--color-hover);
+      }
+
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+      }
+
+      .news-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-base);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card:hover {
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
+
+      .news-card-image {
+        width: 100%;
+        height: 135px;
+        object-fit: cover;
+        background: var(--bg-muted);
+      }
+
+      .news-card-image-placeholder {
+        width: 100%;
+        height: 135px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 48px;
+      }
+
+      .news-card-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card-title {
+        color: var(--text-primary);
+      }
+
+      .news-card-description {
+        color: var(--text-subtle);
+        flex: 1;
+      }
+
+      .news-card-link {
+        color: var(--text-subtle);
+        text-decoration: underline;
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 12px;
+        display: inline-block;
+      }
+
+      .news-card-link:hover {
+        text-decoration: underline;
+      }
+
+      .nav-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-medium);
+        border-radius: 5px;
+        padding: 23px 20px 34px;
+        text-align: center;
+        position: relative;
+        transition: box-shadow 0.2s;
+        backdrop-filter: blur(5px);
+        height: 100%;
+        box-shadow: 0 4px 4px 0 var(--shadow-card);
+        color: var(--color-navy);
+      }
+
+      .wide-nav-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 30px 20px;
+        background: var(--bg-white);
+        border: 1px solid var(--border-medium);
+        border-radius: 5px;
+        box-shadow: 0 4px 4px 0 var(--shadow-card);
+        height: 100%;
+        transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+        color: var(--color-navy);
+        margin-top: 30px;
+      }
+
+      a.nav-link{
+        display: block;
+      }
+
+      .wide-nav-card .icon {
+        width: 40px;
+        height: 40px;
+        color: var(--color-hover);
+        background: none;
+        border-radius: 0;
+        margin: 0;
+      }
+
+      .wide-nav-card .icon svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .wide-nav-card .icon svg path {
+        fill: currentColor;
+      }
+
+      .nav-card:hover {
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
+
+      .wide-nav-card:hover {
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
+
+      .nav-card .icon {
+        width: 60px;
+        height: 60px;
+        margin: 0px auto 12px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+      }
+
+      .nav-card p {
+        font-style: normal;
+      }
+
+      .toggle-on-at-or-below-tablet-size {
+        display:none;
+      }
+
+      .toggle-on-at-or-below-mobile-size {
+        display:none;
+      }
+
+      .welcome-inner-card{
+          margin: 0px 0px 20px 0px;
+          background: var(--bg-white);
+          padding: 15px 22px 11px;
+          border-radius: 3px;
+      }
+
+      .grid-container{
+        position: relative;
+      }
+
+      @media (max-width: 992px) {
+        .news-notices-header {
+          margin-bottom: 20px;
         }
 
-        #home-page .entries-list .entry {
-            border: 1px solid #BBB;
-            padding: 0px 30px;
-            padding-bottom: 40px;
+        .cards-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        #home-page .content {
-            padding: 40px 0;
+        .nav-card {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          align-items: center;
+          text-align: left;
+          padding: 20px 25px;
         }
 
-        #home-page .carousel {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-            max-height: 300px;
-            overflow: hidden;
+        .nav-card .icon {
+          margin: 0px 16px 0px 0px;
         }
 
-        #home-page .hero-image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
+        .nav-card p {
+          grid-column: 1 / -1;
         }
 
-        #home-page .hero-image.active {
-            opacity: 1;
-        }
-    </style>
-{% endblock %}
-{% block extra_js %}
-    <script>
-        const rotationPeriod = 5000
-
-        function rotateImages() {
-            const images = document.querySelectorAll('.hero-image')
-            let currentIndex = 0
-
-            setInterval(() => {
-                images.forEach((img) => img.classList.remove('active'))
-                currentIndex = (currentIndex + 1) % images.length
-                images[currentIndex].classList.add('active')
-            }, rotationPeriod)
+        .wide-nav-cards {
+          display: none;
         }
 
-        document.addEventListener('DOMContentLoaded', rotateImages)
-    </script>
+        .toggle-on-at-or-below-tablet-size {
+          display: flex;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .grid-container{
+          margin: 0px 12px;
+        }
+
+        .pseudo-background-image::after {
+          background: none;
+        }
+
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-card {
+          padding: 16px 16px;
+        }
+
+        .toggle-on-at-or-below-tablet-size {
+          display: block;
+        }
+
+        .hero{
+          display: none;
+        }
+
+        .toggle-on-at-or-below-mobile-size {
+          display:block;
+        }
+
+        .news-notices-section {
+          padding: 40px 0;
+        }
+
+        .news-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+</style>
 {% endblock %}
 {% block content %}
-    <div id="home-page">
-        <div class="carousel">
-            {% for picture in page.images.all %}
-                {% image picture.image fill-2000x400-c80  as myrendition %}
-                <img src="{{ myrendition.url }}"
-                     alt="{{ myrendition.title }}"
-                     class="hero-image {% if forloop.first %}active{% endif %}"
-                     {% if myrendition.focal_point %} data-focus-x="{{ myrendition.focal_point.centroid.x }}" data-focus-y="{{ myrendition.focal_point.centroid.y }}" data-focus-width="{{ myrendition.focal_point.width }}" data-focus-height="{{ myrendition.focal_point.height }}" {% endif %} />
-            {% endfor %}
+<div id="home-page">
+
+  <section class="hero" role="region" aria-label="Court background">
+    <div class="welcome-container">
+      <div class="welcome-inner" role="region" aria-label="Welcome">
+        <div>
+          <h1 class="welcome-title">
+            {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
+          </h1>
+          <div class="welcome-body">
+            {% if page.hero_body %}
+            {{ page.hero_body|richtext }}
+            {% else %}
+            We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case
+            management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a
+            federal trial court established under Article I of the Constitution.
+            {% endif %}
+          </div>
         </div>
-        <div class="grid-container">
-            <div class="content">
-                <div class="entries-list">
-                    {% for card in live_static_text_cards %}
-                        <div class="entry shadow-2">
-                            {% if card.title %}
-                                <h3>{{ card.title }}</h3>
-                            {% else %}
-                                <br />
-                            {% endif %}
-                            <div>{{ card.body|richtext }}</div>
-                        </div>
-                    {% endfor %}
-                </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="nav-cards">
+    <div class="pseudo-background-image">
+      {% if page.hero_background_image %}
+        {% image page.hero_background_image fill-3000x1200 as bg_image %}
+
+        <img class="hero-image" src="{{ bg_image.url }}" alt="{{ bg_image.alt }}">
+      {% endif %}
+    </div>
+    <div class="grid-container toggle-on-at-or-below-mobile-size">
+      <div class="welcome-inner-card" role="region" aria-label="Welcome">
+        <div>
+          <h1 class="welcome-title">
+            {{ page.hero_title|default:"Welcome to the United States Tax Court" }}
+          </h1>
+          <div class="welcome-body">
+            {% if page.hero_body %}
+            {{ page.hero_body|richtext }}
+            {% else %}
+            We are a national court that resolves disputes between taxpayers and the IRS. Our electronic filing and case
+            management system, DAWSON, allows users to file documents and track case status. The U.S. Tax Court is a
+            federal trial court established under Article I of the Constitution.
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-container">
+        <div class="cards-grid">
+            {% for tile in page.quick_access_tiles %}
+                <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                    <div class="nav-card">
+                      {% if tile.value.icon %}
+                          <div class="icon">
+                              {# Use the custom template tag to render the SVG inline #}
+                              {% include_svg tile.value.icon.svg_file %}
+                            </div>
+                      {% endif %}
+                        <h2>{{ tile.value.title }}</h2>
+                        <p>{{ tile.value.description|richtext }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+            {% for tile in page.full_width_quick_access_tile %}
+            <div class="toggle-on-at-or-below-tablet-size">
+              <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                  <div class="nav-card">
+                    {% if tile.value.icon %}
+                      <div class="icon">
+                          {# Use the custom template tag to render the SVG inline #}
+                          {% include_svg tile.value.icon.svg_file %}
+                      </div>
+                    {% endif %}
+                    <h2>{{ tile.value.title }}</h2>
+                  </div>
+              </a>
             </div>
+
+            {% endfor %}
+          </div>
+        <div class="wide-nav-cards">
+          {% for tile in page.full_width_quick_access_tile %}
+            <a href="{{ tile.value.related_page.url|default:tile.value.external_url }}" class="nav-link" aria-label="{{ tile.value.title }}">
+                <div class="wide-nav-card">
+                  {% if tile.value.icon %}
+                    <div class="icon">
+                        {# Use the custom template tag to render the SVG inline #}
+                        {% include_svg tile.value.icon.svg_file %}
+                    </div>
+                  {% endif %}
+                  <h2>{{ tile.value.title }}</h2>
+                </div>
+            </a>
+          {% endfor %}
         </div>
     </div>
+  </section>
+
+
+  <!-- News and Notices Section -->
+  {% if news_items %}
+  <section class="news-notices-section">
+    <div class="container">
+      <div class="news-notices-header">
+        <h2><a href="{{ press_release_page_url }}">News and Notices</a></h2>
+      </div>
+      <div class="news-grid">
+        {% for news_item in news_items %}
+        <div class="news-card">
+          {% if news_item.image %}
+            {% image news_item.image fill-370x135 as news_image %}
+            <img src="{{ news_image.url }}" alt="{{ news_item.title }}" class="news-card-image">
+          {% else %}
+            <img src="{% static 'images/home/news.jpeg' %}" alt="Default news image" class="news-card-image">
+          {% endif %}
+          <div class="news-card-content">
+            <h3 class="news-card-title">{{ news_item.title }}</h3>
+            <div class="news-card-description">
+              {{ news_item.description|richtext }}
+            </div>
+            {% if news_item.document %}
+            <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Press Release.</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="grid-container">
+    <section class="static-cards">
+      <div class="content">
+        <div class="entries-list">
+          {% for card in live_static_text_cards %}
+          <div class="entry">
+            {% if card.title %}
+            <h2>{{ card.title }}</h2>
+            {% else %}
+            <br />
+            {% endif %}
+            <div>{{ card.body|richtext }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
 {% endblock %}

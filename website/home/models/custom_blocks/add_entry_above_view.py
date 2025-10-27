@@ -1,6 +1,5 @@
 from django.contrib import messages
 
-from home.models.pages.home_page import HomePageEntry
 from django.urls import reverse
 from wagtail.models import Page
 from django.http import HttpResponseRedirect
@@ -28,14 +27,4 @@ def add_entry_above_view(request, sort_order, page_id):
 
     except Page.DoesNotExist:
         messages.error(request, "The page was not found.")
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/admin/"))
-    except HomePageEntry.DoesNotExist:
-        messages.error(
-            request,
-            f"Could not find an entry with sort_order={sort_order} on this page.",
-        )
-        # Redirect back to the editor, even on error
-        if "page" in locals():
-            url = reverse("wagtailadmin_pages:edit", args=(page.id,))
-            return HttpResponseRedirect(url)
         return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/admin/"))

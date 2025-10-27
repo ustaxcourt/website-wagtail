@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0070_newsitem_note_newsitem_review_by"),
+        ("home", "0070_backfill_live_revisions"),
         ("wagtailcore", "0094_alter_page_locale"),
     ]
 

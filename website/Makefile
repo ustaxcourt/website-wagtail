@@ -66,7 +66,7 @@ rmdb:
 rmmedia:
 	rm -rf ./media || echo "Media folder already deleted"
 
-resetdb: rmdb rmmedia makemigrations migrate superuser createpages
+resetdb: rmdb rmmedia makemigrations migrate superuser createpages updatepages
 
 reset: setup resetdb
 

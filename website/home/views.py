@@ -1,4 +1,5 @@
 from wagtail.admin.views.reports import ReportView
+from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
 from .models import NewsItem
 from wagtail.admin.filters import (
@@ -121,3 +122,17 @@ def to_default_tz(dt):
         dt_naive = dt.astimezone().replace(tzinfo=None)
         return dt_naive
     return dt
+
+
+class SVGChooseView(DocumentChooserViewSet.choose_view_class):
+    def get_object_list(self):
+        queryset = super().get_object_list()
+
+        return queryset.filter(file__iendswith=".svg")
+
+
+class SVGChooserViewSet(DocumentChooserViewSet):
+    choose_view_class = SVGChooseView
+
+
+svg_chooser_viewset = SVGChooserViewSet("svg_chooser")

@@ -19,9 +19,10 @@ class Command(BaseCommand):
     help = "Handle updates to pages and other content."
 
     def handle(self, *args, **options):
-        # Update pages
         for page_class in pages_to_update:
             page_instance = page_class()
             page_instance.run()
 
+        home_initializer = HomePageInitializer()
+        home_initializer.update_home_page()
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
