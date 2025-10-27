@@ -1,13 +1,12 @@
 {% load static %}
 <style>
     #yellow-news-banner-container {
-        background-color: #FAF3D1;
+        background-color: var(--bg-notice);
         width: 100%;
     }
 
     #yellow-news-banner-container .yellow-news-banner {
-        color: #000000;
-        font-family: 'Source Sans Pro', sans-serif;
+        color: var(--text-black);
         font-size: 17px;
         font-weight: 400;
         display: none;
@@ -15,20 +14,18 @@
     }
 
     #yellow-news-banner-container .yellow-news-banner p {
-        margin: 0;
         padding: 0;
-        line-height: 1.5;
-        color: #000000;
+        color: var(--text-black);
     }
 
     #yellow-news-banner-container .yellow-news-banner a {
-        color: #000000;
+        color: var(--text-black);
         text-decoration: underline;
         font-weight: 400;
     }
 
     #yellow-news-banner-container .yellow-news-banner a:hover {
-        color: #333333;
+        color: var(--text-muted);
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-content {

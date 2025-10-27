@@ -7,7 +7,7 @@
     }
 
     header#top-navigation .blue-banner {
-        background-color: var(--header-dark-blue);
+        background-color: var(--color-secondary);
     }
 
     header#top-navigation .blue-banner .dawson {
@@ -132,7 +132,7 @@
     }
 
     header#top-navigation .search-form button {
-        background-color: var(--light-blue);
+        background-color: var(--color-primary-legacy);
         color: white;
         border: none;
         border-radius: 0px 4px 4px 0px;
@@ -185,7 +185,6 @@
         cursor: pointer;
         height: 50px;
         padding: 0 20px;
-        font-family: 'Source Sans 3', sans-serif;
         font-size: 18px;
         font-weight: 600;
         color: white;
@@ -246,7 +245,6 @@
     header#top-navigation .navigation-list .nav-link a {
         display: block;
         color: white;
-        font-family: 'Source Sans 3', sans-serif;
         font-size: 18px;
         font-weight: 400;
         line-height: 30px;
@@ -283,7 +281,6 @@
         background: none;
         cursor: pointer;
         height: 64px;
-        font-family: 'Source Sans 3', sans-serif;
         font-size: 18px;
         font-weight: 600;
         color: white;
@@ -313,9 +310,11 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 15px 20px;
             color: white;
             font-size: 24px;
+            position: absolute;
+            left: 0px;
+            top: 10px;
         }
 
         header#top-navigation .navigation-header:hover .navigation-list,
@@ -416,7 +415,7 @@
         }
 
         header#top-navigation .navigation-bar .navigation .navigation-header:not(#navigation-search-form):hover {
-            background-color: var(--light-blue);
+            background-color: var(--color-primary-legacy);
         }
 
         header#top-navigation .navigation-bar .navigation .navigation-header:hover a,
