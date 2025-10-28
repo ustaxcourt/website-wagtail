@@ -31,93 +31,67 @@ describe('Homepage redesign', () => {
   it('Quick Access Tiles', function() {
     cy.visit('/');
 
-    cy.get('[href="/dawson/"] > .nav-card > h2').should('be.visible');
-    cy.get('[href="/dawson/"] > .nav-card > h2').click();
-    cy.get('.display-none').click();
-    cy.get('[href="/petitioners-start/"] > .nav-card > h2').should('be.visible');
-    cy.get('[href="/petitioners-start/"] > .nav-card > h2').click();
-    cy.get('.display-none').click();
-    cy.get('[aria-label="DAWSON Case Management"] > .nav-card > h2').should('be.visible');
-    cy.get('[aria-label="DAWSON Case Management"] > .nav-card > h2').click();
-    cy.get('[href="/rules/"] > .nav-card > p').should('be.visible');
-    cy.get('[href="/rules/"] > .nav-card > p').click();
-    cy.get('.display-none').click();
-    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-opinions"] > .nav-card > h2').should('be.visible');
-    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-opinions"] > .nav-card > h2').click();
-    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-orders"] > .nav-card > h2').should('be.visible');
-    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-orders"] > .nav-card > h2').click();
-    cy.get('[href="/practitioners/"] > .nav-card > h2').should('be.visible');
-    cy.get('[href="/practitioners/"] > .nav-card > h2').click();
-    cy.get('.display-none').click();
-    cy.get('[href="/case-related-forms/"] > .nav-card > h2').should('be.visible');
-    cy.get('[href="/case-related-forms/"] > .nav-card').click();
-    cy.get('#logo-link > .display-none').click();
-    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/trial-sessions"] > .nav-card > p').should('be.visible');
-    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/trial-sessions"] > .nav-card').click();
-    cy.get('.wide-nav-card > h2').should('have.text', 'Find a Case, Order, Opinion or Practitioner');
-    cy.get('.wide-nav-card > h2').should('be.visible');
-    cy.get('.wide-nav-card > h2').click();
-  
+    /* ==== Generated with Cypress Studio ==== */
+    cy.get('[href="/dawson/"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="/dawson/"] > .nav-card').should('be.visible');
+    cy.get('[href="/petitioners-start/"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="/petitioners-start/"] > .nav-card').should('be.visible');
+    cy.get('[aria-label="DAWSON Case Management"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[aria-label="DAWSON Case Management"] > .nav-card').should('be.visible');
+    cy.get('[href="/rules/"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="/rules/"] > .nav-card').should('be.visible');
+    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-opinions"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-opinions"] > .nav-card').should('be.visible');
+    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-orders"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/todays-orders"] > .nav-card').should('be.visible');
+    cy.get('[href="/practitioners/"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="/practitioners/"] > .nav-card').should('be.visible');
+    cy.get('[href="/case-related-forms/"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="/case-related-forms/"] > .nav-card').should('be.visible');
+    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/trial-sessions"] > .nav-card').should('have.class', 'nav-card');
+    cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/trial-sessions"] > .nav-card').should('be.visible');
+    cy.get('.wide-nav-card').should('have.class', 'wide-nav-card');
+    cy.get('.wide-nav-card').should('be.visible');
+    /* ==== End Cypress Studio ==== */
   });
 
   it('Search Bar', function() {
     cy.visit('/');
 
-    cy.get('#desktop-search-form > [data-testid="search-input"]').click();
-    cy.get('#desktop-search-form > [data-testid="search-input"]').should('have.attr', 'type', 'text');
-    cy.get('#desktop-search-form > [data-testid="search-input"]').should('have.attr', 'data-testid', 'search-input');
-    cy.get('#desktop-search-form > [data-testid="search-input"]').click();
-    cy.get('#desktop-search-form > [data-testid="search-input"]').should('be.visible');
-    cy.get('#desktop-search-form > [data-testid="search-input"]').should('be.enabled');
-    cy.get('#desktop-search-form > [data-testid="search-button"]').should('have.text', '\n                            \n                            Search\n                        ');
-    cy.get('#desktop-search-form > [data-testid="search-button"]').should('be.visible');
-    cy.get('#desktop-search-form > [data-testid="search-button"]').should('be.enabled');
-    cy.get('#desktop-search-form > [data-testid="search-input"]').clear('j');
-    cy.get('#desktop-search-form > [data-testid="search-input"]').type('judge');
-    cy.get('#desktop-search-form > [data-testid="search-button"]').click();
+    /* ==== Generated with Cypress Studio ==== */
+    cy.get('#tablet-search-form > [data-testid="search-input"]').should('have.attr', 'name', 'query');
+    cy.get('#tablet-search-form > [data-testid="search-input"]').should('be.visible');
+    cy.get('#tablet-search-form > [data-testid="search-input"]').should('be.enabled');
+    cy.get('#tablet-search-form > [data-testid="search-input"]').should('not.be.checked');
+    cy.get('#tablet-search-form > [data-testid="search-button"]').should('have.text', '\n                                    \n                                    Search\n                                ');
+    cy.get('#tablet-search-form > [data-testid="search-button"]').should('have.attr', 'type', 'submit');
+    cy.get('#tablet-search-form > [data-testid="search-button"]').should('be.visible');
+    cy.get('#tablet-search-form > [data-testid="search-button"]').should('be.enabled');
+    cy.get('#tablet-search-form > [data-testid="search-input"]').clear('j');
+    cy.get('#tablet-search-form > [data-testid="search-input"]').type('j');
+    cy.get('#tablet-search-form > [data-testid="search-button"]').click();
     cy.get('.pagination > a').click();
-    cy.get('[href="/search/?query=judge&page=1"]').click();
     cy.get(':nth-child(1) > h2 > a').click();
-  
+    /* ==== End Cypress Studio ==== */
   });
 
   it('Header', function() {
     cy.visit('/');
 
-    cy.get('.display-none').should('have.class', 'tablet:display-block');
-    cy.get('.display-none').should('have.attr', 'alt', 'US Tax Court Logo');
-    cy.get('.display-none').should('be.visible');
-    cy.get('.display-none').click();
-    cy.get('.dawson-link > .dawson').should('have.class', 'dawson');
-    cy.get('.dawson-link > .dawson').should('have.attr', 'alt', 'Dawson Logo');
-    cy.get('.dawson-link > .dawson').should('be.visible');
-    cy.get('.dawson-link > .dawson').click();
-    cy.get('.usa-banner__header-text').should('have.text', 'An official website of the United States government');
-    cy.get('.usa-banner__header-text').should('have.class', 'usa-banner__header-text');
-    cy.get('.usa-banner__header-text').should('be.visible');
-    cy.get('.usa-banner__button-text').should('have.text', 'Here’s how you know');
-    cy.get('.usa-banner__button-text').should('have.class', 'usa-banner__button-text');
-    cy.get('.usa-banner__button-text').should('be.visible');
-    cy.get('.usa-banner__button-text').click();
-    cy.get(':nth-child(1) > .usa-media-block__body > p > :nth-child(1)').should('have.text', 'Official websites use .gov');
-    cy.get(':nth-child(1) > .usa-media-block__body > p').should('have.text', '\n                            Official websites use .gov\n                            \n                            A\n                            .gov website belongs to an official government organization in the United States.\n                        ');
-    cy.get(':nth-child(1) > .usa-media-block__body > p').should('be.visible');
-    cy.get(':nth-child(2) > .usa-media-block__body > p > :nth-child(1)').should('have.text', 'Secure .gov websites use HTTPS');
-    cy.get(':nth-child(2) > .usa-media-block__body > p > :nth-child(1)').should('be.visible');
-    cy.get(':nth-child(2) > .usa-media-block__body > p').should('be.visible');
-    cy.get('.alert-content > p').should('have.text', '\n            This is a testing site for the U.S. Tax Court and not intended for public use.  To learn more about starting a case, visit the U.S. Tax Court website.\n        ');
-    cy.get('.alert-content > p').should('be.visible');
-    cy.get('.alert-content > p > a').should('have.text', 'U.S. Tax Court website.');
-    cy.get('.alert-content > p > a').should('have.attr', 'href', 'https://www.ustaxcourt.gov/');
-    cy.get('.alert-content > p > a').should('be.visible');
-    cy.get('.alert-content > p > a').click();
-    cy.get('.close-btn > img').should('have.attr', 'src', 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>');
-    cy.get('.give-feedback-btn').should('have.text', '\n    Give Feedback\n');
-    cy.get('.give-feedback-btn').should('have.class', 'give-feedback-btn');
-    cy.get('.give-feedback-btn').should('have.attr', 'href', 'https://forms.office.com/r/45R5iAguPG');
-    cy.get('.give-feedback-btn').should('be.visible');
-    cy.get('.give-feedback-btn').click();
-  
+    /* ==== Generated with Cypress Studio ==== */
+    cy.get('.desktop-header-logo-section > #logo-link > .logo-seal').should('have.class', 'logo-seal');
+    cy.get('.desktop-header-logo-section > #logo-link > .logo-seal').should('be.visible');
+    cy.get('.logo-content > .logo-heading').should('have.text', 'United States Tax Court');
+    cy.get('.logo-content > .logo-heading').should('have.class', 'logo-heading');
+    cy.get('.logo-content > .logo-heading').should('have.attr', 'href', '/');
+    cy.get('.logo-content > .logo-heading').should('be.visible');
+    cy.get('.logo-subheadings > :nth-child(1) > :nth-child(1)').should('have.text', 'Patrick J. Urda, Chief Judge');
+    cy.get('.logo-subheadings > :nth-child(1) > :nth-child(1)').should('have.class', 'logo-subheading');
+    cy.get('.logo-subheadings > :nth-child(1) > :nth-child(1)').should('be.visible');
+    cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('have.text', 'Charles G. Jeane, Clerk of the Court');
+    cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('have.class', 'logo-subheading');
+    cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('be.visible');
+    /* ==== End Cypress Studio ==== */
   })
 
   it('Warning about Tax Scams', function() {
@@ -149,51 +123,53 @@ describe('Homepage redesign', () => {
   });
 
   it('Footer', function() {
-  
     cy.visit('/');
+
+    /* ==== Generated with Cypress Studio ==== */
     cy.get('.seal').should('have.class', 'seal');
-    cy.get('.seal').should('have.attr', 'src', '/static/images/footer/ustc-seal.svg');
     cy.get('.seal').should('be.visible');
-    cy.get('.font-heading').should('have.text', 'United States Tax Court\n                            \n                                \n                                    400 Second Street, NW\n                                    Washington, DC 20217\n                                \n                            \n                    ');
+
+    cy.get('.font-heading').should(
+      'have.text',
+      '\n                            United States Tax Court\n                            \n                            \n                                \n                                    400 Second Street, NW\n                                    \n                                    Washington, DC 20217\n                                \n                            \n                        '
+    );
+
     cy.get('.font-heading').should('have.class', 'font-heading');
-    cy.get('.font-heading > a > span').should('be.visible');
-    cy.get('.seal').click();
-    cy.get('.court-hours').should('have.text', 'Tax Court Hours of Operation:');
-    cy.get('.court-hours').should('have.class', 'court-hours');
-    cy.get('.court-hours').should('be.visible');
-    cy.get('.footer-time-container > p').should('have.text', ' Tax Court Hours of Operation: 8 a.m. to 4:30 p.m. (EST)\n                 on all days except Saturdays, Sundays, and\n                  legal holidays \n                    in the District of Columbia.\n                ');
+    cy.get('.font-heading').should('be.visible');
+    cy.get('.footer-time-container > p').should('have.text', '\n                        Tax Court Hours of Operation: 8 a.m. to 4:30 p.m. (EST)\n                        on all days except Saturdays, Sundays, and\n                         legal holidays \n                        in the District of Columbia.\n                    ');
     cy.get('.footer-time-container > p').should('be.visible');
-    cy.get('.footer-time-container > p > a > span').should('have.text', 'legal holidays');
-    cy.get('.footer-time-container > p > a > span').should('have.attr', 'style', 'text-decoration: underline; color:white;');
-    cy.get('.footer-time-container > p > a > span').should('be.visible');
-    cy.get(':nth-child(3) > p').should('have.text', '\n                        (202) 521-0700\n                        All rights reserved\n                        Build: 31e73f7\n                    ');
+    cy.get('.phone').should('have.text', '202) 521-0700');
+    cy.get('.phone').should('be.visible');
     cy.get(':nth-child(3) > p').should('be.visible');
-    cy.get('.footer-address > .grid-container > .content').click();
-    cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').should('have.class', 'dawson');
-    cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').should('have.attr', 'src', '/static/images/footer/dawson-logo.svg');
-    cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').should('be.visible');
-    cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').click();
+    cy.get('.dawson').should('have.class', 'dawson');
+    cy.get('.dawson').should('be.visible');
+    cy.get('.dawson').click();
+    cy.get('.give-feedback-btn').should('have.text', 'Give Feedback');
+    cy.get('.give-feedback-btn').should('have.attr', 'href', 'https://forms.office.com/r/45R5iAguPG');
+    cy.get('.give-feedback-btn').should('be.visible');
+    cy.get('.give-feedback-btn').click();
+    /* ==== End Cypress Studio ==== */
   });
 
-    describe('Banner expiration test', () => {
- const bannerSelector = '[data-testid=".alert-text"]'; // Adjust to match your app
- const pageUrl = '/'; // Replace with your target page
- beforeEach(() => {
-   cy.visit('/');
- });
+  describe('Banner expiration test', () => {
+const bannerSelector = '[data-testid=".alert-text"]'; // Adjust to match your app
+const pageUrl = '/'; // Replace with your target page
+beforeEach(() => {
+ cy.visit('/');
+});
 
- it('should not display the banner after expiration date', () => {
-   // Verify that the banner does not exist in the DOM
-   cy.get('body').then(($body) => {
-     if ($body.find('.alert-text').length > 0) {
-       // If the banner element exists, fail the test
-       cy.get('.alert-text').should('not.be.visible');
-     } else {
-       // If it doesn't exist at all, that’s expected
-       cy.log('✅ Banner element not found — it has expired as expected.');
-       }
-   });
+it('should not display the banner after expiration date', () => {
+ // Verify that the banner does not exist in the DOM
+ cy.get('body').then(($body) => {
+   if ($body.find('.alert-text').length > 0) {
+     // If the banner element exists, fail the test
+     cy.get('.alert-text').should('not.be.visible');
+   } else {
+     // If it doesn't exist at all, that’s expected
+     cy.log('✅ Banner element not found — it has expired as expected.');
+     }
  });
+});
 });
 
   it('should not display banner after expiration', () => {
@@ -204,4 +180,34 @@ describe('Homepage redesign', () => {
    cy.get('.alert-text').should('not.exist');
 
   });
-})
+
+  /* ==== Test Created with Cypress Studio ==== */
+  it('New and Notices', function() {
+    /* ==== Generated with Cypress Studio ==== */
+    cy.visit('/');
+    cy.get(':nth-child(1) > .news-card-image').should('have.class', 'news-card-image');
+    cy.get(':nth-child(1) > .news-card-image').should('be.visible');
+    cy.get(':nth-child(1) > .news-card-content').should('have.class', 'news-card-content');
+    cy.get(':nth-child(1) > .news-card-content').should('be.visible');
+    cy.get(':nth-child(1) > .news-card-content > .news-card-link').should('have.text', 'See the Press Release.');
+    cy.get(':nth-child(1) > .news-card-content > .news-card-link').should('have.class', 'news-card-link');
+    cy.get(':nth-child(1) > .news-card-content > .news-card-link').should('be.visible');
+    cy.get(':nth-child(2) > .news-card-image').should('have.class', 'news-card-image');
+    cy.get(':nth-child(2) > .news-card-image').should('be.visible');
+    cy.get(':nth-child(2) > .news-card-content').should('have.class', 'news-card-content');
+    cy.get(':nth-child(2) > .news-card-content').should('be.visible');
+    cy.get(':nth-child(2) > .news-card-content > .news-card-link').should('have.text', 'See the Press Release.');
+    cy.get(':nth-child(2) > .news-card-content > .news-card-link').should('have.class', 'news-card-link');
+    cy.get(':nth-child(2) > .news-card-content > .news-card-link').should('have.attr', 'href', '/documents/104/04072025.pdf');
+    cy.get(':nth-child(2) > .news-card-content > .news-card-link').should('be.visible');
+    cy.get(':nth-child(3) > .news-card-image').should('have.class', 'news-card-image');
+    cy.get(':nth-child(3) > .news-card-image').should('be.visible');
+    cy.get(':nth-child(3) > .news-card-content').should('have.class', 'news-card-content');
+    cy.get(':nth-child(3) > .news-card-content').should('be.visible');
+    cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('have.class', 'news-card-link');
+    cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('have.text', 'See the Press Release.');
+    cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('be.visible');
+    /* ==== End Cypress Studio ==== */
+  });
+
+  });
