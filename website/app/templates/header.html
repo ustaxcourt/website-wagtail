@@ -735,12 +735,12 @@
                                         <a target="_blank"
                                            href="{{ sub_link.external_url }}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            {{ sub_link.title|title }}
+                                            {{ sub_link.title }}
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            {{ sub_link.title|title }}
+                                            {{ sub_link.title }}
                                         </a>
                                     {% endif %}
                                 </li>

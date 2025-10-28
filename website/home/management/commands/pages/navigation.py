@@ -4,6 +4,8 @@ from wagtail.models import Page
 from home.models import NavigationMenu
 import logging
 
+from home.models.utils.execute_script import ExecuteScript
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,27 +32,27 @@ class NavigationInitializer(PageInitializer):
                     "title": "ABOUT THE COURT",
                     "sub_links": [
                         {
-                            "title": "MISSION",
+                            "title": "Mission",
                             "page": self.get_page("mission"),
                         },
                         {
-                            "title": "HISTORY",
+                            "title": "History",
                             "page": self.get_page("history"),
                         },
                         {
-                            "title": "REPORTS & STATISTICS",
+                            "title": "Reports & Statistics",
                             "page": self.get_page("reports-and-statistics"),
                         },
                         {
-                            "title": "JUDGES",
+                            "title": "Judges",
                             "page": self.get_page("judges"),
                         },
                         {
-                            "title": "DIRECTORY",
+                            "title": "Directory",
                             "page": self.get_page("directory"),
                         },
                         {
-                            "title": "TRIAL SESSIONS",
+                            "title": "Trial Sessions",
                             "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                         },
                         {
@@ -173,3 +175,39 @@ class NavigationInitializer(PageInitializer):
         revision.publish()
 
         logger.info("Successfully created Navigation menu.")
+
+    def update(self):
+        logger.info("Updating Navigation menu...")
+        NavigationMenu.objects.all().delete()
+        # Create a single navigation menu
+        menu = NavigationMenu.objects.create(menu_items=self.get_default_menu_items())
+
+        # Create a new revision and publish it
+        revision = menu.save_revision()
+        revision.publish()
+        logger.info("Successfully created Navigation menu.")
+
+    def run(self):
+        logger.info("HELLO FROM NAVIGATION INITIALIZER!!!!!")
+        """Update the footer as an execution script"""
+        command_name = "Navigation menu update update for homepage redesign"
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update()
+            execution_log_text = "Footer updated for homepage redesign"
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+
+        except Exception as e:
+            logger.error(e)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {e}"
+            script_entry.save()
+            raise
