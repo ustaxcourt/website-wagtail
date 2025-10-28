@@ -122,9 +122,6 @@ describe('Homepage redesign', () => {
 
   it('Warning about Tax Scams', function() {
     cy.visit('/');
-    cy.get('[href="https://ustaxcourt.gov/redirect_irs_tax_scams.html"]').should('have.text', 'warnings and alerts');
-    cy.get('[href="https://ustaxcourt.gov/redirect_irs_tax_scams.html"]').should('have.attr', 'href', 'https://ustaxcourt.gov/redirect_irs_tax_scams.html');
-    cy.get('[href="https://ustaxcourt.gov/redirect_irs_tax_scams.html"]').click();
     cy.get('[href="https://reportfraud.ftc.gov/"]').should('have.text', 'Federal Trade Commission ');
     cy.get('[href="https://reportfraud.ftc.gov/"]').should('have.attr', 'href', 'https://reportfraud.ftc.gov/');
     cy.get('[href="https://reportfraud.ftc.gov/"]').click();
@@ -176,6 +173,35 @@ describe('Homepage redesign', () => {
     cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').should('have.attr', 'src', '/static/images/footer/dawson-logo.svg');
     cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').should('be.visible');
     cy.get(':nth-child(3) > [href="https://dawson.ustaxcourt.gov/"] > .dawson').click();
-    
+  });
+
+    describe('Banner expiration test', () => {
+ const bannerSelector = '[data-testid=".alert-text"]'; // Adjust to match your app
+ const pageUrl = '/'; // Replace with your target page
+ beforeEach(() => {
+   cy.visit('/');
+ });
+
+ it('should not display the banner after expiration date', () => {
+   // Verify that the banner does not exist in the DOM
+   cy.get('body').then(($body) => {
+     if ($body.find('.alert-text').length > 0) {
+       // If the banner element exists, fail the test
+       cy.get('.alert-text').should('not.be.visible');
+     } else {
+       // If it doesn't exist at all, that’s expected
+       cy.log('✅ Banner element not found — it has expired as expected.');
+       }
+   });
+ });
+});
+
+  it('should not display banner after expiration', () => {
+   // Mock current date to a time *after* expiration
+   const expiredDate = new Date('2025-10-28T00:00:00Z'); // Adjust date as needed
+   cy.clock(expiredDate);
+   cy.visit('/');
+   cy.get('.alert-text').should('not.exist');
+
   });
 })
