@@ -1,6 +1,23 @@
 /* ==========================================================================
    CSS Variables / Root Settings
    ========================================================================== */
+
+   /*
+   Breakpoints: #TODO: Breakpoints need to be confirmed
+   - Mobile: max-width(768px)
+        - QAT shrink to one column
+
+   - Another one: max-width(879px)
+        - Font adjustment
+        - Shrink to nav hamburger
+   - Another one: max-width(905px)
+        - Font adjustment
+   - Tablet-mini: max-width(992px)
+        - QAT shrink to 2 columns
+        - Navigation bar shrinks
+   - Tablet: max-width(1023px)
+   - Desktop: min-width(1024px) */
+
 :root {
     /* Fonts */
     --heading-font: "Source Sans 3";
