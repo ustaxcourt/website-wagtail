@@ -199,12 +199,32 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 #scroll-to-top {
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: 8px;
     padding: 8px 10px;
+    height: 35px;
+    width: 35px;
 }
 
 #scroll-to-top img {
     filter: brightness(0) invert(1);
+    width: 25px;
+    height: 25px;
+    max-width: none;
+}
+
+@media (max-width: 1025px) {
+    #scroll-to-top {
+        width: 24px;
+        height: 24px;
+        border: white solid 1px;
+        right: 4px;
+    }
+
+    #scroll-to-top img {
+        width: 20px;
+        height: 24px;
+        max-width: none;
+    }
 }
 
 /* Fade Animation */
