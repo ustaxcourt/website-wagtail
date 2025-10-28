@@ -2,7 +2,7 @@
 {% load wagtailcore_tags %}
 <style>
     footer#app-footer .main {
-        background: #005EA2;
+        background: var(--color-primary);
         padding: 20px 0px;
         line-height: 1.6rem;
     }
@@ -17,8 +17,8 @@
     }
 
     footer#app-footer .footer-address {
-        background: #1A4480;
-        color: white;
+        background: var(--color-secondary);
+        color: var(--text-white);
         font-family: var(--font-family);
         text-align: center;
         padding-bottom: 20px;
@@ -38,12 +38,6 @@
         text-decoration: underline;
     }
 
-    footer#app-footer .footer-address p {
-        margin-bottom: 0px;
-        margin-top: 4px;
-        font-size: 17px;
-    }
-
     footer#app-footer .footer-address hr {
         width: 100%;
         height: 1px;
@@ -60,23 +54,17 @@
     }
 
     footer#app-footer h2 {
-        font-size: 20px;
-        line-height: normal;
-        color: white;
+        color: var(--text-white);
     }
 
     .main p {
-        color: white;
+        color: var(--text-white);
     }
 
     .main a {
-        color: white;
+        color: var(--text-white);
         font-weight: inherit;
         text-decoration: underline;
-    }
-
-    footer#app-footer p {
-        margin-top: 0px;
     }
 
     .address {
@@ -86,7 +74,7 @@
     }
 
     .footer-address a {
-        color: white;
+        color: var(--text-white);
         font-weight: inherit;
     }
 
@@ -128,9 +116,7 @@
 
         footer#app-footer .footer-time-container p {
             display: inline;
-            margin: 0px;
             padding: 0px;
-            font-size: 16px;
         }
 
         .court-hours {
@@ -166,7 +152,7 @@
                              src="{% static 'images/footer/ustc-seal.svg' %}" />
                     </a>
                     <div class="address">
-                        <p class="font-heading">
+                        <p>
                             United States Tax Court
                             <br>
                             <a href="https://www.google.com/maps/place/US+Tax+Court/@38.8951679,-77.0149345,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b788e9a932e5:0x33d2d11766456bca!8m2!3d38.8951679!4d-77.0149345!16zL20vMDVzZDE0?entry=ttu&g_ep=EgoyMDI1MDYxNy4wIKXMDSoASAFQAw%3D%3D">

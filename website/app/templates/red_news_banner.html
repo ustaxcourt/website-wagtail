@@ -1,13 +1,12 @@
 {% load static %}
 <style>
     #red-news-banner-container {
-        background-color: #B50909;
+        background-color: var(--color-danger);
         width: 100%;
     }
 
     #red-news-banner-container .red-news-banner {
-        color: #FFFFFF;
-        font-family: 'Source Sans Pro', sans-serif;
+        color: var(--text-white);
         font-size: 20px;
         font-weight: 400;
         display: none;
@@ -15,20 +14,19 @@
     }
 
     #red-news-banner-container .red-news-banner p {
-        margin: 0;
         padding: 0;
-        line-height: 1.5;
-        color: #FFFFFF;
+        color: var(--text-white);
     }
 
     #red-news-banner-container .red-news-banner a {
-        color: #FFFFFF;
+        color: var(--text-white);
         text-decoration: underline;
         font-weight: 400;
     }
 
     #red-news-banner-container .red-news-banner a:hover {
-        color: #EEEEEE;
+        color: var(--text-white);
+        opacity: 0.9;
     }
 
     #red-news-banner-container .red-news-banner .alert-content {
