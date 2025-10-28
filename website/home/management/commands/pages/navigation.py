@@ -56,15 +56,15 @@ class NavigationInitializer(PageInitializer):
                             "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                         },
                         {
-                            "title": "FEES & CHARGES",
+                            "title": "Fees & Charges",
                             "page": self.get_page("fees-and-charges"),
                         },
                         {
-                            "title": "EMPLOYMENT",
+                            "title": "Employment",
                             "page": self.get_page("employment"),
                         },
                         {
-                            "title": "PRESS RELEASES & NEWS",
+                            "title": "Press Releases & News",
                             "page": self.get_page("press-releases"),
                         },
                     ],
@@ -76,27 +76,27 @@ class NavigationInitializer(PageInitializer):
                     "title": "RULES & GUIDANCE",
                     "sub_links": [
                         {
-                            "title": "REMOTE PROCEEDINGS",
+                            "title": "Remote Proceedings",
                             "page": self.get_page("zoomgov"),
                         },
                         {
-                            "title": "ADMINISTRATIVE ORDERS",
+                            "title": "Administrative Orders",
                             "page": self.get_page("administrative-orders"),
                         },
                         {
-                            "title": "TAX COURT RULES",
+                            "title": "Tax Court Rules",
                             "page": self.get_page("rules"),
                         },
                         {
-                            "title": "GUIDANCE FOR PETITIONERS",
+                            "title": "Guidance For Petitioners",
                             "page": self.get_page("petitioners"),
                         },
                         {
-                            "title": "CLINICS & PRO BONO PROGRAMS",
+                            "title": "Clinics & Pro Bono Programs",
                             "page": self.get_page("clinics"),
                         },
                         {
-                            "title": "GUIDANCE FOR PRACTITIONERS",
+                            "title": "Guidance For Practitioners",
                             "page": self.get_page("practitioners"),
                         },
                     ],
@@ -108,27 +108,27 @@ class NavigationInitializer(PageInitializer):
                     "title": "ORDERS & OPINIONS",
                     "sub_links": [
                         {
-                            "title": "TODAY'S OPINIONS",
+                            "title": "Today's Opinions",
                             "external_url": "https://dawson.ustaxcourt.gov/todays-opinions",
                         },
                         {
-                            "title": "TODAY'S ORDERS",
+                            "title": "Today's Orders",
                             "external_url": "https://dawson.ustaxcourt.gov/todays-orders",
                         },
                         {
-                            "title": "SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
+                            "title": "Search (Case, Order, Opinion, Practitioner)",
                             "external_url": "https://dawson.ustaxcourt.gov/",
                         },
                         {
-                            "title": "CITATION & STYLE MANUAL",
+                            "title": "Citation & Style Manual",
                             "page": self.get_page("citation-and-style-manual"),
                         },
                         {
-                            "title": "TRANSCRIPTS & COPIES",
+                            "title": "Transcripts & Copies",
                             "page": self.get_page("transcripts-and-copies"),
                         },
                         {
-                            "title": "TAX COURT REPORTS: PAMPHLETS",
+                            "title": "Tax Court Reports: Pamphlets",
                             "page": self.get_page("pamphlets"),
                         },
                     ],
@@ -140,15 +140,15 @@ class NavigationInitializer(PageInitializer):
                     "title": "EFILING & CASE MAINTENANCE",
                     "sub_links": [
                         {
-                            "title": "SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
+                            "title": "Search (Case, Order, Opinion, Practitioner)",
                             "external_url": "https://dawson.ustaxcourt.gov/",
                         },
                         {
-                            "title": "DAWSON (EFILING SYSTEM)",
+                            "title": "DAWSON (Efiling System)",
                             "page": self.get_page("dawson"),
                         },
                         {
-                            "title": "CASE RELATED FORMS",
+                            "title": "Case Related Forms",
                             "page": self.get_page("case-related-forms"),
                         },
                     ],
@@ -188,7 +188,6 @@ class NavigationInitializer(PageInitializer):
         logger.info("Successfully created Navigation menu.")
 
     def run(self):
-        logger.info("HELLO FROM NAVIGATION INITIALIZER!!!!!")
         """Update the footer as an execution script"""
         command_name = "Navigation menu update update for homepage redesign"
         # Check if script already exists
