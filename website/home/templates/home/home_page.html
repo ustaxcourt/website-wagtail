@@ -6,12 +6,8 @@
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
     <style>
-      :root {
-          --container-w: 1120px;
-      }
-
       #home-page {
-          background: var(--bg-white);
+          background: #fff;
       }
 
       .container {
@@ -131,20 +127,23 @@
 
       /* News and Notices Section */
       .news-notices-section {
-        padding: 60px 0;
+        padding: 10px 0;
         background: var(--bg-white);
       }
 
       .news-notices-header {
-        margin-bottom: 40px;
+        margin-bottom: 20px;
       }
 
       .news-notices-header h2 a {
         color: var(--text-primary);
+        text-decoration: underline;
+        font-weight: 600;
       }
 
       .news-notices-header h2 a:hover {
         color: var(--color-hover);
+        text-decoration: underline;
       }
 
       .news-grid {
@@ -193,11 +192,15 @@
       }
 
       .news-card-title {
+        font-weight: 600;
         color: var(--text-primary);
+        margin: 0 0 12px 0;
       }
 
       .news-card-description {
         color: var(--text-subtle);
+        font-size: 17px;
+        line-height: 20px;
         flex: 1;
       }
 
@@ -310,8 +313,22 @@
       }
 
       @media (max-width: 992px) {
+
+        .news-card-title {
+          font-size: 18px;
+          line-height: 20px;
+        }
+
+        .news-card-description {
+          font-size: 16px;
+        }
+
         .news-notices-header {
           margin-bottom: 20px;
+        }
+
+        .news-notices-header h2 a {
+          font-size: 20px;
         }
 
         .cards-grid {
@@ -488,7 +505,7 @@
   <!-- News and Notices Section -->
   {% if news_items %}
   <section class="news-notices-section">
-    <div class="container">
+    <div class="grid-container">
       <div class="news-notices-header">
         <h2><a href="{{ press_release_page_url }}">News and Notices</a></h2>
       </div>
