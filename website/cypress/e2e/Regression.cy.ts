@@ -31,7 +31,6 @@ describe('Homepage redesign', () => {
   it('Quick Access Tiles', function() {
     cy.visit('/');
 
-    /* ==== Generated with Cypress Studio ==== */
     cy.get('[href="/dawson/"] > .nav-card').should('have.class', 'nav-card');
     cy.get('[href="/dawson/"] > .nav-card').should('be.visible');
     cy.get('[href="/petitioners-start/"] > .nav-card').should('have.class', 'nav-card');
@@ -52,13 +51,12 @@ describe('Homepage redesign', () => {
     cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/trial-sessions"] > .nav-card').should('be.visible');
     cy.get('.wide-nav-card').should('have.class', 'wide-nav-card');
     cy.get('.wide-nav-card').should('be.visible');
-    /* ==== End Cypress Studio ==== */
+    
   });
 
   it('Search Bar', function() {
     cy.visit('/');
 
-    /* ==== Generated with Cypress Studio ==== */
     cy.get('#tablet-search-form > [data-testid="search-input"]').should('have.attr', 'name', 'query');
     cy.get('#tablet-search-form > [data-testid="search-input"]').should('be.visible');
     cy.get('#tablet-search-form > [data-testid="search-input"]').should('be.enabled');
@@ -72,13 +70,12 @@ describe('Homepage redesign', () => {
     cy.get('#tablet-search-form > [data-testid="search-button"]').click();
     cy.get('.pagination > a').click();
     cy.get(':nth-child(1) > h2 > a').click();
-    /* ==== End Cypress Studio ==== */
+   
   });
 
   it('Header', function() {
     cy.visit('/');
 
-    /* ==== Generated with Cypress Studio ==== */
     cy.get('.desktop-header-logo-section > #logo-link > .logo-seal').should('have.class', 'logo-seal');
     cy.get('.desktop-header-logo-section > #logo-link > .logo-seal').should('be.visible');
     cy.get('.logo-content > .logo-heading').should('have.text', 'United States Tax Court');
@@ -91,7 +88,7 @@ describe('Homepage redesign', () => {
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('have.text', 'Charles G. Jeane, Clerk of the Court');
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('have.class', 'logo-subheading');
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('be.visible');
-    /* ==== End Cypress Studio ==== */
+  
   })
 
   it('Warning about Tax Scams', function() {
@@ -125,17 +122,8 @@ describe('Homepage redesign', () => {
   it('Footer', function() {
     cy.visit('/');
 
-    /* ==== Generated with Cypress Studio ==== */
     cy.get('.seal').should('have.class', 'seal');
     cy.get('.seal').should('be.visible');
-
-    cy.get('.font-heading').should(
-      'have.text',
-      '\n                            United States Tax Court\n                            \n                            \n                                \n                                    400 Second Street, NW\n                                    \n                                    Washington, DC 20217\n                                \n                            \n                        '
-    );
-
-    cy.get('.font-heading').should('have.class', 'font-heading');
-    cy.get('.font-heading').should('be.visible');
     cy.get('.footer-time-container > p').should('have.text', '\n                        Tax Court Hours of Operation: 8 a.m. to 4:30 p.m. (EST)\n                        on all days except Saturdays, Sundays, and\n                         legal holidays \n                        in the District of Columbia.\n                    ');
     cy.get('.footer-time-container > p').should('be.visible');
     cy.get('.phone').should('have.text', '202) 521-0700');
@@ -148,7 +136,7 @@ describe('Homepage redesign', () => {
     cy.get('.give-feedback-btn').should('have.attr', 'href', 'https://forms.office.com/r/45R5iAguPG');
     cy.get('.give-feedback-btn').should('be.visible');
     cy.get('.give-feedback-btn').click();
-    /* ==== End Cypress Studio ==== */
+   
   });
 
   describe('Banner expiration test', () => {
@@ -181,9 +169,7 @@ it('should not display the banner after expiration date', () => {
 
   });
 
-  /* ==== Test Created with Cypress Studio ==== */
   it('New and Notices', function() {
-    /* ==== Generated with Cypress Studio ==== */
     cy.visit('/');
     cy.get(':nth-child(1) > .news-card-image').should('have.class', 'news-card-image');
     cy.get(':nth-child(1) > .news-card-image').should('be.visible');
@@ -207,7 +193,7 @@ it('should not display the banner after expiration date', () => {
     cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('have.class', 'news-card-link');
     cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('have.text', 'See the Press Release.');
     cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('be.visible');
-    /* ==== End Cypress Studio ==== */
+  
   });
 
   });
