@@ -342,6 +342,10 @@ button.link:hover {
         font-size: 16px;
         line-height: 20px;
     }
+    p.usa-banner__header-action {
+        font-size: .8rem
+    }
+
 
     h1 {
         font-size: 24px;
