@@ -189,7 +189,7 @@ class NavigationInitializer(PageInitializer):
 
     def run(self):
         """Update the navigation menu as an execution script"""
-        command_name = "Navigation menu update update for homepage redesign"
+        command_name = "Navigation menu update for homepage redesign"
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")
