@@ -199,7 +199,7 @@ class NavigationInitializer(PageInitializer):
 
         try:
             self.update()
-            execution_log_text = "Footer updated for homepage redesign"
+            execution_log_text = "Navigation menu updated for homepage redesign"
             script_entry.execution_status = "SUCCESS"
             script_entry.execution_log = execution_log_text
             script_entry.save()
