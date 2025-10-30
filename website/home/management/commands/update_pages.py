@@ -5,9 +5,13 @@ from home.management.commands.pages.about_the_court import (
 )
 from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.footer import FooterInitializer
+from home.management.commands.pages.navigation import NavigationInitializer
 
 # Ensure Home Page is initialized first
-pages_to_update = about_the_court_pages_to_update + [FooterInitializer]
+pages_to_update = about_the_court_pages_to_update + [
+    FooterInitializer,
+    NavigationInitializer,
+]
 
 
 class Command(BaseCommand):

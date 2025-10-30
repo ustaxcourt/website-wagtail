@@ -188,7 +188,6 @@
         font-size: 18px;
         font-weight: 600;
         color: white;
-        text-transform: uppercase;
     }
 
     header#top-navigation .navigation-header .link:hover,
@@ -225,8 +224,15 @@
         z-index: 500;
         padding: 0;
         margin: 0;
-        min-width: max-content;
+        min-width: 100%;
+        width: max-content;
         border-top: 6px solid #1A4480;
+    }
+
+    /*FIXME: this is an ugly hack to get the last menu to wrap but not the others */
+    #top-navigation > div.navigation-bar > ul > li:nth-child(6) ul {
+        min-width: inherit;
+        width: inherit;
     }
 
     header#top-navigation .navigation-header:hover .navigation-list,
@@ -254,6 +260,7 @@
 
     header#top-navigation .navigation-list .nav-link a:hover {
         font-weight: 600;
+        font-size: 17px;
     }
 
     header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
@@ -313,7 +320,6 @@
             color: white;
             font-size: 24px;
             position: absolute;
-            left: -6px;
             top: 10px;
         }
 
@@ -329,7 +335,6 @@
         }
 
         header#top-navigation .navigation-header .navigation-list {
-            position: absolute;
             left: 10px;
             top: -2px;
         }
@@ -478,7 +483,6 @@
             text-align: left;
             justify-content: flex-start;
             font-size: 18px;
-            text-transform: uppercase;
         }
 
         header#top-navigation .navigation-header.active .link {
@@ -735,12 +739,12 @@
                                         <a target="_blank"
                                            href="{{ sub_link.external_url }}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            {{ sub_link.title|title }}
+                                            {{ sub_link.title }}
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
                                            data-testid="nav-link-{{ sub_link.title|slugify }}">
-                                            {{ sub_link.title|title }}
+                                            {{ sub_link.title }}
                                         </a>
                                     {% endif %}
                                 </li>
