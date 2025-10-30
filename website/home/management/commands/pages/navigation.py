@@ -188,7 +188,7 @@ class NavigationInitializer(PageInitializer):
         logger.info("Successfully created Navigation menu.")
 
     def run(self):
-        """Update the footer as an execution script"""
+        """Update the navigation menu as an execution script"""
         command_name = "Navigation menu update update for homepage redesign"
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
