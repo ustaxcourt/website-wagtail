@@ -2,24 +2,64 @@
    CSS Variables / Root Settings
    ========================================================================== */
 :root {
-    --dark-blue: rgb(18, 33, 64);
-    --header-dark-blue: #1A4480;
-    --light-blue: rgba(0, 94, 162, 1.00);
-    --faint-blue: rgba(0, 94, 162, 0.1);
-    --medium-gray: rgb(240, 240, 240);
-    --dark-gray: rgb(220, 222, 224);
-    --link-hover-blue: #003256;
-    --light-gray-hover: rgb(231, 231, 231);
-    --faint-gray: #eee;
-    --link-blue: #005ea2;
-    --noto-serif-jp: 'Noto Serif JP', serif;
-    --color-primary-alt-lightest: #F1F9FC;
-    --color-accent-cool-light: #97D4EA;
-    --color-white: #FFFFFF;
+    /* Fonts */
     --heading-font: "Source Sans 3";
     --body-font: 'Source Sans 3';
-    --base-font-size: 17px;
+    --noto-serif-jp: 'Noto Serif JP', serif;
+
+    /* Layout */
     --container-width: 1440px;
+    --component-button-radius: 4px;
+
+    /* Brand Colors */
+    --color-primary: #005EA2;
+    --theme-color-primary: #005EA2;
+    --color-secondary: #1A4480;
+    --color-dark: #003366;
+    --color-navy: #162E51;
+    --color-darker: #07294D;
+    --color-link: #005ea2;
+    --color-link-hover: #003256;
+    --color-hover: #0066cc;
+
+    /* Background Colors */
+    --color-white: #FFFFFF;
+    --bg-white: #fff;
+    --bg-muted: #e9ecef;
+    --bg-info: #F1F9FC;
+    --bg-info-alt: #E1F3F8;
+    --bg-warning: #faf3cf;
+    --bg-notice: #FAF3D1;
+
+    /* Text Colors */
+    --text-black: #000;
+    --text-primary: #111;
+    --text-secondary: #222;
+    --text-muted: #333;
+    --text-subtle: #555;
+    --text-white: #fff;
+
+    /* Border Colors */
+    --border-light: #dcdcdc;
+    --border-base: #dee2e6;
+    --border-accent: #97D4EA;
+    --border-medium: #A9AEB1;
+
+    /* Alert/Status Colors */
+    --color-danger: #B50909;
+    --color-error: #b50909;
+    --color-danger-dark: #990000;
+
+    /* Shadow Colors */
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.17);
+    --shadow-dark: rgba(0, 0, 0, 0.33);
+    --shadow-card: rgba(86, 92, 101, 0.10);
+
+    /* Legacy/Deprecated (for compatibility) */
+    --bg-neutral: rgb(240, 240, 240);
+    --border-faint: #eee;
+    --color-primary-legacy: rgba(0, 94, 162, 1.00);
 }
 
 /* ==========================================================================
@@ -46,50 +86,60 @@ ol ol ol {
     font-family: var(--noto-serif-jp), serif;
 }
 
-body {
+body, p {
     -webkit-font-smoothing: antialiased;
-    line-height: 24px;
     font-family: var(--body-font), sans-serif;
-    font-size: var(--base-font-size);
-    -webkit-font-smoothing: antialiased;
+    font-size: 17px;
+    line-height: 20px;
+    font-weight: 400;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font), sans-serif;
-    font-weight: bold;
-    line-height: 38px;
     margin-bottom: 8px;
     -webkit-font-smoothing: antialiased;
 }
 
 h1 {
-    font-size: 2rem;
-    line-height: 2.5rem;
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: 400;
 }
 
 h2 {
-    font-size: 1.5rem;
-    margin-bottom: 8.5px;
+    font-size: 24px;
     line-height: 30px;
     font-weight: 600;
 }
 
 h3 {
-    font-size: 1.25rem;
-    line-height: 1.563rem;
-    font-family: 'Source Sans 3', sans-serif;
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
 }
 
 h4 {
-    font-size: 1.063rem;
-    line-height: 1.5rem;
-    font-family: 'Source Sans 3', sans-serif;
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
+}
+
+h5 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
+}
+
+h6 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 600;
 }
 
 /* Links */
 a {
-    color: var(--link-blue);
+    color: var(--color-link);
     font-weight: bold;
     text-decoration: none;
     cursor: pointer;
@@ -105,11 +155,29 @@ a.font-normal {
 
 a:hover {
     text-decoration: underline;
-    color: var(--link-hover-blue);
+    color: var(--color-link-hover);
+}
+
+/* Links inside headings - no underline by default, underline on hover */
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    text-decoration: none;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+    text-decoration: underline;
+}
+
+/* Link utility classes */
+.link-blue {
+    color: var(--color-link);
+}
+
+.link-blue:hover {
+    color: var(--color-link-hover);
 }
 
 .font-light-blue {
-    color: var(--light-blue)
+    color: var(--color-primary-legacy)
 }
 
 /* ==========================================================================
@@ -131,12 +199,32 @@ a:hover {
 #scroll-to-top {
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: 8px;
     padding: 8px 10px;
+    height: 35px;
+    width: 35px;
 }
 
 #scroll-to-top img {
     filter: brightness(0) invert(1);
+    width: 25px;
+    height: 25px;
+    max-width: none;
+}
+
+@media (max-width: 1025px) {
+    #scroll-to-top {
+        width: 24px;
+        height: 24px;
+        border: white solid 1px;
+        right: 4px;
+    }
+
+    #scroll-to-top img {
+        width: 20px;
+        height: 24px;
+        max-width: none;
+    }
 }
 
 /* Fade Animation */
@@ -157,14 +245,14 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid var(--faint-gray);
+    border-top: 1px solid var(--border-faint);
     margin: 1em 0;
     padding: 0;
 }
 
 .foundry-divider-simple {
     margin: 17px 0 17px 0;
-    border-top: 1px solid var(--faint-gray);
+    border-top: 1px solid var(--border-faint);
     height: 0;
 }
 
@@ -201,7 +289,7 @@ button.link:hover {
 
 .blue-page-links-bar {
     display: flex;
-    background-color: var(--light-blue);
+    background-color: var(--color-primary-legacy);
     border-radius: 5px;
     gap: 10px;
 }
@@ -229,7 +317,35 @@ button.link:hover {
     font-size: 2rem;
 }
 
-@media (min-width: 320px) and (max-width: 768px) {
+/* ==========================================================================
+   Responsive Typography - Mobile
+   ========================================================================== */
+@media (max-width: 768px) {
+    body, p {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    h2 {
+        font-size: 20px;
+        line-height: 22px;
+    }
+
+    h3 {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
+    h4, h5, h6 {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
     .blue-page-links-bar {
         gap: 5px;
         border-radius: 3px;
@@ -246,14 +362,6 @@ button.link:hover {
     }
 
     .blue-page-links-bar i {
-        font-size: 20px;
-    }
-
-    body {
-        font-size: 16px;
-    }
-
-    h2 {
         font-size: 20px;
     }
 }
