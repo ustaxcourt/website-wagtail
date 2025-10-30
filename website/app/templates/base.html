@@ -92,6 +92,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%26%24&family=Source+Sans+Pro:wght@400;700&display=swap"
               rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
         <script defer type="text/javascript" src="{% static 'js/app.js' %}"></script>
         <script defer
                 type="text/javascript"
@@ -103,13 +104,16 @@
     </head>
     <body class="{% block body_class %}  {% endblock %}">
         {% include 'banner.html' %}
+        {% include 'red_news_banner.html' %}
         {% get_environment as environment %}
         {% if environment != "production" %}
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
+        {% include 'yellow_news_banner.html' %}
         {% block content %}{% endblock %}
         {% include 'footer.html' %}
+        {% include 'includes/give_feedback_button.html' %}
         <button title="Scroll to top"
                 id="scroll-to-top"
                 type="button"

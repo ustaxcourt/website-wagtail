@@ -1,15 +1,14 @@
 {% extends 'wagtailadmin/notifications/base.html' %}
 {% load i18n wagtailadmin_tags %}
-
 {% block content %}
     {% if page %}
         <p>
             {% blocktrans trimmed with page_title=page.get_admin_display_title page_url=page_edit_url user=editor.get_full_name|default:editor.get_username %}
-            The website page '<strong><a href="{{ page_url }}">{{ page_title }}</a></strong>' is in moderation. <strong>{{ user }}</strong> has changed the page. Please <a href="{{ page_url }}">log in to Wagtail</a> for more information.
+                The website page '<strong><a href="{{ page_url }}">{{ page_title }}</a></strong>' is in moderation. <strong>{{ user }}</strong> has changed the page. Please <a href="{{ page_url }}">log in to Wagtail</a> for more information.
             {% endblocktrans %}
         </p>
         <p>
-        {% trans "The new revision has replaced yours in the moderation queue. You may want to review the latest changes." %}
+            {% trans "The new revision has replaced yours in the moderation queue. You may want to review the latest changes." %}
         </p>
     {% else %}
         {% latest_str object as title %}

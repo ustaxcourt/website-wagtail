@@ -1,172 +1,186 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Moderation Digest</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            color: #333;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #dfe2e5;
-            text-align: left;
-            padding: 8px 12px;
-            vertical-align: top;
-        }
-        th {
-            background-color: #f6f8fa;
-            font-weight: 600;
-        }
-        a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .footer {
-            margin-top: 25px;
-            font-size: 0.9em;
-            color: #586069;
-        }
-        /* Style for the notes list */
-        td ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        /* Review-by chips */
-        .review-chip {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 3px;
-            color: #2d3436;
-        }
-        .review-chip-overdue {
-            background-color: #ff6b6b;
-            color: #ffffff;
-            font-weight: bold;
-        }
-        .review-chip-soon {
-            background-color: #feefc3;
-            color: #2d3436;
-            font-weight: bold;
-        }
-        .review-chip-ok {
-            color: #2d3436;
-        }
-        .no-deadline {
-            color: #586069;
-            font-style: italic;
-        }
-    </style>
-</head>
-<body>
-    <h2>
-        Hi, there are <strong>{{ items|length }}</strong> item(s) in the moderation workflow.
-    </h2>
-    <h3>Items in progress in {{ site_url }}</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Requested By</th>
-                <th>Date Requested</th>
-                <th>Note(s)</th>
-                <th>Review By Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for it in items %}
-                <tr>
-                    <td>
-                        {% if it.edit_url %}
-                            <a href="{{ it.edit_url }}">{{ it.title }}</a>
-                        {% else %}
-                            {{ it.title }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {# Get status from the first task on the latest revision #}
-                        {% if it.latest_revision %}
-                            {% with first_task=it.latest_revision.task_states.all|first %}
-                                {% if first_task and first_task.workflow_state %}
-                                    {{ first_task.workflow_state.get_status_display }}
-                                {% else %}
-                                    In Progress
-                                {% endif %}
-                            {% endwith %}
-                        {% else %}
-                            In Progress
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if it.latest_revision and it.latest_revision.user %}
-                            {{ it.latest_revision.user.get_full_name|default:it.latest_revision.user.username }}
-                        {% elif it.obj and it.obj.owner %}
-                            {{ it.obj.owner.get_full_name|default:it.obj.owner.username }}
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if it.latest_revision %}
-                            {{ it.latest_revision.created_at|date:"M d, Y, P" }}
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if it.note %}
-                            <div>{{ it.note }}</div>
-                        {% endif %}
-                        {# The view has already prepared the list of all relevant comments #}
-                        {% if it.comments %}
-                            <ul>
-                                {% for comment in it.comments %}
-                                    <li>{{ comment }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% elif not it.note %}
-                            N/A
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if it.review_by %}
-                            {% if it.is_overdue %}
-                                <span class="review-chip review-chip-overdue">{{ it.review_by|date:"M d, Y, g:i A" }} (OVERDUE)</span>
-                            {% else %}
-                                {% if it.days_until_review or it.days_until_review == 0 %}
-                                    {% if it.days_until_review <= 1 %}
-                                        <span class="review-chip review-chip-soon">{{ it.review_by|date:"M d, Y, g:i A" }} (Due Soon)<br><small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
-                                    {% else %}
-                                        <span class="review-chip review-chip-ok">{{ it.review_by|date:"M d, Y, g:i A" }}<br><small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
-                                    {% endif %}
-                                {% else %}
-                                    <span class="review-chip review-chip-ok">{{ it.review_by|date:"M d, Y, g:i A" }}<br><small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
-                                {% endif %}
-                            {% endif %}
-                        {% else %}
-                            <span class="no-deadline">No deadline set</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6">There are no items awaiting moderation.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <head>
+        <title>Moderation Digest</title>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                color: #333;
+            }
 
-    <p class="footer">
-        You can review all pages at the <a href="{{ site_url }}/admin/#awaiting-review-section">Wagtail Admin Review Dashboard</a>.
-    </p>
-</body>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            th,
+            td {
+                border: 1px solid #dfe2e5;
+                text-align: left;
+                padding: 8px 12px;
+                vertical-align: top;
+            }
+
+            th {
+                background-color: #f6f8fa;
+                font-weight: 600;
+            }
+
+            a {
+                color: #0366d6;
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            .footer {
+                margin-top: 25px;
+                font-size: 0.9em;
+                color: #586069;
+            }
+
+            /* Style for the notes list */
+            td ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            /* Review-by chips */
+            .review-chip {
+                display: inline-block;
+                padding: 2px 6px;
+                border-radius: 3px;
+                color: #2d3436;
+            }
+
+            .review-chip-overdue {
+                background-color: #ff6b6b;
+                color: #ffffff;
+                font-weight: bold;
+            }
+
+            .review-chip-soon {
+                background-color: #feefc3;
+                color: #2d3436;
+                font-weight: bold;
+            }
+
+            .review-chip-ok {
+                color: #2d3436;
+            }
+
+            .no-deadline {
+                color: #586069;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>
+            Hi, there are <strong>{{ items|length }}</strong> item(s) in the moderation workflow.
+        </h2>
+        <h3>Items in progress in {{ site_url }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Requested By</th>
+                    <th>Date Requested</th>
+                    <th>Note(s)</th>
+                    <th>Review By Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for it in items %}
+                    <tr>
+                        <td>
+                            {% if it.edit_url %}
+                                <a href="{{ it.edit_url }}">{{ it.title }}</a>
+                            {% else %}
+                                {{ it.title }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {# Get status from the first task on the latest revision #}
+                            {% if it.latest_revision %}
+                                {% with first_task=it.latest_revision.task_states.all|first %}
+                                    {% if first_task and first_task.workflow_state %}
+                                        {{ first_task.workflow_state.get_status_display }}
+                                    {% else %}
+                                        In Progress
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                In Progress
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if it.latest_revision and it.latest_revision.user %}
+                                {{ it.latest_revision.user.get_full_name|default:it.latest_revision.user.username }}
+                            {% elif it.obj and it.obj.owner %}
+                                {{ it.obj.owner.get_full_name|default:it.obj.owner.username }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if it.latest_revision %}
+                                {{ it.latest_revision.created_at|date:"M d, Y, P" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if it.note %}<div>{{ it.note }}</div>{% endif %}
+                            {# The view has already prepared the list of all relevant comments #}
+                            {% if it.comments %}
+                                <ul>
+                                    {% for comment in it.comments %}<li>{{ comment }}</li>{% endfor %}
+                                </ul>
+                            {% elif not it.note %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if it.review_by %}
+                                {% if it.is_overdue %}
+                                    <span class="review-chip review-chip-overdue">{{ it.review_by|date:"M d, Y, g:i A" }} (OVERDUE)</span>
+                                {% else %}
+                                    {% if it.days_until_review or it.days_until_review == 0 %}
+                                        {% if it.days_until_review <= 1 %}
+                                            <span class="review-chip review-chip-soon">{{ it.review_by|date:"M d, Y, g:i A" }} (Due Soon)
+                                                <br>
+                                                <small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
+                                        {% else %}
+                                            <span class="review-chip review-chip-ok">{{ it.review_by|date:"M d, Y, g:i A" }}
+                                                <br>
+                                                <small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="review-chip review-chip-ok">{{ it.review_by|date:"M d, Y, g:i A" }}
+                                            <br>
+                                            <small class="review-chip__meta">{{ it.days_until_review }} day{{ it.days_until_review|pluralize }} left</small></span>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <span class="no-deadline">No deadline set</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">There are no items awaiting moderation.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="footer">
+            You can review all pages at the <a href="{{ site_url }}/admin/#awaiting-review-section">Wagtail Admin Review Dashboard</a>.
+        </p>
+    </body>
 </html>

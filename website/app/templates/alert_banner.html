@@ -1,30 +1,28 @@
 {% load static %}
 <style>
     .alert-banner {
-        background-color: #faf3cf;
-        color: #000;
+        background-color: var(--bg-warning);
+        color: var(--text-black);
         font-weight: bold;
     }
 
     .alert-banner p {
-        margin-top: 0;
-        margin-bottom: 0;
         line-height: 1.2;
     }
 
     .alert-banner a {
-        color: #000;
+        color: var(--text-black);
         text-decoration: underline;
     }
 
     .alert-banner .close-btn {
         cursor: pointer;
         border: none;
-        background-color: #0000;
+        background-color: transparent;
     }
 
     .alert-banner .close-btn:hover {
-        color: #333;
+        color: var(--text-muted);
     }
 
     .alert-banner .alert-content {
@@ -35,10 +33,6 @@
     }
 
     @media(min-width:1025px) {
-        .alert-banner p {
-            font-size: 17px;
-        }
-
         .alert-banner .alert-content {
             padding-left: 2rem;
             gap: 145px;
@@ -46,10 +40,6 @@
     }
 
     @media(max-width:1024px) {
-        .alert-banner p {
-            font-size: 15px;
-        }
-
         .alert-banner .alert-content {
             padding-left: 1rem;
             gap: 145px;
@@ -57,10 +47,6 @@
     }
 
     @media(max-width:768px) {
-        .alert-banner p {
-            font-size: 13px;
-        }
-
         .alert-banner .alert-content {
             padding-left: 1rem;
             gap: 0px;
