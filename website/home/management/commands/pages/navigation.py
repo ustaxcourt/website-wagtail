@@ -4,6 +4,8 @@ from wagtail.models import Page
 from home.models import NavigationMenu
 import logging
 
+from home.models.utils.execute_script import ExecuteScript
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,39 +32,39 @@ class NavigationInitializer(PageInitializer):
                     "title": "ABOUT THE COURT",
                     "sub_links": [
                         {
-                            "title": "MISSION",
+                            "title": "Mission",
                             "page": self.get_page("mission"),
                         },
                         {
-                            "title": "HISTORY",
+                            "title": "History",
                             "page": self.get_page("history"),
                         },
                         {
-                            "title": "REPORTS & STATISTICS",
+                            "title": "Reports & Statistics",
                             "page": self.get_page("reports-and-statistics"),
                         },
                         {
-                            "title": "JUDGES",
+                            "title": "Judges",
                             "page": self.get_page("judges"),
                         },
                         {
-                            "title": "DIRECTORY",
+                            "title": "Directory",
                             "page": self.get_page("directory"),
                         },
                         {
-                            "title": "TRIAL SESSIONS",
+                            "title": "Trial Sessions",
                             "external_url": "https://dawson.ustaxcourt.gov/trial-sessions",
                         },
                         {
-                            "title": "FEES & CHARGES",
+                            "title": "Fees & Charges",
                             "page": self.get_page("fees-and-charges"),
                         },
                         {
-                            "title": "EMPLOYMENT",
+                            "title": "Employment",
                             "page": self.get_page("employment"),
                         },
                         {
-                            "title": "PRESS RELEASES & NEWS",
+                            "title": "Press Releases & News",
                             "page": self.get_page("press-releases"),
                         },
                     ],
@@ -74,27 +76,27 @@ class NavigationInitializer(PageInitializer):
                     "title": "RULES & GUIDANCE",
                     "sub_links": [
                         {
-                            "title": "REMOTE PROCEEDINGS",
+                            "title": "Remote Proceedings",
                             "page": self.get_page("zoomgov"),
                         },
                         {
-                            "title": "ADMINISTRATIVE ORDERS",
+                            "title": "Administrative Orders",
                             "page": self.get_page("administrative-orders"),
                         },
                         {
-                            "title": "TAX COURT RULES",
+                            "title": "Tax Court Rules",
                             "page": self.get_page("rules"),
                         },
                         {
-                            "title": "GUIDANCE FOR PETITIONERS",
+                            "title": "Guidance For Petitioners",
                             "page": self.get_page("petitioners"),
                         },
                         {
-                            "title": "CLINICS & PRO BONO PROGRAMS",
+                            "title": "Clinics & Pro Bono Programs",
                             "page": self.get_page("clinics"),
                         },
                         {
-                            "title": "GUIDANCE FOR PRACTITIONERS",
+                            "title": "Guidance For Practitioners",
                             "page": self.get_page("practitioners"),
                         },
                     ],
@@ -106,27 +108,27 @@ class NavigationInitializer(PageInitializer):
                     "title": "ORDERS & OPINIONS",
                     "sub_links": [
                         {
-                            "title": "TODAY'S OPINIONS",
+                            "title": "Today's Opinions",
                             "external_url": "https://dawson.ustaxcourt.gov/todays-opinions",
                         },
                         {
-                            "title": "TODAY'S ORDERS",
+                            "title": "Today's Orders",
                             "external_url": "https://dawson.ustaxcourt.gov/todays-orders",
                         },
                         {
-                            "title": "SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
+                            "title": "Search (Case, Order, Opinion, Practitioner)",
                             "external_url": "https://dawson.ustaxcourt.gov/",
                         },
                         {
-                            "title": "CITATION & STYLE MANUAL",
+                            "title": "Citation & Style Manual",
                             "page": self.get_page("citation-and-style-manual"),
                         },
                         {
-                            "title": "TRANSCRIPTS & COPIES",
+                            "title": "Transcripts & Copies",
                             "page": self.get_page("transcripts-and-copies"),
                         },
                         {
-                            "title": "TAX COURT REPORTS: PAMPHLETS",
+                            "title": "Tax Court Reports: Pamphlets",
                             "page": self.get_page("pamphlets"),
                         },
                     ],
@@ -138,26 +140,18 @@ class NavigationInitializer(PageInitializer):
                     "title": "EFILING & CASE MAINTENANCE",
                     "sub_links": [
                         {
-                            "title": "SEARCH (CASE, ORDER, OPINION, PRACTITIONER)",
+                            "title": "Search (Case, Order, Opinion, Practitioner)",
                             "external_url": "https://dawson.ustaxcourt.gov/",
                         },
                         {
-                            "title": "DAWSON (EFILING SYSTEM)",
+                            "title": "DAWSON (Efiling System)",
                             "page": self.get_page("dawson"),
                         },
                         {
-                            "title": "CASE RELATED FORMS",
+                            "title": "Case Related Forms",
                             "page": self.get_page("case-related-forms"),
                         },
                     ],
-                },
-            ),
-            (
-                "section",
-                {
-                    "title": "GIVE FEEDBACK",
-                    "external_url": "https://forms.office.com/r/45R5iAguPG",
-                    "sub_links": [],
                 },
             ),
         ]
@@ -181,3 +175,38 @@ class NavigationInitializer(PageInitializer):
         revision.publish()
 
         logger.info("Successfully created Navigation menu.")
+
+    def update(self):
+        logger.info("Updating Navigation menu...")
+        NavigationMenu.objects.all().delete()
+        # Create a single navigation menu
+        menu = NavigationMenu.objects.create(menu_items=self.get_default_menu_items())
+
+        # Create a new revision and publish it
+        revision = menu.save_revision()
+        revision.publish()
+        logger.info("Successfully created Navigation menu.")
+
+    def run(self):
+        """Update the navigation menu as an execution script"""
+        command_name = "Navigation menu update for homepage redesign"
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update()
+            execution_log_text = "Navigation menu updated for homepage redesign"
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+
+        except Exception as e:
+            logger.error(e)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {e}"
+            script_entry.save()
+            raise

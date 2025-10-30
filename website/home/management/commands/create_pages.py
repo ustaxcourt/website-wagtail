@@ -48,7 +48,6 @@ pages_to_initialize = home_page_initialize + (
 
 pages_to_update = [
     HomePageInitializer,
-    FooterInitializer,
     JudgesPageInitializer,
     DawsonPageInitializer,
 ]
