@@ -2,14 +2,14 @@
 {% load wagtailcore_tags %}
 <style>
     footer#app-footer .main {
-        background: var(--medium-gray);
+        background: var(--color-primary);
         padding: 20px 0px;
         line-height: 1.6rem;
     }
 
     footer#app-footer .main .title {
         font-size: 1.4rem;
-        font-family: var(--heading-font);
+        font-family: var(--heading-font), sans-serif;
         font-weight: 600;
         line-height: 2rem;
         margin-bottom: 8px;
@@ -17,8 +17,8 @@
     }
 
     footer#app-footer .footer-address {
-        background: var(--dark-gray);
-        color: #555;
+        background: var(--color-secondary);
+        color: var(--text-white);
         font-family: var(--font-family);
         text-align: center;
         padding-bottom: 20px;
@@ -26,18 +26,16 @@
     }
 
     footer#app-footer .footer-address .content {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
+        gap: 20px;
+        text-align: left;
     }
 
     footer#app-footer .footer-address .phone {
         white-space: nowrap;
-    }
-
-    footer#app-footer .footer-address p {
-        margin-bottom: 0px;
-        margin-top: 4px;
+        text-decoration: underline;
     }
 
     footer#app-footer .footer-address hr {
@@ -56,12 +54,79 @@
     }
 
     footer#app-footer h2 {
-        font-size: 20px;
-        line-height: normal;
+        color: var(--text-white);
     }
 
-    footer#app-footer p {
-        margin-top: 0px;
+    .main p {
+        color: var(--text-white);
+    }
+
+    .main a {
+        color: var(--text-white);
+        font-weight: inherit;
+        text-decoration: underline;
+    }
+
+    .address {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .footer-address a {
+        color: var(--text-white);
+        font-weight: inherit;
+    }
+
+    .footer-item-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+        text-align: right;
+    }
+
+    .footer-time-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-self: center;
+        max-width: 60ch;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        footer#app-footer .footer-address .content {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 0px;
+            text-align: center;
+        }
+
+        .footer-item-container {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .footer-time-container {
+            align-items: center;
+            text-align: center;
+        }
+
+        footer#app-footer .footer-time-container p {
+            display: inline;
+            padding: 0px;
+        }
+
+        .court-hours {
+            font-weight: bold;
+        }
+
+        .spacing-fix {
+            display: block;
+            height: 1em;
+        }
     }
 </style>
 <footer id="app-footer">
@@ -69,15 +134,9 @@
         <div class="grid-container">
             <div class="grid-row grid-gap">
                 <div class="grid-col-12 desktop:grid-col">
-                    <h2>Technical Questions?</h2>
+                    <h2>Questions?</h2>
                     <p>
                         {% with technicalQuestions=settings.home.Footer.technicalQuestions %}{{ technicalQuestions|richtext }}{% endwith %}
-                    </p>
-                </div>
-                <div class="grid-col-12 desktop:grid-col">
-                    <h2>Other Questions?</h2>
-                    <p>
-                        {% with otherQuestions=settings.home.Footer.otherQuestions %}{{ otherQuestions|richtext }}{% endwith %}
                     </p>
                 </div>
             </div>
@@ -86,18 +145,48 @@
     <div class="footer-address">
         <div class="grid-container">
             <div class="content">
-                <a href="/">
-                    <img alt="US Tax Court Logo"
-                         class="seal"
-                         src="{% static 'images/footer/seal.webp' %}" />
-                </a>
-                <hr />
-                <p class="font-heading">United States Tax Court</p>
-                <p>
-                    400 Second Street, NW, Washington, DC 20217 | <span class="phone">(202) 521-0700</span>
-                </p>
-                <p>All Rights Reserved</p>
-                <p class="build-info">Build: {{ build_sha }}</p>
+                <div class="footer-item-container">
+                    <a href="/">
+                        <img alt="US Tax Court Logo"
+                             class="seal"
+                             src="{% static 'images/footer/ustc-seal.svg' %}" />
+                    </a>
+                    <div class="address">
+                        <p>
+                            United States Tax Court
+                            <br>
+                            <a href="https://www.google.com/maps/place/US+Tax+Court/@38.8951679,-77.0149345,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b788e9a932e5:0x33d2d11766456bca!8m2!3d38.8951679!4d-77.0149345!16zL20vMDVzZDE0?entry=ttu&g_ep=EgoyMDI1MDYxNy4wIKXMDSoASAFQAw%3D%3D">
+                                <span style="color: white;">
+                                    400 Second Street, NW
+                                    <br>
+                                    Washington, DC 20217
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <div class="footer-time-container">
+                    <p>
+                        <span class="court-hours">Tax Court Hours of Operation:</span> 8 a.m. to 4:30 p.m. (EST)
+                        on all days except Saturdays, Sundays, and
+                        <a href="/holidays"> <span style="text-decoration: underline; color:white;">legal holidays</span> </a>
+                        in the District of Columbia.
+                    </p>
+                </div>
+                <div class="footer-item-container">
+                    <p>
+                        (<a class="phone" href="tel:+2025210700">202) 521-0700</a>
+                        <br>
+                        All rights reserved
+                        <br>
+                        Build: {{ build_sha }}
+                    </p>
+                    <a href="https://dawson.ustaxcourt.gov/">
+                        <img alt="Dawson Logo"
+                             class="dawson"
+                             src="{% static 'images/footer/dawson-logo.svg' %}" />
+                    </a>
+                </div>
             </div>
         </div>
     </div>

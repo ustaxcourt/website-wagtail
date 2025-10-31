@@ -11,15 +11,32 @@ from django import forms
 
 
 @register_setting
+class Header(BaseGenericSetting):
+    chief_judge = models.CharField(
+        max_length=255,
+        default="Patrick J. Urda, Chief Judge",
+        help_text="Name and title of the Chief Judge",
+    )
+    clerk_of_court = models.CharField(
+        max_length=255,
+        default="Charles G. Jeane, Clerk of the Court",
+        help_text="Name and title of the Clerk of the Court",
+    )
+
+    panels = [
+        FieldPanel("chief_judge"),
+        FieldPanel("clerk_of_court"),
+    ]
+
+
+@register_setting
 class Footer(BaseGenericSetting):
     technicalQuestions = RichTextField(
         blank=True, help_text="Content for technical questions."
     )
-    otherQuestions = RichTextField(blank=True, help_text="Content for other questions.")
 
     content_panels = Page.content_panels + [
         FieldPanel("technicalQuestions"),
-        FieldPanel("otherQuestions"),
     ]
 
 

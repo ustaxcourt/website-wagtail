@@ -93,8 +93,6 @@
             margin-bottom: 0.5em;
             display: block;
             font-weight: normal;
-            font-size: 17px;
-            line-height: 24px;
         }
 
         .enhanced-page .dedication {
@@ -118,7 +116,6 @@
 
         .enhanced-page .dedication .dedication-text {
             flex: 1;
-            font-size: 17px;
         }
 
         .enhanced-page .dedication .dedication-text .title {
@@ -171,13 +168,7 @@
             margin-top: -20px;
         }
 
-        .enhanced-page #video-container .description-block p {
-            margin-left: 40px;
-        }
-
         .enhanced-page #video-container .description-block blockquote {
-            font-size: 17px;
-            line-height: 24px;
             padding: 0.5rem 1rem;
             margin-bottom: 1rem;
             border-left: 0.25rem solid #eceeef;
@@ -185,7 +176,6 @@
 
         .enhanced-page #video-container .description-block blockquote cite {
             display: block;
-            font-size: 17px;
             color: #1b1b1b;
             font-style: italic;
         }
@@ -306,14 +296,11 @@
         }
 
         .enhanced-page .info-card .card-header .title {
-            font-size: 24px;
             font-weight: bold;
             text-align: left;
         }
 
         .enhanced-page .info-card .description {
-            font-size: 17px;
-            line-height: 1.4;
             text-align: left;
         }
 
@@ -369,10 +356,6 @@
             .enhanced-page #video-container .description-block {
                 margin-left: -38px;
             }
-
-            .enhanced-page #video-container .description-block p {
-                margin-top: 30px;
-            }
         }
 
         .enhanced-page .alert {
@@ -392,14 +375,6 @@
             background-color: #f1f9fc;
             border-color: #d4ecf6;
             border: none;
-        }
-
-        .enhanced-page .alert p {
-            margin: 0;
-        }
-
-        .enhanced-page .alert p:last-child {
-            margin-bottom: 0;
         }
 
         .enhanced-page .alert a {
@@ -518,6 +493,8 @@
                             <iframe title="Victor Lundy:Sculptor of Space"
                                     aria-label="Watch on YouTube"
                                     src="{{ block.value.video_url }}"
+                                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
                                     allowfullscreen></iframe>
                         </div>
                         <div class="description-block">
