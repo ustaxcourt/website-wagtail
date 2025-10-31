@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0071_newsitem_note_newsitem_review_by"),
+        ("home", "0070_newsitem_note_newsitem_review_by"),
         ("wagtailimages", "0027_image_description"),
     ]
 
