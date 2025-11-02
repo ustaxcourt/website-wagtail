@@ -1,20 +1,21 @@
 import logging
 import os
 
-from django.contrib import admin
 from django.conf import settings
+
+from django.contrib import admin
 from django.shortcuts import redirect, render
-from django.urls import include, path, re_path
+from django.urls import path, include
+from django.urls import re_path
 from django.views.generic import TemplateView, RedirectView
 
+from search import views as search_views
+from app.admin_local.views import LocalLoginView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
-
-from search import views as search_views
-from app.admin_local.views import LocalLoginView
 
 
 def all_legacy_documents_redirect(request, filename):

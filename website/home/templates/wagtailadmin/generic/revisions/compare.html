@@ -2,7 +2,7 @@
 {% load i18n wagtailadmin_tags %}
 {% block extra_css %}
     <style>
-       .button +.button {
+        .button+.button {
             margin-inline-start: 0;
         }
 
@@ -19,7 +19,7 @@
             border-top: 1px solid var(--w-color-border-furniture);
         }
 
-        @media (min-width: 800px){
+        @media (min-width: 800px) {
             .workflow-action-buttons {
                 margin-left: -5rem;
             }
@@ -75,7 +75,7 @@
         <tbody>
             {% for comp in comparison %}
                 <tr>
-                    {% if comp.field_label != "Review by date"%}
+                    {% if comp.field_label != "Review by date" %}
                         <td class="title" valign="top">
                             <div class="title-wrapper">{{ comp.field_label }}:</div>
                         </td>
@@ -133,9 +133,7 @@
                         <td class="timestamp" valign="top">
                             {% if forloop.first %}
                                 {% if revision_b.pk == object.pk and object.current_workflow_state %}
-                                    {% with latest_revision=object.get_latest_revision %}
-                                        {{ latest_revision.created_at|date:"M j, Y H:i" }}
-                                    {% endwith %}
+                                    {% with latest_revision=object.get_latest_revision %}{{ latest_revision.created_at|date:"M j, Y H:i" }}{% endwith %}
                                 {% else %}
                                     {% trans "Current" %}
                                 {% endif %}
@@ -168,11 +166,9 @@
                         <p>{% trans "There are no differences between these two versions" %}</p>
                     </td>
                 </tr>
-
             {% endfor %}
         </tbody>
     </table>
-
     <div class="workflow-action-buttons">
         {% if workflow_state and task_state %}
             <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' task_state.id %}"
@@ -206,7 +202,6 @@
         <!-- History button -->
         <a href="{% url 'wagtailadmin_pages:history' object.pk %}"
            class="button">{% trans "View edit history" %}</a>
-
     </div>
 {% endblock %}
 {% block extra_js %}
