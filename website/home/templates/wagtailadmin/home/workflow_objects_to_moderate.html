@@ -204,10 +204,8 @@
                             <td class="review-date-cell">
                                 <!-- 3.  Notes / Review By -->
                                 {% if obj.review_by %}
-                                <span class="review-date-span">Review by: {{ obj.review_by|date:"M j, Y" }}</span>
-                                {% if obj.is_review_overdue %}
-                                <span class="overdue-label">OVERDUE</span>
-                                {% endif %}
+                                    <span class="review-date-span">Review by: {{ obj.review_by|date:"M j, Y" }}</span>
+                                    {% if obj.is_review_overdue %}<span class="overdue-label">OVERDUE</span>{% endif %}
                                 {% else %}
                                     <span class="no-review-date">No review date set</span>
                                 {% endif %}
