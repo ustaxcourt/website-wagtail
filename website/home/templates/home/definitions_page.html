@@ -208,6 +208,43 @@
                 filter: brightness(0) invert(1);
             }
 
+            #suggestions {
+                position: absolute;
+                background: white;
+                border: 1px solid black;
+                width: max-content;
+                padding: 8px;
+                max-width: 400px;
+                z-index: 100;
+            }
+
+        }
+        /*May need to move it above with the other selectors
+        Also may not be needed inside the media function since not much changes,
+        except maybe max height*/
+        #suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid black;
+            width: max-content;
+            padding: 8px;
+            max-width: 400px;
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .suggestionEntry {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+        }
+        .suggestionEntry:hover {
+            cursor: pointer;
+            background-color: blue;
+            color: white;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 {% endblock %}
@@ -228,14 +265,13 @@
             <input type="text"
                     name="query"
                     id="search-input"
-                    placeholder="Enter search text"
+                    placeholder="Search..."
                     aria-label="Search"
                     data-testid="search-input">
-                Search
             </button>
         </form>
 
-         <div class="suggestions" id="suggestions" aria-live="polite" aria-atomic="true">
+         <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true">
 
          </div>
 
@@ -322,13 +358,28 @@
         suggestionsDiv.innerHTML = '';
 
         if (query.length < 1){
+            suggestionsDiv.classList.add('hidden')
+            return;
+        }
+        suggestionsDiv.classList.remove('hidden');
+
+        const termElements = document.querySelectorAll('.definition-term');
+        available_words = Array.from(termElements).map(element => element.textContent.trim());
+
+        const filteredWords = available_words.filter(word =>
+            word.toLowerCase().includes(query)
+        );
+
+        if(filteredWords.length === 0){
+            suggestionsDiv.classList.add('hidden')
             return;
         }
 
-        available_words.forEach(word => {
-            suggestionsDiv.innerHTML = '<div class="p-3 text-lg text-gray-700">{No suggestions found.}</div>';
+        let suggestions =  '';
+        filteredWords.forEach(word => {
+            suggestions += `<div class="suggestionEntry p-3 text-lg text-gray-700">${word}</div>`;
         })
-
+        suggestionsDiv.innerHTML = suggestions;
 
 
         /*
