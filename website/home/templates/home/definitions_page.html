@@ -151,6 +151,16 @@
 
             #definitions-page .alphabet-nav-mobile.show-nav {
                 display: flex;
+                border: 1px solid var(--theme-color-base-light, #A9AEB1);
+                padding: 28px;
+                position: absolute;
+                z-index: 50;
+                background: white;
+                width: 237px;
+                right: 21px;
+                margin-top: 0px;
+                justify-content: flex-start;
+                gap: 22px;
             }
 
             #definitions-page .alphabet-nav-mobile a {
@@ -232,6 +242,7 @@
                     <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
                 {% endfor %}
             </div>
+
         {% endif %}
 
         {% for letter, definitions in grouped_definitions %}
