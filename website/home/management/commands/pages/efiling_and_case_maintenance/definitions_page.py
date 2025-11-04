@@ -15,6 +15,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+definitions_documents = {
+    "filter_icon.svg": "",
+}
+
 
 class DefinitionsPageInitializer(PageInitializer):
     def __init__(self):
@@ -31,7 +35,7 @@ class DefinitionsPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        title = "Definitions"
+        title = "Tax Court Definitions"
 
         if Page.objects.filter(slug=self.slug).exists():
             logger.info(f"- {title} page already exists.")
