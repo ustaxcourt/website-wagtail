@@ -221,6 +221,24 @@
             <p>This page defines key terms used throughout the site to help individuals representing themselves before the Tax Court. It clarifies common legal and procedural language, ensuring readers can navigate the process with greater understanding, even without formal training.</p>
         </div>
 
+        <form id="search-form"
+                class="search-form"
+                action="/search/"
+                method="get">
+            <input type="text"
+                    name="query"
+                    id="search-input"
+                    placeholder="Enter search text"
+                    aria-label="Search"
+                    data-testid="search-input">
+                Search
+            </button>
+        </form>
+
+         <div class="suggestions" id="suggestions" aria-live="polite" aria-atomic="true">
+
+         </div>
+
         {% if available_letters %}
             <div class="alphabet-nav">
                 {% for letter in available_letters %}
@@ -264,6 +282,7 @@
 {% block extra_js %}
 <script>
     // Wait for the document to be fully loaded
+    var available_words;
     document.addEventListener('DOMContentLoaded', function() {
 
         // Find the button and the mobile nav element
@@ -285,6 +304,62 @@
                 filterButton.setAttribute('aria-expanded', isExpanded);
             });
         }
+        // 1. Select all elements that have the class 'definition-term'// This gives you a NodeList (which is like an array)
+        const termElements = document.querySelectorAll('.definition-term');
+
+        // 2. Convert the NodeList to a proper array and extract the text// .map() creates a new array by running a function on every item// .textContent gets the text inside the <h3>// .trim() removes any extra whitespace from the beginning or end
+        available_words = Array.from(termElements).map(element => element.textContent.trim());
+
+        // 3. Now you have an array of all the terms.// You can see it in your browser's developer console (F12)
+        console.log(available_words);
+    });
+    /*Listen on search input, when the user types*/
+    const searchInput = document.getElementById('search-input');
+    const suggestionsDiv = document.getElementById('suggestions');
+    searchInput.addEventListener('input', function() {
+        const query = searchInput.value.toLowerCase().trim();
+
+        suggestionsDiv.innerHTML = '';
+
+        if (query.length < 1){
+            return;
+        }
+
+        available_words.forEach(word => {
+            suggestionsDiv.innerHTML = '<div class="p-3 text-lg text-gray-700">{No suggestions found.}</div>';
+        })
+
+
+
+        /*
+        // Filter the word list based on the input
+        const filteredWords = available_words.filter(word =>
+            word.toLowerCase().startsWith(inputValue)
+        );
+
+        // --- 4. Display the Suggestions ---
+        if (filteredWords.length > 0) {
+            filteredWords.forEach(word => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.textContent = word;
+                suggestionItem.className = 'p-3 text-lg text-gray-700 hover:bg-blue-50 cursor-pointer border-b border-gray-200';
+
+                // Add a click listener to each suggestion item
+                suggestionItem.addEventListener('click', () => {
+                    searchInput.value = word; // Fill the input with the clicked word
+                    suggestionsDiv.classList.add('hidden'); // Hide the list
+                });
+
+                suggestionsDiv.appendChild(suggestionItem);
+            });
+
+            // Show the suggestions list
+            suggestionsDiv.classList.remove('hidden');
+        } else {
+            // No matches found, so make sure the list is hidden
+            suggestionsDiv.classList.add('hidden');
+        }
+        */
     });
 </script>
 {% endblock %}

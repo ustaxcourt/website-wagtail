@@ -49,6 +49,7 @@ class DefinitionsPage(ModerationMixin, Page):
 
         # Group definitions by first letter
         grouped_definitions = defaultdict(list)
+        all_questions = []
 
         for block in self.definitions:
             if block.block_type == "definition":
@@ -56,6 +57,7 @@ class DefinitionsPage(ModerationMixin, Page):
                 if question:
                     first_letter = question[0].upper()
                     grouped_definitions[first_letter].append(block.value)
+                    all_questions.append(question)
 
         # Sort definitions within each group alphabetically
         for letter in grouped_definitions:
@@ -66,5 +68,6 @@ class DefinitionsPage(ModerationMixin, Page):
         # Convert to sorted list of tuples for template
         context["grouped_definitions"] = sorted(grouped_definitions.items())
         context["available_letters"] = sorted(grouped_definitions.keys())
+        context["available_words"] = sorted(list(set(all_questions)))
 
         return context
