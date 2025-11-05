@@ -208,6 +208,27 @@
             display: none;
         }
 
+        .search-toast-container {
+            position: absolute;
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            padding: 11px;
+        }
+
+        .search-toast {
+            color: var(--theme-color-primary-dark, #565C65);
+            padding: 10px;
+            border-radius: 3px;
+            z-index: 101;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            font-style: italic;
+            border: 1px solid var(--theme-color-base-lighter, #DFE1E2);
+            box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
+        }
+
         @media (max-width: 1023px){
             #definitions-page .definitions-navigation-container {
                 justify-content: right;
@@ -363,10 +384,8 @@
                 </form>
             </div>
 
-            <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true">
+            <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true"></div>
 
-
-            </div>
             {% if available_letters %}
                 <button id="filter-toggle-btn" aria-expanded="false" aria-controls="alphabet-nav-mobile">
                     <img class="filter-icon" src="{% static 'images/icons/filter_icon.svg' %}" alt="Filter"></img>
@@ -384,6 +403,9 @@
             {% endif %}
         </div>
 
+        <div class="search-toast-container">
+            <div id="search-toast" class="search-toast hidden">No Results Found</div>
+        </div>
 
         {% for letter, definitions in grouped_definitions %}
             <div class="letter-section" id="letter-{{ letter }}">
@@ -408,14 +430,13 @@
         const mobileNav = document.getElementById('alphabet-nav-mobile');
         const searchInput = document.getElementById('search-input');
         const suggestionsDiv = document.getElementById('suggestions');
+        const toastElement = document.getElementById('search-toast');
 
-        // Get all term elements *once* when the page loads
         const termElements = document.querySelectorAll('.definition-term');
 
-        // --- State variable for keyboard navigation ---
         let selectedSuggestionIndex = -1;
+        let toastTimeout = null;
 
-        // --- Mobile Nav Toggle ---
         if (filterButton && mobileNav) {
             filterButton.addEventListener('click', function() {
                 mobileNav.classList.toggle('show-nav');
@@ -423,12 +444,25 @@
                 const isExpanded = mobileNav.classList.contains('show-nav');
                 filterButton.setAttribute('aria-expanded', isExpanded);
             });
+
+            document.addEventListener('click', function(event) {
+                if (mobileNav.classList.contains('show-nav')) {
+
+                    const clickedOnNav = event.target.closest('#alphabet-nav-mobile');
+                    const clickedOnButton = event.target.closest('#filter-toggle-btn');
+                    const clickedOnNavLink = event.target.closest('#alphabet-nav-mobile a');
+
+                    if ((!clickedOnNav && !clickedOnButton) || clickedOnNavLink) {
+                        mobileNav.classList.remove('show-nav');
+                        filterButton.classList.remove('show-nav');
+                        filterButton.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
         }
 
-        // --- Build the word list *once* ---
         const available_words = Array.from(termElements).map(element => element.textContent.trim());
 
-        // Manages applying the 'suggestion-active' class
         function updateSuggestionSelection(suggestionsNodeList) {
             suggestionsNodeList.forEach(item => {
                 item.classList.remove('suggestion-active');
@@ -442,6 +476,20 @@
             }
         }
 
+        function showToast(message, duration = 1500) {
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+            }
+
+            toastElement.textContent = message;
+            toastElement.classList.remove('hidden');
+
+            toastTimeout = setTimeout(() => {
+                toastElement.classList.add('hidden');
+                toastTimeout = null; // Clear the timer ID
+            }, duration);
+        }
+
         searchInput.addEventListener('focus', function() {
             if (window.location.hash || window.location.search) {
                 const cleanUrl = window.location.pathname;
@@ -449,7 +497,6 @@
             }
         });
 
-        // --- Listen for search input ---
         searchInput.addEventListener('input', function() {
             selectedSuggestionIndex = -1;
 
@@ -470,7 +517,6 @@
                 return;
             }
 
-            // Build and display new suggestions
             let suggestionsHTML = '';
             filteredWords.forEach(word => {
                 suggestionsHTML += `<div class="suggestionEntry p-3 text-lg text-gray-700" data-term="${word}">${word}</div>`;
@@ -481,10 +527,10 @@
 
         searchInput.addEventListener('keydown', function(e) {
             const suggestions = suggestionsDiv.querySelectorAll('.suggestionEntry');
-            if (suggestions.length === 0) return;
 
             switch (e.key) {
                 case 'ArrowDown':
+                    if (suggestions.length === 0) return;
                     e.preventDefault();
                     selectedSuggestionIndex++;
                     if (selectedSuggestionIndex >= suggestions.length) {
@@ -494,6 +540,7 @@
                     break;
 
                 case 'ArrowUp':
+                    if (suggestions.length === 0) return;
                     e.preventDefault();
                     selectedSuggestionIndex--;
                     if (selectedSuggestionIndex < 0) {
@@ -509,6 +556,10 @@
                     }
                     else if (suggestions.length > 0) {
                         suggestions[0].click();
+                    }
+                    else {
+                        showToast("No Results Found", 2000);
+                        searchInput.value = '';
                     }
                     break;
 
