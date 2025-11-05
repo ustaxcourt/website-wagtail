@@ -12,16 +12,18 @@
             color: #1b1b1b;
         }
 
-        #definitions-page .search-form-container-container {
+        #definitions-page .definitions-navigation-container {
             display: flex;
-            justify-content: right;
-
+            justify-content: center;
+            gap: 22px;
         }
 
         #definitions-page .search-form-container{
             width: fit-content;
             border: 1px solid #71767A;
             border-radius: 3px;
+            height: fit-content;
+            align-self: center;
         }
 
         #definitions-page .search-form input{
@@ -45,6 +47,11 @@
             color: var(--theme-color-base-medium);
         }
 
+        #search-form {
+            display: flex;
+            align-items: center;
+        }
+
         #search-form-icon {
             color: var(--theme-color-base-medium)
         }
@@ -54,7 +61,6 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             justify-content: center;
-            margin: 2rem 0;
             color: var(--theme-color-primary-dark, #1A4480);
         }
 
@@ -202,16 +208,28 @@
             display: none;
         }
 
+        @media (max-width: 1023px){
+            #definitions-page .definitions-navigation-container {
+                justify-content: right;
+                flex-direction: column-reverse;
+            }
+
+            #definitions-page .search-form-container {
+                align-self: end;
+            }
+        }
+
         @media (max-width: 768px) {
             #definitions-page h1{
                 margin-top: 26px;
             }
 
-            #definitions-page .search-form-container-container {
+            #definitions-page .definitions-navigation-container {
                 display: flex;
                 justify-content: right;
                 gap: 12px;
                 padding-right: 5px;
+                flex-direction: row;
             }
 
             #definitions-page .search-form input{
@@ -320,7 +338,16 @@
             <p>This page defines key terms used throughout the site to help individuals representing themselves before the Tax Court. It clarifies common legal and procedural language, ensuring readers can navigate the process with greater understanding, even without formal training.</p>
         </div>
 
-        <div class="search-form-container-container">
+        <div class="definitions-navigation-container">
+
+            {% if available_letters %}
+                <div class="alphabet-nav">
+                    {% for letter in available_letters %}
+                        <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="search-form-container">
                 <form id="search-form"
                     class="search-form">
@@ -357,13 +384,6 @@
             {% endif %}
         </div>
 
-        {% if available_letters %}
-            <div class="alphabet-nav">
-                {% for letter in available_letters %}
-                    <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
-                {% endfor %}
-            </div>
-        {% endif %}
 
         {% for letter, definitions in grouped_definitions %}
             <div class="letter-section" id="letter-{{ letter }}">
@@ -521,8 +541,7 @@
 
                 if (targetElement) {
                     const targetCard = targetElement.closest('.definition-card');
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+                    targetCard.scrollIntoView({ block: 'start' });
                     searchInput.value = '';
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
