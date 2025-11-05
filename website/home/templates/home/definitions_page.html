@@ -180,9 +180,6 @@
             background-color: blue;
             color: white;
         }
-        .hidden {
-            display: none;
-        }
 
         #suggestions {
             position: absolute;
@@ -193,6 +190,16 @@
             max-height: 300px;
             overflow-y: auto;
             margin-top: 33px;
+        }
+
+        .suggestionEntry.suggestion-active {
+            cursor: pointer;
+            background-color: blue;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -316,9 +323,7 @@
         <div class="search-form-container-container">
             <div class="search-form-container">
                 <form id="search-form"
-                    class="search-form"
-                    action="/search/"
-                    method="get">
+                    class="search-form">
                     <input type="text"
                         name="query"
                         id="search-input"
@@ -378,100 +383,146 @@
 
 {% block extra_js %}
 <script>
-    // Wait for the document to be fully loaded
-    var available_words;
     document.addEventListener('DOMContentLoaded', function() {
-
-        // Find the button and the mobile nav element
         const filterButton = document.getElementById('filter-toggle-btn');
         const mobileNav = document.getElementById('alphabet-nav-mobile');
+        const searchInput = document.getElementById('search-input');
+        const suggestionsDiv = document.getElementById('suggestions');
 
-        //Only run if both elements exist on the page
+        // Get all term elements *once* when the page loads
+        const termElements = document.querySelectorAll('.definition-term');
+
+        // --- State variable for keyboard navigation ---
+        let selectedSuggestionIndex = -1;
+
+        // --- Mobile Nav Toggle ---
         if (filterButton && mobileNav) {
-
-            // Add a click event listener to the button
             filterButton.addEventListener('click', function() {
-
-                // Toggle the 'show-nav' class on the mobile nav and filter button
                 mobileNav.classList.toggle('show-nav');
                 filterButton.classList.toggle('show-nav');
-
-                // Update ARIA attribute for accessibility
                 const isExpanded = mobileNav.classList.contains('show-nav');
                 filterButton.setAttribute('aria-expanded', isExpanded);
             });
         }
-        // 1. Select all elements that have the class 'definition-term'// This gives you a NodeList (which is like an array)
-        const termElements = document.querySelectorAll('.definition-term');
 
-        // 2. Convert the NodeList to a proper array and extract the text// .map() creates a new array by running a function on every item// .textContent gets the text inside the <h3>// .trim() removes any extra whitespace from the beginning or end
-        available_words = Array.from(termElements).map(element => element.textContent.trim());
+        // --- Build the word list *once* ---
+        const available_words = Array.from(termElements).map(element => element.textContent.trim());
 
-        // 3. Now you have an array of all the terms.// You can see it in your browser's developer console (F12)
-        console.log(available_words);
-    });
-    /*Listen on search input, when the user types*/
-    const searchInput = document.getElementById('search-input');
-    const suggestionsDiv = document.getElementById('suggestions');
-    searchInput.addEventListener('input', function() {
-        const query = searchInput.value.toLowerCase().trim();
-
-        suggestionsDiv.innerHTML = '';
-
-        if (query.length < 1){
-            suggestionsDiv.classList.add('hidden')
-            return;
-        }
-        suggestionsDiv.classList.remove('hidden');
-
-        const termElements = document.querySelectorAll('.definition-term');
-        available_words = Array.from(termElements).map(element => element.textContent.trim());
-
-        const filteredWords = available_words.filter(word =>
-            word.toLowerCase().includes(query)
-        );
-
-        if(filteredWords.length === 0){
-            suggestionsDiv.classList.add('hidden')
-            return;
-        }
-
-        let suggestions =  '';
-        filteredWords.forEach(word => {
-            suggestions += `<div class="suggestionEntry p-3 text-lg text-gray-700">${word}</div>`;
-        })
-        suggestionsDiv.innerHTML = suggestions;
-
-
-        /*
-        // Filter the word list based on the input
-        const filteredWords = available_words.filter(word =>
-            word.toLowerCase().startsWith(inputValue)
-        );
-
-        // --- 4. Display the Suggestions ---
-        if (filteredWords.length > 0) {
-            filteredWords.forEach(word => {
-                const suggestionItem = document.createElement('div');
-                suggestionItem.textContent = word;
-                suggestionItem.className = 'p-3 text-lg text-gray-700 hover:bg-blue-50 cursor-pointer border-b border-gray-200';
-
-                // Add a click listener to each suggestion item
-                suggestionItem.addEventListener('click', () => {
-                    searchInput.value = word; // Fill the input with the clicked word
-                    suggestionsDiv.classList.add('hidden'); // Hide the list
-                });
-
-                suggestionsDiv.appendChild(suggestionItem);
+        // Manages applying the 'suggestion-active' class
+        function updateSuggestionSelection(suggestionsNodeList) {
+            suggestionsNodeList.forEach(item => {
+                item.classList.remove('suggestion-active');
             });
 
-            // Show the suggestions list
-            suggestionsDiv.classList.remove('hidden');
-        } else {
-            // No matches found, so make sure the list is hidden
-            suggestionsDiv.classList.add('hidden');
+            if (selectedSuggestionIndex > -1) {
+                const selectedItem = suggestionsNodeList[selectedSuggestionIndex];
+                selectedItem.classList.add('suggestion-active');
+
+                selectedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
-        */
+
+        // --- Listen for search input ---
+        searchInput.addEventListener('input', function() {
+            selectedSuggestionIndex = -1;
+
+            const query = searchInput.value.toLowerCase().trim();
+            suggestionsDiv.innerHTML = '';
+
+            if (query.length < 1) {
+                suggestionsDiv.classList.add('hidden');
+                return;
+            }
+
+            const filteredWords = available_words.filter(word =>
+                word.toLowerCase().startsWith(query)
+            );
+
+            if (filteredWords.length === 0) {
+                suggestionsDiv.classList.add('hidden');
+                return;
+            }
+
+            // Build and display new suggestions
+            let suggestionsHTML = '';
+            filteredWords.forEach(word => {
+                suggestionsHTML += `<div class="suggestionEntry p-3 text-lg text-gray-700" data-term="${word}">${word}</div>`;
+            });
+            suggestionsDiv.innerHTML = suggestionsHTML;
+            suggestionsDiv.classList.remove('hidden');
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            const suggestions = suggestionsDiv.querySelectorAll('.suggestionEntry');
+            if (suggestions.length === 0) return;
+
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    selectedSuggestionIndex++;
+                    if (selectedSuggestionIndex >= suggestions.length) {
+                        selectedSuggestionIndex = 0;
+                    }
+                    updateSuggestionSelection(suggestions);
+                    break;
+
+                case 'ArrowUp':
+                    e.preventDefault();
+                    selectedSuggestionIndex--;
+                    if (selectedSuggestionIndex < 0) {
+                        selectedSuggestionIndex = suggestions.length - 1;
+                    }
+                    updateSuggestionSelection(suggestions);
+                    break;
+
+                case 'Enter':
+                    e.preventDefault();
+                    if (selectedSuggestionIndex > -1) {
+                        suggestions[selectedSuggestionIndex].click();
+                    }
+                    else if (suggestions.length > 0) {
+                        suggestions[0].click();
+                    }
+                    break;
+
+                case 'Escape':
+                    suggestionsDiv.classList.add('hidden');
+                    suggestionsDiv.innerHTML = '';
+                    selectedSuggestionIndex = -1;
+                    break;
+            }
+        });
+
+        suggestionsDiv.addEventListener('mouseover', function(event) {
+            const hoveredSuggestion = event.target.closest('.suggestionEntry');
+            if (hoveredSuggestion) {
+                const allSuggestions = suggestionsDiv.querySelectorAll('.suggestionEntry');
+                const newIndex = Array.from(allSuggestions).indexOf(hoveredSuggestion);
+
+                if (newIndex !== selectedSuggestionIndex) {
+                    selectedSuggestionIndex = newIndex;
+                    updateSuggestionSelection(allSuggestions);
+                }
+            }
+        });
+
+        suggestionsDiv.addEventListener('click', function(event) {
+            const clickedSuggestion = event.target.closest('.suggestionEntry');
+            if (clickedSuggestion) {
+                const selectedTerm = clickedSuggestion.dataset.term;
+                const targetElement = Array.from(termElements).find(el => el.textContent.trim() === selectedTerm);
+
+                if (targetElement) {
+                    const targetCard = targetElement.closest('.definition-card');
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    searchInput.value = '';
+                    suggestionsDiv.classList.add('hidden');
+                    suggestionsDiv.innerHTML = '';
+                    selectedSuggestionIndex = -1;
+                }
+            }
+        });
     });
 </script>
 {% endblock %}
