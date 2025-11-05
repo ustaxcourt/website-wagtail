@@ -183,7 +183,7 @@
         }
         .suggestionEntry:hover {
             cursor: pointer;
-            background-color: blue;
+            background-color: var(--theme-color-base-medium);
             color: white;
         }
 
@@ -195,12 +195,11 @@
             z-index: 100;
             max-height: 300px;
             overflow-y: auto;
-            margin-top: 33px;
         }
 
         .suggestionEntry.suggestion-active {
             cursor: pointer;
-            background-color: blue;
+            background-color: var(--theme-color-base-medium);
             color: white;
         }
 
@@ -283,7 +282,6 @@
                 background: white;
                 width: 237px;
                 right: 21px;
-                margin-top: 33px;
                 justify-content: flex-start;
                 gap: 22px;
             }
@@ -344,7 +342,6 @@
                 width: 317px;
                 max-width: 400px;
                 z-index: 100;
-                margin-top: 33px;
             }
         }
     </style>
@@ -382,9 +379,8 @@
                         <i id="search-form-icon" class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </form>
+                <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true"></div>
             </div>
-
-            <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true"></div>
 
             {% if available_letters %}
                 <button id="filter-toggle-btn" aria-expanded="false" aria-controls="alphabet-nav-mobile">
@@ -597,6 +593,27 @@
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
+                }
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            const clickedOnSearchInput = event.target.closest('#search-input');
+
+            if (!suggestionsDiv.classList.contains('hidden')) {
+
+                const clickedOnSuggestions = event.target.closest('#suggestions');
+
+                if (!clickedOnSuggestions && !clickedOnSearchInput) {
+                    suggestionsDiv.classList.add('hidden');
+                    suggestionsDiv.innerHTML = '';
+                    selectedSuggestionIndex = -1;
+                    searchInput.value = '';
+                }
+            }
+            else{
+                if(!clickedOnSearchInput){
+                    searchInput.value = '';
                 }
             }
         });
