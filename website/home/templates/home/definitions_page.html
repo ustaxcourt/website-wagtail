@@ -171,6 +171,30 @@
             background-color: var(--link-hover-blue, #0056b3);
         }
 
+        .suggestionEntry {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+        }
+        .suggestionEntry:hover {
+            cursor: pointer;
+            background-color: blue;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+
+        #suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--theme-color-base-lighter);
+            width: 317px;
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 33px;
+        }
+
         @media (max-width: 768px) {
             #definitions-page h1{
                 margin-top: 26px;
@@ -184,7 +208,7 @@
             }
 
             #definitions-page .search-form input{
-                width: 188px;
+                width: 180px;
                 height: 31px;
             }
 
@@ -270,40 +294,12 @@
             #suggestions {
                 position: absolute;
                 background: white;
-                border: 1px solid black;
-                width: max-content;
-                padding: 8px;
+                border: 1px solid var(--theme-color-base-lighter);
+                width: 317px;
                 max-width: 400px;
                 z-index: 100;
+                margin-top: 33px;
             }
-
-        }
-        /*May need to move it above with the other selectors
-        Also may not be needed inside the media function since not much changes,
-        except maybe max height*/
-        #suggestions {
-            position: absolute;
-            background: white;
-            border: 1px solid black;
-            width: max-content;
-            padding: 8px;
-            max-width: 400px;
-            z-index: 100;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .suggestionEntry {
-            border-bottom: 1px solid #ddd;
-            padding: 8px;
-        }
-        .suggestionEntry:hover {
-            cursor: pointer;
-            background-color: blue;
-            color: white;
-        }
-        .hidden {
-            display: none;
         }
     </style>
 {% endblock %}
@@ -335,6 +331,10 @@
                 </form>
             </div>
 
+            <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true">
+
+
+            </div>
             {% if available_letters %}
                 <button id="filter-toggle-btn" aria-expanded="false" aria-controls="alphabet-nav-mobile">
                     <img class="filter-icon" src="{% static 'images/icons/filter_icon.svg' %}" alt="Filter"></img>
@@ -351,12 +351,6 @@
 
             {% endif %}
         </div>
-
-
-
-         <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true">
-
-         </div>
 
         {% if available_letters %}
             <div class="alphabet-nav">
