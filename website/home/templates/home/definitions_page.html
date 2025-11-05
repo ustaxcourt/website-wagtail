@@ -422,6 +422,13 @@
             }
         }
 
+        searchInput.addEventListener('focus', function() {
+            if (window.location.hash || window.location.search) {
+                const cleanUrl = window.location.pathname;
+                history.replaceState(null, '', cleanUrl);
+            }
+        });
+
         // --- Listen for search input ---
         searchInput.addEventListener('input', function() {
             selectedSuggestionIndex = -1;
