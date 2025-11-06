@@ -412,25 +412,25 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
 @hooks.register("register_reports_menu_item")
 def register_unpublished_changes_report_menu_item():
     return AdminOnlyMenuItem(
-        "Press Release & Notices publish report",
-        reverse("newsitem_report"),
+        "News and Announcements Publish Report",
+        reverse("news_and_announcements_report"),
         icon_name="clipboard-list",
         order=700,
     )
 
 
 @hooks.register("register_admin_urls")
-def register_newsitem_report_url():
+def register_news_and_announcements_report_url():
     return [
         path(
-            "reports/newsitem-report/",
+            "reports/news-and-announcements-report/",
             NewsItemReportView.as_view(),
-            name="newsitem_report",
+            name="news_and_announcements_report",
         ),
         path(
-            "reports/newsitem-report/results/",
+            "reports/news-and-notices-report/results/",
             NewsItemReportView.as_view(results_only=True),
-            name="newsitem_report_results",
+            name="news_and_announcements_report_results",
         ),
     ]
 
