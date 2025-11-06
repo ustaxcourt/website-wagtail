@@ -22,6 +22,8 @@
         color: var(--text-black);
         text-decoration: underline;
         font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
     }
 
     #yellow-news-banner-container .yellow-news-banner a:hover {
@@ -66,6 +68,14 @@
         width: 24px;
         height: 24px;
     }
+
+    @media(max-width: 768px){
+        #red-news-banner-container .red-news-banner a {
+            font-size: 16px;
+            line-height: 20px;
+        }
+    }
+
 </style>
 {% if has_yellow_news %}
     <!-- Embed news data as JSON for client-side processing -->
@@ -120,7 +130,7 @@
 
             // Build the document link if available
             const documentLink = itemToShow.document_url
-                ? ` <a href="${itemToShow.document_url}">See the Press Release</a>.`
+                ? ` <a href="${itemToShow.document_url}">See the Announcement</a>.`
                 : '';
 
             const bannerHTML = `
