@@ -29,7 +29,7 @@
         #definitions-page .search-form input{
             font-style: italic;
             color: var(--theme-color-base-medium);
-            width: 275px;
+            width: 269px;
             height: 31px;
             border: none;
             padding-left: 13px;
@@ -50,6 +50,7 @@
         #search-form {
             display: flex;
             align-items: center;
+            gap: 6px;
         }
 
         #search-form-icon {
@@ -152,7 +153,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             justify-content: center;
-            margin: 2rem 0;
+            margin: 33px 0;
             color: var(--theme-color-primary-dark, #1A4480);
         }
 
@@ -213,6 +214,7 @@
             width: 100%;
             justify-content: center;
             padding: 11px;
+            left:0;
         }
 
         .search-toast {
@@ -226,6 +228,9 @@
             font-style: italic;
             border: 1px solid var(--theme-color-base-lighter, #DFE1E2);
             box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
+        }
+        .search-form button:focus {
+            outline: none;
         }
 
         @media (max-width: 1023px){
@@ -376,7 +381,8 @@
                         aria-label="Search"
                         data-testid="search-input">
                     <button type="submit" data-testid="search-button">
-                        <i id="search-form-icon" class="fa-solid fa-magnifying-glass"></i>
+                        <i id="search-form-icon"class="fa-solid fa-magnifying-glass"aria-hidden="true"></i>
+                        <span class="sr-only">Search</span>
                     </button>
                 </form>
                 <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true"></div>
