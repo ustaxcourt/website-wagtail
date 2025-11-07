@@ -278,29 +278,8 @@
         width: 100%;
     }
 
-
-    header#top-navigation li.navigation-header.get-feedback {
-        display: none;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        justify-content: center;
-        background: none;
-        cursor: pointer;
-        height: 64px;
-        font-size: 18px;
-        font-weight: 600;
-        color: white;
-        text-transform: uppercase;
-    }
-
      /* Mobile Navigation Styles */
      @media (max-width: 879px) {
-
-        header#top-navigation li.navigation-header.get-feedback {
-            display: flex;
-        }
-
         header#top-navigation #navigation-search-form {
             display: flex;
         }
@@ -714,8 +693,8 @@
                 <li class="navigation-header">
                     {% if section.value.external_url %}
                         <a href="{{ section.value.external_url }}"
-                           target="_blank"
-                           data-testid="nav-button-{{ section.value.title|slugify }}">
+                        target="_blank"
+                        data-testid="nav-button-{{ section.value.title|slugify }}">
                             {{ section.value.title }}
                         </a>
                     {% else %}
@@ -732,18 +711,23 @@
                     {% endif %}
                     {% if section.value.sub_links %}
                         <ul class="navigation-list"
-                            data-testid="nav-list-{{ section.value.title|slugify }}">
+                            data-testid="nav-list-{{ section.value.title|slugify }}"
+
+                            {% if forloop.last %}
+                                id="last-nav-list"
+                            {% endif %}>
+
                             {% for sub_link in section.value.sub_links %}
                                 <li class="nav-link">
                                     {% if sub_link.external_url %}
                                         <a target="_blank"
-                                           href="{{ sub_link.external_url }}"
-                                           data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                        href="{{ sub_link.external_url }}"
+                                        data-testid="nav-link-{{ sub_link.title|slugify }}">
                                             {{ sub_link.title }}
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
-                                           data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                        data-testid="nav-link-{{ sub_link.title|slugify }}">
                                             {{ sub_link.title }}
                                         </a>
                                     {% endif %}
@@ -753,14 +737,6 @@
                     {% endif %}
                 </li>
             {% endfor %}
-            <li class="navigation-header get-feedback">
-                <a href="https://forms.office.com/r/45R5iAguPG"
-                   class="link"
-                   target="_blank"
-                   data-testid="nav-button-Give-Feedback">
-                    <div>GIVE FEEDBACK</div>
-                </a>
-            </li>
         </ul>
     </div>
 </header>
