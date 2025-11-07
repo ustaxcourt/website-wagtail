@@ -376,11 +376,11 @@
                 <form id="search-form"
                     class="search-form">
                     <input type="text"
-                        name="query"
+                        name="definiions-query"
                         id="search-input"
                         placeholder="Search..."
                         aria-label="Search"
-                        data-testid="search-input">
+                        data-testid="definitions-search-input">
                     <button type="submit" data-testid="search-button">
                         <i id="search-form-icon"class="fa-solid fa-magnifying-glass"aria-hidden="true"></i>
                         <span class="sr-only">Search</span>
@@ -520,6 +520,8 @@
                 return;
             }
 
+            suggestionsDiv.classList.remove('hidden');
+
             let suggestionsHTML = '';
             filteredWords.forEach(word => {
                 suggestionsHTML += `
@@ -530,7 +532,6 @@
                     </div>`;
             });
             suggestionsDiv.innerHTML = suggestionsHTML;
-            suggestionsDiv.classList.remove('hidden');
         });
 
         searchInput.addEventListener('keydown', function(e) {
