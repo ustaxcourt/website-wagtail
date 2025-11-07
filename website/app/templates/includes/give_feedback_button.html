@@ -4,18 +4,22 @@
         width: 100%;
         height: fit-content;
         display: flex;
-        position: sticky;
-        top: 125px;
+        position: fixed;
+        {% comment %} position: sticky; {% endcomment %}
+        {% comment %} top: 125px; {% endcomment %}
         z-index: 1000;
     }
 
     .give-feedback-btn {
-      position: absolute;
+      position: fixed;
+      {% comment %} position: absolute; {% endcomment %}
       right: -42px;
-      top: 210px;
+      {% comment %} top: 210px; {% endcomment %}
 
       width: 109px;
       height: 29px;
+
+      margin-top: 100px;
 
       background: #005EA2;
       /* theme-color-primary */
