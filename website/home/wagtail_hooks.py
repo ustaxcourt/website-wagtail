@@ -428,7 +428,7 @@ def register_news_and_announcements_report_url():
             name="news_and_announcements_report",
         ),
         path(
-            "reports/news-and-notices-report/results/",
+            "reports/news-and-announcements-report/results/",
             NewsItemReportView.as_view(results_only=True),
             name="news_and_announcements_report_results",
         ),
