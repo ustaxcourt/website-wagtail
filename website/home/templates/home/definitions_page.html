@@ -20,7 +20,7 @@
 
         #definitions-page .search-form-container{
             width: fit-content;
-            border: 1px solid #71767A;
+            border: 1px solid var(--Base-base-dark, #565C65);
             border-radius: 3px;
             height: fit-content;
             align-self: center;
@@ -76,8 +76,8 @@
             color: var(--light-blue);
             text-decoration: none;
             font-weight: normal;
-            font-size: 16px;
-            border: 1px solid #ddd;
+            font-size: 17px;
+            border: 1px solid var(--theme-color-base-lighter, #DCDEE0);
             border-radius: 4px;
             transition: background-color 0.2s ease, border-color 0.2s ease;
         }
@@ -136,8 +136,9 @@
         }
 
         #definitions-page .definition-description a {
-            color: var(--link-blue);
+            color: var(--color-link);
             text-decoration: underline;
+            font-weight: 700;
         }
 
         #definitions-page .definition-description a:hover {
@@ -251,7 +252,7 @@
 
             #definitions-page .definitions-navigation-container {
                 display: flex;
-                justify-content: right;
+                justify-content: space-between;
                 gap: 12px;
                 padding-right: 5px;
                 flex-direction: row;
@@ -303,7 +304,7 @@
                 text-decoration: none;
                 font-weight: normal;
                 font-size: 16px;
-                border: 1px solid #ddd;
+                border: 1px solid var(--theme-color-base-lighter, #DCDEE0);
                 border-radius: 4px;
                 transition: background-color 0.2s ease, border-color 0.2s ease;
             }
@@ -385,7 +386,7 @@
                         <span class="sr-only">Search</span>
                     </button>
                 </form>
-                <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true"></div>
+                <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true" role="listbox"></div>
             </div>
 
             {% if available_letters %}
@@ -521,7 +522,12 @@
 
             let suggestionsHTML = '';
             filteredWords.forEach(word => {
-                suggestionsHTML += `<div class="suggestionEntry p-3 text-lg text-gray-700" data-term="${word}">${word}</div>`;
+                suggestionsHTML += `
+                    <div class="suggestionEntry p-3 text-lg text-gray-700"
+                        role="option"
+                        data-term="${word}">
+                        ${word}
+                    </div>`;
             });
             suggestionsDiv.innerHTML = suggestionsHTML;
             suggestionsDiv.classList.remove('hidden');
