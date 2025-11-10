@@ -4,334 +4,401 @@
 {% load custom_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
-
 {% block extra_css %}
-<style>
-  :root {
-    --container-w: 1120px;
-  }
+    <style>
+      #home-page {
+          background: #fff;
+      }
 
-  #home-page {
-    background: #fff;
-  }
+      .container {
+          width: min(var(--container-w), 92vw);
+          margin: 0 auto;
+      }
 
-  .container {
-    width: min(var(--container-w), 92vw);
-    margin: 0 auto;
-  }
+      #home-page .entries-list {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin: 20px 0;
+      }
 
-  #home-page .entries-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 20px 0;
-  }
+      #home-page .entries-list .entry {
+          padding: 0px 30px;
+          border: 1px solid var(--border-accent);
+          border-radius: 0;
+          background: var(--bg-info);
+          box-shadow: none;
+      }
 
-  #home-page .entries-list .entry {
-    padding: 0px 30px;
-    border: 1px solid #97D4EA;
-    background: var(--color-primary-alt-lightest);
-  }
+      #home-page .entries-list .entry a {
+          color: inherit;
+          text-decoration: underline;
+          font-weight: 400;
+      }
 
-  .hero {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    background: #ffffff;
-  }
+      .hero {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: var(--bg-white);
+      }
 
-  .welcome-container {
-    position: relative;
-    width: 100%;
-    background: #fff;
-    border-top: 1px solid #dcdcdc;
-    border-bottom: 1px solid #dcdcdc;
-    z-index: 2;
-  }
+      .welcome-container {
+        position: relative;
+        width: 100%;
+        background: var(--bg-white);
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+        z-index: 2;
+      }
 
-  .welcome-inner {
-    min-height: 136px;
-    padding: 16px 0;
-    display: flex;
-    align-items: center;
-    max-width: var(--container-width);
-    margin: 0 auto;
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+      .welcome-inner {
+          min-height: 136px;
+          padding: 16px 0;
+          display: flex;
+          align-items: center;
+          max-width: var(--container-width);
+          margin: 0 auto;
+          padding-left: 2rem;
+          padding-right: 2rem;
+      }
 
-  .welcome-title {
-    margin: 0 0 6px 0;
-    font-weight: 400;
-    font-size: 32px;
-    line-height: 38px;
-    color: #111;
-  }
+      .welcome-title {
+          color: var(--text-primary);
+      }
 
-  .welcome-body,
-  .welcome-body p {
-    margin: 0;
-    font-weight: 400;
-    font-size: 17px;
-    line-height: 20px;
-    color: #222;
-  }
+      .welcome-body,
+      .welcome-body p {
+          color: var(--text-secondary);
+      }
 
-  .hero-image {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+      .hero-image {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
 
-  /* .pseudo-background-image {
-    background-size: contain;
-    background-position: top;
-    background-repeat: no-repeat;
-    position: relative;
-    width: 100%;
-  } */
+      .pseudo-background-image {
+        position: absolute; /* Establishes a positioning context for the overlay */
+        display: block; /* Ensures it takes up the full width */
+        z-index: -1;
 
-  .pseudo-background-image {
-  position: absolute; /* Establishes a positioning context for the overlay */
-  display: block; /* Ensures it takes up the full width */
-  z-index: -1;
+          /* These rules stretch it to fill the entire parent (.nav-cards) */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+      }
 
-    /* These rules stretch it to fill the entire parent (.nav-cards) */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  }
+      .pseudo-background-image::after {
+        content: ''; /* A pseudo-element must have content */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
 
-  .pseudo-background-image::after {
-    content: ''; /* A pseudo-element must have content */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+        /* Apply your gradient to the overlay */
+        background: linear-gradient(rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0));
+      }
 
-    /* Apply your gradient to the overlay */
-    background: linear-gradient(rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0));
-  }
+      .nav-cards {
+        padding: 12px 0;
+        position: relative;
+        isolation: isolate;
+      }
 
-  .nav-cards {
-    padding: 40px 0;
-      /* Establishes a positioning and stacking context for its children. */
-  position: relative;
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-top: 30px;
+      }
 
-  /* Prevents the negative z-index background from hiding behind the parent. */
-  isolation: isolate;
-  }
+      .nav-link {
+        text-decoration: none;
+        color: inherit;
+      }
 
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    margin-top: 30px;
-  }
+      a:active.nav-link {
+        text-decoration: none;
+        color: inherit;
+      }
 
-  .nav-link {
-    text-decoration: none;
-    color: inherit;
-  }
+      /* News and Notices Section */
+      .news-notices-section {
+        padding: 10px 0;
+        background: var(--bg-white);
+      }
 
-  a:active.nav-link {
-    text-decoration: none;
-    color: inherit;
-  }
+      .news-notices-header {
+        margin-bottom: 20px;
+      }
 
-  .nav-card {
-    background: var(--color-white, #FFF);
-    border: 1px solid var(--theme-color-base-light, #A9AEB1);
-    border-radius: 5px;
-    padding: 23px 20px 34px;
-    text-align: center;
-    position: relative;
-    transition: box-shadow 0.2s;
-    backdrop-filter: blur(5px);
-    height: 100%;
-    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
-    color: #162E51;
-  }
+      .news-notices-header h2 a {
+        color: var(--text-primary);
+        text-decoration: underline;
+        font-weight: 600;
+      }
 
+      .news-notices-header h2 a:hover {
+        color: var(--color-hover);
+        text-decoration: underline;
+      }
 
-  .wide-nav-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 30px 20px;
-    background: var(--color-white, #FFF);
-    border: 1px solid var(--theme-color-base-light, #A9AEB1);
-    border-radius: 5px;
-    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
-    height: 100%;
-    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
-    color: #162E51;
-    margin-top: 30px;
-  }
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+      }
 
-  a.nav-link{
-    display: block;
-  }
+      .news-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-base);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
 
-  .wide-nav-card .icon {
-    width: 40px;
-    height: 40px;
-    color: #0066cc;
-    background: none;
-    border-radius: 0;
-    margin: 0;
-  }
+      .news-card:hover {
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
 
-  .wide-nav-card .icon svg {
-    width: 100%;
-    height: 100%;
-  }
+      .news-card-image {
+        width: 100%;
+        height: 135px;
+        object-fit: cover;
+        background: var(--bg-muted);
+      }
 
-  .wide-nav-card .icon svg path {
-    fill: currentColor;
-  }
+      .news-card-image-placeholder {
+        width: 100%;
+        height: 135px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 48px;
+      }
 
-  .wide-nav-card h2 {
-    margin: 0;
-  }
+      .news-card-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
 
-  .nav-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
+      .news-card-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 12px 0;
+      }
 
-  .wide-nav-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
+      .news-card-description {
+        color: var(--text-subtle);
+        font-size: 17px;
+        line-height: 20px;
+        flex: 1;
+      }
 
-  .nav-card .icon {
-    width: 60px;
-    height: 60px;
-    margin: 0px auto 12px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
-  }
+      .news-card-link {
+        color: var(--text-subtle);
+        text-decoration: underline;
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 12px;
+        display: inline-block;
+      }
 
-  .nav-card h2 {
-    margin: 0px 0px 12px 0px;
-  }
+      .news-card-link:hover {
+        text-decoration: underline;
+      }
 
-  .nav-card p {
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-    margin: 0px;
-  }
+      .nav-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-medium);
+        border-radius: 5px;
+        padding: 23px 20px 34px;
+        text-align: center;
+        position: relative;
+        transition: box-shadow 0.2s;
+        backdrop-filter: blur(5px);
+        height: 100%;
+        box-shadow: 0 4px 4px 0 var(--shadow-card);
+        color: var(--color-navy);
+      }
 
-  .toggle-on-at-or-below-tablet-size {
-    display:none;
-  }
-  .toggle-on-at-or-below-mobile-size {
-    display:none;
-    }
+      .wide-nav-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 30px 20px;
+        background: var(--bg-white);
+        border: 1px solid var(--border-medium);
+        border-radius: 5px;
+        box-shadow: 0 4px 4px 0 var(--shadow-card);
+        height: 100%;
+        transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+        color: var(--color-navy);
+        margin-top: 30px;
+      }
 
-  .welcome-inner-card{
-      margin: 0px 0px 20px 0px;
-      background: var(--color-white, #FFF);
-      padding: 15px 22px 11px;
-      border-radius: 3px;
-  }
+      a.nav-link{
+        display: block;
+      }
 
-  .grid-container{
-    position: relative;
-  }
+      .wide-nav-card .icon {
+        width: 40px;
+        height: 40px;
+        color: var(--color-hover);
+        background: none;
+        border-radius: 0;
+        margin: 0;
+      }
 
-  @media (max-width: 992px) {
-    .cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+      .wide-nav-card .icon svg {
+        width: 100%;
+        height: 100%;
+      }
 
-    .nav-card {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      text-align: left;
-      padding: 20px 25px;
-    }
+      .wide-nav-card .icon svg path {
+        fill: currentColor;
+      }
 
-    .nav-card .icon {
-      margin: 0px 16px 0px 0px;
-    }
+      .nav-card:hover {
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
 
-    .nav-card h2 {
-      margin: 0px;
-    }
+      .wide-nav-card:hover {
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
 
-    .nav-card p {
-      grid-column: 1 / -1;
-      margin: 0px;
-    }
+      .nav-card .icon {
+        width: 60px;
+        height: 60px;
+        margin: 0px auto 12px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+      }
 
-    .wide-nav-cards {
-      display: none;
-    }
+      .nav-card p {
+        font-style: normal;
+      }
 
-    .toggle-on-at-or-below-tablet-size {
-      display: flex;
-    }
-  }
+      .toggle-on-at-or-below-tablet-size {
+        display:none;
+      }
 
-  @media (max-width: 768px) {
-    .grid-container{
-      margin: 0px 12px;
-    }
+      .toggle-on-at-or-below-mobile-size {
+        display:none;
+      }
 
-    .pseudo-background-image::after {
-      background: none;
-    }
+      .welcome-inner-card{
+          margin: 0px 0px 20px 0px;
+          background: var(--bg-white);
+          padding: 15px 22px 11px;
+          border-radius: 3px;
+      }
 
-    .cards-grid {
-      grid-template-columns: 1fr;
-    }
+      .grid-container{
+        position: relative;
+      }
 
-    .nav-card {
-      padding: 16px 16px;
-    }
+      @media (max-width: 992px) {
 
-    .nav-card h2 {
-      line-height: 20px;
-      font-size: 20px;
-    }
+        .news-card-title {
+          font-size: 18px;
+          line-height: 20px;
+        }
 
-    .nav-card p {
-      font-size: 16px;
-    }
+        .news-card-description {
+          font-size: 16px;
+        }
 
-    .welcome-title {
-      font-size: 28px;
-      line-height: 34px;
-    }
+        .news-notices-header {
+          margin-bottom: 20px;
+        }
 
-    .toggle-on-at-or-below-tablet-size {
-      display: block;
-    }
+        .news-notices-header h2 a {
+          font-size: 20px;
+        }
 
-    .hero{
-      display: none;
-    }
+        .cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
 
-    .toggle-on-at-or-below-mobile-size {
-    display:block;
-    }
+        .nav-card {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          align-items: center;
+          text-align: left;
+          padding: 20px 25px;
+        }
 
-  }
+        .nav-card .icon {
+          margin: 0px 16px 0px 0px;
+        }
 
+        .nav-card p {
+          grid-column: 1 / -1;
+        }
 
+        .wide-nav-cards {
+          display: none;
+        }
+
+        .toggle-on-at-or-below-tablet-size {
+          display: flex;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .grid-container{
+          margin: 0px 12px;
+        }
+
+        .pseudo-background-image::after {
+          background: none;
+        }
+
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-card {
+          padding: 16px 16px;
+        }
+
+        .toggle-on-at-or-below-tablet-size {
+          display: block;
+        }
+
+        .hero{
+          display: none;
+        }
+
+        .toggle-on-at-or-below-mobile-size {
+          display:block;
+        }
+
+        .news-notices-section {
+          padding: 40px 0;
+        }
+
+        .news-grid {
+          grid-template-columns: 1fr;
+        }
+      }
 </style>
 {% endblock %}
-
 {% block content %}
 <div id="home-page">
 
@@ -434,12 +501,45 @@
     </div>
   </section>
 
-  <section class="static-cards">
+
+  <!-- News and Notices Section -->
+  {% if news_items %}
+  <section class="news-notices-section">
     <div class="grid-container">
+      <div class="news-notices-header">
+        <h2><a href="{{ press_release_page_url }}">News and Notices</a></h2>
+      </div>
+      <div class="news-grid">
+        {% for news_item in news_items %}
+        <div class="news-card">
+          {% if news_item.image %}
+            {% image news_item.image fill-370x135 as news_image %}
+            <img src="{{ news_image.url }}" alt="{{ news_item.title }}" class="news-card-image">
+          {% else %}
+            <img src="{% static 'images/home/news.jpeg' %}" alt="Default news image" class="news-card-image">
+          {% endif %}
+          <div class="news-card-content">
+            <h3 class="news-card-title">{{ news_item.title }}</h3>
+            <div class="news-card-description">
+              {{ news_item.description|richtext }}
+            </div>
+            {% if news_item.document %}
+            <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Press Release.</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="grid-container">
+    <section class="static-cards">
       <div class="content">
         <div class="entries-list">
           {% for card in live_static_text_cards %}
-          <div class="entry shadow-2">
+          <div class="entry">
             {% if card.title %}
             <h2>{{ card.title }}</h2>
             {% else %}

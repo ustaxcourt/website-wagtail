@@ -2,20 +2,21 @@
     /* ---- Give Feedback (Rotated per Figma spec) ---- */
     .give-feedback-btn {
       position: fixed;         /* stick to screen while scrolling */
-      right: -57px;            /* hug the right edge */
+      right: -42px;            /* hug the right edge */
       top: 40vh;               /* vertical placement, tweak as needed */
 
-      width: 152px;
-      height: 39px;
+      width: 109px;
+      height: 29px;
 
-      background: #005EA2;     /* theme-color-primary */
+      background: #005EA2;
+      /* theme-color-primary */
       color: #fff;
       border-radius: 4px;
       text-decoration: none;
 
       font-family: "Public Sans", sans-serif;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 12px;
       line-height: 95%;
       text-align: center;
 
@@ -25,11 +26,14 @@
 
       /* Rotation */
       transform: rotate(-90deg);
-      transform-origin: center center;  /* keeps it on-screen */
+      transform-origin: center center;
+      /* keeps it on-screen */
       z-index: 1000;
+      border: 1px solid white;
     }
 
-    @media (max-width: 768px) {
+    /* mobile styles */
+    @media (max-width: 879px) {
         .give-feedback-btn {
             display: flex;
             flex-direction: row;
@@ -48,10 +52,25 @@
             top: 40vh;
             font-size: 14px;
 
-            border-radius: var(--component-button-radius, 4px) 4px 0 0;
-            background: var(--theme-color-primary, #005EA2);
+            border-radius: var(--component-button-radius) 4px 0 0;
+            background: var(--theme-color-primary);
+        }
+
+        .give-feedback-btn {
+            display: none;
+        }
+
+    }
+    /* @media (min-width: 879px) {
+        .give-feedback-btn {
+            border: 1px solid white;
         }
     }
+    @media (max-width: 879px) {
+        .give-feedback-btn {
+            display: none;
+        }
+    } */
 
     .give-feedback-btn,
     .give-feedback-btn:visited,
@@ -62,9 +81,7 @@
         background: #005EA2;
         text-decoration: none;
     }
-
 </style>
-
-<a class="give-feedback-btn" href="https://forms.office.com/r/45R5iAguPG" aria-label="Give Feedback">
-    Give Feedback
-</a>
+<a class="give-feedback-btn"
+   href="https://forms.office.com/r/45R5iAguPG"
+   aria-label="Give Feedback">Give Feedback</a>

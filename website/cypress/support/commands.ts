@@ -75,20 +75,57 @@ export function checkHeaderOrder() {
 }
 
 export function checkHeaderStyles() {
-    const headerStyles = {
-        h1: { fontFamily: 'Source Sans Pro', fontSize: '32px', lineHeight: '40px' },
-        'h2:not(footer h2)': { fontFamily: 'Source Sans Pro', fontSize: '24px', lineHeight: '30px' },
-        'footer h2': { fontFamily: 'Source Sans Pro', fontSize: '20px', lineHeight:'normal'},
-        h3: { fontFamily: 'Source Sans Pro', fontSize: '20px', lineHeight: '25px' },
-        h4: { fontFamily: 'Source Sans Pro', fontSize: '17px', lineHeight: '24px' },
+    cy.viewport('iphone-x'); // Check mobile first
+    cy.wait(100); // Allow styles to recompute
+
+    const pSelector = 'p:not(.usa-banner__header-action):not(.usa-banner__header-text)';
+
+    const mobileStyles = {
+        h1: { fontFamily: 'Source Sans 3', fontSize: '24px', lineHeight: '32px' },
+        h2: { fontFamily: 'Source Sans 3', fontSize: '20px', lineHeight: '22px' },
+        h3: { fontFamily: 'Source Sans 3', fontSize: '18px', lineHeight: '20px' },
+        [pSelector]: { fontFamily: 'Source Sans 3', fontSize: '16px', lineHeight: '20px' },
     };
-    Object.entries(headerStyles).forEach(([header, styles]) => {
+
+    Object.entries(mobileStyles).forEach(([selector, styles]) => {
         cy.get('body').then(($body) => {
-            if ($body.find(header).length === 0) {
-                cy.log(`⚠️ Skipping ${header} checks: No ${header} elements found.`);
+            if ($body.find(selector).length === 0) {
+                cy.log(`⚠️ Skipping ${selector} checks (mobile): No ${selector} elements found.`);
                 return;
             }
-            cy.get(header).each(($el) => {
+            cy.get(selector).first().then(($el) => {
+                cy.wrap($el).should('have.css', 'font-family').then((fontFamily) => {
+                    const fontFamilyString = String(fontFamily);
+                    expect(fontFamilyString.toLowerCase()).to.include(styles.fontFamily.toLowerCase());
+                });
+                cy.wrap($el).should('have.css', 'font-size').then((fontSize) => {
+                    expect(fontSize).to.eq(styles.fontSize);
+                });
+                cy.wrap($el).should('have.css', 'line-height').then((lineHeight) => {
+                    expect(lineHeight).to.eq(styles.lineHeight);
+                });
+            });
+        });
+    });
+
+    // Check desktop/tablet
+    cy.viewport(1280, 720);
+    cy.wait(100); // Allow styles to recompute
+
+    const desktopStyles = {
+        h1: { fontFamily: 'Source Sans 3', fontSize: '32px', lineHeight: '38px' },
+        h2: { fontFamily: 'Source Sans 3', fontSize: '24px', lineHeight: '30px' },
+        h3: { fontFamily: 'Source Sans 3', fontSize: '20px', lineHeight: '25px' },
+        [pSelector]: { fontFamily: 'Source Sans 3', fontSize: '17px', lineHeight: '20px' },
+    };
+
+    Object.entries(desktopStyles).forEach(([selector, styles]) => {
+        cy.get('body').then(($body) => {
+            if ($body.find(selector).length === 0) {
+                cy.log(`⚠️ Skipping ${selector} checks (desktop): No ${selector} elements found.`);
+                return;
+            }
+            cy.get(selector).first().then(($el) => {
                 cy.wrap($el).should('have.css', 'font-family').then((fontFamily) => {
                     const fontFamilyString = String(fontFamily);
                     expect(fontFamilyString.toLowerCase()).to.include(styles.fontFamily.toLowerCase());

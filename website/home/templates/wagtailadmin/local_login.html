@@ -1,85 +1,129 @@
 {% extends "wagtailadmin/admin_base.html" %}
 {% load i18n wagtailadmin_tags static %}
-{% block titletag %}{% trans "Emergency Login" %}{% endblock %}
+{% block titletag %}
+    {% trans "Emergency Login" %}
+{% endblock %}
 {% block bodyclass %}login{% endblock %}
-
 {% block extra_css %}
-<style>
-    .login { background: #f0f0f0; }
-    @media (prefers-color-scheme: dark) { .login { background: #1a1a1a; } }
+    <style>
+        .login {
+            background: #f0f0f0;
+        }
 
-    .login .content-wrapper { background: #FFF; }
-    @media (prefers-color-scheme: dark) {
-        .login .content-wrapper { background: #2d2d2d; color: #fff; }
-    }
+        @media (prefers-color-scheme: dark) {
+            .login {
+                background: #1a1a1a;
+            }
+        }
 
-    .court-seal { width: 150px; height: 150px; filter: grayscale(100%); }
-    @media (prefers-color-scheme: dark) { .court-seal { filter: grayscale(100%) invert(1); } }
+        .login .content-wrapper {
+            background: #FFF;
+        }
 
-    .court-seal-container { text-align: center; }
+        @media (prefers-color-scheme: dark) {
+            .login .content-wrapper {
+                background: #2d2d2d;
+                color: #fff;
+            }
+        }
 
-    .divider {
-        display: flex; align-items: center; text-align: center;
-        margin: 2rem 0; color: #666;
-    }
-    @media (prefers-color-scheme: dark) { .divider { color: #999; } }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #ddd; }
-    @media (prefers-color-scheme: dark) { .divider::before, .divider::after { border-bottom-color: #444; } }
-    .divider span { margin: 0 1rem; text-transform: uppercase; font-size: 0.8rem; font-weight: 500; }
-</style>
+        .court-seal {
+            width: 150px;
+            height: 150px;
+            filter: grayscale(100%);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .court-seal {
+                filter: grayscale(100%) invert(1);
+            }
+        }
+
+        .court-seal-container {
+            text-align: center;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+            color: #666;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .divider {
+                color: #999;
+            }
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+
+            .divider::before,
+            .divider::after {
+                border-bottom-color: #444;
+            }
+        }
+
+        .divider span {
+            margin: 0 1rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+    </style>
 {% endblock extra_css %}
-
 {% block furniture %}
-<main class="content-wrapper" id="main">
-    <div class="court-seal-container">
-        <img src="{% static 'images/footer/seal.png' %}" alt="United States Tax Court Seal" class="court-seal">
-    </div>
-
-    <div class="messages" role="status">
-        {% if messages or form.errors %}
-        <ul>
-            {% if form.errors %}
-            {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
+    <main class="content-wrapper" id="main">
+        <div class="court-seal-container">
+            <img src="{% static 'images/footer/seal.png' %}"
+                 alt="United States Tax Court Seal"
+                 class="court-seal">
+        </div>
+        <div class="messages" role="status">
+            {% if messages or form.errors %}
+                <ul>
+                    {% if form.errors %}
+                        {% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}
+                    {% endif %}
+                    {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+                </ul>
             {% endif %}
-            {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-
-    <div class="divider"><span>{% trans "Emergency Admin Access Only" %}</span></div>
-
-    <form class="login-form"
-          action=""
-          method="post"
-          autocomplete="off"
-          novalidate>
-        {% csrf_token %}
-        {% url 'wagtailadmin_home' as home_url %}
-        <input type="hidden" name="next" value="{{ next|default:home_url }}" />
-
-        {% formattedfield form.username %}
-        {% formattedfield form.password %}
-
-        {% if show_password_reset %}
-        <a class="reset-password" href="{% url 'wagtailadmin_password_reset' %}">
-            {% trans "Forgotten password?" %}
-        </a>
-        {% endif %}
-
-        {% include "wagtailadmin/shared/forms/single_checkbox.html" with label_classname="remember-me" name="remember" text=_("Remember me") %}
-
-        <footer class="form-actions">
-            <button type="submit"
-                    class="button button-longrunning"
-                    data-controller="w-progress"
-                    data-action="w-progress#activate"
-                    data-w-progress-active-value="{% trans 'Signing in…' %}">
-                {% icon name="spinner" %}
-                <em data-w-progress-target="label">{% trans 'Sign in' %}</em>
-            </button>
-        </footer>
-    </form>
-</main>
+        </div>
+        <div class="divider">
+            <span>{% trans "Emergency Admin Access Only" %}</span>
+        </div>
+        <form class="login-form"
+              action=""
+              method="post"
+              autocomplete="off"
+              novalidate>
+            {% csrf_token %}
+            {% url 'wagtailadmin_home' as home_url %}
+            <input type="hidden" name="next" value="{{ next|default:home_url }}" />
+            {% formattedfield form.username %}
+            {% formattedfield form.password %}
+            {% if show_password_reset %}
+                <a class="reset-password" href="{% url 'wagtailadmin_password_reset' %}">{% trans "Forgotten password?" %}</a>
+            {% endif %}
+            {% include "wagtailadmin/shared/forms/single_checkbox.html" with label_classname="remember-me" name="remember" text=_("Remember me") %}
+            <footer class="form-actions">
+                <button type="submit"
+                        class="button button-longrunning"
+                        data-controller="w-progress"
+                        data-action="w-progress#activate"
+                        data-w-progress-active-value="{% trans 'Signing in…' %}">
+                    {% icon name="spinner" %}
+                    <em data-w-progress-target="label">{% trans 'Sign in' %}</em>
+                </button>
+            </footer>
+        </form>
+    </main>
 {% endblock %}
