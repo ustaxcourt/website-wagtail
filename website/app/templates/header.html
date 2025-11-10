@@ -278,8 +278,27 @@
         width: 100%;
     }
 
+    header#top-navigation li.navigation-header.get-feedback {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        justify-content: center;
+        background: none;
+        cursor: pointer;
+        height: 64px;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        text-transform: uppercase;
+    }
+
      /* Mobile Navigation Styles */
      @media (max-width: 879px) {
+        header#top-navigation li.navigation-header.get-feedback {
+            display: flex;
+        }
+
         header#top-navigation #navigation-search-form {
             display: flex;
         }
@@ -737,6 +756,14 @@
                     {% endif %}
                 </li>
             {% endfor %}
+            <li class="navigation-header get-feedback">
+                <a href="https://forms.office.com/r/45R5iAguPG"
+                   class="link"
+                   target="_blank"
+                   data-testid="nav-button-Give-Feedback">
+                    <div>GIVE FEEDBACK</div>
+                </a>
+            </li>
         </ul>
     </div>
 </header>
