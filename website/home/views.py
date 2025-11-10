@@ -33,8 +33,8 @@ class NewsItemReportFilterSet(WagtailFilterSet):
 class NewsItemReportView(ReportView):
     title = "News Item Workflow Report"
 
-    index_url_name = "newsitem_report"
-    index_results_url_name = "newsitem_report_results"
+    index_url_name = "news_and_announcements_report"
+    index_results_url_name = "news_and_announcements_report_results"
 
     filterset_class = NewsItemReportFilterSet
 
