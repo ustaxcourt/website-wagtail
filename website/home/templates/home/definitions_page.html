@@ -380,7 +380,8 @@
                         id="search-input"
                         placeholder="Search..."
                         aria-label="Search"
-                        data-testid="definitions-search-input">
+                        data-testid="definitions-search-input"
+                        role="searchbox">
                     <button type="submit" data-testid="search-button">
                         <i id="search-form-icon"class="fa-solid fa-magnifying-glass"aria-hidden="true"></i>
                         <span class="sr-only">Search</span>
@@ -474,8 +475,13 @@
             if (selectedSuggestionIndex > -1) {
                 const selectedItem = suggestionsNodeList[selectedSuggestionIndex];
                 selectedItem.classList.add('suggestion-active');
+                selectedItem.setAttribute('aria-selected', 'true');
+                searchInput.setAttribute('aria-activedescendant', selectedItem.id);
 
                 selectedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }else{
+                selectedItem.setAttribute('aria-selected', 'false');
+                searchInput.removeAttribute('aria-activedescendant');
             }
         }
 
@@ -526,6 +532,7 @@
             filteredWords.forEach(word => {
                 suggestionsHTML += `
                     <div class="suggestionEntry p-3 text-lg text-gray-700"
+                        id="suggestion-${word.replace(/\s/g, '')}"
                         role="option"
                         data-term="${word}">
                         ${word}
