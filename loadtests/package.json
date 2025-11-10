@@ -5,6 +5,7 @@
   "scripts": {
     "test": "artillery run load-test.yml",
     "test:cody": "TARGET_URL=https://cody-sandbox-web.ustaxcourt.gov artillery run load-test.yml",
+    "test:vlad": "TARGET_URL=https://vlad-sandbox-web.ustaxcourt.gov artillery run load-test.yml",
     "test:dev": "TARGET_URL=https://dev-web.ustaxcourt.gov artillery run load-test.yml",
     "test:staging": "TARGET_URL=https://staging-web.ustaxcourt.gov artillery run load-test.yml",
     "test:prod": "TARGET_URL=https://www.ustaxcourt.gov artillery run load-test.yml",

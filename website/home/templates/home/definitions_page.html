@@ -378,6 +378,7 @@
                     <input type="text"
                         name="definiions-query"
                         id="search-input"
+                        role="searchbox"
                         placeholder="Search..."
                         aria-label="Search"
                         data-testid="definitions-search-input">
@@ -386,7 +387,7 @@
                         <span class="sr-only">Search</span>
                     </button>
                 </form>
-                <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true" role="listbox"></div>
+                <div class="suggestions hidden" id="suggestions" role="listbox" aria-label="Search suggestions"></div>
             </div>
 
             {% if available_letters %}
@@ -469,13 +470,20 @@
         function updateSuggestionSelection(suggestionsNodeList) {
             suggestionsNodeList.forEach(item => {
                 item.classList.remove('suggestion-active');
+                item.setAttribute('aria-selected', 'false');
             });
 
             if (selectedSuggestionIndex > -1) {
                 const selectedItem = suggestionsNodeList[selectedSuggestionIndex];
                 selectedItem.classList.add('suggestion-active');
+                selectedItem.setAttribute('aria-selected', 'true');
+
+                // Update aria-activedescendant
+                searchInput.setAttribute('aria-activedescendant', selectedItem.id);
 
                 selectedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                searchInput.removeAttribute('aria-activedescendant');
             }
         }
 
@@ -523,15 +531,20 @@
             suggestionsDiv.classList.remove('hidden');
 
             let suggestionsHTML = '';
-            filteredWords.forEach(word => {
+            filteredWords.forEach((word, index) => {
+                const suggestionId = `suggestion-${index}`;
                 suggestionsHTML += `
                     <div class="suggestionEntry p-3 text-lg text-gray-700"
                         role="option"
+                        id="${suggestionId}"
                         data-term="${word}">
                         ${word}
                     </div>`;
             });
             suggestionsDiv.innerHTML = suggestionsHTML;
+
+            // Update aria-expanded
+            searchInput.setAttribute('aria-expanded', 'true');
         });
 
         searchInput.addEventListener('keydown', function(e) {
