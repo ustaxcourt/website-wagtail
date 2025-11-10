@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
-from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin, PageQuerySet
+from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
@@ -18,6 +18,19 @@ from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 
 
+class NewsItemQuerySet(models.QuerySet):
+    def live(self):
+        """
+        Returns items that are 'live', have a go_live_at
+        date in the past, and have not expired.
+        """
+        now = timezone.now()
+        return self.filter(live=True, go_live_at__lte=now).filter(
+            # Also check that it hasn't expired
+            models.Q(expire_at__isnull=True) | models.Q(expire_at__gt=now)
+        )
+
+
 class NewsItem(
     ModerationMixin,
     WorkflowMixin,
@@ -26,7 +39,7 @@ class NewsItem(
     index.Indexed,
     models.Model,
 ):
-    objects = PageQuerySet.as_manager()
+    objects = NewsItemQuerySet.as_manager()
 
     title = models.CharField(
         max_length=500, help_text="Title of the news article", blank=False
