@@ -111,6 +111,7 @@
         {% endif %}
         {% include 'header.html' %}
         {% include 'includes/give_feedback_button.html' %}
+        {% include 'includes/definitions_button.html' %}
         {% include 'yellow_news_banner.html' %}
         {% block content %}{% endblock %}
         {% include 'footer.html' %}
@@ -129,9 +130,10 @@
             document.addEventListener("DOMContentLoaded", () => {
 
                   const hiddenMenu = document.getElementById("last-nav-list");
-                  const contentToAdjust = document.querySelector(".give-feedback-btn");
+                  const feedbackButtonToAdjust = document.querySelector(".give-feedback-btn");
+                  const definitionsButtonToAdjust = document.querySelector(".definitions-btn");
 
-                  if (!hiddenMenu || !contentToAdjust) return;
+                  if (!hiddenMenu) return;
 
                   function getTrueMenuHeight(element) {
                         const originalStyles = {
@@ -157,13 +159,31 @@
 
                   const observer = new ResizeObserver(entries => {
 
-                  const menuContentHeight = hiddenMenu.scrollHeight;
+                      const menuContentHeight = hiddenMenu.scrollHeight;
 
-                  if (menuContentHeight > 0) {
-                        lastKnownOpenHeight = menuContentHeight;
-                  }
+                      if (menuContentHeight > 0) {
+                            lastKnownOpenHeight = menuContentHeight;
+                      }
 
-                  contentToAdjust.style.marginTop = `calc(55px + ${lastKnownOpenHeight}px)`;
+                      const baseMargin = 55;
+                      const gap = 12;
+
+                      if (feedbackButtonToAdjust) {
+
+                            feedbackButtonToAdjust.style.marginTop = `calc(${baseMargin}px + ${lastKnownOpenHeight}px)`;
+
+                            if (definitionsButtonToAdjust) {
+                                  const feedbackButtonHeight = feedbackButtonToAdjust.offsetWidth;
+
+                                  const definitionsMarginTop = baseMargin + feedbackButtonHeight + gap + lastKnownOpenHeight;
+
+                                  definitionsButtonToAdjust.style.marginTop = `calc(${definitionsMarginTop}px)`;
+                            }
+
+                      } else if (definitionsButtonToAdjust) {
+                            definitionsButtonToAdjust.style.marginTop = `calc(67px + ${lastKnownOpenHeight}px)`;
+                      }
+
                   });
 
                   observer.observe(hiddenMenu);

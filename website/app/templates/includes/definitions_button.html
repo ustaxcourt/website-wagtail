@@ -1,0 +1,83 @@
+<style>
+    #definitions-container {
+        width: 100%;
+        position: sticky;
+        top: 0px;
+        z-index: 1000;
+    }
+
+    .definitions-btn {
+      position: absolute;
+      right: -42px;
+      width: 109px;
+      height: 29px;
+      margin-top: 100px;
+
+      background: #005EA2;
+      color: #fff;
+      border-radius: 4px;
+      text-decoration: none;
+
+      font-family: "Public Sans", sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 95%;
+      text-align: center;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      /* Rotation */
+      transform: rotate(-90deg);
+      transform-origin: center center;
+      /* keeps it on-screen */
+      z-index: 1000;
+      border: 1px solid white;
+    }
+
+    /* mobile styles */
+    @media (max-width: 879px) {
+        .definitions-btn {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 20px;
+            text-align: center;
+            gap: 8px;
+            white-space: nowrap;
+
+            position: fixed;
+            right: -40px;
+            width: 116px;
+            height: 38px;
+
+            top: 40vh;
+            font-size: 14px;
+
+            border-radius: var(--component-button-radius) 4px 0 0;
+            background: var(--theme-color-primary);
+        }
+
+        .definitions-btn {
+            display: none;
+        }
+
+    }
+
+    .definitions-btn,
+    .definitions-btn:visited,
+    .definitions-btn:hover,
+    .definitions-btn:active,
+    .definitions-btn:focus {
+        color: #fff;
+        background: #005EA2;
+        text-decoration: none;
+    }
+</style>
+<div id="definitions-container">
+    <a class="definitions-btn"
+   href="/definitions"
+   aria-label="Definitions">Definitions</a>
+</div>
