@@ -416,7 +416,7 @@
                 <div class="definitions-grid">
                     {% for definition in definitions %}
                         <div class="definition-card">
-                            <h3 class="definition-term" aria-describedby="definition-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">{{ definition.question }}</h3>
+                            <h3 class="definition-term" tabindex="-1" aria-describedby="definition-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">{{ definition.question }}</h3>
                             <div class="definition-description" id="definition-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">{{ definition.answer|richtext }}</div>
                         </div>
                     {% endfor %}
@@ -609,6 +609,7 @@
                 if (targetElement) {
                     const targetCard = targetElement.closest('.definition-card');
                     targetCard.scrollIntoView({ block: 'start' });
+                    targetElement.focus();
                     searchInput.value = '';
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
