@@ -1,7 +1,6 @@
 {% load static tz %}
 <style>
     #definitions-container {
-        width: 100%;
         position: sticky;
         top: 0px;
         z-index: 1000;
@@ -9,8 +8,8 @@
 
     .definitions-btn {
         position: absolute;
-        right: -42px;
-        width: 109px;
+        right: -46px;
+        width: fit-content;
         height: 29px;
         margin-top: 100px;
 
@@ -23,9 +22,8 @@
         font-weight: 700;
         font-size: 12px;
         line-height: 95%;
-        text-align: center;
 
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
 
@@ -35,8 +33,14 @@
         /* keeps it on-screen */
         z-index: 1000;
         border: 1px solid white;
+    }
 
-        gap: 13px;
+    .definitions-btn .button-contents {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 5px var(--usa-spacing-205, 12px);
     }
 
     .definitions-btn img {
@@ -85,8 +89,12 @@
 </style>
 <div id="definitions-container">
     <a class="definitions-btn" href="/definitions" aria-label="Definitions">
-        Definitions
-        <img src="{% static 'images/icons/book.svg' %}" alt="Book">
+        <div class="button-contents">
+            <div class="button-text">
+                Definitions
+            </div>
+            <img src="{% static 'images/icons/book.svg' %}" alt="Book">
+        </div>
     </a>
 
 </div>
