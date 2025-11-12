@@ -416,8 +416,8 @@
                 <div class="definitions-grid">
                     {% for definition in definitions %}
                         <div class="definition-card">
-                            <h3 class="definition-term">{{ definition.question }}</h3>
-                            <div class="definition-description">{{ definition.answer|richtext }}</div>
+                            <h3 class="definition-term" aria-describedby="definition-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">{{ definition.question }}</h3>
+                            <div class="definition-description" id="definition-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">{{ definition.answer|richtext }}</div>
                         </div>
                     {% endfor %}
                 </div>
@@ -568,6 +568,7 @@
                     e.preventDefault();
                     if (selectedSuggestionIndex > -1) {
                         suggestions[selectedSuggestionIndex].click();
+                        searchInput.blur();
                     }
                     else if (suggestions.length > 0) {
                         suggestions[0].click();
