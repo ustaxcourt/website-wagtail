@@ -407,7 +407,7 @@
         </div>
 
         <div class="search-toast-container">
-            <div id="search-toast" class="search-toast hidden">No Results Found</div>
+            <div id="search-toast" class="search-toast hidden" aria-atomic="true" role="alert">No Results Found</div>
         </div>
 
         {% for letter, definitions in grouped_definitions %}
