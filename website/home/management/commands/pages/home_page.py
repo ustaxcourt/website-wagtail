@@ -59,7 +59,7 @@ class HomePageInitializer(PageInitializer):
 
         homepage = HomePage(
             title=title,
-            intro="U.S. Tax Court website homepage",
+            # intro="U.S. Tax Court website homepage",
             draft_title="Home",
             slug=None,
             search_description="Official Site of the United States Tax Court",

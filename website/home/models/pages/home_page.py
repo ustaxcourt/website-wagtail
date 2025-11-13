@@ -58,8 +58,8 @@ class StaticTextCardBlock(blocks.StructBlock):
 
 class HomePage(ModerationMixin, Page):
     # Hero section fields for CMS editing
-    intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
-    hero_title = models.CharField(
+    # intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+    intro_text = models.CharField(
         max_length=255,
         default="Welcome to the United States Tax Court",
         help_text="Main welcome title displayed on the homepage hero section",
@@ -108,13 +108,13 @@ class HomePage(ModerationMixin, Page):
     )
 
     content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        FieldPanel("hero_title"),
+        # FieldPanel("intro"),
+        FieldPanel("intro_text"),
         FieldPanel("hero_body"),
         FieldPanel("hero_background_image"),
-        FieldPanel("static_text_cards"),
         FieldPanel("quick_access_tiles"),
         FieldPanel("full_width_quick_access_tile"),
+        FieldPanel("static_text_cards"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
@@ -122,8 +122,8 @@ class HomePage(ModerationMixin, Page):
     )
 
     search_fields = Page.search_fields + [
-        index.SearchField("intro"),
-        index.SearchField("hero_title"),
+        # index.SearchField("intro"),
+        index.SearchField("intro_text"),
         index.SearchField("hero_body"),
     ]
 
