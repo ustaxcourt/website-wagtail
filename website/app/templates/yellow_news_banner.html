@@ -7,8 +7,6 @@
 
     #yellow-news-banner-container .yellow-news-banner {
         color: var(--text-black);
-        font-size: 17px;
-        font-weight: 400;
         display: none;
         /* Hidden by default, shown by JavaScript if not dismissed and within date range */
     }
@@ -120,7 +118,7 @@
 
             // Build the document link if available
             const documentLink = itemToShow.document_url
-                ? ` <a href="${itemToShow.document_url}">See the Press Release</a>.`
+                ? ` <a href="${itemToShow.document_url}">See the Announcement</a>.`
                 : '';
 
             const bannerHTML = `
