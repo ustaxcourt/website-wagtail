@@ -240,10 +240,6 @@ class HomePageInitializer(PageInitializer):
             if len(homepage.quick_access_tiles) == 0:
                 homepage.quick_access_tiles = quick_access_tiles
                 homepage.full_width_quick_access_tile = full_width_quick_access_tile
-            # May need to add some logic so it's saved the first time
-            # but not on updates
-            # homepage.quick_access_tiles = quick_access_tiles
-            # homepage.full_width_quick_access_tile = full_width_quick_access_tile
 
             # Save a new revision and publish the changes to make them live
             homepage.save_revision().publish()
