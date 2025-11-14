@@ -1,18 +1,30 @@
 from django.db import models
 
 from wagtail.admin.panels import FieldPanel
+from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
 from wagtail.search import index
 from wagtail import blocks
 
 from django.utils import timezone
+from django import forms
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from home.models.snippets.news_item import NewsItem
 from home.blocks import SVGChooserBlock
 from home.models.pages.press_release import PressReleasePage
+
+
+class HomePageAdminForm(WagtailAdminPageForm):
+    def clean_intro_text(self):
+        value = self.cleaned_data.get("intro_text")
+        if not value or not str(value).strip():
+            raise forms.ValidationError(
+                "Intro text cannot be empty or only whitespace."
+            )
+        return value
 
 
 class QuickAccessTileBlock(blocks.StructBlock):
@@ -57,8 +69,8 @@ class StaticTextCardBlock(blocks.StructBlock):
 
 
 class HomePage(ModerationMixin, Page):
-    # Hero section fields for CMS editing
-    # intro = RichTextField(blank=True, help_text="Introduction text for the homepage.")
+    base_form_class = HomePageAdminForm
+
     intro_text = models.CharField(
         max_length=255,
         default="Welcome to the United States Tax Court",
