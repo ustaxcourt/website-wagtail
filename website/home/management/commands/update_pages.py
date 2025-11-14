@@ -13,7 +13,7 @@ from home.management.commands.pages.navigation import NavigationInitializer
 pages_to_update = (
     about_the_court_pages_to_update
     + efiling_and_case_maintenance_pages_to_update
-    + [FooterInitializer, NavigationInitializer]
+    + [FooterInitializer, NavigationInitializer, HomePageInitializer]
 )
 
 
@@ -25,6 +25,4 @@ class Command(BaseCommand):
             page_instance = page_class()
             page_instance.run()
 
-        home_initializer = HomePageInitializer()
-        home_initializer.update_home_page()
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
