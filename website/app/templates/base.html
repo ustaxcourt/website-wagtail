@@ -23,7 +23,7 @@
         {# Force all links in the live preview panel to be opened in a new tab #}
         {% if request.in_preview_panel %}<base target="_blank" />{% endif %}
         {# Favicon #}
-        <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+        <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}" />
         <link rel="apple-touch-icon"
               sizes="57x57"
               href="{% static 'images/icons/apple-icon-57x57.png' %}">
@@ -60,17 +60,17 @@
               sizes="32x32"
               href="{% static 'images/icons/favicon-32x32.png' %}">
         <link rel="icon"
-              type="image/png"
+              type="image/svg+xml"
               sizes="96x96"
-              href="{% static 'images/icons/favicon-96x96.png' %}">
+              href="{% static 'images/icons/favicon-96x96.svg' %}">
         <link rel="icon"
-              type="image/png"
+              type="image/svg+xml"
               sizes="16x16"
-              href="{% static 'images/icons/favicon-16x16.png' %}">
+              href="{% static 'images/icons/favicon-16x16.svg' %}">
         <link rel="manifest" href="{% static 'images/icons/manifest.json' %}">
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage"
-              content="{% static 'images/icons/ms-icon-144x144.png' %}">
+              content="{% static 'images/icons/ms-icon-144x144.svg' %}">
         <meta name="theme-color" content="#ffffff">
         {# Global stylesheets #}
         <link rel="stylesheet"
@@ -110,10 +110,10 @@
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
+        {% include 'includes/give_feedback_button.html' %}
         {% include 'yellow_news_banner.html' %}
         {% block content %}{% endblock %}
         {% include 'footer.html' %}
-        {% include 'includes/give_feedback_button.html' %}
         <button title="Scroll to top"
                 id="scroll-to-top"
                 type="button"
@@ -125,6 +125,50 @@
         </button>
         {# Global javascript #}
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", () => {
+
+                  const hiddenMenu = document.getElementById("last-nav-list");
+                  const contentToAdjust = document.querySelector(".give-feedback-btn");
+
+                  if (!hiddenMenu || !contentToAdjust) return;
+
+                  function getTrueMenuHeight(element) {
+                        const originalStyles = {
+                              display: element.style.display,
+                              visibility: element.style.visibility,
+                              position: element.style.position,
+                        };
+
+                        element.style.display = 'block';
+                        element.style.visibility = 'hidden';
+                        element.style.position = 'absolute';
+
+                        const height = element.offsetHeight;
+
+                        element.style.display = originalStyles.display;
+                        element.style.visibility = originalStyles.visibility;
+                        element.style.position = originalStyles.position;
+
+                        return height;
+                  }
+
+                  let lastKnownOpenHeight = getTrueMenuHeight(hiddenMenu);
+
+                  const observer = new ResizeObserver(entries => {
+
+                  const menuContentHeight = hiddenMenu.scrollHeight;
+
+                  if (menuContentHeight > 0) {
+                        lastKnownOpenHeight = menuContentHeight;
+                  }
+
+                  contentToAdjust.style.marginTop = `calc(55px + ${lastKnownOpenHeight}px)`;
+                  });
+
+                  observer.observe(hiddenMenu);
+            });
+        </script>
         <script type="text/javascript"
                 src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
     </body>
