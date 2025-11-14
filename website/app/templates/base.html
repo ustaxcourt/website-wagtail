@@ -110,10 +110,10 @@
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
+        {% include 'includes/give_feedback_button.html' %}
         {% include 'yellow_news_banner.html' %}
         {% block content %}{% endblock %}
         {% include 'footer.html' %}
-        {% include 'includes/give_feedback_button.html' %}
         <button title="Scroll to top"
                 id="scroll-to-top"
                 type="button"
@@ -125,6 +125,50 @@
         </button>
         {# Global javascript #}
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", () => {
+
+                  const hiddenMenu = document.getElementById("last-nav-list");
+                  const contentToAdjust = document.querySelector(".give-feedback-btn");
+
+                  if (!hiddenMenu || !contentToAdjust) return;
+
+                  function getTrueMenuHeight(element) {
+                        const originalStyles = {
+                              display: element.style.display,
+                              visibility: element.style.visibility,
+                              position: element.style.position,
+                        };
+
+                        element.style.display = 'block';
+                        element.style.visibility = 'hidden';
+                        element.style.position = 'absolute';
+
+                        const height = element.offsetHeight;
+
+                        element.style.display = originalStyles.display;
+                        element.style.visibility = originalStyles.visibility;
+                        element.style.position = originalStyles.position;
+
+                        return height;
+                  }
+
+                  let lastKnownOpenHeight = getTrueMenuHeight(hiddenMenu);
+
+                  const observer = new ResizeObserver(entries => {
+
+                  const menuContentHeight = hiddenMenu.scrollHeight;
+
+                  if (menuContentHeight > 0) {
+                        lastKnownOpenHeight = menuContentHeight;
+                  }
+
+                  contentToAdjust.style.marginTop = `calc(55px + ${lastKnownOpenHeight}px)`;
+                  });
+
+                  observer.observe(hiddenMenu);
+            });
+        </script>
         <script type="text/javascript"
                 src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
     </body>

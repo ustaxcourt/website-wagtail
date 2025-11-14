@@ -1,15 +1,20 @@
 <style>
     /* ---- Give Feedback (Rotated per Figma spec) ---- */
-    .give-feedback-btn {
-      position: fixed;         /* stick to screen while scrolling */
-      right: -42px;            /* hug the right edge */
-      top: 40vh;               /* vertical placement, tweak as needed */
+    #give-feedback-container {
+        width: 100%;
+        position: sticky;
+        top: 0px;
+        z-index: 1000;
+    }
 
+    .give-feedback-btn {
+      position: absolute;
+      right: -42px;
       width: 109px;
       height: 29px;
+      margin-top: 100px;
 
       background: #005EA2;
-      /* theme-color-primary */
       color: #fff;
       border-radius: 4px;
       text-decoration: none;
@@ -61,16 +66,6 @@
         }
 
     }
-    /* @media (min-width: 879px) {
-        .give-feedback-btn {
-            border: 1px solid white;
-        }
-    }
-    @media (max-width: 879px) {
-        .give-feedback-btn {
-            display: none;
-        }
-    } */
 
     .give-feedback-btn,
     .give-feedback-btn:visited,
@@ -82,6 +77,8 @@
         text-decoration: none;
     }
 </style>
-<a class="give-feedback-btn"
+<div id="give-feedback-container">
+    <a class="give-feedback-btn"
    href="https://forms.office.com/r/45R5iAguPG"
    aria-label="Give Feedback">Give Feedback</a>
+</div>
