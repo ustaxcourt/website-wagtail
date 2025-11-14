@@ -53,11 +53,6 @@ class NavigationRibbonInitializer:
                 "icon": IconCategories.SCALE,
                 "url": "/petitioners-after",
             },
-            {
-                "title": "Glossary",
-                "icon": IconCategories.BOOK,
-                "url": "/petitioners-glossary",
-            },
         ]
 
         for link in links:

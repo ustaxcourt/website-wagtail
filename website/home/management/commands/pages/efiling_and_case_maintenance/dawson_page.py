@@ -66,18 +66,31 @@ class DawsonPageInitializer(PageInitializer):
 
     def create_related_pages(self, card, related_std_pages, category, standard_pages):
         for a_page in related_std_pages:
-            RelatedPage.objects.create(
-                display_title=next(
-                    (
-                        p["title"]
-                        for p in standard_pages[category]
-                        if p["slug"] == a_page.slug
-                    ),
-                    a_page.title,
+            display_title = next(
+                (
+                    p["title"]
+                    for p in standard_pages[category]
+                    if p["slug"] == a_page.slug
                 ),
-                card=card,
-                related_page=a_page,
+                a_page.title,
             )
+
+            # Check if the page is an EnhancedStandardPage instance
+            if isinstance(a_page, EnhancedStandardPage):
+                RelatedPage.objects.create(
+                    display_title=display_title,
+                    card=card,
+                    related_page=a_page,
+                )
+            else:
+                # For non-EnhancedStandardPage instances (like DefinitionsPage),
+                # use the URL approach instead
+                RelatedPage.objects.create(
+                    display_title=display_title,
+                    card=card,
+                    related_page=None,
+                    url=f"/{a_page.slug}",
+                )
         card.save()
 
     def create_page_info(self, home_page):
