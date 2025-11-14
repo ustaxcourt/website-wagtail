@@ -9,11 +9,11 @@ from .fill_in_form_instructions_page import FillInFormsInstructionsPageInitializ
 from .dawson_faqs_training_and_support import (
     DawsonFaqsTrainingAndSupportPageInitializer,
 )
+from .definitions_page import DefinitionsPageInitializer
 from .searches_and_public_access_page import SearchesAndPublicAccessPageInitializer
 from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitializer
 from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
 from .dashboard_page import DashboardPageInitializer
-from .definitions_page import DawsonFaqsDefinitionsPageInitializer
 from .find_order_page import DawsonFindAnOrderPageInitializer
 from .find_an_opinion import DawsonFindAnOpinionPageInitializer
 from .dawson_find_a_case import FindACasePageInitializer
@@ -40,8 +40,8 @@ efiling_and_case_maintenance_pages_to_initialize = [
     DawsonFaqsAccountManagementPageInitializer,
     DawsonFaqsTrainingAndSupportPageInitializer,
     DawsonFaqsCaseManagementPageInitializer,
-    DawsonFaqsDefinitionsPageInitializer,
     NoticeRegardingPrivacyPageInitializer,
+    DefinitionsPageInitializer,
     DawsonFindAnOrderPageInitializer,
     DawsonFindAnOpinionPageInitializer,
     DawsonReleaseNotesInitializer,
@@ -55,4 +55,9 @@ efiling_and_case_maintenance_pages_to_initialize = [
     PlacesOfTrialPageInitializer,
     FillInFormsInstructionsPageInitializer,
     SearchesAndPublicAccessPageInitializer,
+]
+
+
+efiling_and_case_maintenance_pages_to_update = [
+    DefinitionsPageInitializer,
 ]
