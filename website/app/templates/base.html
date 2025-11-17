@@ -114,12 +114,12 @@
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/definitions_button.html' %}
         {% endif %}
-        {% include 'yellow_news_banner.html' %}
-        {% block content %}{% endblock %}
-        {% include 'footer.html' %}
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/mini_definitions_button.html' %}
         {% endif %}
+        {% include 'yellow_news_banner.html' %}
+        {% block content %}{% endblock %}
+        {% include 'footer.html' %}
         <button title="Scroll to top"
                 id="scroll-to-top"
                 type="button"
