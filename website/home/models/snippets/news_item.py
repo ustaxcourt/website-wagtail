@@ -11,11 +11,15 @@ from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.search import index
 from wagtail.admin.filters import WagtailFilterSet
 import django_filters
-from django.forms import DateInput
+
+# from django.forms import DateInput
 from django.utils import timezone
 from datetime import datetime, time
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+
+from django_filters import DateFromToRangeFilter
+from wagtail.admin.filters import DateRangePickerWidget
 
 
 class NewsItemQuerySet(models.QuerySet):
@@ -335,20 +339,30 @@ class NewsItemFilterSet(WagtailFilterSet):
         label="Status",
     )
 
-    publish_date_from = django_filters.DateFilter(
-        field_name="publish_date",
-        lookup_expr="gte",
-        label="Publish Date From",
-        widget=DateInput(attrs={"type": "date"}),
-        method="filter_publish_date_from",
-    )
+    # publish_date_from = django_filters.DateFilter(
+    #     field_name="publish_date",
+    #     lookup_expr="gte",
+    #     label="Publish Date From",
+    #     widget=DateInput(attrs={"type": "date"}),
+    #     method="filter_publish_date_from",
+    # )
 
-    publish_date_to = django_filters.DateFilter(
+    # publish_date_to = django_filters.DateFilter(
+    #     field_name="publish_date",
+    #     lookup_expr="lte",
+    #     label="Publish Date To",
+    #     widget=DateInput(attrs={"type": "date"}),
+    #     method="filter_publish_date_to",
+    # )
+    publish_date_range = DateFromToRangeFilter(
         field_name="publish_date",
-        lookup_expr="lte",
-        label="Publish Date To",
-        widget=DateInput(attrs={"type": "date"}),
-        method="filter_publish_date_to",
+        label="Publish Date Range",
+        widget=DateRangePickerWidget,
+    )
+    homepage_display_expiration_date_range = DateFromToRangeFilter(
+        field_name="homepage_display_expiration_date",
+        label="Homepage Display Expiration Date Range",
+        widget=DateRangePickerWidget,
     )
 
     def filter_publish_date_from(self, queryset, name, value):
@@ -367,7 +381,12 @@ class NewsItemFilterSet(WagtailFilterSet):
 
     class Meta:
         model = NewsItem
-        fields = ["banner_options", "status", "publish_date_from", "publish_date_to"]
+        fields = [
+            "banner_options",
+            "status",
+            "publish_date_range",
+            "homepage_display_expiration_date_range",
+        ]
 
 
 class NewsItemViewSet(SnippetViewSet):
