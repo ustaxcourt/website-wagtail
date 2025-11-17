@@ -78,18 +78,12 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                     "document": None,
                                     "url": "/petitioners-after",
                                 },
-                                {
-                                    "title": "Definition of terms (Glossary)",
-                                    "icon": IconCategories.INFO,
-                                    "document": None,
-                                    "url": "/petitioners-glossary",
-                                },
                             ],
                         },
                     },
                     {
                         "type": "paragraph",
-                        "value": "A helpful <strong><a href='/petitioners-glossary'>Glossary</a></strong> (definition of terms) is available on the Court’s website. A <strong>User Guide</strong> for the Court’s electronic filing and case management system, is also available.",
+                        "value": "A <strong>User Guide</strong> for the Court’s electronic filing and case management system, is also available.",
                     },
                     {"type": "h2", "value": "Additional Resources"},
                     {"type": "hr", "value": True},
@@ -102,6 +96,12 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                     "icon": IconCategories.PDF,
                                     "document": document.id,
                                     "url": None,
+                                },
+                                {
+                                    "title": "Definitions",
+                                    "icon": IconCategories.INFO,
+                                    "document": None,
+                                    "url": "/definitions",
                                 },
                                 {
                                     "title": " Clinic Program Information",
