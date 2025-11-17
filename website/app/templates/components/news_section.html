@@ -1,0 +1,33 @@
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+<!-- News and Notices Section -->
+{% if news_items %}
+<section class="news-notices-section">
+  <div class="grid-container">
+    <div class="news-notices-header">
+      <h2><a href="{{ press_release_page_url }}">News and Announcements</a></h2>
+    </div>
+    <div class="news-grid">
+      {% for news_item in news_items %}
+      <div class="news-card">
+        {% if news_item.image %}
+          {% image news_item.image fill-370x135 as news_image %}
+          <img src="{{ news_image.url }}" alt="{{ news_item.title }}" class="news-card-image">
+        {% else %}
+          <img src="{% static 'images/home/news.jpeg' %}" alt="Default news image" class="news-card-image">
+        {% endif %}
+        <div class="news-card-content">
+          <h3 class="news-card-title">{{ news_item.title }}</h3>
+          <div class="news-card-description">
+            {{ news_item.description|richtext }}
+          </div>
+          {% if news_item.document %}
+          <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Press Release.</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

@@ -5,6 +5,7 @@
 
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/components/news-cards.css' %}">
     <style>
       #home-page {
           background: #fff;
@@ -143,77 +144,6 @@
 
       .news-notices-header h2 a:hover {
         color: var(--color-hover);
-        text-decoration: underline;
-      }
-
-      .news-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 30px;
-      }
-
-      .news-card {
-        background: var(--bg-white);
-        border: 1px solid var(--border-base);
-        border-radius: 8px;
-        overflow: hidden;
-        transition: box-shadow 0.2s;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .news-card:hover {
-        box-shadow: 0 4px 12px var(--shadow-light);
-      }
-
-      .news-card-image {
-        width: 100%;
-        height: 135px;
-        object-fit: cover;
-        background: var(--bg-muted);
-      }
-
-      .news-card-image-placeholder {
-        width: 100%;
-        height: 135px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 48px;
-      }
-
-      .news-card-content {
-        padding: 20px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .news-card-title {
-        font-weight: 600;
-        color: var(--text-primary);
-        margin: 0 0 12px 0;
-      }
-
-      .news-card-description {
-        color: var(--text-subtle);
-        font-size: 17px;
-        line-height: 20px;
-        flex: 1;
-      }
-
-      .news-card-link {
-        color: var(--text-subtle);
-        text-decoration: underline;
-        font-size: 14px;
-        font-weight: normal;
-        margin-top: 12px;
-        display: inline-block;
-      }
-
-      .news-card-link:hover {
         text-decoration: underline;
       }
 
@@ -392,10 +322,6 @@
         .news-notices-section {
           padding: 40px 0;
         }
-
-        .news-grid {
-          grid-template-columns: 1fr;
-        }
       }
 </style>
 {% endblock %}
@@ -501,38 +427,8 @@
     </div>
   </section>
 
-
   <!-- News and Notices Section -->
-  {% if news_items %}
-  <section class="news-notices-section">
-    <div class="grid-container">
-      <div class="news-notices-header">
-        <h2><a href="{{ press_release_page_url }}">News and Announcements</a></h2>
-      </div>
-      <div class="news-grid">
-        {% for news_item in news_items %}
-        <div class="news-card">
-          {% if news_item.image %}
-            {% image news_item.image fill-370x135 as news_image %}
-            <img src="{{ news_image.url }}" alt="{{ news_item.title }}" class="news-card-image">
-          {% else %}
-            <img src="{% static 'images/home/news.jpeg' %}" alt="Default news image" class="news-card-image">
-          {% endif %}
-          <div class="news-card-content">
-            <h3 class="news-card-title">{{ news_item.title }}</h3>
-            <div class="news-card-description">
-              {{ news_item.description|richtext }}
-            </div>
-            {% if news_item.document %}
-            <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Press Release.</a>
-            {% endif %}
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-  {% endif %}
+  {% include "components/news_section.html" with news_items=news_items press_release_page_url=press_release_page_url %}
 
   <div class="grid-container">
     <section class="static-cards">
