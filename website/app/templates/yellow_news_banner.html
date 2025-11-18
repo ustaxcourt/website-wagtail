@@ -28,7 +28,7 @@
 
     #yellow-news-banner-container .yellow-news-banner .alert-content {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
         padding: 16px 0;
     }
@@ -37,10 +37,19 @@
         flex-shrink: 0;
         width: 24px;
         height: 24px;
+        margin-top: 2px;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-text {
         flex: 1;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-text p {
+        display: inline;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-text strong {
+        display: inline;
     }
 
     #yellow-news-banner-container .yellow-news-banner .close-btn {
@@ -54,6 +63,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-top: 2px;
     }
 
     #yellow-news-banner-container .yellow-news-banner .close-btn:hover {
