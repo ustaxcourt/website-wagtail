@@ -7,6 +7,7 @@
 
     #yellow-news-banner-container .yellow-news-banner {
         color: var(--text-black);
+        font-weight: 400;
         display: none;
         /* Hidden by default, shown by JavaScript if not dismissed and within date range */
     }
@@ -14,12 +15,16 @@
     #yellow-news-banner-container .yellow-news-banner p {
         padding: 0;
         color: var(--text-black);
+        font-size: 20px;
+        line-height: 24px;
     }
 
     #yellow-news-banner-container .yellow-news-banner a {
         color: var(--text-black);
         text-decoration: underline;
         font-weight: 400;
+        font-size: 20px;
+        line-height: 24px;
     }
 
     #yellow-news-banner-container .yellow-news-banner a:hover {
@@ -74,6 +79,19 @@
         width: 24px;
         height: 24px;
     }
+
+    @media(max-width: 768px){
+        #yellow-news-banner-container .yellow-news-banner p {
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner a {
+            font-size: 16px;
+            line-height: 20px;
+        }
+    }
+
 </style>
 {% if has_yellow_news %}
     <!-- Embed news data as JSON for client-side processing -->

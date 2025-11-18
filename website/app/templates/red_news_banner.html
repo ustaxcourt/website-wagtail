@@ -7,6 +7,7 @@
 
     #red-news-banner-container .red-news-banner {
         color: var(--text-white);
+        font-weight: 400;
         display: none;
         /* Hidden by default, shown by JavaScript if within date range */
     }
@@ -14,12 +15,16 @@
     #red-news-banner-container .red-news-banner p {
         padding: 0;
         color: var(--text-white);
+        font-size: 20px;
+        line-height: 24px;
     }
 
     #red-news-banner-container .red-news-banner a {
         color: var(--text-white);
         text-decoration: underline;
         font-weight: 400;
+        font-size: 20px;
+        line-height: 24px;
     }
 
     #red-news-banner-container .red-news-banner a:hover {
@@ -52,6 +57,20 @@
     #red-news-banner-container .red-news-banner .alert-text strong {
         display: inline;
     }
+
+    @media(max-width: 768px){
+        #red-news-banner-container .red-news-banner p {
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        #red-news-banner-container .red-news-banner a {
+            font-size: 16px;
+            line-height: 20px;
+        }
+    }
+
+
 </style>
 {% if has_critical_news %}
     <!-- Embed critical news data as JSON for client-side processing -->
