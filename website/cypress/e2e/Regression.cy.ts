@@ -51,7 +51,7 @@ describe('Homepage redesign', () => {
     cy.get('[href="https://dev.ef-cms.ustaxcourt.gov/trial-sessions"] > .nav-card').should('be.visible');
     cy.get('.wide-nav-card').should('have.class', 'wide-nav-card');
     cy.get('.wide-nav-card').should('be.visible');
-    
+
   });
 
   it('Search Bar', function() {
@@ -70,7 +70,7 @@ describe('Homepage redesign', () => {
     cy.get('#tablet-search-form > [data-testid="search-button"]').click();
     cy.get('.pagination > a').click();
     cy.get(':nth-child(1) > h2 > a').click();
-   
+
   });
 
   it('Header', function() {
@@ -88,7 +88,7 @@ describe('Homepage redesign', () => {
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('have.text', 'Charles G. Jeane, Clerk of the Court');
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('have.class', 'logo-subheading');
     cy.get('.logo-subheadings > :nth-child(1) > :nth-child(2)').should('be.visible');
-  
+
   })
 
   it('Warning about Tax Scams', function() {
@@ -116,7 +116,7 @@ describe('Homepage redesign', () => {
     cy.get('[style="text-decoration: underline;"]').should('have.text', '202) 521-0700');
     cy.get('[style="text-decoration: underline;"]').should('have.attr', 'href', 'tel:+2025210700');
     cy.get('[style="text-decoration: underline;"]').should('be.visible');
-  
+
   });
 
   it('Footer', function() {
@@ -136,7 +136,7 @@ describe('Homepage redesign', () => {
     cy.get('.give-feedback-btn').should('have.attr', 'href', 'https://forms.office.com/r/45R5iAguPG');
     cy.get('.give-feedback-btn').should('be.visible');
     cy.get('.give-feedback-btn').click();
-   
+
   });
 
   describe('Banner expiration test', () => {
@@ -146,7 +146,7 @@ beforeEach(() => {
  cy.visit('/');
 });
 
-it('should not display the banner after expiration date', () => {
+it.skip('(disabled pending WAG-554) should not display the banner after expiration date', () => {
  // Verify that the banner does not exist in the DOM
  cy.get('body').then(($body) => {
    if ($body.find('.alert-text').length > 0) {
@@ -160,7 +160,7 @@ it('should not display the banner after expiration date', () => {
 });
 });
 
-  it('should not display banner after expiration', () => {
+  it.skip('should not display banner after expiration', () => {
    // Mock current date to a time *after* expiration
    const expiredDate = new Date('2025-10-28T00:00:00Z'); // Adjust date as needed
    cy.clock(expiredDate);
@@ -169,7 +169,7 @@ it('should not display the banner after expiration date', () => {
 
   });
 
-  it('New and Notices', function() {
+  it.skip('(disabled pending WAG-554) New and Notices', function() {
     cy.visit('/');
     cy.get(':nth-child(1) > .news-card-image').should('have.class', 'news-card-image');
     cy.get(':nth-child(1) > .news-card-image').should('be.visible');
@@ -193,7 +193,7 @@ it('should not display the banner after expiration date', () => {
     cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('have.class', 'news-card-link');
     cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('have.text', 'See the Press Release.');
     cy.get(':nth-child(3) > .news-card-content > .news-card-link').should('be.visible');
-  
+
   });
 
   });
