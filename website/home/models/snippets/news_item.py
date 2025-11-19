@@ -309,7 +309,7 @@ class NewsItem(
         super().save(*args, **kwargs)
 
     def get_preview_template(self, request, mode_name):
-        return "previews/news_item_preview.html"
+        return "previews/news_cards_preview.html"
 
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)
