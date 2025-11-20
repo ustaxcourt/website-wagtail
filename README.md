@@ -315,7 +315,7 @@ To connect to your ECS container from local:
 
 - note: `ustc-sso-profile` is the profile name used in the `ecs_ssh.py` script, update to yours if different
 
-- note: [requires Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/install-plugin-macos-overview.html), use `sillicon` insllation and not `x86`!
+- note: [requires Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/install-plugin-macos-overview.html), use `silicon` insllation and not `x86`!
 
 ```bash
 source ./.venv/bin/activate
