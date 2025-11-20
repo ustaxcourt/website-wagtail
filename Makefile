@@ -103,7 +103,7 @@ start-tunnel: check-env-is-aws
 	@cd infra && ENVIRONMENT=$(env) ./ssh-tunnel.sh
 
 ecs-ssh:
-	@cd infra && python3 ./scripts/ecs_ssh.py
+	. ./.venv/bin/activate && cd infra && python3 ./scripts/ecs_ssh.py
 
 apply-db-restore: check-env-is-aws
 	@echo "Restoring database for environment: $(env)"

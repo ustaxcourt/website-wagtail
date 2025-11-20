@@ -318,11 +318,7 @@ To connect to your ECS container from local:
 - note: [requires Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/install-plugin-macos-overview.html), use `silicon` insllation and not `x86`!
 
 ```bash
-source ./.venv/bin/activate
-# option 0:
 make ecs-ssh
-# option 1:
-python infra/scripts/ecs_ssh.py
 ```
 
 ---
