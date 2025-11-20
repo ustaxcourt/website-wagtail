@@ -94,6 +94,23 @@
         max-width: 60ch;
         text-align: center;
     }
+    .skip-link {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        z-index: 100;
+    }
+    .skip-link:focus {
+        {% comment %} position: static; {% endcomment %}
+        background-color: white;
+        color: black;
+        left: 0;
+        width: auto;
+        height: auto;
+    }
 
     @media (max-width: 768px) {
         footer#app-footer .footer-address .content {
@@ -130,6 +147,7 @@
     }
 </style>
 <footer id="app-footer">
+    <a href="#main-content" class="skip-link">Back to top</a>
     <div class="main">
         <div class="grid-container">
             <div class="grid-row grid-gap">
