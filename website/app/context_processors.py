@@ -24,6 +24,7 @@ def yellow_priority_news(request):
         news_data.append(
             {
                 "id": item.id,
+                "title": item.title,
                 "description": str(item.description),  # Convert RichText to HTML string
                 "banner_start_date": item.banner_start_date.isoformat()
                 if item.banner_start_date
@@ -61,6 +62,7 @@ def critical_priority_news(request):
         news_data.append(
             {
                 "id": item.id,
+                "title": item.title,
                 "description": str(item.description),  # Convert RichText to HTML string
                 "banner_start_date": item.banner_start_date.isoformat()
                 if item.banner_start_date
