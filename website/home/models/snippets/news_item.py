@@ -67,7 +67,7 @@ class NewsItem(
     )
 
     description = RichTextField(
-        blank=False, help_text="Description of the news article"
+        blank=True, help_text="Summary of the news article", verbose_name="Summary"
     )
 
     publish_date = models.DateTimeField(

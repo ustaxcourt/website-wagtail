@@ -1,3 +1,4 @@
+
 .news-notices-section {
   padding: 10px 0;
   background: var(--bg-white);
@@ -34,10 +35,6 @@
   flex-direction: column;
 }
 
-.news-card:hover {
-  box-shadow: 0 4px 12px var(--shadow-light);
-}
-
 .news-card-image {
   width: 100%;
   height: 135px;
@@ -71,7 +68,6 @@
 
 .news-card-description {
   color: var(--text-subtle);
-  font-size: 17px;
   line-height: 20px;
   flex: 1;
 }
@@ -79,7 +75,6 @@
 .news-card-link {
   color: var(--text-subtle);
   text-decoration: underline;
-  font-size: 14px;
   font-weight: normal;
   margin-top: 12px;
   display: inline-block;
@@ -94,10 +89,6 @@
   .news-card-title {
     font-size: 18px;
     line-height: 20px;
-  }
-
-  .news-card-description {
-    font-size: 16px;
   }
 
   .news-notices-header {

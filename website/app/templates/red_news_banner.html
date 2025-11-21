@@ -15,16 +15,12 @@
     #red-news-banner-container .red-news-banner p {
         padding: 0;
         color: var(--text-white);
-        font-size: 20px;
-        line-height: 24px;
     }
 
     #red-news-banner-container .red-news-banner a {
         color: var(--text-white);
         text-decoration: underline;
         font-weight: 400;
-        font-size: 20px;
-        line-height: 24px;
     }
 
     #red-news-banner-container .red-news-banner a:hover {
@@ -34,7 +30,7 @@
 
     #red-news-banner-container .red-news-banner .alert-content {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
         padding: 16px 0;
     }
@@ -57,19 +53,6 @@
         display: inline;
     }
 
-    @media(max-width: 768px){
-        #red-news-banner-container .red-news-banner p {
-            font-size: 16px;
-            line-height: 20px;
-        }
-
-        #red-news-banner-container .red-news-banner a {
-            font-size: 16px;
-            line-height: 20px;
-        }
-    }
-
-
 </style>
 {% if has_critical_news %}
     <!-- Embed critical news data as JSON for client-side processing -->
@@ -81,6 +64,7 @@
         (function() {
             // Parse the news data from the JSON script tag
             const newsDataElement = document.getElementById('critical-news-data');
+
             if (!newsDataElement) return;
 
             let newsItems;
@@ -137,7 +121,7 @@
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
                         <div class="alert-text">
-                            <strong>Important Notice:</strong> ${itemToShow.description}${documentLink}
+                            <strong>Important Notice: ${itemToShow.title}</strong> ${itemToShow.description}${documentLink}
                         </div>
                     </div>
                 </div>

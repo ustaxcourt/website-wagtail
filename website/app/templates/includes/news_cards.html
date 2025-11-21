@@ -20,10 +20,10 @@
           <h3 class="news-card-title">{{ news_item.title }}</h3>
           <div class="news-card-description">
             {{ news_item.description|richtext }}
+            {% if news_item.document %}
+              <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Announcement.</a>
+            {% endif %}
           </div>
-          {% if news_item.document %}
-          <a href="{{ news_item.document.url }}" class="news-card-link" target="_blank">See the Press Release.</a>
-          {% endif %}
         </div>
       </div>
       {% endfor %}
