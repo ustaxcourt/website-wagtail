@@ -4,6 +4,10 @@ from home.management.commands.pages.page_initializer import PageInitializer
 import logging
 from django.conf import settings
 
+from home.models.utils.execute_script import ExecuteScript
+from django.db import DatabaseError
+from django.core.exceptions import ValidationError
+
 logger = logging.getLogger(__name__)
 
 home_page_documents = {
@@ -59,7 +63,8 @@ class HomePageInitializer(PageInitializer):
 
         homepage = HomePage(
             title=title,
-            intro="U.S. Tax Court website homepage",
+            # intro="U.S. Tax Court website homepage",
+            intro_text="Welcome to the United States Tax Court.",
             draft_title="Home",
             slug=None,
             search_description="Official Site of the United States Tax Court",
@@ -246,3 +251,56 @@ class HomePageInitializer(PageInitializer):
             logger.info("Successfully updated Home page with quick access tiles.")
         else:
             logger.warning("Could not find Home page to update.")
+
+    def run(self):
+        """Update the homepage quick access tiles as an execution script"""
+        command_name = "HomePage update for homepage redesign"
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update_home_page()
+            execution_log_text = "HomePage updated for homepage redesign"
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+
+        except HomePage.DoesNotExist:
+            error_msg = "HomePage settings not found in database. Cannot update non-existent homepage."
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {error_msg}"
+            script_entry.save()
+            raise
+
+        except DatabaseError as e:
+            error_msg = f"Database error occurred while updating homepage: {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Database Error:</strong> {error_msg}"
+            script_entry.save()
+            raise
+
+        except ValidationError as e:
+            error_msg = f"Validation error occurred while saving homepage: {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = (
+                f"<strong>Validation Error:</strong> {error_msg}"
+            )
+            script_entry.save()
+            raise
+
+        except Exception as e:
+            error_msg = f"Unexpected error during homepage update: {type(e).__name__} - {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = (
+                f"<strong>Unexpected Error:</strong> {error_msg}"
+            )
+            script_entry.save()
+            raise
