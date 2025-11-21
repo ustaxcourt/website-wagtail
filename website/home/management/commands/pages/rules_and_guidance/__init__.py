@@ -8,7 +8,6 @@ from .petitioners_about_page import PetitionersAboutInitializer
 from .petitioners_after_trial_page import PetitionersAfterTrialInitializer
 from .petitioners_before_trial_page import PetitionersBeforeTrialInitializer
 from .petitioners_during_page import PetitionersDuringPageInitializer
-from .petitioners_glossary_page import PetitionersGlossaryPageInitializer
 from .petitioners_start_page import PetitionersStartPageInitializer
 from .remote_basics import RemoteBasicsPageInitializer
 from .remote_proceedings_page import RemoteProceedingsPageInitializer
@@ -47,7 +46,6 @@ rules_and_guidance_pages_to_initialize = [
     PetitionersBeforeTrialInitializer,
     PetitionersAfterTrialInitializer,
     PetitionersBeforeTrialInitializer,
-    PetitionersGlossaryPageInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
     GettingReadyPageInitializer,

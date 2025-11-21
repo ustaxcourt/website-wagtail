@@ -381,7 +381,12 @@ class NewsItemFilterSet(WagtailFilterSet):
 
     class Meta:
         model = NewsItem
-        fields = ["banner_options", "status", "publish_date_from", "publish_date_to"]
+        fields = [
+            "banner_options",
+            "status",
+            "publish_date_from",
+            "publish_date_to",
+        ]
 
 
 class NewsItemViewSet(SnippetViewSet):
