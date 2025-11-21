@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0081_merge_0071_definitionspage_0080_fix_trail_court_typo"),
+        ("home", "0082_rename_hero_title_homepage_intro_text_and_more"),
     ]
 
     operations = [
