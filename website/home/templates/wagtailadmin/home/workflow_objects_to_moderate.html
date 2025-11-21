@@ -181,7 +181,7 @@
                                             {% if action_name == 'approve' %}
                                                 {% ifchanged action_name %}
                                                     <button data-workflow-action-url="{% url state.workflow_action_url_name obj.pk|admin_urlquote action_name task_state.id %}"
-                                                            data-launch-modal
+
                                                             class="button">{% trans 'Publish' %}</button>
                                                 {% endifchanged %}
                                             {% endif %}
