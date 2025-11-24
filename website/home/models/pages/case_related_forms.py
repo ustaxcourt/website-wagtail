@@ -9,7 +9,14 @@ from home.models.pages.standard import StandardPage
 
 
 class CaseRelatedFormsPage(StandardPage):
+    show_floating_definitions_button = models.BooleanField(
+        default=False,
+        verbose_name="Floating Definitions Button",
+        help_text="Check to display the floating definitions button on this page.",
+    )
+
     content_panels = Page.content_panels + [
+        FieldPanel("show_floating_definitions_button"),
         InlinePanel("forms", label="Forms"),
     ]
 

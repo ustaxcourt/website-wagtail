@@ -45,6 +45,12 @@ class EnhancedStandardPage(ModerationMixin, Page):
         related_name="+",
     )
 
+    show_floating_definitions_button = models.BooleanField(
+        default=False,
+        verbose_name="Floating Definitions Button",
+        help_text="Check to display the floating definitions button on this page.",
+    )
+
     body = StreamField(
         [
             (
@@ -221,6 +227,7 @@ class EnhancedStandardPage(ModerationMixin, Page):
         blank=True,
     )
     content_panels = Page.content_panels + [
+        FieldPanel("show_floating_definitions_button"),
         FieldPanel("navigation_ribbon"),
         FieldPanel("body"),
     ]
