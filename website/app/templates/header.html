@@ -292,6 +292,21 @@
         text-transform: uppercase;
     }
 
+    .skip-link {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        z-index: 100;
+    }
+    .skip-link:focus {
+        color: white;
+        left: 0;
+        width: auto;
+        height: auto;
+    }
      /* Mobile Navigation Styles */
      @media (max-width: 879px) {
         header#top-navigation li.navigation-header.get-feedback {
@@ -610,6 +625,7 @@
 
 </style>
 <header id="top-navigation">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="blue-banner">
         <div class="grid-container padding-1">
             <div class="usa-header__inner display-flex flex-justify flex-align-center">
