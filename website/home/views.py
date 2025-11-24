@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
 from django.utils import timezone
+from django_filters import DateFromToRangeFilter
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -19,14 +20,26 @@ class NewsItemReportFilterSet(WagtailFilterSet):
 
     title = django_filters.CharFilter(lookup_expr="icontains", label="Title")
 
+    publish_date_range = DateFromToRangeFilter(
+        field_name="publish_date",
+        label="Publish Date Range",
+        widget=DateRangePickerWidget,
+    )
+
+    homepage_display_expiration_date_range = DateFromToRangeFilter(
+        field_name="homepage_display_expiration_date",
+        label="Homepage Display Expiration Date Range",
+        widget=DateRangePickerWidget,
+    )
+
     class Meta:
         model = NewsItem
         fields = [
             "title",
             "created_at",
             "banner_options",
-            "publish_date",
-            "homepage_display_expiration_date",
+            "publish_date_range",
+            "homepage_display_expiration_date_range",
         ]
 
 
