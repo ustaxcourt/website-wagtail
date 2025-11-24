@@ -3,7 +3,12 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
-from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
+from wagtail.models import (
+    DraftStateMixin,
+    RevisionMixin,
+    WorkflowMixin,
+    PreviewableMixin,
+)
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.admin.panels import PublishingPanel
 from wagtail.snippets.models import register_snippet
@@ -36,6 +41,7 @@ class NewsItem(
     WorkflowMixin,
     DraftStateMixin,
     RevisionMixin,
+    PreviewableMixin,
     index.Indexed,
     models.Model,
 ):
@@ -61,7 +67,7 @@ class NewsItem(
     )
 
     description = RichTextField(
-        blank=False, help_text="Description of the news article"
+        blank=True, help_text="Summary of the news article", verbose_name="Summary"
     )
 
     publish_date = models.DateTimeField(
@@ -301,6 +307,14 @@ class NewsItem(
         self.updated_by = self.created_by
         self.go_live_at = self.publish_date
         super().save(*args, **kwargs)
+
+    def get_preview_template(self, request, mode_name):
+        return "previews/news_cards_preview.html"
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        context["preview_news_items"] = [self]
+        return context
 
     class Meta:
         ordering = ["-created_at"]
