@@ -31,6 +31,21 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
+class AccordianBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        max_length=255, required=True, help_text="Title user will see before opening"
+    )
+    description = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        help_text="The hidden body that shows after clicking the title",
+    )
+
+    class Meta:
+        label = "Accordian Block"
+        template = "accordian_block.html"
+
+
 class EnhancedStandardPage(ModerationMixin, Page):
     base_form_class = ReviewByRequiredOnSubmitForm
 
@@ -222,6 +237,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
                     ),
                     label="Card Set",
                 ),
+            ),
+            (
+                "accordian",
+                AccordianBlock(),
             ),
         ],
         blank=True,

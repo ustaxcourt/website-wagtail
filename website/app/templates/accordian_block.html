@@ -1,0 +1,91 @@
+{% load static %}
+<style>
+  .accordian-block {
+    background-color: var();
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  .accordian-title {
+    color: black;
+    cursor: pointer;
+    margin: 0;
+    padding: 1rem;
+    font-size: 1.2rem;
+  }
+  .accordian-icon {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+
+    background-color: var(--color-primary);
+
+  /* 2. Use the SVG as a mask */
+    -webkit-mask-image: url({% static 'images/icons/arrow-down-triangle.svg' %});
+    mask-image: url({% static 'images/icons/arrow-down-triangle.svg' %});
+
+  /* 3. Ensure the mask covers the area */
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .accordian-header{
+    {% comment %} color: var(--color-white); {% endcomment %}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1100px;
+    height: 55px
+  }
+  .accordian-header:hover {
+    cursor: pointer;
+  }
+  .accordian-header p {
+    color: var(--color-primary);
+  }
+  .hidden{
+    display: none;
+  }
+  .accordian-content {
+    padding: 1rem;
+    background-color: var(--color-primary);
+    width: 1100px;
+  }
+  .accordian-content p {
+    margin-left: 1rem;
+  }
+  .rotated {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+  }
+</style>
+
+<body>
+    <div id = "accordian-{{block_index}}" class="accordian-block">
+      <div class="accordian-header">
+        <h3 class="accordian-title">{{ block.value.title }}</h3>
+        {% comment %} <img src="{% static 'images/icons/arrow-down-triangle.svg' %}" alt="Expand accordian" class="accordian-icon" /> {% endcomment %}
+        <div class="accordian-icon"></div>
+      </div>
+        <div class="accordian-content hidden">
+            <p>{{ block.value.description }}</p>
+        </div>
+    </div>
+</body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const accordianBlock = document.getElementById("accordian-"+{{block_index}});
+    const header = accordianBlock.querySelector(".accordian-header");
+    const title = accordianBlock.querySelector(".accordian-title");
+    const content = accordianBlock.querySelector(".accordian-content");
+    const icon = accordianBlock.querySelector(".accordian-icon");
+
+    header.addEventListener("click", function() {
+      // check if content is visible
+      content.classList.toggle("hidden");
+      icon.classList.toggle("rotated");
+    });
+  });
+  </script>
