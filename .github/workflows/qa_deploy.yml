@@ -1,0 +1,65 @@
+name: QA Environment Pipeline
+
+on:
+  push:
+    branches:
+      - qa
+    tags:
+      - qa-destroy
+
+concurrency:
+  group: qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # QA DEPLOY — Runs when pushing to the `qa` branch
+  qa_deploy:
+    if: startsWith(github.ref, 'refs/heads/qa')
+    name: Deploy QA (Basic Checks)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set QA Environment
+        run: echo "ENVIRONMENT=qa" >> $GITHUB_ENV
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python (example dependency)
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Lint Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run Basic Lint Check
+        run: |
+          echo "Running linter for QA environment..."
+          flake8 website || true  # don't fail yet while doing TDD
+
+      - name: QA Placeholder Step (Expandable)
+        run: echo "QA pipeline ran successfully for branch push."
+
+  # QA DESTROY — Runs when pushing a `qa-destroy` tag
+
+  qa_destroy:
+    if: startsWith(github.ref, 'refs/tags/qa-destroy')
+    name: Destroy QA Environment (Basic Stub)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set QA Destroy Flag
+        run: echo "DESTROY_QA=true" >> $GITHUB_ENV
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Print Destroy Notice
+        run: |
+          echo "QA destroy tag detected.."
+          echo "This is where Terraform destroy or cleanup steps will later go."
+          echo "For TDD, this is only a stub."
