@@ -35,8 +35,7 @@ class AccordianBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         max_length=255, required=True, help_text="Title user will see before opening"
     )
-    description = blocks.CharBlock(
-        max_length=255,
+    description = blocks.RichTextBlock(
         required=True,
         help_text="The hidden body that shows after clicking the title",
     )

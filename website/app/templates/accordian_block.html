@@ -7,11 +7,14 @@
     margin-bottom: 1rem;
   }
   .accordian-title {
-    color: black;
+    color: var(--color-primary);
     cursor: pointer;
     margin: 0;
     padding: 1rem;
     font-size: 1.2rem;
+  }
+  .accordian-title.active {
+    color: #ffffff;
   }
   .accordian-icon {
     width: 15px;
@@ -30,14 +33,23 @@
     -webkit-mask-size: contain;
     mask-size: contain;
   }
-  .accordian-header{
+  .accordian-icon.active {
+      background-color: var(--color-white);
+  }
+
+  .accordian-header {
     {% comment %} color: var(--color-white); {% endcomment %}
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 1100px;
-    height: 55px
+    height: 55px;
+    background-color: var(--color-white);
   }
+  .accordian-header.active {
+    background-color: var(--color-primary);
+  }
+
   .accordian-header:hover {
     cursor: pointer;
   }
@@ -48,17 +60,22 @@
     display: none;
   }
   .accordian-content {
-    padding: 1rem;
-    background-color: var(--color-primary);
-    width: 1100px;
-  }
-  .accordian-content p {
-    margin-left: 1rem;
+    padding: 20px 45px;
+    width: 68.75rem;
   }
   .rotated {
     transform: rotate(180deg);
     transition: transform 0.3s ease;
   }
+
+  @media (max-width: 768px) {
+    .accordian-content {
+      padding: 20px 20px;
+    }
+  }
+
+
+
 </style>
 
 <body>
@@ -86,6 +103,10 @@
       // check if content is visible
       content.classList.toggle("hidden");
       icon.classList.toggle("rotated");
+
+      title.classList.toggle("active");
+      header.classList.toggle("active");
+      icon.classList.toggle("active");
     });
   });
   </script>
