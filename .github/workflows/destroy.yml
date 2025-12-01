@@ -3,37 +3,38 @@ name: Destroy
 on:
   push:
     tags:
-      - 'sandbox-destroy'
+      - '*-destroy'   # for sandbox-destroy, qa-destroy, train-destroy, etc.
 
 jobs:
   destroy:
-    environment: ${{ github.ref == 'refs/tags/sandbox-destroy' && format('{0}_sandbox', github.actor) || '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+
     steps:
-      - name: Set Environment
+      - name: Determine Environment
         id: set_env
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/sandbox-destroy ]]; then
+          TAG="${GITHUB_REF#refs/tags/}"
+
+          if [[ "$TAG" == "sandbox-destroy" ]]; then
             echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+          elif [[ "$TAG" == "qa-destroy" ]]; then
+            echo "ENVIRONMENT=qa" >> $GITHUB_ENV
           else
-            echo "Debug: No matching condition found"
+            echo "Unknown destroy tag: $TAG"
             exit 1
           fi
 
-      - name: Checkout sandbox tag
+      - name: Checkout Repo
         uses: actions/checkout@v3
-        with:
-          ref: sandbox # Always check out the sandbox tag
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
 
       - name: Apply Terraform destructive plan
-        id: tf_outputs
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           cd infra
+          echo "Destroying environment: $ENVIRONMENT"
           echo "Y" | ./destroy.sh

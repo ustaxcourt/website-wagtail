@@ -45,6 +45,187 @@ jobs:
         id: current_date
         run: echo "DATE=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_OUTPUT
 
+      - name: Apply Terraform
+        id: tf_outputs
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./setup-tf-buckets.sh
+
+          # Pass GitHub SHA to Terraform
+          export TF_VAR_github_sha=$GITHUB_SHA
+
+          ./deploy.sh
+
+          bastion_ip=$(terraform output -raw bastion_public_ip)
+          echo "bastion_public_ip=${bastion_ip}" >> $GITHUB_OUTPUT
+
+          db_endpoint=$(terraform output -raw database_endpoint)
+          echo "database_endpoint=${db_endpoint}" >> $GITHUB_OUTPUT
+
+          bucket_name=$(terraform output -raw bucket_name)
+          echo "bucket_name=${bucket_name}" >> $GITHUB_OUTPUT
+
+      - name: Set up SSH Key
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          . ./load-secrets.sh
+          cd ..
+          echo "DOMAIN_NAME=$DOMAIN_NAME" >> $GITHUB_ENV
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DATABASE_PASSWORD}" # prevent the password from logging out
+          echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> $GITHUB_ENV
+          echo "::add-mask::${DJANGO_SUPERUSER_PASSWORD}" # prevent the password from logging out
+          mkdir -p .ssh
+          echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
+          chmod 600 .ssh/id_rsa
+
+      - name: Run Migrations
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          # setup the tunnel so that we can run django commands into the env database
+          set -e
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          # run migration and other commands
+          make migrate settings="app.settings.${ENVIRONMENT}"
+          make superuser settings="app.settings.${ENVIRONMENT}"|| echo "user already exists, skipping"
+          make resetadminpassword settings="app.settings.${ENVIRONMENT}"
+          make createpages settings="app.settings.${ENVIRONMENT}"
+          make updateindex settings="app.settings.${ENVIRONMENT}"
+          make preregisterusers settings="app.settings.${ENVIRONMENT}"
+          make preregistersuperusers settings="app.settings.${ENVIRONMENT}"
+          make setupwagtaillroles settings="app.settings.${ENVIRONMENT}"
+          make cmd c="python manage.py update_search" settings="app.settings.${ENVIRONMENT}"
+          make setupses settings="app.settings.${ENVIRONMENT}"
+          make updatepages settings="app.settings.${ENVIRONMENT}"
+
+      - name: Create GitHub Release (optional)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.current_date.outputs.DATE }}
+          release_name: ${{ steps.current_date.outputs.DATE }}
+          draft: false
+          prerelease: false
+          body: ${{ github.event.pull_request.title || 'No PR title available.' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Manually Deploy ECS Task (Post-Migration)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          taskArn=$(aws ecs list-task-definitions \
+            --family-prefix "${ENVIRONMENT}-website-tasks" \
+            --sort DESC \
+            --region us-east-1 \
+            --query 'taskDefinitionArns[0]' \
+            --output text
+          )
+
+          # Set desired count (sandbox, dev, and train)
+          desired_count=1
+
+          aws ecs update-service \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --service "${ENVIRONMENT}-website-service" \
+            --task-definition "${taskArn}" \
+            --desired-count "${desired_count}" \
+            --force-new-deployment \
+            --region us-east-1
+
+      - name: Wait for ECS Service to Stabilize
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster "${ENVIRONMENT}-website-cluster" \
+            --services "${ENVIRONMENT}-website-service" \
+            --region us-east-1
+
+      - name: Invalidate CloudFront Distribution
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          # Get the CloudFront distribution ID for the environment
+          distribution_id=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?contains(Origins.Items[0].DomainName, '${ENVIRONMENT}')].Id" \
+            --output text)
+
+          if [ -z "$distribution_id" ]; then
+            echo "Error: Could not find CloudFront distribution for environment ${ENVIRONMENT}"
+            exit 1
+          fi
+
+          echo "Invalidating CloudFront distribution: $distribution_id"
+          aws cloudfront create-invalidation \
+            --distribution-id "$distribution_id" \
+            --paths "/*"
+
+      - name: Perform Production Checks in staging
+        if: ${{ env.ENVIRONMENT == 'dev' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASTION_HOST_IP: ${{ steps.tf_outputs.outputs.bastion_public_ip }}
+          DATABASE_HOSTNAME: ${{ steps.tf_outputs.outputs.database_endpoint }}
+          AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
+        run: |
+          cd website
+          # setup the tunnel so that we can run django commands into the env database
+          set -e
+          ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
+          ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
+          export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
+          make production-checks settings="app.settings.${ENVIRONMENT}"
+
+
+      - name: Validate urls
+        run: |
+          echo "--- Starting URL redirect check ---"
+          # Install script dependencies
+          cd utilities
+          pip install requests
+
+          # Run the URL checker script
+          python redirect_validator/url_checker.py "https://${DOMAIN_NAME}" "redirect_validator/paths_for_validation.csv" "url_check_results.csv"
+
+          # Optional: Check for 404s and fail the build if any are found
+          # The '!' before grep inverts the match, so it fails if '❌' is found.
+          if grep -q '❌' url_check_results.csv; then
+            echo "❌ Critical error: Found 404 Not Found errors."
+            exit 1
+          else
+            echo "✅ No 404 errors found."
+          fi
+
+
+      - name: Terminate Bastion Host
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd infra
+          ./disable-bastion-host.sh
+
   # QA DESTROY — Runs when pushing a `qa-destroy` tag
 
   qa_destroy:
