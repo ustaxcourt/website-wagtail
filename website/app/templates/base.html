@@ -118,7 +118,9 @@
             {% include 'includes/mini_definitions_button.html' %}
         {% endif %}
         {% include 'yellow_news_banner.html' %}
-        {% block content %}{% endblock %}
+        <main id="main-content" >
+            {% block content %}{% endblock %}
+        </main>
         {% include 'footer.html' %}
         <button title="Scroll to top"
                 id="scroll-to-top"
