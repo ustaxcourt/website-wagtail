@@ -31,13 +31,31 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
+class StyledCalloutBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(
+        required=True, help_text="The title of this special element"
+    )
+    text = blocks.RichTextBlock(required=True, help_text="The paragraph content")
+
+    class Meta:
+        label = "Callout Banner"
+        icon = "info-circle"
+        template = "styled_callout.html"
+
+
 class AccordianBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         max_length=255, required=True, help_text="Title user will see before opening"
     )
-    description = blocks.RichTextBlock(
+    description = blocks.StreamBlock(
+        [
+            # Text for the user to enter as description
+            ("prose", blocks.RichTextBlock()),
+            # Special callout block
+            ("callout", StyledCalloutBlock()),
+        ],
         required=True,
-        help_text="The hidden body that shows after clicking the title",
+        help_text="Add text or special elements to the body",
     )
 
     class Meta:

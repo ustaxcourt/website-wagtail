@@ -1,0 +1,56 @@
+{% load static %}
+
+<style>
+  .styled-callout {
+    background: #F1F9FC;
+    border-left: 6px solid #07648D;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    corner-radius: 0px;
+  }
+  .callout-items {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+  }
+  .callout-items img {
+    margin-top: 10px
+  }
+  .callout-content {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-accent-light);
+    margin-left: 1rem;
+  }
+  .callout-content h4 {
+    margin: 0;
+    padding: 0.5rem 1rem 0 0;
+    color: var(--color-primary);
+  }
+  .callout-content p {
+    margin-top: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .callout-items img{
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+</style>
+
+
+<div>
+  <div class="styled-callout">
+    <div class="callout-items" style="margin-right: 1rem;">
+      <img src="{% static 'images/icons/info_icon.svg' %}" alt="Info Icon" width="30" height="30">
+      <div class="callout-content">
+        <h4>{{ block.value.heading }}</h4>
+        <p>{{ block.value.text }}</p>
+      </div>
+    </div>
+  </div>
+ <div></div>
+  </div>
