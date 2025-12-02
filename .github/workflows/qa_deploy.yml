@@ -138,7 +138,7 @@ jobs:
             --output text
           )
 
-          # Set desired count (sandbox, dev, and train)
+          # Set desired count
           desired_count=1
 
           aws ecs update-service \
@@ -181,7 +181,6 @@ jobs:
             --paths "/*"
 
       - name: Perform Production Checks in staging
-        if: ${{ env.ENVIRONMENT == 'dev' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
