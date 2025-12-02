@@ -1,0 +1,23 @@
+{% load static tz %}
+<style>
+    #mini-definitions-button {
+        display: none;
+    }
+
+    @media (max-width: 879px) {
+        #mini-definitions-button {
+            display: flex;
+        }
+    }
+</style>
+<a href="/definitions"
+   target="_blank"
+   id="mini-definitions-button"
+   class="usa-button width-auto">
+
+    <img src="{% static 'images/icons/book.svg' %}"
+         alt=""
+         aria-hidden="true" />
+
+    <span class="usa-sr-only">Definitions</span>
+</a>

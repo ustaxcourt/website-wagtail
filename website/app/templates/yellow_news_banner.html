@@ -7,7 +7,6 @@
 
     #yellow-news-banner-container .yellow-news-banner {
         color: var(--text-black);
-        font-size: 17px;
         font-weight: 400;
         display: none;
         /* Hidden by default, shown by JavaScript if not dismissed and within date range */
@@ -30,7 +29,7 @@
 
     #yellow-news-banner-container .yellow-news-banner .alert-content {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
         padding: 16px 0;
     }
@@ -43,6 +42,14 @@
 
     #yellow-news-banner-container .yellow-news-banner .alert-text {
         flex: 1;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-text p {
+        display: inline;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-text strong {
+        display: inline;
     }
 
     #yellow-news-banner-container .yellow-news-banner .close-btn {
@@ -62,10 +69,10 @@
         opacity: 0.7;
     }
 
-    #yellow-news-banner-container .yellow-news-banner .close-btn svg {
-        width: 24px;
-        height: 24px;
+    #yellow-news-banner-container .yellow-news-banner .close-btn {
+        padding: 0 !important;
     }
+
 </style>
 {% if has_yellow_news %}
     <!-- Embed news data as JSON for client-side processing -->
@@ -120,7 +127,7 @@
 
             // Build the document link if available
             const documentLink = itemToShow.document_url
-                ? ` <a href="${itemToShow.document_url}">See the Press Release</a>.`
+                ? ` <a href="${itemToShow.document_url}">See the Announcement</a>.`
                 : '';
 
             const bannerHTML = `
@@ -133,7 +140,7 @@
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
                         <div class="alert-text">
-                            ${itemToShow.description}${documentLink}
+                            <strong>${itemToShow.title}</strong> ${itemToShow.description}${documentLink}
                         </div>
                         <button class="close-btn" onclick="closeYellowBanner(${itemToShow.id})" aria-label="Close banner">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

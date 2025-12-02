@@ -172,7 +172,6 @@
     <div class="workflow-action-buttons">
         {% if workflow_state and task_state %}
             <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' task_state.id %}"
-                    data-launch-modal
                     class="button button-primary">{% trans "Publish" %}</button>
             <button data-workflow-action-url="{% url workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' task_state.id %}"
                     data-launch-modal
@@ -181,14 +180,12 @@
             {% with current_workflow_state=object.current_workflow_state current_task_state=object.current_workflow_state.current_task_state %}
                 {% if current_workflow_state.workflow_action_url_name %}
                     <button data-workflow-action-url="{% url current_workflow_state.workflow_action_url_name object.pk|admin_urlquote 'approve' current_task_state.id %}"
-                            data-launch-modal
                             class="button button-primary">{% trans "Publish" %}</button>
                     <button data-workflow-action-url="{% url current_workflow_state.workflow_action_url_name object.pk|admin_urlquote 'reject' current_task_state.id %}"
                             data-launch-modal
                             class="button">{% trans "Request changes" %}</button>
                 {% else %}
                     <button data-workflow-action-url="{% url 'wagtailadmin_pages:workflow_action' object.pk|admin_urlquote 'approve' current_task_state.id %}"
-                            data-launch-modal
                             class="button button-primary">{% trans "Publish" %}</button>
                     <button data-workflow-action-url="{% url 'wagtailadmin_pages:workflow_action' object.pk|admin_urlquote 'reject' current_task_state.id %}"
                             data-launch-modal
