@@ -1,0 +1,79 @@
+{% load static tz %}
+<style>
+    #definitions-container {
+        position: sticky;
+        top: 0px;
+        z-index: 1000;
+    }
+
+    .definitions-btn {
+        position: absolute;
+        right: -46px;
+        width: fit-content;
+        height: 29px;
+        margin-top: 100px;
+
+        background: #005EA2;
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+
+        font-family: "Public Sans", sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 95%;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        /* Rotation */
+        transform: rotate(-90deg);
+        transform-origin: center center;
+        /* keeps it on-screen */
+        z-index: 1000;
+        border: 1px solid white;
+    }
+
+    .definitions-btn .button-contents {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 5px var(--usa-spacing-205, 12px);
+    }
+
+    .definitions-btn img {
+        transform: rotate(90deg);
+    }
+
+    /* mobile styles */
+    @media (max-width: 879px) {
+
+        .definitions-btn {
+            display: none;
+        }
+
+    }
+
+    .definitions-btn,
+    .definitions-btn:visited,
+    .definitions-btn:hover,
+    .definitions-btn:active,
+    .definitions-btn:focus {
+        color: #fff;
+        background: #005EA2;
+        text-decoration: none;
+    }
+</style>
+<div id="definitions-container">
+    <a class="definitions-btn" href="/definitions" target="_blank" aria-label="Definitions">
+        <div class="button-contents">
+            <div class="button-text">
+                Definitions
+            </div>
+            <img src="{% static 'images/icons/book.svg' %}" alt="Book">
+        </div>
+    </a>
+
+</div>

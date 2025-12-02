@@ -1,0 +1,12 @@
+{% extends "previews/base_preview.html" %}
+{% load static %}
+
+{% block title %}{{ news_item.title }} - Preview{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/includes/news_cards.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% include "includes/news_cards.html" with news_items=preview_news_items %}
+{% endblock %}

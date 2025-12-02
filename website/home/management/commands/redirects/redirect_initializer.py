@@ -65,6 +65,11 @@ REDIRECTS = [
         "new_path": "/files/documents/rule-27.pdf",
         "is_permanent": True,
     },
+    {
+        "old_path": "/petitioners-glossary",
+        "new_path": "/definitions",
+        "is_permanent": True,
+    },
 ]
 
 
