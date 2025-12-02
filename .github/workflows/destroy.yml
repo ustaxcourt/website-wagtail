@@ -3,7 +3,7 @@ name: Destroy
 on:
   push:
     tags:
-      - '*-destroy'   # for sandbox-destroy, qa-destroy, train-destroy, etc.
+      - '*-destroy'   # for sandbox-destroy, qa-destroy
 
 jobs:
   destroy:
@@ -20,7 +20,7 @@ jobs:
           elif [[ "$TAG" == "qa-destroy" ]]; then
             echo "ENVIRONMENT=qa" >> $GITHUB_ENV
           else
-            echo "Unknown destroy tag: $TAG"
+            echo "Unknown destroy tag: $TAG or environment: Destroy only supports 'sandbox' and 'qa'."
             exit 1
           fi
 
