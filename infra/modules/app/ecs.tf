@@ -87,6 +87,29 @@ resource "aws_iam_role_policy" "ses_send_email_policy" {
   })
 }
 
+# Add policy ECS task role to allow executing ECS commands from local machine, @see 'enable_execute_command'
+resource "aws_iam_role_policy" "ecs_exec_policy" {
+  count = var.environment != "production" ? 1 : 0
+  name  = "${var.environment}-ecs-exec-policy"
+  role  = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
@@ -170,7 +193,6 @@ resource "aws_ecs_service" "this" {
   name            = "${var.environment}-website-service"
   task_definition = aws_ecs_task_definition.this.arn
 
-  # TODO: DO NOT MERGE, triple checking that extra policy is required
   enable_execute_command = var.environment != "production"
 
   # Enable the ECS deployment circuit breaker for rollbacks
