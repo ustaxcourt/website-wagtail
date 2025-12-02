@@ -170,6 +170,9 @@ resource "aws_ecs_service" "this" {
   name            = "${var.environment}-website-service"
   task_definition = aws_ecs_task_definition.this.arn
 
+  # TODO: DO NOT MERGE, triple checking that extra policy is required
+  enable_execute_command = var.environment != "production"
+
   # Enable the ECS deployment circuit breaker for rollbacks
   deployment_controller {
     type = "ECS"
