@@ -560,11 +560,6 @@
                 </div>
             {% elif block.block_type == 'accordian' %}
                 {% include "accordian_block.html" with block=block block_index=forloop.counter0 %}
-                {% comment %} <div class="accordian-block">
-                    <button class="accordian-title">{{ block.value.title }}</button>
-                    <div class="accordian-content">
-                        <p>{{ block.value.description }}</p>
-                    </div> {% endcomment %}
             {% else %}
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}
