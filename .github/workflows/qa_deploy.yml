@@ -15,9 +15,10 @@ jobs:
   # QA DEPLOY — Runs when pushing to the `qa` branch
   qa_deploy:
     if: startsWith(github.ref, 'refs/heads/qa')
+    environment: qa
     name: Deploy QA (Basic Checks)
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 90
 
     steps:
       - name: Set QA Environment
