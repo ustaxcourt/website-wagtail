@@ -10,7 +10,7 @@ try:
 except ImportError:
     pass
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+# SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = False
 BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
