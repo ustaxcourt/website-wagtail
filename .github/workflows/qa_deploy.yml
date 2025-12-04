@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - qa
-    tags:
-      - qa-destroy
 
 concurrency:
   group: qa-${{ github.ref }}
