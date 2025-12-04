@@ -3,10 +3,10 @@
 <style>
   .styled-callout {
     background: #F1F9FC;
-    border-left: 6px solid #07648D;
-    padding: 1rem;
+    border-left: 8px solid #07648D;
+    padding-left: 1rem;
     margin: 1.5rem 0;
-    corner-radius: 0px;
+    border-radius: 0px;
   }
   .callout-items {
     display: flex;
@@ -21,15 +21,20 @@
     display: flex;
     flex-direction: column;
     background-color: var(--color-accent-light);
-    margin-left: 1rem;
   }
-  .callout-content h4 {
-    margin: 0;
+  .callout-content h3 {
+    margin-block-start: 5px;
+    margin-left: 1rem;
     padding: 0.5rem 1rem 0 0;
-    color: var(--color-primary);
+    color: black;
+
+    margin-bottom: 0.5rem;
   }
   .callout-content p {
-    margin-top: 10px;
+    margin-top: 0px;
+    margin-left: 1rem;
+
+    margin-bottom: 0.5rem;
   }
 
   @media (max-width: 768px) {
@@ -47,7 +52,7 @@
     <div class="callout-items" style="margin-right: 1rem;">
       <img src="{% static 'images/icons/info_icon.svg' %}" alt="Info Icon" width="30" height="30">
       <div class="callout-content">
-        <h4>{{ block.value.heading }}</h4>
+        <h3 >{{ block.value.heading }}</h3>
         <p>{{ block.value.text }}</p>
       </div>
     </div>

@@ -10,6 +10,7 @@
     margin-bottom: 1rem;
   }
   .accordian-title {
+    width: 100%;
     color: var(--color-primary);
     cursor: pointer;
     margin: 0;
@@ -21,7 +22,7 @@
   }
   .accordian-icon {
     width: 15px;
-    height: 15px;
+    height: 9px;
     cursor: pointer;
     margin-right: 1.5rem;
 
@@ -72,6 +73,28 @@
     transition: transform 0.3s ease;
   }
 
+  .accordian-header-button {
+    background: none;
+    color: #1B1B1B;
+    border: none;
+    font: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+  }
+  .accordian-header-button.active {
+    color: #ffffff;
+  }
+
+  button.accordian-header-button:focus {
+    border: none;
+    {% comment %} outline: none; {% endcomment %}
+  }
   @media (max-width: 768px) {
     .accordian-header {
       width: 100%;
@@ -87,17 +110,30 @@
     }
   }
 
-
-
 </style>
+
 
 <body>
     <div id="accordian-{{block_index}}" class="accordian-block">
-      <div class="accordian-header">
-        <h3 class="accordian-title">{{ block.value.title }}</h3>
-        <div class="accordian-icon"></div>
+      <div class="accordian-header" >
+        {% comment %} <h3 class="accordian-title">{{ block.value.title }}</h3>
+        <div class="accordian-icon"></div> {% endcomment %}
+        <h3 class="accordian-title">
+          <button
+            type="button"
+            class="accordian-header-button"
+            aria-expanded="false"
+            aria-controls="content-{{block_index}}"
+            id="btn-{{block_index}}"
+        >
+            {{ block.value.title }}
+            <span class="accordian-icon" aria-hidden="true"></span>
+        </button></h3>
       </div>
-        <div class="accordian-content hidden">
+        <div id="content-{{block_index}}"
+        class="accordian-content hidden"
+        role="region"
+        aria-labelledby="btn-{{block_index}}">
           {% for block in block.value.description %}
             {% if block.block_type == 'prose' %}
             <div class="rich-text">
@@ -123,6 +159,7 @@
     const title = accordianBlock.querySelector(".accordian-title");
     const content = accordianBlock.querySelector(".accordian-content");
     const icon = accordianBlock.querySelector(".accordian-icon");
+    const button = accordianBlock.querySelector(".accordian-header-button");
 
     header.addEventListener("click", function() {
       // check if content is visible
@@ -132,6 +169,9 @@
       title.classList.toggle("active");
       header.classList.toggle("active");
       icon.classList.toggle("active");
+
+      button.classList.toggle("active");
+
     });
   });
   </script>
