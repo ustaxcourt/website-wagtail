@@ -102,6 +102,9 @@ start-tunnel: check-env-is-aws
 	@echo "Starting SSH tunnel to bastion host..."
 	@cd infra && ENVIRONMENT=$(env) ./ssh-tunnel.sh
 
+ecs-ssh:
+	. ./.venv/bin/activate && cd infra && python3 ./scripts/ecs_ssh.py
+
 apply-db-restore: check-env-is-aws
 	@echo "Restoring database for environment: $(env)"
 	@cd infra && ENVIRONMENT=$(env) ./apply-migrations-to-restored-db.sh

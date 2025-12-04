@@ -306,6 +306,18 @@ after running this in a separate terminal, you should be able to run migrations 
 
 Remember to remove your IP address from the security group when done.
 
+---
+
+## Locally connect to ECS
+
+note: [requires Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/install-plugin-macos-overview.html)
+
+```bash
+make ecs-ssh
+```
+
+---
+
 ## CI / CD
 
 Our code is currently deployed using github actions when your pull request is merged to the `development` branch.  The way this works, is the github action will spin up an ubuntu machine, pull in the branch code, setup python and terraform, and eventually it'll run terraform which will build the wagtail container, and deploy that container to aws ecs.  After updating our infrastructure, the ci/cd pipeline will run migration scripts via the bastion host tunnel which will update the ecs service with the latest wagtail migration scripts.  Finally, the github action workflow will update the ECS task to run with the latest version of the wagtail container.
