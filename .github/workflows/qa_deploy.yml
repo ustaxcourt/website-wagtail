@@ -95,6 +95,7 @@ jobs:
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           cd website
+          export ENVIRONMENT=train
           # setup the tunnel so that we can run django commands into the env database
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
@@ -190,6 +191,7 @@ jobs:
           AWS_STORAGE_BUCKET_NAME: ${{ steps.tf_outputs.outputs.bucket_name }}
         run: |
           cd website
+          export ENVIRONMENT=train
           # setup the tunnel so that we can run django commands into the env database
           set -e
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
