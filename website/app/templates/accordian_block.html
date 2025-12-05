@@ -7,7 +7,7 @@
     background-color: var();
     border: 1px solid var(--color-border);
     border-radius: 4px;
-    margin-bottom: 1rem;
+    margin-bottom: 34px;
   }
   .accordian-title {
     width: 100%;
@@ -36,6 +36,8 @@
     mask-repeat: no-repeat;
     -webkit-mask-size: contain;
     mask-size: contain;
+
+    transition: transform 0.3s ease;
   }
   .accordian-icon.active {
       background-color: var(--color-white);
@@ -148,9 +150,7 @@
               <div class="callout-content">
                   {% include_block block %}
               </div>
-
           {% endif %}
-            <p>{{ block.value.description }}</p>
             {% endfor %}
         </div>
     </div>
