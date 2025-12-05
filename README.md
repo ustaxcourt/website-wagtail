@@ -264,7 +264,7 @@ In order for USTC employees & contractors to login to wagtail admin with their A
 
 3. Go to: All Services > App Registrations > ustc-website-sso
 - Under "all applications, filter to "ustc-website-sso" and select that
-- Whitelist the redirect urls used by the wagtail instance
+- allowlist the redirect urls used by the wagtail instance
   - Select "Manage > Authentication"
   - Select "Add Redirect URI"
   - (If prompted with "select platform", choose "web")
@@ -277,13 +277,15 @@ In order for USTC employees & contractors to login to wagtail admin with their A
 - Note the following values - AWS secrets manager will need them.
   - "Directory (tenant) ID"
   - "Application (client) ID"
-  - "Client Credentials"
 
 #### How To Obtain A Unique `SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET` For A Sandbox
 
 - activate "Application Administrator" role in PIM
 - go to App Registrations > ustc-website-sso > Certificates & secrets
-- navigate to "client secrets" and generate a new client secret  (do not delete the old one)
+- select "client secrets" and generate a new secret:
+  - age: 6 months
+  - choose a simple name e.g. "Jim sandbox secret"
+
 
 
 ## Deploying to your Sandbox
