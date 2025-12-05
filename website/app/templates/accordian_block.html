@@ -7,14 +7,15 @@
     background-color: var();
     border: 1px solid var(--color-border);
     border-radius: 4px;
-    margin-bottom: 34px;
+    margin-bottom: 18px;
+    word-wrap: break-word;
   }
   .accordian-title {
     width: 100%;
     color: var(--color-primary);
     cursor: pointer;
     margin: 0;
-    padding: 1rem;
+    padding: 15px 10px 15px 10px;
     font-size: 1.2rem;
   }
   .accordian-title.active {
@@ -24,8 +25,6 @@
     width: 15px;
     height: 9px;
     cursor: pointer;
-    /* margin-right: 1.5rem; */
-    margin: 15px 15px 0px 15px;
 
     background-color: var(--color-primary);
 
@@ -93,16 +92,13 @@
   .accordian-header-button.active {
     color: #ffffff;
   }
-
-  button.accordian-header-button:focus {
-    border: none;
-    {% comment %} outline: none; {% endcomment %}
+  .accordian-content .rich-text ol {
+    list-style-type: decimal;
   }
   @media (max-width: 768px) {
     .accordian-header {
       width: 100%;
       height: auto;
-      padding: 10px;
     }
     .accordian-header h3 {
       font-size: 18px;
@@ -110,9 +106,6 @@
     .accordian-content {
       width: 100%;
       padding: 20px 20px;
-    }
-    .accordian-icon {
-      margin: 15px 10px 0px 10px;
     }
   }
 
