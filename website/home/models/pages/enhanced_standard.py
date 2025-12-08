@@ -49,9 +49,7 @@ class AccordianBlock(blocks.StructBlock):
     )
     description = blocks.StreamBlock(
         [
-            # Text for the user to enter as description
             ("prose", blocks.RichTextBlock()),
-            # Special callout block
             ("callout", StyledCalloutBlock()),
         ],
         required=True,
@@ -59,7 +57,7 @@ class AccordianBlock(blocks.StructBlock):
     )
 
     class Meta:
-        label = "Accordian Block"
+        label = "Accordion Block"
         template = "accordian_block.html"
 
 

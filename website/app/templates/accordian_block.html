@@ -4,8 +4,6 @@
 <style>
 
   .accordian-block {
-    background-color: var();
-    border: 1px solid var(--color-border);
     border-radius: 4px;
     margin-bottom: 18px;
     word-wrap: break-word;
@@ -127,8 +125,6 @@
 <body>
     <div id="accordian-{{block_index}}" class="accordian-block">
       <div class="accordian-header" >
-        {% comment %} <h3 class="accordian-title">{{ block.value.title }}</h3>
-        <div class="accordian-icon"></div> {% endcomment %}
         <h3 class="accordian-title">
           <button
             type="button"
@@ -171,7 +167,6 @@
     const button = accordianBlock.querySelector(".accordian-header-button");
 
     header.addEventListener("click", function() {
-      // check if content is visible
       content.classList.toggle("hidden");
       icon.classList.toggle("rotated");
 
