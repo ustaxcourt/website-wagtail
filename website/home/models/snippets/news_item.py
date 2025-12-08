@@ -131,9 +131,6 @@ class NewsItem(
         FieldPanel(
             "homepage_display_expiration_date", classname="expiration-date-picker"
         ),
-        FieldPanel("banner_options"),
-        FieldPanel("banner_start_date", classname="banner-start-date-picker"),
-        FieldPanel("banner_end_date", classname="banner-end-date-picker"),
         PublishingPanel(),
     ]
     edit_handler = ModerationTabbedInterface.create_for_snippet(panels)
