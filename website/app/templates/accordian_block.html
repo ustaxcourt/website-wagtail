@@ -29,6 +29,9 @@
 
     background-color: var(--color-primary);
 
+    -webkit-mask-position: center;
+    mask-position: center;
+
     -webkit-mask-image: url({% static 'images/icons/arrow-down-triangle.svg' %});
     mask-image: url({% static 'images/icons/arrow-down-triangle.svg' %});
 
@@ -95,6 +98,11 @@
   }
   .accordian-content .rich-text ol {
     list-style-type: decimal;
+  }
+  .rich-text img{
+    max-width: 100%;
+    height: auto;
+    display: block;
   }
   @media (max-width: 768px) {
     .accordian-title {
