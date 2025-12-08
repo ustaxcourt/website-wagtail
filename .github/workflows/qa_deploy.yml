@@ -6,8 +6,7 @@ on:
       - qa
 
 concurrency:
-  group: qa-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   # QA DEPLOY — Runs when pushing to the `qa` branch
