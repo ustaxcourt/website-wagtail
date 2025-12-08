@@ -72,6 +72,13 @@ class NewsItem(
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    banner = models.ForeignKey(
+        "home.Banner",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="news_items",
+    )
 
     description = RichTextField(
         blank=True, help_text="Summary of the news article", verbose_name="Summary"
@@ -110,6 +117,7 @@ class NewsItem(
         FieldPanel("document"),
         FieldPanel("image"),
         FieldPanel("description"),
+        FieldPanel("banner"),
         FieldPanel("publish_date", classname="publish-date-picker"),
         FieldPanel(
             "homepage_display_expiration_date", classname="expiration-date-picker"
