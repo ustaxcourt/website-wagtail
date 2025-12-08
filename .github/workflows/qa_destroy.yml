@@ -1,27 +1,27 @@
 on:
   push:
     tags:
-      - 'sandbox-destroy'
+      - 'qa-destroy'
 
 jobs:
   destroy:
-    environment: ${{ github.ref == 'refs/tags/sandbox-destroy' && format('{0}_sandbox', github.actor) || '' }}
+    environment: ${{ github.ref == 'refs/tags/qa-destroy' && format('{0}_qa', github.actor) || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Set Environment
         id: set_env
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/sandbox-destroy ]]; then
-            echo "ENVIRONMENT=sandbox" >> $GITHUB_ENV
+          if [[ "${{ github.ref }}" == refs/tags/qa-destroy ]]; then
+            echo "ENVIRONMENT=qa" >> $GITHUB_ENV
           else
             echo "Debug: No matching condition found"
             exit 1
           fi
-      - name: Checkout sandbox tag
+      - name: Checkout qa tag
         uses: actions/checkout@v3
         with:
-          ref: sandbox # Always check out the sandbox tag
+          ref: qa # Always check out the qa tag
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
