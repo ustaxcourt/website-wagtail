@@ -93,6 +93,9 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                             "description": news_item.title,
                             "file": news_item.document,
                         },
+                        "category": news_item.category
+                        if news_item.category != "news"
+                        else None,
                     }
                     grouped[year].append(release_entry)
                 else:
@@ -103,6 +106,9 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                         "title": news_item.title,
                         "body": news_item.description,
                         "file": None,
+                        "category": news_item.category
+                        if news_item.category != "news"
+                        else None,
                     }
                     grouped[year].append(release_entry)
 

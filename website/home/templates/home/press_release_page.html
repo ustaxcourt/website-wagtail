@@ -55,6 +55,18 @@
             align-items: center;
             z-index: 1000;
         }
+
+        .category-high {
+            background-color: #f5f5bbff;
+            font-weight: bold;
+            padding: 0 0.1rem;
+        }
+
+        .category-critical {
+            background-color: #FF6863;
+            font-weight: bold;
+            padding: 0 0.1rem;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -68,7 +80,7 @@
             <ul>
                 {% for release in releases %}
                     {% if release.is_homepage_entry %}
-                        <li>
+                        <li class="margin-bottom-2">
                             <!-- Hidden Checkbox Toggle -->
                             <input type="checkbox"
                                    id="modal-toggle-{{ release.id }}"
@@ -95,7 +107,7 @@
                             </div>
                         </li>
                     {% else %}
-                        <li>
+                        <li class="margin-bottom-2">
                             {% if release.details.file %}
                                 <a href="{{ release.details.file.url }}"
                                    style="text-decoration: underline">
@@ -104,7 +116,11 @@
                             {% else %}
                                 <strong>{{ release.release_date|date:"m/d/Y" }}</strong>
                             {% endif %}
-                            — {{ release.details.description }}
+                            -
+                            {% if release.category %}
+                              <span class="category-{{ release.category|lower }}">{{ release.category|title }}</span>
+                            {% endif %}
+                            {{ release.details.description }}
                         </li>
                     {% endif %}
                 {% endfor %}

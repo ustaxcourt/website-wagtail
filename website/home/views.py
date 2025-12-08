@@ -35,9 +35,9 @@ class NewsItemReportFilterSet(WagtailFilterSet):
     class Meta:
         model = NewsItem
         fields = [
+            "category",
             "title",
             "created_at",
-            "banner_options",
             "publish_date_range",
             "homepage_display_expiration_date_range",
         ]
@@ -83,28 +83,15 @@ class NewsItemReportView(ReportView):
             if obj.homepage_display_expiration_date
             else "-",
         ),
-        Column(
-            "banner_options",
-            label="Banner Type",
-            accessor=lambda obj: {
-                "critical": format_html(
-                    '<div style="background-color: red; color: black; white-space: nowrap; padding: 5px;">Critical</div>'
-                ),
-                "high": format_html(
-                    '<div style="background-color: orange; color: black; white-space: nowrap; padding: 5px;">High Priority</div>'
-                ),
-                "none": "No banner",
-            }.get(obj.banner_options),
-        ),
         Column("created_at", label="Created At", accessor=lambda obj: obj.created_at),
     ]
 
     list_export = [
         "id",
+        "category",
         "title",
         "publish_date",
         "homepage_display_expiration_date",
-        "banner_options",
         "document_url",
     ]
 

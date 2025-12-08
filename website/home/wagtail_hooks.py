@@ -173,7 +173,7 @@ def purge_cache_for_snippet_related_pages(request, instance):
     # Purge CloudFront cache for all pages when high priority news item changes
     # (since yellow banners appear on all pages)
     if snippet_type == "newsitem" and isinstance(instance, NewsItem):
-        if instance.banner_options == "high":
+        if instance.category == "high":
             purge_cloudflare_root()
             return
 
@@ -305,9 +305,9 @@ def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
     del sender, kwargs
 
     # Only purge cache for high or critical priority banners
-    if instance.banner_options in ["high", "critical"]:
+    if instance.category in ["high", "critical"]:
         action = "created" if created else "updated"
-        priority_type = "High" if instance.banner_options == "high" else "Critical"
+        priority_type = "High" if instance.category == "high" else "Critical"
         logger.info(
             f"{priority_type} priority NewsItem {action}: {instance.title} (ID: {instance.id})"
         )
@@ -323,8 +323,8 @@ def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
     del sender, kwargs
 
     # Only purge cache for high or critical priority banners
-    if instance.banner_options in ["high", "critical"]:
-        priority_type = "High" if instance.banner_options == "high" else "Critical"
+    if instance.category in ["high", "critical"]:
+        priority_type = "High" if instance.category == "high" else "Critical"
         logger.info(
             f"{priority_type} priority NewsItem deleted: {instance.title} (ID: {instance.id})"
         )
