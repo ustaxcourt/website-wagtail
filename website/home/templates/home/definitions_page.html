@@ -381,7 +381,7 @@
             <div class="search-form-container">
                 <form id="search-form"
                     class="search-form"
-                    action="/save-this-search/"
+                    {% comment %} action="/save-this-search/" {% endcomment %}
                     method="post"
                 >
                     {% csrf_token %}
@@ -441,6 +441,22 @@
 
 {% block extra_js %}
 <script>
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const filterButton = document.getElementById('filter-toggle-btn');
         const mobileNav = document.getElementById('alphabet-nav-mobile');
@@ -455,15 +471,28 @@
 
         const common_handler = (search_term) => {
             console.log('DB operation on: ', search_term);
-            // Create an XMLHttpRequest object
+
+            const csrftoken = getCookie('csrftoken');
+
+            // 2. Prepare your data (assuming you want to send JSON)
+            const data = JSON.stringify({
+                "definitions-query": search_term
+            });
+
+
             const xhttp = new XMLHttpRequest();
-            // Define a callback function
-            xhttp.onload = function() {
-              // Here you can use the Data
-            }
-            // Send a request
-            xhttp.open("POST", "/save-this-search", {"definitions-query": search_term});
-            xhttp.send();
+
+            // 3. Open the connection (Method, URL, Async)
+            xhttp.open("POST", "/definitions-search/", true);
+
+            // 4. Set Headers
+            // Tell the server we are sending JSON
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            // Add the CSRF Token to the header
+            xhttp.setRequestHeader("X-CSRFToken", csrftoken);
+
+            // 5. Send the data
+            xhttp.send(data);
         }
 
         search_form_icon.addEventListener('click', () => {

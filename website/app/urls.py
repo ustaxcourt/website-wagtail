@@ -91,7 +91,11 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
-    path("save-this-search/", search_views.save_this_search, name="save_this_search"),
+    path(
+        "definitions-search/",
+        search_views.definitions_search,
+        name="definitions_search",
+    ),
 ]
 
 # Redirects localhost:8000/admin to local-login

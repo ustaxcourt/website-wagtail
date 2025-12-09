@@ -1,6 +1,9 @@
 from wagtail.admin.views.reports import ReportView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
+
+from search.models.its_a_file import DefinitionsQuery
+from home.models.pages.definitions import DefinitionsPage
 from .models import NewsItem
 from wagtail.admin.filters import (
     DateRangePickerWidget,
@@ -135,6 +138,57 @@ def to_default_tz(dt):
         dt_naive = dt.astimezone().replace(tzinfo=None)
         return dt_naive
     return dt
+
+
+class SearchDefinitionsReportView(ReportView):
+    title = "Search Definitions Report"
+
+    index_url_name = "search_definitions_report"
+    index_results_url_name = "search_definitions_report_results"
+
+    # filterset_class = NewsItemReportFilterSet
+
+    definitions = DefinitionsPage.objects.values_list("definitions", flat=True).first()
+
+    # print(definitions)
+
+    columns = [
+        Column(
+            "query_string",
+            label="Searched Definition",
+            accessor=lambda obj: format_html(
+                '<div style="font-weight: bold;">{}</div>',
+                obj.query_string if obj.query_string else "-",
+            ),
+        ),
+        Column(
+            "number_of_hits",
+            label="Times Searched",
+            accessor=lambda obj: format_html(
+                "<p>{}</p>",
+                obj.number_of_hits,
+            )
+            if obj.number_of_hits
+            else "-",
+        ),
+        Column(
+            "id",
+            label="In list?",
+            accessor=lambda obj: obj.id is not None
+            if obj.query_string in ["definitions"]
+            else "false",
+        ),
+        # Column(
+        #     "homepage_display_expiration_date",
+        #     label="Page Last Updated",
+        #     accessor=lambda obj: obj.homepage_display_expiration_date
+        #     if obj.homepage_display_expiration_date
+        #     else "-",
+        # ),
+    ]
+
+    def get_queryset(self):
+        return DefinitionsQuery.objects.all()
 
 
 class SVGChooseView(DocumentChooserViewSet.choose_view_class):
