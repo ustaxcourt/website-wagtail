@@ -1,4 +1,5 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
 
@@ -8,6 +9,10 @@ from wagtail.contrib.search_promotions.models import Query, SearchPromotion
 
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
+
+from search.models.its_a_file import DefinitionsQuery
+
+# from search.models import DefinitionsQuery
 
 SEARCH_EXCLUSION_PAGES = ["Press Releases & News"]
 
@@ -184,3 +189,20 @@ def search(request):
             "search_promotions": search_promotions,  # Pass promotions to the template
         },
     )
+
+
+def save_this_search(request: HttpRequest):
+    # breakpoint()
+    print(request.body)
+    print("---------123---------")
+
+    search_query = request.POST.get("definitions-query", "error_A")
+    # page = request.GET.get("page", 'error_B')
+
+    the_search_term = search_query
+
+    breakpoint()
+    query = DefinitionsQuery.get(the_search_term)
+    query.add_hit()
+
+    return HttpResponse(status=200, content="123")

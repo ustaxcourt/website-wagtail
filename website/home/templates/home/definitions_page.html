@@ -380,14 +380,20 @@
 
             <div class="search-form-container">
                 <form id="search-form"
-                    class="search-form">
+                    class="search-form"
+                    action="/save-this-search/"
+                    method="post"
+                >
+                    {% csrf_token %}
                     <input type="text"
                         name="definitions-query"
                         id="search-input"
                         placeholder="Search..."
                         aria-label="Search"
                         data-testid="definitions-search-input"
-                        role="searchbox">
+                        role="searchbox"
+
+                    >
                     <button type="submit" data-testid="search-button">
                         <i id="search-form-icon"class="fa-solid fa-magnifying-glass"aria-hidden="true"></i>
                         <span class="sr-only">Search</span>
@@ -442,7 +448,28 @@
         const suggestionsDiv = document.getElementById('suggestions');
         const toastElement = document.getElementById('search-toast');
 
+        const search_form_icon = document.getElementById('search-form-icon');
+
         const termElements = document.querySelectorAll('.definition-term');
+
+
+        const common_handler = (search_term) => {
+            console.log('DB operation on: ', search_term);
+            // Create an XMLHttpRequest object
+            const xhttp = new XMLHttpRequest();
+            // Define a callback function
+            xhttp.onload = function() {
+              // Here you can use the Data
+            }
+            // Send a request
+            xhttp.open("POST", "/save-this-search", {"definitions-query": search_term});
+            xhttp.send();
+        }
+
+        search_form_icon.addEventListener('click', () => {
+            common_handler(searchInput.value);
+        });
+
 
         let selectedSuggestionIndex = -1;
         let toastTimeout = null;
@@ -573,6 +600,7 @@
 
                 case 'Enter':
                     e.preventDefault();
+                    common_handler(searchInput.value);
                     if (selectedSuggestionIndex > -1) {
                         suggestions[selectedSuggestionIndex].click();
                         searchInput.blur();
@@ -582,7 +610,7 @@
                     }
                     else {
                         showToast("No Results Found", 2000);
-                        searchInput.value = '';
+                        //searchInput.value = '';
                     }
                     break;
 
@@ -617,7 +645,7 @@
                     const targetCard = targetElement.closest('.definition-card');
                     targetCard.scrollIntoView({ block: 'start' });
                     targetElement.focus();
-                    searchInput.value = '';
+                    //searchInput.value = '';
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
@@ -636,15 +664,17 @@
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
-                    searchInput.value = '';
+                    //searchInput.value = '';
                 }
             }
             else{
                 if(!clickedOnSearchInput){
-                    searchInput.value = '';
+                    //searchInput.value = '';
                 }
             }
         });
     });
+
+
 </script>
 {% endblock %}
