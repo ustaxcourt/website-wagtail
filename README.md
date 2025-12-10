@@ -431,15 +431,10 @@ Ensure no other developers are actively using the QA environment before proceedi
 
 2. Create the QA destroy tag:
     ```shell
-    git tag qa-destroy
+    make tag tag=qa-destroy
     ```
 
-3. Push the destroy tag to the remote repository:
-    ```shell
-    git push origin qa-destroy
-    ```
-
-4. Monitor the destroy workflow in GitHub → Actions.
+3. Monitor the destroy workflow in GitHub → Actions.
    - Confirm that Terraform completes the teardown successfully.
 
 
