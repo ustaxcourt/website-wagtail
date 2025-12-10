@@ -31,6 +31,36 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
+class StyledCalloutBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(
+        required=True, help_text="The title of this special element"
+    )
+    text = blocks.RichTextBlock(required=True, help_text="The paragraph content")
+
+    class Meta:
+        label = "Callout Banner"
+        icon = "info-circle"
+        template = "styled_callout.html"
+
+
+class AccordianBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        max_length=255, required=True, help_text="Title user will see before opening"
+    )
+    description = blocks.StreamBlock(
+        [
+            ("prose", blocks.RichTextBlock()),
+            ("callout", StyledCalloutBlock()),
+        ],
+        required=True,
+        help_text="Add text or special elements to the body",
+    )
+
+    class Meta:
+        label = "Accordion Block"
+        template = "accordian_block.html"
+
+
 class EnhancedStandardPage(ModerationMixin, Page):
     base_form_class = ReviewByRequiredOnSubmitForm
 
@@ -222,6 +252,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
                     ),
                     label="Card Set",
                 ),
+            ),
+            (
+                "accordian",
+                AccordianBlock(),
             ),
         ],
         blank=True,

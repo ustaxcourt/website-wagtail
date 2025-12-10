@@ -304,6 +304,11 @@
             text-align: left;
         }
 
+        .accordians {
+            display: flex;
+            flex-direction: column;
+            gap:34px
+        }
         @media (max-width: 1024px) {
             .enhanced-page .question-answer-block .bookmark {
                 top: 24px;
@@ -558,6 +563,8 @@
                         </div>
                     {% endfor %}
                 </div>
+            {% elif block.block_type == 'accordian' %}
+                {% include "accordian_block.html" with block=block block_index=forloop.counter0 %}
             {% else %}
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}
