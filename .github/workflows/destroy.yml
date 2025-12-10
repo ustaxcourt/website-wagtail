@@ -1,3 +1,5 @@
+name: Destroy
+
 on:
   push:
     tags:
@@ -18,6 +20,7 @@ jobs:
             echo "Debug: No matching condition found"
             exit 1
           fi
+
       - name: Checkout sandbox tag
         uses: actions/checkout@v3
         with:
