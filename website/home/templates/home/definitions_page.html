@@ -470,6 +470,11 @@
 
 
         const common_handler = (search_term) => {
+            if (!search_term || search_term.trim() === '') {
+                return;
+            }
+
+
             console.log('DB operation on: ', search_term);
 
             const csrftoken = getCookie('csrftoken');
@@ -639,7 +644,7 @@
                     }
                     else {
                         showToast("No Results Found", 2000);
-                        //searchInput.value = '';
+                        searchInput.value = '';
                     }
                     break;
 
@@ -669,6 +674,7 @@
             if (clickedSuggestion) {
                 const selectedTerm = clickedSuggestion.dataset.term;
                 const targetElement = Array.from(termElements).find(el => el.textContent.trim() === selectedTerm);
+                common_handler(selectedTerm);
 
                 if (targetElement) {
                     const targetCard = targetElement.closest('.definition-card');

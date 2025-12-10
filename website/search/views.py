@@ -11,7 +11,7 @@ from wagtail.contrib.search_promotions.models import Query, SearchPromotion
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
 
-from search.models.its_a_file import DefinitionsQuery
+from search.models.definitionsQuery import DefinitionsQuery
 
 # from search.models import DefinitionsQuery
 

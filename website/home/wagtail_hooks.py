@@ -454,7 +454,7 @@ def register_searched_definitions_report_url():
         ),
         path(
             "reports/search-definitions-report/results/",
-            NewsItemReportView.as_view(results_only=True),
+            SearchDefinitionsReportView.as_view(results_only=True),
             name="search_definitions_report_results",
         ),
     ]

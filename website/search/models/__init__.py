@@ -1,1 +1,1 @@
-from search.models.its_a_file import DefinitionsQuery as DefinitionsQuery
+from search.models.definitionsQuery import DefinitionsQuery as DefinitionsQuery
