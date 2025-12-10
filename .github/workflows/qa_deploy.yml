@@ -223,23 +223,3 @@ jobs:
         run: |
           cd infra
           ./disable-bastion-host.sh
-
-  # QA DESTROY — Runs when pushing a `qa-destroy` tag
-
-  qa_destroy:
-    if: startsWith(github.ref, 'refs/tags/qa-destroy')
-    name: Destroy QA Environment
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set QA Destroy Flag
-        run: echo "DESTROY_QA=true" >> $GITHUB_ENV
-
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Print Destroy Notice
-        run: |
-          echo "QA destroy tag detected.."
-          echo "This is where Terraform destroy or cleanup steps will later go."
-          echo "For TDD, this is only a stub."
