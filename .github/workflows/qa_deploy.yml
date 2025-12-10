@@ -1,4 +1,4 @@
-name: QA Environment Pipeline
+name: QA Deploy
 
 on:
   push:
