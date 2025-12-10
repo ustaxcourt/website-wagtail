@@ -377,6 +377,72 @@ Or, the following equivalent command.
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
 
+## Deploying to QA
+
+### Overview
+To deploy to the QA environment, ensure you are on the `qa` branch.
+This repository is configured to automatically deploy whenever commits are pushed to `qa`.
+Deployment typically completes within a few minutes.
+
+You can monitor deployment progress in real time via GitHub Actions:
+https://github.com/ustaxcourt/website-wagtail/actions
+
+---
+
+## The Workflow
+
+1. Ensure your local repository is on the `qa` branch:
+    ```shell
+    git checkout qa
+    ```
+
+2. Commit your changes:
+    ```shell
+    git commit -m "commit message"
+    ```
+
+3. Push your changes to the remote QA branch:
+    ```shell
+    git push
+    ```
+
+4. Monitor your workflow in GitHub → Actions.
+   - View logs for each step of the pipeline.
+   - Confirm the QA deployment completes successfully.
+
+---
+
+## Destroying the QA Environment
+
+### Overview
+Destroying the QA environment requires creating and pushing a Git tag.
+Pushing the `qa-destroy` tag triggers the destroy workflow, which tears down only the resources managed by Terraform.
+
+Ensure no other developers are actively using the QA environment before proceeding.
+
+---
+
+## The Workflow
+
+1. Ensure your local repository is on the `qa` branch:
+    ```shell
+    git checkout qa
+    ```
+
+2. Create the QA destroy tag:
+    ```shell
+    git tag qa-destroy
+    ```
+
+3. Push the destroy tag to the remote repository:
+    ```shell
+    git push origin qa-destroy
+    ```
+
+4. Monitor the destroy workflow in GitHub → Actions.
+   - Confirm that Terraform completes the teardown successfully.
+
+
 ### Workflow for Production Deploys
 
 1. At the end of a sprint, we create a *release* branch (e.g. `release/sprint-13`) off of production.
