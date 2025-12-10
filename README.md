@@ -389,7 +389,7 @@ https://github.com/ustaxcourt/website-wagtail/actions
 
 ---
 
-## The Workflow
+## Steps
 
 1. Ensure your local repository is on the `qa` branch:
     ```shell
@@ -422,7 +422,7 @@ Ensure no other developers are actively using the QA environment before proceedi
 
 ---
 
-## The Workflow
+## Steps
 
 1. Ensure your local repository is on the `qa` branch:
     ```shell
