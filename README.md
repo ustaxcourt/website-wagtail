@@ -254,7 +254,8 @@ USERS_TO_PREREGISTER:
 `
 
 ### Configuring SSO
-[!NOTE] This section is inte ded for USTC Employees with access to the [Microsoft Azure Portal](https://portal.azure.com).
+> [!NOTE]
+> This section is intended for USTC Employees with access to the [Microsoft Azure Portal](https://portal.azure.com).
 
 In order for USTC employees & contractors to login to wagtail admin with their Active Directory credentials, a USTC administrator must first register the sandbox URL with the Court's Azure portal and then supply the sandbox with a "SSO Client Secret".
 
