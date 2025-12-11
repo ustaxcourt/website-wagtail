@@ -145,14 +145,10 @@ class SearchDefinitionsReportFilterSet(WagtailFilterSet):
         lookup_expr="icontains", label="Search Term"
     )
 
-    # number_of_hits = django_filters.RangeFilter(field_name="number_of_hits", label="Number of Hits (Range)")
     number_of_hits = django_filters.RangeFilter(
         field_name="number_of_hits", label="Number of Hits (Range)"
     )
 
-    # number_of_hits_min = django_filters.NumberFilter(field_name="number_of_hits", label="Number of Hits minimum", lookup_expr="range")
-
-    # number_of_hits_max = django_filters.NumberFilter(field_name="number_of_hits", label="Number of Hits maximum", lookup_expr="lte")
     class Meta:
         model = DefinitionsQuery
         fields = [
@@ -172,7 +168,6 @@ class SearchDefinitionsReportView(ReportView):
             "query_string",
             label="Searched Definition",
             accessor=lambda obj: format_html(
-                # Darker text, slightly larger font for readability
                 '<div style="font-weight: 600; font-size: 14px;">{}</div>',
                 obj.query_string if obj.query_string else "—",
             ),
@@ -181,7 +176,6 @@ class SearchDefinitionsReportView(ReportView):
             "number_of_hits",
             label="Times Searched",
             accessor=lambda obj: format_html(
-                # A light blue "pill" badge for metrics
                 '<span style="background-color: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 12px;">{}</span>',
                 obj.number_of_hits,
             )
@@ -191,14 +185,11 @@ class SearchDefinitionsReportView(ReportView):
         Column(
             "id",
             label="In list?",
-            # Logic moved inside format_html to apply conditional coloring
             accessor=lambda obj: format_html(
                 '<span style="background-color: {}; color: {}; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;">{}</span>',
-                # Green background if True, Gray if False
                 "#dcfce7"
                 if obj.query_string.lower().strip() in DefinitionsPage.getWordList()
                 else "#f3f4f6",
-                # Dark Green text if True, Dark Gray if False
                 "#166534"
                 if obj.query_string.lower().strip() in DefinitionsPage.getWordList()
                 else "#4b5563",
