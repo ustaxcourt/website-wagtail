@@ -1,6 +1,7 @@
 from wagtail.admin.views.reports import ReportView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
+from datetime import date
 
 from search.models.definitionsQuery import DefinitionsQuery
 from home.models.pages.definitions import DefinitionsPage
@@ -208,6 +209,10 @@ class SearchDefinitionsReportView(ReportView):
 
     def get_queryset(self):
         return DefinitionsQuery.objects.all().order_by("-id")
+
+    def get_filename(self):
+        today = date.today().strftime("%Y-%m-%d")
+        return f"Search_Terms_Report_{today}"
 
 
 class SVGChooseView(DocumentChooserViewSet.choose_view_class):
