@@ -49,7 +49,8 @@ class NewsItemReportView(ReportView):
     index_url_name = "news_and_announcements_report"
     index_results_url_name = "news_and_announcements_report_results"
 
-    filterset_class = NewsItemReportFilterSet
+    # Disable filtering since we're combining two different model types
+    filterset_class = None
 
     columns = [
         Column(
@@ -112,8 +113,18 @@ class NewsItemReportView(ReportView):
         # Get all news items
         news_items = list(NewsItem.objects.all())
 
-        # Get all banners
-        banners = list(Banner.objects.all())
+        # Get banner IDs that are already referenced by news items
+        # We don't want to show these banners separately since they're already
+        # represented by their associated news item
+        banner_ids_in_news_items = set(
+            NewsItem.objects.filter(banner__isnull=False).values_list(
+                "banner_id", flat=True
+            )
+        )
+
+        # Get all banners that are NOT referenced by news items
+        # These are standalone banners that should appear as separate entries
+        banners = list(Banner.objects.exclude(id__in=banner_ids_in_news_items))
 
         # Mark each object with its type for easier handling
         for item in news_items:
