@@ -173,6 +173,10 @@ To check whether you have successfully logged into your account and that the pro
    ```
    This command creates the necessary `website_secrets` in your AWS sandbox environment.
 
+   If you receive errors about ~/.ssh not existing, follow the steps located in the links below to generate a SSH key and add it to GitHub. Run the make command above again once this is done.
+   - [Generating a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+   - [Adding the key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+
 4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
 
 5. Populate required values for the `website_secrets` secret:
