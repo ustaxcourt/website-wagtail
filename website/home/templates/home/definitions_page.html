@@ -475,11 +475,9 @@
             }
 
 
-            console.log('DB operation on: ', search_term);
-
             const csrftoken = getCookie('csrftoken');
 
-            // 2. Prepare your data (assuming you want to send JSON)
+
             const data = JSON.stringify({
                 "definitions-query": search_term
             });
@@ -487,16 +485,14 @@
 
             const xhttp = new XMLHttpRequest();
 
-            // 3. Open the connection (Method, URL, Async)
+
             xhttp.open("POST", "/definitions-search/", true);
 
-            // 4. Set Headers
-            // Tell the server we are sending JSON
+
             xhttp.setRequestHeader("Content-Type", "application/json");
-            // Add the CSRF Token to the header
+
             xhttp.setRequestHeader("X-CSRFToken", csrftoken);
 
-            // 5. Send the data
             xhttp.send(data);
         }
 
@@ -634,7 +630,6 @@
 
                 case 'Enter':
                     e.preventDefault();
-                    common_handler(searchInput.value);
                     if (selectedSuggestionIndex > -1) {
                         suggestions[selectedSuggestionIndex].click();
                         searchInput.blur();
@@ -643,6 +638,7 @@
                         suggestions[0].click();
                     }
                     else {
+                        common_handler(searchInput.value);
                         showToast("No Results Found", 2000);
                         searchInput.value = '';
                     }

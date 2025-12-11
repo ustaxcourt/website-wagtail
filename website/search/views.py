@@ -193,23 +193,14 @@ def search(request):
 
 
 def definitions_search(request: HttpRequest):
-    # breakpoint()
-    print(request.body)
-    print("---------123---------")
-
     data = json.loads(request.body)
 
     search_query = data.get("definitions-query", "error_A")
-    # search_query = request.body["definitions-query"] if "definitions-query" in request.body else "error_A"
-    print(type(request.body))
-    # page = request.GET.get("page", 'error_B')
 
     the_search_term = search_query
 
-    print(f"The search term is: {the_search_term}")
-    # breakpoint()
     query = DefinitionsQuery.get(the_search_term)
-    # query = DefinitionsQuery.
+
     query.add_hit()
 
-    return HttpResponse(status=200, content="123")
+    return HttpResponse(status=200, content="")
