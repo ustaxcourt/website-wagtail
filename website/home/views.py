@@ -167,25 +167,13 @@ class SearchDefinitionsReportView(ReportView):
     index_results_url_name = "search_definitions_report_results"
     filterset_class = SearchDefinitionsReportFilterSet
 
-    # definitionsPage = DefinitionsPage.objects.first() #.values_list("definitions", flat=True).first()
-
-    # definitionsFound = []
-
-    # definitions = definitionsPage.definitions.get_prep_value()
-    # #print(definitions.)
-
-    # for def_block in definitions:
-    #     if def_block.get("value") and def_block["value"].get("question"):
-    #         definitionsFound.append(def_block["value"]["question"].lower().strip())
-
-    # print (definitionsFound)
     columns = [
         Column(
             "query_string",
             label="Searched Definition",
             accessor=lambda obj: format_html(
                 # Darker text, slightly larger font for readability
-                '<div style="font-weight: 600; color: #1f2937; font-size: 14px;">{}</div>',
+                '<div style="font-weight: 600; font-size: 14px;">{}</div>',
                 obj.query_string if obj.query_string else "—",
             ),
         ),
@@ -228,7 +216,7 @@ class SearchDefinitionsReportView(ReportView):
     ]
 
     def get_queryset(self):
-        return DefinitionsQuery.objects.all()
+        return DefinitionsQuery.objects.all().order_by("-id")
 
 
 class SVGChooseView(DocumentChooserViewSet.choose_view_class):
