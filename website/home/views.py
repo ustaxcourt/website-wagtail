@@ -1,7 +1,7 @@
 from wagtail.admin.views.reports import ReportView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
-from .models import NewsItem
+from .models import NewsItem, Banner
 from wagtail.admin.filters import (
     DateRangePickerWidget,
     WagtailFilterSet,
@@ -44,7 +44,7 @@ class NewsItemReportFilterSet(WagtailFilterSet):
 
 
 class NewsItemReportView(ReportView):
-    title = "News Item Workflow Report"
+    title = "News & Announcements Report"
 
     index_url_name = "news_and_announcements_report"
     index_results_url_name = "news_and_announcements_report_results"
@@ -57,7 +57,7 @@ class NewsItemReportView(ReportView):
             label="Title",
             accessor=lambda obj: format_html(
                 '<div style="font-weight: bold;">{}</div>',
-                obj.title if obj.title else "-",
+                get_title(obj),
             ),
         ),
         Column(
@@ -74,16 +74,16 @@ class NewsItemReportView(ReportView):
         Column(
             "publish_date",
             label="Publish Date",
-            accessor=lambda obj: obj.publish_date if obj.publish_date else "-",
+            accessor=lambda obj: get_publish_date(obj),
         ),
         Column(
             "homepage_display_expiration_date",
             label="Homepage Expiration",
-            accessor=lambda obj: obj.homepage_display_expiration_date
-            if obj.homepage_display_expiration_date
-            else "-",
+            accessor=lambda obj: get_homepage_expiration(obj),
         ),
-        Column("created_at", label="Created At", accessor=lambda obj: obj.created_at),
+        Column(
+            "created_at", label="Created At", accessor=lambda obj: get_created_at(obj)
+        ),
     ]
 
     list_export = [
@@ -109,7 +109,63 @@ class NewsItemReportView(ReportView):
         }
 
     def get_queryset(self):
-        return NewsItem.objects.all()
+        # Get all news items
+        news_items = list(NewsItem.objects.all())
+
+        # Get all banners
+        banners = list(Banner.objects.all())
+
+        # Mark each object with its type for easier handling
+        for item in news_items:
+            item._is_banner = False
+        for banner in banners:
+            banner._is_banner = True
+
+        # Combine and sort by created_at (most recent first)
+        combined = news_items + banners
+        combined.sort(key=lambda x: get_created_at(x) or timezone.now(), reverse=True)
+
+        return combined
+
+
+def get_title(obj):
+    """Get title based on object type"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        priority = (
+            "High priority banner"
+            if obj.priority_level == "high"
+            else "Critical banner"
+        )
+        return f"{priority}: {obj.banner_title}"
+    return obj.title if hasattr(obj, "title") and obj.title else "-"
+
+
+def get_publish_date(obj):
+    """Get publish date based on object type"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        return obj.banner_start_date if obj.banner_start_date else "-"
+    return (
+        obj.publish_date if hasattr(obj, "publish_date") and obj.publish_date else "-"
+    )
+
+
+def get_homepage_expiration(obj):
+    """Get homepage expiration based on object type"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        return obj.banner_end_date if obj.banner_end_date else "-"
+    return (
+        obj.homepage_display_expiration_date
+        if hasattr(obj, "homepage_display_expiration_date")
+        and obj.homepage_display_expiration_date
+        else "-"
+    )
+
+
+def get_created_at(obj):
+    """Get created_at based on object type"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        return obj.first_published_at if obj.first_published_at else "-"
+    return obj.created_at if hasattr(obj, "created_at") else "-"
 
 
 def to_default_tz(dt):
