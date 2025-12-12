@@ -175,7 +175,14 @@ To check whether you have successfully logged into your account and that the pro
 
 4. **Confirm your `DOMAIN_NAME`.** Log in to your AWS sandbox account and check the secret entry under `website_secrets`. It might be `{developer-name}-sandbox-web.ustaxcourt.gov`. If you want to change the domain name, do it now.
 
-5. **Configure github sandbox environment** Open file "infra/iam/sandbox_generated-deployer-access-key.json" and provide "AccessKeyId" and the "SecretAccessKey" values to [@jtdevos](https://github.com/jtdevos)/admin for github environment configuration. a new environment with "github user_sandbox" will be created.
+5. Populate required values for the `website_secrets` secret:
+    - `DJANGO_SUPERUSER_PASSWORD`: Choose a unique, non-trivial password.
+    - SSO-related values (receive these from an USTC Admin)
+      - `SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY`
+      - `SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET`
+      - `SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID`
+
+6. **Configure github sandbox environment** Open file "infra/iam/sandbox_generated-deployer-access-key.json" and provide "AccessKeyId" and the "SecretAccessKey" values to [@jtdevos](https://github.com/jtdevos)/admin for github environment configuration. a new environment with "github user_sandbox" will be created.
 
 ```text
 github environment name: {{github_user_id}}_sandbox
@@ -183,14 +190,16 @@ AWS_ACCESS_KEY_ID: AccessKeyId
 AWS_SECRET_ACCESS_KEY: SecretAccessKey
 ```
 
-6. **Push `sandbox` tag to setup your sandbox environment**. In your laptop console, run the following command to create a deployment workflow in GitHub to start the application deployment workflow:
+7. **Push `sandbox` tag to setup your sandbox environment**.   In your laptop console, run the following command to create a deployment workflow in GitHub to start the application deployment workflow:
+> [!IMPORTANT]
+> You must choose a unique DJANGO_SUPERUSER_PASSWORD value in secrets manager prior to completing your first deployment.
 
 ```shell
    make tag tag=sandbox
 ```
 Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/website-wagtail/actions/workflows/deploy.yml). The workflow will pause on a Terraform step (`module.app.aws_acm_certificate_validation.main: Still creating... [X elapsed]`). The entire deployment will complete after you provide NS entries to [@jtdevos](https://github.com/jtdevos). See next step.
 
-7. **While the github workflow is in progress.** Log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
+8. **While the github workflow is in progress.** Log in to your AWS sandbox admin console, go to [Route53 > Hosted Zones](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=us-east-1), and open the link for `"{{DOMAIN_NAME}}"`. Copy the “Value/Route traffic to” entries for the `"NS"` record. They might look like this:
    ```text
    ns-1396.awsdns-46.org.
    ns-886.awsdns-46.net.
@@ -198,11 +207,11 @@ Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/we
    ns-341.awsdns-42.com.
    ```
 
-8. **Provide the `NS` entries and "Record name" (`DOMAIN_NAME`)** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow should complete successfully.
+9. **Provide the `NS` entries and "Record name" (`DOMAIN_NAME`)** to [@jtdevos](https://github.com/jtdevos). After Jim configures the routing, the deployment workflow should complete successfully.
 
-9. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
+10. **Open the `DOMAIN_NAME`** in your browser to verify that the website is functioning correctly.
 
-10. **Destroy application environment**. Verify you are able to destroy the application environment by running destroy command.
+11. **Destroy application environment**. Verify you are able to destroy the application environment by running destroy command.
 
 > [!WARNING]
 > Leaving your sandbox application environment running might incur unwanted expense. Once the testing is done, you should destroy the AWS resources.
@@ -210,9 +219,9 @@ Monitor the deployment under [Actions > Deploy](https://github.com/ustaxcourt/we
 ```shell
 make tag tag=sandbox-destroy
 ```
+## SSO Authentication
 
-
-## Adding users to sandbox during deployment (Optional)
+### Adding SSO users to sandbox during deployment
 
 You may pre-load your users so that they can login seamlessly with SSO, either as superusers or within an existing group (at time of writing, Editors or Moderators). There are sample values below for each secret. Save to website-secrets in the target environment prior to deployment.
 
@@ -240,6 +249,45 @@ USERS_TO_PREREGISTER:
 }
 `
 
+### Configuring SSO
+[!NOTE] This section is inte ded for USTC Employees with access to the [Microsoft Azure Portal](https://portal.azure.com).
+
+In order for USTC employees & contractors to login to wagtail admin with their Active Directory credentials, a USTC administrator must first register the sandbox URL with the Court's Azure portal and then supply the sandbox with a "SSO Client Secret".
+
+#### How To Register A Wagtail Sandbox Website Using The Microsoft Azure Portal
+
+1.  Login to the [Microsoft Azure Portal](https://portal.azure.com) website
+
+2. Elevate your permissions to "Application Administrator"
+	- Go to `All Services > Privileged Identity Management > Tasks > My Roles`
+	- Select the "Activate" option for "Application Administrator"
+
+3. Go to: All Services > App Registrations > ustc-website-sso
+- Under "all applications, filter to "ustc-website-sso" and select that
+- allowlist the redirect urls used by the wagtail instance
+  - Select "Manage > Authentication"
+  - Select "Add Redirect URI"
+  - (If prompted with "select platform", choose "web")
+  - Add the following URI's:
+    - https://[sandboxname].ustaxcourt.gov/
+    - https://[sandboxname].ustaxcourt.gov/complete/azuread-tenant-oauth2/
+
+4. Make note of the OAuth Tenant keys/secrets - your webapp will need them
+- Select "Overview" from side menu
+- Note the following values - AWS secrets manager will need them.
+  - "Directory (tenant) ID"
+  - "Application (client) ID"
+
+#### How To Obtain A Unique `SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET` For A Sandbox
+
+- activate "Application Administrator" role in PIM
+- go to App Registrations > ustc-website-sso > Certificates & secrets
+- select "client secrets" and generate a new secret:
+  - age: 6 months
+  - choose a simple name e.g. "Jim sandbox secret"
+
+
+
 ## Deploying to your Sandbox
 
 If you want to deploy the application to your sandbox, follow these steps:
@@ -265,7 +313,7 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - attach the new policy to your user
   - create an access key for that user, choose cli option
   - copy those keys for the next step
-- create a github action context with the same name of your branch `cody-sandbox`
+- create a github action context with the same name of your branch e.g. `cody-sandbox`
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
 
