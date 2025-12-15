@@ -92,8 +92,13 @@
                                    style="cursor: pointer;
                                           color: #0056b3;
                                           text-decoration: underline">
-                                <strong>{{ release.title }} ({{ release.release_date|date:"m/d/Y" }})</strong>
+                                <strong>{{ release.release_date|date:"m/d/Y" }}</strong>
                             </label>
+                            -
+                            {% if release.category %}
+                              <span class="category-{{ release.category|lower }}">{{ release.category|title }}</span>
+                            {% endif %}
+                            <span>{{ release.details.description }}</span>
                             <!-- Modal Content -->
                             <div class="modal">
                                 <div class="modal-content">

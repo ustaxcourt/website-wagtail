@@ -3,43 +3,44 @@ from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
 from .models import NewsItem, Banner
 from wagtail.admin.filters import (
-    DateRangePickerWidget,
     WagtailFilterSet,
 )
-from django.utils.translation import gettext_lazy as _
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
 from django.utils import timezone
-from django_filters import DateFromToRangeFilter
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
-    created_at = django_filters.DateFromToRangeFilter(
-        label=_("Created at"), widget=DateRangePickerWidget
+    category = django_filters.ChoiceFilter(
+        label="Category",
+        choices=[
+            ("news", "News Item"),
+            ("high", "High Priority Announcement"),
+            ("critical", "Critical Announcement"),
+        ],
+        empty_label="All Categories",
     )
 
-    title = django_filters.CharFilter(lookup_expr="icontains", label="Title")
+    # publish_date_range = DateFromToRangeFilter(
+    #     field_name="publish_date",
+    #     label="Publish Date Range",
+    #     widget=DateRangePickerWidget,
+    # )
 
-    publish_date_range = DateFromToRangeFilter(
-        field_name="publish_date",
-        label="Publish Date Range",
-        widget=DateRangePickerWidget,
-    )
-
-    homepage_display_expiration_date_range = DateFromToRangeFilter(
-        field_name="homepage_display_expiration_date",
-        label="Homepage Display Expiration Date Range",
-        widget=DateRangePickerWidget,
-    )
+    # homepage_display_expiration_date_range = DateFromToRangeFilter(
+    #     field_name="homepage_display_expiration_date",
+    #     label="Homepage Display Expiration Date Range",
+    #     widget=DateRangePickerWidget,
+    # )
 
     class Meta:
         model = NewsItem
         fields = [
             "category",
-            "title",
-            "created_at",
-            "publish_date_range",
-            "homepage_display_expiration_date_range",
+            # "title",
+            # "created_at",
+            # "publish_date_range",
+            # "homepage_display_expiration_date_range",
         ]
 
 
@@ -50,7 +51,7 @@ class NewsItemReportView(ReportView):
     index_results_url_name = "news_and_announcements_report_results"
 
     # Disable filtering since we're combining two different model types
-    filterset_class = None
+    filterset_class = NewsItemReportFilterSet
 
     columns = [
         Column(
@@ -124,15 +125,16 @@ class NewsItemReportView(ReportView):
         # Get banner IDs that are already referenced by news items
         # We don't want to show these banners separately since they're already
         # represented by their associated news item
-        banner_ids_in_news_items = set(
-            NewsItem.objects.filter(banner__isnull=False).values_list(
-                "banner_id", flat=True
-            )
-        )
+        # banner_ids_in_news_items = set(
+        #     NewsItem.objects.filter(banner__isnull=False).values_list(
+        #         "banner_id", flat=True
+        #     )
+        # )
 
         # Get all banners that are NOT referenced by news items
         # These are standalone banners that should appear as separate entries
-        banners = list(Banner.objects.exclude(id__in=banner_ids_in_news_items))
+        banners = list(Banner.objects.all())
+        # .exclude(id__in=banner_ids_in_news_items)
 
         # Mark each object with its type for easier handling
         for item in news_items:
@@ -145,6 +147,33 @@ class NewsItemReportView(ReportView):
         combined.sort(key=lambda x: get_created_at(x) or timezone.now(), reverse=True)
 
         return combined
+
+    def get_filtered_queryset(self, queryset=None, filters=None):
+        """Apply filters to the combined queryset"""
+        queryset = queryset or self.get_queryset()
+        filters = filters or self.get_filterset_kwargs().get("data", {})
+
+        print("Filters applied:", filters)
+
+        if not filters:
+            return queryset
+
+        filtered = queryset
+
+        # Filter by category
+        category = filters.get("category")
+        if category:
+            filtered = [
+                obj for obj in filtered if self._get_obj_category(obj) == category
+            ]
+
+        return filtered
+
+    def _get_obj_category(self, obj):
+        """Get category value for an object for filtering purposes"""
+        if getattr(obj, "_is_banner", False):
+            return obj.priority_level
+        return getattr(obj, "category", None)
 
 
 def get_title(obj):

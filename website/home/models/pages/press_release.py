@@ -103,6 +103,9 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                         "id": news_item.id,
                         "is_homepage_entry": True,
                         "release_date": release_date,
+                        "details": {
+                            "description": news_item.title,
+                        },
                         "title": news_item.title,
                         "body": news_item.description,
                         "file": None,
