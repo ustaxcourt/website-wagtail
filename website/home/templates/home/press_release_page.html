@@ -122,10 +122,17 @@
                                 <strong>{{ release.release_date|date:"m/d/Y" }}</strong>
                             {% endif %}
                             -
-                            {% if release.category %}
-                              <span class="category-{{ release.category|lower }}">{{ release.category|title }}</span>
+                            {% if release.is_banner %}
+                              {# For banners: highlighted label, bolded title, then body text (not bolded) #}
+                              <span class="category-{{ release.banner_type|lower }}">{{ release.banner_label }}</span>
+                              <strong>{{ release.banner_title }}</strong> {{ release.banner_body|striptags }}
+                            {% else %}
+                              {# For regular news items, show category if present #}
+                              {% if release.category %}
+                                <span class="category-{{ release.category|lower }}">{{ release.category|title }}</span>
+                              {% endif %}
+                              {{ release.details.description }}
                             {% endif %}
-                            {{ release.details.description }}
                         </li>
                     {% endif %}
                 {% endfor %}

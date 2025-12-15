@@ -32,6 +32,12 @@ def yellow_priority_news(request):
                 "description": str(item.description),  # Convert RichText to HTML string
                 "priority_level": item.priority_level,
                 "document_url": item.document.url if item.document else None,
+                "banner_start_date": item.banner_start_date.isoformat()
+                if item.banner_start_date
+                else None,
+                "banner_end_date": item.banner_end_date.isoformat()
+                if item.banner_end_date
+                else None,
             }
         )
 
@@ -65,6 +71,12 @@ def critical_priority_news(request):
                 "description": str(item.description),  # Convert RichText to HTML string
                 "priority_level": item.priority_level,
                 "document_url": item.document.url if item.document else None,
+                "banner_start_date": item.banner_start_date.isoformat()
+                if item.banner_start_date
+                else None,
+                "banner_end_date": item.banner_end_date.isoformat()
+                if item.banner_end_date
+                else None,
             }
         )
 

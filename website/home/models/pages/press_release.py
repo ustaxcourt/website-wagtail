@@ -12,6 +12,7 @@ from django.template.response import TemplateResponse
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.snippets.news_item import NewsItem
+from home.models.snippets.banners import Banner
 
 
 class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
@@ -72,6 +73,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     def group_press_releases_by_year(self):
         grouped = defaultdict(list)
 
+        # Process NewsItems
         news_items = (
             NewsItem.objects.live()
             .filter(publish_date__lte=timezone.now())
@@ -114,6 +116,40 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                         else None,
                     }
                     grouped[year].append(release_entry)
+
+        # Process standalone Banners
+        banners = (
+            Banner.objects.live()
+            .filter(banner_start_date__lte=timezone.now())
+            .order_by("-banner_start_date")
+        )
+        for banner in banners:
+            release_date = (
+                banner.banner_start_date.date() if banner.banner_start_date else None
+            )
+            if release_date:
+                year = release_date.year
+
+                # Determine banner type label
+                banner_label = (
+                    "High Priority" if banner.priority_level == "high" else "Critical"
+                )
+
+                # Create release entry from Banner
+                release_entry = {
+                    "is_news_item": True,
+                    "is_banner": True,
+                    "release_date": release_date,
+                    "banner_label": banner_label,  # "High Priority" or "Critical"
+                    "banner_title": banner.banner_title,  # The title to be bolded
+                    "banner_body": banner.description,  # The body text
+                    "banner_type": banner.priority_level,  # "high" or "critical" for styling
+                    "details": {
+                        "description": "",  # Not used for banners
+                        "file": None,
+                    },
+                }
+                grouped[year].append(release_entry)
 
         sorted_grouped = {
             year: sorted(releases, key=itemgetter("release_date"), reverse=True)
