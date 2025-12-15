@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - qa
-  tags:
+    tags:
       - qa-deploy
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
