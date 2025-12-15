@@ -29,7 +29,7 @@ Requirements are installed using `pip`. Local/development requirements go to `lo
 ### Naming Conventions
 
 - Use `lower_case_with_underscores` for function names, variable names, and attribute names.
-- Use `UpperCaseWithUnderscores` for class names.
+- Use `UpperCaseWithoutUnderscores` for class names.
 - Service we use the naming convention: `<entity>_<action>`, example: `user_create()`.
 - APIs we use the following naming convention: `<Entity><Action>Api`, example: `UserCreateApi`.
 
