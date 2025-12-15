@@ -62,6 +62,10 @@
   .emergency .callout-content p {
     color: white;
   }
+  .callout-content #callout-title {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
 
   .callout-icon {
       margin-top: 10px;
@@ -71,6 +75,9 @@
       mask-repeat: no-repeat;
       -webkit-mask-position: center;
       mask-position: center;
+
+      width: 32px;
+      height: 32px;
   }
   .info .callout-icon {
     -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');
@@ -81,8 +88,8 @@
     mask-image: url('/static/uswds/img/usa-icons/warning.svg');
   }
   .success .callout-icon {
-    -webkit-mask-image: url('/static/images/icons/success.svg');
-    mask-image: url('/static/images/icons/success.svg');
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/check_circle.svg');
+    mask-image: url('/static/uswds/img/usa-icons/check_circle.svg');
   }
   .error .callout-icon {
     -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');
@@ -99,6 +106,10 @@
       width: 24px;
       height: 24px;
     }
+    .callout-icon {
+      width: 24px;
+      height: 24px;
+    }
   }
 
 </style>
@@ -106,9 +117,9 @@
 <div>
   <div class="styled-callout {{ block.value.callout_type }}">
     <div class="callout-items" style="margin-right: 1rem;">
-      <span style="width: 24px; height: 24px;" class="callout-icon"></span>
+      <span class="callout-icon"></span>
       <div class="callout-content">
-        <h3 >{{ block.value.heading }}</h3>
+        <h3 id="callout-title" >{{ block.value.heading }}</h3>
         <p>{{ block.value.text }}</p>
       </div>
     </div>

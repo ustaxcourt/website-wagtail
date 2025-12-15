@@ -60,5 +60,12 @@
         {% elif no_opportunities_message %}
             <p>{{ no_opportunities_message }}</p>
         {% endif %}
+        {% for block in page.body%}
+            {% if block.block_type == 'accordian' %}
+                {% include "accordian_block.html" with block=block block_index=forloop.counter0 %}
+            {% elif block.block_type == 'callout' %}
+                {% include "callout_block.html" with block=block %}
+            {% endif %}
+        {% endfor %}
     </div>
 {% endblock %}
