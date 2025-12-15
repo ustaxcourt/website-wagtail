@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - qa
+  tags:
+      - qa-deploy
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,7 +13,6 @@ concurrency:
 jobs:
   # QA DEPLOY — Runs when pushing to the `qa` branch
   qa_deploy:
-    if: startsWith(github.ref, 'refs/heads/qa')
     environment: qa
     name: Deploy QA (Basic Checks)
     runs-on: ubuntu-latest
