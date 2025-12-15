@@ -188,15 +188,34 @@ def get_created_at(obj):
 
 
 def format_category(obj):
-    if not obj.category:
-        return "-"
-    if obj.category == "news":
-        return "News Item"
-    if obj.category == "high":
-        return "High Priority Announcement"
-    if obj.category == "critical":
+    # If this object was tagged as a banner in get_queryset, handle it separately
+    if getattr(obj, "_is_banner", False):
+        pl = getattr(obj, "priority_level", None)
+        if pl == "high":
+            return "High Priority Announcement"
+        if pl == "critical":
+            return "Critical Announcement"
+        # fallback for banners with no priority set
+        return "Banner"
+
+    # For non-banner objects (e.g. NewsItem), prefer category, fall back to priority_level
+    cat = getattr(obj, "category", None)
+    if cat:
+        if cat == "news":
+            return "News Item"
+        if cat == "high":
+            return "High Priority Announcement"
+        if cat == "critical":
+            return "Critical Announcement"
+        return str(cat).capitalize()
+
+    pl = getattr(obj, "priority_level", None)
+    if pl == "critical":
         return "Critical Announcement"
-    return obj.category
+    if pl == "high":
+        return "High Priority Announcement"
+
+    return "-"
 
 
 def to_default_tz(dt):
