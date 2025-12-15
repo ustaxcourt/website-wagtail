@@ -54,6 +54,14 @@ class NewsItemReportView(ReportView):
 
     columns = [
         Column(
+            "category",
+            label="Category",
+            accessor=lambda obj: format_html(
+                "<div style='font-weight: bold;'>{}</div>",
+                format_category(obj),
+            ),
+        ),
+        Column(
             "title",
             label="Title",
             accessor=lambda obj: format_html(
@@ -177,6 +185,18 @@ def get_created_at(obj):
     if hasattr(obj, "_is_banner") and obj._is_banner:
         return obj.first_published_at if obj.first_published_at else "-"
     return obj.created_at if hasattr(obj, "created_at") else "-"
+
+
+def format_category(obj):
+    if not obj.category:
+        return "-"
+    if obj.category == "news":
+        return "News Item"
+    if obj.category == "high":
+        return "High Priority Announcement"
+    if obj.category == "critical":
+        return "Critical Announcement"
+    return obj.category
 
 
 def to_default_tz(dt):
