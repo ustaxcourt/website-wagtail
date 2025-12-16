@@ -110,10 +110,12 @@
             {% include 'alert_banner.html' %}
         {% endif %}
         {% include 'header.html' %}
+
         {% include 'includes/give_feedback_button.html' %}
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/definitions_button.html' %}
         {% endif %}
+
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/mini_definitions_button.html' %}
         {% endif %}
@@ -135,6 +137,8 @@
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", () => {
+
+                return;
 
                   const hiddenMenu = document.getElementById("last-nav-list");
                   const feedbackButtonToAdjust = document.querySelector(".give-feedback-btn");
