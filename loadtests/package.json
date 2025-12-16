@@ -15,6 +15,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "artillery": "^2.0.26"
+    "artillery": "^2.0.27"
   }
 }
