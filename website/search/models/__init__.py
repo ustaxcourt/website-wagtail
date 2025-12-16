@@ -1,0 +1,1 @@
+from search.models.definitionsQuery import DefinitionsQuery as DefinitionsQuery
