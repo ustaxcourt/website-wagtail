@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls import path, include
 from django.urls import re_path
 from django.views.generic import TemplateView, RedirectView
+from django.templatetags.static import static
 
 from search import views as search_views
 from app.admin_local.views import LocalLoginView
@@ -76,6 +77,15 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
         name="robots_file",
+    ),
+    # Serve a root-level favicon for browsers that request /favicon.ico
+    path(
+        "favicon.ico",
+        RedirectView.as_view(
+            url=static("images/icons/favicon.ico"),
+            permanent=True,
+        ),
+        name="favicon_file",
     ),
     path("django-admin/", admin.site.urls),
     path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
