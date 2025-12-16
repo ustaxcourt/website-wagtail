@@ -676,7 +676,6 @@
                     const targetCard = targetElement.closest('.definition-card');
                     targetCard.scrollIntoView({ block: 'start' });
                     targetElement.focus();
-                    //searchInput.value = '';
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
@@ -687,7 +686,10 @@
         document.addEventListener('click', function(event) {
             const clickedOnSearchInput = event.target.closest('#search-input');
 
-            if (!suggestionsDiv.classList.contains('hidden')) {
+            let is_hidden = suggestionsDiv.classList.contains('hidden');
+            let is_visible = !is_hidden;
+
+            if (is_visible) {
 
                 const clickedOnSuggestions = event.target.closest('#suggestions');
 
@@ -695,12 +697,6 @@
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
-                    //searchInput.value = '';
-                }
-            }
-            else{
-                if(!clickedOnSearchInput){
-                    //searchInput.value = '';
                 }
             }
         });
