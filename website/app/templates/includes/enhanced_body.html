@@ -1,14 +1,5 @@
 {% load wagtailcore_tags wagtailimages_tags filters static %}
 
-    {% with page.show_floating_definitions_button as show_definitions_button %}
-        <p>Test: {{ show_definitions_button }}</p>
-    {% endwith %}
-    <p>Test: {{ page.show_floating_definitions_button }}</p>
-    <p>Test: {{ page.show_floating_definitions_button|get_type }}</p>
-
-    <p>Test: {{ page.navigation_ribbon }}</p>
-    <p>Test: {{ page.navigation_ribbon|get_type }}</p>
-
         {% for block in page.body %}
             {% if block.block_type == 'h2' %}
                 <h2>{{ block.value }}</h2>

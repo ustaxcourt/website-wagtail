@@ -30,8 +30,3 @@ def parse_iso_date(date_string):
             pass
 
     return date_string
-
-
-@register.filter
-def get_type(value) -> str:
-    return type(value).__name__
