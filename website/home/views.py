@@ -1,6 +1,8 @@
+from django.db.models.functions import Lower, Trim
 from wagtail.admin.views.reports import ReportView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
+from datetime import date
 
 from search.models.definitionsQuery import DefinitionsQuery
 from home.models.pages.definitions import DefinitionsPage
@@ -149,11 +151,33 @@ class SearchDefinitionsReportFilterSet(WagtailFilterSet):
         field_name="number_of_hits", label="Number of Hits (Range)"
     )
 
+    in_list = django_filters.ChoiceFilter(
+        choices=[("yes", "Yes"), ("no", "No")],
+        label="In List?",
+        method="filter_in_list",  # Tells Django to use the method below
+        empty_label="All",
+    )
+
+    def filter_in_list(self, queryset, name, value):
+        """
+        Custom filter to check if the query_string exists in the
+        DefinitionsPage word list.
+        """
+        word_list = [w.lower().strip() for w in DefinitionsPage.getWordList()]
+
+        qs = queryset.annotate(query_list=Lower(Trim("query_string")))
+
+        if value == "yes":
+            return qs.filter(query_list__in=word_list)
+
+        elif value == "no":
+            return qs.exclude(query_list__in=word_list)
+
+        return queryset
+
     class Meta:
         model = DefinitionsQuery
-        fields = [
-            "query_string",
-        ]
+        fields = []
 
 
 class SearchDefinitionsReportView(ReportView):
@@ -184,7 +208,7 @@ class SearchDefinitionsReportView(ReportView):
         ),
         Column(
             "id",
-            label="In list?",
+            label="On List?: Yes/No",
             accessor=lambda obj: format_html(
                 '<span style="background-color: {}; color: {}; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;">{}</span>',
                 "#dcfce7"
@@ -208,6 +232,10 @@ class SearchDefinitionsReportView(ReportView):
 
     def get_queryset(self):
         return DefinitionsQuery.objects.all().order_by("-id")
+
+    def get_filename(self):
+        today = date.today().strftime("%Y-%m-%d")
+        return f"Search_Terms_Report_{today}"
 
 
 class SVGChooseView(DocumentChooserViewSet.choose_view_class):
