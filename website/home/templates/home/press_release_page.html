@@ -111,6 +111,9 @@
             </ul>
             {% if not forloop.last %}<hr>{% endif %}
         {% endfor %}
+
+        {% include "includes/enhanced_body.html" %}
+
         {% if not is_archive %}
             <hr>
             <div class="custom-button-archive">
