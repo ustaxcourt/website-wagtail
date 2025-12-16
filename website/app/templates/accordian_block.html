@@ -147,12 +147,12 @@
                 {{ block.value }}
             </div>
 
-          {% elif block.block_type == 'callout' %}
+            {% elif block.block_type == 'callout' %}
               <div class="callout-content">
                   {% include_block block %}
               </div>
-          {% endif %}
-            {% endfor %}
+            {% endif %}
+          {% endfor %}
         </div>
     </div>
 </body>
