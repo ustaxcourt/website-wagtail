@@ -1,6 +1,11 @@
+from django.db.models.functions import Lower, Trim
 from wagtail.admin.views.reports import ReportView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
+from datetime import date
+
+from search.models.definitionsQuery import DefinitionsQuery
+from home.models.pages.definitions import DefinitionsPage
 from .models import NewsItem, Banner
 from wagtail.admin.filters import (
     WagtailFilterSet,
@@ -257,6 +262,102 @@ def to_default_tz(dt):
         dt_naive = dt.astimezone().replace(tzinfo=None)
         return dt_naive
     return dt
+
+
+class SearchDefinitionsReportFilterSet(WagtailFilterSet):
+    query_string = django_filters.CharFilter(
+        lookup_expr="icontains", label="Search Term"
+    )
+
+    number_of_hits = django_filters.RangeFilter(
+        field_name="number_of_hits", label="Number of Hits (Range)"
+    )
+
+    in_list = django_filters.ChoiceFilter(
+        choices=[("yes", "Yes"), ("no", "No")],
+        label="In List?",
+        method="filter_in_list",  # Tells Django to use the method below
+        empty_label="All",
+    )
+
+    def filter_in_list(self, queryset, name, value):
+        """
+        Custom filter to check if the query_string exists in the
+        DefinitionsPage word list.
+        """
+        word_list = [w.lower().strip() for w in DefinitionsPage.getWordList()]
+
+        qs = queryset.annotate(query_list=Lower(Trim("query_string")))
+
+        if value == "yes":
+            return qs.filter(query_list__in=word_list)
+
+        elif value == "no":
+            return qs.exclude(query_list__in=word_list)
+
+        return queryset
+
+    class Meta:
+        model = DefinitionsQuery
+        fields = []
+
+
+class SearchDefinitionsReportView(ReportView):
+    title = "Search Definitions Report"
+
+    index_url_name = "search_definitions_report"
+    index_results_url_name = "search_definitions_report_results"
+    filterset_class = SearchDefinitionsReportFilterSet
+
+    columns = [
+        Column(
+            "query_string",
+            label="Searched Definition",
+            accessor=lambda obj: format_html(
+                '<div style="font-weight: 600; font-size: 14px;">{}</div>',
+                obj.query_string if obj.query_string else "—",
+            ),
+        ),
+        Column(
+            "number_of_hits",
+            label="Times Searched",
+            accessor=lambda obj: format_html(
+                '<span style="background-color: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 12px;">{}</span>',
+                obj.number_of_hits,
+            )
+            if obj.number_of_hits
+            else "-",
+        ),
+        Column(
+            "id",
+            label="On List?: Yes/No",
+            accessor=lambda obj: format_html(
+                '<span style="background-color: {}; color: {}; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;">{}</span>',
+                "#dcfce7"
+                if obj.query_string.lower().strip() in DefinitionsPage.getWordList()
+                else "#f3f4f6",
+                "#166534"
+                if obj.query_string.lower().strip() in DefinitionsPage.getWordList()
+                else "#4b5563",
+                "YES"
+                if obj.query_string.lower().strip() in DefinitionsPage.getWordList()
+                else "NO",
+            ),
+        ),
+    ]
+
+    list_export = [
+        "id",
+        "query_string",
+        "number_of_hits",
+    ]
+
+    def get_queryset(self):
+        return DefinitionsQuery.objects.all().order_by("-id")
+
+    def get_filename(self):
+        today = date.today().strftime("%Y-%m-%d")
+        return f"Search_Terms_Report_{today}"
 
 
 class SVGChooseView(DocumentChooserViewSet.choose_view_class):
