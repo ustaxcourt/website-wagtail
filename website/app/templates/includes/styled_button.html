@@ -1,0 +1,35 @@
+{% load static %}
+{% load wagtailcore_tags %}
+
+<style>
+  .usa-button.styled-button{
+    display: flex;
+    align-items: center;
+    color: var(--color-white);
+    padding: 10px 20px;
+
+    width: fit-content;
+    font-size: 16px;
+  }
+
+  .usa-button.styled-button .button-icon {
+    background-color: var(--color-white);
+    width: 16px;
+    height: 16px;
+  }
+
+</style>
+
+<body>
+  <button class="usa-button styled-button" type="button" onclick="window.location.href='{{ block.value.url }}'">
+    {% if block.value.icon and block.value.icon.svg_file %}
+      <img class="button-icon" src="{{ block.value.icon.svg_file.url }}" alt="Button icon">
+    {% endif %}
+    {{ block.value.text }}
+  </button>
+</body>
+
+
+<script>
+
+</script>
