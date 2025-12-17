@@ -39,4 +39,14 @@ describe('index page', () => {
 
     cy.url().should('include', '/case-related-forms/')
   })
+
+  it('search buttons contain text or title attribute for accessibility', () => {
+    cy.get('[data-testid="search-button"]').should(($button) => {
+
+      expect($button).to.have.length(3) //checking that home page has three search buttons
+      expect($button.eq(0)).to.contain('Search') //test tablet search box
+      expect($button.eq(1)).to.contain('Search') //test desktop search box
+      expect($button.eq(2).attr('title')).to.contain('Search') //test mobile search box
+    });
+  })
 })

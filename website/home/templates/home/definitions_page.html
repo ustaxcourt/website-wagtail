@@ -380,14 +380,20 @@
 
             <div class="search-form-container">
                 <form id="search-form"
-                    class="search-form">
+                    class="search-form"
+                    {% comment %} action="/save-this-search/" {% endcomment %}
+                    method="post"
+                >
+                    {% csrf_token %}
                     <input type="text"
                         name="definitions-query"
                         id="search-input"
                         placeholder="Search..."
                         aria-label="Search"
                         data-testid="definitions-search-input"
-                        role="searchbox">
+                        role="searchbox"
+
+                    >
                     <button type="submit" data-testid="search-button">
                         <i id="search-form-icon"class="fa-solid fa-magnifying-glass"aria-hidden="true"></i>
                         <span class="sr-only">Search</span>
@@ -435,6 +441,22 @@
 
 {% block extra_js %}
 <script>
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const filterButton = document.getElementById('filter-toggle-btn');
         const mobileNav = document.getElementById('alphabet-nav-mobile');
@@ -442,7 +464,42 @@
         const suggestionsDiv = document.getElementById('suggestions');
         const toastElement = document.getElementById('search-toast');
 
+        const search_form_icon = document.getElementById('search-form-icon');
+
         const termElements = document.querySelectorAll('.definition-term');
+
+
+        const common_handler = (search_term) => {
+            if (!search_term || search_term.trim() === '') {
+                return;
+            }
+
+
+            const csrftoken = getCookie('csrftoken');
+
+
+            const data = JSON.stringify({
+                "definitions-query": search_term
+            });
+
+
+            const xhttp = new XMLHttpRequest();
+
+
+            xhttp.open("POST", "/definitions-search/", true);
+
+
+            xhttp.setRequestHeader("Content-Type", "application/json");
+
+            xhttp.setRequestHeader("X-CSRFToken", csrftoken);
+
+            xhttp.send(data);
+        }
+
+        search_form_icon.addEventListener('click', () => {
+            common_handler(searchInput.value);
+        });
+
 
         let selectedSuggestionIndex = -1;
         let toastTimeout = null;
@@ -581,6 +638,7 @@
                         suggestions[0].click();
                     }
                     else {
+                        common_handler(searchInput.value);
                         showToast("No Results Found", 2000);
                         searchInput.value = '';
                     }
@@ -612,12 +670,12 @@
             if (clickedSuggestion) {
                 const selectedTerm = clickedSuggestion.dataset.term;
                 const targetElement = Array.from(termElements).find(el => el.textContent.trim() === selectedTerm);
+                common_handler(selectedTerm);
 
                 if (targetElement) {
                     const targetCard = targetElement.closest('.definition-card');
                     targetCard.scrollIntoView({ block: 'start' });
                     targetElement.focus();
-                    searchInput.value = '';
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
@@ -628,7 +686,10 @@
         document.addEventListener('click', function(event) {
             const clickedOnSearchInput = event.target.closest('#search-input');
 
-            if (!suggestionsDiv.classList.contains('hidden')) {
+            let is_hidden = suggestionsDiv.classList.contains('hidden');
+            let is_visible = !is_hidden;
+
+            if (is_visible) {
 
                 const clickedOnSuggestions = event.target.closest('#suggestions');
 
@@ -636,15 +697,11 @@
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
-                    searchInput.value = '';
-                }
-            }
-            else{
-                if(!clickedOnSearchInput){
-                    searchInput.value = '';
                 }
             }
         });
     });
+
+
 </script>
 {% endblock %}

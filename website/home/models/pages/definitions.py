@@ -71,3 +71,16 @@ class DefinitionsPage(ModerationMixin, Page):
         context["available_words"] = sorted(list(set(all_questions)))
 
         return context
+
+    @staticmethod
+    def getWordList() -> list[str]:
+        definitionsPage = DefinitionsPage.objects.first()
+        definitions = definitionsPage.definitions.get_prep_value()
+
+        definitionsFound = []
+
+        for def_block in definitions:
+            if def_block.get("value") and def_block["value"].get("question"):
+                definitionsFound.append(def_block["value"]["question"].lower().strip())
+
+        return definitionsFound

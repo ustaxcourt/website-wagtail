@@ -9,6 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         RAISE_ERROR = False
         # Check if DEBUG is False
+        self.stdout.write("Running production environment checks...")
         if settings.DEBUG:
             self.stdout.write(
                 self.style.ERROR("ERROR: DEBUG is set to True. Expected: False.")
@@ -19,6 +20,7 @@ class Command(BaseCommand):
 
         # Check if SECRET_KEY is set
         if not settings.SECRET_KEY:
+            self.stdout.write("secret: ", settings.SECRET_KEY)
             self.stdout.write(
                 self.style.ERROR("ERROR: SECRET_KEY is not set. Expected: Configured.")
             )
