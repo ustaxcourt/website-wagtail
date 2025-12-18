@@ -4,7 +4,6 @@ from wagtail.blocks import PageChooserBlock
 
 
 class ButtonBlock(blocks.StructBlock):
-    # make icon able to hold images in the future
     icon = SVGDocumentChooserBlock(required=False, help_text="Optional: Button icon")
     text = blocks.CharBlock(required=True, help_text="Button text")
     url = blocks.StreamBlock(
