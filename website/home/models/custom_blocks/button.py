@@ -1,17 +1,15 @@
 from wagtail import blocks
-from home.blocks import SVGChooserBlock
+from home.blocks import SVGDocumentChooserBlock
 
 
 class ButtonBlock(blocks.StructBlock):
     # make icon able to hold images in the future
-    icon = SVGChooserBlock(required=False)
+    icon = SVGDocumentChooserBlock(required=False, help_text="Optional: Button icon")
     text = blocks.CharBlock(required=True, help_text="Button text")
-    href = blocks.CharBlock(
-        required=True, help_text="Button link  (Can be relative or absolute)"
-    )
-    url = blocks.URLBlock(
-        required=True, help_text="Optional: Use this field for absolute URLs"
-    )
+    url = blocks.CharBlock(required=True, help_text="Button link", label="URL")
+    # url = blocks.URLBlock(
+    #     required=True, help_text="Optional: Use this field for absolute URLs"
+    # )
     style = blocks.ChoiceBlock(
         choices=[
             ("primary", "Primary"),
