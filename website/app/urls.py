@@ -9,6 +9,7 @@ from django.urls import path, include
 from django.urls import re_path
 from django.views.generic import TemplateView, RedirectView
 from django.templatetags.static import static
+from django.http import FileResponse
 
 from search import views as search_views
 from app.admin_local.views import LocalLoginView
@@ -71,6 +72,41 @@ def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
+def serve_favicon(request):
+    """
+    Serve favicon.ico with multiple fallback approaches:
+    1. Try Wagtail's format-ico filter (recommended by diagnostic)
+    2. Serve static file directly with proper headers
+    3. Fallback to redirect
+    """
+    from wagtail.images.models import Image
+
+    # Approach 1: Try Wagtail's format-ico filter (recommended solution)
+    try:
+        favicon_image = Image.objects.filter(title__icontains="favicon").first()
+        if favicon_image:
+            # Use Wagtail's format-ico to generate the .ico file
+            rendition = favicon_image.get_rendition("format-ico")
+            # Redirect to the generated .ico file
+            return redirect(rendition.url)
+    except Exception:
+        pass
+
+    # Approach 2: Serve static favicon.ico directly with proper content type
+    try:
+        favicon_path = os.path.join(
+            settings.STATIC_ROOT or settings.BASE_DIR,
+            "app/static/images/icons/favicon.ico",
+        )
+        if os.path.exists(favicon_path):
+            return FileResponse(open(favicon_path, "rb"), content_type="image/x-icon")
+    except Exception:
+        pass
+
+    # Approach 3: Fallback to redirect to static file
+    return redirect(static("images/icons/favicon.ico"))
+
+
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
@@ -79,14 +115,7 @@ urlpatterns = [
         name="robots_file",
     ),
     # Serve a root-level favicon for browsers that request /favicon.ico
-    path(
-        "favicon.ico",
-        RedirectView.as_view(
-            url=static("images/icons/favicon.ico"),
-            permanent=True,
-        ),
-        name="favicon_file",
-    ),
+    path("favicon.ico", serve_favicon, name="favicon_file"),
     path("django-admin/", admin.site.urls),
     path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
     path(
