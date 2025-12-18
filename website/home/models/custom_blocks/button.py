@@ -20,6 +20,10 @@ class ButtonBlock(blocks.StructBlock):
         help_text="Choose the button style",
     )
 
+    button_hover = blocks.BooleanBlock(
+        required=False, help_text="Enable hover effect on button", default=True
+    )
+
     class Meta:
         icon = "placeholder"
         label = "Button"
