@@ -34,6 +34,9 @@
     flex-direction: row;
     align-items: flex-start;
 
+    padding-top: 16px;
+    padding-bottom: 16px;
+
   }
   .callout-items img {
     margin-top: 10px
@@ -68,16 +71,16 @@
   }
 
   .callout-icon {
-      margin-top: 10px;
-      background-color: black;
-      /* Ensure the mask doesn't repeat */
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      mask-position: center;
+    margin-top: 10px;
+    background-color: black;
+    /* Ensure the mask doesn't repeat */
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
 
-      width: 32px;
-      height: 32px;
+    width: 32px;
+    height: 32px;
   }
   .info .callout-icon {
     -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');
@@ -107,6 +110,7 @@
       height: 24px;
     }
     .callout-icon {
+      min-width: 24px;
       width: 24px;
       height: 24px;
     }
