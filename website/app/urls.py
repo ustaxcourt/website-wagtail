@@ -77,6 +77,11 @@ urlpatterns = [
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
         name="robots_file",
     ),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url="/static/images/icons/favicon.ico", permanent=True),
+        name="favicon",
+    ),
     path("django-admin/", admin.site.urls),
     path("admin-tools/role-switcher/", include("app.role_switcher.urls")),
     path(
