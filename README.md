@@ -250,7 +250,7 @@ USERS_TO_PREREGISTER:
 `
 
 ### Configuring SSO
-[!NOTE] This section is inte ded for USTC Employees with access to the [Microsoft Azure Portal](https://portal.azure.com).
+> [!NOTE] This section is intended for USTC Employees with access to the [Microsoft Azure Portal](https://portal.azure.com).
 
 In order for USTC employees & contractors to login to wagtail admin with their Active Directory credentials, a USTC administrator must first register the sandbox URL with the Court's Azure portal and then supply the sandbox with a "SSO Client Secret".
 
@@ -332,6 +332,27 @@ Leaving your sandbox running without being used will waste money.  Remember to c
 3. modify `rds.tf` to remove the lifecycle rule preventing the destruction of the rds instance by setting `deletion_protection = false`
 4. `ENVIRONMENT=<SANDBOX ENV> ./destroy.sh` or run `make destroy`
   - Alternatively, you can use `make tag tag=sandbox-destroy`
+
+
+## Utilities for Reading & Copying `website_secrets` Values Across AWS Profiles
+> [!Note] This section is only applicable for users that have *multiple* AWS accounts.  These account profiles must first be added to the AWS CLI configuration file.
+
+For users with access to multiple AWS profiles, there are a couple of utilities that assist in reviewing & copying secrets.
+
+- `infra/scripts/get_website_secret.py`: display `website_secrets` values on the command line
+- `infra/scripts/copy_secret_property.py`: copy `website_secrets` value from one AWS profile to another
+
+### Usage
+```
+# activate the website-wagtail virtual environment
+. .venv/bin/activate
+
+# read the contents of the USERS_TO_PRELOAD value for a profile
+> infra/scripts/get_website_secret.py profile1 USERS_TO_PRELOAD
+
+# copy contents of USERS_TO_PRELOAD from profile 1 to profile 2
+> infra/scripts/copy_website_secret.py profile1 profile 2 USERS_TO_PRELOAD
+```
 
 
 ## Manually Connecting to DB
@@ -436,6 +457,67 @@ Or, the following equivalent command.
 > If a code review results in significant changes to the feature, deploy an update to the developer sandbox and request a re-review from UX and PO
 10. Once everything looks good (PR reviewed, UX+PO approval), merge the PR (thus integrating the feature into `main`)
 11. Once merged, a github automation will deploy the current state of `main` to the staging environment.
+
+## Deploying to QA
+
+### Overview
+To deploy to the QA environment, ensure you are on the `qa` branch.
+This repository is configured to automatically deploy whenever commits are pushed to `qa`.
+Deployment typically completes within a few minutes.
+
+You can monitor deployment progress in real time via GitHub Actions:
+https://github.com/ustaxcourt/website-wagtail/actions
+
+---
+
+## Steps
+
+1. Ensure your local repository is on the `qa` branch:
+    ```shell
+    git checkout qa
+    ```
+
+2. Commit your changes:
+    ```shell
+    git commit -m "commit message"
+    ```
+
+3. Push your changes to the remote QA branch:
+    ```shell
+    git push
+    ```
+
+4. Monitor your workflow in GitHub → Actions.
+   - View logs for each step of the pipeline.
+   - Confirm the QA deployment completes successfully.
+
+---
+
+## Destroying the QA Environment
+
+### Overview
+Destroying the QA environment requires creating and pushing a Git tag.
+Pushing the `qa-destroy` tag triggers the destroy workflow, which tears down only the resources managed by Terraform.
+
+Ensure no other developers are actively using the QA environment before proceeding.
+
+---
+
+## Steps
+
+1. Ensure your local repository is on the `qa` branch:
+    ```shell
+    git checkout qa
+    ```
+
+2. Create the QA destroy tag:
+    ```shell
+    make tag tag=qa-destroy
+    ```
+
+3. Monitor the destroy workflow in GitHub → Actions.
+   - Confirm that Terraform completes the teardown successfully.
+
 
 ### Workflow for Production Deploys
 
