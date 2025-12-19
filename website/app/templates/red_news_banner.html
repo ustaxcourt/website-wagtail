@@ -93,8 +93,9 @@
                 }
 
                 // Parse ISO dates - these will be converted to user's local timezone automatically
-                const startDate = item.banner_start_date ? new Date(item.banner_start_date) : null;
-                const endDate = item.banner_end_date ? new Date(item.banner_end_date) : null;
+                // add 1 hour (3600000 ms) to account for server timezone difference
+                const startDate = item.banner_start_date ? new Date(new Date(item.banner_start_date).getTime() + 3600000) : null;
+                const endDate = item.banner_end_date ? new Date(new Date(item.banner_end_date).getTime() + 3600000) : null;
 
                 // Check if current time is within the date range
                 const afterStart = !startDate || now >= startDate;
