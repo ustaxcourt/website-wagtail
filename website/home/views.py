@@ -87,6 +87,11 @@ class NewsItemReportView(ReportView):
             else "-",
         ),
         Column(
+            "banner_information",
+            label="Banner Information",
+            accessor=lambda obj: get_banner_information(obj),
+        ),
+        Column(
             "publish_date",
             label="Publish Date",
             accessor=lambda obj: get_publish_date(obj),
@@ -105,6 +110,7 @@ class NewsItemReportView(ReportView):
         "id",
         "category",
         "title",
+        "banner_information",
         "publish_date",
         "homepage_display_expiration_date",
         "document_url",
@@ -114,13 +120,37 @@ class NewsItemReportView(ReportView):
         super().__init__(**kwargs)
 
         self.custom_field_preprocess = self.custom_field_preprocess.copy()
+        self.custom_field_preprocess["category"] = {
+            self.FORMAT_CSV: format_category,
+            self.FORMAT_XLSX: format_category,
+        }
+        self.custom_field_preprocess["title"] = {
+            self.FORMAT_CSV: get_title,
+            self.FORMAT_XLSX: get_title,
+        }
+        self.custom_field_preprocess["banner_information"] = {
+            self.FORMAT_CSV: get_banner_information,
+            self.FORMAT_XLSX: get_banner_information,
+        }
         self.custom_field_preprocess["publish_date"] = {
-            self.FORMAT_CSV: to_default_tz,
-            self.FORMAT_XLSX: to_default_tz,
+            self.FORMAT_CSV: lambda obj: to_default_tz(get_publish_date_raw(obj)),
+            self.FORMAT_XLSX: lambda obj: to_default_tz(get_publish_date_raw(obj)),
         }
         self.custom_field_preprocess["homepage_display_expiration_date"] = {
-            self.FORMAT_CSV: to_default_tz,
-            self.FORMAT_XLSX: to_default_tz,
+            self.FORMAT_CSV: lambda obj: to_default_tz(
+                get_homepage_expiration_raw(obj)
+            ),
+            self.FORMAT_XLSX: lambda obj: to_default_tz(
+                get_homepage_expiration_raw(obj)
+            ),
+        }
+        self.custom_field_preprocess["document_url"] = {
+            self.FORMAT_CSV: lambda obj: obj.document_url
+            if hasattr(obj, "document_url")
+            else "-",
+            self.FORMAT_XLSX: lambda obj: obj.document_url
+            if hasattr(obj, "document_url")
+            else "-",
         }
 
     def get_queryset(self):
@@ -181,6 +211,23 @@ class NewsItemReportView(ReportView):
         return getattr(obj, "category", None)
 
 
+def get_banner_information(obj):
+    """Get banner start and end dates for banners"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        start = (
+            obj.banner_start_date.strftime("%Y-%m-%d %H:%M")
+            if obj.banner_start_date
+            else "Not set"
+        )
+        end = (
+            obj.banner_end_date.strftime("%Y-%m-%d %H:%M")
+            if obj.banner_end_date
+            else "Indefinite"
+        )
+        return f"Start: {start} | End: {end}"
+    return "-"
+
+
 def get_title(obj):
     """Get title based on object type"""
     if hasattr(obj, "_is_banner") and obj._is_banner:
@@ -193,12 +240,30 @@ def get_title(obj):
     return obj.title if hasattr(obj, "title") and obj.title else "-"
 
 
+def get_publish_date_raw(obj):
+    """Get raw publish date based on object type (for export)"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        return obj.banner_start_date
+    return obj.publish_date if hasattr(obj, "publish_date") else None
+
+
 def get_publish_date(obj):
     """Get publish date based on object type"""
     if hasattr(obj, "_is_banner") and obj._is_banner:
         return obj.banner_start_date if obj.banner_start_date else "-"
     return (
         obj.publish_date if hasattr(obj, "publish_date") and obj.publish_date else "-"
+    )
+
+
+def get_homepage_expiration_raw(obj):
+    """Get raw homepage expiration based on object type (for export)"""
+    if hasattr(obj, "_is_banner") and obj._is_banner:
+        return obj.banner_end_date
+    return (
+        obj.homepage_display_expiration_date
+        if hasattr(obj, "homepage_display_expiration_date")
+        else None
     )
 
 
