@@ -65,7 +65,7 @@
   .emergency .callout-content p {
     color: white;
   }
-  .callout-content #callout-title {
+  .callout-content .callout-title {
     text-transform: uppercase;
     font-weight: bold;
   }
@@ -119,11 +119,11 @@
 </style>
 
 <div>
-  <div class="styled-callout {{ block.value.callout_type }}">
+  <div class="styled-callout {{ block.value.callout_type }}" role="alert" aria-label="alert-{{ block.value.callout_type }}">
     <div class="callout-items" style="margin-right: 1rem;">
-      <span class="callout-icon"></span>
+      <span class="callout-icon" aria-hidden="true"></span>
       <div class="callout-content">
-        <h3 id="callout-title" >{{ block.value.heading }}</h3>
+        <h3 id="alert-{{ block.value.callout_type }}" class="callout-title">{{ block.value.heading }}</h3>
         <p>{{ block.value.text }}</p>
       </div>
     </div>
