@@ -119,11 +119,11 @@
 </style>
 
 <div>
-  <div class="styled-callout {{ block.value.callout_type }}" role="alert" aria-label="alert-{{ block.value.callout_type }}">
+  <div class="styled-callout {{ block.value.callout_type }}" role="region" aria-label="{{block.value.callout_type}} type banner title reads {{ block.value.heading }}" tabindex="0">
     <div class="callout-items" style="margin-right: 1rem;">
       <span class="callout-icon" aria-hidden="true"></span>
       <div class="callout-content">
-        <h3 id="alert-{{ block.value.callout_type }}" class="callout-title">{{ block.value.heading }}</h3>
+        <h3 id="callout-heading-{{ block.value.callout_type }}" class="callout-title">{{ block.value.heading }}</h3>
         <p>{{ block.value.text }}</p>
       </div>
     </div>
