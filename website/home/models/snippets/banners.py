@@ -234,6 +234,26 @@ class Banner(
         return self._revisions
 
     @property
+    def category(self):
+        if self.priority_level == "high":
+            return "High Priority"
+        elif self.priority_level == "critical":
+            return "Critical"
+        return "None"
+
+    @property
+    def title(self):
+        return self.banner_title
+
+    @property
+    def publish_date(self):
+        return self.banner_start_date
+
+    @property
+    def homepage_display_expiration_date(self):
+        return self.banner_end_date
+
+    @property
     def document_url(self):
         if self.document and self.document.url:
             return f"{self.document.url}"

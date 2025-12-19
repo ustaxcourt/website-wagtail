@@ -31,7 +31,7 @@
         display: flex;
         align-items: flex-start;
         gap: 12px;
-        padding: 16px 0;
+        padding: 14px 0;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-icon {
@@ -42,6 +42,13 @@
 
     #yellow-news-banner-container .yellow-news-banner .alert-text {
         flex: 1;
+        font-size: 17px;
+    }
+
+    @media (max-width: 600px) {
+        #yellow-news-banner-container .yellow-news-banner .alert-text {
+            font-size: 16px;
+        }
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-text p {
