@@ -21,7 +21,7 @@ from home.models import NavigationMenu, JudgeRole, Header
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
-from .views import svg_chooser_viewset
+from .views import SearchDefinitionsReportView, svg_chooser_viewset
 
 import logging
 
@@ -431,6 +431,31 @@ def register_news_and_announcements_report_url():
             "reports/news-and-announcements-report/results/",
             NewsItemReportView.as_view(results_only=True),
             name="news_and_announcements_report_results",
+        ),
+    ]
+
+
+@hooks.register("register_reports_menu_item")
+def register_searched_definitions_report_menu_item():
+    return AdminOnlyMenuItem(
+        "Search Definitions Report",
+        reverse("search_definitions_report"),
+        icon_name="clipboard-list",
+    )
+
+
+@hooks.register("register_admin_urls")
+def register_searched_definitions_report_url():
+    return [
+        path(
+            "reports/search-definitions-report/",
+            SearchDefinitionsReportView.as_view(),
+            name="search_definitions_report",
+        ),
+        path(
+            "reports/search-definitions-report/results/",
+            SearchDefinitionsReportView.as_view(results_only=True),
+            name="search_definitions_report_results",
         ),
     ]
 
