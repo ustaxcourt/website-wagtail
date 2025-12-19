@@ -21,7 +21,7 @@ djangorestframework==3.15.2
 draftjs-exporter==5.0.0
 et_xmlfile==2.0.0
 fontawesomefree==6.6.0
-filelock==3.16.1
+filelock==3.20.1
 filetype==1.2.0
 identify==2.6.4
 idna==3.10
