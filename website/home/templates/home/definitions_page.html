@@ -496,9 +496,41 @@
             xhttp.send(data);
         }
 
-        search_form_icon.addEventListener('click', () => {
-            common_handler(searchInput.value);
-        });
+    const searchForm = document.getElementById('search-form');
+
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+
+        const query = searchInput.value.trim();
+
+        const matchedWord = available_words.find(word =>
+            word.toLowerCase() === query.toLowerCase()
+        );
+
+        if (matchedWord) {
+            const targetElement = Array.from(termElements).find(el => el.textContent.trim() === matchedWord);
+
+            if (targetElement) {
+                const targetCard = targetElement.closest('.definition-card');
+                targetCard.scrollIntoView({ block: 'start' });
+                targetElement.focus();
+
+                common_handler(query.toLowerCase());
+
+                suggestionsDiv.classList.add('hidden');
+                suggestionsDiv.innerHTML = '';
+                selectedSuggestionIndex = -1;
+                searchInput.value = '';
+            }
+        } else {
+            if (query.length > 0) {
+                common_handler(query);
+                showToast("No Results Found", 2000);
+                searchInput.value = '';
+            }
+        }
+    });
 
 
         let selectedSuggestionIndex = -1;
