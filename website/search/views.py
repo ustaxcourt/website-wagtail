@@ -1,4 +1,6 @@
+import json
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
 
@@ -8,6 +10,10 @@ from wagtail.contrib.search_promotions.models import Query, SearchPromotion
 
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
+
+from search.models.definitionsQuery import DefinitionsQuery
+
+# from search.models import DefinitionsQuery
 
 SEARCH_EXCLUSION_PAGES = ["Press Releases & News"]
 
@@ -184,3 +190,17 @@ def search(request):
             "search_promotions": search_promotions,  # Pass promotions to the template
         },
     )
+
+
+def definitions_search(request: HttpRequest):
+    data = json.loads(request.body)
+
+    search_query = data.get("definitions-query", "error_A")
+
+    the_search_term = search_query
+
+    query = DefinitionsQuery.get(the_search_term)
+
+    query.add_hit()
+
+    return HttpResponse(status=200, content="")
