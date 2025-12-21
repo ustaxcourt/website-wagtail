@@ -77,6 +77,12 @@ class Banner(
         """
         super().clean()
 
+        if not self.title:
+            raise ValidationError({"banner_title": "Banner title is required."})
+
+        if not self.description:
+            raise ValidationError({"description": "Description is required."})
+
         # Require start date for high and critical priority banners
         if self.priority_level in ["high", "critical"] and not self.banner_start_date:
             raise ValidationError(

@@ -15,7 +15,7 @@ from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.search import index
 from wagtail.admin.filters import WagtailFilterSet
 import django_filters
-from django.forms import DateInput
+from django.forms import DateInput, ValidationError
 from django.utils import timezone
 from datetime import datetime, time
 from home.mixins.moderation import ModerationMixin
@@ -146,6 +146,22 @@ class NewsItem(
         context = super().get_preview_context(request, mode_name)
         context["preview_news_items"] = [self]
         return context
+
+    def clean(self):
+        """
+        Custom validation for NewsItem model.
+        Ensures that required fields are populated and valid.
+        """
+        super().clean()
+
+        if not self.title:
+            raise ValidationError({"title": "Title is required."})
+
+        if not self.description:
+            raise ValidationError({"description": "Description is required."})
+
+        if not self.publish_date:
+            raise ValidationError({"publish_date": "Publish date is required."})
 
     class Meta:
         ordering = ["-created_at"]
