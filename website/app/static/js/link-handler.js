@@ -1,11 +1,9 @@
-
 /****
  * PDF and link handlers which are used to track links and PDFs and open them in new tabs
  */
 function setupLinkHandlers() {
     // Use event delegation instead of querySelectorAll
     document.addEventListener('click', function(event) {
-        // attribute `data-is-link` is utilized by Button, e.g. `styled_button.html`
         const link = event.target.closest('a, [data-is-link="true"]');
         if (!link) {
             return;
@@ -13,11 +11,7 @@ function setupLinkHandlers() {
 
         let href = link.getAttribute('href');
         if (!href) {
-            // attribute `data-url` is utilized by Button, e.g. `styled_button.html`
-            href = link.getAttribute('data-url');
-            if (!href) {
-                return;
-            }
+            return;
         }
 
         // For same-domain PDFs, let GA track first

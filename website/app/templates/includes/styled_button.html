@@ -31,7 +31,7 @@
   <button class="usa-button styled-button {%if not block.value.button_hover%}no-hover{% endif %}" type="button"
           data-is-link="true"
     {% if link_item.block_type == 'external_url' %}
-      data-url='{{ link_item.value }}'
+       href="{{ link_item.value }}"
     {% else %}
       onclick="window.location.href='{% pageurl link_item.value %}'"
     {% endif %}
