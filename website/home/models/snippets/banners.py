@@ -1,7 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
-from wagtail.fields import RichTextField
 from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
@@ -21,11 +20,15 @@ class Banner(
 
     banner_title = models.CharField(
         max_length=115,
-        help_text="Character Limit 0f 115",
+        help_text="Character Limit of 115",
         blank=False,
     )
 
-    description = RichTextField(blank=False)
+    description = models.CharField(
+        # max_length=500,
+        # help_text="Character Limit of 500",
+        blank=False,
+    )
 
     document = models.ForeignKey(
         "wagtaildocs.Document",

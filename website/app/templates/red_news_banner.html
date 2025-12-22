@@ -162,9 +162,13 @@
             const documentLink = itemToShow.document_url
                 ? ` <a href="${itemToShow.document_url}">See the Announcement</a>.`
                 : '';
-
             const bannerHTML = `
-            <div class="red-news-banner" id="${bannerId}" aria-label="Critical Priority Banner" role="region">
+            <div
+                class="red-news-banner"
+                id="${bannerId}"
+                tabindex="0"
+                aria-label='Critical Priority Banner. ${itemToShow.title}. ${itemToShow.description}'
+                role="region">
                 <div class="grid-container">
                     <div class="alert-content">
                         <img src="{% static 'images/icons/fas.fa-exclamation-circle.svg' %}" alt="Alert" class="alert-icon" />
