@@ -5,7 +5,7 @@ from wagtail.blocks import PageChooserBlock
 
 class ButtonBlock(blocks.StructBlock):
     icon = SVGDocumentChooserBlock(required=False, help_text="Optional: Button icon")
-    text = blocks.CharBlock(required=True, help_text="Button text")
+    text = blocks.CharBlock(required=True, help_text="Button text", max_length=64)
     url = blocks.StreamBlock(
         [
             ("internal_page", PageChooserBlock(help_text="Select a page to link to")),
