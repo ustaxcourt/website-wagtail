@@ -496,6 +496,8 @@
             xhttp.send(data);
         }
 
+    let selectedSuggestionIndex = -1;
+    let toastTimeout = null;
     const searchForm = document.getElementById('search-form');
 
     searchForm.addEventListener('submit', (e) => {
@@ -504,25 +506,18 @@
 
         const query = searchInput.value.trim();
 
-        const matchedWord = available_words.find(word =>
-            word.toLowerCase() === query.toLowerCase()
-        );
+        //const matchedWord = available_words.find(word =>
+      //      word.toLowerCase() === query.toLowerCase()
+       // );
 
-        if (matchedWord) {
-            const targetElement = Array.from(termElements).find(el => el.textContent.trim() === matchedWord);
-
-            if (targetElement) {
-                const targetCard = targetElement.closest('.definition-card');
-                targetCard.scrollIntoView({ block: 'start' });
-                targetElement.focus();
-
-                common_handler(query.toLowerCase());
-
-                suggestionsDiv.classList.add('hidden');
-                suggestionsDiv.innerHTML = '';
-                selectedSuggestionIndex = -1;
-                searchInput.value = '';
-            }
+        const suggestions = suggestionsDiv.querySelectorAll('.suggestionEntry');
+        if (suggestions.length > 0) {
+            suggestions[0].click();
+            common_handler(query.toLowerCase());
+            suggestionsDiv.classList.add('hidden');
+            suggestionsDiv.innerHTML = '';
+            selectedSuggestionIndex = -1;
+            searchInput.value = '';
         } else {
             if (query.length > 0) {
                 common_handler(query);
@@ -533,8 +528,6 @@
     });
 
 
-        let selectedSuggestionIndex = -1;
-        let toastTimeout = null;
 
         if (filterButton && mobileNav) {
             filterButton.addEventListener('click', function() {
@@ -721,8 +714,9 @@
             let is_hidden = suggestionsDiv.classList.contains('hidden');
             let is_visible = !is_hidden;
 
+            /*
             if (is_visible) {
-
+                console.log("Inside the document click listener");
                 const clickedOnSuggestions = event.target.closest('#suggestions');
 
                 if (!clickedOnSuggestions && !clickedOnSearchInput) {
@@ -731,6 +725,7 @@
                     selectedSuggestionIndex = -1;
                 }
             }
+            */
         });
     });
 
