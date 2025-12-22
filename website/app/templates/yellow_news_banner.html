@@ -46,17 +46,16 @@
         width: 24px;
         height: 24px;
         color: #000;
+        margin-top: 2px;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-text {
         flex: 1;
-        font-size: 20px;
+        font-size: 17px;
     }
 
-    @media (max-width: 600px) {
-        #yellow-news-banner-container .yellow-news-banner .alert-text {
-            font-size: 20px;
-        }
+    #yellow-news-banner-container .yellow-news-banner .alert-text strong {
+        font-size: 17px;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-text p {
@@ -92,6 +91,38 @@
 
     #yellow-news-banner-container .yellow-news-banner .close-btn {
         padding: 0 !important;
+    }
+
+    /* Desktop alignment with USTC logo */
+    @media (min-width: 880px) {
+        #yellow-news-banner-container .yellow-news-banner .grid-container {
+            padding-left: 26px;
+        }
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        #yellow-news-banner-container .yellow-news-banner .grid-container {
+            padding: 0 16px;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-content {
+            gap: 12px;
+            padding: 14px 0;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-text {
+            font-size: 16px;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-text strong {
+            font-size: 16px;
+        }
     }
 
 </style>

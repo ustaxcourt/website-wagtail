@@ -38,7 +38,7 @@
 
     #red-news-banner-container .red-news-banner .alert-content {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 16px;
         padding: 20px 0;
     }
@@ -47,12 +47,17 @@
         flex-shrink: 0;
         width: 24px;
         height: 24px;
+        margin-top: 2px;
     }
 
     #red-news-banner-container .red-news-banner .alert-text {
         flex: 1;
         font-size: 20px;
         line-height: 1.5;
+    }
+
+    #red-news-banner-container .red-news-banner .alert-text strong {
+        font-size: 20px;
     }
 
     #red-news-banner-container .red-news-banner .alert-text p {
@@ -87,7 +92,11 @@
         }
 
         #red-news-banner-container .red-news-banner .alert-text {
-            font-size: 20px;
+            font-size: 16px;
+        }
+
+        #red-news-banner-container .red-news-banner .alert-text strong {
+            font-size: 16px;
         }
     }
 
