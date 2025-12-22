@@ -5,11 +5,20 @@
 function setupLinkHandlers() {
     // Use event delegation instead of querySelectorAll
     document.addEventListener('click', function(event) {
-        const link = event.target.closest('a');
-        if (!link) return;
+        // attribute `data-is-link` is utilized by Button, e.g. `styled_button.html`
+        const link = event.target.closest('a, [data-is-link="true"]');
+        if (!link) {
+            return;
+        }
 
-        const href = link.getAttribute('href');
-        if (!href) return;
+        let href = link.getAttribute('href');
+        if (!href) {
+            // attribute `data-url` is utilized by Button, e.g. `styled_button.html`
+            href = link.getAttribute('data-url');
+            if (!href) {
+                return;
+            }
+        }
 
         // For same-domain PDFs, let GA track first
         if (isSamedomain(href) && isPdf(href)) {

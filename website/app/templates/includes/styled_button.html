@@ -27,11 +27,12 @@
 </style>
 
 <body>
-  <button class="usa-button styled-button {%if not block.value.button_hover%}no-hover{% endif %}" type="button"
   {% for link_item in block.value.url %}
-    {%if link_item.block_type == 'external_url'%}
-    onclick="window.location.href='{{ link_item.value }}'"
-    {%else %}
+  <button class="usa-button styled-button {%if not block.value.button_hover%}no-hover{% endif %}" type="button"
+          data-is-link="true"
+    {% if link_item.block_type == 'external_url' %}
+      data-url='{{ link_item.value }}'
+    {% else %}
       onclick="window.location.href='{% pageurl link_item.value %}'"
     {% endif %}
   {% endfor %}>
