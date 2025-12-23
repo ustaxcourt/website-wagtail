@@ -513,7 +513,6 @@
         const suggestions = suggestionsDiv.querySelectorAll('.suggestionEntry');
         if (suggestions.length > 0) {
             suggestions[0].click();
-            common_handler(query.toLowerCase());
             suggestionsDiv.classList.add('hidden');
             suggestionsDiv.innerHTML = '';
             selectedSuggestionIndex = -1;
@@ -704,6 +703,7 @@
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
+                    searchInput.value = '';
                 }
             }
         });
