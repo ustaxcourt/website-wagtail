@@ -58,6 +58,16 @@ class NewsItemReportView(ReportView):
     # Disable filtering since we're combining two different model types
     filterset_class = NewsItemReportFilterSet
 
+    export_headings = {
+        "id": "ID",
+        "category": "Category",
+        "title": "Title",
+        "banner_information": "Banner Information",
+        "publish_date": "Publish Date",
+        "homepage_display_expiration_date": "Homepage Expiration",
+        "document_url": "Document URL",
+    }
+
     columns = [
         Column(
             "category",
@@ -119,38 +129,17 @@ class NewsItemReportView(ReportView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        # Custom preprocessing for datetime fields to convert timezone
+        # Note: to_row_dict now handles the extraction of values,
+        # so preprocessing receives VALUES, not objects
         self.custom_field_preprocess = self.custom_field_preprocess.copy()
-        self.custom_field_preprocess["category"] = {
-            self.FORMAT_CSV: format_category,
-            self.FORMAT_XLSX: format_category,
-        }
-        self.custom_field_preprocess["title"] = {
-            self.FORMAT_CSV: get_title,
-            self.FORMAT_XLSX: get_title,
-        }
-        self.custom_field_preprocess["banner_information"] = {
-            self.FORMAT_CSV: get_banner_information,
-            self.FORMAT_XLSX: get_banner_information,
-        }
         self.custom_field_preprocess["publish_date"] = {
-            self.FORMAT_CSV: lambda obj: to_default_tz(get_publish_date_raw(obj)),
-            self.FORMAT_XLSX: lambda obj: to_default_tz(get_publish_date_raw(obj)),
+            self.FORMAT_CSV: lambda value: to_default_tz(value) if value else "",
+            self.FORMAT_XLSX: lambda value: to_default_tz(value) if value else "",
         }
         self.custom_field_preprocess["homepage_display_expiration_date"] = {
-            self.FORMAT_CSV: lambda obj: to_default_tz(
-                get_homepage_expiration_raw(obj)
-            ),
-            self.FORMAT_XLSX: lambda obj: to_default_tz(
-                get_homepage_expiration_raw(obj)
-            ),
-        }
-        self.custom_field_preprocess["document_url"] = {
-            self.FORMAT_CSV: lambda obj: obj.document_url
-            if hasattr(obj, "document_url")
-            else "-",
-            self.FORMAT_XLSX: lambda obj: obj.document_url
-            if hasattr(obj, "document_url")
-            else "-",
+            self.FORMAT_CSV: lambda value: to_default_tz(value) if value else "",
+            self.FORMAT_XLSX: lambda value: to_default_tz(value) if value else "",
         }
 
     def get_queryset(self):
@@ -209,6 +198,50 @@ class NewsItemReportView(ReportView):
         if getattr(obj, "_is_banner", False):
             return obj.priority_level
         return getattr(obj, "category", None)
+
+    def get_heading(self, queryset, field):
+        """
+        Override get_heading to handle list queryset (instead of QuerySet).
+        The parent class tries to access queryset.model which doesn't exist on lists.
+        """
+        # Check if we have a custom heading defined
+        heading_override = self.export_headings.get(field)
+        if heading_override:
+            return heading_override
+        # For list-based queryset, just return the field name capitalized
+        return field.replace("_", " ").title()
+
+    def to_row_dict(self, item):
+        """
+        Override to_row_dict to handle computed fields that don't exist as attributes.
+        Maps export field names to their computed values using helper functions.
+        """
+        from collections import OrderedDict
+
+        row_dict = OrderedDict()
+        for field in self.list_export:
+            if field == "category":
+                row_dict[field] = format_category(item)
+            elif field == "title":
+                row_dict[field] = get_title(item)
+            elif field == "banner_information":
+                row_dict[field] = get_banner_information(item)
+            elif field == "publish_date":
+                row_dict[field] = get_publish_date_raw(item)
+            elif field == "homepage_display_expiration_date":
+                row_dict[field] = get_homepage_expiration_raw(item)
+            elif field == "document_url":
+                row_dict[field] = getattr(item, "document_url", "-")
+            else:
+                # For standard fields like 'id', get the attribute directly
+                row_dict[field] = getattr(item, field, None)
+
+        return row_dict
+
+    def get_filename(self):
+        """Generate filename for export"""
+        today = date.today().strftime("%Y-%m-%d")
+        return f"News_and_Announcements_Report_{today}"
 
 
 def get_banner_information(obj):
