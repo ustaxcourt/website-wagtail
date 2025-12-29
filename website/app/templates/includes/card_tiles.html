@@ -8,12 +8,16 @@
 <style>
 .card-tiles-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 16px;
+    max-width: 100%;
 }
 .card-tile {
     display: flex;
-    width: 260px;
+    flex: 1 1 0;
+    max-width: 260px;
+    min-width: 0;
     padding: 33px 12px;
     flex-direction: column;
     justify-content: center;
@@ -54,7 +58,26 @@
         gap: 16px;
     }
     .card-tile {
-        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+        flex-direction: row;
+        height: 62px;
+        padding: 0 10px;
+        align-items: center;
+        gap: 11px;
+    }
+    .card-tile__header {
+        font-size: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1 0 0;
+        align-self: stretch;
+        text-align: left;
+    }
+    .card-tile__icon {
+        width: 35px;
+        height: 35px;
     }
 }
 /* Tablet: 2x2 grid (768px - 1024px) */
@@ -66,7 +89,8 @@
         gap: 16px;
     }
     .card-tile {
-        width: calc(50% - 8px);
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
         gap: 10px;
     }
 }
@@ -84,6 +108,9 @@
     {% endfor %}
 </div>
 
+<script>
+    console.log('hello world');
+</script>
 {#<div class="card-tiles-container">#}
 {#  <ul class="usa-card-group">#}
 {#    {% for tile in block.value.tiles %}#}
