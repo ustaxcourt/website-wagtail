@@ -565,6 +565,8 @@
                 </div>
             {% elif block.block_type == 'accordian' %}
                 {% include "accordian_block.html" with block=block block_index=forloop.counter0 %}
+            {% elif block.block_type == 'card_tiles' %}
+                {% include "includes/card_tiles.html" with block=block %}
             {% else %}
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}

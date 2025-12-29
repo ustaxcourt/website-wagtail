@@ -1,5 +1,6 @@
 from django.db import models
 from wagtail import blocks
+from wagtail.blocks import PageChooserBlock
 from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail.snippets.blocks import SnippetChooserBlock
@@ -8,6 +9,7 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageBlock
 from wagtail.search import index
 
+from home.blocks import SVGDocumentChooserBlock
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
@@ -59,6 +61,49 @@ class AccordianBlock(blocks.StructBlock):
     class Meta:
         label = "Accordion Block"
         template = "accordian_block.html"
+
+
+class CardTileBlock(blocks.StructBlock):
+    """Individual card tile with icon, header, and link."""
+
+    icon = SVGDocumentChooserBlock(required=True, help_text="Card Icon")
+    card_header = blocks.CharBlock(required=True, help_text="Displays the card title")
+    breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
+    breadcrumb_url = blocks.StreamBlock(
+        [
+            ("internal_page", PageChooserBlock(help_text="Select a page to link to")),
+            ("external_url", blocks.URLBlock(help_text="Enter an external URL")),
+        ],
+        max_num=1,
+        min_num=1,
+        help_text="Choose either an internal page or external URL",
+        label="URL",
+    )
+
+    class Meta:
+        label = "Card Tile"
+        icon = "doc-full"
+
+
+class CardTilesBlock(blocks.StructBlock):
+    """
+    Card Tiles container - displays up to 4 card tiles in a responsive grid.
+    Desktop (>1025px): 4 buttons in a row
+    Tablet (768-1025px): 2x2 grid
+    Mobile (<768px): Vertical stack
+    """
+
+    tiles = blocks.ListBlock(
+        CardTileBlock(),
+        min_num=1,
+        max_num=4,
+        help_text="Add up to 4 card tiles. They will display responsively based on screen size.",
+    )
+
+    class Meta:
+        label = "Card Tiles"
+        icon = "grip"
+        template = "includes/card_tiles.html"
 
 
 class EnhancedStandardPage(ModerationMixin, Page):
@@ -257,7 +302,14 @@ class EnhancedStandardPage(ModerationMixin, Page):
                 "accordian",
                 AccordianBlock(),
             ),
+            (
+                "card_tiles",
+                CardTilesBlock(),
+            ),
         ],
+        block_counts={
+            "card_tiles": {"min_num": 0, "max_num": 1},
+        },
         blank=True,
     )
     content_panels = Page.content_panels + [
