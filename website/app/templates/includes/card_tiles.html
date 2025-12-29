@@ -6,7 +6,7 @@
 {# Tablet (768-1025px): 2x2 grid #}
 {# Mobile (<768px): Vertical stack #}
 <style>
-.card-tiles-container {
+.card-tile {
     display: flex;
     width: 260px;
     padding: 33px 12px;
@@ -19,6 +19,17 @@
 
     border-radius: 5px;
     border: 1px solid var(--theme-color-primary);
+}
+
+.card-tile__header {
+    align-self: stretch;
+    color: var(--theme-color-primary-darker, #162E51);
+    text-align: center;
+    font-family: "Source Sans 3";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 125% */
 }
 
 .card-tile__icon {
@@ -43,7 +54,7 @@
     {% for tile in block.value.tiles %}
       <div class="card-tile">
         <img class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
-        <h2 class="card-tile__title">{{ tile.card_header }}</h2>
+        <h2 class="card-tile__header">{{ tile.card_header }}</h2>
       </div>
     {% endfor %}
 </div>
