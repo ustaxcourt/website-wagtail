@@ -32,6 +32,32 @@
 
     /* card drop shadow */
     box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
+
+    /* Accessibility: make it clear this is interactive */
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card-tile:hover,
+.card-tile:focus {
+    outline: none;
+    border-color: #0050b3;
+    box-shadow: 0 4px 8px 0 rgba(86, 92, 101, 0.25);
+}
+
+.card-tile:focus {
+    outline: 2px solid #005EA2;
+    outline-offset: 2px;
+}
+
+/* Disable hover effect when no-hover class is present */
+.card-tile.no-hover {
+    cursor: default;
+}
+
+.card-tile.no-hover:hover {
+    border-color: #005EA2;
+    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.10);
 }
 
 .card-tile__header {
@@ -99,9 +125,22 @@
 }
 </style>
 
-<div class="card-tiles-container">
+<div class="card-tiles-container" role="group" aria-label="Navigation cards">
     {% for tile in block.value.tiles %}
-      <div class="card-tile">
+      <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %}"
+           id="card-tile-{{ forloop.counter0 }}"
+           role="button"
+           tabindex="0"
+           aria-label="{{ tile.card_header }}"
+           {% for link in tile.url %}
+               {% if link.block_type == 'internal_page' %}
+                   href="{% pageurl link.value %}"
+               {% elif link.block_type == 'external_url' %}
+                   href="{{ link.value }}" data-is-link="true"
+               {% endif %}
+           {% endfor %}
+           >
+      <span>{{ tile.breadcrumb_url }}</span>
         <img class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
         <h2 class="card-tile__header">{{ tile.card_header }}</h2>
       </div>
@@ -109,7 +148,33 @@
 </div>
 
 <script>
-    console.log('hello world');
+    document.addEventListener('DOMContentLoaded', function() {
+        const cardTiles = document.querySelectorAll('.card-tile');
+
+        cardTiles.forEach(function(tile) {
+            // Handle click events
+            tile.addEventListener('click', function() {
+                handle_card_press(tile);
+            });
+
+            // Handle keyboard events (Enter and Space)
+            tile.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault(); // Prevent page scroll on Space
+                    handle_card_press(tile);
+                }
+            });
+        });
+
+        function handle_card_press(tile) {
+            const tile_id = tile.id;
+            const card_tile = document.getElementById(tile_id);
+            console.log('Card pressed:', tile_id);
+            // Add your navigation or action logic here
+
+
+        }
+    });
 </script>
 {#<div class="card-tiles-container">#}
 {#  <ul class="usa-card-group">#}

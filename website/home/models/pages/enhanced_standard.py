@@ -80,6 +80,20 @@ class CardTileBlock(blocks.StructBlock):
         label="URL",
     )
 
+    card_hover = blocks.BooleanBlock(
+        required=False, help_text="Enable hover effect", default=True
+    )
+
+    body = blocks.StreamBlock(
+        [
+            ("prose", blocks.RichTextBlock()),
+            ("accordian", AccordianBlock()),
+            ("image", ImageBlock()),
+        ],
+        required=False,
+        help_text="Add text or special elements to the body",
+    )
+
     class Meta:
         label = "Card Tile"
         icon = "doc-full"
