@@ -6,6 +6,23 @@
 {# Tablet (768-1025px): 2x2 grid #}
 {# Mobile (<768px): Vertical stack #}
 <style>
+.card-tiles__title {
+    color: var(--theme-color-base-darkest, #1B1B1B);
+    /* Header H1 */
+    font-family: "Source Sans 3";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 38px;
+}
+.card-tiles__title.start {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: auto;
+    text-underline-offset: auto;
+    text-underline-position: from-font;
+}
 .card-tiles-container {
     display: flex;
     justify-content: center;
@@ -126,6 +143,7 @@
 </style>
 
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
+
     {% for tile in block.value.tiles %}
       <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %}"
            id="card-tile-{{ forloop.counter0 }}"

@@ -64,7 +64,7 @@ class AccordianBlock(blocks.StructBlock):
 
 
 class CardTileBlock(blocks.StructBlock):
-    """Individual card tile with icon, header, and link."""
+    """Individual card tile with icon and H2 header."""
 
     icon = SVGDocumentChooserBlock(required=True, help_text="Card Icon")
     card_header = blocks.CharBlock(required=True, help_text="Displays the card title")
@@ -113,6 +113,8 @@ class CardTilesBlock(blocks.StructBlock):
         max_num=4,
         help_text="Add up to 4 card tiles. They will display responsively based on screen size.",
     )
+
+    group_title = blocks.CharBlock(required=True, help_text="Group title")
 
     class Meta:
         label = "Card Tiles"
