@@ -26,6 +26,27 @@ def judge_display_name(judge):
     return f"{judge.title} {judge.display_name}"
 
 
+@register.filter
+def get_alt_attribute_from_url(value):
+    """
+    Returns data needed for alt="accessibility text here".
+    Usage: {{ some_value|get_alt_attribute_from_url }}
+    """
+    print("hello world 123")
+    print(value)
+    type(value)
+    return value
+
+
+@register.filter
+def get_type(value):
+    """
+    Returns the type name of a value for debugging in templates.
+    Usage: {{ some_value|get_type }}
+    """
+    return type(value).__name__
+
+
 @register.simple_tag
 def include_svg(document):
     """

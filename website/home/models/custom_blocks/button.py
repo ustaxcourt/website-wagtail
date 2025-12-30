@@ -1,5 +1,5 @@
 from wagtail import blocks
-from home.blocks import SVGDocumentChooserBlock
+from home.blocks import SVGDocumentChooserBlock, PDFDocumentChooserBlock
 from wagtail.blocks import PageChooserBlock
 
 
@@ -9,6 +9,10 @@ class ButtonBlock(blocks.StructBlock):
     url = blocks.StreamBlock(
         [
             ("internal_page", PageChooserBlock(help_text="Select a page to link to")),
+            (
+                "internal_pdf",
+                PDFDocumentChooserBlock(help_text="Select a PDF to link to"),
+            ),
             ("external_url", blocks.URLBlock(help_text="Enter an external URL")),
         ],
         max_num=1,
