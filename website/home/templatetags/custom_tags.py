@@ -27,15 +27,11 @@ def judge_display_name(judge):
 
 
 @register.filter
-def get_alt_attribute_from_url(value):
-    """
-    Returns data needed for alt="accessibility text here".
-    Usage: {{ some_value|get_alt_attribute_from_url }}
-    """
-    print("hello world 123")
-    print(value)
-    type(value)
-    return value
+def clean_filename(filename):
+    """Remove extension and replace - and _ with spaces."""
+    if "." in filename:
+        filename = filename.rsplit(".", 1)[0]
+    return filename.replace("-", " ").replace("_", " ")
 
 
 @register.filter
