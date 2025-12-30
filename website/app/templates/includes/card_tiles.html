@@ -67,6 +67,10 @@
     outline-offset: 2px;
 }
 
+.card-tile.selected {
+    background: #005EA2;
+}
+
 /* Disable hover effect when no-hover class is present */
 .card-tile.no-hover {
     cursor: default;
@@ -92,6 +96,23 @@
     width: 54px;
     height: 54px;
     fill: var(--theme-color-primary, #005EA2);
+}
+.card-tile__icon.selected {
+    filter: brightness(0) invert(1);
+}
+.card-tile__header.selected {
+    color: white;
+}
+
+/* Body content styling */
+.card-tile__body {
+}
+
+.card-tile__body-prose {
+    color: var(--theme-color-base-darkest, #1B1B1B);
+    font-family: "Source Sans 3";
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 /* Mobile: 1 column (< 768px) */
@@ -142,8 +163,17 @@
 }
 </style>
 
+    <div class="card-tiles__title">
+        <h1>
+            <span class="start">
+                {{ block.value.group_title }}
+            </span>
+            {% for tile in block.value.tiles %}
+                <span class="card-tiles__active-title" id="active-title-{{ forloop.counter0 }}" style="display: none;">{{ tile.card_header }}</span>
+            {% endfor %}
+        </h1>
+    </div>
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
-
     {% for tile in block.value.tiles %}
       <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %}"
            id="card-tile-{{ forloop.counter0 }}"
@@ -158,16 +188,60 @@
                {% endif %}
            {% endfor %}
            >
-      <span>{{ tile.breadcrumb_url }}</span>
-        <img class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
-        <h2 class="card-tile__header">{{ tile.card_header }}</h2>
+        <img id="card-tile-icon-{{ forloop.counter0 }}"
+                class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
+        <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
       </div>
     {% endfor %}
 </div>
 
+{# Body content sections - shown when card is selected #}
+{% for tile in block.value.tiles %}
+    <div class="card-tile__body" id="card-tile-body-{{ forloop.counter0 }}" style="display: none;">
+        {% for body_block in tile.body %}
+            {% if body_block.block_type == 'prose' %}
+                <div class="card-tile__body-prose">{{ body_block.value }}</div>
+            {% elif body_block.block_type == 'accordian' %}
+                {% include "accordian_block.html" with block=body_block %}
+            {% elif body_block.block_type == 'image' %}
+                {% include "blocks/image_block.html" with block=body_block %}
+            {% endif %}
+        {% empty %}
+            {# No body content for this tile #}
+        {% endfor %}
+    </div>
+{% endfor %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
+
+        // Check for selected card from query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedCard = urlParams.get('card');
+        const selected_icon = document.getElementById('card-tile-icon-' + selectedCard);
+        const selected_header = document.getElementById('card-tile-header-' + selectedCard);
+
+        if (selectedCard !== null) {
+            const selectedTile = document.getElementById('card-tile-' + selectedCard);
+            if (selectedTile) {
+                selectedTile.classList.add('selected');
+                selected_icon.classList.add('selected');
+                selected_header.classList.add('selected');
+
+                // Show the body content for the selected card
+                const selectedBody = document.getElementById('card-tile-body-' + selectedCard);
+                if (selectedBody) {
+                    selectedBody.style.display = 'block';
+                }
+
+                // Show the active title for the selected card
+                const activeTitle = document.getElementById('active-title-' + selectedCard);
+                if (activeTitle) {
+                    activeTitle.style.display = 'inline';
+                }
+            }
+        }
 
         cardTiles.forEach(function(tile) {
             // Handle click events
@@ -186,36 +260,15 @@
 
         function handle_card_press(tile) {
             const tile_id = tile.id;
-            const card_tile = document.getElementById(tile_id);
-            console.log('Card pressed:', tile_id);
-            // Add your navigation or action logic here
+            // Extract the card index from the tile id (e.g., "card-tile-0" -> "0")
+            const cardIndex = tile_id.replace('card-tile-', '');
 
+            // Build the new URL with the card query parameter
+            const url = new URL(window.location.href);
+            url.searchParams.set('card', cardIndex);
 
+            // Reload the page with the new query parameter
+            window.location.href = url.toString();
         }
     });
 </script>
-{#<div class="card-tiles-container">#}
-{#  <ul class="usa-card-group">#}
-{#    {% for tile in block.value.tiles %}#}
-{#      <li class="usa-card grid-col-12 tablet:grid-col-6">#}
-{#        {% for url_block in tile.breadcrumb_url %}#}
-{#          {% if url_block.block_type == 'internal_page' %}#}
-{#            <a href="{% pageurl url_block.value %}" class="card-tile">#}
-{#          {% elif url_block.block_type == 'external_url' %}#}
-{#            <a href="{{ url_block.value }}" class="card-tile" target="_blank" rel="noopener noreferrer">#}
-{#          {% endif %}#}
-{#        {% endfor %}#}
-{#          {% if tile.icon and tile.icon.url %}#}
-{#            <img class="card-tile__icon" src="{{ tile.icon.url }}" alt="">#}
-{#          {% endif %}#}
-{#          <h2 class="card-tile__title">{{ tile.card_header }}</h2>#}
-{#        </a>#}
-{#      </li>#}
-{#    {% endfor %}#}
-{#  </ul>#}
-{#</div>#}
-{##}
-{#<div>#}
-{#    {% for tile in block.value.tiles %}#}
-{#    {% endfor %}#}
-{#</div>#}
