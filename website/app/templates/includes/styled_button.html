@@ -1,5 +1,5 @@
 {% load static %}
-{% load wagtailcore_tags navigation_tags%}
+{% load wagtailcore_tags navigation_tags custom_tags %}
 
 <style>
   .usa-button.styled-button{
@@ -31,18 +31,35 @@
 
 <body>
   {% for link_item in block.value.url %}
+      <span>{{ link_item.block_type }}</span>
+      <span>{{ link_item|get_alt_attribute_from_url }}</span>
   <a class="usa-button styled-button {%if not block.value.button_hover%}no-hover{% endif %}" type="button"
           data-is-link="true"
     {% if link_item.block_type == 'external_url' %}
        href="{{ link_item.value }}"
-    {% else %}
-      onclick="window.location.href='{% pageurl link_item.value %}'"
+    {% elif link_item.block_type == 'internal_url' %}
+       href="{% pageurl link_item.value %}"
+    {% elif link_item.block_type == 'internal_pdf' %}
+       href="{{ link_item.value.url }}"
     {% endif %}
   {% endfor %}>
 
     {% if block.value.icon and block.value.icon.url %}
-      <img class="button-icon" src="{{ block.value.icon.url }}" alt="Button icon">
+      <img class="button-icon" src="{{ block.value.icon.url }}" >
     {% endif %}
     {{ block.value.text }}
-</a>
+  </a>
 </body>
+
+<script>
+    //alt="{{ block.value.icon.title }}"
+
+  /*document.querySelectorAll('.button-icon[data-icon-src]').forEach(function(img) {
+    var src = img.getAttribute('data-icon-src');
+    var fileName = src.split('/').pop();
+    var altText = fileName
+      .replace(/\.svg$/i, '')
+      .replace(/[-_]/g, ' ');
+    img.setAttribute('alt', altText);
+  });*/
+</script>
