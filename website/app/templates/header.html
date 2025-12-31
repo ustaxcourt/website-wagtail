@@ -229,10 +229,10 @@
         border-top: 6px solid #1A4480;
     }
 
-    /*FIXME: this is an ugly hack to get the last menu to wrap but not the others */
-    #top-navigation > div.navigation-bar > ul > li:nth-child(6) ul {
-        min-width: inherit;
-        width: inherit;
+    /* Align the last navigation dropdown to the right to prevent overflow */
+    header#top-navigation #last-nav-list {
+        left: auto;
+        right: 0;
     }
 
     header#top-navigation .navigation-header:hover .navigation-list,
