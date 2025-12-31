@@ -96,11 +96,11 @@ class NewsItemReportView(ReportView):
             if obj.document
             else "-",
         ),
-        Column(
-            "banner_information",
-            label="Banner Information",
-            accessor=lambda obj: get_banner_information(obj),
-        ),
+        # Column(
+        #     "banner_information",
+        #     label="Banner Information",
+        #     accessor=lambda obj: get_banner_information(obj),
+        # ),
         Column(
             "publish_date",
             label="Publish Date",
@@ -224,8 +224,8 @@ class NewsItemReportView(ReportView):
                 row_dict[field] = format_category(item)
             elif field == "title":
                 row_dict[field] = get_title(item)
-            elif field == "banner_information":
-                row_dict[field] = get_banner_information(item)
+            # elif field == "banner_information":
+            #     row_dict[field] = get_banner_information(item)
             elif field == "publish_date":
                 row_dict[field] = get_publish_date_raw(item)
             elif field == "homepage_display_expiration_date":
@@ -244,21 +244,21 @@ class NewsItemReportView(ReportView):
         return f"News_and_Announcements_Report_{today}"
 
 
-def get_banner_information(obj):
-    """Get banner start and end dates for banners"""
-    if hasattr(obj, "_is_banner") and obj._is_banner:
-        start = (
-            obj.banner_start_date.strftime("%Y-%m-%d %H:%M")
-            if obj.banner_start_date
-            else "Not set"
-        )
-        end = (
-            obj.banner_end_date.strftime("%Y-%m-%d %H:%M")
-            if obj.banner_end_date
-            else "Indefinite"
-        )
-        return f"Start: {start} | End: {end}"
-    return "-"
+# def get_banner_information(obj):
+#     """Get banner start and end dates for banners"""
+#     if hasattr(obj, "_is_banner") and obj._is_banner:
+#         start = (
+#             obj.banner_start_date.strftime("%Y-%m-%d %H:%M")
+#             if obj.banner_start_date
+#             else "Not set"
+#         )
+#         end = (
+#             obj.banner_end_date.strftime("%Y-%m-%d %H:%M")
+#             if obj.banner_end_date
+#             else "Indefinite"
+#         )
+#         return f"Start: {start} | End: {end}"
+#     return "-"
 
 
 def get_title(obj):
