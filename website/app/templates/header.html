@@ -156,6 +156,7 @@
     /* Desktop Navigation Styles */
     header#top-navigation .navigation-bar {
         background-color: #005EA2;
+        overflow-x: clip;
     }
 
     header#top-navigation .navigation {
@@ -181,15 +182,15 @@
     header#top-navigation .navigation-header > a {
         display: flex;
         align-items: center;
-        /* GAP: scales from 5px at 1026px to 8px at screen width */
-        gap: clamp(5px, calc(5px + 3px * (100vw - 1026px) / (var(--screen-width) * 1px - 1026px)), 8px);
+        /* GAP: scales from 5px at 879px to 8px at screen width */
+        gap: clamp(5px, calc(5px + 3px * (100vw - 879px) / (var(--screen-width) * 1px - 879px)), 8px);
         text-decoration: none;
         background: none;
         border: none;
         cursor: pointer;
         height: 50px;
-        /* PADDING: scales from 5px at 1026px to 20px at screen width */
-        padding: 0 clamp(5px, calc(5px + 15px * (100vw - 1026px) / (var(--screen-width) * 1px - 1026px)), 20px);
+        /* PADDING: scales from 5px at 879px to 20px at screen width */
+        padding: 0 clamp(5px, calc(5px + 15px * (100vw - 879px) / (var(--screen-width) * 1px - 879px)), 20px);
         font-size: 18px;
         font-weight: 600;
         color: white;
