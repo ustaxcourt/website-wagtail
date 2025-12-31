@@ -2,6 +2,9 @@
 {% load wagtailcore_tags navigation_tags wagtailsettings_tags %}
 {% get_settings %}
 <style>
+    :root {
+        --screen-width: 1440; /* fallback, unitless */
+    }
     header#top-navigation {
         position: relative;
     }
@@ -178,13 +181,15 @@
     header#top-navigation .navigation-header > a {
         display: flex;
         align-items: center;
-        gap: 8px;
+        /* GAP: scales from 5px at 1026px to 8px at screen width */
+        gap: clamp(5px, calc(5px + 3px * (100vw - 1026px) / (var(--screen-width) * 1px - 1026px)), 8px);
         text-decoration: none;
         background: none;
         border: none;
         cursor: pointer;
         height: 50px;
-        padding: 0 20px;
+        /* PADDING: scales from 5px at 1026px to 20px at screen width */
+        padding: 0 clamp(5px, calc(5px + 15px * (100vw - 1026px) / (var(--screen-width) * 1px - 1026px)), 20px);
         font-size: 18px;
         font-weight: 600;
         color: white;
@@ -782,6 +787,8 @@
     </div>
 </header>
 <script>
+    // @see WAG-589
+    document.documentElement.style.setProperty('--screen-width', screen.width);
     function toggleMobileMenu() {
         const navigation = document.querySelector('.navigation');
         const overlay = document.querySelector('.mobile-menu-overlay');
