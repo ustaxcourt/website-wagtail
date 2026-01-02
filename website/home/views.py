@@ -9,6 +9,7 @@ from home.models.pages.definitions import DefinitionsPage
 from .models import NewsItem, Banner
 from wagtail.admin.filters import (
     WagtailFilterSet,
+    DateRangePickerWidget,
 )
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
@@ -26,26 +27,26 @@ class NewsItemReportFilterSet(WagtailFilterSet):
         empty_label="All Categories",
     )
 
-    # publish_date_range = DateFromToRangeFilter(
-    #     field_name="publish_date",
-    #     label="Publish Date Range",
-    #     widget=DateRangePickerWidget,
-    # )
+    publish_date_range = django_filters.DateFromToRangeFilter(
+        field_name="publish_date",
+        label="Publish Date Range",
+        widget=DateRangePickerWidget,
+    )
 
-    # homepage_display_expiration_date_range = DateFromToRangeFilter(
-    #     field_name="homepage_display_expiration_date",
-    #     label="Homepage Display Expiration Date Range",
-    #     widget=DateRangePickerWidget,
-    # )
+    homepage_display_expiration_date_range = django_filters.DateFromToRangeFilter(
+        field_name="homepage_display_expiration_date",
+        label="Homepage Display Expiration Date Range",
+        widget=DateRangePickerWidget,
+    )
 
     class Meta:
         model = NewsItem
         fields = [
             "category",
-            # "title",
-            # "created_at",
-            # "publish_date_range",
-            # "homepage_display_expiration_date_range",
+            "title",
+            "created_at",
+            "publish_date_range",
+            "homepage_display_expiration_date_range",
         ]
 
 
