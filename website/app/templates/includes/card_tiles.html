@@ -204,7 +204,7 @@
             {% if body_block.block_type == 'prose' %}
                 <div class="card-tile__body-prose">{{ body_block.value }}</div>
             {% elif body_block.block_type == 'accordian' %}
-                {% include "accordian_block.html" with block=body_block %}
+                {% include "accordian_block.html" with block=body_block suffix="-card-tile" block_index=forloop.counter0 %}
             {% elif body_block.block_type == 'image' %}
                 {% include "blocks/image_block.html" with block=body_block %}
             {% endif %}
