@@ -154,6 +154,34 @@ class NavigationInitializer(PageInitializer):
                     ],
                 },
             ),
+            (
+                "section",
+                {
+                    "title": "RESOURCES",
+                    "sub_links": [
+                        {
+                            "title": "DAWSON FAQ's",
+                            "page": self.get_page("dawson-faqs-searches-public-access"),
+                        },
+                        {
+                            "title": "DAWSON User Guides",
+                            "page": self.get_page("dawson-user-guides"),
+                        },
+                        {
+                            "title": "Tax Court Forms",
+                            "page": self.get_page("case-related-forms"),
+                        },
+                        {
+                            "title": "Tax Court Definitions",
+                            "page": self.get_page("definitions"),
+                        },
+                        {
+                            "title": "Look Up a Practitioner",
+                            "external_url": "https://dawson.ustaxcourt.gov/",
+                        },
+                    ],
+                },
+            ),
         ]
 
     def create(self):

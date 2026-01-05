@@ -2,9 +2,6 @@
 {% load wagtailcore_tags navigation_tags wagtailsettings_tags %}
 {% get_settings %}
 <style>
-    :root {
-        --screen-width: 1440; /* fallback, unitless */
-    }
     header#top-navigation {
         position: relative;
     }
@@ -156,7 +153,6 @@
     /* Desktop Navigation Styles */
     header#top-navigation .navigation-bar {
         background-color: #005EA2;
-        overflow-x: clip;
     }
 
     header#top-navigation .navigation {
@@ -182,18 +178,18 @@
     header#top-navigation .navigation-header > a {
         display: flex;
         align-items: center;
-        /* GAP: scales from 5px at 879px to 8px at screen width */
-        gap: clamp(5px, calc(5px + 3px * (100vw - 879px) / (var(--screen-width) * 1px - 879px)), 8px);
+        gap: clamp(1px, 0.2vw, 8px);
         text-decoration: none;
         background: none;
         border: none;
         cursor: pointer;
         height: 50px;
-        /* PADDING: scales from 5px at 879px to 20px at screen width */
-        padding: 0 clamp(5px, calc(5px + 15px * (100vw - 879px) / (var(--screen-width) * 1px - 879px)), 20px);
         font-size: 18px;
         font-weight: 600;
         color: white;
+
+        padding-left: clamp(1px, 0.2vw, 8px);
+        padding-right: clamp(1px, 0.2vw, 8px);
     }
 
     header#top-navigation .navigation-header .link:hover,
@@ -313,6 +309,21 @@
         width: auto;
         height: auto;
     }
+
+    /* Safe defaults: hide mobile-only elements and use desktop font-size.
+       If viewport falls in the fractional gap between 879px and 880px,
+       desktop layout will show rather than broken mobile. */
+    header#top-navigation .nav-hamburger,
+    header#top-navigation .mobile-header-logo-section,
+    header#top-navigation .mobile-menu-close {
+        display: none;
+    }
+
+    header#top-navigation .navigation-header .link,
+    header#top-navigation .navigation-header > a {
+        font-size: 16px;
+    }
+
      /* Mobile Navigation Styles */
      @media (max-width: 879px) {
         header#top-navigation li.navigation-header.get-feedback {
@@ -339,6 +350,14 @@
             font-size: 24px;
             position: absolute;
             top: 10px;
+        }
+
+        header#top-navigation .mobile-header-logo-section {
+            display: flex;
+        }
+
+        header#top-navigation .desktop-header-logo-section {
+            display: none;
         }
 
         header#top-navigation .navigation-header:hover .navigation-list,
@@ -788,8 +807,6 @@
     </div>
 </header>
 <script>
-    // @see WAG-589
-    document.documentElement.style.setProperty('--screen-width', screen.width);
     function toggleMobileMenu() {
         const navigation = document.querySelector('.navigation');
         const overlay = document.querySelector('.mobile-menu-overlay');
