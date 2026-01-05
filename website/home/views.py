@@ -231,8 +231,8 @@ class NewsItemReportView(ReportView):
             filtered = [obj for obj in filtered if in_publish_date_range(obj)]
 
         # Filter by homepage display expiration date
-        homepage_date_from = filters.get("homepage_display_expiration_date_from")
-        homepage_date_to = filters.get("homepage_display_expiration_date_to")
+        homepage_date_from = filters.get("homepage_display_expiration_date_range_from")
+        homepage_date_to = filters.get("homepage_display_expiration_date_range_to")
 
         if homepage_date_from or homepage_date_to:
 
