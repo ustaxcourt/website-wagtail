@@ -2,7 +2,7 @@ from django.db.models.functions import Lower, Trim
 from wagtail.admin.views.reports import ReportView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 import django_filters
-from datetime import date
+from datetime import date, datetime
 
 from search.models.definitionsQuery import DefinitionsQuery
 from home.models.pages.definitions import DefinitionsPage
@@ -178,8 +178,6 @@ class NewsItemReportView(ReportView):
         queryset = queryset or self.get_queryset()
         filters = filters or self.get_filterset_kwargs().get("data", {})
 
-        print("Filters applied:", filters)
-
         if not filters:
             return queryset
 
@@ -191,6 +189,75 @@ class NewsItemReportView(ReportView):
             filtered = [
                 obj for obj in filtered if self._get_obj_category(obj) == category
             ]
+
+        title = filters.get("title")
+        if title:
+            filtered = [
+                obj for obj in filtered if title.lower() in get_title(obj).lower()
+            ]
+
+        created_at = filters.get("created_at")
+        if created_at:
+            created_at_date = datetime.strptime(created_at, "%Y-%m-%d").date()
+            filtered = [
+                obj for obj in filtered if get_created_at(obj).date() == created_at_date
+            ]
+
+        # Filter by publish date
+        publish_date_from = filters.get("publish_date_range_from")
+        publish_date_to = filters.get("publish_date_range_to")
+        if publish_date_from or publish_date_to:
+
+            def in_publish_date_range(obj):
+                pub_date = get_publish_date_raw(obj)
+                if pub_date is None or pub_date == "-":
+                    return False
+                # Convert datetime to date if needed
+                if hasattr(pub_date, "date"):
+                    pub_date = pub_date.date()
+                if (
+                    publish_date_from
+                    and pub_date
+                    < datetime.strptime(publish_date_from, "%Y-%m-%d").date()
+                ):
+                    return False
+                if (
+                    publish_date_to
+                    and pub_date > datetime.strptime(publish_date_to, "%Y-%m-%d").date()
+                ):
+                    return False
+                return True
+
+            filtered = [obj for obj in filtered if in_publish_date_range(obj)]
+
+        # Filter by homepage display expiration date
+        homepage_date_from = filters.get("homepage_display_expiration_date_from")
+        homepage_date_to = filters.get("homepage_display_expiration_date_to")
+
+        if homepage_date_from or homepage_date_to:
+
+            def in_homepage_date_range(obj):
+                exp_date = get_homepage_expiration_raw(obj)
+                if exp_date is None or exp_date == "-":
+                    return False
+                # Convert datetime to date if needed
+                if hasattr(exp_date, "date"):
+                    exp_date = exp_date.date()
+                if (
+                    homepage_date_from
+                    and exp_date
+                    < datetime.strptime(homepage_date_from, "%Y-%m-%d").date()
+                ):
+                    return False
+                if (
+                    homepage_date_to
+                    and exp_date
+                    > datetime.strptime(homepage_date_to, "%Y-%m-%d").date()
+                ):
+                    return False
+                return True
+
+            filtered = [obj for obj in filtered if in_homepage_date_range(obj)]
 
         return filtered
 
