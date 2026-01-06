@@ -166,7 +166,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 16px;
+        gap: 25px;
     }
     .card-tile {
         margin-top: 34px;
@@ -179,22 +179,22 @@
         max-width: 100%;
     }
 
-    /* 2 cards: 50% width each */
+    /* 2 cards: 50% width each (gap 25px / 2 = 12.5px) */
     .card-tiles-container:has(.card-tile:nth-child(2):last-child) .card-tile {
-        flex: 0 0 calc(50% - 8px);
-        max-width: calc(50% - 8px);
+        flex: 0 0 calc(50% - 12.5px);
+        max-width: calc(50% - 12.5px);
     }
 
-    /* 3 cards: 33% width each */
+    /* 3 cards: 33% width each (2 gaps * 25px / 3 = 16.67px) */
     .card-tiles-container:has(.card-tile:nth-child(3):last-child) .card-tile {
-        flex: 0 0 calc(33.333% - 11px);
-        max-width: calc(33.333% - 11px);
+        flex: 0 0 calc(33.333% - 17px);
+        max-width: calc(33.333% - 17px);
     }
 
     /* 4 cards: 2x2 grid (50% width each) */
     .card-tiles-container:has(.card-tile:nth-child(4):last-child) .card-tile {
-        flex: 0 0 calc(50% - 8px);
-        max-width: calc(50% - 8px);
+        flex: 0 0 calc(50% - 12.5px);
+        max-width: calc(50% - 12.5px);
         margin-top: 0;
         margin-bottom: 0;
     }
