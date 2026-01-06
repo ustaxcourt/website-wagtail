@@ -10,16 +10,25 @@
             overflow-x: auto;
         }
 
-        .enhanced-page.grid-container >* {
+        {% comment %} Every element that can be added to enhanced page is directly under this selector {% endcomment %}
+        {% comment %} .enhanced-page.grid-container >* {
+            margin-bottom: 34px;
+        } {% endcomment %}
+        .enhanced-page.grid-container > :not(.accordian-block) {
             margin-bottom: 34px;
         }
 
-        .enhanced-page.grid-container > h1{
-            margin: 45px 0;
+        .accordian-block:has(~ .accordian-block) {
+            margin-bottom: 18px;
         }
 
         .enhanced-page.grid-container > h1{
-            margin: 45px 0;
+            padding-top: 45px;
+        }
+        .enhanced-page.grid-container {
+            margin-bottom: 45px;
+            margin-left: 29px;
+            margin-right: 29px;
         }
 
         .enhanced-page.grid-container .question-answer-block>h3{
@@ -30,6 +39,14 @@
         }
         .enhanced-page.grid-container .question-answer-block+div>p{
             margin-top: 0px;
+        }
+        h1 + p,
+        h2 + p,
+        h3 + p,
+        h4 + p,
+        h5 + p,
+        h6 + p {
+        margin-top: 15px;
         }
 
 
@@ -269,6 +286,17 @@
             .enhanced-page .enhanced-table.usa-table--stacked td,
             .enhanced-page .usa-table--stacked-header td {
                 border-bottom: 0px;
+            }
+
+            .enhanced-page.grid-container {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 25px;
+                margin:0px;
+            }
+
+            .enhanced-page.grid-container > h1 {
+                padding-top: 25px;
             }
         }
 
