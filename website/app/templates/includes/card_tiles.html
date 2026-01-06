@@ -98,6 +98,8 @@
     font-style: normal;
     font-weight: 600;
     line-height: 30px; /* 125% */
+
+    margin: 0;
 }
 
 .card-tile__icon {
@@ -110,6 +112,23 @@
 }
 .card-tile__header.selected {
     color: white;
+}
+
+/* Icon direction variants */
+.card-tile--icon-left,
+.card-tile--icon-right {
+    flex-direction: row;
+    align-items: center;
+}
+
+.card-tile--icon-left .card-tile__header,
+.card-tile--icon-right .card-tile__header {
+    align-self: center;
+}
+
+.card-tile--icon-top,
+.card-tile--icon-bottom {
+    flex-direction: column;
 }
 
 /* Body content styling */
@@ -140,6 +159,20 @@
         margin-top: 0;
         margin-bottom: 0;
     }
+    /* On mobile: top, bottom, and left all become left (icon first, row layout) */
+    .card-tile--icon-top,
+    .card-tile--icon-bottom,
+    .card-tile--icon-left {
+        flex-direction: row;
+    }
+    /* For bottom, reorder so icon comes first on mobile */
+    .card-tile--icon-bottom .card-tile__icon {
+        order: -1;
+    }
+    /* Right stays right (header first, row layout) */
+    .card-tile--icon-right {
+        flex-direction: row;
+    }
     .card-tile:first-child {
         margin-top: 34px;
     }
@@ -149,7 +182,7 @@
         flex-direction: column;
         justify-content: center;
         flex: 1 0 0;
-        align-self: stretch;
+        align-self: center;
         text-align: left;
     }
     .card-tile__icon {
@@ -171,6 +204,7 @@
     .card-tile {
         margin-top: 34px;
         margin-bottom: 34px;
+        padding: 22px 10px;
     }
 
     /* 1 card: full width */
@@ -232,7 +266,7 @@
     </div>
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
     {% for tile in block.value.tiles %}
-      <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %}"
+      <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %} {% if tile.icon_direction %}card-tile--icon-{{ tile.icon_direction }}{% else %}card-tile--icon-top{% endif %}"
            id="card-tile-{{ forloop.counter0 }}"
            role="button"
            tabindex="0"
@@ -245,9 +279,20 @@
                {% endif %}
            {% endfor %}
            >
+        {% if tile.icon_direction == 'top' or tile.icon_direction == 'left' %}
         <img id="card-tile-icon-{{ forloop.counter0 }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
         <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        {% elif tile.icon_direction == 'bottom' or tile.icon_direction == 'right' %}
+        <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <img id="card-tile-icon-{{ forloop.counter0 }}"
+                class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
+        {% else %}
+        {# Default to top/left if icon_direction is not set #}
+        <img id="card-tile-icon-{{ forloop.counter0 }}"
+                class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
+        <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        {% endif %}
       </div>
     {% endfor %}
 </div>

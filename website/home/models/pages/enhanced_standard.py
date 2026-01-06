@@ -67,6 +67,17 @@ class CardTileBlock(blocks.StructBlock):
     """Individual card tile with icon and H2 header."""
 
     icon = SVGDocumentChooserBlock(required=True, help_text="Card Icon")
+    icon_direction = blocks.ChoiceBlock(
+        required=False,
+        help_text="Icon placement, e.g. Top, Right, Bottom, Left. Default is Top.",
+        choices=[
+            ("top", "Top"),
+            ("right", "Right"),
+            ("bottom", "Bottom"),
+            ("left", "Left"),
+        ],
+        default="top",
+    )
     card_header = blocks.CharBlock(required=True, help_text="Displays the card title")
     breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
     breadcrumb_url = blocks.StreamBlock(
