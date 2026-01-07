@@ -400,7 +400,7 @@
 {% block content %}
     <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
         <h1 data-testid="page-title">
-            <span class="page-title-start">{{ page.title }}</span>
+            <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
             <span class="page-title-breadcrumb" style="display: none;"></span>
         </h1>
         <hr />
@@ -591,6 +591,14 @@
                 // Add underline to the start when breadcrumb is present
                 if (titleStart) {
                     titleStart.style.textDecoration = 'underline';
+                    titleStart.style.cursor = 'pointer';
+
+                    // Make it clickable to remove the card query parameter
+                    titleStart.addEventListener('click', function() {
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('card');
+                        window.location.href = url.toString();
+                    });
                 }
             }
         });
