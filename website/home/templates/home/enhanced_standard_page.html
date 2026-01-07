@@ -20,13 +20,20 @@
         }
 
         .enhanced-page.grid-container > h1{
-            padding-top: 45px;
             margin-top: 0px;
+            margin-bottom: 0px;
         }
         .enhanced-page.grid-container {
-            margin-bottom: 45px;
-            margin-left: 29px;
-            margin-right: 29px;
+            padding-top: 34px;
+            padding-bottom: 45px;
+            padding-left: 29px;
+            padding-right: 29px;
+            margin-bottom: 0px;
+        }
+
+        .enhanced-page.grid-container > hr {
+            margin-top: 34px;
+            margin-bottom: 34px;
         }
 
         .enhanced-page.grid-container .question-answer-block>h3{
@@ -359,6 +366,13 @@
             gap:34px
         }
         @media (max-width: 1024px) {
+            .enhanced-page.grid-container {
+                padding-left: 29px;
+                padding-right: 29px;
+                padding-top: 29px;
+                padding-bottom: 15px;
+            }
+
             .enhanced-page .question-answer-block .bookmark {
                 top: 24px;
                 left: -4px;
@@ -385,6 +399,13 @@
         }
 
         @media (max-width: 768px) {
+            .enhanced-page.grid-container {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
             .enhanced-page .info-cards {
                 grid-template-columns: 1fr;
             }
