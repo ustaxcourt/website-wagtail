@@ -116,6 +116,7 @@
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/definitions_button.html' %}
         {% endif %}
+
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/mini_definitions_button.html' %}
         {% endif %}
@@ -136,65 +137,46 @@
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", () => {
-
-                  const hiddenMenu = document.getElementById("last-nav-list");
+                  const last_navbar_menu_id = "last-nav-list";
+                  const hiddenMenu = document.getElementById(last_navbar_menu_id);
                   const feedbackButtonToAdjust = document.querySelector(".give-feedback-btn");
                   const definitionsButtonToAdjust = document.querySelector(".definitions-btn");
 
-                  if (!hiddenMenu) return;
+                  const BUTTON_HEIGHT = 116;
+                  const GAP_BETWEEN_BUTTONS = 20;
+                  const GAP_FOR_FEEDBACK = 10;
+                  const default_definitions_margin_top = (BUTTON_HEIGHT + GAP_FOR_FEEDBACK + GAP_BETWEEN_BUTTONS);
+                  const default_feedback_margin_top = GAP_FOR_FEEDBACK;
 
-                  function getTrueMenuHeight(element) {
-                        const originalStyles = {
-                              display: element.style.display,
-                              visibility: element.style.visibility,
-                              position: element.style.position,
-                        };
-
-                        element.style.display = 'block';
-                        element.style.visibility = 'hidden';
-                        element.style.position = 'absolute';
-
-                        const height = element.offsetHeight;
-
-                        element.style.display = originalStyles.display;
-                        element.style.visibility = originalStyles.visibility;
-                        element.style.position = originalStyles.position;
-
-                        return height;
+                  if (!hiddenMenu) {
+                      console.error(`Expected element w/ ID: ${last_navbar_menu_id}`);
+                      return;
                   }
 
-                  let lastKnownOpenHeight = getTrueMenuHeight(hiddenMenu);
+                  const get_full_height = (element) => {
+                      const originalStyles = {
+                          display: element.style.display,
+                          visibility: element.style.visibility,
+                          position: element.style.position,
+                      };
 
-                  const observer = new ResizeObserver(entries => {
+                      element.style.display = 'block';
+                      element.style.visibility = 'hidden';
+                      element.style.position = 'absolute';
 
-                      const menuContentHeight = hiddenMenu.scrollHeight;
+                      const height = element.offsetHeight;
 
-                      if (menuContentHeight > 0) {
-                            lastKnownOpenHeight = menuContentHeight;
-                      }
+                      element.style.display = originalStyles.display;
+                      element.style.visibility = originalStyles.visibility;
+                      element.style.position = originalStyles.position;
 
-                      const baseMargin = 55;
-                      const gap = 20;
-
-                      if (feedbackButtonToAdjust) {
-
-                            feedbackButtonToAdjust.style.marginTop = `calc(${baseMargin}px + ${lastKnownOpenHeight}px)`;
-
-                            if (definitionsButtonToAdjust) {
-                                  const feedbackButtonHeight = feedbackButtonToAdjust.offsetWidth;
-
-                                  const definitionsMarginTop = baseMargin + feedbackButtonHeight + gap + lastKnownOpenHeight;
-
-                                  definitionsButtonToAdjust.style.marginTop = `calc(${definitionsMarginTop}px)`;
-                            }
-
-                      } else if (definitionsButtonToAdjust) {
-                            definitionsButtonToAdjust.style.marginTop = `calc(67px + ${lastKnownOpenHeight}px)`;
-                      }
-
-                  });
-
-                  observer.observe(hiddenMenu);
+                      return height;
+                  }
+                  const dropdown_height = get_full_height(hiddenMenu);
+                  feedbackButtonToAdjust.style.marginTop = `calc(${default_feedback_margin_top}px + ${dropdown_height}px)`;
+                  if (definitionsButtonToAdjust) {
+                      definitionsButtonToAdjust.style.marginTop = `calc(${default_definitions_margin_top}px + ${dropdown_height}px)`;
+                  }
             });
         </script>
         <script type="text/javascript"

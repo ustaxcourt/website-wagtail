@@ -545,7 +545,7 @@ During a production deployment, our CI/CD pipeline uses [AWS SNS] to notify subs
 An admin can manually add a team member to the SNS topic using the AWS Console:
 
 1. Go to the **SNS service** in the [AWS Console](https://console.aws.amazon.com/sns/v3/home).
-2. Select the **deployment notifications topic** (e.g., `prod-deployment-notifications`, `sandbox-deployment-notifications`).
+2. Select the **deployment notifications topic** (e.g.., `prod-deployment-notifications`, `sandbox-deployment-notifications`).
 3. Click on the **"Subscriptions"** tab.
 4. Click **“Create subscription”**.
 5. Set:

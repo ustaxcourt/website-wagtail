@@ -75,6 +75,7 @@
             {{ page.title }}
             <hr>
         </h1>
+        {% include "includes/enhanced_body.html" %}
         {% for year, releases in press_releases_by_year.items %}
             <h2 class="title">{{ year }}</h2>
             <ul>
@@ -141,6 +142,8 @@
             </ul>
             {% if not forloop.last %}<hr>{% endif %}
         {% endfor %}
+
+
         {% if not is_archive %}
             <hr>
             <div class="custom-button-archive">

@@ -36,11 +36,22 @@ class StyledCalloutBlock(blocks.StructBlock):
         required=True, help_text="The title of this special element"
     )
     text = blocks.RichTextBlock(required=True, help_text="The paragraph content")
+    callout_type = blocks.ChoiceBlock(
+        required=True,
+        default="info",
+        choices=[
+            ("info", "Info"),
+            ("warning", "Warning"),
+            ("success", "Success"),
+            ("error", "Error"),
+            ("emergency", "Emergency"),
+        ],
+    )
 
     class Meta:
         label = "Callout Banner"
         icon = "info-circle"
-        template = "styled_callout.html"
+        template = "callout_block.html"
 
 
 class AccordianBlock(blocks.StructBlock):
@@ -256,6 +267,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
             (
                 "accordian",
                 AccordianBlock(),
+            ),
+            (
+                "callout",
+                StyledCalloutBlock(),
             ),
         ],
         blank=True,
