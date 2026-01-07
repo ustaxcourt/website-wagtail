@@ -1,0 +1,120 @@
+{% load wagtailcore_tags %}
+
+<style>
+    .grid-container {
+        margin: 2rem 0;
+    }
+
+    .grid-container.width-small {
+        max-width: 600px;
+    }
+
+    .grid-container.width-medium {
+        max-width: 900px;
+    }
+
+    .grid-container.width-large {
+        max-width: 1200px;
+    }
+
+    .grid-container.width-full {
+        max-width: 100%;
+    }
+
+    .grid-layout {
+        display: grid;
+        gap: 0;
+        grid-auto-rows: 1fr;
+        border: 1px solid #dfe1e2;
+    }
+
+    .grid-cell {
+        background-color: #ffffff;
+        border-right: 1px solid #dfe1e2;
+        border-bottom: 1px solid #dfe1e2;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .grid-cell-header {
+        background-color: #f1f9fc;
+        color: #000000;
+        font-size: 24px;
+        font-weight: 600;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .grid-cell-caption {
+        font-size: 14px;
+        color: #000000;
+        font-style: italic;
+        margin: 0;
+        padding: 0 20px;
+        padding-top: 20px;
+    }
+
+    .grid-cell-body {
+        flex: 1;
+        background-color: #ffffff;
+        color: #000000;
+        font-size: 17px;
+        padding: 20px;
+    }
+
+    .grid-cell-body a {
+        color: #1a4480;
+    }
+
+    .grid-cell-body > *:first-child {
+        margin-top: 0;
+    }
+
+    .grid-cell-body > *:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+        .grid-layout {
+            grid-template-columns: 1fr !important;
+        }
+
+        .grid-cell {
+            border-right: none;
+        }
+
+        .grid-cell-header {
+            font-size: 20px;
+        }
+
+        .grid-cell-body {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="grid-container width-{{ block.value.width }}">
+    <div class="grid-layout" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);">
+        {% for cell in block.value.cells %}
+            <div class="grid-cell">
+                {% if cell.header %}
+                    <h3 class="grid-cell-header">{{ cell.header }}</h3>
+                {% endif %}
+
+                {% if cell.caption %}
+                    <p class="grid-cell-caption">{{ cell.caption }}</p>
+                {% endif %}
+
+                <div class="grid-cell-body">
+                    {% for body_block in cell.body %}
+                        {% if body_block.block_type == 'prose' %}
+                            {{ body_block.value|richtext }}
+                        {% elif body_block.block_type == 'callout' %}
+                            {% include "callout_block.html" with block=body_block %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

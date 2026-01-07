@@ -72,6 +72,61 @@ class AccordianBlock(blocks.StructBlock):
         template = "accordian_block.html"
 
 
+class GridCellBlock(blocks.StructBlock):
+    header = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Optional header for this grid cell",
+    )
+    caption = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Optional caption for this grid cell",
+    )
+    body = blocks.StreamBlock(
+        [
+            ("prose", blocks.RichTextBlock()),
+            ("callout", StyledCalloutBlock()),
+        ],
+        required=True,
+        help_text="Add text or special elements to the cell body",
+    )
+
+    class Meta:
+        label = "Grid Cell"
+        icon = "placeholder"
+
+
+class GridBlock(blocks.StructBlock):
+    columns = blocks.IntegerBlock(
+        required=True,
+        default=2,
+        min_value=1,
+        max_value=6,
+        help_text="Number of columns in the grid (1-6)",
+    )
+    width = blocks.ChoiceBlock(
+        required=True,
+        default="full",
+        choices=[
+            ("small", "Small (600px)"),
+            ("medium", "Medium (900px)"),
+            ("large", "Large (1200px)"),
+            ("full", "Full Width"),
+        ],
+        help_text="Maximum width of the grid",
+    )
+    cells = blocks.ListBlock(
+        GridCellBlock(),
+        help_text="Add cells to the grid. Cells will fill row-by-row based on the number of columns selected.",
+    )
+
+    class Meta:
+        label = "Grid"
+        icon = "grip"
+        template = "grid_block.html"
+
+
 class EnhancedStandardPage(ModerationMixin, Page):
     base_form_class = ReviewByRequiredOnSubmitForm
 
@@ -271,6 +326,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
             (
                 "callout",
                 StyledCalloutBlock(),
+            ),
+            (
+                "grid",
+                GridBlock(),
             ),
         ],
         blank=True,
