@@ -12,7 +12,7 @@
 
         {% comment %} Every element that can be added to enhanced page is directly under this selector {% endcomment %}
         .enhanced-page.grid-container > :not(.accordian-block) {
-            margin-bottom: 17px;
+            margin-bottom: 34px;
         }
 
         .accordian-block:has(~ .accordian-block) {
@@ -20,24 +20,24 @@
         }
 
         .enhanced-page.grid-container > h1{
-            padding-top: 18px;
             margin-top: 0px;
+            margin-bottom: 0px;
         }
         .enhanced-page.grid-container {
+            padding-top: 34px;
             padding-bottom: 45px;
-            padding-left: 32px;
-            padding-right: 32px;
+            padding-left: 29px;
+            padding-right: 29px;
+            margin-bottom: 0px;
         }
 
-        {% comment %} HR should have 34 top and bottom {% endcomment %}
-        hr {
-            margin-top: 17px;
-            margin-bottom: 17px;
+        .enhanced-page.grid-container > hr {
+            margin-top: 34px;
+            margin-bottom: 34px;
         }
 
         .enhanced-page.grid-container .question-answer-block>h3{
-            padding-bottom: 15px;
-            margin-bottom: 0px;
+            margin-bottom: 15px;
         }
         .enhanced-page.grid-container .question-answer-block{
             margin-bottom: 0px;
@@ -51,8 +51,7 @@
         h4 + p,
         h5 + p,
         h6 + p {
-        padding-top: 15px;
-        margin: 0px
+        margin-top: 15px;
         }
 
 
@@ -367,6 +366,13 @@
             gap:34px
         }
         @media (max-width: 1024px) {
+            .enhanced-page.grid-container {
+                padding-left: 29px;
+                padding-right: 29px;
+                padding-top: 29px;
+                padding-bottom: 15px;
+            }
+
             .enhanced-page .question-answer-block .bookmark {
                 top: 24px;
                 left: -4px;
@@ -393,6 +399,13 @@
         }
 
         @media (max-width: 768px) {
+            .enhanced-page.grid-container {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
             .enhanced-page .info-cards {
                 grid-template-columns: 1fr;
             }
