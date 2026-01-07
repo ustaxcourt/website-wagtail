@@ -11,7 +11,7 @@
         }
 
         {% comment %} Every element that can be added to enhanced page is directly under this selector {% endcomment %}
-        .enhanced-page.grid-container > :not(.accordian-block) {
+        .enhanced-page.grid-container > :not(.accordian-block, .heading-wrapper) {
             margin-bottom: 34px;
         }
 
@@ -19,15 +19,15 @@
             margin-bottom: 18px;
         }
 
-        .enhanced-page.grid-container > h1{
+        .enhanced-page.grid-container > h1,h2,h3,h4,h5,h6 {
             margin-top: 0px;
             margin-bottom: 0px;
         }
         .enhanced-page.grid-container {
-            padding-top: 34px;
+            padding-top: 45px;
             padding-bottom: 45px;
-            padding-left: 29px;
-            padding-right: 29px;
+            padding-left: 32px;
+            padding-right: 32px;
             margin-bottom: 0px;
         }
 
@@ -45,13 +45,12 @@
         .enhanced-page.grid-container .question-answer-block+div>p{
             margin-top: 0px;
         }
-        h1 + p,
-        h2 + p,
-        h3 + p,
-        h4 + p,
-        h5 + p,
-        h6 + p {
-        margin-top: 15px;
+
+        .heading-wrapper + p {
+            margin-top: 0px;
+        }
+        .heading-wrapper {
+            margin-bottom: 15px;
         }
 
 
@@ -501,7 +500,8 @@
                     </{{ block.value.level }}>
                 </div>
             {% elif block.block_type == 'paragraph' %}
-                <p data-testid="page-body-paragraph">{{ block.value }}</p>
+                {% comment %} <p data-testid="page-body-paragraph">{{ block.value }}</p> {% endcomment %}
+                {{block.value|richtext}}
             {% elif block.block_type == 'snippet' %}
                 {{ block.value.text |safe }}
             {% elif block.block_type == 'image' %}
