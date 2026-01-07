@@ -594,10 +594,20 @@
                     titleStart.style.cursor = 'pointer';
 
                     // Make it clickable to remove the card query parameter
-                    titleStart.addEventListener('click', function() {
+                    // Remove any existing click listeners to avoid duplicates
+                    const newTitleStart = titleStart.cloneNode(true);
+                    titleStart.parentNode.replaceChild(newTitleStart, titleStart);
+
+                    newTitleStart.addEventListener('click', function(event) {
+                        event.preventDefault();
                         const url = new URL(window.location.href);
                         url.searchParams.delete('card');
-                        window.location.href = url.toString();
+
+                        // Update URL without reloading
+                        window.history.pushState({}, '', url.toString());
+
+                        // Trigger popstate to clear card selection
+                        window.dispatchEvent(new PopStateEvent('popstate'));
                     });
                 }
             }

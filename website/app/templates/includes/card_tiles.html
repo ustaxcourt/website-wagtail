@@ -312,56 +312,149 @@
         // Check for selected card from query parameter
         const urlParams = new URLSearchParams(window.location.search);
         const selectedCard = urlParams.get('card');
-        const selected_icon = document.getElementById('card-tile-icon-' + selectedCard);
-        const selected_header = document.getElementById('card-tile-header-' + selectedCard);
 
         if (selectedCard !== null) {
-            const selectedTile = document.getElementById('card-tile-' + selectedCard);
-            if (selectedTile) {
-                selectedTile.classList.add('selected');
-                selected_icon.classList.add('selected');
-                selected_header.classList.add('selected');
-
-                // Show the body content for the selected card
-                const selectedBody = document.getElementById('card-tile-body-' + selectedCard);
-                if (selectedBody) {
-                    selectedBody.style.display = 'block';
-                }
-
-                // Trigger a custom event to notify the page title with the breadcrumb
-                const cardHeader = selected_header.textContent;
-                window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
-                    detail: { breadcrumb: cardHeader }
-                }));
-            }
+            selectCard(selectedCard);
         }
 
         cardTiles.forEach(function(tile) {
             // Handle click events
-            tile.addEventListener('click', function() {
-                handle_card_press(tile);
+            tile.addEventListener('click', function(event) {
+                handle_card_press(tile, event);
             });
 
             // Handle keyboard events (Enter and Space)
             tile.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault(); // Prevent page scroll on Space
-                    handle_card_press(tile);
+                    handle_card_press(tile, event);
                 }
             });
         });
 
-        function handle_card_press(tile) {
+        function selectCard(cardIndex) {
+            const selectedTile = document.getElementById('card-tile-' + cardIndex);
+            const selected_icon = document.getElementById('card-tile-icon-' + cardIndex);
+            const selected_header = document.getElementById('card-tile-header-' + cardIndex);
+
+            if (selectedTile) {
+                // Clear any previously selected cards
+                cardTiles.forEach(function(tile) {
+                    const tileIndex = tile.id.replace('card-tile-', '');
+                    tile.classList.remove('selected');
+                    const icon = document.getElementById('card-tile-icon-' + tileIndex);
+                    const header = document.getElementById('card-tile-header-' + tileIndex);
+                    const body = document.getElementById('card-tile-body-' + tileIndex);
+                    if (icon) icon.classList.remove('selected');
+                    if (header) header.classList.remove('selected');
+                    if (body) body.style.display = 'none';
+                });
+
+                // Select the new card
+                selectedTile.classList.add('selected');
+                if (selected_icon) selected_icon.classList.add('selected');
+                if (selected_header) selected_header.classList.add('selected');
+
+                // Show the body content for the selected card
+                const selectedBody = document.getElementById('card-tile-body-' + cardIndex);
+                if (selectedBody) {
+                    selectedBody.style.display = 'block';
+                }
+
+                // Trigger a custom event to notify the page title with the breadcrumb
+                if (selected_header) {
+                    const cardHeader = selected_header.textContent;
+                    window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
+                        detail: { breadcrumb: cardHeader }
+                    }));
+                }
+            }
+        }
+
+        function handle_card_press(tile, event) {
             const tile_id = tile.id;
             // Extract the card index from the tile id (e.g., "card-tile-0" -> "0")
             const cardIndex = tile_id.replace('card-tile-', '');
 
+            // Get the href attribute if it exists
+            const tileHref = tile.getAttribute('href');
+
+            // Check if this is an external link
+            const isExternalLink = tile.getAttribute('data-is-link') === 'true';
+
+            if (isExternalLink && tileHref) {
+                // For external links, navigate normally
+                window.location.href = tileHref;
+                return;
+            }
+
             // Build the new URL with the card query parameter
             const url = new URL(window.location.href);
-            url.searchParams.set('card', cardIndex);
 
-            // Reload the page with the new query parameter
-            window.location.href = url.toString();
+            // Check if the card's href points to the same page (or no href)
+            const currentPath = window.location.pathname;
+            let targetPath = currentPath;
+
+            if (tileHref) {
+                try {
+                    const hrefUrl = new URL(tileHref, window.location.origin);
+                    targetPath = hrefUrl.pathname;
+                } catch (e) {
+                    // If href is relative, assume it's a different page
+                    targetPath = tileHref;
+                }
+            }
+
+            // If pointing to the same page, avoid reload
+            if (!tileHref || targetPath === currentPath) {
+                event.preventDefault();
+
+                // Update URL without reloading
+                url.searchParams.set('card', cardIndex);
+                window.history.pushState({ card: cardIndex }, '', url.toString());
+
+                // Manually select the card
+                selectCard(cardIndex);
+            } else {
+                // Different page - navigate with card parameter
+                const targetUrl = new URL(tileHref, window.location.origin);
+                targetUrl.searchParams.set('card', cardIndex);
+                window.location.href = targetUrl.toString();
+            }
         }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cardParam = urlParams.get('card');
+
+            if (cardParam !== null) {
+                selectCard(cardParam);
+            } else {
+                // No card selected - clear all selections
+                cardTiles.forEach(function(tile) {
+                    const tileIndex = tile.id.replace('card-tile-', '');
+                    tile.classList.remove('selected');
+                    const icon = document.getElementById('card-tile-icon-' + tileIndex);
+                    const header = document.getElementById('card-tile-header-' + tileIndex);
+                    const body = document.getElementById('card-tile-body-' + tileIndex);
+                    if (icon) icon.classList.remove('selected');
+                    if (header) header.classList.remove('selected');
+                    if (body) body.style.display = 'none';
+                });
+
+                // Clear breadcrumb
+                const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
+                const titleStart = document.querySelector('.page-title-start');
+                if (breadcrumbSpan) {
+                    breadcrumbSpan.textContent = '';
+                    breadcrumbSpan.style.display = 'none';
+                }
+                if (titleStart) {
+                    titleStart.style.textDecoration = 'none';
+                    titleStart.style.cursor = 'default';
+                }
+            }
+        });
     });
 </script>
