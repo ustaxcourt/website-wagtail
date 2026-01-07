@@ -178,7 +178,7 @@
     header#top-navigation .navigation-header > a {
         display: flex;
         align-items: center;
-        gap: clamp(1px, 0.2vw, 8px);
+        gap: 7px;
         text-decoration: none;
         background: none;
         border: none;
@@ -187,9 +187,6 @@
         font-size: 18px;
         font-weight: 600;
         color: white;
-
-        padding-left: clamp(1px, 0.2vw, 20px);
-        padding-right: clamp(1px, 0.2vw, 20px);
     }
 
     header#top-navigation .navigation-header .link:hover,
@@ -631,9 +628,14 @@
     }
 
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1025px) {
         header#top-navigation #tablet-search-form {
             display: none;
+        }
+
+        header#top-navigation .navigation-header .link,
+        header#top-navigation .navigation-header > a {
+            gap: 15px;
         }
     }
 
