@@ -254,16 +254,7 @@
     }
 }
 </style>
-    <div class="card-tiles__title">
-        <h1>
-            <span class="start">
-                {{ block.value.group_title }}
-            </span>
-            {% for tile in block.value.tiles %}
-                <span class="card-tiles__active-title" id="active-title-{{ forloop.counter0 }}" style="display: none;">/ {{ tile.card_header }}</span>
-            {% endfor %}
-        </h1>
-    </div>
+
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
     {% for tile in block.value.tiles %}
       <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %} {% if tile.icon_direction %}card-tile--icon-{{ tile.icon_direction }}{% else %}card-tile--icon-top{% endif %}"
@@ -337,11 +328,11 @@
                     selectedBody.style.display = 'block';
                 }
 
-                // Show the active title for the selected card
-                const activeTitle = document.getElementById('active-title-' + selectedCard);
-                if (activeTitle) {
-                    activeTitle.style.display = 'inline';
-                }
+                // Trigger a custom event to notify the page title with the breadcrumb
+                const cardHeader = selected_header.textContent;
+                window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
+                    detail: { breadcrumb: cardHeader }
+                }));
             }
         }
 

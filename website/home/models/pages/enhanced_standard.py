@@ -125,8 +125,6 @@ class CardTilesBlock(blocks.StructBlock):
         help_text="Add up to 4 card tiles. They will display responsively based on screen size.",
     )
 
-    group_title = blocks.CharBlock(required=True, help_text="Group title")
-
     class Meta:
         label = "Card Tiles"
         icon = "grip"
