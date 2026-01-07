@@ -217,7 +217,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 /* Scroll to Top Button */
 #scroll-to-top {
     position: fixed;
-    bottom: 20px;
+    bottom: 70px;
     right: 8px;
     padding: 8px 10px;
     height: 35px;
@@ -248,10 +248,9 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 
 #mini-definitions-button {
     position: fixed;
-    bottom: 100px;
+    bottom: 120px;
     right: 8px;
     padding: 8px 10px;
-    margin-bottom: 20px;
     height: 35px;
     width: 35px;
 }
