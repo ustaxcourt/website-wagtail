@@ -1,6 +1,5 @@
 from django.conf import settings
 
-# from home.models.snippets.news_item import NewsItem
 from home.models.snippets.banners import Banner
 
 
