@@ -9,7 +9,7 @@ Note, we plan to get sub domains for these environments, and these links are sub
 
 ## Running the Wagtail Website
 
-There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory ::
+There are a number of make commands to run the service locally. See Makefile for more details. To simply run the app, run the following commands in your terminal from the website-wagtail directory:
 
 ### Pre-reqs
 

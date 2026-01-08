@@ -97,11 +97,6 @@ class NewsItemReportView(ReportView):
             if obj.document
             else "-",
         ),
-        # Column(
-        #     "banner_information",
-        #     label="Banner Information",
-        #     accessor=lambda obj: get_banner_information(obj),
-        # ),
         Column(
             "publish_date",
             label="Publish Date",
@@ -146,15 +141,6 @@ class NewsItemReportView(ReportView):
     def get_queryset(self):
         # Get all news items
         news_items = list(NewsItem.objects.all())
-
-        # Get banner IDs that are already referenced by news items
-        # We don't want to show these banners separately since they're already
-        # represented by their associated news item
-        # banner_ids_in_news_items = set(
-        #     NewsItem.objects.filter(banner__isnull=False).values_list(
-        #         "banner_id", flat=True
-        #     )
-        # )
 
         # Get all banners that are NOT referenced by news items
         # These are standalone banners that should appear as separate entries
@@ -310,23 +296,6 @@ class NewsItemReportView(ReportView):
         """Generate filename for export"""
         today = date.today().strftime("%Y-%m-%d")
         return f"News_and_Announcements_Report_{today}"
-
-
-# def get_banner_information(obj):
-#     """Get banner start and end dates for banners"""
-#     if hasattr(obj, "_is_banner") and obj._is_banner:
-#         start = (
-#             obj.banner_start_date.strftime("%Y-%m-%d %H:%M")
-#             if obj.banner_start_date
-#             else "Not set"
-#         )
-#         end = (
-#             obj.banner_end_date.strftime("%Y-%m-%d %H:%M")
-#             if obj.banner_end_date
-#             else "Indefinite"
-#         )
-#         return f"Start: {start} | End: {end}"
-#     return "-"
 
 
 def get_title(obj):
