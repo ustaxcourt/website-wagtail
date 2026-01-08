@@ -116,6 +116,15 @@ class GridBlock(blocks.StructBlock):
         ],
         help_text="Maximum width of the grid",
     )
+    gridStyle = blocks.ChoiceBlock(
+        required=True,
+        default="styled",
+        choices=[
+            ("styled", "Styled"),
+            ("unstyled", "Unstyled"),
+        ],
+        help_text="Style of the grid",
+    )
     cells = blocks.ListBlock(
         GridCellBlock(),
         help_text="Add cells to the grid. Cells will fill row-by-row based on the number of columns selected.",
