@@ -10,12 +10,11 @@
             overflow-x: auto;
         }
 
-        {% comment %} Every element that can be added to enhanced page is directly under this selector {% endcomment %}
-        .enhanced-page.grid-container > :not(.accordian-block, .heading-wrapper) {
+        .enhanced-page.grid-container > :not(.heading-wrapper, h1,h2,h3,h4,h5,h6) {
             margin-bottom: 34px;
         }
 
-        .accordian-block:has(~ .accordian-block) {
+        .enhanced-page.grid-container .accordian-block:has(~ .accordian-block) {
             margin-bottom: 18px;
         }
 
@@ -46,11 +45,26 @@
             margin-top: 0px;
         }
 
-        .heading-wrapper + p {
+        .heading-wrapper + p, h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
             margin-top: 0px;
         }
-        .heading-wrapper {
+        .enhanced-page.enhanced-page.grid-container > .heading-wrapper,
+        .enhanced-page.enhanced-page.grid-container > h1,
+        .enhanced-page.enhanced-page.grid-container > h2,
+        .enhanced-page.enhanced-page.grid-container > h3,
+        .enhanced-page.enhanced-page.grid-container > h4,
+        .enhanced-page.enhanced-page.grid-container > h5,
+        .enhanced-page.enhanced-page.grid-container > h6,
+        .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6) ~ ul)),
+        .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6) ~ p)),
+        .enhanced-page.enhanced-page.grid-container > ul:has(+ p),
+        .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
+        .enhanced-page.enhanced-page.grid-container > p:has(+ p),
+        enhanced-page.enhanced-page.grid-container > ul:has(+ p) {
             margin-bottom: 15px;
+        }
+        p:empty {
+            display: none;
         }
 
 
@@ -367,6 +381,10 @@
                 top: 24px;
                 left: -4px;
             }
+            .enhanced-page.grid-container {
+                padding-left: 29px;
+                padding-right: 29px;
+            }
 
             .enhanced-page .question-answer-block h3,
             .enhanced-page .question-answer-block h4,
@@ -385,6 +403,9 @@
             .enhanced-page .heading-wrapper h5,
             .enhanced-page .heading-wrapper h6 {
                 {% comment %} padding-left: 16px; {% endcomment %}
+            }
+            .enhanced-page.grid-container .heading-wrapper a {
+                margin-right: 16px;
             }
         }
 
