@@ -1,54 +1,58 @@
 {% load wagtailcore_tags %}
 
 <style>
-    .grid-container {
+    .grid-style-container {
         margin: 2rem 0;
     }
 
-    .grid-container.width-small {
+    .grid-style-container.width-small {
         max-width: 600px;
     }
 
-    .grid-container.width-medium {
+    .grid-style-container.width-medium {
         max-width: 900px;
     }
 
-    .grid-container.width-large {
+    .grid-style-container.width-large {
         max-width: 1200px;
     }
 
-    .grid-container.width-full {
+    .grid-style-container.width-full {
         max-width: 100%;
         padding: 0px;
     }
 
-    .grid-layout {
+    .grid-style-layout {
         display: grid;
         gap: 0;
-        grid-auto-rows: 1fr;
+        grid-auto-rows: auto auto 1fr;
     }
-    .grid-layout.styled {
+    .grid-style-layout.styled {
         border: 1px solid #dfe1e2;
     }
 
-    .grid-cell.styled {
+    .grid-style-cell.styled {
         background-color: #ffffff;
         border-right: 1px solid #dfe1e2;
         border-bottom: 1px solid #dfe1e2;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: subgrid;
+        grid-row: span 3;
     }
 
-    .grid-cell-header.styled {
+    .grid-style-cell-header.styled {
         background-color: #f1f9fc;
         color: #000000;
         font-size: 24px;
         font-weight: 600;
         padding: 20px;
         margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .grid-cell-caption.styled {
+    .grid-style-cell-caption.styled {
         font-size: 14px;
         color: #000000;
         font-style: italic;
@@ -57,40 +61,43 @@
         padding-top: 20px;
     }
 
-    .grid-cell-body.styled {
-        flex: 1;
+    .grid-style-cell-body.styled {
         background-color: #ffffff;
         color: #000000;
         font-size: 17px;
         padding: 20px;
     }
 
-    .grid-cell-body.styled a {
+    .grid-style-cell-body.styled a {
         color: #1a4480;
     }
 
     /*unstyled */
-    .grid-layout.unstyled {
+    .grid-style-layout.unstyled {
         border: none;
     }
 
-    .grid-cell.unstyled {
+    .grid-style-cell.unstyled {
         background-color: transparent;
         border: none;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: subgrid;
+        grid-row: span 3;
     }
 
-    .grid-cell-header.unstyled {
+    .grid-style-cell-header.unstyled {
         background-color: transparent;
         color: #000000;
         font-size: 24px;
         font-weight: 600;
         padding: 20px;
         margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .grid-cell-caption.unstyled {
+    .grid-style-cell-caption.unstyled {
         font-size: 14px;
         color: #000000;
         font-style: italic;
@@ -99,58 +106,57 @@
         padding-top: 20px;
     }
 
-    .grid-cell-body.unstyled {
-        flex: 1;
+    .grid-style-cell-body.unstyled {
         background-color: transparent;
         color: #000000;
         font-size: 17px;
         padding: 20px;
     }
 
-    .grid-cell-body.unstyled a {
+    .grid-style-cell-body.unstyled a {
         color: #1a4480;
     }
 
-    .grid-cell-body > *:first-child {
+    .grid-style-cell-body > *:first-child {
         margin-top: 0;
     }
 
-    .grid-cell-body > *:last-child {
+    .grid-style-cell-body > *:last-child {
         margin-bottom: 0;
     }
 
     @media (max-width: 768px) {
-        .grid-layout {
+        .grid-style-layout {
             grid-template-columns: 1fr !important;
         }
 
-        .grid-cell.styled {
+        .grid-style-cell.styled {
             border-right: none;
         }
 
-        .grid-cell-header {
+        .grid-style-cell-header {
             font-size: 20px;
         }
 
-        .grid-cell-body {
+        .grid-style-cell-body {
             font-size: 14px;
         }
     }
 </style>
 
-<div class="grid-container width-{{ block.value.width }}">
-    <div class="grid-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);" role="region" aria-label="Grid layout">
+<div class="grid-style-container width-{{ block.value.width }}">
+    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);" role="region" aria-label="Grid layout">
         {% for cell in block.value.cells %}
-            <div class="grid-cell {{ block.value.gridStyle }}">
+            <div class="grid-style-cell {{ block.value.gridStyle }}">
                 {% if cell.header %}
-                    <h3 class="grid-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header }}</h3>
+                    <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header }}</h3>
                 {% endif %}
 
                 {% if cell.caption %}
-                    <p class="grid-cell-caption {{ block.value.gridStyle }}" tabindex="0">{{ cell.caption }}</p>
+                    <p class="grid-style-cell-caption {{ block.value.gridStyle }}" tabindex="0">{{ cell.caption }}</p>
                 {% endif %}
 
-                <div class="grid-cell-body {{ block.value.gridStyle }}" tabindex="0">
+                <div class="grid-style-cell-body {{ block.value.gridStyle }}" tabindex="0">
                     {% for body_block in cell.body %}
                         {% if body_block.block_type == 'prose' %}
                             {{ body_block.value|richtext }}
