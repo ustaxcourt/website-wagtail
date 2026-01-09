@@ -19,6 +19,7 @@
 
     .grid-container.width-full {
         max-width: 100%;
+        padding: 0px;
     }
 
     .grid-layout {
@@ -140,7 +141,7 @@
 <div class="grid-container width-{{ block.value.width }}">
     <div class="grid-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);">
         {% for cell in block.value.cells %}
-            <div class="grid-cell {{ block.value.gridStyle }}">
+            <div class="grid-cell {{ block.value.gridStyle }}" tabindex="0">
                 {% if cell.header %}
                     <h3 class="grid-cell-header {{ block.value.gridStyle }}">{{ cell.header }}</h3>
                 {% endif %}
