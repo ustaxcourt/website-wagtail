@@ -33,6 +33,12 @@ class ButtonBlock(blocks.StructBlock):
         required=False, help_text="Enable hover effect on button", default=True
     )
 
+    # TODO: Alter the below method if we need to replace the text in the pink error box when no URL elements have been added
+    # or delete this method if we do not need to do this replacement
+    def clean(self, value):
+        result = super().clean(value)
+        return result
+
     class Meta:
         icon = "placeholder"
         label = "Button"

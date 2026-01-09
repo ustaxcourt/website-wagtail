@@ -145,6 +145,13 @@ def global_admin_js():
     )
 
 
+@hooks.register("insert_editor_js")
+def editor_js():
+    return format_html(
+        '<script src="{}"></script>', static("home/js/button_url_admin.js")
+    )
+
+
 @hooks.register("after_edit_snippet")
 def purge_cache_for_snippet_related_pages(request, instance):
     """
