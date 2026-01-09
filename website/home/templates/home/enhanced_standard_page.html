@@ -35,7 +35,7 @@
 
         .enhanced-page.grid-container > hr {
             margin-top: 17px;
-            margin-bottom: 17px;
+            margin-bottom: 34px;
         }
         {% comment %} .enhanced-page.grid-container .question-answer-block{
             margin-bottom: 0px;
@@ -55,8 +55,9 @@
         .enhanced-page.enhanced-page.grid-container > h5,
         .enhanced-page.enhanced-page.grid-container > h6,
         .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
-        .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ p)),
-        .enhanced-page.enhanced-page.grid-container > ul:has(+ p),
+        .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr,p:empty) ~ p)),
+        Extra p tag that is empty, makes this rule weird since I am not displaying empty p tags
+        {% comment %} .enhanced-page.enhanced-page.grid-container > ul:has(+ p), {% endcomment %}
         .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
         .enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
         enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
