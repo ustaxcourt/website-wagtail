@@ -10,15 +10,18 @@
             overflow-x: auto;
         }
 
-        .enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6) {
+        .enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block) {
             margin-bottom: 34px;
         }
 
         .enhanced-page.grid-container .accordian-block:has(~ .accordian-block) {
             margin-bottom: 18px;
         }
+        .page-title,p,ul {
+            margin-top: 0px;
+        }
 
-        .enhanced-page.grid-container > h1,h2,h3,h4,h5,h6 {
+        .enhanced-page.grid-container > h1,h2,h3:not(.question-answer-block > h3),h4,h5,h6  {
             margin-top: 0px;
             margin-bottom: 0px;
         }
@@ -34,16 +37,12 @@
             margin-top: 17px;
             margin-bottom: 17px;
         }
-
-        .enhanced-page.grid-container .question-answer-block>h3{
-            margin-bottom: 15px;
-        }
-        .enhanced-page.grid-container .question-answer-block{
+        {% comment %} .enhanced-page.grid-container .question-answer-block{
             margin-bottom: 0px;
         }
         .enhanced-page.grid-container .question-answer-block+div>p{
             margin-top: 0px;
-        }
+        } {% endcomment %}
 
         .heading-wrapper + p, h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
             margin-top: 0px;
@@ -55,12 +54,12 @@
         .enhanced-page.enhanced-page.grid-container > h4,
         .enhanced-page.enhanced-page.grid-container > h5,
         .enhanced-page.enhanced-page.grid-container > h6,
-        .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6) ~ ul)),
-        .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6) ~ p)),
+        .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
+        .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ p)),
         .enhanced-page.enhanced-page.grid-container > ul:has(+ p),
         .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
-        .enhanced-page.enhanced-page.grid-container > p:has(+ p),
-        enhanced-page.enhanced-page.grid-container > ul:has(+ p),
+        .enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
+        enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
         .enhanced-page.enhanced-page.grid-container > .page-title:has(+ p) {
             margin-bottom: 15px;
         }
@@ -513,8 +512,8 @@
                     </{{ block.value.level }}>
                 </div>
             {% elif block.block_type == 'paragraph' %}
-                {% comment %} <p data-testid="page-body-paragraph">{{ block.value }}</p> {% endcomment %}
-                {{block.value|richtext}}
+                <p data-testid="page-body-paragraph">{{ block.value }}</p>
+                {% comment %} {{block.value|richtext}} {% endcomment %}
             {% elif block.block_type == 'snippet' %}
                 {{ block.value.text |safe }}
             {% elif block.block_type == 'image' %}
