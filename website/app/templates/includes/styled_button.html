@@ -29,22 +29,20 @@
 
 </style>
 
-<body>
-  {% for link_item in block.value.url %}
-  <a class="usa-button styled-button {%if not block.value.button_hover%}no-hover{% endif %}" type="button"
-          data-is-link="true"
-    {% if link_item.block_type == 'external_url' %}
-       href="{{ link_item.value }}"
-    {% elif link_item.block_type == 'internal_page' %}
-       href="{% pageurl link_item.value %}"
-    {% elif link_item.block_type == 'internal_pdf' %}
-       href="{{ link_item.value.url }}"
-    {% endif %}
-  {% endfor %}>
+{% for link_item in block.value.url %}
+<a class="usa-button styled-button {% if not block.value.button_hover %}no-hover{% endif %}"
+   data-is-link="true"
+   {% if link_item.block_type == 'external_url' %}
+      href="{{ link_item.value }}"
+   {% elif link_item.block_type == 'internal_page' %}
+      href="{% pageurl link_item.value %}"
+   {% elif link_item.block_type == 'internal_pdf' %}
+      href="{{ link_item.value.url }}"
+   {% endif %}>
 
-    {% if block.value.icon and block.value.icon.url %}
-      <img title="{{block.value.icon.filename|clean_filename}}" class="button-icon" src="{{ block.value.icon.url }}" >
-    {% endif %}
-    {{ block.value.text }}
-  </a>
-</body>
+  {% if block.value.icon and block.value.icon.url %}
+    <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+  {% endif %}
+  {{ block.value.text }}
+</a>
+{% endfor %}
