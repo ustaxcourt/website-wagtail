@@ -49,7 +49,7 @@ class NewsItem(
     BANNER_CHOICES = [
         ("news", "News Item"),
         ("high", "High priority Announcement"),
-        ("critical", "Critical Anouncement"),
+        ("critical", "Critical Announcement"),
     ]
 
     category = models.CharField(max_length=20, choices=BANNER_CHOICES, default="news")
