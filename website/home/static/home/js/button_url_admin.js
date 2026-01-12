@@ -1,3 +1,45 @@
+// Override Wagtail's default error message for max_num validation on ButtonBlock URL fields
+(function() {
+  // Use MutationObserver to catch error messages as they're added to the DOM
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      mutation.addedNodes.forEach(function(node) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          // Look for error messages within ButtonBlock URL fields
+          const errorMessages = node.querySelectorAll ? node.querySelectorAll('.help-block.help-critical, .error-message') : [];
+          errorMessages.forEach(function(errorEl) {
+            if (errorEl.textContent.includes('The maximum number of items is 1')) {
+              // Check if this error is within a ButtonBlock URL field
+              const urlContainer = errorEl.closest('[data-contentpath="url"]');
+              if (urlContainer) {
+                errorEl.textContent = 'Please select only one URL type for this button.';
+              }
+            }
+          });
+
+          // Also check if the node itself is an error message
+          if (node.classList && (node.classList.contains('help-block') || node.classList.contains('error-message'))) {
+            if (node.textContent.includes('The maximum number of items is 1')) {
+              const urlContainer = node.closest('[data-contentpath="url"]');
+              if (urlContainer) {
+                node.textContent = 'Please select only one URL type for this button.';
+              }
+            }
+          }
+        }
+      });
+    });
+  });
+
+  // Start observing once DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  });
+})();
+
 // Fallback for DOMContentLoaded in case wagtail:load doesn't fire
 document.addEventListener("DOMContentLoaded", function() {
   function hideAddButtonIfNeeded() {
