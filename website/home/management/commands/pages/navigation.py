@@ -29,7 +29,7 @@ class NavigationInitializer(PageInitializer):
             (
                 "section",
                 {
-                    "title": "ABOUT THE COURT",
+                    "title": "COURT INFORMATION",
                     "sub_links": [
                         {
                             "title": "Mission",
@@ -137,7 +137,7 @@ class NavigationInitializer(PageInitializer):
             (
                 "section",
                 {
-                    "title": "EFILING & CASE MAINTENANCE",
+                    "title": "TRIALS & CASE MANAGEMENT",
                     "sub_links": [
                         {
                             "title": "Search (Case, Order, Opinion, Practitioner)",
