@@ -414,7 +414,24 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% for block in page.body %}
+        {# Determine rendering style based on card_tiles and selection #}
+        {% comment %}
+        Style A: If card_tiles exists AND a card is selected (?card=X), render ONLY card_tiles
+        Hybrid: If card_tiles exists BUT no card selected, render card_tiles AND traditional blocks
+        Style B: If NO card_tiles exist, render all blocks traditionally
+        {% endcomment %}
+
+        {# Check if a card tile is selected via query parameter #}
+        {% if request.GET.card and page.body|has_card_tiles %}
+            {# Style A: Card is selected - Render ONLY card_tiles block #}
+            {% for block in page.body %}
+                {% if block.block_type == 'card_tiles' %}
+                    {% include "includes/card_tiles.html" with block=block %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {# Hybrid/Style B: No card selected OR no card_tiles - Render traditional blocks #}
+            {% for block in page.body %}
             {% if block.block_type == 'h2' %}
                 <h2>{{ block.value }}</h2>
             {% elif block.block_type == 'h3' %}
@@ -574,7 +591,10 @@
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}
             {% endif %}
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
+        {# End of conditional rendering logic #}
+
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
