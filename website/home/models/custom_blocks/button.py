@@ -17,7 +17,7 @@ class ButtonBlock(blocks.StructBlock):
         ],
         max_num=1,
         min_num=1,
-        help_text="Choose either an internal page or external URL",
+        help_text="(ﾉ◕ヮ◕)ﾉ Select exactly one: Internal Page, External URL, or PDF.",
         label="URL",
     )
 
