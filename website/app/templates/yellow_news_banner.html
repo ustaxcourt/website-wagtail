@@ -127,6 +127,12 @@
     <div id="yellow-news-banner-container"></div>
     <script type="text/javascript">
         (function() {
+            // Timezone offset from Django settings (in milliseconds)
+            // This offset is applied to banner start/end dates to account for server timezone handling.
+            // TODO: Consider refactoring to use proper UTC storage and timezone-aware serialization from Django
+            // See: https://docs.djangoproject.com/en/5.2/topics/i18n/timezones/
+            const TIMEZONE_OFFSET_MS = {{ timezone_offset_ms|default:"0" }};
+
             // Parse the news data from the JSON script tag
             const newsDataElement = document.getElementById('yellow-news-data');
             if (!newsDataElement) return;
@@ -149,10 +155,10 @@
                     return true;
                 }
 
-                // Parse ISO dates - these will be converted to user's local timezone automatically
-                // add 1 hour (3600000 ms) to account for server timezone difference
-                const startDate = item.banner_start_date ? new Date(new Date(item.banner_start_date).getTime() + 3600000) : null;
-                const endDate = item.banner_end_date ? new Date(new Date(item.banner_end_date).getTime() + 3600000) : null;
+                // Parse ISO dates and apply timezone offset
+                // Dates from the server are serialized; this offset adjusts for server timezone handling
+                const startDate = item.banner_start_date ? new Date(new Date(item.banner_start_date).getTime() + TIMEZONE_OFFSET_MS) : null;
+                const endDate = item.banner_end_date ? new Date(new Date(item.banner_end_date).getTime() + TIMEZONE_OFFSET_MS) : null;
 
                 // Check if current time is within the date range
                 const afterStart = !startDate || now >= startDate;

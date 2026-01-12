@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0085_alter_enhancedstandardpage_body"),
+        ("home", "0084_alter_newsitem_description"),
         ("wagtailcore", "0094_alter_page_locale"),
         ("wagtaildocs", "0014_alter_document_file_size"),
     ]
@@ -39,6 +39,10 @@ class Migration(migrations.Migration):
                 max_length=20,
             ),
         ),
+        # NOTE: The following AlterField for enhancedstandardpage.body includes schema changes
+        # that should have been part of the callout story (already merged). These changes are
+        # included here to correct the omission and ensure the schema is consistent across
+        # environments. This is not a mistake—it's a backfill of missing schema changes.
         migrations.AlterField(
             model_name="enhancedstandardpage",
             name="body",

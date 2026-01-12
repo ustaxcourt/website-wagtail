@@ -7,6 +7,30 @@ def build_info(request):
     return {"build_sha": settings.GITHUB_SHA[:7]}
 
 
+def _get_timezone_offset_ms():
+    """
+    Calculate the timezone offset in milliseconds from Django's timezone settings.
+    This is used to adjust banner dates on the client side.
+
+    Returns: Offset in milliseconds (e.g., 3600000 for UTC+1)
+    """
+    import pytz
+    from django.utils import timezone
+
+    # Get the configured timezone
+    tz_name = settings.TIME_ZONE
+    tz = pytz.timezone(tz_name)
+
+    # Create a timezone-aware datetime and get its UTC offset
+    now = timezone.now()
+    offset = now.astimezone(tz).utcoffset()
+
+    # Convert timedelta to milliseconds
+    if offset:
+        return int(offset.total_seconds() * 1000)
+    return 0
+
+
 def yellow_priority_news(request):
     """
     Context processor to provide yellow priority banners for display.
@@ -43,6 +67,7 @@ def yellow_priority_news(request):
     return {
         "yellow_priority_news_json": json.dumps(banners_data),
         "has_yellow_news": len(banners_data) > 0,
+        "timezone_offset_ms": _get_timezone_offset_ms(),
     }
 
 
@@ -82,4 +107,5 @@ def critical_priority_news(request):
     return {
         "critical_priority_news_json": json.dumps(banners_data),
         "has_critical_news": len(banners_data) > 0,
+        "timezone_offset_ms": _get_timezone_offset_ms(),
     }
