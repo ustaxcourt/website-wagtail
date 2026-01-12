@@ -110,6 +110,185 @@ class CardTileBlock(blocks.StructBlock):
         icon = "doc-full"
 
 
+# Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
+_BASE_BLOCK_TYPES = [
+    (
+        "heading",
+        blocks.StructBlock(
+            [
+                ("text", blocks.CharBlock()),
+                (
+                    "level",
+                    blocks.ChoiceBlock(
+                        choices=[
+                            ("h2", "Heading 2"),
+                            ("h3", "Heading 3"),
+                            ("h4", "Heading 4"),
+                            ("h5", "Heading 5"),
+                        ]
+                    ),
+                ),
+                (
+                    "id",
+                    blocks.CharBlock(
+                        required=False,
+                        help_text="Optional ID for linking to this heading",
+                    ),
+                ),
+            ]
+        ),
+    ),
+    ("h2", blocks.CharBlock(label="Heading 2")),
+    ("h3", blocks.CharBlock(label="Heading 3")),
+    ("h4", blocks.CharBlock(label="Heading 4")),
+    ("paragraph", blocks.RichTextBlock()),
+    ("snippet", SnippetChooserBlock("home.CommonText")),
+    ("button", ButtonBlock()),
+    (
+        "hr",
+        blocks.BooleanBlock(
+            label="Horizontal Rule",
+            default=True,
+            help_text="Add 'Horizontal Rule'.",
+        ),
+    ),
+    (
+        "iframe",
+        blocks.StructBlock(
+            [
+                ("src", blocks.URLBlock(required=True)),
+                ("width", blocks.CharBlock(required=True)),
+                ("height", blocks.CharBlock(required=True)),
+                ("class", blocks.CharBlock(required=False)),
+                ("loading", blocks.CharBlock(required=False)),
+                ("data_delay", blocks.CharBlock(required=False)),
+                ("name", blocks.CharBlock(required=False)),
+                ("title", blocks.CharBlock(required=False)),
+            ]
+        ),
+    ),
+    (
+        "alert",
+        blocks.StructBlock(
+            [
+                (
+                    "alert_type",
+                    blocks.ChoiceBlock(
+                        choices=[
+                            ("info", "Info"),
+                            ("success", "Success"),
+                        ],
+                        default="info",
+                    ),
+                ),
+                ("content", blocks.RichTextBlock()),
+            ],
+        ),
+    ),
+    ("image", ImageBlock()),
+    ("photo_dedication", PhotoDedicationBlock()),
+    (
+        "table",
+        TypedTableBlock(
+            table_value_types,
+        ),
+    ),
+    (
+        "unstyled_table",
+        TypedTableBlock(table_value_types),
+    ),
+    ("list", create_nested_list_block(max_depth=4)),
+    (
+        "links",
+        blocks.StructBlock(
+            [
+                (
+                    "class",
+                    blocks.ChoiceBlock(
+                        choices=[
+                            ("indented", IndentStyle.INDENTED),
+                            ("unindented", IndentStyle.UNINDENTED),
+                        ],
+                        default=IndentStyle.INDENTED,
+                        label="List style",
+                    ),
+                ),
+                (
+                    "links",
+                    blocks.ListBlock(link_obj.child_block, label="Add Entry"),
+                ),
+            ],
+            label="List of Links",
+        ),
+    ),
+    (
+        "questionanswers",
+        blocks.ListBlock(
+            blocks.StructBlock(
+                [
+                    ("question", blocks.CharBlock(required=False)),
+                    ("answer", blocks.RichTextBlock()),
+                    ("anchortag", blocks.CharBlock()),
+                ]
+            ),
+            label="Question and Answer",
+            help_text="Add a question and answer with anchor tag for linking",
+        ),
+    ),
+    ("columns", ColumnBlock()),
+    (
+        "embedded_video",
+        blocks.StructBlock(
+            [
+                ("title", blocks.CharBlock(required=False)),
+                ("description", blocks.RichTextBlock(required=False)),
+                ("video_url", blocks.URLBlock(required=False)),
+            ]
+        ),
+    ),
+    (
+        "card",
+        blocks.ListBlock(
+            blocks.StructBlock(
+                [
+                    (
+                        "icon",
+                        blocks.ChoiceBlock(
+                            choices=[
+                                (
+                                    icon.value,
+                                    icon.name.replace("_", " ").title(),
+                                )
+                                for icon in IconCategories
+                            ],
+                            required=True,
+                        ),
+                    ),
+                    ("title", blocks.CharBlock(required=True)),
+                    ("description", blocks.RichTextBlock(required=True)),
+                    (
+                        "color",
+                        blocks.ChoiceBlock(
+                            choices=[
+                                ("green", "Green"),
+                                ("yellow", "Yellow"),
+                            ],
+                            required=True,
+                        ),
+                    ),
+                ],
+                label="Card",
+            ),
+            label="Card Set",
+        ),
+    ),
+    (
+        "accordian",
+        AccordianBlock(),
+    ),
+]
+
+
 class CardTilesBlock(blocks.StructBlock):
     """
     Card Tiles container - displays up to 4 card tiles in a responsive grid.
@@ -125,10 +304,26 @@ class CardTilesBlock(blocks.StructBlock):
         help_text="Add up to 4 card tiles. They will display responsively based on screen size.",
     )
 
+    default_content = blocks.StreamBlock(
+        _BASE_BLOCK_TYPES,
+        required=False,
+        help_text="Default content to display when no card is selected",
+    )
+
     class Meta:
         label = "Card Tiles"
         icon = "grip"
         template = "includes/card_tiles.html"
+
+
+# ENHANCED_STANDARD_PAGE_CONTENT includes all base blocks plus card_tiles
+ENHANCED_STANDARD_PAGE_CONTENT = StreamField(
+    _BASE_BLOCK_TYPES + [("card_tiles", CardTilesBlock())],
+    block_counts={
+        "card_tiles": {"min_num": 0, "max_num": 1},
+    },
+    blank=True,
+)
 
 
 class EnhancedStandardPage(ModerationMixin, Page):
@@ -152,186 +347,7 @@ class EnhancedStandardPage(ModerationMixin, Page):
     )
 
     body = StreamField(
-        [
-            (
-                "heading",
-                blocks.StructBlock(
-                    [
-                        ("text", blocks.CharBlock()),
-                        (
-                            "level",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("h2", "Heading 2"),
-                                    ("h3", "Heading 3"),
-                                    ("h4", "Heading 4"),
-                                    ("h5", "Heading 5"),
-                                ]
-                            ),
-                        ),
-                        (
-                            "id",
-                            blocks.CharBlock(
-                                required=False,
-                                help_text="Optional ID for linking to this heading",
-                            ),
-                        ),
-                    ]
-                ),
-            ),
-            ("h2", blocks.CharBlock(label="Heading 2")),
-            ("h3", blocks.CharBlock(label="Heading 3")),
-            ("h4", blocks.CharBlock(label="Heading 4")),
-            ("paragraph", blocks.RichTextBlock()),
-            ("snippet", SnippetChooserBlock("home.CommonText")),
-            ("button", ButtonBlock()),
-            (
-                "hr",
-                blocks.BooleanBlock(
-                    label="Horizontal Rule",
-                    default=True,
-                    help_text="Add 'Horizontal Rule'.",
-                ),
-            ),
-            (
-                "iframe",
-                blocks.StructBlock(
-                    [
-                        ("src", blocks.URLBlock(required=True)),
-                        ("width", blocks.CharBlock(required=True)),
-                        ("height", blocks.CharBlock(required=True)),
-                        ("class", blocks.CharBlock(required=False)),
-                        ("loading", blocks.CharBlock(required=False)),
-                        ("data_delay", blocks.CharBlock(required=False)),
-                        ("name", blocks.CharBlock(required=False)),
-                        ("title", blocks.CharBlock(required=False)),
-                    ]
-                ),
-            ),
-            (
-                "alert",
-                blocks.StructBlock(
-                    [
-                        (
-                            "alert_type",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("info", "Info"),
-                                    ("success", "Success"),
-                                ],
-                                default="info",
-                            ),
-                        ),
-                        ("content", blocks.RichTextBlock()),
-                    ],
-                ),
-            ),
-            ("image", ImageBlock()),
-            ("photo_dedication", PhotoDedicationBlock()),
-            (
-                "table",
-                TypedTableBlock(
-                    table_value_types,
-                ),
-            ),
-            (
-                "unstyled_table",
-                TypedTableBlock(table_value_types),
-            ),
-            ("list", create_nested_list_block(max_depth=4)),
-            (
-                "links",
-                blocks.StructBlock(
-                    [
-                        (
-                            "class",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("indented", IndentStyle.INDENTED),
-                                    ("unindented", IndentStyle.UNINDENTED),
-                                ],
-                                default=IndentStyle.INDENTED,
-                                label="List style",
-                            ),
-                        ),
-                        (
-                            "links",
-                            blocks.ListBlock(link_obj.child_block, label="Add Entry"),
-                        ),
-                    ],
-                    label="List of Links",
-                ),
-            ),
-            (
-                "questionanswers",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("question", blocks.CharBlock(required=False)),
-                            ("answer", blocks.RichTextBlock()),
-                            ("anchortag", blocks.CharBlock()),
-                        ]
-                    ),
-                    label="Question and Answer",
-                    help_text="Add a question and answer with anchor tag for linking",
-                ),
-            ),
-            ("columns", ColumnBlock()),
-            (
-                "embedded_video",
-                blocks.StructBlock(
-                    [
-                        ("title", blocks.CharBlock(required=False)),
-                        ("description", blocks.RichTextBlock(required=False)),
-                        ("video_url", blocks.URLBlock(required=False)),
-                    ]
-                ),
-            ),
-            (
-                "card",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            (
-                                "icon",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        (
-                                            icon.value,
-                                            icon.name.replace("_", " ").title(),
-                                        )
-                                        for icon in IconCategories
-                                    ],
-                                    required=True,
-                                ),
-                            ),
-                            ("title", blocks.CharBlock(required=True)),
-                            ("description", blocks.RichTextBlock(required=True)),
-                            (
-                                "color",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        ("green", "Green"),
-                                        ("yellow", "Yellow"),
-                                    ],
-                                    required=True,
-                                ),
-                            ),
-                        ],
-                        label="Card",
-                    ),
-                    label="Card Set",
-                ),
-            ),
-            (
-                "accordian",
-                AccordianBlock(),
-            ),
-            (
-                "card_tiles",
-                CardTilesBlock(),
-            ),
-        ],
+        _BASE_BLOCK_TYPES + [("card_tiles", CardTilesBlock())],
         block_counts={
             "card_tiles": {"min_num": 0, "max_num": 1},
         },

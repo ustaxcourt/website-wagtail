@@ -305,6 +305,94 @@
     </div>
 {% endfor %}
 
+{# Default content - shown when no card is selected #}
+<div class="card-tiles__default-content" id="card-tiles-default-content">
+    {% for content_block in block.value.default_content %}
+        {% if content_block.block_type == 'h2' %}
+            <h2>{{ content_block.value }}</h2>
+        {% elif content_block.block_type == 'h3' %}
+            <h3>{{ content_block.value }}</h3>
+        {% elif content_block.block_type == 'h4' %}
+            <h4>{{ content_block.value }}</h4>
+        {% elif content_block.block_type == 'heading' %}
+            <div class="heading-wrapper">
+                <{{ content_block.value.level }}
+                {% if content_block.value.id %}id="{{ content_block.value.id }}"{% endif %}
+                >
+                {% if content_block.value.id %}
+                    <a href="#{{ content_block.value.id }}" title="{{ content_block.value.text }}">
+                        <div class="fa-solid fa-bookmark bookmark" id="{{ content_block.value.id }}"></div>
+                    </a>
+                {% endif %}
+                {{ content_block.value.text }}
+                </{{ content_block.value.level }}>
+            </div>
+        {% elif content_block.block_type == 'paragraph' %}
+            <p>{{ content_block.value }}</p>
+        {% elif content_block.block_type == 'snippet' %}
+            {{ content_block.value.text |safe }}
+        {% elif content_block.block_type == 'image' %}
+            {% include "blocks/image_block.html" with block=content_block %}
+        {% elif content_block.block_type == 'hr' %}
+            <hr />
+        {% elif content_block.block_type == 'alert' %}
+            <div class="alert {{ content_block.value.alert_type }}">{{ content_block.value.content | richtext }}</div>
+        {% elif content_block.block_type == 'iframe' %}
+            <iframe src="{{ content_block.value.src }}"
+                    width="{{ content_block.value.width }}"
+                    height="{{ content_block.value.height }}"
+                    {% if content_block.value.class %}class="{{ content_block.value.class }}"{% endif %}
+                    {% if content_block.value.loading %}loading="{{ content_block.value.loading }}"{% endif %}
+                    {% if content_block.value.data_delay %}data-delay="{{ content_block.value.data_delay }}"{% endif %}
+                    {% if content_block.value.name %}name="{{ content_block.value.name }}"{% endif %}
+                    {% if content_block.value.title %}title="{{ content_block.value.title }}"{% endif %}></iframe>
+        {% elif content_block.block_type == 'table' %}
+            {% include "home/styled_table.html" with block=content_block %}
+        {% elif content_block.block_type == 'unstyled_table' %}
+            {% include "home/unstyled_table.html" with block=content_block %}
+        {% elif content_block.block_type == 'links' %}
+            {% include "home/links_block.html" with block=content_block %}
+        {% elif content_block.block_type == 'list' %}
+            {% include "home/list_block.html" with block=content_block %}
+        {% elif content_block.block_type == 'button' %}
+            {% include "home/button_block.html" with block=content_block %}
+        {% elif content_block.block_type == 'accordian' %}
+            {% include "accordian_block.html" with block=content_block block_index=forloop.counter0 suffix="-default-content" %}
+        {% elif content_block.block_type == 'embedded_video' %}
+            <hr />
+            <div id="video-container">
+                <h2>{{ content_block.value.title }}</h2>
+                <div class="video-desc-block">
+                    <div class="video-wrapper">
+                        <iframe title="{{ content_block.value.title }}"
+                                src="{{ content_block.value.video_url }}"
+                                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen></iframe>
+                    </div>
+                    <div class="description-block">
+                        <p>{{ content_block.value.description }}</p>
+                    </div>
+                </div>
+            </div>
+        {% elif content_block.block_type == 'columns' %}
+            {% include "home/columns_block.html" with block=content_block %}
+        {% elif content_block.block_type == 'card' %}
+            <div class="info-cards">
+                {% for card in content_block.value %}
+                    <div class="info-card {{ card.color }}">
+                        <div class="card-header">
+                            <i class="{{ card.icon }}" aria-hidden="true"></i>
+                            <div class="title">{{ card.title }}</div>
+                        </div>
+                        <div class="description">{{ card.description|richtext }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
@@ -336,6 +424,7 @@
             const selectedTile = document.getElementById('card-tile-' + cardIndex);
             const selected_icon = document.getElementById('card-tile-icon-' + cardIndex);
             const selected_header = document.getElementById('card-tile-header-' + cardIndex);
+            const defaultContent = document.getElementById('card-tiles-default-content');
 
             if (selectedTile) {
                 // Clear any previously selected cards
@@ -349,6 +438,11 @@
                     if (header) header.classList.remove('selected');
                     if (body) body.style.display = 'none';
                 });
+
+                // Hide default content when a card is selected
+                if (defaultContent) {
+                    defaultContent.style.display = 'none';
+                }
 
                 // Select the new card
                 selectedTile.classList.add('selected');
@@ -427,6 +521,7 @@
         window.addEventListener('popstate', function(event) {
             const urlParams = new URLSearchParams(window.location.search);
             const cardParam = urlParams.get('card');
+            const defaultContent = document.getElementById('card-tiles-default-content');
 
             if (cardParam !== null) {
                 selectCard(cardParam);
@@ -442,6 +537,11 @@
                     if (header) header.classList.remove('selected');
                     if (body) body.style.display = 'none';
                 });
+
+                // Show default content when no card is selected
+                if (defaultContent) {
+                    defaultContent.style.display = 'block';
+                }
 
                 // Clear breadcrumb
                 const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
