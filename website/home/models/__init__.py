@@ -9,6 +9,7 @@ from home.models.settings import (
     Header,
     Footer,
     GoogleAnalyticsSettings,
+    GoogleTagManagerSettings,
 )
 from home.models.config import IconCategories
 from home.models.snippets.news_item import NewsItem
