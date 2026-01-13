@@ -19,6 +19,7 @@ from home.models.custom_blocks.common import custom_promote_panels
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
+from home.blocks import QuickAccessTilesBlock
 
 
 table_value_types = [
@@ -271,6 +272,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
             (
                 "callout",
                 StyledCalloutBlock(),
+            ),
+            (
+                "quick_access_tiles",
+                QuickAccessTilesBlock(),
             ),
         ],
         blank=True,

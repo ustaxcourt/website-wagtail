@@ -1,0 +1,199 @@
+
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load custom_tags %}
+
+<style>
+  .quick-access-tile-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .quick-access-tile-link:hover {
+    text-decoration: none;
+  }
+
+  .quick-access-tile-link:hover h2,
+  .quick-access-tile-link:hover p {
+    text-decoration: none;
+  }
+
+  .quick-access-tile-link.hover-enabled:hover h2,
+  .quick-access-tile-link.hover-enabled:hover p {
+    text-decoration: underline;
+  }
+
+  .quick-access-tile {
+    background: #fff;
+    border: 1px solid #A9AEB1;
+    border-radius: 5px;
+    padding: 23px 20px 34px;
+    position: relative;
+    transition: box-shadow 0.2s;
+    height: 100%;
+    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.1);
+  }
+
+  .quick-access-tile.hover-enabled:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Desktop-Top / Mobile-Left: Icon at top in desktop */
+  .quick-access-tile.icon-desktop_top_mobile_left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
+    order: 1;
+    margin: 0 0 12px 0;
+  }
+
+  .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+    order: 2;
+  }
+
+  /* Desktop-Bottom / Mobile-Right: Icon at bottom in desktop */
+  .quick-access-tile.icon-desktop_bottom_mobile_right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quick-access-tile.icon-desktop_bottom_mobile_right .tile-icon {
+    order: 2;
+    margin: 12px 0 0 0;
+  }
+
+  .quick-access-tile.icon-desktop_bottom_mobile_right .tile-content {
+    order: 1;
+  }
+
+  .tile-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tile-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .tile-content {
+    width: 100%;
+  }
+
+  .quick-access-tile h2 {
+    color: #162E51;
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .quick-access-tile p {
+    color: #162E51;
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+
+  /* Content alignment options */
+  .quick-access-tile.align-center {
+    text-align: center;
+  }
+
+  .quick-access-tile.align-center .tile-icon {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .quick-access-tile.align-left {
+    text-align: left;
+  }
+
+  .quick-access-tile.align-left .tile-icon {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .quick-access-tile.align-right {
+    text-align: right;
+  }
+
+  .quick-access-tile.align-right .tile-icon {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  /* Tablet: ≤992px */
+  @media (max-width: 992px) {
+    .quick-access-tile {
+      padding: 20px 25px;
+      display: grid !important;
+      align-items: start;
+      gap: 16px;
+      text-align: left !important;
+    }
+
+    /* Desktop-Top becomes Mobile-Left */
+    .quick-access-tile.icon-desktop_top_mobile_left {
+      grid-template-columns: 40px 1fr;
+    }
+
+    .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
+      margin: 0;
+      grid-column: 1;
+    }
+
+    .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+      grid-column: 2;
+    }
+
+    /* Desktop-Bottom becomes Mobile-Right */
+    .quick-access-tile.icon-desktop_bottom_mobile_right {
+      grid-template-columns: auto auto;
+      gap: 0;
+      justify-content: start;
+    }
+
+    .quick-access-tile.icon-desktop_bottom_mobile_right .tile-icon {
+      margin: 0 0 0 16px;
+      grid-column: 2;
+    }
+
+    .quick-access-tile.icon-desktop_bottom_mobile_right .tile-content {
+      grid-column: 1;
+    }
+
+    .quick-access-tile h2,
+    .quick-access-tile p {
+      text-align: left !important;
+    }
+  }
+
+  /* Mobile: ≤768px */
+  @media (max-width: 768px) {
+    .quick-access-tile {
+      padding: 16px;
+    }
+  }
+</style>
+
+<a href="{{ block.value.related_page.url|default:block.value.external_url }}"
+   class="quick-access-tile-link {% if block.value.tile_hover_enabled %}hover-enabled{% endif %}"
+   aria-label="{{ block.value.title }}">
+  <div class="quick-access-tile {% if block.value.tile_hover_enabled %}hover-enabled{% endif %} icon-{{ block.value.icon_position }} align-{{ block.value.content_alignment }}">
+    {% if block.value.icon %}
+      <div class="tile-icon">
+        {% include_svg block.value.icon.svg_file %}
+      </div>
+    {% endif %}
+    <div class="tile-content">
+      <h2>{{ block.value.title }}</h2>
+      <p>{{ block.value.description|richtext }}</p>
+    </div>
+  </div>
+</a>

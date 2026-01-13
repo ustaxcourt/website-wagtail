@@ -1,0 +1,36 @@
+{% load wagtailcore_tags %}
+
+<style>
+  .quick-access-tiles-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .quick-access-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  /* Tablet: ≤992px - 2 columns */
+  @media (max-width: 992px) {
+    .quick-access-tiles-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Mobile: ≤768px - 1 column */
+  @media (max-width: 768px) {
+    .quick-access-tiles-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="quick-access-tiles-container">
+  <div class="quick-access-tiles-grid">
+    {% for tile in block.value.tiles %}
+      {% include "quick_access_tile_block.html" with block=tile %}
+    {% endfor %}
+  </div>
+</div>

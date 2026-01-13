@@ -156,6 +156,8 @@
                 {% include "accordian_block.html" with block=block block_index=forloop.counter0 %}
             {% elif block.block_type == 'callout' %}
                 {% include "callout_block.html" with block=block %}
+            {% elif block.block_type == 'quick_access_tiles' %}
+                {% include "quick_access_tiles_block.html" with block=block %}
             {% else %}
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}
