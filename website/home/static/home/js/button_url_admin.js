@@ -40,44 +40,67 @@
   });
 })();
 
-// Fallback for DOMContentLoaded in case wagtail:load doesn't fire
-document.addEventListener("DOMContentLoaded", function() {
-  function hideAddButtonIfNeeded() {
-    //TODO: Need to verify that this code works properly if multiple buttons have been added to the page
+// Toggle add button and duplicate button visibility based on whether a URL link exists
+(function() {
+  function updateButtonVisibility() {
     document.querySelectorAll('[data-contentpath="url"]').forEach(function(container) {
       container.querySelectorAll('[data-streamfield-stream-container]').forEach(function(streamContainer) {
-        console.log(streamContainer); //TODO: Remove before submitting pull request
+        // Get all streamfield child elements (the actual link items)
+        const streamfieldChildren = streamContainer.querySelectorAll('[data-streamfield-child]');
 
-        //Check for element in streamContainer with attribute = [data-streamfield-child] and style is null (or style is not "display: none;")
-        const elementsWithoutStyle = Array.from(streamContainer.childNodes).filter(el => el.hasAttribute('data-streamfield-child') && (!el.hasAttribute('style') || el.style.display !== 'none'));
-        console.log(elementsWithoutStyle); //TODO: Remove before submitting pull request
+        // Check for visible streamfield children (not hidden/deleted)
+        const visibleChildren = Array.from(streamfieldChildren).filter(el => el.style.display !== 'none');
 
-        const elementsNotDataStreamfieldChild = Array.from(streamContainer.childNodes).filter(el => !el.hasAttribute('data-streamfield-child'));
-        //If element found, then set all divs without [data-streamfield-child] attribute in streamContainer to have style="display: none;" and aria-hidden="true"
-        if (elementsWithoutStyle.length > 0)
-        {
-          elementsNotDataStreamfieldChild.forEach((element) => {
+        // Get the add button container(s) - elements that are NOT streamfield children
+        const addButtonContainers = Array.from(streamContainer.children).filter(el =>
+          el.nodeType === Node.ELEMENT_NODE && !el.hasAttribute('data-streamfield-child')
+        );
+
+        // Get duplicate buttons within the url container
+        const duplicateButtons = container.querySelectorAll('[data-streamfield-action="DUPLICATE"]');
+
+        // If there are visible children, hide add buttons and duplicate buttons
+        if (visibleChildren.length > 0) {
+          addButtonContainers.forEach((element) => {
             element.style.display = 'none';
             element.setAttribute('aria-hidden', 'true');
           });
-        }
-        else //Else set last div without [data-streamfield-child] attribute to have style="" and remove aria-hidden attribute
-        {
-          const lastElement = elementsNotDataStreamfieldChild[elementsNotDataStreamfieldChild.length - 1];
-          lastElement.style.display = '';
-          lastElement.removeAttribute('aria-hidden');
+          duplicateButtons.forEach((element) => {
+            element.style.display = 'none';
+            element.setAttribute('aria-hidden', 'true');
+          });
+        } else {
+          // No visible children - show only the first add button, hide the rest
+          addButtonContainers.forEach((element, index) => {
+            if (index === 0) {
+              element.style.display = '';
+              element.removeAttribute('aria-hidden');
+            } else {
+              element.style.display = 'none';
+              element.setAttribute('aria-hidden', 'true');
+            }
+          });
+          // Show duplicate buttons
+          duplicateButtons.forEach((element) => {
+            element.style.display = '';
+            element.removeAttribute('aria-hidden');
+          });
         }
       })
-      console.log(container); //TODO: Remove before submitting pull request
     })
   }
 
-  // Run on load
-  hideAddButtonIfNeeded();
+  // Use MutationObserver to detect when streamfield children are added, removed, or hidden
+  const streamfieldObserver = new MutationObserver(updateButtonVisibility);
 
-  //TODO: Identify the correct event(s) to associate the action to hide the add buttons for URLs of button components.
-  //TODO: Figure out what event is fired when the trash can icon is clicked on a URL object.
-  document.body.addEventListener('click', function(e) {
-    setTimeout(hideAddButtonIfNeeded, 100); // Delay to allow DOM update
+  document.addEventListener('DOMContentLoaded', function() {
+    updateButtonVisibility();
+
+    streamfieldObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style']
+    });
   });
-});
+})();
