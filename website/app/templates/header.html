@@ -841,7 +841,6 @@
      * Called when entering mobile view (width <= 879px)
      */
     function entered_mobile_view() {
-        console.log('[Header] Entered mobile view');
         const header = document.getElementById('top-navigation');
         header.classList.remove('view-tablet', 'view-desktop');
         header.classList.add('view-mobile');
@@ -851,12 +850,10 @@
      * Called when entering tablet view (880px - 1024px)
      */
     function entered_tablet_view() {
-        console.log('[Header] Entered tablet view');
         const header = document.getElementById('top-navigation');
         header.classList.remove('view-mobile', 'view-desktop');
         header.classList.add('view-tablet');
 
-        // Close mobile menu when leaving mobile view
         closeMobileMenu();
     }
 
@@ -864,12 +861,10 @@
      * Called when entering desktop view (width > 1024px)
      */
     function entered_desktop_view() {
-        console.log('[Header] Entered desktop view');
         const header = document.getElementById('top-navigation');
         header.classList.remove('view-mobile', 'view-tablet');
         header.classList.add('view-desktop');
 
-        // Close mobile menu when leaving mobile view
         closeMobileMenu();
     }
 
@@ -878,12 +873,8 @@
      */
     function checkAndUpdateView() {
         const newView = getCurrentViewMode();
-
         if (newView !== currentView) {
-            const previousView = currentView;
             currentView = newView;
-
-            console.log(`[Header] View changed: ${previousView} -> ${newView}`);
 
             switch (newView) {
                 case 'mobile':
@@ -899,18 +890,13 @@
         }
     }
 
-    // Initialize view detection on page load
     document.addEventListener('DOMContentLoaded', function() {
         checkAndUpdateView();
     });
-
-    // Also check immediately in case DOMContentLoaded already fired
+    // check immediately in case DOMContentLoaded already fired
     if (document.readyState !== 'loading') {
         checkAndUpdateView();
     }
-
-    // Check on resize - no debounce needed, checkAndUpdateView is very lightweight
-    // and already guards against redundant work via currentView check
     window.addEventListener('resize', checkAndUpdateView);
 
     function toggleMobileMenu() {
@@ -948,7 +934,6 @@
         // Update aria-expanded attribute
         button.setAttribute('aria-expanded', !isActive);
 
-        // Toggle active state
         header.classList.toggle('active');
     }
 
@@ -957,7 +942,7 @@
 
         // Check if we're on mobile - use matchMedia to match getCurrentViewMode logic
         function isMobile() {
-            return window.matchMedia(`(max-width: ${VIEW_BREAKPOINTS.MOBILE_MAX}px)`).matches;
+            return getCurrentViewMode() === 'mobile';
         }
 
         navigationHeaders.forEach(header => {
@@ -1038,12 +1023,8 @@
                     header.classList.remove('active');
                 });
 
-                // Close mobile menu
                 closeMobileMenu();
             }
         });
-
-        // REMOVED: resize handler for closing mobile menu
-        // Now handled by entered_tablet_view() and entered_desktop_view() callbacks
     });
 </script>
