@@ -19,6 +19,7 @@ from home.models import (
     NavigationRibbon,
     NavigationMenu,
     NewsItem,
+    Banner,
 )
 
 
@@ -240,6 +241,7 @@ class Command(BaseCommand):
 
         # Define snippet models
         snippet_models = [
+            Banner,
             CommonText,
             JudgeProfile,
             JudgeCollection,
@@ -346,6 +348,7 @@ class Command(BaseCommand):
 
         # Define snippet models
         snippet_models = [
+            Banner,
             CommonText,
             JudgeProfile,
             JudgeCollection,
