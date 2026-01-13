@@ -12,7 +12,7 @@
               // Check if this error is within a ButtonBlock URL field
               const urlContainer = errorEl.closest('[data-contentpath="url"]');
               if (urlContainer) {
-                errorEl.textContent = '(つ◉益◉)つ Please select only one URL type for this button.';
+                errorEl.textContent = 'Please select only one URL type for this button.';
               }
             }
           });
@@ -22,7 +22,7 @@
             if (node.textContent.includes('The maximum number of items is 1')) {
               const urlContainer = node.closest('[data-contentpath="url"]');
               if (urlContainer) {
-                node.textContent = '(つ◉益◉)つ Please select only one URL type for this button.';
+                node.textContent = 'Please select only one URL type for this button.';
               }
             }
           }
