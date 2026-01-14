@@ -37,12 +37,6 @@
             margin-top: 17px;
             margin-bottom: 34px;
         }
-        {% comment %} .enhanced-page.grid-container .question-answer-block{
-            margin-bottom: 0px;
-        }
-        .enhanced-page.grid-container .question-answer-block+div>p{
-            margin-top: 0px;
-        } {% endcomment %}
 
         .heading-wrapper + p, h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
             margin-top: 0px;
@@ -514,7 +508,6 @@
                 </div>
             {% elif block.block_type == 'paragraph' %}
                 <p data-testid="page-body-paragraph">{{ block.value }}</p>
-                {% comment %} {{block.value|richtext}} {% endcomment %}
             {% elif block.block_type == 'snippet' %}
                 {{ block.value.text |safe }}
             {% elif block.block_type == 'image' %}
