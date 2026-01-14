@@ -182,18 +182,18 @@
   }
 </style>
 
-<a href="{{ block.value.related_page.url|default:block.value.external_url }}"
-   class="quick-access-tile-link {% if block.value.tile_hover_enabled %}hover-enabled{% endif %}"
-   aria-label="{{ block.value.title }}">
-  <div class="quick-access-tile {% if block.value.tile_hover_enabled %}hover-enabled{% endif %} icon-{{ block.value.icon_position }} align-{{ block.value.content_alignment }}">
-    {% if block.value.icon %}
+<a href="{{ value.related_page.url|default:value.external_url }}"
+   class="quick-access-tile-link {% if value.tile_hover_enabled %}hover-enabled{% endif %}"
+   aria-label="{{ value.title }}">
+  <div class="quick-access-tile {% if value.tile_hover_enabled %}hover-enabled{% endif %} icon-{{ value.icon_position }} align-{{ value.content_alignment }}">
+    {% if value.icon %}
       <div class="tile-icon">
-        {% include_svg block.value.icon.svg_file %}
+        {% include_svg value.icon.svg_file %}
       </div>
     {% endif %}
     <div class="tile-content">
-      <h2>{{ block.value.title }}</h2>
-      <p>{{ block.value.description|richtext }}</p>
+      <h2>{{ value.title }}</h2>
+      <p>{{ value.description|richtext }}</p>
     </div>
   </div>
 </a>

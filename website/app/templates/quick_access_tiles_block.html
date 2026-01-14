@@ -30,7 +30,7 @@
 <div class="quick-access-tiles-container">
   <div class="quick-access-tiles-grid">
     {% for tile in block.value.tiles %}
-      {% include "quick_access_tile_block.html" with block=tile %}
+      {% include "quick_access_tile_block.html" with value=tile %}
     {% endfor %}
   </div>
 </div>
