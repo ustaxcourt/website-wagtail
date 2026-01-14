@@ -145,7 +145,7 @@
 </style>
 
 <div class="grid-style-container width-{{ block.value.width }}">
-    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);" role="region" aria-label="Grid layout">
+    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);" role="region" aria-label="Grid layout" data-columns="{{ block.value.columns }}">
         {% for cell in block.value.cells %}
             <div class="grid-style-cell {{ block.value.gridStyle }}">
                 {% if cell.header %}
@@ -169,3 +169,50 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+(function() {
+    function adjustGridCells() {
+        document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
+            const cells = grid.querySelectorAll('.grid-style-cell');
+
+            // Reset all cells first
+            cells.forEach(function(cell) {
+                cell.style.gridColumn = '';
+            });
+
+            // Only apply spanning on larger screens
+            if (window.innerWidth > 768) {
+                const columns = parseInt(grid.getAttribute('data-columns'));
+                const totalCells = cells.length;
+                const remainder = totalCells % columns;
+
+                // If there's an incomplete last row
+                if (remainder !== 0) {
+                    const lastRowStart = totalCells - remainder;
+                    const baseSpan = Math.floor(columns / remainder);
+                    const extraCells = columns % remainder;
+
+                    // Distribute columns among cells in the last row
+                    for (let i = 0; i < remainder; i++) {
+                        const cellIndex = lastRowStart + i;
+                        // First 'extraCells' get an extra column to fill the row exactly
+                        const span = i < extraCells ? baseSpan + 1 : baseSpan;
+                        cells[cellIndex].style.gridColumn = 'span ' + span;
+                    }
+                }
+            }
+        });
+    }
+
+    // Run on load
+    adjustGridCells();
+
+    // Re-run on resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(adjustGridCells, 250);
+    });
+})();
+</script>
