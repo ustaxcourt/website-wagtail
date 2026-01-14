@@ -42,8 +42,16 @@ class SVGChooserBlock(blocks.StructBlock):
 
 
 class QuickAccessTileBlock(blocks.StructBlock):
-    title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
-    description = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
+    title = blocks.CharBlock(
+        max_length=255, required=True, help_text="Card header (H2)"
+    )
+
+    description = blocks.RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link"],
+        help_text="Optional body text",
+    )
+
     icon = SVGChooserBlock(required=True)
 
     icon_position = blocks.ChoiceBlock(
@@ -53,31 +61,40 @@ class QuickAccessTileBlock(blocks.StructBlock):
         ],
         default="desktop_top_mobile_left",
         required=True,
-        help_text="Position of icon in desktop and mobile layouts",
+        help_text="Controls icon placement across desktop vs tablet/mobile.",
     )
 
     tile_hover_enabled = blocks.BooleanBlock(
         required=False,
         default=True,
-        help_text="Enable hover effect on tile",
+        help_text="If checked, hover treatment is enabled.",
     )
 
     content_alignment = blocks.ChoiceBlock(
-        choices=[
-            ("center", "Center"),
-            ("left", "Left"),
-            ("right", "Right"),
-        ],
+        choices=[("center", "Center"), ("left", "Left"), ("right", "Right")],
         default="center",
         required=True,
-        help_text="Alignment of content within the tile",
+        help_text="Desktop text alignment (tablet/mobile will be left-aligned per design).",
     )
 
-    related_page = blocks.PageChooserBlock(
-        required=False,
-    )
-
+    related_page = blocks.PageChooserBlock(required=False)
     external_url = blocks.URLBlock(required=False, help_text="External link URL")
+
+    def clean(self, value):
+        cleaned = super().clean(value)
+        related_page = cleaned.get("related_page")
+        external_url = cleaned.get("external_url")
+
+        if not related_page and not external_url:
+            raise blocks.ValidationError(
+                "Provide either a Related page or an External URL."
+            )
+        if related_page and external_url:
+            raise blocks.ValidationError(
+                "Choose either Related page OR External URL (not both)."
+            )
+
+        return cleaned
 
     class Meta:
         label = "Quick Access Tile"
@@ -85,17 +102,10 @@ class QuickAccessTileBlock(blocks.StructBlock):
 
 
 class QuickAccessTilesBlock(blocks.StructBlock):
-    """
-    A container block for Quick Access Tiles that enables users to add,
-    remove, and reorder tiles in a responsive grid layout.
-    """
-
-    tiles = blocks.StreamBlock(
-        [
-            ("tile", QuickAccessTileBlock()),
-        ],
+    tiles = blocks.ListBlock(
+        QuickAccessTileBlock(),
         required=False,
-        help_text="Add and reorder Quick Access Tiles. Tiles will display in a responsive grid (3 columns on desktop, 2 on tablet, 1 on mobile).",
+        help_text="Add, reorder, duplicate, or remove tiles. Responsive grid: 3 desktop / 2 tablet / 1 mobile.",
     )
 
     class Meta:
