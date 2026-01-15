@@ -185,22 +185,34 @@
             if (window.innerWidth > 768) {
                 const columns = parseInt(grid.getAttribute('data-columns'));
                 const totalCells = cells.length;
-                const remainder = totalCells % columns;
 
-                // If there's an incomplete last row
-                if (remainder !== 0) {
-                    const lastRowStart = totalCells - remainder;
-                    const baseSpan = Math.floor(columns / remainder);
-                    const extraCells = columns % remainder;
+                // Adjust grid columns to match cell count if fewer cells than columns
+                const effectiveColumns = Math.min(totalCells, columns);
+                grid.style.gridTemplateColumns = `repeat(${effectiveColumns}, 1fr)`;
 
-                    // Distribute columns among cells in the last row
-                    for (let i = 0; i < remainder; i++) {
-                        const cellIndex = lastRowStart + i;
-                        // First 'extraCells' get an extra column to fill the row exactly
-                        const span = i < extraCells ? baseSpan + 1 : baseSpan;
-                        cells[cellIndex].style.gridColumn = 'span ' + span;
+                // Only handle incomplete last row when there are more cells than effective columns
+                if (totalCells > effectiveColumns) {
+                    const remainder = totalCells % effectiveColumns;
+
+                    // If there's an incomplete last row, distribute evenly
+                    if (remainder !== 0) {
+                        const lastRowStart = totalCells - remainder;
+                        const baseSpan = Math.floor(effectiveColumns / remainder);
+                        const extraCells = effectiveColumns % remainder;
+
+                        // Distribute columns among cells in the last row
+                        for (let i = 0; i < remainder; i++) {
+                            const cellIndex = lastRowStart + i;
+                            // First 'extraCells' get an extra column to fill the row exactly
+                            const span = i < extraCells ? baseSpan + 1 : baseSpan;
+                            cells[cellIndex].style.gridColumn = 'span ' + span;
+                        }
                     }
                 }
+            } else {
+                // On mobile, reset to original columns
+                const columns = parseInt(grid.getAttribute('data-columns'));
+                grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
             }
         });
     }
