@@ -102,8 +102,8 @@ class GridBlock(blocks.StructBlock):
         required=True,
         default=2,
         min_value=1,
-        max_value=5,
-        help_text="Number of columns in the grid (1-5)",
+        max_value=4,
+        help_text="Max number of columns in the grid (1-4)",
     )
     width = blocks.ChoiceBlock(
         required=True,
