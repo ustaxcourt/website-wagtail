@@ -10,6 +10,59 @@
             overflow-x: auto;
         }
 
+        .enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block) {
+            margin-bottom: 34px;
+        }
+
+        .enhanced-page.grid-container .accordian-block:has(~ .accordian-block) {
+            margin-bottom: 18px;
+        }
+        .page-title,p,ul {
+            margin-top: 0px;
+        }
+
+        .enhanced-page.grid-container > h1,h2,h3:not(.question-answer-block > h3),h4,h5,h6  {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+        .enhanced-page.grid-container {
+            padding-top: 45px;
+            padding-bottom: 45px;
+            padding-left: 32px;
+            padding-right: 32px;
+            margin-bottom: 0px;
+        }
+
+        .enhanced-page.grid-container > hr {
+            margin-top: 17px;
+            margin-bottom: 34px;
+        }
+
+        .heading-wrapper + p, h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
+            margin-top: 0px;
+        }
+        .enhanced-page.enhanced-page.grid-container > .heading-wrapper,
+        .enhanced-page.enhanced-page.grid-container > h1:not(.page-title),
+        .enhanced-page.enhanced-page.grid-container > h2,
+        .enhanced-page.enhanced-page.grid-container > h3,
+        .enhanced-page.enhanced-page.grid-container > h4,
+        .enhanced-page.enhanced-page.grid-container > h5,
+        .enhanced-page.enhanced-page.grid-container > h6,
+        .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
+        .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr,p:empty) ~ p)),
+        Extra p tag that is empty, makes this rule weird since I am not displaying empty p tags
+        {% comment %} .enhanced-page.enhanced-page.grid-container > ul:has(+ p), {% endcomment %}
+        .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
+        .enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
+        enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
+        .enhanced-page.enhanced-page.grid-container > .page-title:has(+ p) {
+            margin-bottom: 15px;
+        }
+        p:empty {
+            display: none;
+        }
+
+
         .enhanced-page iframe {
             width: 100%;
             max-width: 100%;
@@ -247,6 +300,14 @@
             .enhanced-page .usa-table--stacked-header td {
                 border-bottom: 0px;
             }
+
+            .enhanced-page.grid-container {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 25px;
+                margin:0px;
+            }
+
         }
 
         .enhanced-page .info-cards {
@@ -306,9 +367,14 @@
 
 
         @media (max-width: 1024px) {
+
             .enhanced-page .question-answer-block .bookmark {
                 top: 24px;
                 left: -4px;
+            }
+            .enhanced-page.grid-container {
+                padding-left: 29px;
+                padding-right: 29px;
             }
 
             .enhanced-page .question-answer-block h3,
@@ -327,11 +393,21 @@
             .enhanced-page .heading-wrapper h4,
             .enhanced-page .heading-wrapper h5,
             .enhanced-page .heading-wrapper h6 {
-                padding-left: 16px;
+                {% comment %} padding-left: 16px; {% endcomment %}
+            }
+            .enhanced-page.grid-container .heading-wrapper a {
+                margin-right: 16px;
             }
         }
 
         @media (max-width: 768px) {
+            .enhanced-page.grid-container {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
             .enhanced-page .info-cards {
                 grid-template-columns: 1fr;
             }
@@ -395,8 +471,7 @@
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
     <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
-        <h1 data-testid="page-title">{{ page.title }}</h1>
-        <hr />
+        <h1 class="page-title" data-testid="page-title">{{ page.title }}</h1>
         {% if page.navigation_ribbon %}
             <div class="blue-page-links-bar">
                 {% for link in page.navigation_ribbon.links.all %}
