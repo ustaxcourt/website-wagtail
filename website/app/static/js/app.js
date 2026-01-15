@@ -1,8 +1,4 @@
-
-
-window.addEventListener('scroll', () => {
-    refreshScrollToTopButton();
-});
+const GAP_TO_BOTTOM_FOOTER = 70;
 
 document.getElementById('scroll-to-top').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -27,15 +23,17 @@ function refreshScrollToTopButton() {
     const screenWidth = window.screen.width;
     //only do this on desktop
     if(screenWidth < 1025) {
-        button.style.bottom = '70px'
+        button.style.bottom = `${GAP_TO_BOTTOM_FOOTER}px`;
         return;
     }
 
     //when the footer top is closer to the top of the viewport than  the bottom of the viewport is to the top of the viewport, we need to scootch
     let scootchNeeded = (footerRect.top < window.innerHeight) ;
     if(scootchNeeded) {
-        button.style.bottom = `${window.innerHeight - footerRect.top + 20}px`;
+        button.style.bottom = `${window.innerHeight - footerRect.top + GAP_TO_BOTTOM_FOOTER}px`;
     } else {
-        button.style.bottom = '20px'
+        button.style.bottom = `${GAP_TO_BOTTOM_FOOTER}px`;
     }
 }
+
+window.addEventListener('scroll', refreshScrollToTopButton);

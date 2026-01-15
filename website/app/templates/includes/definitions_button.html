@@ -8,10 +8,11 @@
 
     .definitions-btn {
         position: absolute;
-        right: -46px;
-        width: fit-content;
-        height: 29px;
-        margin-top: 100px;
+        right: 0;
+        width: 30px;
+        height: 116px;
+
+        margin-top: calc(116px + 50px * 2);
 
         background: #005EA2;
         color: #fff;
@@ -27,12 +28,13 @@
         align-items: center;
         justify-content: center;
 
-        /* Rotation */
-        transform: rotate(-90deg);
-        transform-origin: center center;
         /* keeps it on-screen */
         z-index: 1000;
         border: 1px solid white;
+
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        writing-mode: sideways-lr;
     }
 
     .definitions-btn .button-contents {
@@ -43,17 +45,11 @@
         padding: 5px var(--usa-spacing-205, 12px);
     }
 
-    .definitions-btn img {
-        transform: rotate(90deg);
-    }
-
     /* mobile styles */
     @media (max-width: 879px) {
-
         .definitions-btn {
             display: none;
         }
-
     }
 
     .definitions-btn,
@@ -68,12 +64,12 @@
 </style>
 <div id="definitions-container">
     <a class="definitions-btn" href="/definitions" target="_blank" aria-label="Definitions">
-        <div class="button-contents">
-            <div class="button-text">
+        <span class="button-contents">
+            <span class="button-text">
                 Definitions
-            </div>
+            </span>
             <img src="{% static 'images/icons/book.svg' %}" alt="Book">
-        </div>
+        </span>
     </a>
 
 </div>
