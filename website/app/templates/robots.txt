@@ -1,3 +1,8 @@
-User-Agent: *
+{% if ENVIRONMENT != "production" %}
+User-agent: *
+Disallow: /
+{% else %}
+User-agent: *
 Disallow: /admin/
-Sitemap: {{ wagtail_site.root_url }}/sitemap.xml
+Sitemap: /sitemap.xml
+{% endif %}

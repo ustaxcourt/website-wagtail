@@ -9,6 +9,7 @@ from home.models.settings import (
     Header,
     Footer,
     GoogleAnalyticsSettings,
+    GoogleTagManagerSettings,
 )
 from home.models.config import IconCategories
 from home.models.snippets.news_item import NewsItem
@@ -64,3 +65,4 @@ from home.models.pages.external_redirect import ExternalRedirectPage
 from home.models.pages.redirect import RedirectPage
 from home.models.pages.schedule_content import ScheduledPage
 from home.models.utils.execute_script import ExecuteScript
+from home.models.snippets.banners import Banner

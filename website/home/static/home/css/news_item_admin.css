@@ -1,0 +1,26 @@
+/* Admin styling for NewsItem category badges */
+.w-badge.category-high {
+    background-color: #faf3cf !important;
+    color: #000 !important;
+}
+
+.w-badge.category-critical {
+    background-color: #b50909 !important;
+    color: #FFF !important;
+}
+
+/* Target the category column in the listing table */
+td[data-column-name="category"] .w-badge {
+    font-weight: bold;
+}
+
+/* Alternative selectors if the above doesn't work */
+[data-field-name="category"] .w-badge.category-high {
+    background-color: #faf3cf !important;
+    color: #000 !important;
+}
+
+[data-field-name="category"] .w-badge.category-critical {
+    background-color: #b50909 !important;
+    color: #FFF !important;
+}

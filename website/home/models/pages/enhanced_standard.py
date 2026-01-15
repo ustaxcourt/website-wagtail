@@ -49,7 +49,7 @@ class StyledCalloutBlock(blocks.StructBlock):
     )
 
     class Meta:
-        label = "Callout Banner"
+        label = "Callout Block"
         icon = "info-circle"
         template = "callout_block.html"
 

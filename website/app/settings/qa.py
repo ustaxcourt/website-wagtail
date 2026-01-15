@@ -16,7 +16,10 @@ DEBUG = False
 BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 ENVIRONMENT = "qa"
 
-MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
+MIDDLEWARE = [
+    "app.middleware.NoIndexMiddleware",
+    "app.middleware.JSONExceptionMiddleware",
+] + MIDDLEWARE
 
 SITE_IS_LIVE = date.today() >= date(2999, 6, 1)
 
