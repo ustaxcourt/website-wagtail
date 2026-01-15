@@ -187,33 +187,29 @@
                 cell.style.gridColumn = '';
             });
 
-            // Skip spanning logic at breakpoints (820px or less)
-            if (window.innerWidth <= 820) {
-                return;
-            }
-
             const totalCells = cells.length;
-            const columns = parseInt(grid.getAttribute('data-columns'));
 
-            if (true) {
-                // Only handle incomplete last row when there are more cells than columns
-                if (totalCells > columns) {
-                    const remainder = totalCells % columns;
+            // Detect actual rendered columns from computed style (works at all breakpoints)
+            const gridComputedStyle = window.getComputedStyle(grid);
+            const gridTemplateColumns = gridComputedStyle.gridTemplateColumns;
+            const actualColumns = gridTemplateColumns.split(' ').length;
 
-                    // If there's an incomplete last row, distribute evenly
-                    if (remainder !== 0) {
-                        const lastRowStart = totalCells - remainder;
-                        const baseSpan = Math.floor(columns / remainder);
-                        const extraCells = columns % remainder;
+            // Calculate remainder for incomplete last row
+            const remainder = totalCells % actualColumns;
 
-                        // Distribute columns among cells in the last row
-                        for (let i = 0; i < remainder; i++) {
-                            const cellIndex = lastRowStart + i;
-                            // First 'extraCells' get an extra column to fill the row exactly
-                            const span = i < extraCells ? baseSpan + 1 : baseSpan;
-                            cells[cellIndex].style.gridColumn = 'span ' + span;
-                        }
-                    }
+            // If there's an incomplete last row (or fewer cells than columns), distribute evenly
+            if (remainder !== 0 || totalCells < actualColumns) {
+                const cellsInLastRow = remainder !== 0 ? remainder : totalCells;
+                const lastRowStart = totalCells - cellsInLastRow;
+                const baseSpan = Math.floor(actualColumns / cellsInLastRow);
+                const extraCells = actualColumns % cellsInLastRow;
+
+                // Distribute columns among cells in the last row
+                for (let i = 0; i < cellsInLastRow; i++) {
+                    const cellIndex = lastRowStart + i;
+                    // First 'extraCells' get an extra column to fill the row exactly
+                    const span = i < extraCells ? baseSpan + 1 : baseSpan;
+                    cells[cellIndex].style.gridColumn = 'span ' + span;
                 }
             }
         });
