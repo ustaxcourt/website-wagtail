@@ -121,9 +121,10 @@
 
         #search-page .no-results {
             text-align: center;
-            color: #888;
+            color: #000;
             font-size: 1.2rem;
             margin-top: 32px;
+            font-weight: bold;
         }
 
         #search-page .empty-search {
@@ -187,8 +188,9 @@
             <input type="text"
                    name="query"
                    {% if search_query %}value="{{ search_query }}"{% endif %}
-                   placeholder="Search...">
-            <input type="submit" value="Search" class="button">
+                   placeholder="Search..."
+                   aria-label="Search box">
+            <input type="submit" value="Search" class="button" aria-label="Search button" data-testid="search-inpage-input">
         </form>
         {% if search_query == "" %}
             <div class="empty-search">Please enter a search term to find content.</div>
