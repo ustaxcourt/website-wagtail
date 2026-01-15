@@ -57,6 +57,20 @@
                 </div>
             {% else %}
                 <p>{{ message }}</p>
+                {% if page.body %}
+                    {% for block in page.body %}
+                        {% if block.block_type == 'heading' %}
+                            <{{block.value.level}} class="rich-text">
+                                {{ block.value.text }}
+                            </{{block.value.level}}>
+
+                        {% elif block.block_type == 'paragraph' %}
+                            <p class="rich-text">
+                                {{ block.value|richtext }}
+                            </p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             {% endif %}
         </div>
     </div>

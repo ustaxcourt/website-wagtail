@@ -1,7 +1,25 @@
-{% load static wagtailcore_tags env_tags %}
+{% load static wagtailcore_tags env_tags wagtailsettings_tags %}
+{% get_settings %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+   <head>
+      {% if settings.home.GoogleTagManagerSettings.gtm_container_id %}
+      <script>
+            (function (w, d, s, l, i) {
+                  w[l] = w[l] || [];
+                  w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+                  var f = d.getElementsByTagName(s)[0],
+                        j = d.createElement(s),
+                        dl = l != 'dataLayer' ? '&l=' + l : '';
+                  j.async = true;
+                  j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                  f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer',
+                  '{{ settings.home.GoogleTagManagerSettings.gtm_container_id }}');
+      </script>
+      <!-- End Google Tag Manager -->
+      {% endif %}
+
         <meta charset="utf-8" />
         {% get_environment as environment %}
         {% if environment != "production" %}<meta name="robots" content="noindex">{% endif %}
@@ -68,6 +86,7 @@
               sizes="16x16"
               href="{% static 'images/icons/favicon-16x16.svg' %}">
         <link rel="manifest" href="{% static 'images/icons/manifest.json' %}">
+        <link rel="icon" type="image/x-icon" href="{% static 'images/icons/favicon.ico' %}" sizes="any">
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage"
               content="{% static 'images/icons/ms-icon-144x144.svg' %}">
@@ -103,21 +122,32 @@
         {% block extra_css %}{# Override this in templates to add extra stylesheets #}{% endblock %}
     </head>
     <body class="{% block body_class %}  {% endblock %}">
-        {% include 'banner.html' %}
-        {% include 'red_news_banner.html' %}
-        {% get_environment as environment %}
-        {% if environment != "production" %}
-            {% include 'alert_banner.html' %}
-        {% endif %}
-        {% include 'header.html' %}
-        {% include 'includes/give_feedback_button.html' %}
-        {% if page and page.show_floating_definitions_button %}
+      {% if settings.home.GoogleTagManagerSettings.gtm_container_id %}
+      <!-- Google Tag Manager (noscript) -->
+      <noscript>
+            <iframe
+                  src="https://www.googletagmanager.com/ns.html?id={{ settings.home.GoogleTagManagerSettings.gtm_container_id }}"
+                  height="0" width="0" style="display:none;visibility:hidden">
+            </iframe>
+      </noscript>
+      <!-- End Google Tag Manager (noscript) -->
+      {% endif %}
+
+      {% include 'banner.html' %}
+      {% include 'red_news_banner.html' %}
+      {% get_environment as environment %}
+      {% if environment != "production" %}
+      {% include 'alert_banner.html' %}
+      {% endif %}
+      {% include 'header.html' %}
+      {% include 'includes/give_feedback_button.html' %}
+      {% if page and page.show_floating_definitions_button %}
             {% include 'includes/definitions_button.html' %}
         {% endif %}
+
         {% if page and page.show_floating_definitions_button %}
             {% include 'includes/mini_definitions_button.html' %}
         {% endif %}
-        {% include 'yellow_news_banner.html' %}
         <main id="main-content" >
             {% block content %}{% endblock %}
         </main>
@@ -135,65 +165,46 @@
         {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", () => {
-
-                  const hiddenMenu = document.getElementById("last-nav-list");
+                  const last_navbar_menu_id = "last-nav-list";
+                  const hiddenMenu = document.getElementById(last_navbar_menu_id);
                   const feedbackButtonToAdjust = document.querySelector(".give-feedback-btn");
                   const definitionsButtonToAdjust = document.querySelector(".definitions-btn");
 
-                  if (!hiddenMenu) return;
+                  const BUTTON_HEIGHT = 116;
+                  const GAP_BETWEEN_BUTTONS = 20;
+                  const GAP_FOR_FEEDBACK = 10;
+                  const default_definitions_margin_top = (BUTTON_HEIGHT + GAP_FOR_FEEDBACK + GAP_BETWEEN_BUTTONS);
+                  const default_feedback_margin_top = GAP_FOR_FEEDBACK;
 
-                  function getTrueMenuHeight(element) {
-                        const originalStyles = {
-                              display: element.style.display,
-                              visibility: element.style.visibility,
-                              position: element.style.position,
-                        };
-
-                        element.style.display = 'block';
-                        element.style.visibility = 'hidden';
-                        element.style.position = 'absolute';
-
-                        const height = element.offsetHeight;
-
-                        element.style.display = originalStyles.display;
-                        element.style.visibility = originalStyles.visibility;
-                        element.style.position = originalStyles.position;
-
-                        return height;
+                  if (!hiddenMenu) {
+                      console.error(`Expected element w/ ID: ${last_navbar_menu_id}`);
+                      return;
                   }
 
-                  let lastKnownOpenHeight = getTrueMenuHeight(hiddenMenu);
+                  const get_full_height = (element) => {
+                      const originalStyles = {
+                          display: element.style.display,
+                          visibility: element.style.visibility,
+                          position: element.style.position,
+                      };
 
-                  const observer = new ResizeObserver(entries => {
+                      element.style.display = 'block';
+                      element.style.visibility = 'hidden';
+                      element.style.position = 'absolute';
 
-                      const menuContentHeight = hiddenMenu.scrollHeight;
+                      const height = element.offsetHeight;
 
-                      if (menuContentHeight > 0) {
-                            lastKnownOpenHeight = menuContentHeight;
-                      }
+                      element.style.display = originalStyles.display;
+                      element.style.visibility = originalStyles.visibility;
+                      element.style.position = originalStyles.position;
 
-                      const baseMargin = 55;
-                      const gap = 20;
-
-                      if (feedbackButtonToAdjust) {
-
-                            feedbackButtonToAdjust.style.marginTop = `calc(${baseMargin}px + ${lastKnownOpenHeight}px)`;
-
-                            if (definitionsButtonToAdjust) {
-                                  const feedbackButtonHeight = feedbackButtonToAdjust.offsetWidth;
-
-                                  const definitionsMarginTop = baseMargin + feedbackButtonHeight + gap + lastKnownOpenHeight;
-
-                                  definitionsButtonToAdjust.style.marginTop = `calc(${definitionsMarginTop}px)`;
-                            }
-
-                      } else if (definitionsButtonToAdjust) {
-                            definitionsButtonToAdjust.style.marginTop = `calc(67px + ${lastKnownOpenHeight}px)`;
-                      }
-
-                  });
-
-                  observer.observe(hiddenMenu);
+                      return height;
+                  }
+                  const dropdown_height = get_full_height(hiddenMenu);
+                  feedbackButtonToAdjust.style.marginTop = `calc(${default_feedback_margin_top}px + ${dropdown_height}px)`;
+                  if (definitionsButtonToAdjust) {
+                      definitionsButtonToAdjust.style.marginTop = `calc(${default_definitions_margin_top}px + ${dropdown_height}px)`;
+                  }
             });
         </script>
         <script type="text/javascript"

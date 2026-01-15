@@ -17,7 +17,10 @@ ENVIRONMENT = "dev"
 
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 
-MIDDLEWARE = ["app.middleware.JSONExceptionMiddleware"] + MIDDLEWARE
+MIDDLEWARE = [
+    "app.middleware.NoIndexMiddleware",
+    "app.middleware.JSONExceptionMiddleware",
+] + MIDDLEWARE
 
 WAGTAIL_SITE_NAME = "A testing site for US Tax Court Web Development"
 

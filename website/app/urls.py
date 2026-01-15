@@ -74,8 +74,17 @@ urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
         "robots.txt",
-        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+        TemplateView.as_view(
+            template_name="robots.txt",
+            content_type="text/plain",
+            extra_context={"ENVIRONMENT": getattr(settings, "ENVIRONMENT", "")},
+        ),
         name="robots_file",
+    ),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url="/static/images/icons/favicon.ico", permanent=True),
+        name="favicon",
     ),
     path("django-admin/", admin.site.urls),
     path("admin-tools/role-switcher/", include("app.role_switcher.urls")),

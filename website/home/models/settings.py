@@ -54,3 +54,16 @@ class GoogleAnalyticsSettings(BaseGenericSetting):
             widget=forms.TextInput(attrs={"value": settings.GOOGLE_ANALYTICS_ID}),
         ),
     ]
+
+
+@register_setting
+class GoogleTagManagerSettings(BaseGenericSetting):
+    gtm_container_id = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Google Tag Manager Container ID, e.g. GTM-XXXXXXX",
+    )
+
+    panels = [
+        FieldPanel("gtm_container_id"),
+    ]
