@@ -30,19 +30,3 @@ def parse_iso_date(date_string):
             pass
 
     return date_string
-
-
-@register.filter
-def has_card_tiles(stream_blocks):
-    """
-    Check if any block in the StreamField has block_type 'card_tiles'
-    Returns True if found, False otherwise
-    """
-    if not stream_blocks:
-        return False
-
-    for block in stream_blocks:
-        if hasattr(block, "block_type") and block.block_type == "card_tiles":
-            return True
-
-    return False
