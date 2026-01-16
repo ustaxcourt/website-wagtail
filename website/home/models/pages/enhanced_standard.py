@@ -78,10 +78,10 @@ class GridCellBlock(blocks.StructBlock):
         max_length=255,
         help_text="Optional header for this grid cell",
     )
-    caption = blocks.CharBlock(
+    caption = blocks.RichTextBlock(
         required=False,
-        max_length=255,
-        help_text="Optional caption for this grid cell",
+        features=["bold", "italic", "link"],
+        help_text="Optional caption for this grid cell (links allowed)",
     )
     body = blocks.StreamBlock(
         [
