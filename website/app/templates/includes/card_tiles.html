@@ -307,7 +307,7 @@
 
 {# Default content - shown when no card is selected #}
 <div class="card-tiles__default-content" id="card-tiles-default-content">
-    {% include "home/render_blocks.html" with blocks=block.value.default_content suffix="-default-content" %}
+    {% include "includes/enhanced_body.html" with blocks=block.value.default_content suffix="-default-content" %}
 </div>
 
 <script>
