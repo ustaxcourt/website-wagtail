@@ -331,16 +331,6 @@ class CardTilesBlock(blocks.StructBlock):
         template = "includes/card_tiles.html"
 
 
-# ENHANCED_STANDARD_PAGE_CONTENT includes all base blocks plus card_tiles
-ENHANCED_STANDARD_PAGE_CONTENT = StreamField(
-    _BASE_BLOCK_TYPES + [("card_tiles", CardTilesBlock())],
-    block_counts={
-        "card_tiles": {"min_num": 0, "max_num": 1},
-    },
-    blank=True,
-)
-
-
 class EnhancedStandardPage(ModerationMixin, Page):
     base_form_class = ReviewByRequiredOnSubmitForm
 
