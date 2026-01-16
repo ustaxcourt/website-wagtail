@@ -1,12 +1,19 @@
 // Pamphlet admin customization: Add "insert at position" buttons between inline entries
 
+console.log("hello from pamphlet admin");
+
 function initializePamphletInsertButtons() {
-  // Find the inline panel for pamphlet entries
-  const inlinePanel = document.querySelector('[data-inline-panel-child="entries"]');
+  console.log("initializePamphletInsertButtons called");
+
+  // Find the inline panel section - it has an ID like "panel-child-content-entries-section"
+  const inlinePanel = document.querySelector('#panel-child-content-entries-section');
 
   if (!inlinePanel) {
+    console.log("Could not find inline panel for entries");
     return;
   }
+
+  console.log("Found inline panel:", inlinePanel);
 
   // Add insert buttons between entries
   addInsertButtons(inlinePanel);
@@ -17,18 +24,33 @@ function initializePamphletInsertButtons() {
 
 function addInsertButtons(inlinePanel) {
   // Find the container that holds all the inline items
-  const childrenContainer = inlinePanel.querySelector('[data-inline-panel-child-container]');
+  // Based on Wagtail's structure, this should be inside the panel content
+  let childrenContainer = inlinePanel.querySelector('[data-inline-panel-child-container]');
+
+  // If that doesn't exist, try finding the direct container of inline children
+  if (!childrenContainer) {
+    // Look for the parent of elements with IDs like "inline_child_entries-0"
+    const firstChild = inlinePanel.querySelector('[id^="inline_child_entries-"]');
+    if (firstChild) {
+      childrenContainer = firstChild.parentElement;
+      console.log("Found children container via first child:", childrenContainer);
+    }
+  }
 
   if (!childrenContainer) {
+    console.log("Could not find children container");
     return;
   }
 
   // Remove any existing insert buttons first to avoid duplicates
   childrenContainer.querySelectorAll('.pamphlet-insert-button').forEach(btn => btn.remove());
 
+  // Find all inline children - they have IDs like "inline_child_entries-0"
   const children = Array.from(childrenContainer.children).filter(
-    child => child.hasAttribute('data-inline-panel-child')
+    child => child.id && child.id.startsWith('inline_child_entries-')
   );
+
+  console.log("Found children:", children.length);
 
   // Add an "Add new" button at the top
   const topButton = createInsertButton('Add new pamphlet at top', 0);
@@ -94,24 +116,42 @@ function createInsertButton(text, position) {
 }
 
 function insertNewEntryAtPosition(position) {
-  // Find the "Add" button in the inline panel
-  const addButton = document.querySelector('[data-inline-panel-child="entries"] button[type="button"]');
+  // Find the "Add" button in the inline panel - look for button with text "Add" or similar
+  const inlinePanel = document.querySelector('#panel-child-content-entries-section');
+
+  // Try multiple selectors for the add button
+  let addButton = inlinePanel.querySelector('button[data-inline-panel-add-child]');
+
+  if (!addButton) {
+    // Look for any button with "Add" text
+    const buttons = Array.from(inlinePanel.querySelectorAll('button'));
+    addButton = buttons.find(btn => btn.textContent.includes('Add'));
+  }
 
   if (!addButton) {
     console.error('Could not find add button for inline panel');
     return;
   }
 
+  console.log("Clicking add button:", addButton);
+
   // Click the add button to create a new entry
   addButton.click();
 
   // Wait for the new entry to be added to the DOM
   setTimeout(() => {
-    const inlinePanel = document.querySelector('[data-inline-panel-child="entries"]');
-    const childrenContainer = inlinePanel.querySelector('[data-inline-panel-child-container]');
+    const firstChild = inlinePanel.querySelector('[id^="inline_child_entries-"]');
+    if (!firstChild) {
+      console.error("Could not find any entries after adding");
+      return;
+    }
+
+    const childrenContainer = firstChild.parentElement;
     const children = Array.from(childrenContainer.children).filter(
-      child => child.hasAttribute('data-inline-panel-child')
+      child => child.id && child.id.startsWith('inline_child_entries-')
     );
+
+    console.log("Children after add:", children.length);
 
     // The new entry is added at the end, so move it to the desired position
     const newEntry = children[children.length - 1];
@@ -120,6 +160,7 @@ function insertNewEntryAtPosition(position) {
       // Move the new entry to the specified position
       const targetChild = children[position];
       childrenContainer.insertBefore(newEntry, targetChild);
+      console.log("Moved new entry to position", position);
     }
 
     // Update sort_order values for all entries
@@ -135,20 +176,34 @@ function insertNewEntryAtPosition(position) {
 
 function updateSortOrders(childrenContainer) {
   const children = Array.from(childrenContainer.children).filter(
-    child => child.hasAttribute('data-inline-panel-child')
+    child => child.id && child.id.startsWith('inline_child_entries-')
   );
 
   children.forEach((child, index) => {
-    // Find the sort_order input field
-    const sortOrderInput = child.querySelector('input[name*="ORDER"]');
+    // Find the sort_order input field - it might be named like "entries-0-sort_order" or "entries-0-ORDER"
+    let sortOrderInput = child.querySelector('input[name*="sort_order"]');
+
+    if (!sortOrderInput) {
+      sortOrderInput = child.querySelector('input[name*="ORDER"]');
+    }
+
     if (sortOrderInput) {
       sortOrderInput.value = index;
+      console.log(`Set sort_order for ${child.id} to ${index}`);
+    } else {
+      console.warn(`Could not find sort_order input for ${child.id}`);
     }
   });
 }
 
 function observeInlinePanelChanges(inlinePanel) {
-  const childrenContainer = inlinePanel.querySelector('[data-inline-panel-child-container]');
+  const firstChild = inlinePanel.querySelector('[id^="inline_child_entries-"]');
+  if (!firstChild) {
+    console.log("No children found yet for observer");
+    return;
+  }
+
+  const childrenContainer = firstChild.parentElement;
 
   if (!childrenContainer) {
     return;
@@ -162,7 +217,7 @@ function observeInlinePanelChanges(inlinePanel) {
       if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
         // Check if any added nodes are inline panel children
         mutation.addedNodes.forEach(node => {
-          if (node.nodeType === 1 && node.hasAttribute('data-inline-panel-child')) {
+          if (node.nodeType === 1 && node.id && node.id.startsWith('inline_child_entries-')) {
             shouldRefresh = true;
           }
         });
@@ -186,20 +241,36 @@ function observeInlinePanelChanges(inlinePanel) {
 
 // Check if we're on a pamphlets page
 function shouldInitialize() {
-  return window.location.href.includes('admin/pages/') &&
-         document.querySelector('[data-inline-panel-child="entries"]') !== null;
+  const isAdminPages = window.location.href.includes('admin/pages/');
+  const hasEntriesPanel = document.querySelector('#panel-child-content-entries-section') !== null;
+
+  console.log("shouldInitialize check:", {
+    url: window.location.href,
+    isAdminPages,
+    hasEntriesPanel
+  });
+
+  return isAdminPages && hasEntriesPanel;
 }
 
 // Initialize on Wagtail admin load
 document.addEventListener('wagtail:load', function() {
+  console.log("wagtail:load event fired");
   if (shouldInitialize()) {
+    console.log("Initializing pamphlet insert buttons via wagtail:load");
     setTimeout(initializePamphletInsertButtons, 200);
+  } else {
+    console.log("shouldInitialize returned false on wagtail:load");
   }
 });
 
 // Fallback for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
+  console.log("DOMContentLoaded event fired");
   if (shouldInitialize()) {
+    console.log("Initializing pamphlet insert buttons via DOMContentLoaded");
     setTimeout(initializePamphletInsertButtons, 500);
+  } else {
+    console.log("shouldInitialize returned false on DOMContentLoaded");
   }
 });
