@@ -28,9 +28,9 @@ describe('index page', () => {
     bannerContent().should('be.hidden')
   })
 
-  it('can expand eFiling navigation to show Case Related Forms link', () => {
+  it('can expand Trials & Case Management navigation to show Case Related Forms link', () => {
     // Check initial state
-    cy.get('[data-testid="nav-button-efiling-case-maintenance"]')
+    cy.get('[data-testid="nav-button-trials-case-management"]')
       .should('be.visible').realHover()
 
     cy.get('[data-testid="nav-link-case-related-forms"]')
