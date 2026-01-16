@@ -98,7 +98,7 @@
         color: #000000;
         font-style: italic;
         margin: 0;
-        padding: 0 20px;
+        padding: 0 32px;
         padding-top: 20px;
     }
 
@@ -106,7 +106,7 @@
         background-color: transparent;
         color: #000000;
         font-size: 17px;
-        {% comment %} padding: 20px; {% endcomment %}
+        padding: 20px 32px;
         flex: 1;
     }
 
@@ -151,7 +151,9 @@
     <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat(12, 1fr);" role="region" aria-label="Grid style layout" data-columns="{{ block.value.columns }}">
         {% for cell in block.value.cells %}
             <div class="grid-style-cell {{ block.value.gridStyle }}">
-                {% if cell.header %}
+                {% if block.value.gridStyle == "styled" %}
+                    <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header|default:"" }}</h3>
+                {% elif cell.header %}
                     <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header }}</h3>
                 {% endif %}
 
@@ -175,6 +177,65 @@
 
 <script>
 (function() {
+    function equalizeHeadersInRows() {
+        document.querySelectorAll('.grid-style-layout.styled').forEach(function(grid) {
+            const cells = Array.from(grid.querySelectorAll('.grid-style-cell'));
+
+            // Get configured columns for calculating rows
+            const configuredColumns = parseInt(grid.getAttribute('data-columns'));
+            const normalSpan = 12 / configuredColumns;
+
+            // Group cells by row based on their grid positions
+            const rows = [];
+            let currentRow = [];
+            let currentRowSpan = 0;
+
+            cells.forEach(function(cell, index) {
+                const cellSpan = parseInt(cell.style.gridColumn.replace('span ', '')) || normalSpan;
+
+                if (currentRowSpan + cellSpan > 12) {
+                    // Start new row
+                    if (currentRow.length > 0) {
+                        rows.push(currentRow);
+                    }
+                    currentRow = [cell];
+                    currentRowSpan = cellSpan;
+                } else {
+                    currentRow.push(cell);
+                    currentRowSpan += cellSpan;
+                }
+            });
+
+            // Push last row
+            if (currentRow.length > 0) {
+                rows.push(currentRow);
+            }
+
+            // Equalize header heights within each row (styled grids always have headers)
+            rows.forEach(function(rowCells) {
+                const headers = rowCells
+                    .map(cell => cell.querySelector('.grid-style-cell-header'))
+                    .filter(header => header !== null);
+
+                if (headers.length > 0) {
+                    // Reset heights first
+                    headers.forEach(function(header) {
+                        header.style.minHeight = '';
+                    });
+
+                    // Get the natural height of each header
+                    const heights = headers.map(header => header.offsetHeight);
+                    const maxHeight = Math.max(...heights);
+
+                    // Apply max height to all headers in this row
+                    headers.forEach(function(header) {
+                        header.style.minHeight = maxHeight + 'px';
+                    });
+                }
+            });
+        });
+    }
+
     function adjustGridCells() {
         document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
             const cells = grid.querySelectorAll('.grid-style-cell');
@@ -207,6 +268,9 @@
                 }
             }
         });
+
+        // After adjusting spans, equalize header heights
+        equalizeHeadersInRows();
     }
 
     // Run on load
