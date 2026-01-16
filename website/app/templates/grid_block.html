@@ -178,6 +178,15 @@
 <script>
 (function() {
     function equalizeHeadersInRows() {
+        // Skip header equalization on mobile (430px or less) - let headers wrap naturally
+        if (window.innerWidth <= 430) {
+            // Reset any previously set min-heights
+            document.querySelectorAll('.grid-style-cell-header').forEach(function(header) {
+                header.style.minHeight = '';
+            });
+            return;
+        }
+
         document.querySelectorAll('.grid-style-layout.styled').forEach(function(grid) {
             const cells = Array.from(grid.querySelectorAll('.grid-style-cell'));
 
