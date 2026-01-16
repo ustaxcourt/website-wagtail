@@ -151,7 +151,7 @@
 </style>
 
 <div class="grid-style-container width-{{ block.value.width }}">
-    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat({{ block.value.columns }}, 1fr);" role="region" aria-label="Grid layout" data-columns="{{ block.value.columns }}">
+    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat(12, 1fr);" role="region" aria-label="Grid layout" data-columns="{{ block.value.columns }}">
         {% for cell in block.value.cells %}
             <div class="grid-style-cell {{ block.value.gridStyle }}">
                 {% if cell.header %}
@@ -181,35 +181,32 @@
     function adjustGridCells() {
         document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
             const cells = grid.querySelectorAll('.grid-style-cell');
+            const totalCells = cells.length;
+            const configuredColumns = parseInt(grid.getAttribute('data-columns'));
 
-            // Reset all cells first
+            // Always set the normal span based on configured columns
+            const normalSpan = 12 / configuredColumns;
             cells.forEach(function(cell) {
-                cell.style.gridColumn = '';
+                cell.style.gridColumn = `span ${normalSpan}`;
             });
 
-            const totalCells = cells.length;
+            // Case 1: Fewer cells than configured columns - override all cells to distribute evenly
+            if (totalCells < configuredColumns) {
+                const spanPerCell = 12 / totalCells;
+                cells.forEach(function(cell) {
+                    cell.style.gridColumn = `span ${spanPerCell}`;
+                });
+            }
+            // Case 2: Incomplete last row - override last row cells only
+            else {
+                const remainder = totalCells % configuredColumns;
+                if (remainder !== 0) {
+                    const lastRowStart = totalCells - remainder;
+                    const spanForLastRow = 12 / remainder;
 
-            // Detect actual rendered columns from computed style (works at all breakpoints)
-            const gridComputedStyle = window.getComputedStyle(grid);
-            const gridTemplateColumns = gridComputedStyle.gridTemplateColumns;
-            const actualColumns = gridTemplateColumns.split(' ').length;
-
-            // Calculate remainder for incomplete last row
-            const remainder = totalCells % actualColumns;
-
-            // If there's an incomplete last row (or fewer cells than columns), distribute evenly
-            if (remainder !== 0 || totalCells < actualColumns) {
-                const cellsInLastRow = remainder !== 0 ? remainder : totalCells;
-                const lastRowStart = totalCells - cellsInLastRow;
-                const baseSpan = Math.floor(actualColumns / cellsInLastRow);
-                const extraCells = actualColumns % cellsInLastRow;
-
-                // Distribute columns among cells in the last row
-                for (let i = 0; i < cellsInLastRow; i++) {
-                    const cellIndex = lastRowStart + i;
-                    // First 'extraCells' get an extra column to fill the row exactly
-                    const span = i < extraCells ? baseSpan + 1 : baseSpan;
-                    cells[cellIndex].style.gridColumn = 'span ' + span;
+                    for (let i = 0; i < remainder; i++) {
+                        cells[lastRowStart + i].style.gridColumn = `span ${spanForLastRow}`;
+                    }
                 }
             }
         });
