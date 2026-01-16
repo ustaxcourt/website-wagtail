@@ -36,7 +36,7 @@
   }
 
   .quick-access-tile.hover-enabled:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 10px var(--shadow-medium);
   }
 
   /* Desktop-Top / Mobile-Left: Icon at top in desktop */
@@ -128,6 +128,29 @@
     margin-right: 0;
   }
 
+    /* Selected / Active state */
+  .quick-access-tile-link.is-active .quick-access-tile {
+    background: #005EA2;
+    border-color: #005EA2;
+  }
+
+  .quick-access-tile-link.is-active .quick-access-tile h2,
+  .quick-access-tile-link.is-active .quick-access-tile .tile-description,
+  .quick-access-tile-link.is-active .quick-access-tile .tile-description * {
+    color: #FFFFFF;
+  }
+
+  .quick-access-tile-link.is-active .tile-icon {
+    background: #FFFFFF;
+    border-radius: 50%;
+  }
+
+  .quick-access-tile-link.is-active .tile-icon svg,
+  .quick-access-tile-link.is-active .tile-icon svg * {
+    fill: #005EA2;
+  }
+
+
   /* Tablet: ≤992px */
   @media (max-width: 992px) {
     .quick-access-tile {
@@ -183,9 +206,11 @@
 </style>
 
 <a href="{{ value.related_page.url|default:value.external_url }}"
-   class="quick-access-tile-link {% if value.tile_hover_enabled %}hover-enabled{% endif %}"
-   aria-label="{{ value.title }}">
-    <div class="quick-access-tile {% if value.tile_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}" tabindex="0">
+  class="quick-access-tile-link {% if value.tile_hover_enabled %}hover-enabled{% endif %}"
+  aria-label="{{ value.title }}"
+>
+  <div class="quick-access-tile {% if value.tile_hover_enabled %}hover-enabled{% endif %}
+           icon-{{ icon_position }} align-{{ value.content_alignment }}">
     {% if value.icon %}
       <div class="tile-icon">
         {% include_svg value.icon.svg_file %}
