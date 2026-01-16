@@ -15,3 +15,6 @@ From: .venv/lib/python3.12/site-packages/wagtail/admin/templates/wagtailadmin/ho
 
 website/home/templates/wagtailadmin/home/workflow_objects_to_moderate.html
 From: .venv/lib/python3.12/site-packages/wagtail/admin/templates/wagtailadmin/home/workflow_objects_to_moderate.html
+
+website/home/templates/wagtailadmin/login.html
+From: .venv/lib/python3.12/site-packages/wagtail/admin/templates/wagtailadmin/login.html
