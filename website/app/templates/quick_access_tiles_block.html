@@ -10,6 +10,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
+    margin-top: 30px;
   }
 
   /* Tablet: ≤992px - 2 columns */
@@ -30,7 +31,7 @@
 <div class="quick-access-tiles-container">
   <div class="quick-access-tiles-grid">
     {% for tile in block.value.tiles %}
-      {% include "quick_access_tile_block.html" with value=tile %}
+      {% include "quick_access_tile_block.html" with value=tile icon_position=block.value.icon_position %}
     {% endfor %}
   </div>
 </div>

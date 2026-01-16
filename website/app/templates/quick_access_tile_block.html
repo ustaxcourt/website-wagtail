@@ -185,7 +185,7 @@
 <a href="{{ value.related_page.url|default:value.external_url }}"
    class="quick-access-tile-link {% if value.tile_hover_enabled %}hover-enabled{% endif %}"
    aria-label="{{ value.title }}">
-  <div class="quick-access-tile {% if value.tile_hover_enabled %}hover-enabled{% endif %} icon-{{ value.icon_position }} align-{{ value.content_alignment }}">
+    <div class="quick-access-tile {% if value.tile_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}" tabindex="0">
     {% if value.icon %}
       <div class="tile-icon">
         {% include_svg value.icon.svg_file %}
@@ -193,7 +193,7 @@
     {% endif %}
     <div class="tile-content">
       <h2>{{ value.title }}</h2>
-      <p>{{ value.description|richtext }}</p>
+      <div class="tile-description">{{ value.description|richtext }}</div>
     </div>
   </div>
 </a>

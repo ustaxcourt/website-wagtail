@@ -45,24 +45,12 @@ class QuickAccessTileBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         max_length=255, required=True, help_text="Card header (H2)"
     )
-
     description = blocks.RichTextBlock(
         required=False,
         features=["bold", "italic", "link"],
         help_text="Optional body text",
     )
-
     icon = SVGChooserBlock(required=True)
-
-    icon_position = blocks.ChoiceBlock(
-        choices=[
-            ("desktop_top_mobile_left", "Desktop-Top / Mobile-Left"),
-            ("desktop_bottom_mobile_right", "Desktop-Bottom / Mobile-Right"),
-        ],
-        default="desktop_top_mobile_left",
-        required=True,
-        help_text="Controls icon placement across desktop vs tablet/mobile.",
-    )
 
     tile_hover_enabled = blocks.BooleanBlock(
         required=False,
@@ -91,7 +79,7 @@ class QuickAccessTileBlock(blocks.StructBlock):
             )
         if related_page and external_url:
             raise blocks.ValidationError(
-                "Choose either Related page OR External URL (not both)."
+                "Choose either Related page OR an External URL (not both)."
             )
 
         return cleaned
@@ -102,6 +90,16 @@ class QuickAccessTileBlock(blocks.StructBlock):
 
 
 class QuickAccessTilesBlock(blocks.StructBlock):
+    icon_position = blocks.ChoiceBlock(
+        choices=[
+            ("desktop_top_mobile_left", "Desktop-Top / Mobile-Left"),
+            ("desktop_bottom_mobile_right", "Desktop-Bottom / Mobile-Right"),
+        ],
+        default="desktop_top_mobile_left",
+        required=True,
+        help_text="Applies to ALL tiles in this set (keeps icon placement uniform).",
+    )
+
     tiles = blocks.ListBlock(
         QuickAccessTileBlock(),
         required=False,
