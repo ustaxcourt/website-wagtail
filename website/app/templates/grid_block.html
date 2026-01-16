@@ -151,9 +151,7 @@
     <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat(12, 1fr);" role="region" aria-label="Grid style layout" data-columns="{{ block.value.columns }}">
         {% for cell in block.value.cells %}
             <div class="grid-style-cell {{ block.value.gridStyle }}">
-                {% if block.value.gridStyle == "styled" %}
-                    <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header|default:"" }}</h3>
-                {% elif cell.header %}
+                {% if cell.header %}
                     <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header }}</h3>
                 {% endif %}
 
@@ -192,7 +190,7 @@
 
         document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
             const cells = Array.from(grid.querySelectorAll('.grid-style-cell'));
-            const isUnstyled = grid.classList.contains('unstyled');
+            const gridStyle = grid.classList.contains('styled') ? 'styled' : 'unstyled';
 
             // Get configured columns for calculating rows
             const configuredColumns = parseInt(grid.getAttribute('data-columns'));
@@ -224,40 +222,38 @@
                 rows.push(currentRow);
             }
 
-            // For unstyled grids, add placeholder headers in rows where at least one cell has a header
-            if (isUnstyled) {
-                rows.forEach(function(rowCells) {
-                    // Check if any cell in this row has a header with text
-                    const hasHeaderWithText = rowCells.some(function(cell) {
-                        const header = cell.querySelector('.grid-style-cell-header');
-                        return header && header.textContent.trim() !== '';
-                    });
-
-                    // If at least one cell has a header, ensure all cells have a header element
-                    if (hasHeaderWithText) {
-                        rowCells.forEach(function(cell) {
-                            let header = cell.querySelector('.grid-style-cell-header');
-                            if (!header) {
-                                // Create placeholder header
-                                header = document.createElement('h3');
-                                header.className = 'grid-style-cell-header unstyled placeholder-header';
-                                header.setAttribute('tabindex', '0');
-                                header.textContent = '';
-                                // Insert at the beginning of the cell
-                                cell.insertBefore(header, cell.firstChild);
-                            }
-                        });
-                    } else {
-                        // Remove any placeholder headers if no headers in this row
-                        rowCells.forEach(function(cell) {
-                            const header = cell.querySelector('.grid-style-cell-header.placeholder-header');
-                            if (header) {
-                                header.remove();
-                            }
-                        });
-                    }
+            // For both styled and unstyled grids, add placeholder headers in rows where at least one cell has a header
+            rows.forEach(function(rowCells) {
+                // Check if any cell in this row has a header with text
+                const hasHeaderWithText = rowCells.some(function(cell) {
+                    const header = cell.querySelector('.grid-style-cell-header');
+                    return header && header.textContent.trim() !== '';
                 });
-            }
+
+                // If at least one cell has a header, ensure all cells have a header element
+                if (hasHeaderWithText) {
+                    rowCells.forEach(function(cell) {
+                        let header = cell.querySelector('.grid-style-cell-header');
+                        if (!header) {
+                            // Create placeholder header
+                            header = document.createElement('h3');
+                            header.className = 'grid-style-cell-header ' + gridStyle + ' placeholder-header';
+                            header.setAttribute('tabindex', '0');
+                            header.textContent = '';
+                            // Insert at the beginning of the cell
+                            cell.insertBefore(header, cell.firstChild);
+                        }
+                    });
+                } else {
+                    // Remove any placeholder headers if no headers in this row
+                    rowCells.forEach(function(cell) {
+                        const header = cell.querySelector('.grid-style-cell-header.placeholder-header');
+                        if (header) {
+                            header.remove();
+                        }
+                    });
+                }
+            });
 
             // Equalize header heights within each row
             rows.forEach(function(rowCells) {
