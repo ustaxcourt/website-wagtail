@@ -25,19 +25,20 @@
     .grid-style-layout {
         display: grid;
         gap: 0;
-        grid-auto-rows: auto auto 1fr;
     }
     .grid-style-layout.styled {
         border: 1px solid #dfe1e2;
+    }
+
+    .grid-style-cell {
+        display: flex;
+        flex-direction: column;
     }
 
     .grid-style-cell.styled {
         background-color: #ffffff;
         border-right: 1px solid #dfe1e2;
         border-bottom: 1px solid #dfe1e2;
-        display: grid;
-        grid-template-rows: subgrid;
-        grid-row: span 3;
     }
 
     .grid-style-cell-header.styled {
@@ -66,6 +67,7 @@
         color: #000000;
         font-size: 17px;
         padding: 20px;
+        flex: 1;
     }
 
     .grid-style-cell-body.styled a {
@@ -80,9 +82,6 @@
     .grid-style-cell.unstyled {
         background-color: transparent;
         border: none;
-        display: grid;
-        grid-template-rows: subgrid;
-        grid-row: span 3;
     }
 
     .grid-style-cell-header.unstyled {
@@ -111,6 +110,7 @@
         color: #000000;
         font-size: 17px;
         padding: 20px;
+        flex: 1;
     }
 
     .grid-style-cell-body.unstyled a {
@@ -151,7 +151,7 @@
 </style>
 
 <div class="grid-style-container width-{{ block.value.width }}">
-    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat(12, 1fr);" role="region" aria-label="Grid layout" data-columns="{{ block.value.columns }}">
+    <div class="grid-style-layout {{ block.value.gridStyle }}" style="grid-template-columns: repeat(12, 1fr);" role="region" aria-label="Grid style layout" data-columns="{{ block.value.columns }}">
         {% for cell in block.value.cells %}
             <div class="grid-style-cell {{ block.value.gridStyle }}">
                 {% if cell.header %}
@@ -159,7 +159,7 @@
                 {% endif %}
 
                 {% if cell.caption %}
-                    <p class="grid-style-cell-caption {{ block.value.gridStyle }}" tabindex="0">{{ cell.caption }}</p>
+                    <div class="grid-style-cell-caption {{ block.value.gridStyle }}" tabindex="0">{{ cell.caption|richtext }}</div>
                 {% endif %}
 
                 <div class="grid-style-cell-body {{ block.value.gridStyle }}" tabindex="0">
