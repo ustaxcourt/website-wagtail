@@ -1,7 +1,7 @@
 from home.models.pages.standard import StandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.fields import RichTextField
-from wagtail.models import ParentalKey
+from wagtail.models import ParentalKey, Orderable
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from django.db import models
@@ -23,12 +23,12 @@ class PamphletsPage(StandardPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        entries = PamphletEntry.objects.all().order_by("-volume_number")
+        entries = self.entries.all()
         context["entries"] = entries
         return context
 
 
-class PamphletEntry(models.Model):
+class PamphletEntry(Orderable):
     title = models.CharField(max_length=255)
     pdf = models.ForeignKey(
         "wagtaildocs.Document",
