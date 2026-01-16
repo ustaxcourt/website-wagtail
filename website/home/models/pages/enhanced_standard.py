@@ -38,11 +38,22 @@ class StyledCalloutBlock(blocks.StructBlock):
         required=True, help_text="The title of this special element"
     )
     text = blocks.RichTextBlock(required=True, help_text="The paragraph content")
+    callout_type = blocks.ChoiceBlock(
+        required=True,
+        default="info",
+        choices=[
+            ("info", "Info"),
+            ("warning", "Warning"),
+            ("success", "Success"),
+            ("error", "Error"),
+            ("emergency", "Emergency"),
+        ],
+    )
 
     class Meta:
-        label = "Callout Banner"
+        label = "Callout Block"
         icon = "info-circle"
-        template = "styled_callout.html"
+        template = "callout_block.html"
 
 
 class AccordianBlock(blocks.StructBlock):
@@ -286,6 +297,10 @@ _BASE_BLOCK_TYPES = [
         "accordian",
         AccordianBlock(),
     ),
+    (
+        "callout",
+        StyledCalloutBlock(),
+    ),
 ]
 
 
@@ -366,20 +381,3 @@ class EnhancedStandardPage(ModerationMixin, Page):
     search_fields = Page.search_fields + [
         index.SearchField("body"),
     ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        if self.body:
-            sorted_body = []
-            for block in self.body:
-                if block.block_type == "questionanswers":
-                    # Sort the questionanswers data alphanumerically by question
-                    sorted_value = sorted(
-                        block.value, key=lambda x: str(x.get("question", ""))
-                    )
-                    print(sorted_value)
-                    sorted_body.append((block.block_type, sorted_value))
-                else:
-                    sorted_body.append((block.block_type, block.value))
-            self.body = sorted_body
-        return context
