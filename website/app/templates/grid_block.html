@@ -180,15 +180,19 @@
     function equalizeHeadersInRows() {
         // Skip header equalization on mobile (430px or less) - let headers wrap naturally
         if (window.innerWidth <= 430) {
-            // Reset any previously set min-heights
+            // Reset any previously set min-heights and remove placeholders
             document.querySelectorAll('.grid-style-cell-header').forEach(function(header) {
                 header.style.minHeight = '';
+                if (header.classList.contains('placeholder-header')) {
+                    header.remove();
+                }
             });
             return;
         }
 
-        document.querySelectorAll('.grid-style-layout.styled').forEach(function(grid) {
+        document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
             const cells = Array.from(grid.querySelectorAll('.grid-style-cell'));
+            const isUnstyled = grid.classList.contains('unstyled');
 
             // Get configured columns for calculating rows
             const configuredColumns = parseInt(grid.getAttribute('data-columns'));
@@ -220,7 +224,42 @@
                 rows.push(currentRow);
             }
 
-            // Equalize header heights within each row (styled grids always have headers)
+            // For unstyled grids, add placeholder headers in rows where at least one cell has a header
+            if (isUnstyled) {
+                rows.forEach(function(rowCells) {
+                    // Check if any cell in this row has a header with text
+                    const hasHeaderWithText = rowCells.some(function(cell) {
+                        const header = cell.querySelector('.grid-style-cell-header');
+                        return header && header.textContent.trim() !== '';
+                    });
+
+                    // If at least one cell has a header, ensure all cells have a header element
+                    if (hasHeaderWithText) {
+                        rowCells.forEach(function(cell) {
+                            let header = cell.querySelector('.grid-style-cell-header');
+                            if (!header) {
+                                // Create placeholder header
+                                header = document.createElement('h3');
+                                header.className = 'grid-style-cell-header unstyled placeholder-header';
+                                header.setAttribute('tabindex', '0');
+                                header.textContent = '';
+                                // Insert at the beginning of the cell
+                                cell.insertBefore(header, cell.firstChild);
+                            }
+                        });
+                    } else {
+                        // Remove any placeholder headers if no headers in this row
+                        rowCells.forEach(function(cell) {
+                            const header = cell.querySelector('.grid-style-cell-header.placeholder-header');
+                            if (header) {
+                                header.remove();
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Equalize header heights within each row
             rows.forEach(function(rowCells) {
                 const headers = rowCells
                     .map(cell => cell.querySelector('.grid-style-cell-header'))
