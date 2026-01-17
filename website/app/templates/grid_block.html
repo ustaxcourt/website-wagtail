@@ -44,7 +44,7 @@
     .grid-style-cell-header.styled {
         background-color: #f1f9fc;
         color: #000000;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 600;
         padding: 20px;
         margin: 0;
@@ -66,7 +66,7 @@
         background-color: #ffffff;
         color: #000000;
         font-size: 17px;
-        padding: 20px 32px;
+        padding: 15px 20px 20px;
         flex: 1;
     }
 
@@ -87,7 +87,7 @@
     .grid-style-cell-header.unstyled {
         background-color: transparent;
         color: #000000;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 600;
         padding: 20px;
         margin: 0;
@@ -106,7 +106,7 @@
         background-color: transparent;
         color: #000000;
         font-size: 17px;
-        padding: 20px 32px;
+        padding: 15px 20px 20px;
         flex: 1;
     }
 
@@ -123,6 +123,7 @@
     }
     .grid-style-cell-caption p{
         font-size: 14px;
+        margin-bottom: 0px;
     }
 
     @media (max-width: 820px) {
@@ -140,8 +141,11 @@
             border-right: none;
         }
 
-        .grid-style-cell-header {
-            font-size: 20px;
+        .grid-style-cell-header.styled {
+            font-size: 18px;
+        }
+        .grid-style-cell-header.unstyled {
+            font-size: 18px;
         }
 
         .grid-style-cell-body {
