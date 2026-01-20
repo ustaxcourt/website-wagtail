@@ -1,5 +1,5 @@
 from wagtail.documents.blocks import DocumentChooserBlock
-from .widgets import AdminSVGChooser
+from .widgets import AdminSVGChooser, AdminPDFChooser
 from django.core.exceptions import ValidationError
 from wagtail import blocks
 
@@ -11,6 +11,15 @@ class SVGDocumentChooserBlock(DocumentChooserBlock):
     """
 
     widget = AdminSVGChooser()
+
+
+class PDFDocumentChooserBlock(DocumentChooserBlock):
+    """
+    A custom DocumentChooserBlock that uses the AdminPDFChooser widget by default.
+    Only shows PDF files in the chooser.
+    """
+
+    widget = AdminPDFChooser()
 
 
 class SVGChooserBlock(blocks.StructBlock):

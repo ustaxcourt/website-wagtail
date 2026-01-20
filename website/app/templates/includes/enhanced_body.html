@@ -154,6 +154,8 @@
                 </div>
             {% elif block.block_type == 'accordian' %}
                 {% include "accordian_block.html" with block=block block_index=forloop.counter0 %}
+            {% elif block.block_type == 'button' %}
+                {% include "includes/styled_button.html" with block=block %}
             {% elif block.block_type == 'callout' %}
                 {% include "callout_block.html" with block=block %}
             {% else %}
