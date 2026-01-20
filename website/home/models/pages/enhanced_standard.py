@@ -74,53 +74,6 @@ class AccordianBlock(blocks.StructBlock):
         template = "accordian_block.html"
 
 
-class CardTileBlock(blocks.StructBlock):
-    """Individual card tile with icon and H2 header."""
-
-    icon = SVGDocumentChooserBlock(required=True, help_text="Card Icon")
-    icon_direction = blocks.ChoiceBlock(
-        required=False,
-        help_text="Icon placement, e.g. Top, Right, Bottom, Left. Default is Top.",
-        choices=[
-            ("top", "Top"),
-            ("right", "Right"),
-            ("bottom", "Bottom"),
-            ("left", "Left"),
-        ],
-        default="top",
-    )
-    card_header = blocks.CharBlock(required=True, help_text="Displays the card title")
-    breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
-    breadcrumb_url = blocks.StreamBlock(
-        [
-            ("internal_page", PageChooserBlock(help_text="Select a page to link to")),
-            ("external_url", blocks.URLBlock(help_text="Enter an external URL")),
-        ],
-        max_num=1,
-        min_num=1,
-        help_text="Choose either an internal page or external URL",
-        label="URL",
-    )
-
-    card_hover = blocks.BooleanBlock(
-        required=False, help_text="Enable hover effect", default=True
-    )
-
-    body = blocks.StreamBlock(
-        [
-            ("prose", blocks.RichTextBlock()),
-            ("accordian", AccordianBlock()),
-            ("image", ImageBlock()),
-        ],
-        required=False,
-        help_text="Add text or special elements to the body",
-    )
-
-    class Meta:
-        label = "Card Tile"
-        icon = "doc-full"
-
-
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
     (
@@ -304,6 +257,46 @@ _BASE_BLOCK_TYPES = [
 ]
 
 
+class AnchorPageBlock(blocks.StructBlock):
+    breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
+    body = blocks.StreamBlock(_BASE_BLOCK_TYPES, required=False)
+
+
+class CardTileBlock(blocks.StructBlock):
+    """Individual card tile with icon and H2 header."""
+
+    icon = SVGDocumentChooserBlock(required=True, help_text="Card Icon")
+    icon_direction = blocks.ChoiceBlock(
+        required=False,
+        help_text="Icon placement, e.g. Top, Right, Bottom, Left. Default is Top.",
+        choices=[
+            ("top", "Top"),
+            ("right", "Right"),
+            ("bottom", "Bottom"),
+            ("left", "Left"),
+        ],
+        default="top",
+    )
+    card_header = blocks.CharBlock(required=True, help_text="Displays the card title")
+    link = blocks.StreamBlock(
+        [
+            ("anchor_page", AnchorPageBlock()),
+            ("internal_page", PageChooserBlock()),
+            ("external_url", blocks.URLBlock()),
+        ],
+        max_num=1,
+        min_num=1,
+    )
+
+    card_hover = blocks.BooleanBlock(
+        required=False, help_text="Enable hover effect", default=True
+    )
+
+    class Meta:
+        label = "Card Tile"
+        icon = "doc-full"
+
+
 class CardTilesBlock(blocks.StructBlock):
     """
     Card Tiles container - displays up to 4 card tiles in a responsive grid.
@@ -371,3 +364,20 @@ class EnhancedStandardPage(ModerationMixin, Page):
     search_fields = Page.search_fields + [
         index.SearchField("body"),
     ]
+
+    def clean(self):
+        super().clean()
+        # Validate that [internal page] links don't point to this page, as [anchor page] should be selected instead =)
+        for block in self.body:
+            if block.block_type == "card_tiles":
+                for i, tile in enumerate(block.value.get("tiles", [])):
+                    for link in tile.get("link", []):
+                        if link.block_type == "internal_page" and link.value:
+                            if link.value.pk == self.pk:
+                                from django.core.exceptions import ValidationError
+
+                                raise ValidationError(
+                                    {
+                                        "body": f"Card Tile {i + 1}: The link type [Internal Page] should not point to itself. Use [Anchor Page] instead."
+                                    }
+                                )

@@ -486,7 +486,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% include "includes/enhanced_body.html" %}
+        {% include "includes/enhanced_body.html" with blocks=page.body %}
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}

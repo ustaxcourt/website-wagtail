@@ -1,10 +1,10 @@
 {% load wagtailcore_tags wagtailimages_tags filters static %}
 
 {# Reusable template for rendering a list of blocks #}
-{# Usage: {% include "includes/enhanced_body.html" %} - uses page.body by default #}
+{# Usage: {% include "includes/enhanced_body.html" with blocks=page.body %} #}
 {# Or: {% include "includes/enhanced_body.html" with blocks=block.value.default_content %} #}
 
-        {% for block in blocks|default:page.body %}
+        {% for block in blocks %}
             {% if block.block_type == 'h2' %}
                 <h2>{{ block.value }}</h2>
             {% elif block.block_type == 'h3' %}
@@ -160,8 +160,6 @@
                 {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix=suffix|default:"-accordian" %}
             {% elif block.block_type == 'callout' %}
                 {% include "callout_block.html" with block=block %}
-            {% elif block.block_type == 'button' %}
-                {% include "home/button_block.html" with block=block %}
             {% elif block.block_type == 'card_tiles' %}
                 {% include "includes/card_tiles.html" with block=block %}
             {% else %}

@@ -257,18 +257,20 @@
 
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
     {% for tile in block.value.tiles %}
+      {% with link=tile.link.0 %}
       <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %} {% if tile.icon_direction %}card-tile--icon-{{ tile.icon_direction }}{% else %}card-tile--icon-top{% endif %}"
            id="card-tile-{{ forloop.counter0 }}"
            role="button"
            tabindex="0"
            aria-label="{{ tile.card_header }}"
-           {% for link in tile.breadcrumb_url %}
-               {% if link.block_type == 'internal_page' %}
-                   href="{% pageurl link.value %}"
-               {% elif link.block_type == 'external_url' %}
-                   href="{{ link.value }}" data-is-external="true"
-               {% endif %}
-           {% endfor %}
+           data-link-type="{{ link.block_type }}"
+           {% if link.block_type == 'internal_page' %}
+               data-href="{% pageurl link.value %}"
+           {% elif link.block_type == 'external_url' %}
+               data-href="{{ link.value }}" data-is-external="true"
+           {% elif link.block_type == 'anchor_page' %}
+               data-breadcrumb-title="{{ link.value.breadcrumb_title }}"
+           {% endif %}
            >
         {% if tile.icon_direction == 'top' or tile.icon_direction == 'left' %}
         <img id="card-tile-icon-{{ forloop.counter0 }}"
@@ -285,29 +287,24 @@
         <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
         {% endif %}
       </div>
+      {% endwith %}
     {% endfor %}
 </div>
 
-{# Body content sections - shown when card is selected #}
+{# Body content sections - shown when card is selected (only for anchor_page links) #}
 {% for tile in block.value.tiles %}
+    {% with link=tile.link.0 %}
+    {% if link.block_type == 'anchor_page' %}
     <div class="card-tile__body" id="card-tile-body-{{ forloop.counter0 }}" style="display: none;">
-        {% for body_block in tile.body %}
-            {% if body_block.block_type == 'prose' %}
-                <div class="card-tile__body-prose">{{ body_block.value }}</div>
-            {% elif body_block.block_type == 'accordian' %}
-                {% include "accordian_block.html" with block=body_block suffix="-card-tile" block_index=forloop.counter0 %}
-            {% elif body_block.block_type == 'image' %}
-                {% include "blocks/image_block.html" with block=body_block %}
-            {% endif %}
-        {% empty %}
-            {# No body content for this tile #}
-        {% endfor %}
+        {% include "includes/enhanced_body.html" with blocks=link.value.body suffix="-card-tile" only %}
     </div>
+    {% endif %}
+    {% endwith %}
 {% endfor %}
 
 {# Default content - shown when no card is selected #}
 <div class="card-tiles__default-content" id="card-tiles-default-content">
-    {% include "includes/enhanced_body.html" with blocks=block.value.default_content suffix="-default-content" %}
+    {% include "includes/enhanced_body.html" with blocks=block.value.default_content suffix="-default-content" only %}
 </div>
 
 <script>
@@ -366,19 +363,25 @@
                 if (selected_icon) selected_icon.classList.add('selected');
                 if (selected_header) selected_header.classList.add('selected');
 
-                // Show the body content for the selected card
+                // Show the body content for the selected card (only for this_page links)
                 const selectedBody = document.getElementById('card-tile-body-' + cardIndex);
                 if (selectedBody) {
                     selectedBody.style.display = 'block';
                 }
 
                 // Trigger a custom event to notify the page title with the breadcrumb
-                if (selected_header) {
-                    const cardHeader = selected_header.textContent;
-                    window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
-                        detail: { breadcrumb: cardHeader }
-                    }));
+                // Use breadcrumb_title for anchor_page links, otherwise use card header
+                const linkType = selectedTile.getAttribute('data-link-type');
+                let breadcrumbText = selected_header ? selected_header.textContent : '';
+                if (linkType === 'anchor_page') {
+                    const customBreadcrumb = selectedTile.getAttribute('data-breadcrumb-title');
+                    if (customBreadcrumb) {
+                        breadcrumbText = customBreadcrumb;
+                    }
                 }
+                window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
+                    detail: { breadcrumb: breadcrumbText }
+                }));
             }
         }
 
@@ -387,13 +390,13 @@
             // Extract the card index from the tile id (e.g., "card-tile-0" -> "0")
             const cardIndex = tile_id.replace('card-tile-', '');
 
-            // Get the href attribute if it exists
-            const tileHref = tile.getAttribute('href');
-
-            // Check if this is an external link
+            // Get link type and href from data attributes
+            const linkType = tile.getAttribute('data-link-type');
+            const tileHref = tile.getAttribute('data-href');
             const isExternalLink = tile.getAttribute('data-is-external') === 'true';
 
-            if (isExternalLink && tileHref) {
+            // Handle external_url: navigate away
+            if (linkType === 'external_url' && tileHref) {
                 // For external links, create a temporary anchor and click it
                 // This allows link-handler.js to handle the redirect page logic
                 const tempLink = document.createElement('a');
@@ -405,38 +408,23 @@
                 return;
             }
 
-            // Build the new URL with the card query parameter
-            const url = new URL(window.location.href);
-
-            // Check if the card's href points to the same page (or no href)
-            const currentPath = window.location.pathname;
-            let targetPath = currentPath;
-
-            if (tileHref) {
-                try {
-                    const hrefUrl = new URL(tileHref, window.location.origin);
-                    targetPath = hrefUrl.pathname;
-                } catch (e) {
-                    // If href is relative, assume it's a different page
-                    targetPath = tileHref;
-                }
+            // Handle internal_page: navigate to the page
+            if (linkType === 'internal_page' && tileHref) {
+                window.location.href = tileHref;
+                return;
             }
 
-            // If pointing to the same page, avoid reload
-            if (!tileHref || targetPath === currentPath) {
+            // Handle anchor_page: stay on page, show body content
+            if (linkType === 'anchor_page') {
                 event.preventDefault();
 
                 // Update URL without reloading
+                const url = new URL(window.location.href);
                 url.searchParams.set('card', cardIndex);
                 window.history.pushState({ card: cardIndex }, '', url.toString());
 
                 // Manually select the card
                 selectCard(cardIndex);
-            } else {
-                // Different page - navigate with card parameter
-                const targetUrl = new URL(tileHref, window.location.origin);
-                targetUrl.searchParams.set('card', cardIndex);
-                window.location.href = targetUrl.toString();
             }
         }
 
