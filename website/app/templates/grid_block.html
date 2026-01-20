@@ -5,18 +5,6 @@
         margin: 2rem 0;
     }
 
-    .grid-style-container.width-small {
-        max-width: 600px;
-    }
-
-    .grid-style-container.width-medium {
-        max-width: 900px;
-    }
-
-    .grid-style-container.width-large {
-        max-width: 1200px;
-    }
-
     .grid-style-container.width-full {
         max-width: 100%;
         padding: 0px;
@@ -53,22 +41,43 @@
     .grid-style-cell-caption.styled {
         font-size: 14px;
         color: #000000;
-        font-style: italic;
         margin: 0;
         padding: 0 20px;
         padding-top: 20px;
     }
 
+    .grid-style-cell-caption.styled a {
+        color: #1a4480;
+    }
+
+    .grid-style-cell-caption.italic {
+        font-style: italic;
+    }
+
     .grid-style-cell-body.styled {
         background-color: #ffffff;
         color: #000000;
-        font-size: 17px;
+        font-size: 16px !important;
         padding: 15px 20px 20px;
         flex: 1;
     }
 
     .grid-style-cell-body.styled a {
         color: #1a4480;
+    }
+
+    .grid-style-cell-body.styled ul,
+    .grid-style-cell-body.styled ol {
+        font-size: 16px;
+    }
+
+    .grid-style-cell-body.styled ul li,
+    .grid-style-cell-body.styled ol li {
+        font-size: 16px;
+    }
+
+    .grid-style-cell-body.styled p {
+        font-size: 16px;
     }
 
     /*unstyled */
@@ -93,22 +102,39 @@
     .grid-style-cell-caption.unstyled {
         font-size: 14px;
         color: #000000;
-        font-style: italic;
         margin: 0;
         padding: 0 20px;
         padding-top: 20px;
     }
 
+    .grid-style-cell-caption.unstyled a {
+        color: #1a4480;
+    }
+
     .grid-style-cell-body.unstyled {
         background-color: transparent;
         color: #000000;
-        font-size: 17px;
+        font-size: 16px;
         padding: 15px 20px 20px;
         flex: 1;
     }
 
     .grid-style-cell-body.unstyled a {
         color: #1a4480;
+    }
+
+    .grid-style-cell-body.unstyled ul,
+    .grid-style-cell-body.unstyled ol {
+        font-size: 16px;
+    }
+
+    .grid-style-cell-body.unstyled ul li,
+    .grid-style-cell-body.unstyled ol li {
+        font-size: 16px;
+    }
+
+    .grid-style-cell-body.unstyled p {
+        font-size: 16px;
     }
 
     .grid-style-cell-body > *:first-child {
@@ -140,6 +166,10 @@
             min-width: 250px;
         }
 
+        .grid-style-cell {
+            grid-column: auto !important;
+        }
+
         .grid-style-cell.styled {
             border-right: none;
         }
@@ -152,7 +182,13 @@
         }
 
         .grid-style-cell-body {
-            font-size: 14px;
+            font-size: 16px;
+        }
+
+        .grid-style-cell-body p,
+        .grid-style-cell-body ul,
+        .grid-style-cell-body ol {
+            font-size: 16px;
         }
     }
 </style>
@@ -166,7 +202,7 @@
                 {% endif %}
 
                 {% if cell.caption %}
-                    <div class="grid-style-cell-caption {{ block.value.gridStyle }}" tabindex="0">{{ cell.caption|richtext }}</div>
+                    <div class="grid-style-cell-caption {{ block.value.gridStyle }}{% if cell.italic_caption %} italic{% endif %}" tabindex="0">{{ cell.caption|richtext }}</div>
                 {% endif %}
 
                 <div class="grid-style-cell-body {{ block.value.gridStyle }}" tabindex="0">
@@ -321,7 +357,7 @@
             if (isMobile) {
                 grid.style.setProperty('grid-template-columns', '1fr', 'important');
                 cells.forEach(function(cell) {
-                    cell.style.gridColumn = '';
+                    cell.style.removeProperty('grid-column');
                 });
             } else if (isTablet) {
                 const effectiveColumns = configuredColumns === 1 ? 1 : 2;
@@ -330,7 +366,7 @@
                     if (configuredColumns > 1 && totalCells % 2 === 1 && index === totalCells - 1) {
                         cell.style.gridColumn = 'span 2';
                     } else {
-                        cell.style.gridColumn = '';
+                        cell.style.removeProperty('grid-column');
                     }
                 });
             } else {

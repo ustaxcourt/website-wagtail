@@ -83,6 +83,11 @@ class GridCellBlock(blocks.StructBlock):
         features=["bold", "italic", "link"],
         help_text="Optional caption for this grid cell (links allowed)",
     )
+    italic_caption = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Make the caption text italic",
+    )
     body = blocks.StreamBlock(
         [
             ("prose", blocks.RichTextBlock()),
@@ -109,9 +114,6 @@ class GridBlock(blocks.StructBlock):
         required=True,
         default="full",
         choices=[
-            ("small", "Small (600px)"),
-            ("medium", "Medium (900px)"),
-            ("large", "Large (1200px)"),
             ("full", "Full Width"),
         ],
         help_text="Maximum width of the grid",
