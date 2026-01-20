@@ -178,13 +178,12 @@
     header#top-navigation .navigation-header > a {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
         text-decoration: none;
         background: none;
         border: none;
         cursor: pointer;
         height: 50px;
-        padding: 0 20px;
         font-size: 18px;
         font-weight: 600;
         color: white;
@@ -229,10 +228,10 @@
         border-top: 6px solid #1A4480;
     }
 
-    /*FIXME: this is an ugly hack to get the last menu to wrap but not the others */
-    #top-navigation > div.navigation-bar > ul > li:nth-child(6) ul {
-        min-width: inherit;
-        width: inherit;
+    /* Align the last navigation dropdown to the right to prevent overflow */
+    header#top-navigation #last-nav-list {
+        left: auto;
+        right: 0;
     }
 
     header#top-navigation .navigation-header:hover .navigation-list,
@@ -307,321 +306,351 @@
         width: auto;
         height: auto;
     }
-     /* Mobile Navigation Styles */
-     @media (max-width: 879px) {
-        header#top-navigation li.navigation-header.get-feedback {
-            display: flex;
-        }
 
-        header#top-navigation #navigation-search-form {
-            display: flex;
-        }
-
-        header#top-navigation .navigation-bar {
-            background-color: #005EA2;
-            position: relative;
-        }
-
-        header#top-navigation .nav-hamburger {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: white;
-            font-size: 24px;
-            position: absolute;
-            top: 10px;
-        }
-
-        header#top-navigation .navigation-header:hover .navigation-list,
-        header#top-navigation .navigation-header.active .navigation-list {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        header#top-navigation .navigation-header:hover {
-            z-index: 501;
-        }
-
-        header#top-navigation .navigation-header .navigation-list {
-            left: 10px;
-            top: -2px;
-        }
-
-        /* Mobile menu drawer */
-        header#top-navigation .navigation {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            max-width: 400px;
-            height: 100vh;
-            background-color: #005EA2;
-        }
-
-        header#top-navigation #mobile-search-form {
-            display: flex;
-            margin: 13px 16px 18px 16px;
-        }
-
-        header#top-navigation #mobile-search-form button {
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: var(--color-white) 1px solid;
-            border-radius: 0px 3px 3px 0px;
-        }
-        header#top-navigation #mobile-search-form button i {
-            font-size: 22px;
-        }
-        header#top-navigation #mobile-search-form input {
-            height: 44px;
-            width: 250px;
-            border-radius: 3px 0px 0px 3px;
-            padding: 11px 10px;
-            font-size: 20px;
-            color: #71767A;
-        }
-
-        header#top-navigation .navigation-bar .navigation {
-            flex-direction: column;
-            overflow-y: auto;
-            transition: left 0.3s ease-in-out;
-            z-index: 1000;
-            padding: 0;
-            justify-content: flex-start;
-        }
-
-        header#top-navigation .navigation.mobile-menu-open {
-            left: 0;
-        }
-
-        /* Mobile menu overlay */
-        header#top-navigation .mobile-menu-overlay {
-            display: none;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header .link {
-            white-space: normal;
-            height: auto;
-            min-height: 44px;
-            padding: 8px 20px;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header .link>div {
-            flex-wrap: wrap;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header .nav-link a {
-            white-space: normal;
-            padding: 8px 10px;
-            min-height: 44px;
-            height: auto;
-            display: flex;
-            align-items: start;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header .nav-link a i {
-            position: relative;
-            top: 14px;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header:not(#navigation-search-form):hover {
-            background-color: var(--color-primary-legacy);
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header:hover a,
-        header#top-navigation .navigation-bar .navigation .navigation-header:hover .link {
-            color: white;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header .link:hover {
-            color: white;
-        }
-
-        header#top-navigation .navigation-bar .navigation .navigation-header.displayed-navigation-header {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        header#top-navigation .mobile-menu-overlay.active {
-            display: block;
-        }
-
-        /* Close button in mobile menu */
-        header#top-navigation .mobile-menu-close {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 32px;
-            cursor: pointer;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        header#top-navigation .navigation-header {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            border-bottom: 2px solid #162E51;
-            height: auto;
-        }
-
-        header#top-navigation .navigation-header:first-of-type {
-            margin-top: 60px;
-        }
-
-        header#top-navigation .navigation-header .link,
-        header#top-navigation .navigation-header > a {
-            height: auto;
-            padding: 15px 20px;
-            text-align: left;
-            justify-content: flex-start;
-            font-size: 18px;
-        }
-
-        header#top-navigation .navigation-header.active .link {
-            background-color: #1A4480;
-        }
-
-        header#top-navigation .navigation-header .link .chevron-down,
-        header#top-navigation .navigation-header .link .chevron-up {
-            font-size: 16px;
-        }
-
-        /* Override hover behavior on mobile - only use .active class */
-        header#top-navigation .navigation-header .link .chevron-down {
-            display: inline;
-        }
-
-        header#top-navigation .navigation-header .link .chevron-up {
-            display: none;
-        }
-
-        header#top-navigation .navigation-header:hover .link .chevron-down {
-            display: inline;
-        }
-
-        header#top-navigation .navigation-header:hover .link .chevron-up {
-            display: none;
-        }
-
-        header#top-navigation .navigation-header.active .link .chevron-down {
-            display: none;
-        }
-
-        header#top-navigation .navigation-header.active .link .chevron-up {
-            display: inline;
-        }
-
-        header#top-navigation .navigation-list {
-            position: static;
-            display: none;
-            width: 100%;
-            background-color: #1A4480;
-            border-top: none;
-            padding-left: 20px;
-        }
-
-        header#top-navigation .navigation-header.active .navigation-list {
-            display: block;
-        }
-
-        header#top-navigation .navigation-list .nav-link {
-            padding: 0;
-            border: none;
-        }
-
-        header#top-navigation .navigation-list .nav-link a {
-            padding: 12px 20px;
-            font-size: 18px;
-            line-height: 24px;
-        }
-
-        header#top-navigation .navigation-list .nav-link a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Remove hover effects on mobile */
-        header#top-navigation .navigation-header:hover .navigation-list {
-            display: none;
-        }
-
-        header#top-navigation .navigation-header.active:hover .navigation-list {
-            display: block;
-        }
-
-        header#top-navigation #desktop-search-form {
-            display: none;
-        }
-
-        header#top-navigation .desktop-header-logo-section {
-            display: none;
-        }
+    /* Safe defaults: hide mobile-only elements and use desktop font-size.
+       These are overridden by view-* classes set via JavaScript. */
+    header#top-navigation .nav-hamburger,
+    header#top-navigation .mobile-header-logo-section,
+    header#top-navigation .mobile-menu-close {
+        display: none;
     }
 
-    @media (max-width: 905px) {
-        header#top-navigation .desktop-header-logo-section .logo-heading {
-            font-size: 24px;
-        }
-
-        header#top-navigation .desktop-header-logo-section .logo-subheading {
-            font-size: 12px;
-        }
+    header#top-navigation .navigation-header .link,
+    header#top-navigation .navigation-header > a {
+        font-size: 16px;
     }
 
-    @media (min-width: 880px) {
-        header#top-navigation .mobile-header-logo-section {
-            display: none;
-        }
+    /* ========================================
+       VIEW-BASED STYLES (JavaScript-controlled)
+       These replace media queries for state-affecting properties
+       ======================================== */
 
-        header#top-navigation .nav-hamburger {
-            display: none;
-        }
-
-        header#top-navigation .mobile-menu-close {
-            display: none;
-        }
-
-        header#top-navigation .navigation-header .link,
-        header#top-navigation .navigation-header > a {
-            font-size: 16px;
-        }
+    /* Mobile view: show hamburger, mobile logo, hide desktop logo */
+    header#top-navigation.view-mobile .nav-hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: white;
+        font-size: 24px;
+        position: absolute;
+        top: 10px;
     }
 
-
-    @media (min-width: 1024px) {
-        header#top-navigation #tablet-search-form {
-            display: none;
-        }
+    header#top-navigation.view-mobile .mobile-header-logo-section {
+        display: flex;
     }
 
-    @media (max-width: 1023px) {
-        header#top-navigation #desktop-search-container {
-            display: none;
-        }
-
-        header#top-navigation .desktop-header-logo-section .logo-subheadings {
-            display: flex;
-            flex-direction: row;
-        }
+    header#top-navigation.view-mobile .desktop-header-logo-section {
+        display: none;
     }
+
+    header#top-navigation.view-mobile .mobile-menu-close {
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 32px;
+        cursor: pointer;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    header#top-navigation.view-mobile #desktop-search-form {
+        display: none;
+    }
+
+    header#top-navigation.view-mobile #navigation-search-form {
+        display: flex;
+    }
+
+    /* Tablet view: hide mobile elements, show desktop elements */
+    header#top-navigation.view-tablet .nav-hamburger,
+    header#top-navigation.view-tablet .mobile-header-logo-section,
+    header#top-navigation.view-tablet .mobile-menu-close {
+        display: none;
+    }
+
+    header#top-navigation.view-tablet #tablet-search-form {
+        display: flex;
+    }
+
+    header#top-navigation.view-tablet #desktop-search-container {
+        display: none;
+    }
+
+    /* Desktop view: hide mobile elements, show desktop elements */
+    header#top-navigation.view-desktop .nav-hamburger,
+    header#top-navigation.view-desktop .mobile-header-logo-section,
+    header#top-navigation.view-desktop .mobile-menu-close {
+        display: none;
+    }
+
+    header#top-navigation.view-desktop #tablet-search-form {
+        display: none;
+    }
+
+     /* Mobile Navigation Styles - now using .view-mobile class instead of media query for visibility */
+     /* These styles apply the LAYOUT for mobile view (positioning, sizing, etc.) */
+     header#top-navigation.view-mobile li.navigation-header.get-feedback {
+        display: flex;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar {
+        background-color: #005EA2;
+        position: relative;
+     }
+
+     header#top-navigation.view-mobile .navigation-header:hover .navigation-list,
+     header#top-navigation.view-mobile .navigation-header.active .navigation-list {
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+     }
+
+     header#top-navigation.view-mobile .navigation-header:hover {
+        z-index: 501;
+     }
+
+     header#top-navigation.view-mobile .navigation-header .navigation-list {
+        left: 10px;
+        top: -2px;
+     }
+
+     /* Mobile menu drawer - class-based */
+     header#top-navigation.view-mobile .navigation {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        max-width: 400px;
+        height: 100vh;
+        background-color: #005EA2;
+     }
+
+     header#top-navigation.view-mobile #mobile-search-form {
+        display: flex;
+        margin: 13px 16px 18px 16px;
+     }
+
+     header#top-navigation.view-mobile #mobile-search-form button {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: var(--color-white) 1px solid;
+        border-radius: 0px 3px 3px 0px;
+     }
+
+     header#top-navigation.view-mobile #mobile-search-form button i {
+        font-size: 22px;
+     }
+
+     header#top-navigation.view-mobile #mobile-search-form input {
+        height: 44px;
+        width: 250px;
+        border-radius: 3px 0px 0px 3px;
+        padding: 11px 10px;
+        font-size: 20px;
+        color: #71767A;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation {
+        flex-direction: column;
+        overflow-y: auto;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000;
+        padding: 0;
+        justify-content: flex-start;
+     }
+
+     header#top-navigation.view-mobile .navigation.mobile-menu-open {
+        left: 0;
+     }
+
+     /* Mobile menu overlay */
+     header#top-navigation.view-mobile .mobile-menu-overlay {
+        display: none;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header .link {
+        white-space: normal;
+        height: auto;
+        min-height: 44px;
+        padding: 8px 20px;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header .link>div {
+        flex-wrap: wrap;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header .nav-link a {
+        white-space: normal;
+        padding: 8px 10px;
+        min-height: 44px;
+        height: auto;
+        display: flex;
+        align-items: start;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header .nav-link a i {
+        position: relative;
+        top: 14px;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header:not(#navigation-search-form):hover {
+        background-color: var(--color-primary-legacy);
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header:hover a,
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header:hover .link {
+        color: white;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header .link:hover {
+        color: white;
+     }
+
+     header#top-navigation.view-mobile .navigation-bar .navigation .navigation-header.displayed-navigation-header {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+     }
+
+     header#top-navigation.view-mobile .mobile-menu-overlay.active {
+        display: block;
+     }
+
+     header#top-navigation.view-mobile .navigation-header {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        border-bottom: 2px solid #162E51;
+        height: auto;
+     }
+
+     header#top-navigation.view-mobile .navigation-header:first-of-type {
+        margin-top: 60px;
+     }
+
+     header#top-navigation.view-mobile .navigation-header .link,
+     header#top-navigation.view-mobile .navigation-header > a {
+        height: auto;
+        padding: 15px 20px;
+        text-align: left;
+        justify-content: flex-start;
+        font-size: 18px;
+     }
+
+     header#top-navigation.view-mobile .navigation-header.active .link {
+        background-color: #1A4480;
+     }
+
+     header#top-navigation.view-mobile .navigation-header .link .chevron-down,
+     header#top-navigation.view-mobile .navigation-header .link .chevron-up {
+        font-size: 16px;
+     }
+
+     /* Override hover behavior on mobile - only use .active class */
+     header#top-navigation.view-mobile .navigation-header .link .chevron-down {
+        display: inline;
+     }
+
+     header#top-navigation.view-mobile .navigation-header .link .chevron-up {
+        display: none;
+     }
+
+     header#top-navigation.view-mobile .navigation-header:hover .link .chevron-down {
+        display: inline;
+     }
+
+     header#top-navigation.view-mobile .navigation-header:hover .link .chevron-up {
+        display: none;
+     }
+
+     header#top-navigation.view-mobile .navigation-header.active .link .chevron-down {
+        display: none;
+     }
+
+     header#top-navigation.view-mobile .navigation-header.active .link .chevron-up {
+        display: inline;
+     }
+
+     header#top-navigation.view-mobile .navigation-list {
+        position: static;
+        display: none;
+        width: 100%;
+        background-color: #1A4480;
+        border-top: none;
+        padding-left: 20px;
+     }
+
+     header#top-navigation.view-mobile .navigation-header.active .navigation-list {
+        display: block;
+     }
+
+     header#top-navigation.view-mobile .navigation-list .nav-link {
+        padding: 0;
+        border: none;
+     }
+
+     header#top-navigation.view-mobile .navigation-list .nav-link a {
+        padding: 12px 20px;
+        font-size: 18px;
+        line-height: 24px;
+     }
+
+     header#top-navigation.view-mobile .navigation-list .nav-link a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+     }
+
+     /* Remove hover effects on mobile */
+     header#top-navigation.view-mobile .navigation-header:hover .navigation-list {
+        display: none;
+     }
+
+     header#top-navigation.view-mobile .navigation-header.active:hover .navigation-list {
+        display: block;
+     }
+
+     /* REMOVED: These are now handled by .view-mobile class above:
+        - #desktop-search-form display:none
+        - .desktop-header-logo-section display:none
+     */
+
+    /* Tablet view: smaller logo text */
+    header#top-navigation.view-tablet .desktop-header-logo-section .logo-heading {
+        font-size: 24px;
+    }
+
+    header#top-navigation.view-tablet .desktop-header-logo-section .logo-subheading {
+        font-size: 12px;
+    }
+
+    header#top-navigation.view-tablet .desktop-header-logo-section .logo-subheadings {
+        display: flex;
+        flex-direction: row;
+    }
+
+    /* Desktop view: larger gap in nav links */
+    header#top-navigation.view-desktop .navigation-header .link,
+    header#top-navigation.view-desktop .navigation-header > a {
+        gap: 15px;
+    }
+
+    /* REMOVED all media queries - now using .view-mobile, .view-tablet, .view-desktop classes */
 
 </style>
 <header id="top-navigation">
@@ -632,7 +661,7 @@
                 <button class="nav-hamburger"
                     aria-label="Toggle mobile menu"
                     onclick="toggleMobileMenu()">
-                    <img src="{% static 'images/menu.svg' %}" alt="Menu"></img>
+                    <img src="{% static 'images/menu.svg' %}" alt="Menu">
                 </button>
 
                 <!-- mobile -->
@@ -782,10 +811,98 @@
     </div>
 </header>
 <script>
+    // View breakpoints - using CSS pixel values
+    // These thresholds determine which view mode we're in
+    const VIEW_BREAKPOINTS = {
+        MOBILE_MAX: 879,    // <= 879px is mobile
+        TABLET_MAX: 1024    // <= 1024px is tablet, > 1024px is desktop
+    };
+
+    // Track current view to avoid redundant calls
+    let currentView = null;
+
+    /**
+     * Determine the current view mode using matchMedia.
+     * This matches exactly how CSS media queries evaluate width,
+     * avoiding discrepancies between window.innerWidth and clientWidth.
+     */
+    function getCurrentViewMode() {
+        // matchMedia evaluates the same way CSS does - no scrollbar edge cases
+        if (window.matchMedia(`(max-width: ${VIEW_BREAKPOINTS.MOBILE_MAX}px)`).matches) {
+            return 'mobile';
+        } else if (window.matchMedia(`(max-width: ${VIEW_BREAKPOINTS.TABLET_MAX}px)`).matches) {
+            return 'tablet';
+        } else {
+            return 'desktop';
+        }
+    }
+
+    /**
+     * Called when entering mobile view (width <= 879px)
+     */
+    function entered_mobile_view() {
+        const header = document.getElementById('top-navigation');
+        header.classList.remove('view-tablet', 'view-desktop');
+        header.classList.add('view-mobile');
+    }
+
+    /**
+     * Called when entering tablet view (880px - 1024px)
+     */
+    function entered_tablet_view() {
+        const header = document.getElementById('top-navigation');
+        header.classList.remove('view-mobile', 'view-desktop');
+        header.classList.add('view-tablet');
+
+        closeMobileMenu();
+    }
+
+    /**
+     * Called when entering desktop view (width > 1024px)
+     */
+    function entered_desktop_view() {
+        const header = document.getElementById('top-navigation');
+        header.classList.remove('view-mobile', 'view-tablet');
+        header.classList.add('view-desktop');
+
+        closeMobileMenu();
+    }
+
+    /**
+     * Check current view and call appropriate callback if view changed
+     */
+    function checkAndUpdateView() {
+        const newView = getCurrentViewMode();
+        if (newView !== currentView) {
+            currentView = newView;
+
+            switch (newView) {
+                case 'mobile':
+                    entered_mobile_view();
+                    break;
+                case 'tablet':
+                    entered_tablet_view();
+                    break;
+                case 'desktop':
+                    entered_desktop_view();
+                    break;
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAndUpdateView();
+    });
+    // check immediately in case DOMContentLoaded already fired
+    if (document.readyState !== 'loading') {
+        checkAndUpdateView();
+    }
+    window.addEventListener('resize', checkAndUpdateView);
+
     function toggleMobileMenu() {
         const navigation = document.querySelector('.navigation');
         const overlay = document.querySelector('.mobile-menu-overlay');
-        navigation.classList.toggle('mobile-menu-open');
+        navigation.classList.toggle('mobile-menu-open') ;
         overlay.classList.toggle('active');
 
         // Prevent body scroll when mobile menu is open
@@ -817,16 +934,15 @@
         // Update aria-expanded attribute
         button.setAttribute('aria-expanded', !isActive);
 
-        // Toggle active state
         header.classList.toggle('active');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         const navigationHeaders = document.querySelectorAll('.navigation-header');
 
-        // Check if we're on mobile
+        // Check if we're on mobile - use matchMedia to match getCurrentViewMode logic
         function isMobile() {
-            return window.innerWidth <= 853;
+            return getCurrentViewMode() === 'mobile';
         }
 
         navigationHeaders.forEach(header => {
@@ -907,20 +1023,8 @@
                     header.classList.remove('active');
                 });
 
-                // Close mobile menu
                 closeMobileMenu();
             }
-        });
-
-        // Handle window resize
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                if (!isMobile()) {
-                    closeMobileMenu();
-                }
-            }, 250);
         });
     });
 </script>
