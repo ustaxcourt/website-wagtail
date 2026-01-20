@@ -1,15 +1,18 @@
-
 /****
  * PDF and link handlers which are used to track links and PDFs and open them in new tabs
  */
 function setupLinkHandlers() {
     // Use event delegation instead of querySelectorAll
     document.addEventListener('click', function(event) {
-        const link = event.target.closest('a');
-        if (!link) return;
+        const link = event.target.closest('a, [data-is-link="true"]');
+        if (!link) {
+            return;
+        }
 
-        const href = link.getAttribute('href');
-        if (!href) return;
+        let href = link.getAttribute('href');
+        if (!href) {
+            return;
+        }
 
         // For same-domain PDFs, let GA track first
         if (isSamedomain(href) && isPdf(href)) {
