@@ -135,11 +135,17 @@ function insertNewEntryAtPosition(position) {
 
   console.log("Clicking add button:", addButton);
 
+  // Store current scroll position to prevent jumping
+  const scrollPosition = window.scrollY;
+
   // Click the add button to create a new entry
   addButton.click();
 
   // Wait for the new entry to be added to the DOM
   setTimeout(() => {
+    // Restore scroll position immediately to prevent the jump to bottom
+    window.scrollTo(0, scrollPosition);
+
     const firstChild = inlinePanel.querySelector('[id^="inline_child_entries-"]');
     if (!firstChild) {
       console.error("Could not find any entries after adding");
@@ -166,11 +172,16 @@ function insertNewEntryAtPosition(position) {
     // Update sort_order values for all entries
     updateSortOrders(childrenContainer);
 
+    // Update all entry labels to reflect their new positions
+    updateEntryLabels(childrenContainer);
+
     // Refresh insert buttons
     addInsertButtons(inlinePanel);
 
-    // Scroll the new entry into view
-    newEntry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Now scroll smoothly to the new entry
+    setTimeout(() => {
+      newEntry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
   }, 100);
 }
 
@@ -196,6 +207,44 @@ function updateSortOrders(childrenContainer) {
   });
 }
 
+function updateEntryLabels(childrenContainer) {
+  const children = Array.from(childrenContainer.children).filter(
+    child => child.id && child.id.startsWith('inline_child_entries-')
+  );
+
+  children.forEach((child, index) => {
+    // Find the label/heading that displays "Entries X"
+    // It's typically in a heading or label element within the inline child
+    const headingSelectors = [
+      'h2',
+      'h3',
+      '.object-title',
+      '.inline-child__header',
+      '[class*="title"]',
+      'summary',
+      'legend'
+    ];
+
+    let heading = null;
+    for (const selector of headingSelectors) {
+      heading = child.querySelector(selector);
+      if (heading && heading.textContent.includes('Entries')) {
+        break;
+      }
+    }
+
+    if (heading) {
+      // Update the text to show the correct position
+      // The text is usually "Entries X" where X is the old number
+      const newLabel = `Entries ${index + 1}`;
+      heading.textContent = heading.textContent.replace(/Entries \d+/, newLabel);
+      console.log(`Updated label for ${child.id} to "${newLabel}"`);
+    } else {
+      console.warn(`Could not find heading for ${child.id}`);
+    }
+  });
+}
+
 function observeInlinePanelChanges(inlinePanel) {
   const firstChild = inlinePanel.querySelector('[id^="inline_child_entries-"]');
   if (!firstChild) {
@@ -212,15 +261,21 @@ function observeInlinePanelChanges(inlinePanel) {
   // Use MutationObserver to detect when entries are added, removed, or reordered
   const observer = new MutationObserver((mutations) => {
     let shouldRefresh = false;
+    let shouldUpdateLabels = false;
 
     mutations.forEach((mutation) => {
-      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      if (mutation.type === 'childList') {
         // Check if any added nodes are inline panel children
         mutation.addedNodes.forEach(node => {
           if (node.nodeType === 1 && node.id && node.id.startsWith('inline_child_entries-')) {
             shouldRefresh = true;
           }
         });
+
+        // If nodes were moved (removed and re-added), update labels
+        if (mutation.removedNodes.length > 0) {
+          shouldUpdateLabels = true;
+        }
       }
     });
 
@@ -230,6 +285,14 @@ function observeInlinePanelChanges(inlinePanel) {
       observeInlinePanelChanges.refreshTimeout = setTimeout(() => {
         addInsertButtons(inlinePanel);
       }, 100);
+    }
+
+    if (shouldUpdateLabels) {
+      // Update labels after drag-and-drop reordering
+      clearTimeout(observeInlinePanelChanges.labelTimeout);
+      observeInlinePanelChanges.labelTimeout = setTimeout(() => {
+        updateEntryLabels(childrenContainer);
+      }, 150);
     }
   });
 
