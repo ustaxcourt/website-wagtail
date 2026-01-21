@@ -140,8 +140,8 @@
     role="region"
     aria-labelledby="btn-{{block_index}}"
   >
-    {% for block in block.value.description %} {% if block.block_type == 'prose'
-    %}
+    {% for block in block.value.description %}
+    {% if block.block_type == 'prose'%}
     <div class="rich-text">{{ block.value }}</div>
 
     {% elif block.block_type == 'callout' %}
