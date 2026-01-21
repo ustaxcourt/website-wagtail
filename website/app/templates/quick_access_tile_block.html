@@ -178,7 +178,7 @@
     /* Desktop-Bottom becomes Mobile-Right */
     .quick-access-tile.icon-desktop_bottom_mobile_right {
       grid-template-columns: auto auto;
-      gap: 0;
+      gap: 16px;
       justify-content: start;
     }
 
@@ -205,7 +205,7 @@
   }
 </style>
 
-<a href="{{ value.related_page.url|default:value.external_url }}"
+<!-- <a href="{{ value.related_page.url|default:value.external_url }}"
   class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
   aria-label="{{ value.title }}"
 >
@@ -221,4 +221,23 @@
       <div class="tile-description">{{ value.description|richtext }}</div>
     </div>
   </div>
-</a>
+</a> -->
+
+{% with tile_url=value.related_page.url|default:value.external_url %}
+  <a href="{{ tile_url }}"
+     class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if value.related_page and request.path == tile_url %}is-active{% endif %}"
+     aria-label="{{ value.title }}">
+    <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
+                icon-{{ icon_position }} align-{{ value.content_alignment }}" tabindex="0">
+      {% if value.icon %}
+        <div class="tile-icon">
+          {% include_svg value.icon.svg_file %}
+        </div>
+      {% endif %}
+      <div class="tile-content">
+        <h2>{{ value.title }}</h2>
+        <div class="tile-description">{{ value.description|richtext }}</div>
+      </div>
+    </div>
+  </a>
+{% endwith %}
