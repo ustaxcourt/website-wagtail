@@ -169,6 +169,9 @@
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
+        #filter-toggle-btn:focus-visible {
+            border: .25rem solid #2491ff;
+        }
 
         #filter-toggle-btn img {
             height: 15px;
@@ -231,6 +234,11 @@
         }
         .search-form button:focus {
             outline: none;
+        }
+
+        .search-form button:focus-visible {
+            outline: .25rem solid #2491ff;
+            outline-offset: 0.125rem;
         }
 
         @media (max-width: 1023px){
@@ -496,13 +504,30 @@
             xhttp.send(data);
         }
 
-        search_form_icon.addEventListener('click', () => {
-            common_handler(searchInput.value);
-        });
+    let selectedSuggestionIndex = -1;
+    let toastTimeout = null;
+    const searchForm = document.getElementById('search-form');
+
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const query = searchInput.value.trim();
+
+        const suggestions = suggestionsDiv.querySelectorAll('.suggestionEntry');
+        if (suggestions.length > 0) {
+            suggestions[0].click();
+            suggestionsDiv.classList.add('hidden');
+            suggestionsDiv.innerHTML = '';
+            selectedSuggestionIndex = -1;
+            searchInput.value = '';
+        } else if (query.length > 0) {
+            common_handler(query);
+            showToast("No Results Found", 2000);
+            searchInput.value = '';
+        }
+    });
 
 
-        let selectedSuggestionIndex = -1;
-        let toastTimeout = null;
 
         if (filterButton && mobileNav) {
             filterButton.addEventListener('click', function() {
@@ -679,27 +704,11 @@
                     suggestionsDiv.classList.add('hidden');
                     suggestionsDiv.innerHTML = '';
                     selectedSuggestionIndex = -1;
+                    searchInput.value = '';
                 }
             }
         });
 
-        document.addEventListener('click', function(event) {
-            const clickedOnSearchInput = event.target.closest('#search-input');
-
-            let is_hidden = suggestionsDiv.classList.contains('hidden');
-            let is_visible = !is_hidden;
-
-            if (is_visible) {
-
-                const clickedOnSuggestions = event.target.closest('#suggestions');
-
-                if (!clickedOnSuggestions && !clickedOnSearchInput) {
-                    suggestionsDiv.classList.add('hidden');
-                    suggestionsDiv.innerHTML = '';
-                    selectedSuggestionIndex = -1;
-                }
-            }
-        });
     });
 
 

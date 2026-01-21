@@ -1948,7 +1948,7 @@ class PressReleasesPageInitializer(PageInitializer):
                             homepage_display_expiration_date=expiration_datetime,
                             created_by=current_user,
                             updated_by=current_user,
-                            banner_options="none",
+                            category="news",
                             live=True,
                         )
 
