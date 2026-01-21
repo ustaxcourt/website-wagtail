@@ -44,7 +44,10 @@
   .callout-content {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 0;
     background-color: var(--color-accent-light);
+      word-break: break-word;
   }
   .callout-content h3 {
     margin-block-start: 5px;
@@ -68,6 +71,7 @@
   .callout-content .callout-title {
     text-transform: uppercase;
     font-weight: bold;
+    word-break: break-word;
   }
 
   .callout-icon {
@@ -81,6 +85,7 @@
     mask-size: contain;
     width: 32px;
     height: 32px;
+    flex-shrink: 0;
   }
   .info .callout-icon {
     -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');

@@ -1,0 +1,48 @@
+{% load static %}
+{% load wagtailcore_tags navigation_tags custom_tags %}
+
+<style>
+  .usa-button.styled-button{
+    display: flex;
+    align-items: center;
+    color: var(--color-white);
+    padding: 10px 20px;
+
+    min-height: 44px;
+    width: fit-content;
+    word-break: break-word;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.025em;
+  }
+
+  .usa-button.styled-button .button-icon {
+    background-color: var(--color-white);
+    width: 24px;
+    height: 24px;
+  }
+
+  .usa-button.styled-button.no-hover:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+</style>
+
+{% for link_item in block.value.url %}
+<a class="usa-button styled-button {% if not block.value.button_hover %}no-hover{% endif %}"
+   data-is-link="true"
+   {% if link_item.block_type == 'external_url' %}
+      href="{{ link_item.value }}"
+   {% elif link_item.block_type == 'internal_page' %}
+      href="{% pageurl link_item.value %}"
+   {% elif link_item.block_type == 'internal_pdf' %}
+      href="{{ link_item.value.url }}"
+   {% endif %}>
+
+  {% if block.value.icon and block.value.icon.url %}
+    <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+  {% endif %}
+  {{ block.value.text }}
+</a>
+{% endfor %}
