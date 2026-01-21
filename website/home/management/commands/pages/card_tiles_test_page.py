@@ -317,13 +317,33 @@ class CardTilesTestPageInitializer(PageInitializer):
             },
         }
 
+        # Content before CardTiles
+        intro_paragraph = {
+            "type": "paragraph",
+            "value": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>",
+        }
+
+        # Content after CardTiles
+        accordion_block = {
+            "type": "accordian",
+            "value": {
+                "title": "Additional Information (Accordion)",
+                "description": [
+                    {
+                        "type": "prose",
+                        "value": "<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>",
+                    },
+                ],
+            },
+        }
+
         home_page.add_child(
             instance=EnhancedStandardPage(
                 title=title,
                 slug=self.slug,
                 seo_title=title,
                 search_description="Test page for CardTiles with all block types",
-                body=[card_tiles_block],
+                body=[intro_paragraph, card_tiles_block, accordion_block],
             )
         )
 
