@@ -1,4 +1,40 @@
+<style>
+    {% comment %} Styling will be done here for ease of access then will be moved to the enhanced_body.html file to match style {% endcomment %}
+    {% comment %} Style as expcted, then clean it up to prevent duplicates in the enhanced_body.html file {% endcomment %}
+
+    .table-container caption {
+        text-align: left;
+        margin-bottom: 15px;
+        font-size: 17px;
+    }
+
+    @media (max-width: 768px) {
+        .table-container caption{
+            font-size: 16px;
+        }
+    }
+
+</style>
 <div class="table-container">
+    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %}">
+        {% if block.value.caption_location == "top" and block.value.table.caption %}<caption>{{ block.value.table.caption }}</caption>{% endif %}
+        <thead>
+            <tr>
+                {% for col in block.value.table.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in block.value.table.rows %}
+                <tr>
+                    {% for value in row %}<td>{{ value }}</td>{% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if block.value.caption_location == "bottom" and block.value.table.caption %}<caption>{{ block.value.table.caption }}</caption>{% endif %}
+</div>
+
+{% comment %} <div class="table-container">
     <table class="enhanced-table">
         {% if block.value.caption %}<caption>{{ block.value.caption }}</caption>{% endif %}
         <thead>
@@ -14,4 +50,4 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
+</div> {% endcomment %}

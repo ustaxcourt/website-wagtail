@@ -257,8 +257,9 @@
             color: white;
         }
 
-        .enhanced-page .enhanced-table:not(.unstyled) th,
-        .enhanced-page .enhanced-table:not(.unstyled) td {
+        {% comment %} My thinking is that this should only apply to unstyled-borderless tables {% endcomment %}
+        .enhanced-page .enhanced-table:not(.unstyled-borderless) th,
+        .enhanced-page .enhanced-table:not(.unstyled-borderless) td {
             padding: 1rem;
             text-align: left;
             border: 1px solid #dfe1e2;

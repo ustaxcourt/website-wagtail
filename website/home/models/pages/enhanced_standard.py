@@ -21,29 +21,6 @@ from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
 
 
-table_value_types = [
-    ("text", blocks.RichTextBlock()),
-]
-
-
-class IndentStyle(models.TextChoices):
-    INDENTED = "indented"
-    UNINDENTED = "unindented"
-
-
-class TableListBlock(blocks.StructBlock):
-    table = TypedTableBlock(table_value_types)
-
-    style = blocks.ChoiceBlock(
-        choices=[
-            ("styled", "Styled Table"),
-            ("borderlessUnstyled", "Borderless Unstyled Table"),
-            ("unstyled", "Unstyled Table"),
-        ],
-        default="styled",
-    )
-
-
 class StyledCalloutBlock(blocks.StructBlock):
     heading = blocks.CharBlock(
         required=True, help_text="The title of this special element"
@@ -83,6 +60,47 @@ class AccordianBlock(blocks.StructBlock):
     class Meta:
         label = "Accordion Block"
         template = "accordian_block.html"
+
+
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+    # ("callout", StyledCalloutBlock()),
+    (
+        "components",
+        blocks.StreamBlock(
+            [
+                ("text", blocks.RichTextBlock()),
+                ("callout", StyledCalloutBlock()),
+                ("Accordian", AccordianBlock()),
+            ]
+        ),
+    ),
+]
+
+
+class IndentStyle(models.TextChoices):
+    INDENTED = "indented"
+    UNINDENTED = "unindented"
+
+
+class TableListBlock(blocks.StructBlock):
+    table = TypedTableBlock(table_value_types)
+    caption_location = blocks.ChoiceBlock(
+        choices=[("top", "Top"), ("bottom", "Bottom")],
+        default="top",
+    )
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("styled", "Styled Table"),
+            ("borderlessUnstyled", "Borderless Unstyled Table"),
+            ("unstyled", "Unstyled Table"),
+        ],
+        default="styled",
+    )
+
+    class Meta:
+        label = "New Table"
+        icon = "table"
 
 
 class EnhancedStandardPage(ModerationMixin, Page):
