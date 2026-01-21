@@ -31,17 +31,29 @@
         display: flex;
         align-items: flex-start;
         gap: 12px;
-        padding: 16px 0;
+        padding: 14px 0;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .grid-container {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 25px;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-icon {
         flex-shrink: 0;
         width: 24px;
         height: 24px;
+        color: #000;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-text {
         flex: 1;
+        font-size: 17px;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .alert-text strong {
+        font-size: 17px;
     }
 
     #yellow-news-banner-container .yellow-news-banner .alert-text p {
@@ -63,6 +75,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        color: #000;
+    }
+
+    #yellow-news-banner-container .yellow-news-banner .close-btn svg {
+        color: #000;
+        stroke: #000;
     }
 
     #yellow-news-banner-container .yellow-news-banner .close-btn:hover {
@@ -71,6 +89,33 @@
 
     #yellow-news-banner-container .yellow-news-banner .close-btn {
         padding: 0 !important;
+    }
+
+    /* Desktop alignment with USTC logo */
+    @media (min-width: 880px) {
+        #yellow-news-banner-container .yellow-news-banner .grid-container {
+            padding-left: 26px;
+        }
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        #yellow-news-banner-container .yellow-news-banner .grid-container {
+            padding: 0 16px;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-content {
+            gap: 12px;
+            padding: 14px 0;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-text {
+            font-size: 16px;
+        }
+
+        #yellow-news-banner-container .yellow-news-banner .alert-text strong {
+            font-size: 16px;
+        }
     }
 
 </style>
@@ -82,6 +127,12 @@
     <div id="yellow-news-banner-container"></div>
     <script type="text/javascript">
         (function() {
+            // Timezone offset from Django settings (in milliseconds)
+            // This offset is applied to banner start/end dates to account for server timezone handling.
+            // TODO: Consider refactoring to use proper UTC storage and timezone-aware serialization from Django
+            // See: https://docs.djangoproject.com/en/5.2/topics/i18n/timezones/
+            const TIMEZONE_OFFSET_MS = {{ timezone_offset_ms|default:"0" }};
+
             // Parse the news data from the JSON script tag
             const newsDataElement = document.getElementById('yellow-news-data');
             if (!newsDataElement) return;
@@ -104,9 +155,10 @@
                     return true;
                 }
 
-                // Parse ISO dates - these will be converted to user's local timezone automatically
-                const startDate = item.banner_start_date ? new Date(item.banner_start_date) : null;
-                const endDate = item.banner_end_date ? new Date(item.banner_end_date) : null;
+                // Parse ISO dates and apply timezone offset
+                // Dates from the server are serialized; this offset adjusts for server timezone handling
+                const startDate = item.banner_start_date ? new Date(new Date(item.banner_start_date).getTime() + TIMEZONE_OFFSET_MS) : null;
+                const endDate = item.banner_end_date ? new Date(new Date(item.banner_end_date).getTime() + TIMEZONE_OFFSET_MS) : null;
 
                 // Check if current time is within the date range
                 const afterStart = !startDate || now >= startDate;
@@ -131,19 +183,20 @@
                 : '';
 
             const bannerHTML = `
-            <div class="yellow-news-banner" id="${bannerId}">
+            <div
+                class="yellow-news-banner"
+                id="${bannerId}"
+                tabindex="0"
+                aria-label='High Priority Banner. ${itemToShow.title}. ${itemToShow.description}'
+                role="region">
                 <div class="grid-container">
                     <div class="alert-content">
-                        <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
+                        <img src="{% static 'images/icons/info_icon.svg' %}" alt="Alert" class="alert-icon" />
                         <div class="alert-text">
                             <strong>${itemToShow.title}</strong> ${itemToShow.description}${documentLink}
                         </div>
                         <button class="close-btn" onclick="closeYellowBanner(${itemToShow.id})" aria-label="Close banner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>

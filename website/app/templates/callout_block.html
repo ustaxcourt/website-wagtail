@@ -1,0 +1,136 @@
+{% load static %}
+
+<style>
+  .styled-callout {
+    background: #F1F9FC;
+    border-left: 8px solid #07648D;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0px;
+  }
+  .styled-callout.info {
+    background-color: #e7f6f8;
+    border-left-color: #00bde3;
+  }
+  .styled-callout.warning {
+    background-color: #faf3d1;
+    border-left-color: #ffbe2e;
+  }
+  .styled-callout.success {
+    background-color: #ecf3ec;
+    border-left-color: #00a91c;
+  }
+  .styled-callout.error {
+    background-color: #f4e3db;
+    border-left-color: #d54309;
+  }
+  .styled-callout.emergency {
+    background-color: #9c3d10;
+    border-left-color: #9c3d10;
+  }
+
+  .callout-items {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    padding-top: 16px;
+    padding-bottom: 16px;
+
+  }
+  .callout-items img {
+    margin-top: 10px
+  }
+  .callout-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    background-color: var(--color-accent-light);
+      word-break: break-word;
+  }
+  .callout-content h3 {
+    margin-block-start: 5px;
+    margin-left: 1rem;
+    padding: 0.5rem 1rem 0 0;
+    color: black;
+    margin-bottom: 0.5rem;
+  }
+  .emergency .callout-content h3 {
+    color: white;
+  }
+
+  .callout-content p {
+    margin-top: 0px;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .emergency .callout-content p {
+    color: white;
+  }
+  .callout-content .callout-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    word-break: break-word;
+  }
+
+  .callout-icon {
+    margin-top: 10px;
+    background-color: black;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .info .callout-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');
+    mask-image: url('/static/uswds/img/usa-icons/info.svg');
+  }
+  .warning .callout-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/warning.svg');
+    mask-image: url('/static/uswds/img/usa-icons/warning.svg');
+  }
+  .success .callout-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/check_circle.svg');
+    mask-image: url('/static/uswds/img/usa-icons/check_circle.svg');
+  }
+  .error .callout-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');
+    mask-image: url('/static/uswds/img/usa-icons/info.svg');
+  }
+  .emergency .callout-icon {
+    filter: brightness(0) saturate(100%) invert(100%);
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/info.svg');
+    mask-image: url('/static/uswds/img/usa-icons/info.svg');
+  }
+
+  @media (max-width: 768px) {
+    .callout-items img{
+      width: 24px;
+      height: 24px;
+    }
+    .callout-icon {
+      min-width: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+</style>
+
+<div>
+  <div class="styled-callout {{ block.value.callout_type }}" role="region" aria-label="{{block.value.callout_type}} type banner title reads {{ block.value.heading }}" tabindex="0">
+    <div class="callout-items" style="margin-right: 1rem;">
+      <span class="callout-icon" aria-hidden="true"></span>
+      <div class="callout-content">
+        <h3 id="callout-heading-{{ block.value.callout_type }}" class="callout-title">{{ block.value.heading }}</h3>
+        <p>{{ block.value.text }}</p>
+      </div>
+    </div>
+  </div>
+</div>
