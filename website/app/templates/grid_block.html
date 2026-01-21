@@ -312,7 +312,7 @@
                     rowCells.forEach(function(cell) {
                         let header = cell.querySelector('.grid-style-cell-header');
                         if (!header) {
-                            header = document.createElement('h3');
+                            header = document.createElement('div');
                             header.className = 'grid-style-cell-header ' + gridStyle + ' placeholder-header';
                             header.setAttribute('tabindex', '0');
                             header.textContent = '';
