@@ -206,10 +206,10 @@
 </style>
 
 <a href="{{ value.related_page.url|default:value.external_url }}"
-  class="quick-access-tile-link {% if value.tile_hover_enabled %}hover-enabled{% endif %}"
+  class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
   aria-label="{{ value.title }}"
 >
-  <div class="quick-access-tile {% if value.tile_hover_enabled %}hover-enabled{% endif %}
+  <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
            icon-{{ icon_position }} align-{{ value.content_alignment }}">
     {% if value.icon %}
       <div class="tile-icon">

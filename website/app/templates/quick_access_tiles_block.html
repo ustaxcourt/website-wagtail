@@ -17,6 +17,7 @@
   @media (max-width: 992px) {
     .quick-access-tiles-grid {
       grid-template-columns: repeat(2, 1fr);
+      margin: 20px 25px;
     }
   }
 
@@ -24,6 +25,7 @@
   @media (max-width: 768px) {
     .quick-access-tiles-grid {
       grid-template-columns: 1fr;
+      margin: 16px;
     }
   }
 </style>
@@ -31,7 +33,7 @@
 <div class="quick-access-tiles-container">
   <div class="quick-access-tiles-grid">
     {% for tile in block.value.tiles %}
-      {% include "quick_access_tile_block.html" with value=tile icon_position=block.value.icon_position %}
+      {% include "quick_access_tile_block.html" with value=tile icon_position=block.value.icon_position tiles_hover_enabled=block.value.tiles_hover_enabled %}
     {% endfor %}
   </div>
 </div>

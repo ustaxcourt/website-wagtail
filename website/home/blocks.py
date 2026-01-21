@@ -52,12 +52,6 @@ class QuickAccessTileBlock(blocks.StructBlock):
     )
     icon = SVGChooserBlock(required=True)
 
-    tile_hover_enabled = blocks.BooleanBlock(
-        required=False,
-        default=True,
-        help_text="If checked, hover treatment is enabled.",
-    )
-
     content_alignment = blocks.ChoiceBlock(
         choices=[("center", "Center"), ("left", "Left"), ("right", "Right")],
         default="center",
@@ -90,6 +84,12 @@ class QuickAccessTileBlock(blocks.StructBlock):
 
 
 class QuickAccessTilesBlock(blocks.StructBlock):
+    tiles_hover_enabled = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="If checked, hover treatment is enabled for ALL tiles in this set.",
+    )
+
     icon_position = blocks.ChoiceBlock(
         choices=[
             ("desktop_top_mobile_left", "Desktop-Top / Mobile-Left"),
