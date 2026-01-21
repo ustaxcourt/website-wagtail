@@ -31,6 +31,19 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
+class TableListBlock(blocks.StructBlock):
+    table = TypedTableBlock(table_value_types)
+
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("styled", "Styled Table"),
+            ("borderlessUnstyled", "Borderless Unstyled Table"),
+            ("unstyled", "Unstyled Table"),
+        ],
+        default="styled",
+    )
+
+
 class StyledCalloutBlock(blocks.StructBlock):
     heading = blocks.CharBlock(
         required=True, help_text="The title of this special element"
@@ -178,6 +191,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
             (
                 "unstyled_table",
                 TypedTableBlock(table_value_types),
+            ),
+            (
+                "new_table",
+                TableListBlock(),
             ),
             ("list", create_nested_list_block(max_depth=4)),
             (
