@@ -70,13 +70,19 @@
   }
 
   .tile-icon {
-    width: 40px;
-    height: 40px;
+    /* width: 40px;
+    height: 40px; */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
+
+  /* .tile-icon svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  } */
 
   .tile-icon svg {
     width: 100%;
@@ -99,6 +105,16 @@
     margin: 0;
     font-size: 0.9375rem;
   }
+
+  .quick-access-tile-link:focus, .quick-access-tile-link:focus-visible {
+    outline: 3px solid #2491ff;
+    outline-offset: 3px;
+  }
+
+  .quick-access-tile-link:focus-visible .quick-access-tile {
+    box-shadow: 0 0 0 3px rgba(36,145,255,0.35);
+  }
+
 
   /* Content alignment options */
   .quick-access-tile.align-center {
@@ -202,7 +218,28 @@
     .quick-access-tile {
       padding: 16px;
     }
+    .quick-access-tile h2 {
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .quick-access-tile p,
+    .quick-access-tile .tile-description,
+    .quick-access-tile .tile-description p {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .quick-access-tile {
+      grid-template-columns: 26px 1fr; /* match mobile icon size */
+    }
+
+  .tile-icon {
+    width: 40px;
+    height: 40px;
   }
+
+}
 </style>
 
 <!-- <a href="{{ value.related_page.url|default:value.external_url }}"
@@ -228,7 +265,7 @@
      class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if value.related_page and request.path == tile_url %}is-active{% endif %}"
      aria-label="{{ value.title }}">
     <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-                icon-{{ icon_position }} align-{{ value.content_alignment }}" tabindex="0">
+                icon-{{ icon_position }} align-{{ value.content_alignment }}">
       {% if value.icon %}
         <div class="tile-icon">
           {% include_svg value.icon.svg_file %}
