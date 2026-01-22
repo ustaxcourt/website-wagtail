@@ -16,6 +16,28 @@
         }
     }
 
+    /* top row */
+    .enhanced-table.unstyled thead tr:first-child th {
+        border-top: none;
+    }
+
+    /* bottom row */
+    .enhanced-table.unstyled tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* first column */
+    .enhanced-table.unstyled tr th:first-child,
+    .enhanced-table.unstyled tr td:first-child {
+        border-left: none;
+    }
+
+    /* last column */
+    .enhanced-table.unstyled tr th:last-child,
+    .enhanced-table.unstyled tr td:last-child {
+        border-right: none;
+    }
+
 </style>
 <div class="table-container">
     <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %}">
