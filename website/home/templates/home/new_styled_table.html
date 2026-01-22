@@ -55,7 +55,7 @@
                         {% if cell.block.name == "components" %}
                           {% for content in cell.value %}
                             {% if content.block_type == "accordian" %}
-                              {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix="suffix-from-styled-table" %}
+                              {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                             {% elif content.block_type == "callout" %}
                               {% include "callout_block.html" with block=content %}
                             {% elif content.block_type == "button" %}
