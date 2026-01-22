@@ -95,7 +95,8 @@
 
   .quick-access-tile h2 {
     color: #162E51;
-    margin: 0 0 8px 0;
+    margin-top: 8px;
+    align-items: center;
     font-size: 1.5rem;
     font-weight: 600;
   }
@@ -175,6 +176,11 @@
       align-items: start;
       gap: 16px;
       text-align: left !important;
+    }
+
+    .quick-access-tile .tile-description {
+      grid-column: 1 / -1;
+      grid-row: 2;
     }
 
     /* Desktop-Top becomes Mobile-Left */
@@ -273,8 +279,8 @@
       {% endif %}
       <div class="tile-content">
         <h2>{{ value.title }}</h2>
-        <div class="tile-description">{{ value.description|richtext }}</div>
       </div>
+      <div class="tile-description">{{ value.description|richtext }}</div>
     </div>
   </a>
 {% endwith %}
