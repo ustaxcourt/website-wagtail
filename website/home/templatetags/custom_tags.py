@@ -26,6 +26,23 @@ def judge_display_name(judge):
     return f"{judge.title} {judge.display_name}"
 
 
+@register.filter
+def clean_filename(filename):
+    """Remove extension and replace - and _ with spaces."""
+    if "." in filename:
+        filename = filename.rsplit(".", 1)[0]
+    return filename.replace("-", " ").replace("_", " ")
+
+
+@register.filter
+def get_type(value):
+    """
+    Returns the type name of a value for debugging in templates.
+    Usage: {{ some_value|get_type }}
+    """
+    return type(value).__name__
+
+
 @register.simple_tag
 def include_svg(document):
     """
