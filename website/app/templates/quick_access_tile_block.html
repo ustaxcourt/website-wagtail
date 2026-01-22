@@ -279,8 +279,9 @@
       {% endif %}
       <div class="tile-content">
         <h2>{{ value.title }}</h2>
+        <div class="tile-description">{{ value.description|richtext }}</div>
       </div>
-      <div class="tile-description">{{ value.description|richtext }}</div>
+
     </div>
   </a>
 {% endwith %}
