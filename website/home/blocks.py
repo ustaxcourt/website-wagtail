@@ -59,22 +59,44 @@ class QuickAccessTileBlock(blocks.StructBlock):
         help_text="Desktop text alignment (tablet/mobile will be left-aligned per design).",
     )
 
+    link_type = blocks.ChoiceBlock(
+        choices=[
+            ("related", "Related page"),
+            ("external", "External URL"),
+        ],
+        required=True,
+        default="related",
+        help_text="Choose what the tile should link to.",
+    )
+
     related_page = blocks.PageChooserBlock(required=False)
     external_url = blocks.URLBlock(required=False, help_text="External link URL")
 
     def clean(self, value):
         cleaned = super().clean(value)
+        link_type = cleaned.get("link_type")
         related_page = cleaned.get("related_page")
         external_url = cleaned.get("external_url")
 
-        if not related_page and not external_url:
-            raise blocks.ValidationError(
-                "Provide either a Related page or an External URL."
-            )
-        if related_page and external_url:
-            raise blocks.ValidationError(
-                "Choose either Related page OR an External URL (not both)."
-            )
+        errors = {}
+
+        if link_type == "related":
+            if not related_page:
+                errors["related_page"] = ValidationError(
+                    "Please choose a related page."
+                )
+            # Optional: clear the other field so saved data stays consistent
+            cleaned["external_url"] = None
+
+        if link_type == "external":
+            if not external_url:
+                errors["external_url"] = ValidationError(
+                    "Please enter an external URL."
+                )
+            cleaned["related_page"] = None
+
+        if errors:
+            raise blocks.StructBlockValidationError(errors)
 
         return cleaned
 
