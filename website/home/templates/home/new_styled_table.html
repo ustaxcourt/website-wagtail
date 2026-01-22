@@ -1,0 +1,55 @@
+{% load filters %}
+
+<style>
+    {% comment %} Styling will be done here for ease of access then will be moved to the enhanced_body.html file to match style {% endcomment %}
+    {% comment %} Style as expected, then clean it up to prevent duplicates in the enhanced_body.html file {% endcomment %}
+
+    .table-container caption {
+        text-align: left;
+        margin-bottom: 15px;
+        font-size: 17px;
+    }
+
+    @media (max-width: 768px) {
+        .table-container caption{
+            font-size: 16px;
+        }
+    }
+
+</style>
+<div class="table-container">
+    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %}">
+        {% if block.value.caption_location == "top" and block.value.table.caption %}<caption>{{ block.value.table.caption }}</caption>{% endif %}
+      <thead>
+            <tr>
+                {% for col in block.value.table.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in block.value.table.rows %}
+                <tr>
+                    {% for cell in row %}
+                      <td>
+                        {% if cell.block.name == "components" %}
+                          {% for content in cell.value %}
+                            {% if content.block_type == "accordian" %}
+                              {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix="suffix-from-styled-table" %}
+                            {% elif content.block_type == "callout" %}
+                              {% include "callout_block.html" with block=content %}
+                            {% elif content.block_type == "button" %}
+                              {% include "includes/styled_button.html" with block=content %}
+                            {% else %}
+                              {{ content }}
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          {{ cell }}
+                        {% endif %}
+                      </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if block.value.caption_location == "bottom" and block.value.table.caption %}<caption>{{ block.value.table.caption }}</caption>{% endif %}
+</div>

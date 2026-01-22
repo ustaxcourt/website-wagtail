@@ -64,14 +64,17 @@ class AccordianBlock(blocks.StructBlock):
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
-    # ("callout", StyledCalloutBlock()),
+]
+
+new_table_value_types = [
     (
         "components",
         blocks.StreamBlock(
             [
                 ("text", blocks.RichTextBlock()),
                 ("callout", StyledCalloutBlock()),
-                ("Accordian", AccordianBlock()),
+                ("accordian", AccordianBlock()),
+                ("button", ButtonBlock()),
             ]
         ),
     ),
@@ -84,7 +87,7 @@ class IndentStyle(models.TextChoices):
 
 
 class TableListBlock(blocks.StructBlock):
-    table = TypedTableBlock(table_value_types)
+    table = TypedTableBlock(new_table_value_types)
     caption_location = blocks.ChoiceBlock(
         choices=[("top", "Top"), ("bottom", "Bottom")],
         default="top",
@@ -202,9 +205,7 @@ class EnhancedStandardPage(ModerationMixin, Page):
             ("photo_dedication", PhotoDedicationBlock()),
             (
                 "table",
-                TypedTableBlock(
-                    table_value_types,
-                ),
+                TypedTableBlock(table_value_types),
             ),
             (
                 "unstyled_table",
