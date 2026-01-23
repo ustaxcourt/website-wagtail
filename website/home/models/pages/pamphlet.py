@@ -37,9 +37,9 @@ class PamphletEntry(Orderable):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    code = models.CharField(max_length=255, blank=True)
-    date_range = models.CharField(max_length=255)
-    citation = RichTextField(blank=True)
+    code = models.CharField(verbose_name="Page Range", max_length=255, blank=True)
+    date_range = models.CharField(verbose_name="Date Range", max_length=255)
+    citation = RichTextField(verbose_name="Cases", blank=True)
 
     parentpage = ParentalKey(
         "PamphletsPage", related_name="entries", on_delete=models.CASCADE
