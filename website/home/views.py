@@ -495,6 +495,9 @@ class SearchDefinitionsReportView(ReportView):
         return f"Search_Terms_Report_{today}"
 
 
+# ------------------- SVG --------------------
+
+
 class SVGChooseView(DocumentChooserViewSet.choose_view_class):
     def get_object_list(self):
         queryset = super().get_object_list()
@@ -506,4 +509,19 @@ class SVGChooserViewSet(DocumentChooserViewSet):
     choose_view_class = SVGChooseView
 
 
-svg_chooser_viewset = SVGChooserViewSet("svg_chooser")
+SVG_CHOOSER_VIEWSET = SVGChooserViewSet("svg_chooser")
+# ------------------- PDF --------------------
+
+
+class PDFChooseView(DocumentChooserViewSet.choose_view_class):
+    def get_object_list(self):
+        queryset = super().get_object_list()
+
+        return queryset.filter(file__iendswith=".pdf")
+
+
+class PDFChooserViewSet(DocumentChooserViewSet):
+    choose_view_class = PDFChooseView
+
+
+PDF_CHOOSER_VIEWSET = PDFChooserViewSet("pdf_chooser")

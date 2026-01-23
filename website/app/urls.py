@@ -74,7 +74,11 @@ urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
         "robots.txt",
-        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+        TemplateView.as_view(
+            template_name="robots.txt",
+            content_type="text/plain",
+            extra_context={"ENVIRONMENT": getattr(settings, "ENVIRONMENT", "")},
+        ),
         name="robots_file",
     ),
     path(
