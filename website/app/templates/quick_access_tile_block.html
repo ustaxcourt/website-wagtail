@@ -78,19 +78,11 @@
   }
 
   .tile-icon {
-    /* width: 40px;
-    height: 40px; */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
-
-  /* .tile-icon svg {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-  } */
 
   .tile-icon svg {
     width: 100%;
@@ -292,23 +284,6 @@
 }
 </style>
 
-<!-- <a href="{{ value.related_page.url|default:value.external_url }}"
-  class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
-  aria-label="{{ value.title }}"
->
-  <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-           icon-{{ icon_position }} align-{{ value.content_alignment }}">
-    {% if value.icon %}
-      <div class="tile-icon">
-        {% include_svg value.icon.svg_file %}
-      </div>
-    {% endif %}
-    <div class="tile-content">
-      <h2>{{ value.title }}</h2>
-      <div class="tile-description">{{ value.description|richtext }}</div>
-    </div>
-  </div>
-</a> -->
 
 {% with tile_url=value.related_page.url|default:value.external_url %}
   {% if tile_url %}
