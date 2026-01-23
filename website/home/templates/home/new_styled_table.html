@@ -1,4 +1,4 @@
-{% load filters %}
+{% load static %} {% load filters %}
 
 <style>
     {% comment %} Styling will be done here for ease of access then will be moved to the enhanced_body.html file to match style {% endcomment %}
@@ -9,10 +9,19 @@
         margin-bottom: 15px;
         font-size: 17px;
     }
+    .mobile {
+        display: none;
+    }
 
     @media (max-width: 768px) {
         .table-container caption{
             font-size: 16px;
+        }
+        .enhanced-table:not(.mobile.enhanced-table) {
+            display: none;
+        }
+        .mobile.enhanced-table {
+            display: table;
         }
     }
 
@@ -53,6 +62,35 @@
     .table-container .enhanced-table.unstyled-borderless td {
       text-align: left;
     }
+    .plus-icon {
+    background-color: red;
+    width: 24px;
+    height: 24px;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-image: url({%static "/images/icons/plus-circle.svg"%});
+    mask-image: url({%static "/images/icons/plus-circle.svg"%});
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+
+    transition: transform 0.3s ease;
+
+  }
+  .cell-header{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cell-header> p{
+    font-size: 17px;
+    margin: 0;
+  }
+
 
 </style>
 <div class="table-container">
@@ -93,4 +131,78 @@
             {% endfor %}
         </tbody>
     </table>
+        <table class="mobile enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
+        <caption
+        {%if block.value.caption_location == "bottom" and block.value.table.caption %}
+          style="caption-side:bottom"
+        {% endif %}>
+        {{ block.value.table.caption }}</caption>
+      <thead>
+            <tr>
+                <th scope="col">{{ block.value.table.columns.0.heading }}</th>
+            </tr>
+            {% comment %} <tr>
+                {% for col in block.value.table.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
+            </tr> {% endcomment %}
+        </thead>
+        <tbody>
+            {% for row in block.value.table.rows %}
+                <tr>
+                    {% comment %} {% for cell in row %} {% endcomment %}
+                    {% with cell=row.0 %}
+                      <td>
+                        <div class="cell-header">
+                          {% comment %} <span class="plus-icon"></span> {% endcomment %}
+                          <svg href="{%static "/images/icons/plus-circle.svg"%}" onclick="return false;" class="plus-icon"></svg>
+                          {% comment %} {% if cell.block.name == "components" %} {% endcomment %}
+                          {% if cell.block.name == "components" %}
+                            {% for content in cell.value %}
+                              {% if content.block_type == "accordian" %}
+                                {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                              {% elif content.block_type == "callout" %}
+                                {% include "callout_block.html" with block=content %}
+                              {% elif content.block_type == "button" %}
+                                {% include "includes/styled_button.html" with block=content %}
+                              {% else %}
+                                {{ content }}
+                              {% endif %}
+                            {% endfor %}
+                          {% else %}
+                            {{ cell }}
+                          {% endif %}
+                        </div>
+                        <div class="cell-content hidden">
+                          {% for col in block.value.table.columns|slice:"1:" %}
+                            <strong>{{ col.heading }}</strong><br/>
+                            {% for i in row|slice:"1:" %}
+                              {{ i }}<br/>
+                            {% endfor %}
+                          {% endfor %}
+                        </div>
+                      </td>
+                    {% comment %} {% endfor %} {% endcomment %}
+                    {% endwith %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const plusIcons = document.querySelectorAll(".plus-icon");
+
+    plusIcons.forEach(function(icon) {
+      icon.addEventListener("click", function() {
+        const cellContent = icon.parentElement.nextElementSibling;
+        cellContent.classList.toggle("hidden");
+        // Toggle rotation
+        if (icon.style.transform === "rotate(45deg)") {
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          icon.style.transform = "rotate(45deg)";
+        }
+      });
+    });
+  });
+</script>
