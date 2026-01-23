@@ -40,7 +40,6 @@ class PamphletEntry(Orderable):
     code = models.CharField(max_length=255, blank=True)
     date_range = models.CharField(max_length=255)
     citation = RichTextField(blank=True)
-    volume_number = models.FloatField(default=0)
 
     parentpage = ParentalKey(
         "PamphletsPage", related_name="entries", on_delete=models.CASCADE
@@ -52,5 +51,4 @@ class PamphletEntry(Orderable):
         FieldPanel("code"),
         FieldPanel("date_range"),
         FieldPanel("citation"),
-        FieldPanel("volume_number"),
     ]
