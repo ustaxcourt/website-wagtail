@@ -8,7 +8,7 @@
 
   .quick-access-tiles-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(12, 1fr);
     gap: 30px;
     margin-top: 30px;
   }
@@ -31,9 +31,72 @@
 </style>
 
 <div class="quick-access-tiles-container">
-  <div class="quick-access-tiles-grid">
+  <div class="quick-access-tiles-grid" data-max-columns="3">
     {% for tile in block.value.tiles %}
       {% include "quick_access_tile_block.html" with value=tile icon_position=block.value.icon_position tiles_hover_enabled=block.value.tiles_hover_enabled %}
     {% endfor %}
   </div>
 </div>
+
+<script>
+(function() {
+    function adjustTileGrid() {
+        const isMobile = window.innerWidth <= 768;
+        const isTablet = window.innerWidth <= 992 && !isMobile;
+
+        document.querySelectorAll('.quick-access-tiles-grid').forEach(function(grid) {
+            const tiles = grid.querySelectorAll('.quick-access-tile-link');
+            const totalTiles = tiles.length;
+            const maxColumns = parseInt(grid.getAttribute('data-max-columns')) || 3;
+
+            if (isMobile) {
+                grid.style.setProperty('grid-template-columns', '1fr', 'important');
+                tiles.forEach(function(tile) {
+                    tile.style.removeProperty('grid-column');
+                });
+            } else if (isTablet) {
+                grid.style.setProperty('grid-template-columns', 'repeat(2, 1fr)', 'important');
+                tiles.forEach(function(tile, index) {
+                    if (totalTiles % 2 === 1 && index === totalTiles - 1) {
+                        tile.style.gridColumn = 'span 2';
+                    } else {
+                        tile.style.removeProperty('grid-column');
+                    }
+                });
+            } else {
+                grid.style.setProperty('grid-template-columns', 'repeat(12, 1fr)', 'important');
+                const normalSpan = 12 / maxColumns;
+
+                tiles.forEach(function(tile) {
+                    tile.style.gridColumn = `span ${normalSpan}`;
+                });
+
+                if (totalTiles < maxColumns) {
+                    const spanPerTile = 12 / totalTiles;
+                    tiles.forEach(function(tile) {
+                        tile.style.gridColumn = `span ${spanPerTile}`;
+                    });
+                } else {
+                    const remainder = totalTiles % maxColumns;
+                    if (remainder !== 0) {
+                        const lastRowStart = totalTiles - remainder;
+                        const spanForLastRow = 12 / remainder;
+
+                        for (let i = 0; i < remainder; i++) {
+                            tiles[lastRowStart + i].style.gridColumn = `span ${spanForLastRow}`;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    adjustTileGrid();
+
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(adjustTileGrid, 250);
+    });
+})();
+</script>
