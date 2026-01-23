@@ -1,6 +1,6 @@
 """
-Test page initializer for CardTiles with all block types.
-This creates an EnhancedStandardPage with CardTiles containing one of each
+Test page initializer for Table with all block types.
+This creates an EnhancedStandardPage with Table containing one of each
 block type allowed in the page body. For local testing only.
 """
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class TableTestPageInitializer(PageInitializer):
     """
-    Creates a test page with CardTiles containing examples of all block types
+    Creates a test page with Table containing examples of all block types
     allowed in EnhancedStandardPage body.
     """
 
@@ -32,7 +32,7 @@ class TableTestPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        title = "Card Tiles Test Page"
+        title = "Table Test Page"
 
         if Page.objects.filter(slug=self.slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -40,7 +40,7 @@ class TableTestPageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        # Content before CardTiles
+        # Content before Table
         intro_paragraph = {
             "type": "paragraph",
             "value": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>",
@@ -370,7 +370,7 @@ class TableTestPageInitializer(PageInitializer):
             },
         }
 
-        # Content after CardTiles
+        # Content after Table
         accordion_block = {
             "type": "accordian",
             "value": {
@@ -389,7 +389,7 @@ class TableTestPageInitializer(PageInitializer):
                 title=title,
                 slug=self.slug,
                 seo_title=title,
-                search_description="Test page for CardTiles with all block types",
+                search_description="Test page for Table with all block types",
                 body=[intro_paragraph, table_block, accordion_block],
             )
         )

@@ -38,10 +38,30 @@
         border-right: none;
     }
 
+    .table-container .enhanced-table caption {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+    }
+    .table-container .enhanced-table th {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 25px;
+    }
+
+    .table-container .enhanced-table.unstyled-borderless th,
+    .table-container .enhanced-table.unstyled-borderless td {
+      text-align: left;
+    }
+
 </style>
 <div class="table-container">
-    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %}">
-        {% if block.value.caption_location == "top" and block.value.table.caption %}<caption>{{ block.value.table.caption }}</caption>{% endif %}
+    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
+        <caption
+        {%if block.value.caption_location == "bottom" and block.value.table.caption %}
+          style="caption-side:bottom"
+        {% endif %}>
+        {{ block.value.table.caption }}</caption>
       <thead>
             <tr>
                 {% for col in block.value.table.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
@@ -73,5 +93,4 @@
             {% endfor %}
         </tbody>
     </table>
-    {% if block.value.caption_location == "bottom" and block.value.table.caption %}<caption>{{ block.value.table.caption }}</caption>{% endif %}
 </div>

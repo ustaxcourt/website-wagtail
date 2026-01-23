@@ -260,7 +260,8 @@
         {% comment %} My thinking is that this should only apply to unstyled-borderless tables {% endcomment %}
         .enhanced-page .enhanced-table:not(.unstyled-borderless) th,
         .enhanced-page .enhanced-table:not(.unstyled-borderless) td {
-            padding: 1rem;
+            {% comment %} padding: 1rem; {% endcomment %}
+            padding: 15px;
             text-align: left;
             border: 1px solid #dfe1e2;
             vertical-align: top;

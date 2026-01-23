@@ -1,5 +1,5 @@
 """
-Management command to create a test page with CardTiles containing all block types.
+Management command to create a test page with Table containing all block types.
 This is for local testing only. Run with:
     python manage.py create_table_test_page
 To delete the test page:
