@@ -240,7 +240,7 @@
             table-layout: fixed;
         }
 
-        .enhanced-page .enhanced-table.unstyled td,
+        .enhanced-page .enhanced-table.unstyled td:not(:has(.cell-header)),
         .enhanced-page .enhanced-table.unstyled th {
             padding: 1rem;
             vertical-align: top;
@@ -250,6 +250,7 @@
             width: 100%;
             border-collapse: collapse;
             margin: 1rem 0;
+            {% comment %} table-layout: fixed; {% endcomment %}
         }
 
         .enhanced-page .enhanced-table:not(.unstyled) th:not([scope="row"]) {
@@ -259,7 +260,7 @@
 
         {% comment %} My thinking is that this should only apply to unstyled-borderless tables {% endcomment %}
         .enhanced-page .enhanced-table:not(.unstyled-borderless) th,
-        .enhanced-page .enhanced-table:not(.unstyled-borderless) td {
+        .enhanced-page .enhanced-table:not(.unstyled-borderless) td:not(:has(.cell-header)) {
             {% comment %} padding: 1rem; {% endcomment %}
             padding: 15px;
             text-align: left;
