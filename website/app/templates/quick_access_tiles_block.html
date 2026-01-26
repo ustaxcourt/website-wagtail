@@ -33,7 +33,7 @@
 </style>
 
 <div class="quick-access-tiles-container">
-  <div class="quick-access-tiles-grid" data-max-columns="3">
+  <div class="quick-access-tiles-grid" data-max-columns="3" role="list" aria-label="Quick access tiles">
     {% for tile in block.value.tiles %}
       {% include "quick_access_tile_block.html" with value=tile icon_position=block.value.icon_position tiles_hover_enabled=block.value.tiles_hover_enabled %}
     {% endfor %}
