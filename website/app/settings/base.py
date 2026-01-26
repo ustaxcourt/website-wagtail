@@ -322,6 +322,7 @@ WAGTAILDOCS_EXTENSIONS = [
     "xlsx",
     "zip",
     "svg",
+    "mp4",
 ]
 
 WAGTAILDOCS_INLINE_CONTENT_TYPES = ["application/pdf", "text/plain", "video/mp4"]
