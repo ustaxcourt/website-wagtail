@@ -12,6 +12,10 @@
     padding: 15px 15px;
     font-size: 1.2rem;
   }
+  .accordian-title:focus:not(:focus-visible),
+  .accordian-title:focus-within:not(:focus-visible) {
+    outline: none;
+  }
   .accordian-title.active {
     color: #ffffff;
   }
@@ -48,6 +52,10 @@
     height: 55px;
     background-color: var(--color-white);
     border-bottom: 1px solid var(--theme-color-base-lighter);
+  }
+  .accordian-header:focus:not(:focus-visible),
+  .accordian-header:focus-within:not(:focus-visible) {
+    outline: none;
   }
   .accordian-header.active {
     background-color: var(--color-primary);
@@ -86,6 +94,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 0;
+  }
+  .accordian-header-button:focus:not(:focus-visible) {
+    outline: none;
   }
   .accordian-header-button.active {
     color: #ffffff;
