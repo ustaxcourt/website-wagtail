@@ -21,6 +21,7 @@ from datetime import datetime, time
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from wagtail.models import Collection
+from wagtail.images.models import Image
 import random
 import logging
 
@@ -38,6 +39,18 @@ class NewsItemQuerySet(models.QuerySet):
             # Also check that it hasn't expired
             models.Q(expire_at__isnull=True) | models.Q(expire_at__gt=now)
         )
+
+
+def get_random_news_item_image_pk():
+    __collection = Collection.objects.filter(name="Home Page News Images").first()
+    __defaultImagePk = None
+    logger.info(dir(__collection))
+    if __collection:
+        __images = Image.objects.filter(collection=__collection)
+        if __images:
+            __defaultImagePk = random.choice(__images).pk
+            logger.info(__defaultImagePk)
+    return __defaultImagePk
 
 
 class NewsItem(
@@ -70,20 +83,13 @@ class NewsItem(
         related_name="+",
     )
 
-    __collection = Collection.objects.filter(name="Homepage News Images").first()
-    __defaultImageId = None
-    logger.info(__collection)
-    if __collection:
-        logger.info(__collection.objects)
-        __randomImage = random.choice(__collection.objects)
-        logger.info(__randomImage)
-
     image = models.ForeignKey(
         "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
+        # null=True,
+        blank=False,
+        on_delete=models.SET_DEFAULT,
         related_name="+",
+        default=get_random_news_item_image_pk,
     )
 
     description = RichTextField(
