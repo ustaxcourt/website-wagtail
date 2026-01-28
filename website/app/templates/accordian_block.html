@@ -151,7 +151,8 @@
 </div>
 {% endwith %}
 
-<script>
+{% comment %} <script>
+  let thing=0;
   document.addEventListener("DOMContentLoaded", function() {
     const accordianBlock = document.getElementById("accordian-"+{{block_index}} + "{{suffix}}");
     const header = accordianBlock.querySelector(".accordian-header");
@@ -159,6 +160,8 @@
     const content = accordianBlock.querySelector(".accordian-content");
     const icon = accordianBlock.querySelector(".accordian-icon");
     const button = accordianBlock.querySelector(".accordian-header-button");
+
+    console.log("Loaded accordian block:", accordianBlock);
 
     header.addEventListener("click", function() {
       content.classList.toggle("hidden");
@@ -172,4 +175,4 @@
 
     });
   });
-</script>
+</script> {% endcomment %}

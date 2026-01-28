@@ -4,10 +4,11 @@
     {% comment %} Styling will be done here for ease of access then will be moved to the enhanced_body.html file to match style {% endcomment %}
     {% comment %} Style as expected, then clean it up to prevent duplicates in the enhanced_body.html file {% endcomment %}
 
-    .table-container caption {
-        text-align: left;
-        margin-bottom: 15px;
-        font-size: 17px;
+    .table-container .enhanced-table caption {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+      text-align: left;
     }
     .mobile {
         display: none;
@@ -31,26 +32,20 @@
     }
 
     /* bottom row */
-    .enhanced-table.unstyled tbody tr:last-child td {
+    .enhanced-table.enhanced-table.unstyled tbody tr:last-child td {
         border-bottom: none;
     }
 
     /* first column */
-    .enhanced-table.unstyled tr th:first-child,
-    .enhanced-table.unstyled tr td:first-child {
+    .enhanced-table.enhanced-table.unstyled tr th:first-child,
+    .enhanced-table.enhanced-table.unstyled tr td:first-child {
         border-left: none;
     }
 
     /* last column */
-    .enhanced-table.unstyled tr th:last-child,
-    .enhanced-table.unstyled tr td:last-child {
+    .enhanced-table.enhanced-table.unstyled tr th:last-child,
+    .enhanced-table.enhanced-table.unstyled tr td:last-child {
         border-right: none;
-    }
-
-    .table-container .enhanced-table caption {
-      font-size: 24px;
-      font-weight: 600;
-      line-height: 30px;
     }
     .table-container .enhanced-table th {
       font-size: 20px;
@@ -130,13 +125,15 @@
   .mobile.enhanced-table.unstyled-borderless .mobile-cell-item{
     border: none;
   }
-
 </style>
 <div class="table-container">
-    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
+    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}"
+    {%if block.value.fixed%}style = "table-layout: fixed"{% else %}style = "table-layout:auto"{% endif %}>
         <caption
         {%if block.value.caption_location == "bottom" and block.value.table.caption %}
-          style="caption-side:bottom"
+          style="caption-side:bottom; margin-top:15px;"
+          {% elif block.value.caption_location == "top" and block.value.table.caption %}
+          style="caption-side:top; margin-bottom:15px;"
         {% endif %}>
         {{ block.value.table.caption }}</caption>
       <thead>
@@ -173,7 +170,9 @@
 <table class="mobile enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
     <caption
     {%if block.value.caption_location == "bottom" and block.value.table.caption %}
-      style="caption-side:bottom"
+      style="caption-side:bottom; margin-top:15px;"
+      {% elif block.value.caption_location == "top" and block.value.table.caption %}
+      style="caption-side:top; margin-bottom:15px;"
     {% endif %}>
     {{ block.value.table.caption }}</caption>
 

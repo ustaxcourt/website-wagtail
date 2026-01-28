@@ -101,6 +101,12 @@ class TableListBlock(blocks.StructBlock):
         default="styled",
     )
 
+    fixed = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to set table layout to fixed width.",
+    )
+
     class Meta:
         label = "New Table"
         icon = "table"
