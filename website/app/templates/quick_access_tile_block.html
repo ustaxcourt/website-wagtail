@@ -1,4 +1,3 @@
-
 {% load static %}
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load custom_tags %}
@@ -107,13 +106,14 @@
     font-size: 0.9375rem;
   }
 
-  .quick-access-tile-link:focus, .quick-access-tile-link:focus-visible {
+  .quick-access-tile-link:focus,
+  .quick-access-tile-link:focus-visible {
     outline: 3px solid #2491ff;
     outline-offset: 3px;
   }
 
   .quick-access-tile-link:focus-visible .quick-access-tile {
-    box-shadow: 0 0 0 3px rgba(36,145,255,0.35);
+    box-shadow: 0 0 0 3px rgba(36, 145, 255, 0.35);
   }
 
 
@@ -145,7 +145,7 @@
     margin-right: 0;
   }
 
-    /* Selected / Active state */
+  /* Selected / Active state */
   .quick-access-tile-link.is-active .quick-access-tile {
     background: #005EA2;
     border-color: #005EA2;
@@ -232,6 +232,7 @@
     .quick-access-tile {
       padding: 16px;
     }
+
     .quick-access-tile h2 {
       font-size: 20px;
       line-height: 1.25;
@@ -276,33 +277,67 @@
       grid-row: 1;
     }
 
-  .tile-icon {
-    width: 40px;
-    height: 40px;
-  }
+    .tile-icon {
+      width: 40px;
+      height: 40px;
+    }
 
-}
+  }
 </style>
 
 
-{% with tile_url=value.related_page.url|default:value.external_url %}
-  {% if tile_url %}
-    <a href="{{ tile_url }}"
-       class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if value.related_page and request.path == tile_url %}is-active{% endif %}"
-       role="listitem"
-       aria-label="{{ value.title }}. {{ value.description|striptags }}">
-      <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-                  icon-{{ icon_position }} align-{{ value.content_alignment }}">
-        <div class="tile-content">
-          {% if value.icon %}
-            <div class="tile-icon" aria-hidden="true">
-              {% include_svg value.icon.svg_file %}
+{% if value.link %}
+  {% for link in value.link %}
+
+    {% if link.block_type == "related_page" %}
+      {% with tile_url=link.value.url %}
+        {% with is_internal=True %}
+          <a href="{{ tile_url }}"
+             class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if is_internal and request.path == tile_url %}is-active{% endif %}"
+             role="listitem"
+             aria-label="{{ value.title }}. {{ value.description|striptags }}">
+            <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
+                        icon-{{ icon_position }} align-{{ value.content_alignment }}">
+              <div class="tile-content">
+                {% if value.icon %}
+                  <div class="tile-icon" aria-hidden="true">
+                    {% include_svg value.icon.svg_file %}
+                  </div>
+                {% endif %}
+                <h2 aria-hidden="true">{{ value.title }}</h2>
+                <div class="tile-description" aria-hidden="true">
+                  {{ value.description|richtext }}
+                </div>
+              </div>
             </div>
-          {% endif %}
-          <h2 aria-hidden="true">{{ value.title }}</h2>
-          <div class="tile-description" aria-hidden="true">{{ value.description|richtext }}</div>
-        </div>
-      </div>
-    </a>
-  {% endif %}
-{% endwith %}
+          </a>
+        {% endwith %}
+      {% endwith %}
+    {% else %}
+      {% with tile_url=link.value %}
+        {% with is_internal=False %}
+          <a href="{{ tile_url }}"
+             class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
+             role="listitem"
+             aria-label="{{ value.title }}. {{ value.description|striptags }}">
+            <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
+                        icon-{{ icon_position }} align-{{ value.content_alignment }}">
+              <div class="tile-content">
+                {% if value.icon %}
+                  <div class="tile-icon" aria-hidden="true">
+                    {% include_svg value.icon.svg_file %}
+                  </div>
+                {% endif %}
+                <h2 aria-hidden="true">{{ value.title }}</h2>
+                <div class="tile-description" aria-hidden="true">
+                  {{ value.description|richtext }}
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endwith %}
+      {% endwith %}
+    {% endif %}
+
+  {% endfor %}
+{% endif %}
