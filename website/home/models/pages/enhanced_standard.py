@@ -62,6 +62,32 @@ class AccordianBlock(blocks.StructBlock):
     )
     description = blocks.StreamBlock(
         [
+            (
+                "heading",
+                blocks.StructBlock(
+                    [
+                        ("text", blocks.CharBlock()),
+                        (
+                            "level",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("h2", "Heading 2"),
+                                    ("h3", "Heading 3"),
+                                    ("h4", "Heading 4"),
+                                    ("h5", "Heading 5"),
+                                ]
+                            ),
+                        ),
+                        (
+                            "id",
+                            blocks.CharBlock(
+                                required=False,
+                                help_text="Optional ID for linking to this heading",
+                            ),
+                        ),
+                    ]
+                ),
+            ),
             ("prose", blocks.RichTextBlock()),
             ("callout", StyledCalloutBlock()),
         ],
@@ -106,6 +132,13 @@ _BASE_BLOCK_TYPES = [
     ("h3", blocks.CharBlock(label="Heading 3")),
     ("h4", blocks.CharBlock(label="Heading 4")),
     ("paragraph", blocks.RichTextBlock()),
+    (
+        "indented_paragraph",
+        blocks.RichTextBlock(
+            label="Indented Paragraph",
+            help_text="Paragraph with left indentation for alignment with list items",
+        ),
+    ),
     ("snippet", SnippetChooserBlock("home.CommonText")),
     ("button", ButtonBlock()),
     (
@@ -295,6 +328,8 @@ class CardTileBlock(blocks.StructBlock):
     class Meta:
         label = "Card Tile"
         icon = "doc-full"
+        # Set label_format to show card_header in admin for easier identification
+        label_format = "Card Tile: {card_header}"
 
 
 class CardTilesBlock(blocks.StructBlock):

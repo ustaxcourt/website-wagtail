@@ -1,5 +1,6 @@
 {% load static %}
 {% load wagtailcore_tags %}
+{% load filters %}
 
 {# Card Tiles Block - Responsive button grid layout #}
 {# Desktop (>1025px): 1-4 tiles in a row #}
@@ -149,7 +150,7 @@
         flex: 0 0 100%;
         max-width: 100%;
         flex-direction: row;
-        height: 62px;
+        min-height: 88px;
         padding: 13px 10px;
         align-items: center;
         gap: 11px;
@@ -255,8 +256,10 @@
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
     {% for tile in block.value.tiles %}
       {% with link=tile.link.0 %}
+      {% with tile_slug=tile.card_header|slugify_text %}
       <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %} {% if tile.icon_direction %}card-tile--icon-{{ tile.icon_direction }}{% else %}card-tile--icon-top{% endif %}"
-           id="card-tile-{{ forloop.counter0 }}"
+           id="card-tile-{{ tile_slug }}"
+           data-tile-index="{{ forloop.counter0 }}"
            role="button"
            tabindex="0"
            aria-label="{{ tile.card_header }}"
@@ -270,20 +273,21 @@
            {% endif %}
            >
         {% if tile.icon_direction == 'top' or tile.icon_direction == 'left' %}
-        <img id="card-tile-icon-{{ forloop.counter0 }}"
+        <img id="card-tile-icon-{{ tile_slug }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
-        <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <h2 id="card-tile-header-{{ tile_slug }}" class="card-tile__header">{{ tile.card_header }}</h2>
         {% elif tile.icon_direction == 'bottom' or tile.icon_direction == 'right' %}
-        <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
-        <img id="card-tile-icon-{{ forloop.counter0 }}"
+        <h2 id="card-tile-header-{{ tile_slug }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <img id="card-tile-icon-{{ tile_slug }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
         {% else %}
         {# Default to top/left if icon_direction is not set #}
-        <img id="card-tile-icon-{{ forloop.counter0 }}"
+        <img id="card-tile-icon-{{ tile_slug }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
-        <h2 id="card-tile-header-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <h2 id="card-tile-header-{{ tile_slug }}" class="card-tile__header">{{ tile.card_header }}</h2>
         {% endif %}
       </div>
+      {% endwith %}
       {% endwith %}
     {% endfor %}
 </div>
@@ -291,16 +295,26 @@
 {# Body content sections - shown when card is selected (only for anchor_page links) #}
 {% for tile in block.value.tiles %}
     {% with link=tile.link.0 %}
+    {% with tile_slug=tile.card_header|slugify_text %}
     {% if link.block_type == 'anchor_page' %}
-    <div class="card-tile__body" id="card-tile-body-{{ forloop.counter0 }}" style="display: none;">
+    <div class="card-tile__body"
+         id="card-tile-body-{{ tile_slug }}"
+         data-tile-index="{{ forloop.counter0 }}"
+         role="region"
+         aria-labelledby="card-tile-header-{{ tile_slug }}"
+         style="display: none;">
         {% include "includes/enhanced_body.html" with blocks=link.value.body suffix="-card-tile" only %}
     </div>
     {% endif %}
     {% endwith %}
+    {% endwith %}
 {% endfor %}
 
 {# Default content - shown when no card is selected #}
-<div class="card-tiles__default-content" id="card-tiles-default-content">
+<div class="card-tiles__default-content"
+     id="card-tiles-default-content"
+     role="region"
+     aria-label="Default content">
     {% include "includes/enhanced_body.html" with blocks=block.value.default_content suffix="-default-content" only %}
 </div>
 
@@ -308,12 +322,12 @@
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
 
-        // Check for selected card from query parameter
+        // Check for selected card from query parameter (supports both slug and index)
         const urlParams = new URLSearchParams(window.location.search);
         const selectedCard = urlParams.get('card');
 
         if (selectedCard !== null) {
-            selectCard(selectedCard);
+            selectCardByIdentifier(selectedCard);
         }
 
         cardTiles.forEach(function(tile) {
@@ -331,20 +345,39 @@
             });
         });
 
-        function selectCard(cardIndex) {
-            const selectedTile = document.getElementById('card-tile-' + cardIndex);
-            const selected_icon = document.getElementById('card-tile-icon-' + cardIndex);
-            const selected_header = document.getElementById('card-tile-header-' + cardIndex);
+        function selectCardByIdentifier(identifier) {
+            // Try to select by slug first (card-tile-{slug})
+            let selectedTile = document.getElementById('card-tile-' + identifier);
+
+            // If not found, try to find by index (for backward compatibility)
+            if (!selectedTile) {
+                cardTiles.forEach(function(tile) {
+                    if (tile.getAttribute('data-tile-index') === identifier) {
+                        selectedTile = tile;
+                    }
+                });
+            }
+
+            if (selectedTile) {
+                selectCard(selectedTile);
+            }
+        }
+
+        function selectCard(selectedTile) {
+            const tileId = selectedTile.id;
+            const tileSlug = tileId.replace('card-tile-', '');
+            const selected_icon = document.getElementById('card-tile-icon-' + tileSlug);
+            const selected_header = document.getElementById('card-tile-header-' + tileSlug);
             const defaultContent = document.getElementById('card-tiles-default-content');
 
             if (selectedTile) {
                 // Clear any previously selected cards
                 cardTiles.forEach(function(tile) {
-                    const tileIndex = tile.id.replace('card-tile-', '');
+                    const slug = tile.id.replace('card-tile-', '');
                     tile.classList.remove('selected');
-                    const icon = document.getElementById('card-tile-icon-' + tileIndex);
-                    const header = document.getElementById('card-tile-header-' + tileIndex);
-                    const body = document.getElementById('card-tile-body-' + tileIndex);
+                    const icon = document.getElementById('card-tile-icon-' + slug);
+                    const header = document.getElementById('card-tile-header-' + slug);
+                    const body = document.getElementById('card-tile-body-' + slug);
                     if (icon) icon.classList.remove('selected');
                     if (header) header.classList.remove('selected');
                     if (body) body.style.display = 'none';
@@ -361,9 +394,20 @@
                 if (selected_header) selected_header.classList.add('selected');
 
                 // Show the body content for the selected card (only for this_page links)
-                const selectedBody = document.getElementById('card-tile-body-' + cardIndex);
+                const selectedBody = document.getElementById('card-tile-body-' + tileSlug);
                 if (selectedBody) {
                     selectedBody.style.display = 'block';
+
+                    // Move focus to the body content for better screen reader experience
+                    // Use a slight delay to ensure content is rendered
+                    setTimeout(function() {
+                        selectedBody.setAttribute('tabindex', '-1');
+                        selectedBody.focus();
+                        // Remove tabindex after focus to restore natural tab order
+                        setTimeout(function() {
+                            selectedBody.removeAttribute('tabindex');
+                        }, 100);
+                    }, 50);
                 }
 
                 // Trigger a custom event to notify the page title with the breadcrumb
@@ -384,8 +428,8 @@
 
         function handle_card_press(tile, event) {
             const tile_id = tile.id;
-            // Extract the card index from the tile id (e.g., "card-tile-0" -> "0")
-            const cardIndex = tile_id.replace('card-tile-', '');
+            // Extract the card slug from the tile id (e.g., "card-tile-my-header" -> "my-header")
+            const cardSlug = tile_id.replace('card-tile-', '');
 
             // Get link type and href from data attributes
             const linkType = tile.getAttribute('data-link-type');
@@ -415,13 +459,13 @@
             if (linkType === 'anchor_page') {
                 event.preventDefault();
 
-                // Update URL without reloading
+                // Update URL without reloading - use slug for better bookmarking
                 const url = new URL(window.location.href);
-                url.searchParams.set('card', cardIndex);
-                window.history.pushState({ card: cardIndex }, '', url.toString());
+                url.searchParams.set('card', cardSlug);
+                window.history.pushState({ card: cardSlug }, '', url.toString());
 
                 // Manually select the card
-                selectCard(cardIndex);
+                selectCard(tile);
             }
         }
 
@@ -432,15 +476,15 @@
             const defaultContent = document.getElementById('card-tiles-default-content');
 
             if (cardParam !== null) {
-                selectCard(cardParam);
+                selectCardByIdentifier(cardParam);
             } else {
                 // No card selected - clear all selections
                 cardTiles.forEach(function(tile) {
-                    const tileIndex = tile.id.replace('card-tile-', '');
+                    const slug = tile.id.replace('card-tile-', '');
                     tile.classList.remove('selected');
-                    const icon = document.getElementById('card-tile-icon-' + tileIndex);
-                    const header = document.getElementById('card-tile-header-' + tileIndex);
-                    const body = document.getElementById('card-tile-body-' + tileIndex);
+                    const icon = document.getElementById('card-tile-icon-' + slug);
+                    const header = document.getElementById('card-tile-header-' + slug);
+                    const body = document.getElementById('card-tile-body-' + slug);
                     if (icon) icon.classList.remove('selected');
                     if (header) header.classList.remove('selected');
                     if (body) body.style.display = 'none';

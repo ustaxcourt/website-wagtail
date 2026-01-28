@@ -94,6 +94,11 @@ ol ol ol {
     list-style-type: lower-roman;
 }
 
+/* Indented paragraph for alignment with list items */
+.indented-paragraph {
+    margin-left: 2em;
+}
+
 /* ==========================================================================
    Typography
    ========================================================================== */

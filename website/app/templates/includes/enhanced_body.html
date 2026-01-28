@@ -26,6 +26,8 @@
                 </div>
             {% elif block.block_type == 'paragraph' %}
                 <p data-testid="page-body-paragraph">{{ block.value }}</p>
+            {% elif block.block_type == 'indented_paragraph' %}
+                <p class="indented-paragraph" data-testid="page-body-indented-paragraph">{{ block.value }}</p>
             {% elif block.block_type == 'snippet' %}
                 {{ block.value.text |safe }}
             {% elif block.block_type == 'image' %}

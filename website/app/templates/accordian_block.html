@@ -126,8 +126,8 @@
         type="button"
         class="accordian-header-button"
         aria-expanded="false"
-        aria-controls="content-{{block_index}}"
-        id="btn-{{block_index}}"
+        aria-controls="content-{{block_index}}{{suffix}}"
+        id="btn-{{block_index}}{{suffix}}"
       >
         {{ block.value.title }}
         <span class="accordian-icon" aria-hidden="true"></span>
@@ -135,13 +135,25 @@
     </h3>
   </div>
   <div
-    id="content-{{block_index}}"
+    id="content-{{block_index}}{{suffix}}"
     class="accordian-content hidden"
     role="region"
-    aria-labelledby="btn-{{block_index}}"
+    aria-labelledby="btn-{{block_index}}{{suffix}}"
   >
     {% for block in block.value.description %}
-      {% if block.block_type == 'prose' %}
+      {% if block.block_type == 'heading' %}
+        {% with level=block.value.level text=block.value.text id=block.value.id %}
+          {% if level == 'h2' %}
+            <h2{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h2>
+          {% elif level == 'h3' %}
+            <h3{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h3>
+          {% elif level == 'h4' %}
+            <h4{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h4>
+          {% elif level == 'h5' %}
+            <h5{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h5>
+          {% endif %}
+        {% endwith %}
+      {% elif block.block_type == 'prose' %}
         <div class="rich-text">{{ block.value }}</div>
       {% elif block.block_type == 'callout' %}
         <div class="callout-content">{% include_block block %}</div>
@@ -168,6 +180,10 @@
       icon.classList.toggle("active");
 
       button.classList.toggle("active");
+
+      // Update aria-expanded attribute
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", !isExpanded);
     });
   });
 </script>

@@ -1,6 +1,7 @@
 from django import template
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+from django.utils.text import slugify
 
 register = template.Library()
 
@@ -30,3 +31,11 @@ def parse_iso_date(date_string):
             pass
 
     return date_string
+
+
+@register.filter
+def slugify_text(text):
+    """
+    Convert text to a URL-friendly slug
+    """
+    return slugify(text)
