@@ -2,10 +2,6 @@
 {% load wagtailcore_tags %}
 {% load filters %}
 
-{# Card Tiles Block - Responsive button grid layout #}
-{# Desktop (>1025px): 1-4 tiles in a row #}
-{# Tablet (768-1025px): 1-3 tiles in a row, or a 2x2 grid #}
-{# Mobile (<768px): 1-4 tiles in a vertical column #}
 <style>
 .card-tiles__title {
     color: var(--theme-color-base-darkest, #1B1B1B);
@@ -134,7 +130,13 @@
 }
 
 .card-tile__body:focus:not(:focus-visible) {
-    outline: none;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.prevent-initial-focus:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .card-tile__body-prose {
@@ -301,7 +303,7 @@
     {% with link=tile.link.0 %}
     {% with tile_slug=tile.card_header|slugify_text %}
     {% if link.block_type == 'anchor_page' %}
-    <div class="card-tile__body"
+    <div class="card-tile__body prevent-initial-focus"
          id="card-tile-body-{{ tile_slug }}"
          data-tile-index="{{ forloop.counter0 }}"
          role="region"
@@ -326,7 +328,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
 
-        // Check for selected card from query parameter (supports both slug and index)
         const urlParams = new URLSearchParams(window.location.search);
         const selectedCard = urlParams.get('card');
 
@@ -335,25 +336,21 @@
         }
 
         cardTiles.forEach(function(tile) {
-            // Handle click events
             tile.addEventListener('click', function(event) {
                 handle_card_press(tile, event);
             });
 
-            // Handle keyboard events (Enter and Space)
             tile.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault(); // Prevent page scroll on Space
+                    event.preventDefault();
                     handle_card_press(tile, event);
                 }
             });
         });
 
         function selectCardByIdentifier(identifier) {
-            // Try to select by slug first (card-tile-{slug})
             let selectedTile = document.getElementById('card-tile-' + identifier);
 
-            // If not found, try to find by index (for backward compatibility)
             if (!selectedTile) {
                 cardTiles.forEach(function(tile) {
                     if (tile.getAttribute('data-tile-index') === identifier) {
@@ -375,7 +372,6 @@
             const defaultContent = document.getElementById('card-tiles-default-content');
 
             if (selectedTile) {
-                // Clear any previously selected cards
                 cardTiles.forEach(function(tile) {
                     const slug = tile.id.replace('card-tile-', '');
                     tile.classList.remove('selected');
@@ -387,35 +383,28 @@
                     if (body) body.style.display = 'none';
                 });
 
-                // Hide default content when a card is selected
                 if (defaultContent) {
                     defaultContent.style.display = 'none';
                 }
 
-                // Select the new card
                 selectedTile.classList.add('selected');
                 if (selected_icon) selected_icon.classList.add('selected');
                 if (selected_header) selected_header.classList.add('selected');
 
-                // Show the body content for the selected card (only for this_page links)
                 const selectedBody = document.getElementById('card-tile-body-' + tileSlug);
                 if (selectedBody) {
                     selectedBody.style.display = 'block';
 
-                    // Move focus to the body content for better screen reader experience
-                    // Use a slight delay to ensure content is rendered
                     setTimeout(function() {
                         selectedBody.setAttribute('tabindex', '-1');
                         selectedBody.focus();
-                        // Remove tabindex after focus to restore natural tab order
+                        selectedBody.classList.remove('prevent-initial-focus');
                         setTimeout(function() {
                             selectedBody.removeAttribute('tabindex');
                         }, 100);
                     }, 50);
                 }
 
-                // Trigger a custom event to notify the page title with the breadcrumb
-                // Use breadcrumb_title for anchor_page links, otherwise use card header
                 const linkType = selectedTile.getAttribute('data-link-type');
                 let breadcrumbText = selected_header ? selected_header.textContent : '';
                 if (linkType === 'anchor_page') {
@@ -432,18 +421,13 @@
 
         function handle_card_press(tile, event) {
             const tile_id = tile.id;
-            // Extract the card slug from the tile id (e.g., "card-tile-my-header" -> "my-header")
             const cardSlug = tile_id.replace('card-tile-', '');
 
-            // Get link type and href from data attributes
             const linkType = tile.getAttribute('data-link-type');
             const tileHref = tile.getAttribute('data-href');
             const isExternalLink = tile.getAttribute('data-is-external') === 'true';
 
-            // Handle external_url: navigate away
             if (linkType === 'external_url' && tileHref) {
-                // For external links, create a temporary anchor and click it
-                // This allows link-handler.js to handle the redirect page logic
                 const tempLink = document.createElement('a');
                 tempLink.href = tileHref;
                 tempLink.style.display = 'none';
@@ -453,27 +437,22 @@
                 return;
             }
 
-            // Handle internal_page: navigate to the page
             if (linkType === 'internal_page' && tileHref) {
                 window.location.href = tileHref;
                 return;
             }
 
-            // Handle anchor_page: stay on page, show body content
             if (linkType === 'anchor_page') {
                 event.preventDefault();
 
-                // Update URL without reloading - use slug for better bookmarking
                 const url = new URL(window.location.href);
                 url.searchParams.set('card', cardSlug);
                 window.history.pushState({ card: cardSlug }, '', url.toString());
 
-                // Manually select the card
                 selectCard(tile);
             }
         }
 
-        // Handle browser back/forward buttons
         window.addEventListener('popstate', function(event) {
             const urlParams = new URLSearchParams(window.location.search);
             const cardParam = urlParams.get('card');
@@ -482,7 +461,6 @@
             if (cardParam !== null) {
                 selectCardByIdentifier(cardParam);
             } else {
-                // No card selected - clear all selections
                 cardTiles.forEach(function(tile) {
                     const slug = tile.id.replace('card-tile-', '');
                     tile.classList.remove('selected');
@@ -494,12 +472,10 @@
                     if (body) body.style.display = 'none';
                 });
 
-                // Show default content when no card is selected
                 if (defaultContent) {
                     defaultContent.style.display = 'block';
                 }
 
-                // Clear breadcrumb
                 const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
                 const titleStart = document.querySelector('.page-title-start');
                 if (breadcrumbSpan) {
