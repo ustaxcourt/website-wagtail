@@ -20,6 +20,11 @@ from django.utils import timezone
 from datetime import datetime, time
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+from wagtail.models import Collection
+import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NewsItemQuerySet(models.QuerySet):
@@ -64,6 +69,14 @@ class NewsItem(
         on_delete=models.SET_NULL,
         related_name="+",
     )
+
+    __collection = Collection.objects.filter(name="Homepage News Images").first()
+    __defaultImageId = None
+    logger.info(__collection)
+    if __collection:
+        logger.info(__collection.objects)
+        __randomImage = random.choice(__collection.objects)
+        logger.info(__randomImage)
 
     image = models.ForeignKey(
         "wagtailimages.Image",
