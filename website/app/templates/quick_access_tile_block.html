@@ -292,49 +292,51 @@
     {% if link.block_type == "related_page" %}
       {% with tile_url=link.value.url %}
         {% with is_internal=True %}
-          <a href="{{ tile_url }}"
-             class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if is_internal and request.path == tile_url %}is-active{% endif %}"
-             role="listitem"
-             aria-label="{{ value.title }}. {{ value.description|striptags }}">
-            <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-                        icon-{{ icon_position }} align-{{ value.content_alignment }}">
-              <div class="tile-content">
-                {% if value.icon %}
-                  <div class="tile-icon" aria-hidden="true">
-                    {% include_svg value.icon.svg_file %}
+          <div role="listitem">
+            <a href="{{ tile_url }}"
+               class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if is_internal and request.path == tile_url %}is-active{% endif %}"
+               aria-label="{{ value.title }}. {{ value.description|striptags }}">
+              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
+                          icon-{{ icon_position }} align-{{ value.content_alignment }}">
+                <div class="tile-content">
+                  {% if value.icon %}
+                    <div class="tile-icon" aria-hidden="true">
+                      {% include_svg value.icon.svg_file %}
+                    </div>
+                  {% endif %}
+                  <h2 aria-hidden="true">{{ value.title }}</h2>
+                  <div class="tile-description" aria-hidden="true">
+                    {{ value.description|richtext }}
                   </div>
-                {% endif %}
-                <h2 aria-hidden="true">{{ value.title }}</h2>
-                <div class="tile-description" aria-hidden="true">
-                  {{ value.description|richtext }}
                 </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
         {% endwith %}
       {% endwith %}
     {% else %}
       {% with tile_url=link.value %}
         {% with is_internal=False %}
-          <a href="{{ tile_url }}"
-             class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
-             role="listitem"
-             aria-label="{{ value.title }}. {{ value.description|striptags }}">
-            <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-                        icon-{{ icon_position }} align-{{ value.content_alignment }}">
-              <div class="tile-content">
-                {% if value.icon %}
-                  <div class="tile-icon" aria-hidden="true">
-                    {% include_svg value.icon.svg_file %}
+          <div role="listitem">
+            <a href="{{ tile_url }}"
+               class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
+               aria-label="{{ value.title }}. {{ value.description|striptags }}">
+              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
+                          icon-{{ icon_position }} align-{{ value.content_alignment }}">
+                <div class="tile-content">
+                  {% if value.icon %}
+                    <div class="tile-icon" aria-hidden="true">
+                      {% include_svg value.icon.svg_file %}
+                    </div>
+                  {% endif %}
+                  <h2 aria-hidden="true">{{ value.title }}</h2>
+                  <div class="tile-description" aria-hidden="true">
+                    {{ value.description|richtext }}
                   </div>
-                {% endif %}
-                <h2 aria-hidden="true">{{ value.title }}</h2>
-                <div class="tile-description" aria-hidden="true">
-                  {{ value.description|richtext }}
                 </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
         {% endwith %}
       {% endwith %}
     {% endif %}

@@ -47,7 +47,7 @@
         const isTablet = window.innerWidth <= 992 && !isMobile;
 
         document.querySelectorAll('.quick-access-tiles-grid').forEach(function(grid) {
-            const tiles = grid.querySelectorAll('.quick-access-tile-link');
+            const tiles = grid.querySelectorAll('[role="listitem"]');
             const totalTiles = tiles.length;
             const maxColumns = parseInt(grid.getAttribute('data-max-columns')) || 3;
 
