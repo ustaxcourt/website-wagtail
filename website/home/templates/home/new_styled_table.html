@@ -58,7 +58,7 @@
       text-align: left;
     }
     .plus-icon {
-    background-color: red;
+    background-color: var(--color-navy);
     width: 24px;
     height: 24px;
 
@@ -251,7 +251,7 @@
       icon.addEventListener("click", function() {
         const cellContent = icon.parentElement.nextElementSibling;
         cellContent.classList.toggle("hidden");
-        // Toggle rotation
+
         if (icon.style.transform === "rotate(45deg)") {
           icon.style.transform = "rotate(0deg)";
         } else {
