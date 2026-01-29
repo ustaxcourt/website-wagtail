@@ -8,6 +8,7 @@ def create_subcollection_under_parent(apps, schema_editor):
 
     parent_name = "News and Announcements"
     subcollection_name = "Home Page News Images"
+    parent_collection_real = None
 
     try:
         Collection.objects.get(name=parent_name)
@@ -28,10 +29,24 @@ def create_subcollection_under_parent(apps, schema_editor):
             .exists()
         ):
             parent_collection_real.add_child(name=subcollection_name)
-
     except Exception as e:
         raise RuntimeError(
-            f"FATAL: Could not create subcollection '{subcollection_name}' under collection '{parent_name}'. Error: {e}"
+            f"Could not create subcollection '{subcollection_name}' under collection '{parent_name}'. Migration aborted. Error: {e}"
+        )
+
+    from wagtail.images.models import Image as RealImage
+
+    # Move images in "News and Announcements" collection to "Home Page News Images"
+    # (These are images that were in the "Press Releases" collection before that collection was
+    # renamed to "News and Announcements" in the previous migration script)
+    try:
+        subcollection_real = RealCollection.objects.get(name=subcollection_name)
+        for newsImage in RealImage.objects.filter(collection=parent_collection_real):
+            newsImage.collection = subcollection_real
+            newsImage.save(update_fields=["collection"])
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to move images from collection '{parent_name}' to collection '{subcollection_name}'. Migration aborted. Error: {e}"
         )
 
 
@@ -42,20 +57,45 @@ def delete_subcollection_under_parent(apps, schema_editor):
     subcollection_name = "Home Page News Images"
 
     try:
-        Collection.objects.get(name=parent_name)
+        Collection.objects.get(name=subcollection_name)
     except Collection.DoesNotExist:
-        return  # Parent missing, nothing to delete
+        return  # Subcollection missing, nothing to delete
 
     from wagtail.models import Collection as RealCollection
+    from wagtail.images.models import Image as RealImage
 
     try:
-        # Use the real model to get the root and create the child
         parent_collection_real = RealCollection.objects.get(name=parent_name)
-        parent_collection_real.get_children().filter(name=subcollection_name).delete()
+        if (
+            not parent_collection_real.get_children()
+            .filter(name=subcollection_name)
+            .exists()
+        ):
+            raise RuntimeError(
+                f"Subcollection '{subcollection_name}' is not a child of collection '{parent_name}'. Migration aborted."
+            )
+    except Exception as e:
+        raise RuntimeError(
+            f"Error while checking if subcollection '{subcollection_name}' is a child of collection '{parent_name}'. Migration aborted. Error: {e}"
+        )
+
+    # Move images in "Home Page News Images" subcollection to "News and Announcements"
+    try:
+        subcollection_real = RealCollection.objects.get(name=subcollection_name)
+        for newsImage in RealImage.objects.filter(collection=subcollection_real):
+            newsImage.collection = parent_collection_real
+            newsImage.save(update_fields=["collection"])
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to move images from collection '{subcollection_name}' to collection '{parent_name}'. Migration aborted. Error: {e}"
+        )
+
+    try:
+        subcollection_real.delete()
 
     except Exception as e:
         raise RuntimeError(
-            f"FATAL: Could not create subcollection '{subcollection_name}' under collection '{parent_name}'. Error: {e}"
+            f"Could not delete subcollection '{subcollection_name}' under collection '{parent_name}'. Migration aborted. Error: {e}"
         )
 
 

@@ -42,15 +42,17 @@ class NewsItemQuerySet(models.QuerySet):
 
 
 def get_random_news_item_image_pk():
-    __collection = Collection.objects.filter(name="Home Page News Images").first()
-    __defaultImagePk = None
-    logger.info(dir(__collection))
-    if __collection:
-        __images = Image.objects.filter(collection=__collection)
-        if __images:
-            __defaultImagePk = random.choice(__images).pk
-            logger.info(__defaultImagePk)
-    return __defaultImagePk
+    homePageNewsCollection = Collection.objects.filter(
+        name="Home Page News Images"
+    ).first()
+    defaultImagePk = None
+    logger.info(dir(homePageNewsCollection))
+    if homePageNewsCollection:
+        imagesToChooseFrom = Image.objects.filter(collection=homePageNewsCollection)
+        if imagesToChooseFrom:
+            defaultImagePk = random.choice(imagesToChooseFrom).pk
+            logger.info(defaultImagePk)
+    return defaultImagePk
 
 
 class NewsItem(
@@ -85,7 +87,7 @@ class NewsItem(
 
     image = models.ForeignKey(
         "wagtailimages.Image",
-        # null=True,
+        null=True,
         blank=False,
         on_delete=models.SET_DEFAULT,
         related_name="+",
