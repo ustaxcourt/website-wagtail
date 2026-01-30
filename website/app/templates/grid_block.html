@@ -1,0 +1,414 @@
+{% load wagtailcore_tags %}
+
+<style>
+    .grid-style-container {
+        margin: 2rem 0;
+    }
+
+    .grid-style-container.width-full {
+        max-width: 100%;
+        padding: 0px;
+    }
+
+    .grid-style-layout {
+        display: grid;
+        gap: 0;
+    }
+    .grid-style-layout.styled {
+        border: 1px solid #dfe1e2;
+    }
+
+    .grid-style-cell {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .grid-style-cell.styled {
+        background-color: #ffffff;
+        border-right: 1px solid #dfe1e2;
+        border-bottom: 1px solid #dfe1e2;
+    }
+
+    .grid-style-cell-header.styled {
+        background-color: #f1f9fc;
+        color: #000000;
+        font-size: 20px;
+        font-weight: 600;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .grid-style-cell-caption.styled {
+        font-size: 14px;
+        color: #000000;
+        margin: 0;
+        padding: 0 20px;
+        padding-top: 20px;
+    }
+
+    .grid-style-cell-caption.styled a {
+        color: #1a4480;
+    }
+
+    .grid-style-cell-caption.italic {
+        font-style: italic;
+    }
+
+    .grid-style-cell-body.styled {
+        background-color: #ffffff;
+        color: #000000;
+        font-size: 17px;
+        padding: 15px 20px 20px;
+        flex: 1;
+    }
+
+    .grid-style-cell-body.styled a {
+        color: #1a4480;
+    }
+
+    .grid-style-cell-body.styled ul,
+    .grid-style-cell-body.styled ol {
+        font-size: 17px;
+    }
+
+    .grid-style-cell-body.styled ul li,
+    .grid-style-cell-body.styled ol li {
+        font-size: 17px;
+    }
+
+    .grid-style-cell-body.styled p {
+        font-size: 17px;
+    }
+
+    /*unstyled */
+    .grid-style-layout.unstyled {
+        border: none;
+    }
+
+    .grid-style-cell.unstyled {
+        background-color: transparent;
+        border: none;
+    }
+
+    .grid-style-cell-header.unstyled {
+        background-color: transparent;
+        color: #000000;
+        font-size: 20px;
+        font-weight: 600;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .grid-style-cell-caption.unstyled {
+        font-size: 14px;
+        color: #000000;
+        margin: 0;
+        padding: 0 20px;
+        padding-top: 20px;
+    }
+
+    .grid-style-cell-caption.unstyled a {
+        color: #1a4480;
+    }
+
+    .grid-style-cell-body.unstyled {
+        background-color: transparent;
+        color: #000000;
+        font-size: 17px;
+        padding: 15px 20px 20px;
+        flex: 1;
+    }
+
+    .grid-style-cell-body.unstyled a {
+        color: #1a4480;
+    }
+
+    .grid-style-cell-body.unstyled ul,
+    .grid-style-cell-body.unstyled ol {
+        font-size: 17px;
+    }
+
+    .grid-style-cell-body.unstyled ul li,
+    .grid-style-cell-body.unstyled ol li {
+        font-size: 17px;
+    }
+
+    .grid-style-cell-body.unstyled p {
+        font-size: 17px;
+    }
+
+    .grid-style-cell-body > *:first-child {
+        margin-top: 0;
+    }
+
+    .grid-style-cell-body > *:last-child {
+        margin-bottom: 0;
+    }
+    .grid-style-cell-caption p{
+        font-size: 14px;
+        margin-bottom: 0px;
+    }
+
+    @media (max-width: 992px) {
+        .grid-style-layout[data-columns="1"] {
+            grid-template-columns: 1fr !important;
+        }
+        .grid-style-layout[data-columns="2"],
+        .grid-style-layout[data-columns="3"],
+        .grid-style-layout[data-columns="4"] {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .grid-style-layout {
+            grid-template-columns: 1fr !important;
+            min-width: 250px;
+        }
+
+        .grid-style-cell {
+            grid-column: auto !important;
+        }
+
+        .grid-style-cell.styled {
+            border-right: none;
+        }
+
+        .grid-style-cell-header.styled {
+            font-size: 18px;
+        }
+        .grid-style-cell-header.unstyled {
+            font-size: 18px;
+        }
+
+        .grid-style-cell-body {
+            font-size: 16px !important;
+        }
+
+        .grid-style-cell-body p,
+        .grid-style-cell-body ul,
+        .grid-style-cell-body ol {
+            font-size: 16px !important;
+        }
+
+        .grid-style-cell-body ul li,
+        .grid-style-cell-body ol li {
+            font-size: 16px !important;
+        }
+    }
+</style>
+
+<div class="grid-style-container width-{{ block.value.width }}">
+    <div class="grid-style-layout {{ block.value.gridStyle }}" id="grid-{{ block.id }}" style="grid-template-columns: repeat(12, 1fr);" role="region" aria-label="Grid style layout" data-columns="{{ block.value.columns }}">
+        {% for cell in block.value.cells %}
+            <div class="grid-style-cell {{ block.value.gridStyle }}">
+                {% if cell.header %}
+                    <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header }}</h3>
+                {% endif %}
+
+                {% if cell.caption %}
+                    <div class="grid-style-cell-caption {{ block.value.gridStyle }}{% if cell.italic_caption %} italic{% endif %}" tabindex="0">{{ cell.caption|richtext }}</div>
+                {% endif %}
+
+                <div class="grid-style-cell-body {{ block.value.gridStyle }}" tabindex="0">
+                    {% for body_block in cell.body %}
+                        {% if body_block.block_type == 'prose' %}
+                            {{ body_block.value|richtext }}
+                        {% elif body_block.block_type == 'callout' %}
+                            {% include "callout_block.html" with block=body_block %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+(function() {
+    function equalizeHeadersInRows() {
+        const isMobile = window.innerWidth <= 768;
+        const isTablet = window.innerWidth <= 992 && !isMobile;
+
+        document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
+            const cells = Array.from(grid.querySelectorAll('.grid-style-cell'));
+            const gridStyle = grid.classList.contains('styled') ? 'styled' : 'unstyled';
+            const configuredColumns = parseInt(grid.getAttribute('data-columns'));
+
+            if (isMobile) {
+                cells.forEach(function(cell) {
+                    const header = cell.querySelector('.grid-style-cell-header');
+
+                    if (header && header.classList.contains('placeholder-header')) {
+                        header.remove();
+                    }
+
+                    const existingHeader = cell.querySelector('.grid-style-cell-header');
+                    if (existingHeader) {
+                        existingHeader.style.minHeight = '';
+                    }
+                });
+                return;
+            }
+
+            if (isTablet && configuredColumns === 1) {
+                cells.forEach(function(cell) {
+                    let header = cell.querySelector('.grid-style-cell-header');
+
+                    if (gridStyle === 'unstyled' && header && header.classList.contains('placeholder-header')) {
+                        header.remove();
+                    }
+
+                    if (header) {
+                        header.style.minHeight = '';
+                    }
+                });
+                return;
+            }
+
+            const normalSpan = 12 / configuredColumns;
+            const effectiveColumns = isTablet ? Math.min(configuredColumns, 2) : configuredColumns;
+
+            const rows = [];
+            let currentRow = [];
+            let currentRowSpan = 0;
+            let maxSpanPerRow = isTablet ? 12 : 12;
+
+            cells.forEach(function(cell, index) {
+                const cellSpan = parseInt(cell.style.gridColumn.replace('span ', '')) || normalSpan;
+
+                if (isTablet) {
+                    if (currentRow.length >= effectiveColumns) {
+                        rows.push(currentRow);
+                        currentRow = [cell];
+                    } else {
+                        currentRow.push(cell);
+                    }
+                } else {
+                    if (currentRowSpan + cellSpan > 12) {
+                        if (currentRow.length > 0) {
+                            rows.push(currentRow);
+                        }
+                        currentRow = [cell];
+                        currentRowSpan = cellSpan;
+                    } else {
+                        currentRow.push(cell);
+                        currentRowSpan += cellSpan;
+                    }
+                }
+            });
+
+            if (currentRow.length > 0) {
+                rows.push(currentRow);
+            }
+
+            rows.forEach(function(rowCells) {
+                const hasHeaderWithText = rowCells.some(function(cell) {
+                    const header = cell.querySelector('.grid-style-cell-header');
+                    return header && header.textContent.trim() !== '';
+                });
+
+                if (hasHeaderWithText) {
+                    rowCells.forEach(function(cell) {
+                        let header = cell.querySelector('.grid-style-cell-header');
+                        if (!header) {
+                            header = document.createElement('div');
+                            header.className = 'grid-style-cell-header ' + gridStyle + ' placeholder-header';
+                            header.textContent = '';
+                            cell.insertBefore(header, cell.firstChild);
+                        }
+                    });
+                } else {
+                    rowCells.forEach(function(cell) {
+                        const header = cell.querySelector('.grid-style-cell-header.placeholder-header');
+                        if (header) {
+                            header.remove();
+                        }
+                    });
+                }
+            });
+
+            rows.forEach(function(rowCells) {
+                const headers = rowCells
+                    .map(cell => cell.querySelector('.grid-style-cell-header'))
+                    .filter(header => header !== null);
+
+                if (headers.length > 0) {
+                    headers.forEach(function(header) {
+                        header.style.minHeight = '';
+                    });
+
+                    const heights = headers.map(header => header.offsetHeight);
+                    const maxHeight = Math.max(...heights);
+
+                    headers.forEach(function(header) {
+                        header.style.minHeight = maxHeight + 'px';
+                    });
+                }
+            });
+        });
+    }
+
+    function adjustGridCells() {
+        const isMobile = window.innerWidth <= 768;
+        const isTablet = window.innerWidth <= 992 && !isMobile;
+
+        document.querySelectorAll('.grid-style-layout').forEach(function(grid) {
+            const cells = grid.querySelectorAll('.grid-style-cell');
+            const totalCells = cells.length;
+            const configuredColumns = parseInt(grid.getAttribute('data-columns'));
+
+            if (isMobile) {
+                grid.style.setProperty('grid-template-columns', '1fr', 'important');
+                cells.forEach(function(cell) {
+                    cell.style.removeProperty('grid-column');
+                });
+            } else if (isTablet) {
+                const effectiveColumns = configuredColumns === 1 ? 1 : 2;
+                grid.style.setProperty('grid-template-columns', `repeat(${effectiveColumns}, 1fr)`, 'important');
+                cells.forEach(function(cell, index) {
+                    if (configuredColumns > 1 && totalCells % 2 === 1 && index === totalCells - 1) {
+                        cell.style.gridColumn = 'span 2';
+                    } else {
+                        cell.style.removeProperty('grid-column');
+                    }
+                });
+            } else {
+                grid.style.setProperty('grid-template-columns', 'repeat(12, 1fr)', 'important');
+                const normalSpan = 12 / configuredColumns;
+
+                cells.forEach(function(cell) {
+                    cell.style.gridColumn = `span ${normalSpan}`;
+                });
+
+                if (totalCells < configuredColumns) {
+                    const spanPerCell = 12 / totalCells;
+                    cells.forEach(function(cell) {
+                        cell.style.gridColumn = `span ${spanPerCell}`;
+                    });
+                } else {
+                    const remainder = totalCells % configuredColumns;
+                    if (remainder !== 0) {
+                        const lastRowStart = totalCells - remainder;
+                        const spanForLastRow = 12 / remainder;
+
+                        for (let i = 0; i < remainder; i++) {
+                            cells[lastRowStart + i].style.gridColumn = `span ${spanForLastRow}`;
+                        }
+                    }
+                }
+            }
+        });
+
+        equalizeHeadersInRows();
+    }
+
+    adjustGridCells();
+
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(adjustGridCells, 250);
+    });
+})();
+</script>
