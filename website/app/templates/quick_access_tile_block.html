@@ -23,6 +23,9 @@
     text-decoration: underline;
   }
 
+  .quick-access-tiles-grid {
+    align-items: stretch;
+  }
   .quick-access-tile {
     background: #fff;
     border: 1px solid #A9AEB1;
@@ -31,6 +34,8 @@
     position: relative;
     transition: box-shadow 0.2s;
     height: 100%;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.1);
   }
 
@@ -103,7 +108,7 @@
   .quick-access-tile p {
     color: #162E51;
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: 17px;
   }
 
   .quick-access-tile-link:focus,
@@ -241,7 +246,7 @@
     .quick-access-tile p,
     .quick-access-tile .tile-description,
     .quick-access-tile .tile-description p {
-      font-size: 16px;
+      font-size: 17px;
       line-height: 1.4;
     }
 
