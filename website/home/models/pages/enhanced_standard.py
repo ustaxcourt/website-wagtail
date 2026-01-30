@@ -103,11 +103,15 @@ class GridCellBlock(blocks.StructBlock):
 
 
 class GridBlock(blocks.StructBlock):
-    columns = blocks.IntegerBlock(
+    columns = blocks.ChoiceBlock(
         required=True,
         default=2,
-        min_value=1,
-        max_value=4,
+        choices=[
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (4, 4),
+        ],
         help_text="Max number of columns in the grid (1-4)",
     )
     width = blocks.ChoiceBlock(
