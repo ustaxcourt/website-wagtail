@@ -454,10 +454,21 @@
 
                 const linkType = selectedTile.getAttribute('data-link-type');
                 let breadcrumbText = selected_header ? selected_header.textContent : '';
+                const pageTitleStart = document.querySelector('.page-title-start');
                 if (linkType === 'anchor_page') {
                     const customBreadcrumb = selectedTile.getAttribute('data-breadcrumb-title');
                     if (customBreadcrumb) {
                         breadcrumbText = customBreadcrumb;
+                    }
+                    if (pageTitleStart) {
+                        pageTitleStart.setAttribute('tabindex', '0');
+                        pageTitleStart.setAttribute('role', 'link');
+                        pageTitleStart.focus();
+                    }
+                } else {
+                    if (pageTitleStart) {
+                        pageTitleStart.removeAttribute('tabindex');
+                        pageTitleStart.removeAttribute('role');
                     }
                 }
                 window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
