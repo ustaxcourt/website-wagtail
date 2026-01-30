@@ -250,7 +250,6 @@
             width: 100%;
             border-collapse: collapse;
             margin: 1rem 0;
-            {% comment %} table-layout: fixed; {% endcomment %}
         }
 
         .enhanced-page .enhanced-table:not(.unstyled) th:not([scope="row"]) {
@@ -258,19 +257,13 @@
             color: white;
         }
 
-        {% comment %} My thinking is that this should only apply to unstyled-borderless tables {% endcomment %}
         .enhanced-page .enhanced-table:not(.unstyled-borderless) th,
         .enhanced-page .enhanced-table:not(.unstyled-borderless) td:not(:has(.cell-header)) {
-            {% comment %} padding: 1rem; {% endcomment %}
             padding: 15px;
             text-align: left;
             border: 1px solid #dfe1e2;
             vertical-align: top;
         }
-
-        {% comment %} .enhanced-page .enhanced-table:not(.unstyled) tr:nth-child(even) {
-            background-color: #f0f0f0;
-        } {% endcomment %}
 
         .enhanced-page .enhanced-table:not(.unstyled) tr:nth-child(odd) {
             background-color: white;

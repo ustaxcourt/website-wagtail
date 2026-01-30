@@ -108,7 +108,7 @@ class TableListBlock(blocks.StructBlock):
     )
 
     class Meta:
-        label = "New Table"
+        label = "Enhanced Table"
         icon = "table"
 
 
@@ -218,7 +218,7 @@ class EnhancedStandardPage(ModerationMixin, Page):
                 TypedTableBlock(table_value_types),
             ),
             (
-                "new_table",
+                "enhanced_table",
                 TableListBlock(),
             ),
             ("list", create_nested_list_block(max_depth=4)),

@@ -150,29 +150,3 @@
   </div>
 </div>
 {% endwith %}
-
-{% comment %} <script>
-  let thing=0;
-  document.addEventListener("DOMContentLoaded", function() {
-    const accordianBlock = document.getElementById("accordian-"+{{block_index}} + "{{suffix}}");
-    const header = accordianBlock.querySelector(".accordian-header");
-    const title = accordianBlock.querySelector(".accordian-title");
-    const content = accordianBlock.querySelector(".accordian-content");
-    const icon = accordianBlock.querySelector(".accordian-icon");
-    const button = accordianBlock.querySelector(".accordian-header-button");
-
-    console.log("Loaded accordian block:", accordianBlock);
-
-    header.addEventListener("click", function() {
-      content.classList.toggle("hidden");
-      icon.classList.toggle("rotated");
-
-      title.classList.toggle("active");
-      header.classList.toggle("active");
-      icon.classList.toggle("active");
-
-      button.classList.toggle("active");
-
-    });
-  });
-</script> {% endcomment %}

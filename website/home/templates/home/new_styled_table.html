@@ -1,8 +1,6 @@
 {% load static %} {% load filters %}
 
 <style>
-    {% comment %} Styling will be done here for ease of access then will be moved to the enhanced_body.html file to match style {% endcomment %}
-    {% comment %} Style as expected, then clean it up to prevent duplicates in the enhanced_body.html file {% endcomment %}
 
     .table-container .enhanced-table caption {
       font-size: 24px;
@@ -138,14 +136,14 @@
         {{ block.value.table.caption }}</caption>
       <thead>
             <tr>
-                {% for col in block.value.table.columns %}<th scope="col">{{ col.heading }}</th>{% endfor %}
+                {% for col in block.value.table.columns %}<th scope="col" tabindex="0">{{ col.heading }}</th>{% endfor %}
             </tr>
         </thead>
         <tbody>
             {% for row in block.value.table.rows %}
                 <tr>
                     {% for cell in row %}
-                      <td>
+                      <td tabindex="0">
                         {% if cell.block.name == "components" %}
                           {% for content in cell.value %}
                             {% if content.block_type == "accordian" %}
@@ -254,8 +252,11 @@
 
         if (icon.style.transform === "rotate(45deg)") {
           icon.style.transform = "rotate(0deg)";
+          icon.style.backgroundColor = "var(--color-navy)";
         } else {
           icon.style.transform = "rotate(45deg)";
+          icon.style.backgroundColor = "var(--color-white)";
+          icon.style.border = "3px solid var(--color-navy)";
         }
       });
     });
