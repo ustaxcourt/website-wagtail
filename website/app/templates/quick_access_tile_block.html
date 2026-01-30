@@ -286,9 +286,8 @@
 </style>
 
 
-{% if value.link %}
-  {% for link in value.link %}
-
+{% if value.link and value.link|length > 0 %}
+  {% with link=value.link.0 %}
     {% if link.block_type == "related_page" %}
       {% with tile_url=link.value.url %}
         {% with is_internal=True %}
@@ -296,8 +295,7 @@
             <a href="{{ tile_url }}"
                class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if is_internal and request.path == tile_url %}is-active{% endif %}"
                aria-label="{{ value.title }}. {{ value.description|striptags }}">
-              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-                          icon-{{ icon_position }} align-{{ value.content_alignment }}">
+              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
                 <div class="tile-content">
                   {% if value.icon %}
                     <div class="tile-icon" aria-hidden="true">
@@ -321,8 +319,7 @@
             <a href="{{ tile_url }}"
                class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
                aria-label="{{ value.title }}. {{ value.description|striptags }}">
-              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %}
-                          icon-{{ icon_position }} align-{{ value.content_alignment }}">
+              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
                 <div class="tile-content">
                   {% if value.icon %}
                     <div class="tile-icon" aria-hidden="true">
@@ -340,6 +337,21 @@
         {% endwith %}
       {% endwith %}
     {% endif %}
-
-  {% endfor %}
+  {% endwith %}
+{% else %}
+  <div role="listitem">
+    <div class="quick-access-tile icon-{{ icon_position }} align-{{ value.content_alignment }}">
+      <div class="tile-content">
+        {% if value.icon %}
+          <div class="tile-icon" aria-hidden="true">
+            {% include_svg value.icon.svg_file %}
+          </div>
+        {% endif %}
+        <h2 aria-hidden="true">{{ value.title }}</h2>
+        <div class="tile-description" aria-hidden="true">
+          {{ value.description|richtext }}
+        </div>
+      </div>
+    </div>
+  </div>
 {% endif %}
