@@ -130,15 +130,15 @@
   }
 </style>
 
-<div id="accordian-{{block_index}}{{suffix}}" class="accordian-block">
+<div id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
   <div class="accordian-header">
     <h3 class="accordian-title">
       <button
         type="button"
         class="accordian-header-button"
         aria-expanded="false"
-        aria-controls="content-{{block_index}}{{suffix}}"
-        id="btn-{{block_index}}{{suffix}}"
+        aria-controls="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
+        id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
       >
         {{ block.value.title }}
         <span class="accordian-icon" aria-hidden="true"></span>
@@ -146,10 +146,10 @@
     </h3>
   </div>
   <div
-    id="content-{{block_index}}{{suffix}}"
+    id="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
     class="accordian-content hidden"
     role="region"
-    aria-labelledby="btn-{{block_index}}{{suffix}}"
+    aria-labelledby="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
   >
     {% for block in block.value.description %}
       {% if block.block_type == 'heading' %}
@@ -174,27 +174,52 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const accordianBlock = document.getElementById("accordian-"+{{block_index}} + "{{suffix}}");
-    const header = accordianBlock.querySelector(".accordian-header");
-    const title = accordianBlock.querySelector(".accordian-title");
-    const content = accordianBlock.querySelector(".accordian-content");
-    const icon = accordianBlock.querySelector(".accordian-icon");
-    const button = accordianBlock.querySelector(".accordian-header-button");
+  (function() {
+    const accordianId = "accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
 
-    header.addEventListener("click", function() {
-      content.classList.toggle("hidden");
-      icon.classList.toggle("rotated");
+    function initializeAccordion() {
+      const accordianBlock = document.getElementById(accordianId);
+      if (!accordianBlock) return;
 
-      title.classList.toggle("active");
-      header.classList.toggle("active");
-      icon.classList.toggle("active");
+      const header = accordianBlock.querySelector(".accordian-header");
+      if (!header) return;
 
-      button.classList.toggle("active");
+      if (header.dataset.initialized === "true") return;
 
-      // Update aria-expanded attribute
-      const isExpanded = button.getAttribute("aria-expanded") === "true";
-      button.setAttribute("aria-expanded", !isExpanded);
+      const title = accordianBlock.querySelector(".accordian-title");
+      const content = accordianBlock.querySelector(".accordian-content");
+      const icon = accordianBlock.querySelector(".accordian-icon");
+      const button = accordianBlock.querySelector(".accordian-header-button");
+
+      if (!content || !icon || !title || !button) return;
+
+      header.addEventListener("click", function(e) {
+        e.stopPropagation();
+
+        content.classList.toggle("hidden");
+        icon.classList.toggle("rotated");
+        title.classList.toggle("active");
+        header.classList.toggle("active");
+        icon.classList.toggle("active");
+        button.classList.toggle("active");
+
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", !isExpanded);
+      });
+
+      header.dataset.initialized = "true";
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initializeAccordion);
+    } else {
+      initializeAccordion();
+    }
+
+    document.addEventListener("initAccordion", function(event) {
+      if (event.detail && event.detail.accordionId === accordianId) {
+        initializeAccordion();
+      }
     });
-  });
+  })();
 </script>

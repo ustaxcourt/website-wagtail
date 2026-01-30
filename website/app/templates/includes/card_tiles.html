@@ -3,6 +3,10 @@
 {% load filters %}
 
 <style>
+.card-tiles-container {
+    margin-top: 34px;
+    margin-bottom: 0;
+}
 .card-tiles__title {
     color: var(--theme-color-base-darkest, #1B1B1B);
     /* Header H1 */
@@ -177,9 +181,9 @@
     .card-tile--icon-right {
         flex-direction: row;
     }
-    .card-tile:first-child {
+    {% comment %} .card-tile:first-child {
         margin-top: 34px;
-    }
+    } {% endcomment %}
     .card-tile__header {
         font-size: 20px;
         display: flex;
@@ -193,9 +197,9 @@
         width: 35px;
         height: 35px;
     }
-    .card-tile:last-child {
+    {% comment %} .card-tile:last-child {
         margin-bottom: 34px;
-    }
+    } {% endcomment %}
 }
 /* Tablet (768-1024px): 1-3 tiles in a row, or a 2x2 grid for 4 tiles */
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -206,8 +210,8 @@
         gap: 25px;
     }
     .card-tile {
-        margin-top: 34px;
-        margin-bottom: 34px;
+        {% comment %} margin-top: 34px;
+        margin-bottom: 34px; {% endcomment %}
         padding: 22px 10px;
     }
 
@@ -236,14 +240,14 @@
         margin-top: 0;
         margin-bottom: 0;
     }
-    .card-tiles-container:has(.card-tile:nth-child(4):last-child) .card-tile:first-child,
+    {% comment %} .card-tiles-container:has(.card-tile:nth-child(4):last-child) .card-tile:first-child,
     .card-tiles-container:has(.card-tile:nth-child(4):last-child) .card-tile:nth-child(2) {
         margin-top: 34px;
     }
     .card-tiles-container:has(.card-tile:nth-child(4):last-child) .card-tile:nth-child(3),
     .card-tiles-container:has(.card-tile:nth-child(4):last-child) .card-tile:nth-child(4) {
         margin-bottom: 34px;
-    }
+    } {% endcomment %}
 }
 
 /* Desktop: cards in a row with 38px gap, auto-adjust width (> 1024px) */
@@ -264,7 +268,7 @@
       {% with link=tile.link.0 %}
       {% with tile_slug=tile.card_header|slugify_text %}
       <div class="card-tile {% if not tile.card_hover %}no-hover{% endif %} {% if tile.icon_direction %}card-tile--icon-{{ tile.icon_direction }}{% else %}card-tile--icon-top{% endif %}"
-           id="card-tile-{{ tile_slug }}"
+           id="card-tile-{{ tile_slug }}-{{ forloop.counter0 }}"
            data-tile-index="{{ forloop.counter0 }}"
            role="button"
            tabindex="0"
@@ -279,18 +283,18 @@
            {% endif %}
            >
         {% if tile.icon_direction == 'top' or tile.icon_direction == 'left' %}
-        <img id="card-tile-icon-{{ tile_slug }}"
+        <img id="card-tile-icon-{{ tile_slug }}-{{ forloop.counter0 }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
-        <h2 id="card-tile-header-{{ tile_slug }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <h2 id="card-tile-header-{{ tile_slug }}-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
         {% elif tile.icon_direction == 'bottom' or tile.icon_direction == 'right' %}
-        <h2 id="card-tile-header-{{ tile_slug }}" class="card-tile__header">{{ tile.card_header }}</h2>
-        <img id="card-tile-icon-{{ tile_slug }}"
+        <h2 id="card-tile-header-{{ tile_slug }}-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <img id="card-tile-icon-{{ tile_slug }}-{{ forloop.counter0 }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
         {% else %}
         {# Default to top/left if icon_direction is not set #}
-        <img id="card-tile-icon-{{ tile_slug }}"
+        <img id="card-tile-icon-{{ tile_slug }}-{{ forloop.counter0 }}"
                 class="card-tile__icon" src="{{ tile.icon.url }}" alt="">
-        <h2 id="card-tile-header-{{ tile_slug }}" class="card-tile__header">{{ tile.card_header }}</h2>
+        <h2 id="card-tile-header-{{ tile_slug }}-{{ forloop.counter0 }}" class="card-tile__header">{{ tile.card_header }}</h2>
         {% endif %}
       </div>
       {% endwith %}
@@ -304,12 +308,12 @@
     {% with tile_slug=tile.card_header|slugify_text %}
     {% if link.block_type == 'anchor_page' %}
     <div class="card-tile__body prevent-initial-focus"
-         id="card-tile-body-{{ tile_slug }}"
+         id="card-tile-body-{{ tile_slug }}-{{ forloop.counter0 }}"
          data-tile-index="{{ forloop.counter0 }}"
          role="region"
-         aria-labelledby="card-tile-header-{{ tile_slug }}"
+         aria-labelledby="card-tile-header-{{ tile_slug }}-{{ forloop.counter0 }}"
          style="display: none;">
-        {% include "includes/enhanced_body.html" with blocks=link.value.body suffix="-card-tile" only %}
+        {% include "includes/enhanced_body.html" with blocks=link.value.body tile_index=forloop.counter0 %}
     </div>
     {% endif %}
     {% endwith %}
@@ -395,6 +399,14 @@
                 if (selectedBody) {
                     selectedBody.style.display = 'block';
 
+                    // Trigger initialization for any accordions in this card body
+                    const accordions = selectedBody.querySelectorAll('.accordian-block');
+                    accordions.forEach(function(accordion) {
+                        document.dispatchEvent(new CustomEvent('initAccordion', {
+                            detail: { accordionId: accordion.id }
+                        }));
+                    });
+
                     setTimeout(function() {
                         selectedBody.setAttribute('tabindex', '-1');
                         selectedBody.focus();
@@ -402,7 +414,42 @@
                         setTimeout(function() {
                             selectedBody.removeAttribute('tabindex');
                         }, 100);
+                        // Focus trap logic
+                        trapCardBodyFocus(selectedBody, selectedTile);
                     }, 50);
+                        // Trap focus in card body and move to next card tile after tabbing out
+                        function trapCardBodyFocus(cardBody, cardTile) {
+                            const focusableSelectors = [
+                                'a[href]', 'button:not([disabled])', 'textarea:not([disabled])',
+                                'input:not([disabled])', 'select:not([disabled])', '[tabindex]:not([tabindex="-1"])'
+                            ];
+                            const focusableElements = cardBody.querySelectorAll(focusableSelectors.join(','));
+                            if (focusableElements.length === 0) return;
+                            const first = focusableElements[0];
+                            const last = focusableElements[focusableElements.length - 1];
+
+                            function handleTrap(e) {
+                                if (e.key !== 'Tab') return;
+                                if (e.shiftKey) {
+                                    if (document.activeElement === first) {
+                                        e.preventDefault();
+                                        cardTile.focus();
+                                    }
+                                } else {
+                                    if (document.activeElement === last) {
+                                        e.preventDefault();
+                                        const allTiles = Array.from(document.querySelectorAll('.card-tile'));
+                                        const idx = allTiles.indexOf(cardTile);
+                                        if (idx !== -1 && idx < allTiles.length - 1) {
+                                            allTiles[idx + 1].focus();
+                                        } else if (idx === allTiles.length - 1) {
+                                            cardBody.removeEventListener('keydown', handleTrap);
+                                        }
+                                    }
+                                }
+                            }
+                            cardBody.addEventListener('keydown', handleTrap);
+                        }
                 }
 
                 const linkType = selectedTile.getAttribute('data-link-type');
