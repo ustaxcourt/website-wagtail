@@ -300,7 +300,7 @@
             <a href="{{ tile_url }}"
                class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %} {% if is_internal and request.path == tile_url %}is-active{% endif %}"
                aria-label="{{ value.title }}. {{ value.description|striptags }}">
-              <div tabindex="0" class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
+              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
                 <div class="tile-content">
                   {% if value.icon %}
                     <div class="tile-icon" aria-hidden="true">
@@ -324,7 +324,7 @@
             <a href="{{ tile_url }}"
                class="quick-access-tile-link {% if tiles_hover_enabled %}hover-enabled{% endif %}"
                aria-label="{{ value.title }}. {{ value.description|striptags }}">
-              <div tabindex="0" class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
+              <div class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
                 <div class="tile-content">
                   {% if value.icon %}
                     <div class="tile-icon" aria-hidden="true">
