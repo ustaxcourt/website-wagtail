@@ -184,7 +184,7 @@
             <tr>
                 <td>
                     <div class="cell-header">
-                        <svg href="{%static '/images/icons/plus-circle.svg'%}" onclick="return false;" class="plus-icon"></svg>
+                        <svg onclick="return false;" class="plus-icon"></svg>
                         {% with cell=row|first %}
                             {% if cell.block.name == "components" %}
                                 {% for content in cell.value %}
@@ -252,11 +252,8 @@
 
         if (icon.style.transform === "rotate(45deg)") {
           icon.style.transform = "rotate(0deg)";
-          icon.style.backgroundColor = "var(--color-navy)";
         } else {
           icon.style.transform = "rotate(45deg)";
-          icon.style.backgroundColor = "var(--color-white)";
-          icon.style.border = "3px solid var(--color-navy)";
         }
       });
     });
