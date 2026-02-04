@@ -3,6 +3,10 @@
 from django.db import migrations
 
 
+# Creates the subcollection "Home Page News Images" if it doesn't exist, places
+# it as a subcollection of the "News and Announcements" collection, and move any
+# images that exist in the "News and Announcements" collection to the "Home Page
+# News Images" subcollection.
 def create_subcollection_under_parent(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
 
@@ -50,6 +54,9 @@ def create_subcollection_under_parent(apps, schema_editor):
         )
 
 
+# Moves any images in the "Home Page News Images" subcollection to the "News and
+# Announcements" collection and deletes the subcollection "Home Page News Images"
+# under the "News and Announcements" collection if it exists.
 def delete_subcollection_under_parent(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
 

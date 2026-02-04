@@ -46,12 +46,15 @@ def get_random_news_item_image_pk():
         name="Home Page News Images"
     ).first()
     defaultImagePk = None
-    logger.info(dir(homePageNewsCollection))
+
     if homePageNewsCollection:
         imagesToChooseFrom = Image.objects.filter(collection=homePageNewsCollection)
         if imagesToChooseFrom:
             defaultImagePk = random.choice(imagesToChooseFrom).pk
-            logger.info(defaultImagePk)
+    else:
+        logger.warning(
+            "Home Page News Images collection does not exist. No default image chosen for new News Item."
+        )
     return defaultImagePk
 
 
