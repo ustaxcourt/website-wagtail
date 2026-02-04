@@ -41,7 +41,7 @@ def rename_collection_back_to_old_name(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0090_alter_enhancedstandardpage_body_and_more"),
+        ("home", "0092_alter_enhancedstandardpage_body"),
     ]
 
     operations = [

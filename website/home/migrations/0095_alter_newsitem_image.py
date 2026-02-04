@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0092_auto_20260127_1604"),
+        ("home", "0094_auto_20260127_1604"),
         ("wagtailimages", "0027_image_description"),
     ]
 

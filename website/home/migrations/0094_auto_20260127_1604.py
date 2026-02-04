@@ -101,7 +101,7 @@ def delete_subcollection_under_parent(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0091_auto_20260127_1550"),
+        ("home", "0093_auto_20260127_1550"),
     ]
 
     operations = [
