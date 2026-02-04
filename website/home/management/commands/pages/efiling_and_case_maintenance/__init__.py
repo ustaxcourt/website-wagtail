@@ -26,7 +26,7 @@ from .update_contact_information_page import UpdateContactInformationPageInitial
 from .dawson_release_notes import DawsonReleaseNotesInitializer
 from .dawson_terms_of_use import DawsonTermsOfUsePageInitializer
 from .places_of_trial_page import PlacesOfTrialPageInitializer
-from .litc_page import LITCPageInitializer
+from .LITC_page import LITCPageInitializer
 
 efiling_and_case_maintenance_pages_to_initialize = [
     # DAWSON page depends on the other DAWSON pages

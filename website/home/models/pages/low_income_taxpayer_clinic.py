@@ -28,7 +28,7 @@ class LITCStateBlock(blocks.StructBlock):
 
 
 class LITCPage(ModerationMixin, Page):
-    low_income_taxpayer_clinic = StreamField(
+    low_income_taxpayer_clinics = StreamField(
         [("state", LITCStateBlock())],
         use_json_field=True,
         blank=True,
@@ -46,7 +46,7 @@ class LITCPage(ModerationMixin, Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("body"),
-        FieldPanel("low_income_taxpayer_clinic"),
+        FieldPanel("low_income_taxpayer_clinics"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
