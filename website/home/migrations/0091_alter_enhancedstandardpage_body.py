@@ -37,7 +37,6 @@ class Migration(migrations.Migration):
                     ("card", 73),
                     ("accordian", 80),
                     ("callout", 78),
-                    ("quick_access_tiles", 93),
                     ("grid", 90),
                 ],
                 blank=True,
@@ -532,15 +531,6 @@ class Migration(migrations.Migration):
                         {},
                     ),
                     81: (
-                        "wagtail.blocks.BooleanBlock",
-                        (),
-                        {
-                            "default": True,
-                            "help_text": "If checked, hover treatment is enabled for ALL tiles in this set.",
-                            "required": False,
-                        },
-                    ),
-                    82: (
                         "wagtail.blocks.IntegerBlock",
                         (),
                         {
@@ -551,42 +541,15 @@ class Migration(migrations.Migration):
                             "required": True,
                         },
                     ),
-                    83: (
+                    82: (
                         "wagtail.blocks.ChoiceBlock",
                         [],
                         {
-                            "choices": [
-                                (
-                                    "desktop_top_mobile_left",
-                                    "Desktop-Top / Mobile-Left",
-                                ),
-                                (
-                                    "desktop_bottom_mobile_right",
-                                    "Desktop-Bottom / Mobile-Right",
-                                ),
-                            ],
-                            "help_text": "Applies to ALL tiles in this set (keeps icon placement uniform).",
-                        },
-                    ),
-                    84: (
-                        "wagtail.blocks.CharBlock",
-                        (),
-                        {
-                            "help_text": "Card header (H2)",
-                            "max_length": 255,
-                            "required": True,
-                        },
-                    ),
-                    85: (
-                        "wagtail.blocks.RichTextBlock",
-                        (),
-                        {
-                            "features": ["bold", "italic", "link"],
-                            "help_text": "Optional body text",
                             "choices": [("full", "Full Width")],
+                            "help_text": "Maximum width of the grid",
                         },
                     ),
-                    86: (
+                    83: (
                         "wagtail.blocks.ChoiceBlock",
                         [],
                         {
@@ -594,7 +557,7 @@ class Migration(migrations.Migration):
                             "help_text": "Style of the grid",
                         },
                     ),
-                    87: (
+                    84: (
                         "wagtail.blocks.CharBlock",
                         (),
                         {
@@ -603,61 +566,7 @@ class Migration(migrations.Migration):
                             "required": False,
                         },
                     ),
-                    88: (
-                        "home.blocks.SVGDocumentChooserBlock",
-                        (),
-                        {"help_text": "Select an SVG file."},
-                    ),
-                    89: (
-                        "wagtail.blocks.StructBlock",
-                        [[("svg_file", 85)]],
-                        {"required": True},
-                    ),
-                    90: (
-                        "wagtail.blocks.ChoiceBlock",
-                        [],
-                        {
-                            "choices": [
-                                ("center", "Center"),
-                                ("left", "Left"),
-                                ("right", "Right"),
-                            ],
-                            "help_text": "Desktop text alignment (tablet/mobile will be left-aligned per design).",
-                        },
-                    ),
-                    91: (
-                        "wagtail.blocks.ChoiceBlock",
-                        [],
-                        {
-                            "choices": [
-                                ("related", "Related page"),
-                                ("external", "External URL"),
-                            ],
-                            "help_text": "Choose what the tile should link to.",
-                        },
-                    ),
-                    92: ("wagtail.blocks.PageChooserBlock", (), {"required": False}),
-                    93: (
-                        "wagtail.blocks.URLBlock",
-                        (),
-                        {"help_text": "External link URL", "required": False},
-                    ),
-                    94: (
-                        "wagtail.blocks.StructBlock",
-                        [
-                            [
-                                ("title", 83),
-                                ("description", 84),
-                                ("icon", 86),
-                                ("content_alignment", 87),
-                                ("link_type", 88),
-                                ("related_page", 89),
-                                ("external_url", 90),
-                            ]
-                        ],
-                        {},
-                    ),
-                    95: (
+                    85: (
                         "wagtail.blocks.RichTextBlock",
                         (),
                         {
@@ -666,7 +575,7 @@ class Migration(migrations.Migration):
                             "required": False,
                         },
                     ),
-                    96: (
+                    86: (
                         "wagtail.blocks.BooleanBlock",
                         (),
                         {
@@ -675,7 +584,7 @@ class Migration(migrations.Migration):
                             "required": False,
                         },
                     ),
-                    97: (
+                    87: (
                         "wagtail.blocks.StreamBlock",
                         [[("prose", 7), ("callout", 78)]],
                         {
@@ -683,7 +592,7 @@ class Migration(migrations.Migration):
                             "required": True,
                         },
                     ),
-                    98: (
+                    88: (
                         "wagtail.blocks.StructBlock",
                         [
                             [
@@ -695,33 +604,14 @@ class Migration(migrations.Migration):
                         ],
                         {},
                     ),
-                    99: (
-                        "wagtail.blocks.ListBlock",
-                        (91,),
-                        {
-                            "help_text": "Add, reorder, duplicate, or remove tiles. Responsive grid: 3 desktop / 2 tablet / 1 mobile.",
-                            "required": False,
-                        },
-                    ),
-                    100: (
-                        "wagtail.blocks.StructBlock",
-                        [
-                            [
-                                ("tiles_hover_enabled", 81),
-                                ("icon_position", 82),
-                                ("tiles", 92),
-                            ]
-                        ],
-                        {},
-                    ),
-                    101: (
+                    89: (
                         "wagtail.blocks.ListBlock",
                         (88,),
                         {
                             "help_text": "Add cells to the grid. Cells will fill row-by-row based on the number of columns selected."
                         },
                     ),
-                    102: (
+                    90: (
                         "wagtail.blocks.StructBlock",
                         [
                             [
