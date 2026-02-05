@@ -8,10 +8,30 @@
 
   .quick-access-tiles-grid {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     row-gap: 20px;
     column-gap: 16px;
     margin-top: 30px;
+    align-items: stretch;
+  }
+
+  /* Desktop: 3 columns max */
+  @media (min-width: 993px) {
+    .quick-access-tiles-grid[data-max-columns="1"] {
+      grid-template-columns: 1fr;
+    }
+
+    .quick-access-tiles-grid[data-max-columns="2"] {
+      grid-template-columns: repeat(auto-fit, minmax(calc(50% - 8px), 1fr));
+    }
+
+    .quick-access-tiles-grid[data-max-columns="3"] {
+      grid-template-columns: repeat(auto-fit, minmax(calc(33.333% - 11px), 1fr));
+    }
+
+    .quick-access-tiles-grid[data-max-columns="4"] {
+      grid-template-columns: repeat(auto-fit, minmax(calc(25% - 12px), 1fr));
+    }
   }
 
   /* Tablet: ≤992px - 2 columns */
@@ -30,6 +50,12 @@
       gap: 12px;
     }
   }
+
+  /* Ensure tiles stretch to fill row height */
+  .quick-access-tiles-grid > [role="listitem"] {
+    display: flex;
+    flex-direction: column;
+  }
 </style>
 
 <div class="quick-access-tiles-container">
@@ -39,95 +65,3 @@
     {% endfor %}
   </div>
 </div>
-
-<script>
-(function() {
-    function adjustTileGrid() {
-        const isMobile = window.innerWidth <= 768;
-        const isTablet = window.innerWidth <= 992 && !isMobile;
-
-        document.querySelectorAll('.quick-access-tiles-grid').forEach(function(grid) {
-          const tiles = Array.from(grid.querySelectorAll('[role="listitem"]'));
-          const totalTiles = tiles.length;
-          const maxColumns = parseInt(grid.getAttribute('data-max-columns')) || 3;
-
-          if (isMobile) {
-            grid.style.setProperty('grid-template-columns', '1fr', 'important');
-            tiles.forEach(function(tile) {
-              tile.style.removeProperty('grid-column');
-            });
-          } else if (isTablet) {
-            grid.style.setProperty('grid-template-columns', 'repeat(2, 1fr)', 'important');
-            tiles.forEach(function(tile, index) {
-              if (totalTiles % 2 === 1 && index === totalTiles - 1) {
-                tile.style.gridColumn = 'span 2';
-              } else {
-                tile.style.removeProperty('grid-column');
-              }
-            });
-          } else {
-            grid.style.setProperty('grid-template-columns', 'repeat(12, 1fr)', 'important');
-            const normalSpan = 12 / maxColumns;
-
-            tiles.forEach(function(tile) {
-              tile.style.gridColumn = `span ${normalSpan}`;
-            });
-
-            if (totalTiles < maxColumns) {
-              const spanPerTile = 12 / totalTiles;
-              tiles.forEach(function(tile) {
-                tile.style.gridColumn = `span ${spanPerTile}`;
-              });
-            } else {
-              const remainder = totalTiles % maxColumns;
-              if (remainder !== 0) {
-                const lastRowStart = totalTiles - remainder;
-                const spanForLastRow = 12 / remainder;
-
-                for (let i = 0; i < remainder; i++) {
-                  tiles[lastRowStart + i].style.gridColumn = `span ${spanForLastRow}`;
-                }
-              }
-            }
-          }
-
-          // --- Equal height logic ---
-          // Reset all tile heights first
-          tiles.forEach(function(tile) {
-              var inner = tile.querySelector('.quick-access-tile');
-              if (inner) inner.style.height = '';
-          });
-
-          // Group tiles by row
-          let rows = [];
-          let columns = isMobile ? 1 : isTablet ? 2 : maxColumns;
-          for (let i = 0; i < tiles.length; i += columns) {
-              rows.push(tiles.slice(i, i + columns));
-          }
-          rows.forEach(function(rowTiles) {
-              let maxHeight = 0;
-              rowTiles.forEach(function(tile) {
-                  var inner = tile.querySelector('.quick-access-tile');
-                  if (inner) {
-                      // Use scrollHeight for accurate content height
-                      const tileHeight = inner.scrollHeight;
-                      if (tileHeight > maxHeight) maxHeight = tileHeight;
-                  }
-              });
-              rowTiles.forEach(function(tile) {
-                  var inner = tile.querySelector('.quick-access-tile');
-                  if (inner) inner.style.height = maxHeight + 'px';
-              });
-          });
-        });
-    }
-
-    adjustTileGrid();
-
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(adjustTileGrid, 250);
-    });
-})();
-</script>
