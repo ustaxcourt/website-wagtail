@@ -109,12 +109,37 @@
                         <div class="state-header">{{ state.value.state }}</div>
                         {% for city in state.value.cities %}
                             <div class="city">{{ city.name }}</div>
-                            {% if city.address %}
+                            {% for clinic in city.clinics %}
+                                <div class="clinic" style="margin-bottom: 10px;">
+                                    <div class="clinic-name">{{ clinic.name }}</div>
+                                    <div class="clinic-info">
+                                        <div class="address">
+                                            <a href="https://www.google.com/maps/search/{{ clinic.address|urlencode }}"
+                                               target="_blank">{{ clinic.address }}</a>
+                                        </div>
+                                        <div class="phone">{{ clinic.phone }}</div>
+                                        {% if clinic.website %}
+                                          <div class="website">
+                                            <a href="{{ clinic.website }}" target="_blank" rel="noopener">
+                                              {{ clinic.website }}
+                                            </a>
+                                          </div>
+                                        {% endif %}
+                                        {% if clinic.email %}
+                                          <div class="email">
+                                            <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a>
+                                          </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <hr>
+                            {% endfor %}
+                            {% comment %} {% if city.address %}
                                 <div class="address">
                                     <a href="https://www.google.com/maps/search/{{ city.address|urlencode }}"
                                        target="_blank">{{ city.address }}</a>
                                 </div>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                             {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
                         {% endfor %}
                     </div>

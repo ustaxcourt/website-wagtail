@@ -10,12 +10,27 @@ from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.alert_message import AlertMessageBlock
 
 
+class LITCClinicBlock(blocks.StructBlock):
+    name = blocks.CharBlock()
+    address = blocks.CharBlock(required=False)
+    email = blocks.EmailBlock(required=False)
+    phone = blocks.CharBlock(required=False)
+    website = blocks.URLBlock(required=False)
+    small_case_procedures_only = blocks.BooleanBlock(
+        required=False, help_text="Indicates if the clinic handles only small cases"
+    )
+
+    class Meta:
+        icon = "user"
+        label = "Low Income Taxpayer Clinic"
+
+
 class LITCCityBlock(blocks.StructBlock):
     name = blocks.CharBlock()
-    note = blocks.TextBlock(required=False)
-    address = blocks.CharBlock(
-        required=False, help_text="Street address or location name"
+    small_cases_only = blocks.BooleanBlock(
+        required=False, help_text="Indicates if the clinic handles only small cases"
     )
+    clinics = blocks.ListBlock(LITCClinicBlock())
 
     class Meta:
         icon = "home"
@@ -55,5 +70,5 @@ class LITCPage(ModerationMixin, Page):
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),
-        index.SearchField("low_income_taxpayer_clinic"),
+        index.SearchField("low_income_taxpayer_clinics"),
     ]
