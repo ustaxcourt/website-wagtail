@@ -170,6 +170,8 @@
                 {% include "callout_block.html" with block=block %}
             {% elif block.block_type == 'card_tiles' %}
                 {% include "includes/card_tiles.html" with block=block %}
+            {% elif block.block_type == 'grid' %}
+                {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
             {% else %}
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}

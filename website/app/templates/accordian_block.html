@@ -30,8 +30,8 @@
     -webkit-mask-position: center;
     mask-position: center;
 
-    -webkit-mask-image: url({%static "images/icons/arrow-down-triangle.svg" %});
-    mask-image: url({%static "images/icons/arrow-down-triangle.svg" %});
+    -webkit-mask-image: url({% static "images/icons/arrow-down-triangle.svg" %});
+    mask-image: url({% static "images/icons/arrow-down-triangle.svg" %});
 
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
@@ -170,6 +170,12 @@
         <div class="callout-content">{% include_block block %}</div>
       {% endif %}
     {% endfor %}
+    {% if block.block_type == 'prose' %}
+    <div class="rich-text">{{ block.value }}</div>
+
+    {% elif block.block_type == 'callout' %}
+    <div class="callout-content">{% include_block block %}</div>
+    {% endif %} {% endfor %}
   </div>
 </div>
 
