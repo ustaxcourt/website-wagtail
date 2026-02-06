@@ -48,15 +48,18 @@
             align-items: start;
         }
 
-        .state-card {
+        .clinic-list .state-card {
             background: white;
             border-radius: 6px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             padding: 1rem;
             margin-bottom: 15px;
+
+            display: flex;
+            flex-direction: column; /* This may be in the incorrect area */
         }
 
-        .state-header {
+        .clinic-list .state-header {
             background: #003366;
             color: white;
             padding: 0.5rem 1rem;
@@ -65,19 +68,19 @@
             margin: -1rem -1rem 1rem -1rem;
         }
 
-        .city {
+        .clinic-list .city {
             margin-top: 15px;
             margin-bottom: 0.5rem;
             font-weight: bold;
         }
 
-        .address a {
+        .clinic-list .address a {
             color: black;
             text-decoration: underline;
             font-weight: 400;
         }
 
-        .note {
+        .clinic-list .note {
             margin-bottom: 10px;
         }
     </style>
@@ -102,7 +105,7 @@
                 </a>
             {% endfor %}
         </div>
-        <div class="grid">
+        <div class="clinic-list grid">
             {% for state in page.low_income_taxpayer_clinics %}
                 {% with state_letter=state.value.state|slice:":1" %}
                     <div class="state-card" id="{{ state_letter }}">
