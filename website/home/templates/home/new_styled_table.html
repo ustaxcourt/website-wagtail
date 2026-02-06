@@ -190,7 +190,7 @@
             <tr>
                 <td>
                     <div class="cell-header">
-                        <svg onclick="return false;" class="plus-icon"></svg>
+                        <svg onclick="toggleCellContent(this)" class="plus-icon"></svg>
                         {% with cell=row|first %}
                             {% if cell.block.name == "components" %}
                                 {% for content in cell.value %}
@@ -248,20 +248,14 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const plusIcons = document.querySelectorAll(".plus-icon");
+  function toggleCellContent(icon) {
+    const cellContent = icon.parentElement.nextElementSibling;
+    cellContent.classList.toggle("hidden");
 
-    plusIcons.forEach(function(icon) {
-      icon.addEventListener("click", function() {
-        const cellContent = icon.parentElement.nextElementSibling;
-        cellContent.classList.toggle("hidden");
-
-        if (icon.style.transform === "rotate(45deg)") {
-          icon.style.transform = "rotate(0deg)";
-        } else {
-          icon.style.transform = "rotate(45deg)";
-        }
-      });
-    });
-  });
+    if (icon.style.transform === "rotate(45deg)") {
+      icon.style.transform = "rotate(0deg)";
+    } else {
+      icon.style.transform = "rotate(45deg)";
+    }
+  }
 </script>
