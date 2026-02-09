@@ -3,7 +3,14 @@
 from django.db import migrations
 
 
-def rename_collection_to_new_name(apps, schema_editor):
+def update_tag_name(apps, schema_editor, old_tag_name, new_tag_name):
+    Tag = apps.get_model("taggit", "Tag")
+    tag = Tag.objects.get(name=old_tag_name)
+    tag.name = new_tag_name
+    tag.save()
+
+
+def rename_collection_and_tag_to_new_name(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
 
     old_collection_name = "Press Releases"
@@ -20,12 +27,20 @@ def rename_collection_to_new_name(apps, schema_editor):
     coll.name = new_collection_name
     coll.save(update_fields=["name"])
 
+    # create_tag(apps, schema_editor, new_collection_name)
+    update_tag_name(apps, schema_editor, old_collection_name, new_collection_name)
 
-def rename_collection_back_to_old_name(apps, schema_editor):
+
+def rename_tag_and_collection_back_to_old_name(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
 
     current_collection_name = "News and Announcements"
     previous_collection_name = "Press Releases"
+
+    # remove_tag(apps, schema_editor, current_collection_name)
+    update_tag_name(
+        apps, schema_editor, current_collection_name, previous_collection_name
+    )
 
     try:
         coll = Collection.objects.get(name=current_collection_name)
@@ -42,10 +57,12 @@ def rename_collection_back_to_old_name(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0092_alter_enhancedstandardpage_body"),
+        ("taggit", "__latest__"),
     ]
 
     operations = [
         migrations.RunPython(
-            rename_collection_to_new_name, rename_collection_back_to_old_name
+            rename_collection_and_tag_to_new_name,
+            rename_tag_and_collection_back_to_old_name,
         ),
     ]
