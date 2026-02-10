@@ -3,6 +3,7 @@
 from django.db import migrations
 
 
+# Updates the name of the tag with the name of [old_tag_name] to [new_tag_name]
 def update_tag_name(apps, schema_editor, old_tag_name, new_tag_name):
     Tag = apps.get_model("taggit", "Tag")
     tag = Tag.objects.get(name=old_tag_name)
@@ -10,6 +11,7 @@ def update_tag_name(apps, schema_editor, old_tag_name, new_tag_name):
     tag.save()
 
 
+# Updates the "Press Releases" collection and tag to be named "News and Announcements"
 def rename_collection_and_tag_to_new_name(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
 
@@ -35,6 +37,7 @@ def rename_collection_and_tag_to_new_name(apps, schema_editor):
         )
 
 
+# Updates the "News and Collection" collection and tag to be named "Press Releases"
 def rename_tag_and_collection_back_to_old_name(apps, schema_editor):
     Collection = apps.get_model("wagtailcore", "Collection")
 
