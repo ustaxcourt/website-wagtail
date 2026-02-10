@@ -1,6 +1,6 @@
 COLLECTION_SORTING_ORDER = [
     "Home Page News Images",
-    "News & Announcements",
+    "News and Announcements",
     "Pamphlets",
     "Tax Court Reports",
     "Tax Court Rules",
