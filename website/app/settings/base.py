@@ -267,6 +267,7 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ("png",)
 
 aws_bucket_name = os.getenv("AWS_STORAGE_BUCKET_NAME")
 if aws_bucket_name:
