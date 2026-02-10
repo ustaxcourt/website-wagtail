@@ -41,37 +41,56 @@
             border-color: #007BFF;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
-            align-items: start;
+        .clinic-list.grid {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 24px;
         }
 
         .clinic-list .state-card {
             background: white;
             border-radius: 6px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
+            {% comment %} box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); {% endcomment %}
+            {% comment %} padding: 1rem; {% endcomment %}
             margin-bottom: 15px;
 
-            display: flex;
-            flex-direction: column; /* This may be in the incorrect area */
+            width: fit-content;
+            flex: 0 0 auto;
         }
 
+
         .clinic-list .state-header {
-            background: #003366;
+            background: var(--color-primary);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 15px;
             font-weight: bold;
             border-radius: 4px 4px 0 0;
             margin: -1rem -1rem 1rem -1rem;
+
+            display: block;
+        }
+
+        .clinic-list .state-content {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+            gap: 1.5rem;
+            align-items: start;
+
+            gap: 24px;
         }
 
         .clinic-list .city {
             margin-top: 15px;
             margin-bottom: 0.5rem;
             font-weight: bold;
+        }
+
+        .clinic-list .clinic-card {
+          height: 218px;
+          width: 368px;
+          padding: 15px;
+          border: 1px solid var(--theme-color-base-lighter);
         }
 
         .clinic-list .address a {
@@ -82,6 +101,11 @@
 
         .clinic-list .note {
             margin-bottom: 10px;
+        }
+        .letter-break {
+            flex-basis: 100%;
+            height: 0;
+            margin: 0;
         }
     </style>
 {% endblock %}
@@ -108,43 +132,48 @@
         <div class="clinic-list grid">
             {% for state in page.low_income_taxpayer_clinics %}
                 {% with state_letter=state.value.state|slice:":1" %}
+                    {% ifchanged state_letter %}
+                        {% if not forloop.first %}
+                            <div class="letter-break"></div>
+                        {% endif %}
+                    {% endifchanged %}
                     <div class="state-card" id="{{ state_letter }}">
                         <div class="state-header">{{ state.value.state }}</div>
-                        {% for city in state.value.cities %}
-                            <div class="city">{{ city.name }}</div>
-                            {% for clinic in city.clinics %}
-                                <div class="clinic" style="margin-bottom: 10px;">
-                                    <div class="clinic-name">{{ clinic.name }}</div>
-                                    <div class="clinic-info">
-                                        <div class="address">
-                                            <a href="https://www.google.com/maps/search/{{ clinic.address|urlencode }}"
-                                               target="_blank">{{ clinic.address }}</a>
+                        <div class="state-content">
+                          {% for city in state.value.cities %}
+                              {% for clinic in city.clinics %}
+                              <div class="clinic-card">
+                                    <div class="city">{{ city.name }}</div>
+                                    <div class="clinic" style="margin-bottom: 10px;">
+                                        <div class="clinic-name">{{ clinic.name }}</div>
+                                        <div class="clinic-info">
+                                            <div class="address">
+                                                {% comment %} <a href="https://www.google.com/maps/search/{{ clinic.address|urlencode }}"
+                                                  target="_blank">{{ clinic.address }}</a> {% endcomment %}
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank">
+                                                    {{ clinic.address }}
+                                                </a>
+                                            </div>
+                                            <div class="phone">{{ clinic.phone }}</div>
+                                            {% if clinic.website %}
+                                              <div class="website">
+                                                <a href="{{ clinic.website }}" target="_blank">
+                                                  {{ clinic.website }}
+                                                </a>
+                                              </div>
+                                            {% endif %}
+                                            {% if clinic.email %}
+                                              <div class="email">
+                                                <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a>
+                                              </div>
+                                            {% endif %}
                                         </div>
-                                        <div class="phone">{{ clinic.phone }}</div>
-                                        {% if clinic.website %}
-                                          <div class="website">
-                                            <a href="{{ clinic.website }}" target="_blank" rel="noopener">
-                                              {{ clinic.website }}
-                                            </a>
-                                          </div>
-                                        {% endif %}
-                                        {% if clinic.email %}
-                                          <div class="email">
-                                            <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a>
-                                          </div>
-                                        {% endif %}
                                     </div>
-                                </div>
-                                <hr>
-                            {% endfor %}
-                            {% comment %} {% if city.address %}
-                                <div class="address">
-                                    <a href="https://www.google.com/maps/search/{{ city.address|urlencode }}"
-                                       target="_blank">{{ city.address }}</a>
-                                </div>
-                            {% endif %} {% endcomment %}
+                                  </div>
+                              {% endfor %}
                             {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
                         {% endfor %}
+                        </div>
                     </div>
                 {% endwith %}
             {% endfor %}
