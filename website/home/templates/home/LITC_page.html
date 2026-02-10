@@ -66,18 +66,23 @@
             padding: 15px;
             font-weight: bold;
             border-radius: 4px 4px 0 0;
-            margin: -1rem -1rem 1rem -1rem;
+            {% comment %} margin: -1rem -1rem 1rem -1rem; {% endcomment %}
 
             display: block;
         }
 
-        .clinic-list .state-content {
+        {% comment %} .clinic-list .state-content {
             display: grid;
             grid-template-columns: repeat(3, auto);
-            gap: 1.5rem;
             align-items: start;
 
             gap: 24px;
+        } {% endcomment %}
+         .clinic-list .state-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            max-width: calc(3 * 368px + 2 * 24px);
         }
 
         .clinic-list .city {

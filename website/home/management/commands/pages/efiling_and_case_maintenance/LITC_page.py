@@ -16,11 +16,11 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Legal Services Alabama LITC",
-                        "address": "P.O. Box 1986, Mobile, AL 36633",
+                        "address": "P.O. Box 20728, Montgomery, AL 36120",
                         "phone": "866-456-4995",
-                        "website": "https://www.alabamalegalhelp.org",
+                        "website": "https://www.legalservicesalabama.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -29,18 +29,11 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Legal Services Alabama LITC",
-                        "address": "P.O. Box 1986, Mobile, AL 36633",
+                        "address": "P.O. Box 20728, Montgomery, AL 36120",
                         "phone": "866-456-4995",
-                        "website": "https://www.alabamalegalhelp.org",
+                        "website": "https://www.legalservicesalabama.org",
                         "small_case_procedure_only": False,
-                    },
-                    {
-                        "name": "Legal Services of North Florida",
-                        "address": "2119 Delta Blvd., Tallahassee, FL 32303",
-                        "phone": "850-385-9007",
-                        "website": "https://www.lsnf.org",
-                        "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -54,14 +47,14 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Alaska Business Development Center, Inc.",
-                        "address": "840 K Street, Suite 202, Anchorage, AK 99501",
+                        "address": "840 K Street, Suite 202, Anchorage, AL 99501",
                         "email": "info@abdc.org",
                         "phone": "907-562-0335",
                         "website": "https://www.abdc.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -72,14 +65,22 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "No local clinic - New Mexico Legal Aid",
-                        "address": "",
-                        "phone": "833-545-4357 (intake) / 505-814-6593 (clinic)",
-                        "website": "https://www.newmexicolegalaid.org",
+                        "name": "Community Legal Services",
+                        "address": "305 S 2nd Abe, Phoenix, AZ 85003",
+                        "email": "info@clsaz.org",
+                        "phone": "602-258-3434",
+                        "website": "https://www.clsaz.org",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Catholic Community Services of Southern AZ",
+                        "address": "975 N. Alvernon Way, Tucson, AZ 85712",
+                        "phone": "520-416-4763",
+                        "website": "",
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -104,7 +105,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": True,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -117,10 +118,11 @@ all_litc_clinics = [
                     {
                         "name": "Cal Poly Orfalea School of Business",
                         "address": "1 Grand Avenue, Building 3, Room 107, San Luis Obispo, CA 93406",
-                        "phone": "877-318-6772",
+                        "email": "litc@calpoly.edu",
+                        "phone": "805-756-2951",
                         "website": "",
                         "small_case_procedure_only": True,
-                    },
+                    }
                 ],
             },
             {
@@ -135,7 +137,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "Bookstein Tax Clinic, California State University, Northridge",
+                        "name": "Bookstein Tax Clinic, California State University, Northridge Nazarian College of Business &Econ.",
                         "address": "18111 Nordhoff Street, Northridge, CA 91330",
                         "phone": "818-677-3688",
                         "website": "",
@@ -179,8 +181,16 @@ all_litc_clinics = [
                     {
                         "name": "Public Law Center Federal Tax Clinic",
                         "address": "601 W. Civic Center Dr., Santa Ana, CA 92701",
-                        "phone": "888-230-3741",
+                        "email": "taxclinic@publiclawcenter.org",
+                        "phone": "714-541-1010, ext. 340",
                         "website": "",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Taxpayers Help Center, Inc.",
+                        "address": "9029 Reseda Blvd., Suite 209, Northridge, CA 91344",
+                        "phone": "818-366-0111",
+                        "website": "https://www.taxpayershelpcenter.com",
                         "small_case_procedure_only": False,
                     },
                 ],
@@ -191,14 +201,14 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "University of San Diego School of Law Tax Clinic",
-                        "address": "5998 Alcala Park, BA 303, San Diego, CA 92110",
+                        "address": "5998 Alcalá Park, BA 303, San Diego, CA 92110",
                         "phone": "619-260-7470",
                         "website": "",
                         "small_case_procedure_only": False,
                     },
                     {
                         "name": "Legal Aid Society of San Diego, Inc.",
-                        "address": "110 South Euclid Ave., San Diego, CA 92114",
+                        "address": "1764 San Diego Avenue, Suite 100, San Diego, CA 92110",
                         "phone": "877-534-2524",
                         "website": "",
                         "small_case_procedure_only": False,
@@ -267,13 +277,13 @@ all_litc_clinics = [
                     {
                         "name": "Denver Asset Building Coalition",
                         "address": "2475 W. 26th Ave., Denver, CO 80211",
-                        "email": "intake@denverabc.org",
+                        "email": "intake@denver@abc.org",
                         "phone": "",
                         "website": "",
                         "small_case_procedure_only": True,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -305,14 +315,14 @@ all_litc_clinics = [
                         "small_case_procedure_only": True,
                     },
                 ],
-            },
+            }
         ],
     },
     {
         "state": "Delaware",
         "cities": [
             {
-                "name": "Philadelphia (place of trial)",
+                "name": "Philadelphia",
                 "small_cases_only": False,
                 "clinics": [
                     {
@@ -321,9 +331,9 @@ all_litc_clinics = [
                         "phone": "302-690-5000 / 302-393-1607 (Spanish line)",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -362,7 +372,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -378,7 +388,7 @@ all_litc_clinics = [
                         "phone": "352-273-0810",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -391,7 +401,7 @@ all_litc_clinics = [
                         "phone": "850-385-9007",
                         "website": "https://www.LSNF.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -406,9 +416,9 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "Gulfcoast Legal Services",
-                        "address": "1112 Manatee Avenue East, Bradenton, FL 34208",
-                        "phone": "941-746-6151 / 800-230-5920",
+                        "name": "GulfCoast Legal Services",
+                        "address": "501 First Ave N, Suite 420, St. Petersburg, FL 33701",
+                        "phone": "727-821-0726 / 800-230-5920",
                         "website": "",
                         "small_case_procedure_only": False,
                     },
@@ -423,20 +433,20 @@ all_litc_clinics = [
                         "address": "491 North State Road 7, Plantation, FL 33317",
                         "phone": "954-736-2477",
                         "website": "https://www.browardlegalaid.org",
-                        "small_case_procedure_only": False,
+                        "small_case_procedure_only": True,
                     },
                     {
                         "name": "Legal Aid Society of Palm Beach County",
                         "address": "423 Fern Street, Suite 200, West Palm Beach, FL 33401",
                         "phone": "561-655-8944",
-                        "website": "https://www.legalaidpbc.org",
+                        "website": "https://www.legalaiedpbc.org",
                         "small_case_procedure_only": False,
                     },
                     {
                         "name": "Legal Services of Greater Miami, Inc. Low Income Taxpayer Clinic",
                         "address": "4343 West Flagler Street, Suite #100, Miami, FL 33134",
                         "phone": "305-576-0080",
-                        "website": "https://www.legalservicesmiami.org",
+                        "website": "https://www.Legalservicesmiami.org",
                         "small_case_procedure_only": False,
                     },
                     {
@@ -460,19 +470,20 @@ all_litc_clinics = [
                     {
                         "name": "Georgia State University College of Law Philip C. Cook Low Income Taxpayer Clinic",
                         "address": "85 Park Place NE, Atlanta, GA 30303",
+                        "email": "taxclinic@gsu.edu",
                         "phone": "404-413-9230",
-                        "website": "https://law.gsu.edu/tax",
+                        "website": "https://www.law.gsu.edu/tax",
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "North Georgia Low-Income Taxpayer Clinic",
+                        "name": "Georgia Tax Clinic",
                         "address": "234 Luckie Street, Lawrenceville, GA 30046",
-                        "phone": "678-646-5661 / 888-267-6891 (toll-free)",
+                        "phone": "678-646-5661",
                         "website": "https://www.gataxclinic.com",
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -484,9 +495,9 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Hawaii Federal Tax Clinic",
-                        "address": "425 South Street Unit 1102, Honolulu, Hawaii 96813",
+                        "address": "1001 Bishop Street, Honolulu, Hawaii 96813",
                         "phone": "808-202-2274",
-                        "website": "https://www.hawaiilitc.org",
+                        "website": "https://www.hawaiifedtax.org",
                         "small_case_procedure_only": False,
                     },
                     {
@@ -497,7 +508,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -508,34 +519,14 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "La Posada Tax Clinic",
-                        "address": "P.O. Box 1962, Twin Falls, ID 83303",
-                        "phone": "208-735-1189",
-                        "website": "",
-                        "small_case_procedure_only": False,
-                    },
-                    {
                         "name": "University of Idaho",
                         "address": "501 W. Front Street, Boise, Idaho 83702",
                         "phone": "208-364-6166",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
-            {
-                "name": "Pocatello",
-                "small_cases_only": True,
-                "clinics": [
-                    {
-                        "name": "La Posada Tax Clinic",
-                        "address": "P.O. Box 1962, Twin Falls, ID 83303",
-                        "phone": "208-735-1189",
-                        "website": "",
-                        "small_case_procedure_only": False,
-                    },
-                ],
-            },
+            }
         ],
     },
     {
@@ -556,20 +547,13 @@ all_litc_clinics = [
                         "name": "Loyola University Chicago School of Law",
                         "address": "25 E. Pearson, Suite 1005, Chicago, IL 60611",
                         "phone": "312-915-7176",
-                        "website": "https://www.luc.edu/law/academics/clinical-programs/federaltaxclinic/",
-                        "small_case_procedure_only": False,
-                    },
-                    {
-                        "name": "Center for Concern",
-                        "address": "1665 Elk Blvd., Des Plaines, IL 60016",
-                        "phone": "847-823-0453",
-                        "website": "",
+                        "website": "https://www.luc.edu/law/taxclinic",
                         "small_case_procedure_only": False,
                     },
                     {
                         "name": "Ladder Up Tax Clinic",
                         "address": "350 N. Orleans Street Suite C2-100, Chicago, IL 60654",
-                        "phone": "312-630-0242",
+                        "phone": "312-630-0267",
                         "website": "https://www.goladderup.org",
                         "small_case_procedure_only": False,
                     },
@@ -577,7 +561,7 @@ all_litc_clinics = [
                         "name": "Prairie State Legal Services",
                         "address": "31W001W. North Avenue, Suite 200, West Chicago, IL 60185",
                         "phone": "855-829-7757",
-                        "website": "https://pslegal.org/litc",
+                        "website": "https://www.pslegal.org/litc",
                         "small_case_procedure_only": False,
                     },
                 ],
@@ -587,19 +571,12 @@ all_litc_clinics = [
                 "small_cases_only": True,
                 "clinics": [
                     {
-                        "name": "Ladder Up Tax Clinic",
-                        "address": "350 N. Orleans Street Suite C2-100, Chicago, IL 60654",
-                        "phone": "312-630-0242",
-                        "website": "https://www.goladderup.org",
-                        "small_case_procedure_only": False,
-                    },
-                    {
                         "name": "Prairie State Legal Services",
                         "address": "31W001W. North Avenue, Suite 200, West Chicago, IL 60185",
                         "phone": "855-829-7757",
-                        "website": "https://pslegal.org/litc",
+                        "website": "https://www.pslegal.org/litc",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -621,12 +598,12 @@ all_litc_clinics = [
                     {
                         "name": "Neighborhood Christian Legal Clinic",
                         "address": "3333 North Meridian Street, Suite 201, Indianapolis, IN 46208",
-                        "phone": "317-429-4139",
+                        "phone": "317-429-4151",
                         "website": "https://www.nclegalclinic.org",
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -642,9 +619,9 @@ all_litc_clinics = [
                         "phone": "800-532-1275",
                         "website": "https://www.iowalegalaid.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -656,7 +633,7 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Kansas City Tax Clinic, UMKC School of Law",
-                        "address": "500 East 52nd Street, Ste 2-522, Kansas City, MO 64110",
+                        "address": "500 East 52nd Street, Kansas City, MO 64110",
                         "phone": "816-235-6201",
                         "website": "",
                         "small_case_procedure_only": False,
@@ -669,7 +646,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -693,8 +670,15 @@ all_litc_clinics = [
                         "website": "",
                         "small_case_procedure_only": False,
                     },
+                    {
+                        "name": "Legal Aid of the Bluegrass",
+                        "address": "300 East Main Street, Suite 210, Lexington, KY 40507",
+                        "phone": "859-431-8200",
+                        "website": "",
+                        "small_case_procedure_only": False,
+                    },
                 ],
-            },
+            }
         ],
     },
     {
@@ -712,6 +696,14 @@ all_litc_clinics = [
                         "website": "",
                         "small_case_procedure_only": False,
                     },
+                    {
+                        "name": "LSU Law Low Income Tax Clinic",
+                        "address": "1 East Stadum Drive, Rm W109, Baton Rouge, LA 70898",
+                        "email": "taxclinic@lsu.edu",
+                        "phone": "225-578-7819",
+                        "website": "https://www.law.lsu.edu/forms/litc",
+                        "small_case_procedure_only": False,
+                    },
                 ],
             },
             {
@@ -724,6 +716,14 @@ all_litc_clinics = [
                         "email": "application@slls.org",
                         "phone": "504-529-1000, ext. 225 / 877-521-6242, ext. 225",
                         "website": "",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "LSU Law Low Income Tax Clinic",
+                        "address": "1 East Stadum Drive, Rm W109, Baton Rouge, LA 70898",
+                        "email": "taxclinic@lsu.edu",
+                        "phone": "225-578-7819",
+                        "website": "https://www.law.lsu.edu/forms/litc",
                         "small_case_procedure_only": False,
                     },
                 ],
@@ -743,9 +743,9 @@ all_litc_clinics = [
                         "phone": "207-552-3108",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -777,7 +777,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -790,7 +790,7 @@ all_litc_clinics = [
                     {
                         "name": "Greater Boston Legal Services",
                         "address": "197 Friend Street, Boston, MA 02114",
-                        "email": "larevalo@gbls.org",
+                        "email": "Taxbenefits-help@gbls.org",
                         "phone": "617-371-1234 / 617-603-1569",
                         "website": "",
                         "small_case_procedure_only": False,
@@ -806,7 +806,7 @@ all_litc_clinics = [
                     {
                         "name": "603 Legal Aid Low-Income Taxpayer Project",
                         "address": "93 N. State Street, Suite 200, Concord, NH 03301",
-                        "email": "bheggie@603legalaid.org",
+                        "email": "lgoldberg@603legalaid.org",
                         "phone": "603-224-3333",
                         "website": "",
                         "small_case_procedure_only": False,
@@ -836,7 +836,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -882,7 +882,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -907,7 +907,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -923,9 +923,9 @@ all_litc_clinics = [
                         "phone": "662-234-2918 ext. 2126 / 888-808-8049",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -937,7 +937,7 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Kansas City Tax Clinic, UMKC School of Law",
-                        "address": "500 East 52nd Street, Ste 2-522, Kansas City, MO 64110",
+                        "address": "500 East 52nd Street, Kansas City, MO 64110",
                         "phone": "816-235-6201",
                         "website": "",
                         "small_case_procedure_only": False,
@@ -961,7 +961,7 @@ all_litc_clinics = [
                         "phone": "314-935-7238",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -974,12 +974,13 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "No local clinic",
-                        "address": "",
-                        "phone": "202-521-3366",
+                        "name": "University of Wyoming",
+                        "address": "1000 E. University Ave. Dept 3275, Laramie, WY 82071",
+                        "email": "litc@uwyo.edu",
+                        "phone": "307-766-6114",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -987,12 +988,12 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "No local clinic",
-                        "address": "",
-                        "phone": "202-521-3366",
+                        "name": "Gonzaga Law School",
+                        "address": "721 N. Cincinnati Street, Spokane, WA 99202",
+                        "phone": "509-313-5791",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -1006,13 +1007,13 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Legal Aid of Nebraska",
-                        "address": "947 O Street, Suite 301, Lincoln, NE 68508",
+                        "address": "1241 N. Street, Suite 200, Lincoln, NE 68508",
                         "phone": "877-250-2016",
                         "website": "https://www.legalaidofnebraska.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1023,11 +1024,18 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "No local clinic - Remote assistance: Texas A&M University",
-                        "address": "",
-                        "email": "LITC@law.tamu.edu",
+                        "name": "Texas A&M University School of Law Tax Dispute Resolution Clinic",
+                        "address": "307 W. 7th St., Suite LL 50, Fort Worth, Texas 76102",
+                        "email": "tdrc@law.tamu.edu",
                         "phone": "817-212-4123",
                         "website": "https://www.law.tamu.edu/tax-clinic",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Inland Counties Legal Services Low Income Taxpayer Clinic",
+                        "address": "1040 Iowa Ave., Suite 109, Riverside, California 92507",
+                        "phone": "888-245-4257",
+                        "website": "",
                         "small_case_procedure_only": False,
                     },
                 ],
@@ -1037,11 +1045,18 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "No local clinic - Remote assistance: Texas A&M University",
-                        "address": "",
-                        "email": "LITC@law.tamu.edu",
+                        "name": "Texas A&M University School of Law Tax Dispute Resolution Clinic",
+                        "address": "307 W. 7th St., Suite LL 50, Fort Worth, Texas 76102",
+                        "email": "tdrc@law.tamu.edu",
                         "phone": "817-212-4123",
                         "website": "https://www.law.tamu.edu/tax-clinic",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Inland Counties Legal Services Low Income Taxpayer Clinic",
+                        "address": "1040 Iowa Ave., Suite 109, Riverside, California 92507",
+                        "phone": "888-245-4257",
+                        "website": "",
                         "small_case_procedure_only": False,
                     },
                 ],
@@ -1052,7 +1067,7 @@ all_litc_clinics = [
         "state": "New Hampshire",
         "cities": [
             {
-                "name": "Boston (place of trial)",
+                "name": "Boston",
                 "small_cases_only": False,
                 "clinics": [
                     {
@@ -1061,16 +1076,16 @@ all_litc_clinics = [
                         "phone": "603-224-3333",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
         "state": "New Jersey",
         "cities": [
             {
-                "name": "New York City (place of trial)",
+                "name": "New York City",
                 "small_cases_only": False,
                 "clinics": [
                     {
@@ -1095,7 +1110,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -1107,13 +1122,13 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "New Mexico Legal Aid",
-                        "address": "P.O. Box 25486 / 505 Marquette Ave. NW, 700, Albuquerque, NM 87102",
+                        "address": "P.O. Box 25486, Albuquerque, NM 87125 / 505 Marquette Ave. NW, 700, Albuquerque, NM 87102",
                         "phone": "833-545-4357 (intake) / 505-814-6593 (clinic)",
                         "website": "https://www.newmexicolegalaid.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1144,10 +1159,24 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "Erie County Bar Association Volunteer Lawyers Project, Inc.",
-                        "address": "438 Main Street, 7th Floor, Buffalo, NY 14202",
-                        "phone": "716-847-0662, ext. 316",
-                        "website": "https://www.ecbavlp.com/litc",
+                        "name": "Empire Justice Center",
+                        "address": "Central Library of Rochester, 115 South Avenue, Rochester, NY 14604",
+                        "phone": "585-900-1024",
+                        "website": "",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Syracuse University College of Law LITC",
+                        "address": "Office of Clinical Legal Education, Box 6543, Syracuse, New York 13217-6543",
+                        "phone": "315-443-4582 / 888-797-5291 (Toll-free)",
+                        "website": "",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Cornell University Law School",
+                        "address": "241 Campus Road, Ithaca, NY 14853",
+                        "phone": "607-255-4196",
+                        "website": "",
                         "small_case_procedure_only": False,
                     },
                 ],
@@ -1160,6 +1189,13 @@ all_litc_clinics = [
                         "name": "Syracuse University College of Law LITC",
                         "address": "Office of Clinical Legal Education, Box 6543, Syracuse, New York 13217-6543",
                         "phone": "315-443-4582 / 888-797-5291 (Toll-free)",
+                        "website": "",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Cornell University Law School",
+                        "address": "241 Campus Road, Ithaca, NY 14853",
+                        "phone": "607-255-4196",
                         "website": "",
                         "small_case_procedure_only": False,
                     },
@@ -1177,7 +1213,14 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "Brooklyn Low Income Taxpayer Clinic, Brooklyn Legal Services NYC",
+                        "name": "Mobilization for Justice",
+                        "address": "100 William Street, 6th Fl, New York, NY 10038",
+                        "phone": "212-417-3839",
+                        "website": "",
+                        "small_case_procedure_only": False,
+                    },
+                    {
+                        "name": "Brooklyn LITC, Brooklyn Legal Services NYC",
                         "address": "105 Court Street, Brooklyn, N.Y. 11201",
                         "phone": "917-661-4500",
                         "website": "",
@@ -1204,6 +1247,13 @@ all_litc_clinics = [
                         "website": "",
                         "small_case_procedure_only": False,
                     },
+                    {
+                        "name": "The Legal Aid Society LITC",
+                        "address": "2090 Adam Clayton Powell, Jr. Blvd, 3rd Fl., New York, N.Y. 10027",
+                        "phone": "888-663-6880",
+                        "website": "",
+                        "small_case_procedure_only": False,
+                    },
                 ],
             },
         ],
@@ -1216,21 +1266,21 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "North Carolina Charlotte Center for Legal Advocacy",
-                        "address": "Box 25558, Charlotte, NC 28229",
+                        "name": "Charlotte Center for Legal Advocacy North Carolina LITC",
+                        "address": "5535 Albemarle Rd., Charlotte, NC 28212",
                         "phone": "980-353-3530 / 800-438-1254 (Toll-free) / 800-247-1931 (Spanish line)",
                         "website": "https://www.charlottelegaladvocacy.org",
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "Pisgah Legal Services",
+                        "name": "Pisgah Legal Services LITC",
                         "address": "62A Charlotte St., Asheville, NC 28801",
                         "phone": "828-253-0406 / 800-489-6144 (Toll-free)",
                         "website": "https://www.pisgahlegal.org",
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -1241,14 +1291,15 @@ all_litc_clinics = [
                 "small_cases_only": True,
                 "clinics": [
                     {
-                        "name": "None - Tax Court LITC assistance line",
-                        "address": "",
-                        "phone": "202-521-3366",
-                        "website": "",
+                        "name": "No local clinic, remote assistance: Texas A&M University School of Law Tax Dispute Resolution Clinic",
+                        "address": "307 W. 7th Street, Suite LL 50, Fort Worth, Texas 76102",
+                        "email": "tdrc@law.tamu.edu",
+                        "phone": "817-212-4123",
+                        "website": "https://www.law.tamu.edu/tax-clinic",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1266,9 +1317,9 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "Appalred Legal Aid",
-                        "address": "114 North Third Street, Richmond, KY 40475",
-                        "phone": "859-624-1394 / 800-477-1394",
+                        "name": "Legal Aid of the Bluegrass",
+                        "address": "300 East Main Street, Suite 210, Lexington, KY 40507",
+                        "phone": "859-431-8200",
                         "website": "",
                         "small_case_procedure_only": False,
                     },
@@ -1308,10 +1359,10 @@ all_litc_clinics = [
                     {
                         "name": "Legal Aid of Southeast and Central Ohio",
                         "address": "1108 City Park Avenue., Suite 100, Columbus, OH 43206",
-                        "phone": "614-241-2001 (Franklin County) / 844-302-1800",
-                        "website": "",
+                        "phone": "888-246-4420",
+                        "website": "https://www.lasco.org/apply",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -1325,13 +1376,13 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Legal Aid Services of Oklahoma",
-                        "address": "917 South Detroit Ave., Suite 725, Tulsa, Oklahoma 74120",
+                        "address": "907 South Detroit Ave., Suite 725, Tulsa, Oklahoma 74120",
                         "phone": "918-236-9572",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1351,22 +1402,21 @@ all_litc_clinics = [
                     },
                     {
                         "name": "Legal Aid Services of Oregon",
-                        "address": "520 S.W. 6th Avenue, Suite 700, Portland, OR 97204",
-                        "email": "taxteam@lasoregon.org",
-                        "phone": "503-295-9499",
-                        "website": "",
+                        "address": "621 SW Morrison St., Ste. 900, Portland, OR 97205",
+                        "phone": "",
+                        "website": "https://www.ortaxhelp.com",
                         "small_case_procedure_only": False,
                     },
                     {
                         "name": "Oregon Law Center Tax Clinic",
-                        "address": "522 SW 5th Ave., Ste. 812, Portland, OR 97204",
+                        "address": "621 SW Morrison St., Ste. 1450, Portland, OR 97205",
                         "email": "LITC@oregonlawcenter.org",
                         "phone": "800-672-4919",
                         "website": "",
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -1419,6 +1469,14 @@ all_litc_clinics = [
                         "website": "",
                         "small_case_procedure_only": False,
                     },
+                    {
+                        "name": "Misericordia University LITC",
+                        "address": "301 Lake Street, Dallas, PA 18612",
+                        "email": "taxclinic@misericordia.edu",
+                        "phone": "(570) 674-1472",
+                        "website": "",
+                        "small_case_procedure_only": True,
+                    },
                 ],
             },
             {
@@ -1430,14 +1488,14 @@ all_litc_clinics = [
                         "address": "P.O. Box 7226, Pittsburgh, PA 15213",
                         "email": "lawclin@pitt.edu",
                         "phone": "412-648-1300",
-                        "website": "",
+                        "website": "https://www.law.pitt.edu/academics/experiential-learning-opportunities/clinics/taxpayer-clinic",
                         "small_case_procedure_only": False,
                     },
                     {
-                        "name": "Southwestern Pennsylvania Legal Aid",
+                        "name": "Summit Legal Aid Low Income Taxpayer Clinic",
                         "address": "10 West Cherry Ave., Washington, PA 15301",
                         "phone": "800-846-0871",
-                        "website": "",
+                        "website": "https://www.pataxhelp.org/contact-us",
                         "small_case_procedure_only": False,
                     },
                     {
@@ -1456,7 +1514,7 @@ all_litc_clinics = [
         "state": "Rhode Island",
         "cities": [
             {
-                "name": "Boston (place of trial)",
+                "name": "Boston",
                 "small_cases_only": False,
                 "clinics": [
                     {
@@ -1465,9 +1523,9 @@ all_litc_clinics = [
                         "phone": "401-274-2652",
                         "website": "",
                         "small_case_procedure_only": True,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1481,7 +1539,7 @@ all_litc_clinics = [
                         "name": "South Carolina Legal Services",
                         "address": "701 S. Main Street, Greenville, S.C. 29601",
                         "phone": "888-346-5592",
-                        "website": "https://www.sclegal.org",
+                        "website": "",
                         "small_case_procedure_only": False,
                     },
                     {
@@ -1492,7 +1550,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -1503,14 +1561,15 @@ all_litc_clinics = [
                 "small_cases_only": True,
                 "clinics": [
                     {
-                        "name": "No local clinic",
-                        "address": "",
-                        "phone": "202-521-3366",
-                        "website": "",
+                        "name": "No local clinic, remote assistance: Texas A&M University School of Law Tax Dispute Resolution Clinic",
+                        "address": "307 W. 7th Street, Suite LL 50, Fort Worth, Texas 76102",
+                        "email": "tdrc@law.tamu.edu",
+                        "phone": "817-212-4123",
+                        "website": "https://www.law.tamu.edu/tax-clinic",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1526,7 +1585,7 @@ all_litc_clinics = [
                         "phone": "866-481-3669",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -1539,7 +1598,7 @@ all_litc_clinics = [
                         "phone": "866-481-3669",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -1548,11 +1607,11 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Memphis Area Legal Services, Inc.",
-                        "address": "200 Jefferson, Suite 1075, Memphis, TN 38103",
+                        "address": "200 Jefferson, Suire 1075, Memphis, TN 38103",
                         "phone": "901-523-8822, ext. 419",
                         "website": "https://www.malsi.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -1580,8 +1639,8 @@ all_litc_clinics = [
                     },
                     {
                         "name": "Lone Star Legal Aid, Inc.",
-                        "address": "500 Jefferson St., Ste. 1700, Houston, TX 77002",
-                        "phone": "800-733-8394",
+                        "address": "1415 Fannin Street, Houston, TX 77002",
+                        "phone": "713-652-0077 / 800-733-8394",
                         "website": "https://www.lonestarlegal.org",
                         "small_case_procedure_only": False,
                     },
@@ -1589,7 +1648,7 @@ all_litc_clinics = [
                         "name": "Texas A&M University School of Law",
                         "address": "307 W. 7th Street, Suite LL50, Fort Worth, TX 76102",
                         "email": "LITC@law.tamu.edu",
-                        "phone": "817-212-4123",
+                        "phone": "817-212-4062",
                         "website": "https://www.law.tamu.edu/tax-clinic",
                         "small_case_procedure_only": False,
                     },
@@ -1601,8 +1660,8 @@ all_litc_clinics = [
                 "clinics": [
                     {
                         "name": "Lone Star Legal Aid, Inc.",
-                        "address": "500 Jefferson St., Ste. 1700, Houston, TX 77002",
-                        "phone": "800-733-8394",
+                        "address": "1415 Fannin Street, Houston, TX 77002",
+                        "phone": "713-652-0077 / 800-733-8394",
                         "website": "https://www.lonestarlegal.org",
                         "small_case_procedure_only": False,
                     },
@@ -1630,7 +1689,7 @@ all_litc_clinics = [
                         "name": "Texas A&M University School of Law",
                         "address": "307 W. 7th Street, Suite LL50, Fort Worth, TX 76102",
                         "email": "LITC@law.tamu.edu",
-                        "phone": "817-212-4123",
+                        "phone": "817-212-4062",
                         "website": "https://www.law.tamu.edu/tax-clinic",
                         "small_case_procedure_only": False,
                     },
@@ -1662,7 +1721,7 @@ all_litc_clinics = [
                         "phone": "806-742-4312 / 800-420-8037 (toll-free)",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -1675,7 +1734,7 @@ all_litc_clinics = [
                         "phone": "210-212-3747 / 833-329-8752",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -1688,16 +1747,9 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "Centro Hispano LITC",
-                        "address": "650 W 100 N, Provo, UT 84601",
-                        "phone": "801-655-0258",
-                        "website": "https://www.centrohispanouc.org",
-                        "small_case_procedure_only": False,
-                    },
-                    {
-                        "name": "University of Idaho",
-                        "address": "501 W. Front Street, Boise, Idaho 83702",
-                        "phone": "208-364-6166",
+                        "name": "Utah Tax Help Services",
+                        "address": "815 W 1250 S, Orem, UT 84058",
+                        "phone": "801-210-8001",
                         "website": "",
                         "small_case_procedure_only": False,
                     },
@@ -1705,11 +1757,11 @@ all_litc_clinics = [
                         "name": "Westminster Tax",
                         "address": "1840 S 1300 E Gore 118, Salt Lake City, UT 84105",
                         "phone": "801-210-8291",
-                        "website": "https://www.westminsteru.edu/taxclinic",
+                        "website": "",
                         "small_case_procedure_only": False,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -1734,7 +1786,7 @@ all_litc_clinics = [
                         "small_case_procedure_only": True,
                     },
                 ],
-            },
+            }
         ],
     },
     {
@@ -1748,7 +1800,7 @@ all_litc_clinics = [
                         "name": "The Community Tax Law Project",
                         "address": "5206 Markel Road, Suite 100-B, Richmond, VA 23230",
                         "email": "info@ctlp.org",
-                        "phone": "804-358-5855 (local) / 800-295-0110 (toll-free)",
+                        "phone": "804-358-5855",
                         "website": "https://www.ctlp.org",
                         "small_case_procedure_only": False,
                     },
@@ -1770,7 +1822,7 @@ all_litc_clinics = [
                         "name": "The Community Tax Law Project",
                         "address": "5206 Markel Road, Suite 100-B, Richmond, VA 23230",
                         "email": "info@ctlp.org",
-                        "phone": "804-358-5855 (local) / 800-295-0110 (toll-free)",
+                        "phone": "804-358-5855",
                         "website": "https://www.ctlp.org",
                         "small_case_procedure_only": False,
                     },
@@ -1799,7 +1851,7 @@ all_litc_clinics = [
                         "phone": "206-685-6805",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
             {
@@ -1812,7 +1864,7 @@ all_litc_clinics = [
                         "phone": "509-313-5791",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
             },
         ],
@@ -1830,9 +1882,9 @@ all_litc_clinics = [
                         "phone": "859-624-1394 / 800-477-1394",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1845,12 +1897,12 @@ all_litc_clinics = [
                     {
                         "name": "Legal Action of Wisconsin, Inc.",
                         "address": "633 W. Wisconsin Ave., Ste. 2000, Milwaukee, WI 53203",
-                        "phone": "414-274-3400 / 855-502-2468",
-                        "website": "",
+                        "phone": "855-947-2529 / 608-473-3820",
+                        "website": "https://www.legalaction.org",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
     {
@@ -1867,9 +1919,9 @@ all_litc_clinics = [
                         "phone": "307-766-6114",
                         "website": "",
                         "small_case_procedure_only": False,
-                    },
+                    }
                 ],
-            },
+            }
         ],
     },
 ]
