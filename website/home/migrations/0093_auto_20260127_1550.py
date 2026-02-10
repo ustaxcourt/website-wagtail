@@ -27,8 +27,12 @@ def rename_collection_and_tag_to_new_name(apps, schema_editor):
     coll.name = new_collection_name
     coll.save(update_fields=["name"])
 
-    # create_tag(apps, schema_editor, new_collection_name)
-    update_tag_name(apps, schema_editor, old_collection_name, new_collection_name)
+    try:
+        update_tag_name(apps, schema_editor, old_collection_name, new_collection_name)
+    except Exception as e:
+        raise RuntimeError(
+            f"Error while checking updating tag '{old_collection_name}' to '{new_collection_name}'. Migration aborted. Error: {e}"
+        )
 
 
 def rename_tag_and_collection_back_to_old_name(apps, schema_editor):
@@ -37,10 +41,14 @@ def rename_tag_and_collection_back_to_old_name(apps, schema_editor):
     current_collection_name = "News and Announcements"
     previous_collection_name = "Press Releases"
 
-    # remove_tag(apps, schema_editor, current_collection_name)
-    update_tag_name(
-        apps, schema_editor, current_collection_name, previous_collection_name
-    )
+    try:
+        update_tag_name(
+            apps, schema_editor, current_collection_name, previous_collection_name
+        )
+    except Exception as e:
+        raise RuntimeError(
+            f"Error while checking updating tag '{current_collection_name}' to '{previous_collection_name}'. Migration aborted. Error: {e}"
+        )
 
     try:
         coll = Collection.objects.get(name=current_collection_name)
