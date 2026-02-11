@@ -169,13 +169,13 @@
       {% elif block.block_type == 'callout' %}
         <div class="callout-content">{% include_block block %}</div>
       {% endif %}
-    {% endfor %}
-    {% if block.block_type == 'prose' %}
-    <div class="rich-text">{{ block.value }}</div>
+      {% if block.block_type == 'prose' %}
+      <div class="rich-text">{{ block.value }}</div>
 
-    {% elif block.block_type == 'callout' %}
-    <div class="callout-content">{% include_block block %}</div>
-    {% endif %} {% endfor %}
+      {% elif block.block_type == 'callout' %}
+      <div class="callout-content">{% include_block block %}</div>
+      {% endif %}
+    {% endfor %}
   </div>
 </div>
 
