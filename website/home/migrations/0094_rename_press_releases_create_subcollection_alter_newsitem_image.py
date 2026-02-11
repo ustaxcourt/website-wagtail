@@ -184,7 +184,7 @@ class Migration(migrations.Migration):
     ]
 
     dependencies = [
-        ("home", "0092_alter_enhancedstandardpage_body"),
+        ("home", "0093_alter_enhancedstandardpage_body"),
         ("taggit", "__latest__"),
         ("wagtailimages", "0027_image_description"),
     ]
