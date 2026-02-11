@@ -2,10 +2,17 @@
 {% load wagtailcore_tags %}
 {% block extra_css %}
     <style>
+        .grid-container > *:not(.page-title) {
+            margin-bottom: 34px;
+        }
+
+        .page-title {
+            margin-bottom: 15px;
+        }
+
         .notice p {
             font-size: 17px;
             font-weight: 700;
-
         }
 
         .description {
@@ -19,7 +26,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 2.1rem;
-            margin-bottom: 1.5rem;
         }
 
         .alphabet button {
@@ -38,48 +44,39 @@
         }
 
         .clinic-list.grid {
-            display: flex;
-            flex-wrap: wrap;
-
-            gap: 24px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 24px;
+            row-gap: 15px;
         }
 
-        .clinic-list .state-card {
-            background: white;
-            border-radius: 6px;
-            {% comment %} box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); {% endcomment %}
-            {% comment %} padding: 1rem; {% endcomment %}
-            margin-bottom: 15px;
-
-            width: fit-content;
-            flex: 0 0 auto;
+        .state-card {
+            min-width: 0;
         }
+        .state-card.span-2 { grid-column: span 2; }
+        .state-card.span-3 { grid-column: span 3; }
 
-
-        .clinic-list .state-header {
+        .state-card .state-header {
             background: var(--color-primary);
             color: white;
             padding: 15px;
             font-weight: bold;
             border-radius: 4px 4px 0 0;
-            {% comment %} margin: -1rem -1rem 1rem -1rem; {% endcomment %}
             margin-bottom: 10px;
-
             display: block;
         }
 
-        {% comment %} .clinic-list .state-content {
+        .state-card .state-content {
             display: grid;
-            grid-template-columns: repeat(3, auto);
-            align-items: start;
-
-            gap: 24px;
-        } {% endcomment %}
-         .clinic-list .state-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            max-width: calc(3 * 368px + 2 * 24px);
+            grid-template-columns: 1fr;
+            row-gap: 10px;
+            column-gap: 24px;
+        }
+        .state-card.span-2 .state-content {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .state-card.span-3 .state-content {
+            grid-template-columns: repeat(3, 1fr);
         }
 
         .clinic-list .city {
@@ -89,10 +86,9 @@
         }
 
         .clinic-list .clinic-card {
-          height: 218px;
-          width: 368px;
-          padding: 15px;
-          border: 1px solid var(--theme-color-base-lighter);
+            padding: 15px;
+            border: 1px solid var(--theme-color-base-lighter);
+            min-width: 0;
         }
         .clinic-list .clinic-card div + div {
             margin-top: 10px;
@@ -105,15 +101,44 @@
         }
 
         .clinic-list .note {
+            grid-column: 1 / -1;
             margin-bottom: 10px;
         }
+
         .letter-break {
-            flex-basis: 100%;
+            grid-column: 1 / -1;
             height: 0;
             margin: 0;
         }
+
+        @media (max-width: 1024px) {
+            .clinic-list.grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .state-card.span-3 {
+                grid-column: span 2;
+            }
+            .state-card.span-3 .state-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .clinic-list.grid {
+                grid-template-columns: 1fr;
+            }
+            .state-card.span-2,
+            .state-card.span-3 {
+                grid-column: span 1;
+            }
+            .state-card.span-2 .state-content,
+            .state-card.span-3 .state-content {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 {% endblock %}
+
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1 class="page-title">Participating Clinics and Pro Bono Programs</h1>
@@ -131,8 +156,8 @@
             {% endfor %}
         </div>
         <div class="notice">
-            <p><span style= "color:red;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p>
-            <p><span style= "color:red;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>
+            <p><span style="color:red;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p>
+            <p><span style="color:red;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>
         </div>
 
         <div class="clinic-list grid">
@@ -146,43 +171,49 @@
                     <div class="state-card" id="{{ state_letter }}">
                         <div class="state-header">{{ state.value.state }}</div>
                         <div class="state-content">
-                          {% for city in state.value.cities %}
-                              {% for clinic in city.clinics %}
-                              <div class="clinic-card">
-                                    <div class="city">{{ city.name }}<span style= "color:red;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
-                                    <div class="clinic" style="margin-bottom: 10px;">
-                                        <div class="clinic-name">{{ clinic.name }}<span style= "color:red;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
-                                        <div class="clinic-info">
-                                            <div class="address">
-                                                {% comment %} <a href="https://www.google.com/maps/search/{{ clinic.address|urlencode }}"
-                                                  target="_blank">{{ clinic.address }}</a> {% endcomment %}
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank">
-                                                    {{ clinic.address }}
-                                                </a>
+                            {% for city in state.value.cities %}
+                                {% for clinic in city.clinics %}
+                                    <div class="clinic-card">
+                                        <div class="city">{{ city.name }}<span style="color:red;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
+                                        <div class="clinic" style="margin-bottom: 10px;">
+                                            <div class="clinic-name">{{ clinic.name }}<span style="color:red;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
+                                            <div class="clinic-info">
+                                                <div class="address">
+                                                    <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank">
+                                                        {{ clinic.address }}
+                                                    </a>
+                                                </div>
+                                                <div class="phone">{{ clinic.phone }}</div>
+                                                {% if clinic.website %}
+                                                    <div class="website">
+                                                        <a href="{{ clinic.website }}" target="_blank">{{ clinic.website }}</a>
+                                                    </div>
+                                                {% endif %}
+                                                {% if clinic.email %}
+                                                    <div class="email">
+                                                        <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a>
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                            <div class="phone">{{ clinic.phone }}</div>
-                                            {% if clinic.website %}
-                                              <div class="website">
-                                                <a href="{{ clinic.website }}" target="_blank">
-                                                  {{ clinic.website }}
-                                                </a>
-                                              </div>
-                                            {% endif %}
-                                            {% if clinic.email %}
-                                              <div class="email">
-                                                <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a>
-                                              </div>
-                                            {% endif %}
                                         </div>
                                     </div>
-                                  </div>
-                              {% endfor %}
-                            {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
-                        {% endfor %}
+                                {% endfor %}
+                                {% if city.note %}<div class="note">{{ city.note }}</div>{% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 {% endwith %}
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.state-card').forEach(function (card) {
+                var clinicCount = card.querySelectorAll('.clinic-card').length;
+                var span = Math.min(clinicCount, 3);
+                card.classList.add('span-' + span);
+            });
+        });
+    </script>
 {% endblock %}
