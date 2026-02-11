@@ -124,13 +124,15 @@
 </style>
 
 <div>
-  <div class="styled-callout {{ block.value.callout_type }}" role="region" aria-label="{{block.value.callout_type}} type banner title reads {{ block.value.heading }}" tabindex="0">
+  {% with data=block.value|default:self %}
+  <div class="styled-callout {{ data.callout_type }}" role="region" aria-label="{{data.callout_type}} type banner title reads {{ data.heading }}" tabindex="0">
     <div class="callout-items" style="margin-right: 1rem;">
       <span class="callout-icon" aria-hidden="true"></span>
       <div class="callout-content">
-        <h3 id="callout-heading-{{ block.value.callout_type }}" class="callout-title">{{ block.value.heading }}</h3>
-        <p>{{ block.value.text }}</p>
+        <h3 id="callout-heading-{{ data.callout_type }}" class="callout-title">{{ data.heading }}</h3>
+        <p>{{ data.text }}</p>
       </div>
     </div>
   </div>
 </div>
+{% endwith %}

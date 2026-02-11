@@ -118,8 +118,8 @@
     }
   }
 </style>
-
-<div id="accordian-{{block_index}}" class="accordian-block">
+{% with data=block.value|default:self %}
+<div id="accordian-{{block_index}}{{suffix}}" class="accordian-block">
   <div class="accordian-header">
     <h3 class="accordian-title">
       <button
@@ -129,7 +129,7 @@
         aria-controls="content-{{block_index}}"
         id="btn-{{block_index}}"
       >
-        {{ block.value.title }}
+        {{ data.title }}
         <span class="accordian-icon" aria-hidden="true"></span>
       </button>
     </h3>
@@ -140,8 +140,8 @@
     role="region"
     aria-labelledby="btn-{{block_index}}"
   >
-    {% for block in block.value.description %}
-    {% if block.block_type == 'prose' %}
+    {% for block in data.description %}
+      {% if block.block_type == 'prose' %}
     <div class="rich-text">{{ block.value }}</div>
 
     {% elif block.block_type == 'callout' %}
@@ -149,26 +149,4 @@
     {% endif %} {% endfor %}
   </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const accordianBlock = document.getElementById("accordian-"+{{block_index}});
-    const header = accordianBlock.querySelector(".accordian-header");
-    const title = accordianBlock.querySelector(".accordian-title");
-    const content = accordianBlock.querySelector(".accordian-content");
-    const icon = accordianBlock.querySelector(".accordian-icon");
-    const button = accordianBlock.querySelector(".accordian-header-button");
-
-    header.addEventListener("click", function() {
-      content.classList.toggle("hidden");
-      icon.classList.toggle("rotated");
-
-      title.classList.toggle("active");
-      header.classList.toggle("active");
-      icon.classList.toggle("active");
-
-      button.classList.toggle("active");
-
-    });
-  });
-</script>
+{% endwith %}
