@@ -240,7 +240,7 @@
             table-layout: fixed;
         }
 
-        .enhanced-page .enhanced-table.unstyled td,
+        .enhanced-page .enhanced-table.unstyled td:not(:has(.cell-header)),
         .enhanced-page .enhanced-table.unstyled th {
             padding: 1rem;
             vertical-align: top;
@@ -257,16 +257,12 @@
             color: white;
         }
 
-        .enhanced-page .enhanced-table:not(.unstyled) th,
-        .enhanced-page .enhanced-table:not(.unstyled) td {
-            padding: 1rem;
+        .enhanced-page .enhanced-table:not(.unstyled-borderless, .usa-table--borderless) th,
+        .enhanced-page .enhanced-table:not(.unstyled-borderless, .usa-table--borderless) td:not(:has(.cell-header)) {
+            padding: 15px;
             text-align: left;
             border: 1px solid #dfe1e2;
             vertical-align: top;
-        }
-
-        .enhanced-page .enhanced-table:not(.unstyled) tr:nth-child(even) {
-            background-color: #f0f0f0;
         }
 
         .enhanced-page .enhanced-table:not(.unstyled) tr:nth-child(odd) {

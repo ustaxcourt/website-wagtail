@@ -21,16 +21,6 @@ from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
 
 
-table_value_types = [
-    ("text", blocks.RichTextBlock()),
-]
-
-
-class IndentStyle(models.TextChoices):
-    INDENTED = "indented"
-    UNINDENTED = "unindented"
-
-
 class StyledCalloutBlock(blocks.StructBlock):
     heading = blocks.CharBlock(
         required=True, help_text="The title of this special element"
@@ -142,6 +132,56 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
+
+new_table_value_types = [
+    (
+        "components",
+        blocks.StreamBlock(
+            [
+                ("text", blocks.RichTextBlock()),
+                ("callout", StyledCalloutBlock()),
+                ("accordian", AccordianBlock()),
+                ("button", ButtonBlock()),
+            ]
+        ),
+    ),
+]
+
+
+class IndentStyle(models.TextChoices):
+    INDENTED = "indented"
+    UNINDENTED = "unindented"
+
+
+class TableListBlock(blocks.StructBlock):
+    table = TypedTableBlock(new_table_value_types)
+    caption_location = blocks.ChoiceBlock(
+        choices=[("top", "Top"), ("bottom", "Bottom")],
+        default="top",
+    )
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("styled", "Styled Table"),
+            ("borderlessUnstyled", "Borderless Unstyled Table"),
+            ("unstyled", "Unstyled Table"),
+        ],
+        default="styled",
+    )
+
+    fixed = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to set table layout to fixed width.",
+    )
+
+    class Meta:
+        label = "Enhanced Table"
+        icon = "table"
+
+
 class EnhancedStandardPage(ModerationMixin, Page):
     base_form_class = ReviewByRequiredOnSubmitForm
 
@@ -241,13 +281,15 @@ class EnhancedStandardPage(ModerationMixin, Page):
             ("photo_dedication", PhotoDedicationBlock()),
             (
                 "table",
-                TypedTableBlock(
-                    table_value_types,
-                ),
+                TypedTableBlock(table_value_types),
             ),
             (
                 "unstyled_table",
                 TypedTableBlock(table_value_types),
+            ),
+            (
+                "enhanced_table",
+                TableListBlock(),
             ),
             ("list", create_nested_list_block(max_depth=4)),
             (
