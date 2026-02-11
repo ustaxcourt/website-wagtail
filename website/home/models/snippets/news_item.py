@@ -92,7 +92,7 @@ class NewsItem(
         "wagtailimages.Image",
         null=True,
         blank=False,
-        on_delete=models.SET_DEFAULT,
+        on_delete=models.PROTECT,
         related_name="+",
         default=get_random_news_item_image_pk,
     )
