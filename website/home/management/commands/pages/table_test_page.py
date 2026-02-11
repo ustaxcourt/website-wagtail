@@ -48,7 +48,7 @@ class TableTestPageInitializer(PageInitializer):
 
         # TableListBlock with sample data - showcasing all component types
         table_block = {
-            "type": "new_table",
+            "type": "enhanced_table",
             "value": {
                 "table": {
                     "columns": [
