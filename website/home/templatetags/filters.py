@@ -12,6 +12,15 @@ def column_width(column_count):
 
 
 @register.filter
+def get_type(value):
+    """
+    Return the type name of a value.
+    Usage: {{ some_value|get_type }}
+    """
+    return type(value).__name__
+
+
+@register.filter
 def parse_iso_date(date_string):
     """
     Parse an ISO date string (from revision content) back to a datetime object

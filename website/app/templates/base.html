@@ -210,5 +210,30 @@
         </script>
         <script type="text/javascript"
                 src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
+      <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                  document.addEventListener("click", function(event) {
+
+                  const header = event.target.closest(".accordian-header");
+
+                  if (!header) return;
+
+                  const accordianBlock = header.closest(".accordian-block");
+
+                  const title = accordianBlock.querySelector(".accordian-title");
+                  const content = accordianBlock.querySelector(".accordian-content");
+                  const icon = accordianBlock.querySelector(".accordian-icon");
+                  const button = accordianBlock.querySelector(".accordian-header-button");
+
+
+                  content.classList.toggle("hidden");
+                  icon.classList.toggle("rotated");
+                  title.classList.toggle("active");
+                  header.classList.toggle("active");
+                  icon.classList.toggle("active");
+                  button.classList.toggle("active");
+                  });
+            });
+      </script>
     </body>
 </html>

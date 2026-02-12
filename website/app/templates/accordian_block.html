@@ -129,8 +129,8 @@
     }
   }
 </style>
-
-<div id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
+{% with data=block.value|default:self %}
+<div id="accordian-{{block_index}}{{suffix}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
   <div class="accordian-header">
     <h3 class="accordian-title">
       <button
@@ -140,7 +140,7 @@
         aria-controls="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
         id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
       >
-        {{ block.value.title }}
+        {{ data.title }}
         <span class="accordian-icon" aria-hidden="true"></span>
       </button>
     </h3>
@@ -151,9 +151,9 @@
     role="region"
     aria-labelledby="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
   >
-    {% for block in block.value.description %}
-      {% if block.block_type == 'heading' %}
-        {% with level=block.value.level text=block.value.text id=block.value.id %}
+    {% for block in data.description %}
+        {% if block.block_type == 'heading' %}
+        {% with level=data.level text=data.text id=data.id %}
           {% if level == 'h2' %}
             <h2{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h2>
           {% elif level == 'h3' %}
@@ -178,6 +178,7 @@
     {% endfor %}
   </div>
 </div>
+{% endwith %}
 
 <script>
   (function() {
