@@ -405,30 +405,6 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
-table_value_types = [
-    ("text", blocks.RichTextBlock()),
-]
-
-new_table_value_types = [
-    (
-        "components",
-        blocks.StreamBlock(
-            [
-                ("text", blocks.RichTextBlock()),
-                ("callout", StyledCalloutBlock()),
-                ("accordian", AccordianBlock()),
-                ("button", ButtonBlock()),
-            ]
-        ),
-    ),
-]
-
-
-class IndentStyle(models.TextChoices):
-    INDENTED = "indented"
-    UNINDENTED = "unindented"
-
-
 class AnchorPageBlock(blocks.StructBlock):
     breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
     body = blocks.StreamBlock(_BASE_BLOCK_TYPES, required=False)
