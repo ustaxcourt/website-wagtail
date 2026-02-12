@@ -130,7 +130,7 @@
   }
 </style>
 {% with data=block.value|default:self %}
-<div id="accordian-{{block_index}}{{suffix}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
+<div id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
   <div class="accordian-header">
     <h3 class="accordian-title">
       <button
@@ -168,12 +168,6 @@
         <div class="rich-text">{{ block.value }}</div>
       {% elif block.block_type == 'callout' %}
         <div class="callout-content">{% include_block block %}</div>
-      {% endif %}
-      {% if block.block_type == 'prose' %}
-      <div class="rich-text">{{ block.value }}</div>
-
-      {% elif block.block_type == 'callout' %}
-      <div class="callout-content">{% include_block block %}</div>
       {% endif %}
     {% endfor %}
   </div>

@@ -405,28 +405,28 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
-# table_value_types = [
-#     ("text", blocks.RichTextBlock()),
-# ]
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
 
-# new_table_value_types = [
-#     (
-#         "components",
-#         blocks.StreamBlock(
-#             [
-#                 ("text", blocks.RichTextBlock()),
-#                 ("callout", StyledCalloutBlock()),
-#                 ("accordian", AccordianBlock()),
-#                 ("button", ButtonBlock()),
-#             ]
-#         ),
-#     ),
-# ]
+new_table_value_types = [
+    (
+        "components",
+        blocks.StreamBlock(
+            [
+                ("text", blocks.RichTextBlock()),
+                ("callout", StyledCalloutBlock()),
+                ("accordian", AccordianBlock()),
+                ("button", ButtonBlock()),
+            ]
+        ),
+    ),
+]
 
 
-# class IndentStyle(models.TextChoices):
-#     INDENTED = "indented"
-#     UNINDENTED = "unindented"
+class IndentStyle(models.TextChoices):
+    INDENTED = "indented"
+    UNINDENTED = "unindented"
 
 
 class AnchorPageBlock(blocks.StructBlock):
