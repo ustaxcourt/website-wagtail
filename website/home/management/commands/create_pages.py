@@ -30,6 +30,9 @@ from home.management.commands.pages.about_the_court import JudgesPageInitializer
 from home.management.commands.pages.efiling_and_case_maintenance.dawson_page import (
     DawsonPageInitializer,
 )
+from home.management.commands.pages.card_tiles_test_page import (
+    CardTilesTestPageInitializer,
+)
 
 # Initialize home and footer first
 home_page_initialize = [
@@ -96,3 +99,11 @@ class Command(BaseCommand):
         unlisted_files_initializer = UnlistedFiles()
         unlisted_files_initializer.create()
         self.stdout.write(self.style.SUCCESS("Unlisted files have been initialized."))
+
+        # Initialize card tiles test page (non-production only)
+        if not settings.SITE_IS_LIVE:
+            card_tiles_initializer = CardTilesTestPageInitializer()
+            card_tiles_initializer.create()
+            self.stdout.write(
+                self.style.SUCCESS("Card Tiles test page has been initialized.")
+            )
