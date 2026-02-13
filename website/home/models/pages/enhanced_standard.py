@@ -10,6 +10,7 @@ from wagtail.images.blocks import ImageBlock
 from wagtail.search import index
 
 from home.blocks import SVGDocumentChooserBlock
+from home.blocks import QuickAccessTilesBlock
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
@@ -494,7 +495,11 @@ class EnhancedStandardPage(ModerationMixin, Page):
     )
 
     body = StreamField(
-        _BASE_BLOCK_TYPES + [("card_tiles", CardTilesBlock())],
+        _BASE_BLOCK_TYPES
+        + [
+            ("card_tiles", CardTilesBlock()),
+            ("quick_access_tiles", QuickAccessTilesBlock()),
+        ],
         block_counts={
             "card_tiles": {"min_num": 0, "max_num": 1},
         },
