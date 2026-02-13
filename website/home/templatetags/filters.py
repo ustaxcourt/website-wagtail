@@ -1,6 +1,7 @@
 from django import template
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+from django.utils.text import slugify
 
 register = template.Library()
 
@@ -8,6 +9,15 @@ register = template.Library()
 @register.filter
 def column_width(column_count):
     return 12 // column_count
+
+
+@register.filter
+def get_type(value):
+    """
+    Return the type name of a value.
+    Usage: {{ some_value|get_type }}
+    """
+    return type(value).__name__
 
 
 @register.filter
@@ -30,3 +40,11 @@ def parse_iso_date(date_string):
             pass
 
     return date_string
+
+
+@register.filter
+def slugify_text(text):
+    """
+    Convert text to a URL-friendly slug
+    """
+    return slugify(text)

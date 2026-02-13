@@ -20,6 +20,12 @@ from django.utils import timezone
 from datetime import datetime, time
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+from wagtail.models import Collection
+from wagtail.images.models import Image
+import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NewsItemQuerySet(models.QuerySet):
@@ -33,6 +39,23 @@ class NewsItemQuerySet(models.QuerySet):
             # Also check that it hasn't expired
             models.Q(expire_at__isnull=True) | models.Q(expire_at__gt=now)
         )
+
+
+def get_random_news_item_image_pk():
+    homePageNewsCollection = Collection.objects.filter(
+        name="Home Page News Images"
+    ).first()
+    defaultImagePk = None
+
+    if homePageNewsCollection:
+        imagesToChooseFrom = Image.objects.filter(collection=homePageNewsCollection)
+        if imagesToChooseFrom:
+            defaultImagePk = random.choice(imagesToChooseFrom).pk
+    else:
+        logger.warning(
+            "Home Page News Images collection does not exist. No default image chosen for new News Item."
+        )
+    return defaultImagePk
 
 
 class NewsItem(
@@ -68,9 +91,10 @@ class NewsItem(
     image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
+        blank=False,
+        on_delete=models.PROTECT,
         related_name="+",
+        default=get_random_news_item_image_pk,
     )
 
     description = RichTextField(

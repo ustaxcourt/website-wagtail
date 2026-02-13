@@ -1,0 +1,261 @@
+{% load static %} {% load filters %}
+
+<style>
+
+    .table-container .enhanced-table caption {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+      text-align: left;
+    }
+    .mobile {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .table-container caption{
+            font-size: 16px;
+        }
+        .enhanced-table:not(.mobile.enhanced-table) {
+            display: none;
+        }
+        .mobile.enhanced-table {
+            display: table;
+        }
+    }
+
+    /* top row */
+    .enhanced-table.unstyled thead tr:first-child th {
+        border-top: none;
+    }
+
+    /* bottom row */
+    .enhanced-table.enhanced-table.unstyled tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* first column */
+    .enhanced-table.enhanced-table.unstyled tr th:first-child,
+    .enhanced-table.enhanced-table.unstyled tr td:first-child {
+        border-left: none;
+    }
+
+    /* last column */
+    .enhanced-table.enhanced-table.unstyled tr th:last-child,
+    .enhanced-table.enhanced-table.unstyled tr td:last-child {
+        border-right: none;
+    }
+    .table-container .enhanced-table th {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 25px;
+    }
+
+    .table-container .mobile.enhanced-table th {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 25px;
+    }
+
+    .table-container .enhanced-table.unstyled-borderless th,
+    .table-container .enhanced-table.unstyled-borderless td {
+      text-align: left;
+    }
+    .plus-icon {
+    background-color: var(--color-navy);
+    width: 24px;
+    height: 24px;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-image: url({% static "images/icons/plus-circle.svg" %});
+    mask-image: url({% static "images/icons/plus-circle.svg" %});
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+
+    transition: transform 0.3s ease;
+
+    flex-shrink: 0;
+
+  }
+  .cell-header{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 15px 15px 0 15px;
+  }
+  .cell-header> p{
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .cell-content:not(.hidden){
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px 15px 15px;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+  .cell-content p{
+    display: inline-block;
+    margin:0;
+  }
+
+  .mobile-cell-item p{
+    display: inline;
+  }
+
+  /*Below is dealing with borders for styled, unstyled, and borderless tables for mobile*/
+
+  .mobile.enhanced-table td{
+    border: 1px solid #DFE1E2;
+  }
+
+  .mobile-cell-item:not(:last-child){
+    border-bottom: 1px solid #DFE1E2;
+    padding: 10px 0px;
+  }
+  .mobile-cell-item:last-child{
+    padding-top: 10px;
+  }
+
+  .mobile.enhanced-table.unstyled-borderless td,
+  .mobile.enhanced-table.unstyled-borderless .mobile-cell-item{
+    border: none;
+  }
+</style>
+<div class="table-container">
+    <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}"
+    {%if block.value.fixed%}style = "table-layout: fixed"{% else %}style = "table-layout:auto"{% endif %}>
+        <caption
+        {%if block.value.caption_location == "bottom" and block.value.table.caption %}
+          style="caption-side:bottom; margin-top:15px;"
+          {% elif block.value.caption_location == "top" and block.value.table.caption %}
+          style="caption-side:top; margin-bottom:15px;"
+        {% endif %}>
+        {{ block.value.table.caption }}</caption>
+      <thead>
+            <tr>
+                {% for col in block.value.table.columns %}<th scope="col" tabindex="0">{{ col.heading }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in block.value.table.rows %}
+                <tr>
+                    {% for cell in row %}
+                      <td tabindex="0">
+                        {% if cell.block.name == "components" %}
+                          {% for content in cell.value %}
+                            {% if content.block_type == "accordian" %}
+                              {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                            {% elif content.block_type == "callout" %}
+                              {% include "callout_block.html" with block=content %}
+                            {% elif content.block_type == "button" %}
+                              {% include "includes/styled_button.html" with block=content %}
+                            {% else %}
+                              {{ content }}
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          {{ cell }}
+                        {% endif %}
+                      </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+<table class="mobile enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
+    <caption
+    {%if block.value.caption_location == "bottom" and block.value.table.caption %}
+      style="caption-side:bottom; margin-top:15px;"
+      {% elif block.value.caption_location == "top" and block.value.table.caption %}
+      style="caption-side:top; margin-bottom:15px;"
+    {% endif %}>
+    {{ block.value.table.caption }}</caption>
+
+    <thead>
+        <tr>
+            <th scope="col">{{ block.value.table.columns.0.heading }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in block.value.table.rows %}
+            <tr>
+                <td>
+                    <div class="cell-header">
+                        <svg onclick="toggleCellContent(this)" class="plus-icon"></svg>
+                        {% with cell=row|first %}
+                            {% if cell.block.name == "components" %}
+                                {% for content in cell.value %}
+                                    {% if content.block_type == "accordian" %}
+                                        {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                    {% elif content.block_type == "callout" %}
+                                        {% include "callout_block.html" with block=content %}
+                                    {% elif content.block_type == "button" %}
+                                        {% include "includes/styled_button.html" with block=content %}
+                                    {% else %}
+                                        {{ content }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {{ cell }}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="cell-content hidden">
+                        {% for cell in row %}
+                            {% if not forloop.first %}
+                                <div class="mobile-cell-item">
+
+                                    {% for col in block.value.table.columns %}
+                                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                                            <strong>{{ col.heading }}:</strong>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if cell.block.name == "components" %}
+                                        {% for content in cell.value %}
+                                            {% if content.block_type == "accordian" %}
+                                                {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                            {% elif content.block_type == "callout" %}
+                                                {% include "callout_block.html" with block=content %}
+                                            {% elif content.block_type == "button" %}
+                                                {% include "includes/styled_button.html" with block=content %}
+                                            {% else %}
+                                                {{ content }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ cell }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script>
+  function toggleCellContent(icon) {
+    const cellContent = icon.parentElement.nextElementSibling;
+    cellContent.classList.toggle("hidden");
+
+    if (icon.style.transform === "rotate(45deg)") {
+      icon.style.transform = "rotate(0deg)";
+    } else {
+      icon.style.transform = "rotate(45deg)";
+    }
+  }
+</script>
