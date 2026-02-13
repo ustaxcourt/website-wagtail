@@ -1,6 +1,10 @@
 {% load wagtailcore_tags wagtailimages_tags filters static %}
 
-        {% for block in page.body %}
+{# Reusable template for rendering a list of blocks #}
+{# Usage: {% include "includes/enhanced_body.html" with blocks=page.body %} #}
+{# Or: {% include "includes/enhanced_body.html" with blocks=block.value.default_content %} #}
+
+        {% for block in blocks %}
             {% if block.block_type == 'h2' %}
                 <h2>{{ block.value }}</h2>
             {% elif block.block_type == 'h3' %}
@@ -22,6 +26,8 @@
                 </div>
             {% elif block.block_type == 'paragraph' %}
                 <p data-testid="page-body-paragraph">{{ block.value }}</p>
+            {% elif block.block_type == 'indented_paragraph' %}
+                <p class="indented-paragraph" data-testid="page-body-indented-paragraph">{{ block.value }}</p>
             {% elif block.block_type == 'snippet' %}
                 {{ block.value.text |safe }}
             {% elif block.block_type == 'image' %}
@@ -155,11 +161,19 @@
                     {% endfor %}
                 </div>
             {% elif block.block_type == 'accordian' %}
-                {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix=suffix|default:"DEFAULT-accordian" %}
+                {% if tile_index is not None %}
+                    {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
+                {% else %}
+                    {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix="-accordian" %}
+                {% endif %}
             {% elif block.block_type == 'button' %}
                 {% include "includes/styled_button.html" with block=block %}
             {% elif block.block_type == 'callout' %}
                 {% include "callout_block.html" with block=block %}
+            {% elif block.block_type == 'quick_access_tiles' %}
+                {% include "quick_access_tiles_block.html" with block=block %}
+            {% elif block.block_type == 'card_tiles' %}
+                {% include "includes/card_tiles.html" with block=block %}
             {% elif block.block_type == 'grid' %}
                 {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
             {% else %}
