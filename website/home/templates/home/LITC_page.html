@@ -60,7 +60,8 @@
             background: var(--color-primary);
             color: white;
             padding: 15px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 600;
             border-radius: 4px 4px 0 0;
             margin-bottom: 10px;
             display: block;
@@ -135,6 +136,10 @@
             .state-card.span-3 .state-content {
                 grid-template-columns: 1fr;
             }
+
+            .state-card .state-header {
+                font-size: 20px;
+            }
         }
     </style>
 {% endblock %}
@@ -146,7 +151,7 @@
             The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court.
             The Tax Court does not endorse or recommend any specific tax clinic or organization.
             LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.
-            Please check the <span style="color: var(--color-primary); text-decoration:underline;">Guidance for Low Income Tax Clinics</span> page for more information.
+            Please check the <a href="https://ustaxcourt.gov/petitioners-start/#START4" style="color: var(--color-primary); text-decoration:underline;">Guidance for Low Income Tax Clinics</a> page for more information.
         </h2>
         <div class="alphabet">
             {% for letter in "ACDFGHIKLMNOPSTUVW" %}
@@ -169,11 +174,11 @@
                         {% endif %}
                     {% endifchanged %}
                     <div class="state-card" id="{{ state_letter }}">
-                        <div class="state-header">{{ state.value.state }}</div>
+                        <div class="state-header" tabindex="0">{{ state.value.state }}</div>
                         <div class="state-content">
                             {% for city in state.value.cities %}
                                 {% for clinic in city.clinics %}
-                                    <div class="clinic-card">
+                                    <div class="clinic-card" tabindex="0">
                                         <div class="city">{{ city.name }}<span style="color:red;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
                                         <div class="clinic" style="margin-bottom: 10px;">
                                             <div class="clinic-name">{{ clinic.name }}<span style="color:red;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>

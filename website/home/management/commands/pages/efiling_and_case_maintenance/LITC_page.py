@@ -1159,8 +1159,8 @@ all_litc_clinics = [
                 "small_cases_only": False,
                 "clinics": [
                     {
-                        "name": "Empire Justice Center",
-                        "address": "Central Library of Rochester, 115 South Avenue, Rochester, NY 14604",
+                        "name": "Central Library of Rochester",
+                        "address": "115 South Avenue, Rochester, NY 14604",
                         "phone": "585-900-1024",
                         "website": "",
                         "small_case_procedures_only": False,
