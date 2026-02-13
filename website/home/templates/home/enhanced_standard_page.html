@@ -467,7 +467,11 @@
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
     <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
-        <h1 class="page-title" data-testid="page-title">{{ page.title }}</h1>
+        <h1 data-testid="page-title">
+            <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
+            <span class="page-title-breadcrumb" style="display: none;"></span>
+        </h1>
+        <hr />
         {% if page.navigation_ribbon %}
             <div class="blue-page-links-bar">
                 {% for link in page.navigation_ribbon.links.all %}
@@ -478,9 +482,43 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% include "includes/enhanced_body.html" %}
+        {% include "includes/enhanced_body.html" with blocks=page.body %}
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
     </div>
+
+    <script>
+        // Listen for card tiles breadcrumb
+        window.addEventListener('cardTilesBreadcrumbReady', function(event) {
+            const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
+            const titleStart = document.querySelector('.page-title-start');
+            if (breadcrumbSpan && event.detail.breadcrumb) {
+                breadcrumbSpan.textContent = ' / ' + event.detail.breadcrumb;
+                breadcrumbSpan.style.display = 'inline';
+                // Add underline to the start when breadcrumb is present
+                if (titleStart) {
+                    titleStart.style.textDecoration = 'underline';
+                    titleStart.style.cursor = 'pointer';
+
+                    // Make it clickable to remove the card query parameter
+                    // Remove any existing click listeners to avoid duplicates
+                    const newTitleStart = titleStart.cloneNode(true);
+                    titleStart.parentNode.replaceChild(newTitleStart, titleStart);
+
+                    newTitleStart.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('card');
+
+                        // Update URL without reloading
+                        window.history.pushState({}, '', url.toString());
+
+                        // Trigger popstate to clear card selection
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                    });
+                }
+            }
+        });
+    </script>
 {% endblock content %}

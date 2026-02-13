@@ -1,5 +1,6 @@
 from django.db import models
 from wagtail import blocks
+from wagtail.blocks import PageChooserBlock
 from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail.snippets.blocks import SnippetChooserBlock
@@ -8,6 +9,7 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageBlock
 from wagtail.search import index
 
+from home.blocks import SVGDocumentChooserBlock
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
@@ -19,6 +21,16 @@ from home.models.custom_blocks.common import custom_promote_panels
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
+
+
+table_value_types = [
+    ("text", blocks.RichTextBlock()),
+]
+
+
+class IndentStyle(models.TextChoices):
+    INDENTED = "indented"
+    UNINDENTED = "unindented"
 
 
 class StyledCalloutBlock(blocks.StructBlock):
@@ -50,6 +62,32 @@ class AccordianBlock(blocks.StructBlock):
     )
     description = blocks.StreamBlock(
         [
+            (
+                "heading",
+                blocks.StructBlock(
+                    [
+                        ("text", blocks.CharBlock()),
+                        (
+                            "level",
+                            blocks.ChoiceBlock(
+                                choices=[
+                                    ("h2", "Heading 2"),
+                                    ("h3", "Heading 3"),
+                                    ("h4", "Heading 4"),
+                                    ("h5", "Heading 5"),
+                                ]
+                            ),
+                        ),
+                        (
+                            "id",
+                            blocks.CharBlock(
+                                required=False,
+                                help_text="Optional ID for linking to this heading",
+                            ),
+                        ),
+                    ]
+                ),
+            ),
             ("prose", blocks.RichTextBlock()),
             ("callout", StyledCalloutBlock()),
         ],
@@ -60,6 +98,241 @@ class AccordianBlock(blocks.StructBlock):
     class Meta:
         label = "Accordion Block"
         template = "accordian_block.html"
+
+
+new_table_value_types = [
+    (
+        "components",
+        blocks.StreamBlock(
+            [
+                ("text", blocks.RichTextBlock()),
+                ("callout", StyledCalloutBlock()),
+                ("accordian", AccordianBlock()),
+                ("button", ButtonBlock()),
+            ]
+        ),
+    ),
+]
+
+
+class TableListBlock(blocks.StructBlock):
+    table = TypedTableBlock(new_table_value_types)
+    caption_location = blocks.ChoiceBlock(
+        choices=[("top", "Top"), ("bottom", "Bottom")],
+        default="top",
+    )
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("styled", "Styled Table"),
+            ("borderlessUnstyled", "Borderless Unstyled Table"),
+            ("unstyled", "Unstyled Table"),
+        ],
+        default="styled",
+    )
+
+    fixed = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to set table layout to fixed width.",
+    )
+
+    class Meta:
+        label = "Enhanced Table"
+        icon = "table"
+
+
+# Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
+_BASE_BLOCK_TYPES = [
+    (
+        "heading",
+        blocks.StructBlock(
+            [
+                ("text", blocks.CharBlock()),
+                (
+                    "level",
+                    blocks.ChoiceBlock(
+                        choices=[
+                            ("h2", "Heading 2"),
+                            ("h3", "Heading 3"),
+                            ("h4", "Heading 4"),
+                            ("h5", "Heading 5"),
+                        ]
+                    ),
+                ),
+                (
+                    "id",
+                    blocks.CharBlock(
+                        required=False,
+                        help_text="Optional ID for linking to this heading",
+                    ),
+                ),
+            ]
+        ),
+    ),
+    ("h2", blocks.CharBlock(label="Heading 2")),
+    ("h3", blocks.CharBlock(label="Heading 3")),
+    ("h4", blocks.CharBlock(label="Heading 4")),
+    ("paragraph", blocks.RichTextBlock()),
+    (
+        "indented_paragraph",
+        blocks.RichTextBlock(
+            label="Indented Paragraph",
+            help_text="Paragraph with left indentation for alignment with list items",
+        ),
+    ),
+    ("snippet", SnippetChooserBlock("home.CommonText")),
+    ("button", ButtonBlock()),
+    (
+        "hr",
+        blocks.BooleanBlock(
+            label="Horizontal Rule",
+            default=True,
+            help_text="Add 'Horizontal Rule'.",
+        ),
+    ),
+    (
+        "iframe",
+        blocks.StructBlock(
+            [
+                ("src", blocks.URLBlock(required=True)),
+                ("width", blocks.CharBlock(required=True)),
+                ("height", blocks.CharBlock(required=True)),
+                ("class", blocks.CharBlock(required=False)),
+                ("loading", blocks.CharBlock(required=False)),
+                ("data_delay", blocks.CharBlock(required=False)),
+                ("name", blocks.CharBlock(required=False)),
+                ("title", blocks.CharBlock(required=False)),
+            ]
+        ),
+    ),
+    (
+        "alert",
+        blocks.StructBlock(
+            [
+                (
+                    "alert_type",
+                    blocks.ChoiceBlock(
+                        choices=[
+                            ("info", "Info"),
+                            ("success", "Success"),
+                        ],
+                        default="info",
+                    ),
+                ),
+                ("content", blocks.RichTextBlock()),
+            ],
+        ),
+    ),
+    ("image", ImageBlock()),
+    ("photo_dedication", PhotoDedicationBlock()),
+    (
+        "table",
+        TypedTableBlock(
+            table_value_types,
+        ),
+    ),
+    (
+        "unstyled_table",
+        TypedTableBlock(table_value_types),
+    ),
+    (
+        "enhanced_table",
+        TableListBlock(),
+    ),
+    ("list", create_nested_list_block(max_depth=4)),
+    (
+        "links",
+        blocks.StructBlock(
+            [
+                (
+                    "class",
+                    blocks.ChoiceBlock(
+                        choices=[
+                            ("indented", IndentStyle.INDENTED),
+                            ("unindented", IndentStyle.UNINDENTED),
+                        ],
+                        default=IndentStyle.INDENTED,
+                        label="List style",
+                    ),
+                ),
+                (
+                    "links",
+                    blocks.ListBlock(link_obj.child_block, label="Add Entry"),
+                ),
+            ],
+            label="List of Links",
+        ),
+    ),
+    (
+        "questionanswers",
+        blocks.ListBlock(
+            blocks.StructBlock(
+                [
+                    ("question", blocks.CharBlock(required=False)),
+                    ("answer", blocks.RichTextBlock()),
+                    ("anchortag", blocks.CharBlock()),
+                ]
+            ),
+            label="Question and Answer",
+            help_text="Add a question and answer with anchor tag for linking",
+        ),
+    ),
+    ("columns", ColumnBlock()),
+    (
+        "embedded_video",
+        blocks.StructBlock(
+            [
+                ("title", blocks.CharBlock(required=False)),
+                ("description", blocks.RichTextBlock(required=False)),
+                ("video_url", blocks.URLBlock(required=False)),
+            ]
+        ),
+    ),
+    (
+        "card",
+        blocks.ListBlock(
+            blocks.StructBlock(
+                [
+                    (
+                        "icon",
+                        blocks.ChoiceBlock(
+                            choices=[
+                                (
+                                    icon.value,
+                                    icon.name.replace("_", " ").title(),
+                                )
+                                for icon in IconCategories
+                            ],
+                            required=True,
+                        ),
+                    ),
+                    ("title", blocks.CharBlock(required=True)),
+                    ("description", blocks.RichTextBlock(required=True)),
+                    (
+                        "color",
+                        blocks.ChoiceBlock(
+                            choices=[
+                                ("green", "Green"),
+                                ("yellow", "Yellow"),
+                            ],
+                            required=True,
+                        ),
+                    ),
+                ],
+                label="Card",
+            ),
+            label="Card Set",
+        ),
+    ),
+    (
+        "accordian",
+        AccordianBlock(),
+    ),
+    (
+        "callout",
+        StyledCalloutBlock(),
+    ),
+]
 
 
 class GridCellBlock(blocks.StructBlock):
@@ -132,54 +405,73 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
-table_value_types = [
-    ("text", blocks.RichTextBlock()),
-]
-
-new_table_value_types = [
-    (
-        "components",
-        blocks.StreamBlock(
-            [
-                ("text", blocks.RichTextBlock()),
-                ("callout", StyledCalloutBlock()),
-                ("accordian", AccordianBlock()),
-                ("button", ButtonBlock()),
-            ]
-        ),
-    ),
-]
+class AnchorPageBlock(blocks.StructBlock):
+    breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
+    body = blocks.StreamBlock(_BASE_BLOCK_TYPES, required=False)
 
 
-class IndentStyle(models.TextChoices):
-    INDENTED = "indented"
-    UNINDENTED = "unindented"
+class CardTileBlock(blocks.StructBlock):
+    """Individual card tile with icon and H2 header."""
 
-
-class TableListBlock(blocks.StructBlock):
-    table = TypedTableBlock(new_table_value_types)
-    caption_location = blocks.ChoiceBlock(
-        choices=[("top", "Top"), ("bottom", "Bottom")],
+    icon = SVGDocumentChooserBlock(required=True, help_text="Card Icon")
+    icon_direction = blocks.ChoiceBlock(
+        required=False,
+        help_text="Icon placement, e.g. Top, Right, Bottom, Left. Default is Top.",
+        choices=[
+            ("top", "Top"),
+            ("right", "Right"),
+            ("bottom", "Bottom"),
+            ("left", "Left"),
+        ],
         default="top",
     )
-    style = blocks.ChoiceBlock(
-        choices=[
-            ("styled", "Styled Table"),
-            ("borderlessUnstyled", "Borderless Unstyled Table"),
-            ("unstyled", "Unstyled Table"),
+    card_header = blocks.CharBlock(required=True, help_text="Displays the card title")
+    link = blocks.StreamBlock(
+        [
+            ("anchor_page", AnchorPageBlock()),
+            ("internal_page", PageChooserBlock()),
+            ("external_url", blocks.URLBlock()),
         ],
-        default="styled",
+        max_num=1,
+        min_num=1,
     )
 
-    fixed = blocks.BooleanBlock(
-        required=False,
-        default=False,
-        help_text="Check to set table layout to fixed width.",
+    card_hover = blocks.BooleanBlock(
+        required=False, help_text="Enable hover effect", default=True
     )
 
     class Meta:
-        label = "Enhanced Table"
-        icon = "table"
+        label = "Card Tile"
+        icon = "doc-full"
+        # Set label_format to show card_header in admin for easier identification
+        label_format = "Card Tile: {card_header}"
+
+
+class CardTilesBlock(blocks.StructBlock):
+    """
+    Card Tiles container - displays up to 4 card tiles in a responsive grid.
+    Desktop (>1025px): 4 buttons in a row
+    Tablet (768-1025px): 2x2 grid
+    Mobile (<768px): Vertical stack
+    """
+
+    tiles = blocks.ListBlock(
+        CardTileBlock(),
+        min_num=1,
+        max_num=4,
+        help_text="Add up to 4 card tiles. They will display responsively based on screen size.",
+    )
+
+    default_content = blocks.StreamBlock(
+        _BASE_BLOCK_TYPES,
+        required=False,
+        help_text="Default content to display when no card is selected",
+    )
+
+    class Meta:
+        label = "Card Tiles"
+        icon = "grip"
+        template = "includes/card_tiles.html"
 
 
 class EnhancedStandardPage(ModerationMixin, Page):
@@ -203,192 +495,10 @@ class EnhancedStandardPage(ModerationMixin, Page):
     )
 
     body = StreamField(
-        [
-            (
-                "heading",
-                blocks.StructBlock(
-                    [
-                        ("text", blocks.CharBlock()),
-                        (
-                            "level",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("h2", "Heading 2"),
-                                    ("h3", "Heading 3"),
-                                    ("h4", "Heading 4"),
-                                    ("h5", "Heading 5"),
-                                ]
-                            ),
-                        ),
-                        (
-                            "id",
-                            blocks.CharBlock(
-                                required=False,
-                                help_text="Optional ID for linking to this heading",
-                            ),
-                        ),
-                    ]
-                ),
-            ),
-            ("h2", blocks.CharBlock(label="Heading 2")),
-            ("h3", blocks.CharBlock(label="Heading 3")),
-            ("h4", blocks.CharBlock(label="Heading 4")),
-            ("paragraph", blocks.RichTextBlock()),
-            ("snippet", SnippetChooserBlock("home.CommonText")),
-            ("button", ButtonBlock()),
-            (
-                "hr",
-                blocks.BooleanBlock(
-                    label="Horizontal Rule",
-                    default=True,
-                    help_text="Add 'Horizontal Rule'.",
-                ),
-            ),
-            (
-                "iframe",
-                blocks.StructBlock(
-                    [
-                        ("src", blocks.URLBlock(required=True)),
-                        ("width", blocks.CharBlock(required=True)),
-                        ("height", blocks.CharBlock(required=True)),
-                        ("class", blocks.CharBlock(required=False)),
-                        ("loading", blocks.CharBlock(required=False)),
-                        ("data_delay", blocks.CharBlock(required=False)),
-                        ("name", blocks.CharBlock(required=False)),
-                        ("title", blocks.CharBlock(required=False)),
-                    ]
-                ),
-            ),
-            (
-                "alert",
-                blocks.StructBlock(
-                    [
-                        (
-                            "alert_type",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("info", "Info"),
-                                    ("success", "Success"),
-                                ],
-                                default="info",
-                            ),
-                        ),
-                        ("content", blocks.RichTextBlock()),
-                    ],
-                ),
-            ),
-            ("image", ImageBlock()),
-            ("photo_dedication", PhotoDedicationBlock()),
-            (
-                "table",
-                TypedTableBlock(table_value_types),
-            ),
-            (
-                "unstyled_table",
-                TypedTableBlock(table_value_types),
-            ),
-            (
-                "enhanced_table",
-                TableListBlock(),
-            ),
-            ("list", create_nested_list_block(max_depth=4)),
-            (
-                "links",
-                blocks.StructBlock(
-                    [
-                        (
-                            "class",
-                            blocks.ChoiceBlock(
-                                choices=[
-                                    ("indented", IndentStyle.INDENTED),
-                                    ("unindented", IndentStyle.UNINDENTED),
-                                ],
-                                default=IndentStyle.INDENTED,
-                                label="List style",
-                            ),
-                        ),
-                        (
-                            "links",
-                            blocks.ListBlock(link_obj.child_block, label="Add Entry"),
-                        ),
-                    ],
-                    label="List of Links",
-                ),
-            ),
-            (
-                "questionanswers",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("question", blocks.CharBlock(required=False)),
-                            ("answer", blocks.RichTextBlock()),
-                            ("anchortag", blocks.CharBlock()),
-                        ]
-                    ),
-                    label="Question and Answer",
-                    help_text="Add a question and answer with anchor tag for linking",
-                ),
-            ),
-            ("columns", ColumnBlock()),
-            (
-                "embedded_video",
-                blocks.StructBlock(
-                    [
-                        ("title", blocks.CharBlock(required=False)),
-                        ("description", blocks.RichTextBlock(required=False)),
-                        ("video_url", blocks.URLBlock(required=False)),
-                    ]
-                ),
-            ),
-            (
-                "card",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            (
-                                "icon",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        (
-                                            icon.value,
-                                            icon.name.replace("_", " ").title(),
-                                        )
-                                        for icon in IconCategories
-                                    ],
-                                    required=True,
-                                ),
-                            ),
-                            ("title", blocks.CharBlock(required=True)),
-                            ("description", blocks.RichTextBlock(required=True)),
-                            (
-                                "color",
-                                blocks.ChoiceBlock(
-                                    choices=[
-                                        ("green", "Green"),
-                                        ("yellow", "Yellow"),
-                                    ],
-                                    required=True,
-                                ),
-                            ),
-                        ],
-                        label="Card",
-                    ),
-                    label="Card Set",
-                ),
-            ),
-            (
-                "accordian",
-                AccordianBlock(),
-            ),
-            (
-                "callout",
-                StyledCalloutBlock(),
-            ),
-            (
-                "grid",
-                GridBlock(),
-            ),
-        ],
+        _BASE_BLOCK_TYPES + [("card_tiles", CardTilesBlock())],
+        block_counts={
+            "card_tiles": {"min_num": 0, "max_num": 1},
+        },
         blank=True,
     )
     content_panels = Page.content_panels + [
@@ -404,3 +514,20 @@ class EnhancedStandardPage(ModerationMixin, Page):
     search_fields = Page.search_fields + [
         index.SearchField("body"),
     ]
+
+    def clean(self):
+        super().clean()
+        # Validate that [internal page] links don't point to this page, as [anchor page] should be selected instead =)
+        for block in self.body:
+            if block.block_type == "card_tiles":
+                for i, tile in enumerate(block.value.get("tiles", [])):
+                    for link in tile.get("link", []):
+                        if link.block_type == "internal_page" and link.value:
+                            if link.value.pk == self.pk:
+                                from django.core.exceptions import ValidationError
+
+                                raise ValidationError(
+                                    {
+                                        "body": f"Card Tile {i + 1}: The link type [Internal Page] should not point to itself. Use [Anchor Page] instead."
+                                    }
+                                )
