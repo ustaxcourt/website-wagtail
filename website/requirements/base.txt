@@ -33,7 +33,7 @@ nodeenv==1.9.1
 openpyxl==3.1.5
 packaging==24.2
 pillow_heif==0.20.0
-pillow==11.0.0
+pillow==12.1.1
 platformdirs==4.3.6
 pluggy==1.5.0
 psycopg2-binary==2.9.10
