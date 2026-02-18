@@ -1971,14 +1971,6 @@ class LITCPageInitializer(PageInitializer):
             seo_title=title,
             search_description="Press Releases",
             low_income_taxpayer_clinics=low_income_taxpayer_clinic_data,
-            body=[
-                {
-                    "type": "alert_message",
-                    "value": {
-                        "message": "<strong>Addresses are trial locations only</strong> <br>Always address mail to: United States Tax Court, 400 Second Street NW, Washington, DC 20217-0002.",
-                    },
-                }
-            ],
             show_in_menus=True,
         )
 
