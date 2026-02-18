@@ -26,7 +26,7 @@
         .alphabet {
             display: flex;
             flex-wrap: wrap;
-            gap: 2.1rem;
+            gap: 1.9rem;
         }
 
         .alphabet-toggle {
@@ -130,6 +130,14 @@
             margin: 0;
         }
 
+        .active{
+            background-color: var(--color-secondary);
+            color: white;
+        }
+        .active>span>img{
+            filter: brightness(0) invert(1);
+        }
+
         @media (max-width: 1024px) {
             .clinic-list.grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -155,8 +163,12 @@
 
             .alphabet.open {
                 display: flex;
+                justify-content: space-evenly;
             }
 
+            .alphabet.open > a{
+                color: var(--color-secondary);
+            }
             .alphabet button {
                 padding: 0.4rem 0.75rem;
                 font-size: 0.9rem;
@@ -198,7 +210,7 @@
                 <span class="toggle-icon" aria-hidden="true"> <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20"></span>
             </button>
             <div class="alphabet" id="alphabet-nav">
-                {% for letter in "ACDFGHIKLMNOPSTUVW" %}
+                {% for letter in "ACDFGHIKLMNOPRSTUVW" %}
                     <a href="#{{ letter }}" class="alphabet-link"> {{ letter }} </a>
                 {% endfor %}
             </div>
