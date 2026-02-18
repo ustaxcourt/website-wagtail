@@ -11,9 +11,9 @@ from home.admin.moderation import ModerationTabbedInterface
 class LITCClinicBlock(blocks.StructBlock):
     name = blocks.CharBlock()
     address = blocks.CharBlock(required=False)
-    email = blocks.EmailBlock(required=False)
     phone = blocks.CharBlock(required=False)
     website = blocks.URLBlock(required=False)
+    email = blocks.EmailBlock(required=False)
     small_case_procedures_only = blocks.BooleanBlock(
         required=False, help_text="Indicates if the clinic handles only small cases"
     )

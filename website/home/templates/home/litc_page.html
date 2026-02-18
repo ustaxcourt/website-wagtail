@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
+{% load static %}
 {% block extra_css %}
     <style>
         .grid-container > *:not(.page-title) {
@@ -28,7 +29,22 @@
             gap: 2.1rem;
         }
 
-        .alphabet button {
+        .alphabet-toggle {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dcdee0;
+            background-color: #fff;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+       .alphabet .alphabet-link {
             padding: 0.5rem 1rem;
             border: 1px solid #dcdee0;
             background-color: #fff;
@@ -37,6 +53,8 @@
             cursor: pointer;
             border-radius: 4px;
             transition: background-color 0.2s ease;
+            text-decoration: none;
+            font-weight: 400;
         }
 
         .alphabet button:hover {
@@ -125,6 +143,24 @@
         }
 
         @media (max-width: 768px) {
+            .alphabet-toggle {
+                display: flex;
+            }
+
+            .alphabet {
+                display: none;
+                gap: 0.75rem;
+                padding-top: 12px;
+            }
+
+            .alphabet.open {
+                display: flex;
+            }
+
+            .alphabet button {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.9rem;
+            }
             .clinic-list.grid {
                 grid-template-columns: 1fr;
             }
@@ -140,6 +176,9 @@
             .state-card .state-header {
                 font-size: 20px;
             }
+            .clinic-card .city{
+                font-size: 18px;
+            }
         }
     </style>
 {% endblock %}
@@ -153,16 +192,20 @@
             LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.
             Please check the <a href="https://ustaxcourt.gov/petitioners-start/#START4" style="color: var(--color-primary); text-decoration:underline;">Guidance for Low Income Tax Clinics</a> page for more information.
         </h2>
-        <div class="alphabet">
-            {% for letter in "ACDFGHIKLMNOPSTUVW" %}
-                <a href="#{{ letter }}" class="alphabet-link">
-                    <button>{{ letter }}</button>
-                </a>
-            {% endfor %}
+        <div class="alphabet-wrapper">
+            <button class="alphabet-toggle" aria-expanded="false" aria-controls="alphabet-nav">
+                <span>Filter by Letter</span>
+                <span class="toggle-icon" aria-hidden="true"> <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20"></span>
+            </button>
+            <div class="alphabet" id="alphabet-nav">
+                {% for letter in "ACDFGHIKLMNOPSTUVW" %}
+                    <a href="#{{ letter }}" class="alphabet-link"> {{ letter }} </a>
+                {% endfor %}
+            </div>
         </div>
         <div class="notice">
-            <p><span style="color:red;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p>
-            <p><span style="color:red;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>
+            <p><span style="color:#DB0000;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p>
+            <p><span style="color:#DB0000;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>
         </div>
 
         <div class="clinic-list grid">
@@ -179,15 +222,17 @@
                             {% for city in state.cities %}
                                 {% for clinic in city.clinics %}
                                     <div class="clinic-card" tabindex="0">
-                                        <div class="city">{{ city.name }}<span style="color:red;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
+                                        <div class="city">{{ city.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
                                         <div class="clinic" style="margin-bottom: 10px;">
-                                            <div class="clinic-name">{{ clinic.name }}<span style="color:red;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
+                                            <div class="clinic-name">{{ clinic.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
                                             <div class="clinic-info">
-                                                <div class="address">
-                                                    <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank">
-                                                        {{ clinic.address }}
-                                                    </a>
-                                                </div>
+                                                {% if clinic.address %}
+                                                    <div class="address">
+                                                        <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank">
+                                                            {{ clinic.address }}
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
                                                 <div class="phone">{{ clinic.phone }}</div>
                                                 {% if clinic.website %}
                                                     <div class="website">
@@ -219,6 +264,27 @@
                 var span = Math.min(clinicCount, 3);
                 card.classList.add('span-' + span);
             });
+            var toggle = document.querySelector('.alphabet-toggle');
+            var alphabet = document.getElementById('alphabet-nav');
+
+            if (toggle && alphabet) {
+                toggle.addEventListener('click', function () {
+                    var isOpen = alphabet.classList.toggle('open');
+                    toggle.classList.toggle('active', isOpen);
+                    toggle.setAttribute('aria-expanded', isOpen);
+                });
+
+                // Close the dropdown after clicking a letter on mobile
+                alphabet.querySelectorAll('.alphabet-link').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        if (window.innerWidth <= 768) {
+                            alphabet.classList.remove('open');
+                            toggle.classList.remove('active');
+                            toggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
         });
     </script>
 {% endblock %}
