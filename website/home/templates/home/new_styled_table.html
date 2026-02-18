@@ -112,6 +112,10 @@
     margin: 0;
   }
 
+  .cell-content.hidden {
+    display: none;
+  }
+
   .cell-content:not(.hidden){
     display: flex;
     flex-direction: column;
@@ -222,6 +226,11 @@
                         {% for cell in row %}
                             {% if not forloop.first %}
                                 <div class="mobile-cell-item">
+                                    {% for col in block.value.table.columns %}
+                                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                                            <strong>{{ col.heading }}:</strong>
+                                        {% endif %}
+                                    {% endfor %}
 
                                     {% if cell.block.name == "components" %}
                                         {% for content in cell.value %}
