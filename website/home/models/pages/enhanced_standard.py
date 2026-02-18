@@ -124,9 +124,10 @@ class TableListBlock(blocks.StructBlock):
         label="Header",
         help_text="The title displayed above the table (rendered as H2).",
     )
-    caption = blocks.CharBlock(
+    caption = blocks.RichTextBlock(
         required=False,
         label="Caption",
+        features=["bold", "italic", "link"],
         help_text="A caption displayed above or below the table depending on Caption Location.",
     )
     caption_location = blocks.ChoiceBlock(

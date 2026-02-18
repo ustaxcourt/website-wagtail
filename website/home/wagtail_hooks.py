@@ -153,7 +153,7 @@ def hide_typed_table_caption():
     at the StructBlock level, rendered above the table widget.
     """
     return format_html(
-        "<style>.typed-table-block__caption {{ display: none !important; }}</style>"
+        "<style>.typed-table-block > [data-field-wrapper] {{ display: none !important; }}</style>"
     )
 
 
