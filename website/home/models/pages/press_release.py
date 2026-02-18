@@ -146,7 +146,7 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
                     "banner_type": banner.priority_level,  # "high" or "critical" for styling
                     "details": {
                         "description": "",  # Not used for banners
-                        "file": None,
+                        "file": banner.document,
                     },
                 }
                 grouped[year].append(release_entry)
