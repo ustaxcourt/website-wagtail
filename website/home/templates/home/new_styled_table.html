@@ -2,20 +2,33 @@
 
 <style>
 
-    .table-container .enhanced-table caption {
+    .table-header {
       font-size: 24px;
-      font-weight: 600;
-      line-height: 30px;
-      text-align: left;
+      font-weight: 700;
+      color: #1B1B1B;
+      margin-bottom: 15px;
     }
+
+    .table-caption {
+      font-size: 17px;
+      color: #1B1B1B;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .table-header {
+            font-size: 20px;
+        }
+        .table-caption {
+            font-size: 16px;
+        }
+    }
+
     .mobile {
         display: none;
     }
 
     @media (max-width: 768px) {
-        .table-container caption{
-            font-size: 16px;
-        }
         .enhanced-table:not(.mobile.enhanced-table) {
             display: none;
         }
@@ -130,16 +143,11 @@
     border: none;
   }
 </style>
+{% if block.value.header %}<h2 class="table-header">{{ block.value.header }}</h2>{% endif %}
+{% if block.value.caption and block.value.caption_location == "top" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
 <div class="table-container">
     <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}"
     {%if block.value.fixed%}style = "table-layout: fixed"{% else %}style = "table-layout:auto"{% endif %}>
-        <caption
-        {%if block.value.caption_location == "bottom" and block.value.table.caption %}
-          style="caption-side:bottom; margin-top:15px;"
-          {% elif block.value.caption_location == "top" and block.value.table.caption %}
-          style="caption-side:top; margin-bottom:15px;"
-        {% endif %}>
-        {{ block.value.table.caption }}</caption>
       <thead>
             <tr>
                 {% for col in block.value.table.columns %}<th scope="col" tabindex="0">{{ col.heading }}</th>{% endfor %}
@@ -172,13 +180,6 @@
         </tbody>
 </table>
 <table class="mobile enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
-    <caption
-    {%if block.value.caption_location == "bottom" and block.value.table.caption %}
-      style="caption-side:bottom; margin-top:15px;"
-      {% elif block.value.caption_location == "top" and block.value.table.caption %}
-      style="caption-side:top; margin-bottom:15px;"
-    {% endif %}>
-    {{ block.value.table.caption }}</caption>
 
     <thead>
         <tr>
@@ -246,6 +247,7 @@
     </tbody>
 </table>
 </div>
+{% if block.value.caption and block.value.caption_location == "bottom" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
 
 <script>
   function toggleCellContent(icon) {
