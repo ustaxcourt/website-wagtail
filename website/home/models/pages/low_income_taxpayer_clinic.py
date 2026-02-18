@@ -72,3 +72,43 @@ class LITCPage(ModerationMixin, Page):
         index.SearchField("body"),
         index.SearchField("low_income_taxpayer_clinics"),
     ]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+
+        data_list = []
+
+        for block in self.low_income_taxpayer_clinics:
+            if block.block_type == "state":
+                state_val = block.value
+
+                raw_cities = state_val.get("cities", [])
+                processed_cities = []
+
+                for city in raw_cities:
+                    raw_clinics = city.get("clinics", [])
+                    sorted_clinics = sorted(
+                        raw_clinics, key=lambda x: x["name"].lower()
+                    )
+
+                    city_data = {
+                        "name": city.get("name"),
+                        "small_cases_only": city.get("small_cases_only"),
+                        "note": city.get("note"),
+                        "clinics": sorted_clinics,
+                    }
+                    processed_cities.append(city_data)
+
+                sorted_cities = sorted(
+                    processed_cities, key=lambda x: x["name"].lower()
+                )
+
+                data_list.append(
+                    {"state": state_val.get("state"), "cities": sorted_cities}
+                )
+
+        sorted_data = sorted(data_list, key=lambda x: x["state"].lower())
+
+        context["sorted_clinics"] = sorted_data
+
+        return context

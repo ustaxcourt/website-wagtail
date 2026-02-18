@@ -1945,6 +1945,15 @@ class LITCPageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
+        for state in all_litc_clinics:
+            for city in state["cities"]:
+                city["clinics"] = sorted(city["clinics"], key=lambda x: x["name"])
+
+        for state in all_litc_clinics:
+            state["cities"] = sorted(state["cities"], key=lambda x: x["name"])
+
+        sorted_clinics = sorted(all_litc_clinics, key=lambda x: x["state"])
+
         low_income_taxpayer_clinic_data = [
             {
                 "type": "state",
@@ -1953,7 +1962,7 @@ class LITCPageInitializer(PageInitializer):
                     "cities": state_data["cities"],
                 },
             }
-            for state_data in all_litc_clinics
+            for state_data in sorted_clinics
         ]
 
         litc_page = LITCPage(

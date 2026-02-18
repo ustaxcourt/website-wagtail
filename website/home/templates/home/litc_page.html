@@ -166,17 +166,17 @@
         </div>
 
         <div class="clinic-list grid">
-            {% for state in page.low_income_taxpayer_clinics %}
-                {% with state_letter=state.value.state|slice:":1" %}
+            {% for state in sorted_clinics %}
+                {% with state_letter=state.state|slice:":1" %}
                     {% ifchanged state_letter %}
                         {% if not forloop.first %}
                             <div class="letter-break"></div>
                         {% endif %}
                     {% endifchanged %}
                     <div class="state-card" id="{{ state_letter }}">
-                        <div class="state-header" tabindex="0">{{ state.value.state }}</div>
+                        <div class="state-header" tabindex="0">{{ state.state }}</div>
                         <div class="state-content">
-                            {% for city in state.value.cities %}
+                            {% for city in state.cities %}
                                 {% for clinic in city.clinics %}
                                     <div class="clinic-card" tabindex="0">
                                         <div class="city">{{ city.name }}<span style="color:red;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
