@@ -142,6 +142,84 @@ class TableListBlock(blocks.StructBlock):
         icon = "table"
 
 
+class GridCellBlock(blocks.StructBlock):
+    header = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Optional header for this grid cell",
+    )
+    header_color = blocks.ChoiceBlock(
+        required=True,
+        default="#f1f9fc",
+        choices=[
+            ("#f1f9fc", "Default"),
+            ("#DEEAF0", "Blue-Gray"),
+        ],
+    )
+    caption = blocks.RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link"],
+        help_text="Optional caption for this grid cell (links allowed)",
+    )
+    italic_caption = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Make the caption text italic",
+    )
+    body = blocks.StreamBlock(
+        [
+            ("prose", blocks.RichTextBlock()),
+            ("callout", StyledCalloutBlock()),
+        ],
+        required=True,
+        help_text="Add text or special elements to the cell body",
+    )
+
+    class Meta:
+        label = "Grid Cell"
+        icon = "placeholder"
+
+
+class GridBlock(blocks.StructBlock):
+    columns = blocks.ChoiceBlock(
+        required=True,
+        default=2,
+        choices=[
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (4, 4),
+        ],
+        help_text="Max number of columns in the grid (1-4)",
+    )
+    width = blocks.ChoiceBlock(
+        required=True,
+        default="full",
+        choices=[
+            ("full", "Full Width"),
+        ],
+        help_text="Maximum width of the grid",
+    )
+    gridStyle = blocks.ChoiceBlock(
+        required=True,
+        default="styled",
+        choices=[
+            ("styled", "Styled"),
+            ("unstyled", "Unstyled"),
+        ],
+        help_text="Style of the grid",
+    )
+    cells = blocks.ListBlock(
+        GridCellBlock(),
+        help_text="Add cells to the grid. Cells will fill row-by-row based on the number of columns selected.",
+    )
+
+    class Meta:
+        label = "Grid"
+        icon = "grip"
+        template = "grid_block.html"
+
+
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
     (
@@ -333,77 +411,11 @@ _BASE_BLOCK_TYPES = [
         "callout",
         StyledCalloutBlock(),
     ),
+    (
+        "grid",
+        GridBlock(),
+    ),
 ]
-
-
-class GridCellBlock(blocks.StructBlock):
-    header = blocks.CharBlock(
-        required=False,
-        max_length=255,
-        help_text="Optional header for this grid cell",
-    )
-    caption = blocks.RichTextBlock(
-        required=False,
-        features=["bold", "italic", "link"],
-        help_text="Optional caption for this grid cell (links allowed)",
-    )
-    italic_caption = blocks.BooleanBlock(
-        required=False,
-        default=False,
-        help_text="Make the caption text italic",
-    )
-    body = blocks.StreamBlock(
-        [
-            ("prose", blocks.RichTextBlock()),
-            ("callout", StyledCalloutBlock()),
-        ],
-        required=True,
-        help_text="Add text or special elements to the cell body",
-    )
-
-    class Meta:
-        label = "Grid Cell"
-        icon = "placeholder"
-
-
-class GridBlock(blocks.StructBlock):
-    columns = blocks.ChoiceBlock(
-        required=True,
-        default=2,
-        choices=[
-            (1, 1),
-            (2, 2),
-            (3, 3),
-            (4, 4),
-        ],
-        help_text="Max number of columns in the grid (1-4)",
-    )
-    width = blocks.ChoiceBlock(
-        required=True,
-        default="full",
-        choices=[
-            ("full", "Full Width"),
-        ],
-        help_text="Maximum width of the grid",
-    )
-    gridStyle = blocks.ChoiceBlock(
-        required=True,
-        default="styled",
-        choices=[
-            ("styled", "Styled"),
-            ("unstyled", "Unstyled"),
-        ],
-        help_text="Style of the grid",
-    )
-    cells = blocks.ListBlock(
-        GridCellBlock(),
-        help_text="Add cells to the grid. Cells will fill row-by-row based on the number of columns selected.",
-    )
-
-    class Meta:
-        label = "Grid"
-        icon = "grip"
-        template = "grid_block.html"
 
 
 class AnchorPageBlock(blocks.StructBlock):
