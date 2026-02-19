@@ -70,6 +70,8 @@
 
         .state-card {
             min-width: 0;
+            display: flex;
+            flex-direction: column;
         }
         .state-card.span-2 { grid-column: span 2; }
         .state-card.span-3 { grid-column: span 3; }
@@ -90,6 +92,7 @@
             grid-template-columns: 1fr;
             row-gap: 10px;
             column-gap: 24px;
+            flex: 1;
         }
         .state-card.span-2 .state-content {
             grid-template-columns: repeat(2, 1fr);
