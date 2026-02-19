@@ -112,7 +112,8 @@ new_table_value_types = [
                 ("callout", StyledCalloutBlock()),
                 ("accordian", AccordianBlock()),
                 ("button", ButtonBlock()),
-            ]
+            ],
+            required=False,
         ),
     ),
 ]
