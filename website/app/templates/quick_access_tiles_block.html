@@ -1,0 +1,67 @@
+{% load wagtailcore_tags %}
+
+<style>
+  .quick-access-tiles-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .quick-access-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    row-gap: 20px;
+    column-gap: 16px;
+    margin-top: 30px;
+    align-items: stretch;
+  }
+
+  /* Desktop: 3 columns max */
+  @media (min-width: 993px) {
+    .quick-access-tiles-grid[data-max-columns="1"] {
+      grid-template-columns: 1fr;
+    }
+
+    .quick-access-tiles-grid[data-max-columns="2"] {
+      grid-template-columns: repeat(auto-fit, minmax(calc(50% - 8px), 1fr));
+    }
+
+    .quick-access-tiles-grid[data-max-columns="3"] {
+      grid-template-columns: repeat(auto-fit, minmax(calc(33.333% - 11px), 1fr));
+    }
+
+    .quick-access-tiles-grid[data-max-columns="4"] {
+      grid-template-columns: repeat(auto-fit, minmax(calc(25% - 12px), 1fr));
+    }
+  }
+
+  /* Tablet: ≤992px - 2 columns */
+  @media (max-width: 992px) {
+    .quick-access-tiles-grid {
+      grid-template-columns: repeat(2, 1fr);
+      margin: 20px 0px;
+    }
+  }
+
+  /* Mobile: ≤768px - 1 column */
+  @media (max-width: 768px) {
+    .quick-access-tiles-grid {
+      grid-template-columns: 1fr;
+      margin: 16px 0px;
+      gap: 12px;
+    }
+  }
+
+  /* Ensure tiles stretch to fill row height */
+  .quick-access-tiles-grid > [role="listitem"] {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+
+<div class="quick-access-tiles-container">
+  <div class="quick-access-tiles-grid" data-max-columns="3" role="list" aria-label="Quick access tiles">
+    {% for tile in block.value.tiles %}
+      {% include "quick_access_tile_block.html" with value=tile icon_position=block.value.icon_position tiles_hover_enabled=block.value.tiles_hover_enabled %}
+    {% endfor %}
+  </div>
+</div>
