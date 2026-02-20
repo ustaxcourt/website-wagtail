@@ -8,6 +8,7 @@ functionality for all snippet models.
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from home.models.snippets.common import CommonText
 from home.models.snippets.judges import JudgeProfile, JudgeCollection, JudgeRole
@@ -124,6 +125,71 @@ class TestSnippetDraftModerationCore(TestCase):
         role.save()
 
         self.assertTrue(role.live)
+
+    def test_saving_judge_profile_with_new_pk_does_not_remove_profile_with_old_pk_from_managed_collection(
+        self,
+    ):
+        judge = JudgeProfile.objects.create(
+            first_name="Jane", last_name="Smith", title="Judge", live=False
+        )
+
+        judge.save()
+
+        judgeCollection = JudgeCollection.objects.get(name=judge.title + "s")
+        self.assertTrue(judgeCollection.ordered_judges.filter(judge=judge).exists())
+        originalJudgePk = judge.pk
+
+        judge.pk = -1
+        judge.save()
+
+        self.assertTrue(
+            judgeCollection.ordered_judges.filter(pk=originalJudgePk).exists()
+        )
+        self.assertNotEqual(originalJudgePk, -1)
+
+    def test_changing_judge_title_moves_judge_profile_to_proper_managed_collection(
+        self,
+    ):
+        oldTitle = "Judge"
+        newTitle = "Senior Judge"
+
+        judge = JudgeProfile.objects.create(
+            first_name="Jane", last_name="Smith", title=oldTitle, live=False
+        )
+        judge.save()
+
+        originalJudgeCollection = JudgeCollection.objects.get(name=judge.title + "s")
+        self.assertTrue(
+            originalJudgeCollection.ordered_judges.filter(judge=judge).exists()
+        )
+
+        judge.title = newTitle
+        judge.save()
+
+        newJudgeCollection = JudgeCollection.objects.get(name=judge.title + "s")
+        self.assertTrue(newJudgeCollection.ordered_judges.filter(judge=judge).exists())
+        self.assertFalse(
+            originalJudgeCollection.ordered_judges.filter(judge=judge).exists()
+        )
+
+    def test_deleting_judge_with_restricted_judge_type_throws_error(self):
+        # restricted_roles = ["Chief Judge", "Chief Special Trial Judge"]
+
+        # for roleBeingTested in restricted_roles:
+        judge = JudgeProfile.objects.create(
+            first_name="Jane", last_name="Smith", title="Judge", live=False
+        )
+        judge.save()
+
+        role = JudgeRole.objects.create(
+            role_name="Chief Judge", judge=judge, live=False
+        )
+        role.save()
+
+        judgeCollection = JudgeCollection.objects.get(name=judge.title + "s")
+        self.assertTrue(judgeCollection.ordered_judges.filter(judge=judge).exists())
+
+        self.assertRaises(ValidationError, role.delete)
 
     def test_navigation_ribbon_draft_functionality(self):
         """Test NavigationRibbon draft functionality."""
