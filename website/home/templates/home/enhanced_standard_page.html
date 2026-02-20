@@ -490,6 +490,18 @@
 
     <script>
         // Listen for card tiles breadcrumb
+        function resetCardTileAndBreadcrumb() {
+            event.preventDefault();
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('card');
+
+                        // Update URL without reloading
+                        window.history.pushState({}, '', url.toString());
+
+                        // Trigger popstate to clear card selection
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+
         window.addEventListener('cardTilesBreadcrumbReady', function(event) {
             const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
             const titleStart = document.querySelector('.page-title-start');
@@ -507,15 +519,13 @@
                     titleStart.parentNode.replaceChild(newTitleStart, titleStart);
 
                     newTitleStart.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('card');
+                        resetCardTileAndBreadcrumb();
+                    });
 
-                        // Update URL without reloading
-                        window.history.pushState({}, '', url.toString());
-
-                        // Trigger popstate to clear card selection
-                        window.dispatchEvent(new PopStateEvent('popstate'));
+                    newTitleStart.addEventListener('keypress', function(event) {
+                        if (event.key === "Enter") {
+                            resetCardTileAndBreadcrumb();
+                        }
                     });
                 }
             }
