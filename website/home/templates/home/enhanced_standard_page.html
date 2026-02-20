@@ -489,17 +489,17 @@
     </div>
 
     <script>
-        // Listen for card tiles breadcrumb
-        function resetCardTileAndBreadcrumb() {
+        // Actions to reset the breadcrumb at the top of the page
+        function resetBreadcrumb() {
             event.preventDefault();
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('card');
+            const url = new URL(window.location.href);
+            url.searchParams.delete('card');
 
-                        // Update URL without reloading
-                        window.history.pushState({}, '', url.toString());
+            // Update URL without reloading
+            window.history.pushState({}, '', url.toString());
 
-                        // Trigger popstate to clear card selection
-                        window.dispatchEvent(new PopStateEvent('popstate'));
+            // Trigger popstate to clear card selection
+            window.dispatchEvent(new PopStateEvent('popstate'));
         }
 
         window.addEventListener('cardTilesBreadcrumbReady', function(event) {
@@ -519,12 +519,12 @@
                     titleStart.parentNode.replaceChild(newTitleStart, titleStart);
 
                     newTitleStart.addEventListener('click', function(event) {
-                        resetCardTileAndBreadcrumb();
+                        resetBreadcrumb();
                     });
 
                     newTitleStart.addEventListener('keypress', function(event) {
                         if (event.key === "Enter") {
-                            resetCardTileAndBreadcrumb();
+                            resetBreadcrumb();
                         }
                     });
                 }
