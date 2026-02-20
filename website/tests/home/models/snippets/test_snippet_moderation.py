@@ -6,71 +6,12 @@ functionality for all snippet models that inherit from WorkflowMixin,
 DraftStateMixin, and RevisionMixin.
 """
 
-import pytest
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.test import TestCase
-from wagtail.models import Workflow
-from wagtail.images.tests.utils import Image, get_test_image_file
 
 from home.models.snippets.common import CommonText
 from home.models.snippets.judges import JudgeProfile, JudgeCollection, JudgeRole
 from home.models.snippets.navigation import NavigationRibbon, NavigationMenu
-
-
-@pytest.fixture
-def admin_user():
-    """Create an admin user for testing."""
-    return User.objects.create_user(
-        username="admin",
-        email="admin@example.com",
-        password="testpass123",
-        is_staff=True,
-        is_superuser=True,
-    )
-
-
-@pytest.fixture
-def editor_user():
-    """Create an editor user for testing."""
-    editor_group, created = Group.objects.get_or_create(name="Editors")
-    user = User.objects.create_user(
-        username="editor",
-        email="editor@example.com",
-        password="testpass123",
-        is_staff=True,
-    )
-    user.groups.add(editor_group)
-    return user
-
-
-@pytest.fixture
-def moderator_user():
-    """Create a moderator user for testing."""
-    moderator_group, created = Group.objects.get_or_create(name="Moderators")
-    user = User.objects.create_user(
-        username="moderator",
-        email="moderator@example.com",
-        password="testpass123",
-        is_staff=True,
-    )
-    user.groups.add(moderator_group)
-    return user
-
-
-@pytest.fixture
-def workflow():
-    """Create a basic workflow for testing."""
-    workflow = Workflow.objects.create(name="Test Workflow")
-    return workflow
-
-
-@pytest.fixture
-def test_image():
-    """Create a test image for models that require images."""
-    return Image.objects.create(
-        title="Test image",
-        file=get_test_image_file(),
-    )
 
 
 class TestCommonTextModerationWorkflow(TestCase):

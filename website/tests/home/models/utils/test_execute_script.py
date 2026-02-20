@@ -202,12 +202,8 @@ class TestExecuteScriptIntegration:
             assert script1 is not None
 
         # Second attempt should skip creation
-        if not ExecuteScript.command_exists(command_name):
-            script2 = ExecuteScript.create_script(command_name)
-        else:
-            script2 = None
+        assert ExecuteScript.command_exists(command_name) is True
 
-        assert script2 is None
         assert ExecuteScript.objects.filter(command_name=command_name).count() == 1
 
     @pytest.mark.django_db
