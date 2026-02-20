@@ -1,13 +1,27 @@
 from django.db import models
 from django.forms import ValidationError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
-from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
+from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
+from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.admin.filters import WagtailFilterSet
+
+
+class BannerQuerySet(models.QuerySet):
+    def live(self):
+        """
+        Returns items that are 'live', have a go_live_at
+        date in the past, and have not expired.
+        """
+        now = timezone.now()
+        return self.filter(live=True, go_live_at__lte=now).filter(
+            # Also check that it hasn't expired
+            models.Q(expire_at__isnull=True) | models.Q(expire_at__gt=now)
+        )
 
 
 class Banner(
@@ -56,7 +70,7 @@ class Banner(
     )
 
     _revisions = GenericRelation("wagtailcore.Revision", related_query_name="banner")
-    objects = PageQuerySet.as_manager()
+    objects = BannerQuerySet.as_manager()
 
     content_panels = [
         FieldPanel("banner_title"),
