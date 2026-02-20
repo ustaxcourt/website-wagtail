@@ -151,6 +151,9 @@
   .mobile.enhanced-table.unstyled-borderless .mobile-cell-item{
     border: none;
   }
+  td p {
+    margin: 0;
+  }
 </style>
 {% if block.value.header %}<h2 class="table-header">{{ block.value.header }}</h2>{% endif %}
 {% if block.value.caption and block.value.caption_location == "top" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
@@ -225,29 +228,35 @@
                     <div class="cell-content hidden">
                         {% for cell in row %}
                             {% if not forloop.first %}
-                                <div class="mobile-cell-item">
-                                    {% for col in block.value.table.columns %}
-                                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
-                                            <strong>{{ col.heading }}:</strong>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    {% if cell.block.name == "components" %}
-                                        {% for content in cell.value %}
-                                            {% if content.block_type == "accordian" %}
-                                                {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
-                                            {% elif content.block_type == "callout" %}
-                                                {% include "callout_block.html" with block=content %}
-                                            {% elif content.block_type == "button" %}
-                                                {% include "includes/styled_button.html" with block=content %}
-                                            {% else %}
-                                                {{ content }}
+                                {% for col in block.value.table.columns %}
+                                    {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                                        {% if cell.block.name == "components" %}
+                                            {% if cell.value %}
+                                                <div class="mobile-cell-item">
+                                                    {% if col.heading %}<strong>{{ col.heading }}:</strong>{% endif %}
+                                                    {% for content in cell.value %}
+                                                        {% if content.block_type == "accordian" %}
+                                                            {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                                        {% elif content.block_type == "callout" %}
+                                                            {% include "callout_block.html" with block=content %}
+                                                        {% elif content.block_type == "button" %}
+                                                            {% include "includes/styled_button.html" with block=content %}
+                                                        {% else %}
+                                                            {{ content }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        {{ cell }}
+                                        {% else %}
+                                            {% if cell|striptags|cut:" " %}
+                                                <div class="mobile-cell-item">
+                                                    {% if col.heading %}<strong>{{ col.heading }}:</strong>{% endif %}
+                                                    {{ cell }}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endif %}
-                                </div>
+                                {% endfor %}
                             {% endif %}
                         {% endfor %}
                     </div>
