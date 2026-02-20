@@ -74,6 +74,13 @@
     .table-container .enhanced-table.unstyled-borderless td {
       text-align: left;
     }
+
+    @media (min-width: 769px) {
+      .table-container .enhanced-table:not(.mobile) th,
+      .table-container .enhanced-table:not(.mobile) td {
+        text-align: center !important;
+      }
+    }
     .plus-icon {
     background-color: var(--color-navy);
     width: 24px;
