@@ -162,9 +162,9 @@
     margin: 0;
   }
 </style>
-{% if block.value.header %}<h2 class="table-header">{{ block.value.header }}</h2>{% endif %}
-{% if block.value.caption and block.value.caption_location == "top" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
 <div class="table-container">
+    {% if block.value.header %}<h2 class="table-header">{{ block.value.header }}</h2>{% endif %}
+    {% if block.value.caption and block.value.caption_location == "top" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
     <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}"
     {%if block.value.fixed%}style = "table-layout: fixed"{% else %}style = "table-layout:auto"{% endif %}>
       <thead>
