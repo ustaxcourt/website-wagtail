@@ -18,7 +18,7 @@ class BannerQuerySet(models.QuerySet):
         date in the past, and have not expired.
         """
         now = timezone.now()
-        return self.filter(live=True, go_live_at__lte=now).filter(
+        return self.filter(live=True, banner_start_date__lte=now).filter(
             # Also check that it hasn't expired
             models.Q(expire_at__isnull=True) | models.Q(expire_at__gt=now)
         )
