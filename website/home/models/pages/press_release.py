@@ -60,13 +60,13 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     def archive_view(self, request):
         grouped = self.group_press_releases_by_year
         all_years = list(grouped.keys())
-        archived_years = all_years[5:]  # After first 5 years
+        archived_years = all_years[4:]  # After first 4 years
         archived_releases = {year: grouped[year] for year in archived_years}
 
         context = self.get_context(request)
         context["press_releases_by_year"] = archived_releases
         context["is_archive"] = True
-        self.title = "Press Release Archive"
+        self.title = self.title + " Archive"
         return TemplateResponse(request, self.template, context)
 
     @property
@@ -161,8 +161,8 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
         context = super().get_context(request)
         grouped = self.group_press_releases_by_year
         all_years = list(grouped.keys())
-        first_five_years = all_years[:5]
-        main_page_releases = {year: grouped[year] for year in first_five_years}
+        first_four_years = all_years[:4]
+        main_page_releases = {year: grouped[year] for year in first_four_years}
         context["press_releases_by_year"] = main_page_releases
         context["is_archive"] = False
         return context
