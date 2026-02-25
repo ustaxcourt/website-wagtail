@@ -277,7 +277,7 @@ all_litc_clinics = [
                     {
                         "name": "Denver Asset Building Coalition",
                         "address": "2475 W. 26th Ave., Denver, CO 80211",
-                        "email": "intake@denver@abc.org",
+                        "email": "intake@denverabc.org",
                         "phone": "",
                         "website": "",
                         "small_case_procedures_only": True,
