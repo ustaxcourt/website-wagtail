@@ -42,7 +42,7 @@ REDIRECTS = [
     },
     {
         "old_path": "/press_release_archives.html",
-        "new_path": "/press-releases/archives",
+        "new_path": "/news-and-announcements/archives",
         "is_permanent": True,
     },
     {

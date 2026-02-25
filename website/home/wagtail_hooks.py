@@ -162,7 +162,7 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationmenu": ["/"],
         "navigationribbon": ["/"],
         "simplecard": ["/"],
-        "newsitem": ["/home/press-releases/"],
+        "newsitem": ["/home/news-and-announcements/"],
     }
 
     # Purge CloudFront cache for all pages using wildcard when navigation menu changes

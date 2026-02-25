@@ -168,4 +168,4 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
         return context
 
     class Meta:
-        verbose_name = "Press Release Page"
+        verbose_name = "News and Announcements Page"
