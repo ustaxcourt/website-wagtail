@@ -145,6 +145,18 @@ def global_admin_js():
     )
 
 
+@hooks.register("insert_global_admin_css")
+def hide_typed_table_caption():
+    """
+    Hide the built-in caption input from the TypedTableBlock admin editor.
+    The Enhanced Table component provides its own Header and Caption fields
+    at the StructBlock level, rendered above the table widget.
+    """
+    return format_html(
+        "<style>.typed-table-block > [data-field-wrapper] {{ display: none !important; }}</style>"
+    )
+
+
 @hooks.register("after_edit_snippet")
 def purge_cache_for_snippet_related_pages(request, instance):
     """
