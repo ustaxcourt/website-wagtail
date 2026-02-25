@@ -71,9 +71,16 @@ class Command(BaseCommand):
         # 1. Dynamically get emails of users in the "Moderators" group
         try:
             moderator_group = Group.objects.get(name="Moderators")
-            moderator_emails: Set[str] = {
-                u.email for u in moderator_group.user_set.all() if u.email
-            }
+            moderator_users = list(moderator_group.user_set.all())
+            self.stdout.write(
+                f"Found {len(moderator_users)} user(s) in 'Moderators' group."
+            )
+            for u in moderator_users:
+                email_status = u.email if u.email else "(no email set)"
+                self.stdout.write(
+                    f"  - {u.username} | {u.first_name} {u.last_name} | {email_status}"
+                )
+            moderator_emails: Set[str] = {u.email for u in moderator_users if u.email}
         except Group.DoesNotExist:
             self.stdout.write(self.style.WARNING('"Moderators" group not found.'))
             return
@@ -85,7 +92,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("No recipient emails found. Aborting."))
             return
 
-        self.stdout.write(f"Found {len(recipient_emails)} recipient(s).")
+        self.stdout.write(
+            f"Found {len(recipient_emails)} recipient email(s): {recipient_emails}"
+        )
 
         # You can get this from the Wagtail Site model for more dynamic sites
         domain_name = os.getenv("DOMAIN_NAME")
@@ -224,6 +233,14 @@ class Command(BaseCommand):
             )
             return
 
+        self.stdout.write(f"Found {len(items)} item(s) awaiting moderation:")
+        for item in items:
+            self.stdout.write(
+                f'  - "{item["title"]}" | Status: {item["status"]} | '
+                f"Review by: {item['review_by'] or 'N/A'} | "
+                f"Overdue: {item['is_overdue']}"
+            )
+
         # 3) Render
         context = {
             "items": items,  # your template iterates 'items'
@@ -232,7 +249,12 @@ class Command(BaseCommand):
         email_html = loader.get_template("mail/moderation_digest.html").render(context)
 
         # 4) Send via SES
-        client = boto3.client("ses", region_name=os.getenv("AWS_REGION", "us-east-1"))
+        ses_region = os.getenv("AWS_REGION", "us-east-1")
+        source_email = f"noreply@{domain_name}"
+        self.stdout.write(
+            f"Sending email via SES (region: {ses_region}, from: {source_email}, to: {recipient_emails})"
+        )
+        client = boto3.client("ses", region_name=ses_region)
         try:
             response = client.send_email(
                 Destination={"ToAddresses": recipient_emails},
