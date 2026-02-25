@@ -363,8 +363,10 @@ class TableTestPageInitializer(PageInitializer):
                             ]
                         },
                     ],
-                    "caption": "Feature Overview with All Component Types",
+                    "caption": "",
                 },
+                "header": "Feature Overview with All Component Types",
+                "caption": "This table demonstrates all supported component types within table cells.",
                 "caption_location": "top",
                 "style": "styled",
             },
