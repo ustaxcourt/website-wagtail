@@ -2,20 +2,33 @@
 
 <style>
 
-    .table-container .enhanced-table caption {
+    .table-header {
       font-size: 24px;
-      font-weight: 600;
-      line-height: 30px;
-      text-align: left;
+      font-weight: 700;
+      color: #1B1B1B;
+      margin-bottom: 15px;
     }
+
+    .table-caption {
+      font-size: 17px;
+      color: #1B1B1B;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .table-header {
+            font-size: 20px;
+        }
+        .table-caption {
+            font-size: 16px;
+        }
+    }
+
     .mobile {
         display: none;
     }
 
     @media (max-width: 768px) {
-        .table-container caption{
-            font-size: 16px;
-        }
         .enhanced-table:not(.mobile.enhanced-table) {
             display: none;
         }
@@ -61,6 +74,13 @@
     .table-container .enhanced-table.unstyled-borderless td {
       text-align: left;
     }
+
+    @media (min-width: 769px) {
+      .table-container .enhanced-table:not(.mobile) th,
+      .table-container .enhanced-table:not(.mobile) td {
+        vertical-align: middle !important;
+      }
+    }
     .plus-icon {
     background-color: var(--color-navy);
     width: 24px;
@@ -84,14 +104,23 @@
   }
   .cell-header{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     margin-bottom: 15px;
     padding: 15px 15px 0 15px;
   }
+  .cell-header-content {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
   .cell-header> p{
     font-size: 16px;
     margin: 0;
+  }
+
+  .cell-content.hidden {
+    display: none;
   }
 
   .cell-content:not(.hidden){
@@ -129,17 +158,15 @@
   .mobile.enhanced-table.unstyled-borderless .mobile-cell-item{
     border: none;
   }
+  td p {
+    margin: 0;
+  }
 </style>
 <div class="table-container">
+    {% if block.value.header %}<h2 class="table-header">{{ block.value.header }}</h2>{% endif %}
+    {% if block.value.caption and block.value.caption_location == "top" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
     <table class="enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}"
     {%if block.value.fixed%}style = "table-layout: fixed"{% else %}style = "table-layout:auto"{% endif %}>
-        <caption
-        {%if block.value.caption_location == "bottom" and block.value.table.caption %}
-          style="caption-side:bottom; margin-top:15px;"
-          {% elif block.value.caption_location == "top" and block.value.table.caption %}
-          style="caption-side:top; margin-bottom:15px;"
-        {% endif %}>
-        {{ block.value.table.caption }}</caption>
       <thead>
             <tr>
                 {% for col in block.value.table.columns %}<th scope="col" tabindex="0">{{ col.heading }}</th>{% endfor %}
@@ -172,13 +199,6 @@
         </tbody>
 </table>
 <table class="mobile enhanced-table {%if block.value.style != "styled"%}unstyled{% endif %} {% if block.value.style == "borderlessUnstyled"%}unstyled-borderless{% endif %}">
-    <caption
-    {%if block.value.caption_location == "bottom" and block.value.table.caption %}
-      style="caption-side:bottom; margin-top:15px;"
-      {% elif block.value.caption_location == "top" and block.value.table.caption %}
-      style="caption-side:top; margin-bottom:15px;"
-    {% endif %}>
-    {{ block.value.table.caption }}</caption>
 
     <thead>
         <tr>
@@ -191,52 +211,59 @@
                 <td>
                     <div class="cell-header">
                         <svg onclick="toggleCellContent(this)" class="plus-icon"></svg>
-                        {% with cell=row|first %}
-                            {% if cell.block.name == "components" %}
-                                {% for content in cell.value %}
-                                    {% if content.block_type == "accordian" %}
-                                        {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
-                                    {% elif content.block_type == "callout" %}
-                                        {% include "callout_block.html" with block=content %}
-                                    {% elif content.block_type == "button" %}
-                                        {% include "includes/styled_button.html" with block=content %}
-                                    {% else %}
-                                        {{ content }}
-                                    {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                {{ cell }}
-                            {% endif %}
-                        {% endwith %}
+                        <div class="cell-header-content">
+                            {% with cell=row|first %}
+                                {% if cell.block.name == "components" %}
+                                    {% for content in cell.value %}
+                                        {% if content.block_type == "accordian" %}
+                                            {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                        {% elif content.block_type == "callout" %}
+                                            {% include "callout_block.html" with block=content %}
+                                        {% elif content.block_type == "button" %}
+                                            {% include "includes/styled_button.html" with block=content %}
+                                        {% else %}
+                                            {{ content }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {{ cell }}
+                                {% endif %}
+                            {% endwith %}
+                        </div>
                     </div>
 
                     <div class="cell-content hidden">
                         {% for cell in row %}
                             {% if not forloop.first %}
-                                <div class="mobile-cell-item">
-
-                                    {% for col in block.value.table.columns %}
-                                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
-                                            <strong>{{ col.heading }}:</strong>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    {% if cell.block.name == "components" %}
-                                        {% for content in cell.value %}
-                                            {% if content.block_type == "accordian" %}
-                                                {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
-                                            {% elif content.block_type == "callout" %}
-                                                {% include "callout_block.html" with block=content %}
-                                            {% elif content.block_type == "button" %}
-                                                {% include "includes/styled_button.html" with block=content %}
-                                            {% else %}
-                                                {{ content }}
+                                {% for col in block.value.table.columns %}
+                                    {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                                        {% if cell.block.name == "components" %}
+                                            {% if cell.value %}
+                                                <div class="mobile-cell-item">
+                                                    {% if col.heading %}<strong>{{ col.heading }}:</strong>{% endif %}
+                                                    {% for content in cell.value %}
+                                                        {% if content.block_type == "accordian" %}
+                                                            {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                                        {% elif content.block_type == "callout" %}
+                                                            {% include "callout_block.html" with block=content %}
+                                                        {% elif content.block_type == "button" %}
+                                                            {% include "includes/styled_button.html" with block=content %}
+                                                        {% else %}
+                                                            {{ content }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        {{ cell }}
+                                        {% else %}
+                                            {% if cell|striptags|cut:" " %}
+                                                <div class="mobile-cell-item">
+                                                    {% if col.heading %}<strong>{{ col.heading }}:</strong>{% endif %}
+                                                    {{ cell }}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endif %}
-                                </div>
+                                {% endfor %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -246,6 +273,7 @@
     </tbody>
 </table>
 </div>
+{% if block.value.caption and block.value.caption_location == "bottom" %}<p class="table-caption">{{ block.value.caption }}</p>{% endif %}
 
 <script>
   function toggleCellContent(icon) {

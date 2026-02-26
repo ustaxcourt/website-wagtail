@@ -15,12 +15,14 @@
             background-color: #f5f5bbff;
             font-weight: bold;
             padding: 0 0.1rem;
+            color:black;
         }
 
         .category-critical {
             background-color: #FF6863;
             font-weight: bold;
             padding: 0 0.1rem;
+            color: black;
         }
     </style>
 {% endblock %}
@@ -86,7 +88,7 @@
                             -
                             {% if release.is_banner %}
                               {# For banners: highlighted label, bolded title, then body text (not bolded) #}
-                              <span class="category-{{ release.banner_type|lower }}">{{ release.banner_label }}</span>
+                              <span class="usa-tag category-{{ release.banner_type|lower }}">{{ release.banner_label }}</span>
                               <strong>{{ release.banner_title }}</strong> {{ release.banner_body|striptags }}
                             {% else %}
                               {# For regular news items, show category if present #}

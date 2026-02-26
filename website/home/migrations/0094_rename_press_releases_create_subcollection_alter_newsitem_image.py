@@ -174,6 +174,8 @@ def delete_subcollection_under_parent(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    atomic = False
+
     replaces = [
         ("home", "0093_auto_20260127_1550"),
         ("home", "0094_auto_20260127_1604"),
