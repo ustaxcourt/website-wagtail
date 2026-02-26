@@ -490,8 +490,8 @@
 
     <script>
         // Actions to reset the breadcrumb at the top of the page
-        function resetBreadcrumb() {
-            event.preventDefault();
+        function resetBreadcrumb(eventFromListener) {
+            eventFromListener.preventDefault();
             const url = new URL(window.location.href);
             url.searchParams.delete('card');
 
@@ -519,12 +519,12 @@
                     titleStart.parentNode.replaceChild(newTitleStart, titleStart);
 
                     newTitleStart.addEventListener('click', function(event) {
-                        resetBreadcrumb();
+                        resetBreadcrumb(event);
                     });
 
                     newTitleStart.addEventListener('keypress', function(event) {
                         if (event.key === "Enter") {
-                            resetBreadcrumb();
+                            resetBreadcrumb(event);
                         }
                     });
                 }
