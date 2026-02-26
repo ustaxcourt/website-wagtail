@@ -18,7 +18,7 @@ from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole, Header
-from home.models.snippets.news_item import NewsItem
+
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 from .views import SearchDefinitionsReportView, SVG_CHOOSER_VIEWSET, PDF_CHOOSER_VIEWSET
@@ -170,13 +170,6 @@ def purge_cache_for_snippet_related_pages(request, instance):
         purge_cloudflare_root()
         return
 
-    # Purge CloudFront cache for all pages when high priority news item changes
-    # (since yellow banners appear on all pages)
-    if snippet_type == "newsitem" and isinstance(instance, NewsItem):
-        if instance.category == "high":
-            purge_cloudflare_root()
-            return
-
     affected_prefixes = path_map.get(snippet_type, ["/"])
     affected_pages = []
     for prefix in affected_prefixes:
@@ -294,41 +287,6 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
             logger.error(f"Error getting image URL for cache purge: {e}")
     else:
         logger.warning(f"Image {instance.id} has no file attribute or file is empty")
-
-
-@receiver(post_save, sender=NewsItem)
-def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
-    """
-    Purge CloudFront cache for all pages when a high or critical priority news item is created or updated.
-    High priority news items appear as yellow banners and critical priority items appear as red banners on all pages.
-    """
-    del sender, kwargs
-
-    # Only purge cache for high or critical priority banners
-    if instance.category in ["high", "critical"]:
-        action = "created" if created else "updated"
-        priority_type = "High" if instance.category == "high" else "Critical"
-        logger.info(
-            f"{priority_type} priority NewsItem {action}: {instance.title} (ID: {instance.id})"
-        )
-        purge_cloudflare_root()
-
-
-@receiver(post_delete, sender=NewsItem)
-def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
-    """
-    Purge CloudFront cache for all pages when a high or critical priority news item is deleted.
-    High priority news items appear as yellow banners and critical priority items appear as red banners on all pages.
-    """
-    del sender, kwargs
-
-    # Only purge cache for high or critical priority banners
-    if instance.category in ["high", "critical"]:
-        priority_type = "High" if instance.category == "high" else "Critical"
-        logger.info(
-            f"{priority_type} priority NewsItem deleted: {instance.title} (ID: {instance.id})"
-        )
-        purge_cloudflare_root()
 
 
 @receiver(post_save, sender=Header)
