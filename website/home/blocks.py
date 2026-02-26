@@ -2,6 +2,11 @@ from wagtail.documents.blocks import DocumentChooserBlock
 from .widgets import AdminSVGChooser, AdminPDFChooser
 from django.core.exceptions import ValidationError
 from wagtail import blocks
+from wagtail.contrib.typed_table_block.blocks import (
+    TypedTableBlock,
+    TypedTableBlockAdapter,
+)
+from wagtail.admin.telepath import register
 
 
 class SVGDocumentChooserBlock(DocumentChooserBlock):
@@ -121,3 +126,32 @@ class QuickAccessTilesBlock(blocks.StructBlock):
         label = "Quick Access Tiles"
         icon = "grip"
         template = "quick_access_tiles_block.html"
+
+
+class NoCaptionTypedTableBlock(TypedTableBlock):
+    """
+    TypedTableBlock with the built-in caption field suppressed in the editor.
+    The Enhanced Table component manages its own header and caption fields
+    at the StructBlock level so they appear above the table widget in the admin.
+    The caption input is hidden via CSS injected through wagtail_hooks.
+    """
+
+    def value_from_datadict(self, data, files, prefix):
+        result = super().value_from_datadict(data, files, prefix)
+        result.caption = ""
+        return result
+
+    def to_python(self, value):
+        result = super().to_python(value)
+        result.caption = ""
+        return result
+
+
+class NoCaptionTypedTableBlockAdapter(TypedTableBlockAdapter):
+    js_constructor = "wagtail.contrib.typed_table_block.blocks.TypedTableBlock"
+
+    def js_args(self, block):
+        return super().js_args(block)
+
+
+register(NoCaptionTypedTableBlockAdapter(), NoCaptionTypedTableBlock)
