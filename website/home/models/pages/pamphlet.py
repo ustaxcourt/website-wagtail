@@ -23,7 +23,7 @@ class PamphletsPage(StandardPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        entries = self.entries.all()
+        entries = self.entries.order_by("-sort_order")
         context["entries"] = entries
         return context
 
