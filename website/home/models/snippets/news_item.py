@@ -69,14 +69,6 @@ class NewsItem(
 ):
     objects = NewsItemQuerySet.as_manager()
 
-    BANNER_CHOICES = [
-        ("news", "News Item"),
-        ("high", "High priority Announcement"),
-        ("critical", "Critical Announcement"),
-    ]
-
-    category = models.CharField(max_length=20, choices=BANNER_CHOICES, default="news")
-
     title = models.CharField(
         max_length=500, help_text="Title of the news article", blank=False
     )
@@ -129,7 +121,6 @@ class NewsItem(
     _revisions = GenericRelation("wagtailcore.Revision", related_query_name="newsitem")
 
     panels = [
-        FieldPanel("category"),
         FieldPanel("title"),
         FieldPanel("document"),
         FieldPanel("image"),
@@ -245,7 +236,6 @@ class NewsItemFilterSet(WagtailFilterSet):
     class Meta:
         model = NewsItem
         fields = [
-            "category",
             "status",
             "publish_date_from",
             "publish_date_to",
@@ -258,7 +248,6 @@ class NewsItemViewSet(SnippetViewSet):
         "title",
         "document",
         "status",
-        "category",
         "publish_date",
         "created_at",
     ]
