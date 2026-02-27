@@ -203,7 +203,7 @@
         {% for cell in block.value.cells %}
             <div class="grid-style-cell {{ block.value.gridStyle }}">
                 {% if cell.header %}
-                    <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" tabindex="0">{{ cell.header }}</h3>
+                    <h3 class="grid-style-cell-header {{ block.value.gridStyle }}" {%if block.value.gridStyle == "styled"%} style="background-color: {{ cell.header_color }};" {% endif %} tabindex="0">{{ cell.header }}</h3>
                 {% endif %}
 
                 {% if cell.caption %}

@@ -5,12 +5,15 @@ from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
+
+# from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageBlock
 from wagtail.search import index
 
 from home.blocks import SVGDocumentChooserBlock
 from home.blocks import QuickAccessTilesBlock
+from home.blocks import NoCaptionTypedTableBlock
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
@@ -117,7 +120,17 @@ new_table_value_types = [
 
 
 class TableListBlock(blocks.StructBlock):
-    table = TypedTableBlock(new_table_value_types)
+    header = blocks.CharBlock(
+        required=False,
+        label="Header",
+        help_text="The title displayed above the table (rendered as H2).",
+    )
+    caption = blocks.RichTextBlock(
+        required=False,
+        label="Caption",
+        features=["bold", "italic", "link"],
+        help_text="A caption displayed above or below the table depending on Caption Location.",
+    )
     caption_location = blocks.ChoiceBlock(
         choices=[("top", "Top"), ("bottom", "Bottom")],
         default="top",
@@ -130,16 +143,94 @@ class TableListBlock(blocks.StructBlock):
         ],
         default="styled",
     )
-
     fixed = blocks.BooleanBlock(
         required=False,
         default=False,
         help_text="Check to set table layout to fixed width.",
     )
+    table = NoCaptionTypedTableBlock(new_table_value_types)
 
     class Meta:
         label = "Enhanced Table"
         icon = "table"
+
+
+class GridCellBlock(blocks.StructBlock):
+    header = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Optional header for this grid cell",
+    )
+    header_color = blocks.ChoiceBlock(
+        required=True,
+        default="#f1f9fc",
+        choices=[
+            ("#f1f9fc", "Default"),
+            ("#DEEAF0", "Blue-Gray"),
+        ],
+    )
+    caption = blocks.RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link"],
+        help_text="Optional caption for this grid cell (links allowed)",
+    )
+    italic_caption = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Make the caption text italic",
+    )
+    body = blocks.StreamBlock(
+        [
+            ("prose", blocks.RichTextBlock()),
+            ("callout", StyledCalloutBlock()),
+        ],
+        required=True,
+        help_text="Add text or special elements to the cell body",
+    )
+
+    class Meta:
+        label = "Grid Cell"
+        icon = "placeholder"
+
+
+class GridBlock(blocks.StructBlock):
+    columns = blocks.ChoiceBlock(
+        required=True,
+        default=2,
+        choices=[
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (4, 4),
+        ],
+        help_text="Max number of columns in the grid (1-4)",
+    )
+    width = blocks.ChoiceBlock(
+        required=True,
+        default="full",
+        choices=[
+            ("full", "Full Width"),
+        ],
+        help_text="Maximum width of the grid",
+    )
+    gridStyle = blocks.ChoiceBlock(
+        required=True,
+        default="styled",
+        choices=[
+            ("styled", "Styled"),
+            ("unstyled", "Unstyled"),
+        ],
+        help_text="Style of the grid",
+    )
+    cells = blocks.ListBlock(
+        GridCellBlock(),
+        help_text="Add cells to the grid. Cells will fill row-by-row based on the number of columns selected.",
+    )
+
+    class Meta:
+        label = "Grid"
+        icon = "grip"
+        template = "grid_block.html"
 
 
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
@@ -333,77 +424,11 @@ _BASE_BLOCK_TYPES = [
         "callout",
         StyledCalloutBlock(),
     ),
+    (
+        "grid",
+        GridBlock(),
+    ),
 ]
-
-
-class GridCellBlock(blocks.StructBlock):
-    header = blocks.CharBlock(
-        required=False,
-        max_length=255,
-        help_text="Optional header for this grid cell",
-    )
-    caption = blocks.RichTextBlock(
-        required=False,
-        features=["bold", "italic", "link"],
-        help_text="Optional caption for this grid cell (links allowed)",
-    )
-    italic_caption = blocks.BooleanBlock(
-        required=False,
-        default=False,
-        help_text="Make the caption text italic",
-    )
-    body = blocks.StreamBlock(
-        [
-            ("prose", blocks.RichTextBlock()),
-            ("callout", StyledCalloutBlock()),
-        ],
-        required=True,
-        help_text="Add text or special elements to the cell body",
-    )
-
-    class Meta:
-        label = "Grid Cell"
-        icon = "placeholder"
-
-
-class GridBlock(blocks.StructBlock):
-    columns = blocks.ChoiceBlock(
-        required=True,
-        default=2,
-        choices=[
-            (1, 1),
-            (2, 2),
-            (3, 3),
-            (4, 4),
-        ],
-        help_text="Max number of columns in the grid (1-4)",
-    )
-    width = blocks.ChoiceBlock(
-        required=True,
-        default="full",
-        choices=[
-            ("full", "Full Width"),
-        ],
-        help_text="Maximum width of the grid",
-    )
-    gridStyle = blocks.ChoiceBlock(
-        required=True,
-        default="styled",
-        choices=[
-            ("styled", "Styled"),
-            ("unstyled", "Unstyled"),
-        ],
-        help_text="Style of the grid",
-    )
-    cells = blocks.ListBlock(
-        GridCellBlock(),
-        help_text="Add cells to the grid. Cells will fill row-by-row based on the number of columns selected.",
-    )
-
-    class Meta:
-        label = "Grid"
-        icon = "grip"
-        template = "grid_block.html"
 
 
 class AnchorPageBlock(blocks.StructBlock):
