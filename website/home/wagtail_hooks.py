@@ -18,7 +18,7 @@ from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole, Header
-
+from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
 from .views import SearchDefinitionsReportView, SVG_CHOOSER_VIEWSET, PDF_CHOOSER_VIEWSET
@@ -174,7 +174,7 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationmenu": ["/"],
         "navigationribbon": ["/"],
         "simplecard": ["/"],
-        "newsitem": ["/home/press-releases/"],
+        "newsitem": ["/", "/home/press-releases/"],
     }
 
     # Purge CloudFront cache for all pages using wildcard when navigation menu changes
@@ -299,6 +299,45 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
             logger.error(f"Error getting image URL for cache purge: {e}")
     else:
         logger.warning(f"Image {instance.id} has no file attribute or file is empty")
+
+
+def _purge_newsitem_affected_pages():
+    """
+    Purge CloudFront cache for pages affected by NewsItem changes.
+    Targets the home page and press-releases page rather than purging all pages.
+    """
+    affected_pages = list(
+        Page.objects.live().filter(url_path__in=["/", "/home/press-releases/"])
+    )
+    if affected_pages:
+        try:
+            purge_pages_from_cache(affected_pages)
+            logger.info(f"Purged cache for NewsItem-affected pages: {affected_pages}")
+        except Exception as e:
+            logger.error(f"Error purging cache for NewsItem-affected pages: {e}")
+
+
+@receiver(post_save, sender=NewsItem)
+def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
+    """
+    Purge CloudFront cache for the home page and press-releases page
+    when a NewsItem is created or updated.
+    """
+    del sender, kwargs
+    action = "created" if created else "updated"
+    logger.info(f"NewsItem {action}: {instance.title} (ID: {instance.id})")
+    _purge_newsitem_affected_pages()
+
+
+@receiver(post_delete, sender=NewsItem)
+def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
+    """
+    Purge CloudFront cache for the home page and press-releases page
+    when a NewsItem is deleted.
+    """
+    del sender, kwargs
+    logger.info(f"NewsItem deleted: {instance.title} (ID: {instance.id})")
+    _purge_newsitem_affected_pages()
 
 
 @receiver(post_save, sender=Header)
