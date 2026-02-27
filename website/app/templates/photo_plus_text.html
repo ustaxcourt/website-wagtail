@@ -1,0 +1,42 @@
+{% load static %} {% load wagtailcore_tags wagtailimages_tags %}
+<style>
+    .enhanced-page .dedication {
+        margin-bottom: 3rem;
+        display: block;
+    }
+
+    .enhanced-page .dedication::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    .enhanced-page .dedication .title {
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .enhanced-page .dedication .dedication-image {
+        float: right;
+        width: 480px;
+        padding: 0px 18px;
+    }
+
+    .enhanced-page .dedication .dedication-image img {
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+</style>
+{% with data=block.value|default:self %}
+   <div class="dedication">
+    <h2 class="title">{{ block.value.title }}</h2>
+      {% if block.value.photo %}
+          <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+      {% endif %}
+      <div class="dedication-text">
+          {{ block.value.paragraph_text | richtext }}
+      </div>
+  </div>
+{% endwith %}
