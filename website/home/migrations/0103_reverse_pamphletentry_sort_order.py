@@ -24,7 +24,7 @@ def reverse_pamphlet_sort_order(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0101_alter_pamphletentry_options_and_more"),
+        ("home", "0102_alter_pamphletentry_options_and_more"),
     ]
 
     operations = [
