@@ -18,8 +18,10 @@
 
     .enhanced-page .dedication .dedication-image {
         float: right;
-        width: 480px;
-        padding: 0px 18px;
+        width:200px;
+        height:300px;
+
+        margin: 0px 0px 0px 18px;
     }
 
     .enhanced-page .dedication .dedication-image img {
@@ -27,15 +29,16 @@
         width: 100%;
         height: auto;
         display: block;
+        {% comment %} object-fit: cover; {% endcomment %}
     }
 </style>
 {% with data=block.value|default:self %}
    <div class="dedication">
-    <h2 class="title">{{ block.value.title }}</h2>
+    <h2 class="title" tabindex="0">{{ block.value.title }}</h2>
       {% if block.value.photo %}
-          <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+          <div class="dedication-image" tabindex="0" >{% image block.value.photo width-600 alt=block.value.photo %}</div>
       {% endif %}
-      <div class="dedication-text">
+      <div class="dedication-text" tabindex="0">
           {{ block.value.paragraph_text | richtext }}
       </div>
   </div>
