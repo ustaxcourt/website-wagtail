@@ -148,32 +148,41 @@
             font-weight: normal;
         }
 
-        {% comment %} .enhanced-page .dedication {
-            gap: 1rem;
+        .enhanced-page .dedication {
+            margin-bottom: 2rem;
+        }
+
+        .enhanced-page .dedication .dedication-title {
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .enhanced-page .dedication .dedication-content {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .enhanced-page .dedication.dedication-right .dedication-content {
+            flex-direction: row-reverse;
         }
 
         .enhanced-page .dedication .dedication-image {
-            width: 480px;
-            float: right;
-            display: block;
-            padding: 20px 10px 20px 10px;
+            width: 33%;
+            min-width: 200px;
+            flex-shrink: 0;
         }
 
         .enhanced-page .dedication .dedication-image img {
             box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
             width: 100%;
             height: auto;
-            display: inline-block;
-            margin-bottom: 21px;
+            display: block;
         }
 
         .enhanced-page .dedication .dedication-text {
             flex: 1;
         }
-
-        .enhanced-page .dedication .dedication-text .title {
-            font-weight: bold;
-        } {% endcomment %}
 
         .enhanced-page #video-container .video-desc-block {
             margin-top: 2em;
@@ -407,11 +416,16 @@
                 grid-template-columns: 1fr;
             }
 
+            .enhanced-page .dedication .dedication-content {
+                flex-direction: column;
+            }
+
+            .enhanced-page .dedication.dedication-right .dedication-content {
+                flex-direction: column-reverse;
+            }
+
             .enhanced-page .dedication .dedication-image {
                 width: 100%;
-                height: auto;
-                display: inline-block;
-                margin-bottom: 21px;
             }
 
             .enhanced-page .dedication .dedication-text blockquote {
