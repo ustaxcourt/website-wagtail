@@ -70,9 +70,6 @@
                                 </div>
                             </div>
                             -
-                            {% if release.category %}
-                              <span class="category-{{ release.category|lower }}">{{ release.category|title }}</span>
-                            {% endif %}
                             <span>{{ release.details.description }}</span>
                         </li>
                     {% else %}
@@ -91,10 +88,6 @@
                               <span class="usa-tag category-{{ release.banner_type|lower }}">{{ release.banner_label }}</span>
                               <strong>{{ release.banner_title }}</strong> {{ release.banner_body|striptags }}
                             {% else %}
-                              {# For regular news items, show category if present #}
-                              {% if release.category %}
-                                <span class="category-{{ release.category|lower }}">{{ release.category|title }}</span>
-                              {% endif %}
                               {{ release.details.description }}
                             {% endif %}
                         </li>

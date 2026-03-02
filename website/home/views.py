@@ -17,16 +17,6 @@ from django.utils import timezone
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
-    category = django_filters.ChoiceFilter(
-        label="Category",
-        choices=[
-            ("news", "News Item"),
-            ("high", "High Priority Announcement"),
-            ("critical", "Critical Announcement"),
-        ],
-        empty_label="All Categories",
-    )
-
     publish_date_range = django_filters.DateFromToRangeFilter(
         field_name="publish_date",
         label="Publish Date Range",
@@ -42,7 +32,6 @@ class NewsItemReportFilterSet(WagtailFilterSet):
     class Meta:
         model = NewsItem
         fields = [
-            "category",
             "title",
             "created_at",
             "publish_date_range",
@@ -169,13 +158,6 @@ class NewsItemReportView(ReportView):
 
         filtered = queryset
 
-        # Filter by category
-        category = filters.get("category")
-        if category:
-            filtered = [
-                obj for obj in filtered if self._get_obj_category(obj) == category
-            ]
-
         title = filters.get("title")
         if title:
             filtered = [
@@ -246,12 +228,6 @@ class NewsItemReportView(ReportView):
             filtered = [obj for obj in filtered if in_homepage_date_range(obj)]
 
         return filtered
-
-    def _get_obj_category(self, obj):
-        """Get category value for an object for filtering purposes"""
-        if getattr(obj, "_is_banner", False):
-            return obj.priority_level
-        return getattr(obj, "category", None)
 
     def get_heading(self, queryset, field):
         """
@@ -367,24 +343,8 @@ def format_category(obj):
         # fallback for banners with no priority set
         return "Banner"
 
-    # For non-banner objects (e.g. NewsItem), prefer category, fall back to priority_level
-    cat = getattr(obj, "category", None)
-    if cat:
-        if cat == "news":
-            return "News Item"
-        if cat == "high":
-            return "High Priority Announcement"
-        if cat == "critical":
-            return "Critical Announcement"
-        return str(cat).capitalize()
-
-    pl = getattr(obj, "priority_level", None)
-    if pl == "critical":
-        return "Critical Announcement"
-    if pl == "high":
-        return "High Priority Announcement"
-
-    return "-"
+    # All NewsItems are just "News Item"
+    return "News Item"
 
 
 def to_default_tz(dt):
