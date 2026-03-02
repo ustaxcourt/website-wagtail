@@ -1,0 +1,55 @@
+{% load wagtailimages_tags wagtailcore_tags %}
+
+<style>
+    .dedication-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .dedication-body {
+        overflow: hidden; /* clearfix for floated image */
+    }
+
+    .dedication-image img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .dedication-text {
+        font-size: 17px;
+    }
+
+    @media (max-width: 768px) {
+        .dedication-image {
+            float: none !important;
+            margin: 0 0 15px 0 !important;
+        }
+
+        .dedication--image-right .dedication-body {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 15px;
+        }
+
+        .dedication--image-right .dedication-image {
+            margin: 15px 0 0 0 !important;
+        }
+    }
+</style>
+
+<div class="dedication dedication--image-{{ block.value.image_position|default:'left' }}">
+    <h2 class="dedication-title">{{ block.value.title }}</h2>
+    <div class="dedication-body">
+        {% if block.value.photo %}
+            {% if block.value.image_position == 'right' %}
+                <div class="dedication-image" style="float: right; margin-left: 15px;">{% image block.value.photo original alt=block.value.alt_text %}</div>
+            {% else %}
+                <div class="dedication-image" style="float: left; margin-right: 15px;">{% image block.value.photo original alt=block.value.alt_text %}</div>
+            {% endif %}
+        {% endif %}
+        <div class="dedication-text">
+            {{ block.value.paragraph_text | richtext }}
+        </div>
+    </div>
+</div>

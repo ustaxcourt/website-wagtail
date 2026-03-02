@@ -77,15 +77,7 @@
             {% elif block.block_type == 'list' %}
                 {% include "home/list_block.html" with block=block %}
             {% elif block.block_type == "photo_dedication" %}
-                <div class="dedication">
-                    {% if block.value.photo %}
-                        <div class="dedication-image">{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
-                    {% endif %}
-                    <div class="dedication-text">
-                        <h2 class="title">{{ block.value.title }}</h2>
-                        {{ block.value.paragraph_text | richtext }}
-                    </div>
-                </div>
+                {% include "photo_dedication_block.html" with block=block %}
             {% elif block.block_type == 'embedded_video' %}
                 <hr />
                 <div id="video-container">

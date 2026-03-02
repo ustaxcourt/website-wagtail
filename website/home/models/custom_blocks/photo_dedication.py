@@ -16,6 +16,15 @@ class PhotoDedicationBlock(blocks.StructBlock):
         max_length=255,
         help_text="Provide alternative text for the image for accessibility.",
     )
+    image_position = blocks.ChoiceBlock(
+        choices=[
+            ("left", "Left (image on left on large screens, top on mobile)"),
+            ("right", "Right (image on right on large screens, bottom on mobile)"),
+        ],
+        default="left",
+        required=False,
+        help_text="Choose whether the image appears on the left or right on large screens.",
+    )
 
     class Meta:
         icon = "image"
