@@ -150,6 +150,7 @@
 
         .enhanced-page .dedication {
             margin-bottom: 2rem;
+            overflow: hidden;
         }
 
         .enhanced-page .dedication .dedication-title {
@@ -157,20 +158,16 @@
             margin-bottom: 0.75rem;
         }
 
-        .enhanced-page .dedication .dedication-content {
-            display: flex;
-            gap: 1.5rem;
-            align-items: flex-start;
-        }
-
-        .enhanced-page .dedication.dedication-right .dedication-content {
-            flex-direction: row-reverse;
-        }
-
         .enhanced-page .dedication .dedication-image {
+            float: left;
             width: 33%;
             min-width: 200px;
-            flex-shrink: 0;
+            margin: 0 1.5rem 17.5px 0;
+        }
+
+        .enhanced-page .dedication.dedication-right .dedication-image {
+            float: right;
+            margin: 0 0 17.5px 1.5rem;
         }
 
         .enhanced-page .dedication .dedication-image img {
@@ -180,8 +177,8 @@
             display: block;
         }
 
-        .enhanced-page .dedication .dedication-text {
-            flex: 1;
+        .enhanced-page .dedication .dedication-text p {
+            margin-bottom: 15px;
         }
 
         .enhanced-page #video-container .video-desc-block {
@@ -416,16 +413,25 @@
                 grid-template-columns: 1fr;
             }
 
-            .enhanced-page .dedication .dedication-content {
+            .enhanced-page .dedication {
+                display: flex;
                 flex-direction: column;
             }
 
-            .enhanced-page .dedication.dedication-right .dedication-content {
-                flex-direction: column-reverse;
+            .enhanced-page .dedication .dedication-image {
+                float: none;
+                width: 100%;
+                margin: 0 0 1rem 0;
             }
 
-            .enhanced-page .dedication .dedication-image {
-                width: 100%;
+            .enhanced-page .dedication.dedication-right .dedication-image {
+                float: none;
+                order: 2;
+                margin: 1rem 0 0 0;
+            }
+
+            .enhanced-page .dedication.dedication-right .dedication-text {
+                order: 1;
             }
 
             .enhanced-page .dedication .dedication-text blockquote {

@@ -3,14 +3,12 @@
     {% if block.value.title %}
         <h2 class="dedication-title">{{ block.value.title }}</h2>
     {% endif %}
-    <div class="dedication-content">
-        {% if block.value.photo %}
-            <div class="dedication-image">
-                {% image block.value.photo width-600 alt=block.value.alt_text %}
-            </div>
-        {% endif %}
-        <div class="dedication-text">
-            {{ block.value.paragraph_text|richtext }}
+    {% if block.value.photo %}
+        <div class="dedication-image">
+            {% image block.value.photo width-600 alt=block.value.alt_text %}
         </div>
+    {% endif %}
+    <div class="dedication-text">
+        {{ block.value.paragraph_text|richtext }}
     </div>
 </div>
