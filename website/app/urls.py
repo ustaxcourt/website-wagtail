@@ -98,11 +98,6 @@ urlpatterns = [
         name="all_legacy_documents_redirect",
     ),
     path("documents/", include(wagtaildocs_urls)),
-    path(
-        "press-releases/",
-        RedirectView.as_view(url="/news-and-announcements/", permanent=True),
-        name="press_releases_redirect",
-    ),
     path("", include("social_django.urls", namespace="social")),
     path("search/", search_views.search, name="search"),
     path(
