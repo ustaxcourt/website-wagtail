@@ -70,6 +70,16 @@ REDIRECTS = [
         "new_path": "/definitions",
         "is_permanent": True,
     },
+    {
+        "old_path": "/press-releases",
+        "new_path": "/news-and-announcements",
+        "is_permanent": True,
+    },
+    {
+        "old_path": "/press-releases/archives",
+        "new_path": "/news-and-announcements/archives",
+        "is_permanent": True,
+    },
 ]
 
 
