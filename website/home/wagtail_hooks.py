@@ -174,20 +174,13 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationmenu": ["/"],
         "navigationribbon": ["/"],
         "simplecard": ["/"],
-        "newsitem": ["/home/news-and-announcements/"],
+        "newsitem": ["/", "/home/press-releases/"],
     }
 
     # Purge CloudFront cache for all pages using wildcard when navigation menu changes
     if snippet_type == "navigationmenu":
         purge_cloudflare_root()
         return
-
-    # Purge CloudFront cache for all pages when high priority news item changes
-    # (since yellow banners appear on all pages)
-    if snippet_type == "newsitem" and isinstance(instance, NewsItem):
-        if instance.category == "high":
-            purge_cloudflare_root()
-            return
 
     affected_prefixes = path_map.get(snippet_type, ["/"])
     affected_pages = []
@@ -308,39 +301,43 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
         logger.warning(f"Image {instance.id} has no file attribute or file is empty")
 
 
+def _purge_newsitem_affected_pages():
+    """
+    Purge CloudFront cache for pages affected by NewsItem changes.
+    Targets the home page and press-releases page rather than purging all pages.
+    """
+    affected_pages = list(
+        Page.objects.live().filter(url_path__in=["/", "/home/press-releases/"])
+    )
+    if affected_pages:
+        try:
+            purge_pages_from_cache(affected_pages)
+            logger.info(f"Purged cache for NewsItem-affected pages: {affected_pages}")
+        except Exception as e:
+            logger.error(f"Error purging cache for NewsItem-affected pages: {e}")
+
+
 @receiver(post_save, sender=NewsItem)
 def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
     """
-    Purge CloudFront cache for all pages when a high or critical priority news item is created or updated.
-    High priority news items appear as yellow banners and critical priority items appear as red banners on all pages.
+    Purge CloudFront cache for the home page and press-releases page
+    when a NewsItem is created or updated.
     """
     del sender, kwargs
-
-    # Only purge cache for high or critical priority banners
-    if instance.category in ["high", "critical"]:
-        action = "created" if created else "updated"
-        priority_type = "High" if instance.category == "high" else "Critical"
-        logger.info(
-            f"{priority_type} priority NewsItem {action}: {instance.title} (ID: {instance.id})"
-        )
-        purge_cloudflare_root()
+    action = "created" if created else "updated"
+    logger.info(f"NewsItem {action}: {instance.title} (ID: {instance.id})")
+    _purge_newsitem_affected_pages()
 
 
 @receiver(post_delete, sender=NewsItem)
 def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
     """
-    Purge CloudFront cache for all pages when a high or critical priority news item is deleted.
-    High priority news items appear as yellow banners and critical priority items appear as red banners on all pages.
+    Purge CloudFront cache for the home page and press-releases page
+    when a NewsItem is deleted.
     """
     del sender, kwargs
-
-    # Only purge cache for high or critical priority banners
-    if instance.category in ["high", "critical"]:
-        priority_type = "High" if instance.category == "high" else "Critical"
-        logger.info(
-            f"{priority_type} priority NewsItem deleted: {instance.title} (ID: {instance.id})"
-        )
-        purge_cloudflare_root()
+    logger.info(f"NewsItem deleted: {instance.title} (ID: {instance.id})")
+    _purge_newsitem_affected_pages()
 
 
 @receiver(post_save, sender=Header)
