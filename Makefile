@@ -48,6 +48,8 @@ aws-setup: check-env-is-aws aws-init
 		"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_DB_RECOVERY", \
 		"USERS_TO_PREREGISTER": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
 		"USERS_TO_PREREGISTER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
+		"WAGTAILTRANSFER_SECRET_KEY": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
+		"WAGTAILTRANSFER_SOURCES": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
 	}'; \
 	if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
 		echo "Secret exists. Updating secret..."; \

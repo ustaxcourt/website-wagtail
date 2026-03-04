@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.frontend_cache",
     "app.role_switcher",
     "django_filters",
+    "wagtail_transfer",
 ]
 
 MIDDLEWARE = [
@@ -438,3 +439,6 @@ DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
 
 WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
+
+WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSER_SECRET_KEY")
+WAGTAILTRANSFER_SOURCE = os.getenv("WAGTAILTRANSFER_SOURCE")
