@@ -211,7 +211,8 @@ class PamphletsPageInitializer(PageInitializer):
         logger.info(f"Successfully created the '{title}' page.")
         logger.info(f"Creating entries on '{title}' page...")
 
-        for pamphlet_data in pamphlets_data:
+        for i, pamphlet_data in enumerate(reversed(pamphlets_data)):
+            pamphlet_data["sort_order"] = i
             self.create_pamphlet_entry(new_page, pamphlet_data)
 
     def create_pamphlet_entry(self, parent_page, pamphlet_data):
@@ -242,6 +243,7 @@ class PamphletsPageInitializer(PageInitializer):
                 date_range=pamphlet_data["date_range"],
                 citation=pamphlet_data["citation"],
                 parentpage=parent_page.specific,
+                sort_order=pamphlet_data["sort_order"],
             )
             entry.save()
 
