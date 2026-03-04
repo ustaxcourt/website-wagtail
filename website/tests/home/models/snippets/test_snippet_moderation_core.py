@@ -213,7 +213,7 @@ class TestSnippetDraftModerationCore(TestCase):
 
         for model in snippet_models:
             # Test that we can filter by live status
-            # This verifies that the PageQuerySet manager is working
+            # This verifies that the manager supports DraftStateMixin fields
             try:
                 model.objects.filter(live=True)
                 model.objects.filter(live=False)
