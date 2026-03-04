@@ -1,5 +1,5 @@
 from home.models.pages.standard import StandardPage
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, HelpPanel, InlinePanel
 from wagtail.fields import RichTextField
 from wagtail.models import ParentalKey, Orderable
 from home.admin.moderation import ModerationTabbedInterface
@@ -12,6 +12,9 @@ class PamphletsPage(StandardPage):
         super().__init__(*args, **kwargs)
 
     content_panels = StandardPage.content_panels + [
+        HelpPanel(
+            "Note that entries displayed on this form appear in the opposite order on the live public page."
+        ),
         InlinePanel("entries", label="Entries"),
     ]
 
