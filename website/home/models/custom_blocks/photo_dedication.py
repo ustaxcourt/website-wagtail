@@ -3,6 +3,14 @@ from wagtail.images.blocks import ImageBlock
 
 
 class PhotoDedicationBlock(blocks.StructBlock):
+    image_position = blocks.ChoiceBlock(
+        choices=[
+            ("left", "Before"),
+            ("right", "After"),
+        ],
+        default="left",
+        help_text="Place the image before (left on desktop) or after (right on desktop) the text.",
+    )
     title = blocks.CharBlock(
         max_length=255,
         required=False,
@@ -19,14 +27,6 @@ class PhotoDedicationBlock(blocks.StructBlock):
         required=False,
         max_length=255,
         help_text="Provide alternative text for the image for accessibility.",
-    )
-    image_position = blocks.ChoiceBlock(
-        choices=[
-            ("left", "Before"),
-            ("right", "After"),
-        ],
-        default="left",
-        help_text="Place the image before (left on desktop) or after (right on desktop) the text.",
     )
 
     class Meta:
