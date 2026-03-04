@@ -67,3 +67,15 @@ class GoogleTagManagerSettings(BaseGenericSetting):
     panels = [
         FieldPanel("gtm_container_id"),
     ]
+
+
+@register_setting
+class TrustedSites(BaseGenericSetting):
+    trusted_sites = models.TextField(
+        blank=True,
+        help_text="List of trusted sites, one per line.",
+    )
+
+    panels = [
+        FieldPanel("trusted_sites"),
+    ]
