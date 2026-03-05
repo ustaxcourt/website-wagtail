@@ -444,3 +444,12 @@ WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSFER_SECRET_KEY")
 
 sources_json = os.getenv("WAGTAILTRANSFER_SOURCES", "{}")
 WAGTAILTRANSFER_SOURCES = json.loads(sources_json)
+
+# WAGTAILTRANSFER_SECRET_KEY = "temporary_secret_key_for_testing"
+
+# WAGTAILTRANSFER_SOURCES = {
+#     'Stephen': {
+#         'BASE_URL': 'https://stephen-sandbox-web.ustaxcourt.gov/',
+#         'SECRET_KEY': 'SuperSecretWagtailTransferKey$123',
+#     },
+# }
