@@ -21,6 +21,7 @@ from wagtail_transfer import urls as wagtailtransfer_urls
 logger = logging.getLogger(__name__)
 logger.warning(f"WAGTAILTRANSFER_SOURCES: {settings.WAGTAILTRANSFER_SOURCES}")
 logger.warning(f"WAGTAILTRANSFER_SECRET_KEY: {settings.WAGTAILTRANSFER_SECRET_KEY}")
+logger.warning(f"WAGTAILTRANSFER_SOURCES_JSON: {settings.WAGTAILTRANSFER_SOURCES_JSON}")
 
 
 def all_legacy_documents_redirect(request, filename):
