@@ -18,7 +18,8 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from wagtail_transfer import urls as wagtailtransfer_urls
 
-print(settings.WAGTAILTRANSFER_SOURCES)
+logger = logging.getLogger(__name__)
+logger.warning(f"WAGTAILTRANSFER_SOURCES: {settings.WAGTAILTRANSFER_SOURCES}")
 
 
 def all_legacy_documents_redirect(request, filename):
