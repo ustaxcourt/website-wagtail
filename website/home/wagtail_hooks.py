@@ -174,7 +174,7 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationmenu": ["/"],
         "navigationribbon": ["/"],
         "simplecard": ["/"],
-        "newsitem": ["/", "/home/press-releases/"],
+        "newsitem": ["/", "/home/news-and-annoucements/"],
     }
 
     # Purge CloudFront cache for all pages using wildcard when navigation menu changes
@@ -304,10 +304,10 @@ def purge_cache_after_image_delete(sender, instance, **kwargs):
 def _purge_newsitem_affected_pages():
     """
     Purge CloudFront cache for pages affected by NewsItem changes.
-    Targets the home page and press-releases page rather than purging all pages.
+    Targets the home page and news-and-annoucements page rather than purging all pages.
     """
     affected_pages = list(
-        Page.objects.live().filter(url_path__in=["/", "/home/press-releases/"])
+        Page.objects.live().filter(url_path__in=["/", "/home/news-and-annoucements/"])
     )
     if affected_pages:
         try:
@@ -320,7 +320,7 @@ def _purge_newsitem_affected_pages():
 @receiver(post_save, sender=NewsItem)
 def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
     """
-    Purge CloudFront cache for the home page and press-releases page
+    Purge CloudFront cache for the home page and news-and-annoucements page
     when a NewsItem is created or updated.
     """
     del sender, kwargs
@@ -332,7 +332,7 @@ def purge_cache_after_newsitem_save(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=NewsItem)
 def purge_cache_after_newsitem_delete(sender, instance, **kwargs):
     """
-    Purge CloudFront cache for the home page and press-releases page
+    Purge CloudFront cache for the home page and news-and-annoucements page
     when a NewsItem is deleted.
     """
     del sender, kwargs
