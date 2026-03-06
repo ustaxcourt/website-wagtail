@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 logger.warning(f"WAGTAILTRANSFER_SOURCES: {settings.WAGTAILTRANSFER_SOURCES}")
 logger.warning(f"WAGTAILTRANSFER_SECRET_KEY: {settings.WAGTAILTRANSFER_SECRET_KEY}")
 logger.warning(f"WAGTAILTRANSFER_SOURCES_JSON: {settings.WAGTAILTRANSFER_SOURCES_JSON}")
+logger.warning(f"DOMAIN_NAME: {settings.WAGTAILADMIN_BASE_URL}")
 
 
 def all_legacy_documents_redirect(request, filename):
