@@ -42,7 +42,7 @@ REDIRECTS = [
     },
     {
         "old_path": "/press_release_archives.html",
-        "new_path": "/press-releases/archives",
+        "new_path": "/news-and-announcements/archives",
         "is_permanent": True,
     },
     {
@@ -68,6 +68,16 @@ REDIRECTS = [
     {
         "old_path": "/petitioners-glossary",
         "new_path": "/definitions",
+        "is_permanent": True,
+    },
+    {
+        "old_path": "/press-releases",
+        "new_path": "/news-and-announcements",
+        "is_permanent": True,
+    },
+    {
+        "old_path": "/press-releases/archives",
+        "new_path": "/news-and-announcements/archives",
         "is_permanent": True,
     },
 ]
