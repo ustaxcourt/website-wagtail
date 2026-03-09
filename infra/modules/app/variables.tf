@@ -57,8 +57,5 @@ variable "wagtailtransfer_secret_key" {
 }
 
 variable "wagtailtransfer_sources" {
-  type = map(object({
-    base_url = string
-    secret_key = string
-  }))
+  type = string
 }
