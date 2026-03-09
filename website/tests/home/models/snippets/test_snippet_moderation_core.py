@@ -200,8 +200,8 @@ class TestSnippetDraftModerationCore(TestCase):
         self.assertEqual(common_text.expire_at, future_time)
         self.assertFalse(common_text.expired)
 
-    def test_snippet_managers_have_live_methods(self):
-        """Test that snippet managers can filter by live status."""
+    def test_snippet_managers_support_live_field_filtering(self):
+        """Test that snippet managers can filter by the live field from DraftStateMixin."""
         snippet_models = [
             CommonText,
             JudgeProfile,
@@ -411,3 +411,42 @@ class TestSnippetWorkflowBehavior(TestCase):
         self.assertTrue(common_text.live)
         self.assertTrue(judge.live)  # unchanged
         self.assertFalse(collection.live)  # unchanged
+
+
+class TestSnippetBulkDelete(TestCase):
+    """Regression tests for bulk deletion of snippet models.
+
+    Prior to the fix, these models used PageQuerySet.as_manager(), whose
+    delete() method raises an exception when called on a queryset (it is
+    designed only for Page models).  Wagtail's admin 'delete selected'
+    action calls queryset.delete() on the selected objects, so the custom
+    manager caused every multi-select delete to fail.
+    """
+
+    def test_bulk_delete_common_text(self):
+        """Bulk queryset deletion of CommonText must succeed without errors."""
+        items = [
+            CommonText.objects.create(name=f"Item {i}", text=f"<p>Content {i}</p>")
+            for i in range(3)
+        ]
+        ids = [item.pk for item in items]
+
+        deleted_count, _ = CommonText.objects.filter(pk__in=ids).delete()
+
+        self.assertEqual(deleted_count, 3)
+        self.assertEqual(CommonText.objects.filter(pk__in=ids).count(), 0)
+
+    def test_bulk_delete_judge_profile(self):
+        """Bulk queryset deletion of JudgeProfile must succeed without errors."""
+        judges = [
+            JudgeProfile.objects.create(
+                first_name=f"Judge{i}", last_name="Test", title="Judge"
+            )
+            for i in range(3)
+        ]
+        ids = [j.pk for j in judges]
+
+        # deleted_count may exceed 3 due to CASCADE deletes on related rows
+        JudgeProfile.objects.filter(pk__in=ids).delete()
+
+        self.assertEqual(JudgeProfile.objects.filter(pk__in=ids).count(), 0)
