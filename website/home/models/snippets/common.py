@@ -1,7 +1,7 @@
 from django.db import models
 from wagtail.admin.panels import FieldPanel, PublishingPanel
 from wagtail.fields import RichTextField
-from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
+from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
 from home.mixins.moderation import ModerationMixin
@@ -20,7 +20,6 @@ class CommonText(
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="commontext"
     )
-    objects = PageQuerySet.as_manager()
 
     content_panels = [
         FieldPanel("name"),
