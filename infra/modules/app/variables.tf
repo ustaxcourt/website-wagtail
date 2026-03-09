@@ -51,3 +51,14 @@ variable "email_scheduler_enabled_environments" {
   type        = list(string)
   default     = ["production", "train"]
 }
+
+variable "wagtailtransfer_secret_key" {
+  type = string
+}
+
+variable "wagtailtransfer_sources" {
+  type = map(object({
+    base_url = string
+    secret_key = string
+  }))
+}
