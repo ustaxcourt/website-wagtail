@@ -171,7 +171,7 @@ class HomePage(ModerationMixin, Page):
 
         press_release_page = PressReleasePage.objects.live().first()
         context["press_release_page_url"] = (
-            press_release_page.url if press_release_page else "/press-releases/"
+            press_release_page.url if press_release_page else "/news-and-announcements/"
         )
 
         return context
