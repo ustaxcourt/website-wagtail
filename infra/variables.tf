@@ -50,5 +50,5 @@ variable "wagtailtransfer_sources" {
   type = map(object({
     base_url = string
     secret_key = string
-  })
+  }))
 }
