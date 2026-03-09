@@ -16,6 +16,10 @@ from home.models.snippets.news_item import NewsItem
 from home.blocks import SVGChooserBlock
 from home.models.pages.press_release import PressReleasePage
 
+import logging
+import os
+from django.conf import settings
+
 
 class HomePageAdminForm(WagtailAdminPageForm):
     def clean_intro_text(self):
@@ -141,6 +145,19 @@ class HomePage(ModerationMixin, Page):
 
     def get_context(self, request):
         context = super().get_context(request)
+
+        logger = logging.getLogger(__name__)
+        logger.warning(f"WAGTAILTRANSFER_SOURCES: {settings.WAGTAILTRANSFER_SOURCES}")
+        logger.warning(
+            f"WAGTAILTRANSFER_SECRET_KEY: {settings.WAGTAILTRANSFER_SECRET_KEY}"
+        )
+        logger.warning(
+            f"WAGTAILTRANSFER_SOURCES_JSON: {settings.WAGTAILTRANSFER_SOURCES_JSON}"
+        )
+        logger.warning(f"DOMAIN_NAME: {settings.WAGTAILADMIN_BASE_URL}")
+        logger.warning(
+            f"ENV WAGTAILTRANSFER_SECRET_KEY: {os.getenv('WAGTAILTRANSFER_SECRET_KEY')}"
+        )
 
         # Filter static text cards based on start/end dates
         live_static_text_cards = []
