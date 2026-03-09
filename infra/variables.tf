@@ -47,26 +47,8 @@ variable "wagtailtransfer_secret_key" {
 }
 
 variable "wagtailtransfer_sources" {
-  type = object({
-    local = object({
-      base_url = string
-      secret_key = string
-    })
-    qa = object({
-      base_url = string
-      secret_key = string
-    })
-    ahmed-sandbox = object({
-      base_url = string
-      secret_key = string
-    })
-    stephen-sandbox = object({
-      base_url = string
-      secret_key = string
-    })
-    jim-sandbox = object({
-      base_url = string
-      secret_key = string
-    })
+  type = map(object({
+    base_url = string
+    secret_key = string
   })
 }
