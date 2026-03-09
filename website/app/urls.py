@@ -23,6 +23,9 @@ logger.warning(f"WAGTAILTRANSFER_SOURCES: {settings.WAGTAILTRANSFER_SOURCES}")
 logger.warning(f"WAGTAILTRANSFER_SECRET_KEY: {settings.WAGTAILTRANSFER_SECRET_KEY}")
 logger.warning(f"WAGTAILTRANSFER_SOURCES_JSON: {settings.WAGTAILTRANSFER_SOURCES_JSON}")
 logger.warning(f"DOMAIN_NAME: {settings.WAGTAILADMIN_BASE_URL}")
+logger.warning(
+    f"ENV WAGTAILTRANSFER_SECRET_KEY: {os.getenv('WAGTAILTRANSFER_SECRET_KEY')}"
+)
 
 
 def all_legacy_documents_redirect(request, filename):
