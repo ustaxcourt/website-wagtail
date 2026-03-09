@@ -1,5 +1,5 @@
 from wagtail import blocks
-from wagtail.images.blocks import ImageBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 
 class PhotoDedicationBlock(blocks.StructBlock):
@@ -16,17 +16,17 @@ class PhotoDedicationBlock(blocks.StructBlock):
         required=False,
         help_text="Optional heading displayed above the photo and text.",
     )
-    photo = ImageBlock(
-        required=False, help_text="Upload an image to display with this dedication"
+    photo = ImageChooserBlock(
+        required=True, help_text="Upload an image to display with this dedication"
+    )
+    alt_text = blocks.CharBlock(
+        required=True,
+        max_length=255,
+        help_text="Describe the image for a visually impaired person.",
     )
     paragraph_text = blocks.RichTextBlock(
         required=False,
         help_text="Add the main paragraph text for the dedication section",
-    )
-    alt_text = blocks.CharBlock(
-        required=False,
-        max_length=255,
-        help_text="Provide alternative text for the image for accessibility.",
     )
 
     class Meta:
