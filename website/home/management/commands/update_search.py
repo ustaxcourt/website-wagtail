@@ -107,7 +107,7 @@ PROMOTIONS_DATA = [
         "terms": ["Judge", "Judges"],
         "results": [
             "judges",
-            "press-releases",
+            "news-and-announcements",
             "directory",
         ],
     },
@@ -115,7 +115,7 @@ PROMOTIONS_DATA = [
         "terms": ["Urda", "Judge Urda", "Chief Judge", "Chief Judge Urda"],
         "results": [
             "https://ustaxcourt.gov/judges/51/urda/",
-            "press-releases",
+            "news-and-announcements",
             "directory",
         ],
     },
@@ -129,7 +129,7 @@ PROMOTIONS_DATA = [
         ],
         "results": [
             f"{settings.BASE_URL}/files/documents/04252024.pdf",
-            "press-releases",
+            "news-and-announcements",
             "directory",
         ],
     },

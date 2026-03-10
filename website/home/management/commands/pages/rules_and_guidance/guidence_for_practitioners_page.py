@@ -267,7 +267,7 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": """For additional disciplinary action, refer to previous <a href="/press-releases" title="Press Releases">Press Releases</a>.""",
+                        "value": """For additional disciplinary action, refer to previous <a href="/news-and-announcements" title="News and Announcements">News and Announcements</a>.""",
                     },
                     {"type": "hr", "value": True},
                     {"type": "h2", "value": "Limited Entries of Appearance"},
