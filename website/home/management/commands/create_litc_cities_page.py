@@ -11,8 +11,8 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        page_instance = LITCPageInitializer()
-        page_instance.create()
+        initializer = LITCPageInitializer()
+        initializer.create()
 
         self.stdout.write(
             self.style.SUCCESS("The LITC Cities page has been initialized.")
