@@ -4,7 +4,7 @@
         <h2 class="dedication-title">{{ block.value.title }}</h2>
     {% endif %}
     {% if block.value.photo %}
-        <figure class="dedication-image" role="img" aria-label="{{ block.value.alt_text }}" tabindex="0">
+        <figure class="dedication-image" role="group" aria-label="{{ block.value.alt_text }}" tabindex="0">
             {% image block.value.photo width-600 alt=block.value.alt_text %}
         </figure>
     {% endif %}
