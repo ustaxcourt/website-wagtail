@@ -1949,7 +1949,7 @@ class LITCPageInitializer(PageInitializer):
         command_name = "Create LITC Cities page"
 
         if ExecuteScript.command_exists(command_name):
-            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            logger.info(f"Script '{command_name}' already ran. Update not necessary.")
             return
 
         script_entry = ExecuteScript.create_script(command_name)
