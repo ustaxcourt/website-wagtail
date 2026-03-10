@@ -1969,7 +1969,7 @@ class LITCPageInitializer(PageInitializer):
             title=title,
             slug=slug,
             seo_title=title,
-            search_description="Press Releases",
+            search_description="LITC Cities",
             low_income_taxpayer_clinics=low_income_taxpayer_clinic_data,
             show_in_menus=True,
         )
