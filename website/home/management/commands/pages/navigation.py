@@ -64,8 +64,8 @@ class NavigationInitializer(PageInitializer):
                             "page": self.get_page("employment"),
                         },
                         {
-                            "title": "Press Releases & News",
-                            "page": self.get_page("press-releases"),
+                            "title": "News and Announcements",
+                            "page": self.get_page("news-and-announcements"),
                         },
                     ],
                 },

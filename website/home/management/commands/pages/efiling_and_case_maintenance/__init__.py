@@ -62,4 +62,5 @@ efiling_and_case_maintenance_pages_to_initialize = [
 
 efiling_and_case_maintenance_pages_to_update = [
     DefinitionsPageInitializer,
+    LITCPageInitializer,
 ]

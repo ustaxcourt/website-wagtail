@@ -103,7 +103,7 @@ def search(request):
     # Search
     if search_query:
         search_results = Page.objects.live().search(search_query)
-        judge_results = JudgeProfile.objects.live().filter(
+        judge_results = JudgeProfile.objects.filter(live=True).filter(
             Q(first_name__icontains=search_query)
             | Q(last_name__icontains=search_query)
             | Q(display_name__icontains=search_query)

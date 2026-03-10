@@ -103,7 +103,7 @@ class Command(BaseCommand):
                 "clinics-chief-counsel",
                 "case-related-forms",
             ],
-            "Public Affairs Editor": ["press-releases", "mission", "history"],
+            "Public Affairs Editor": ["news-and-announcements", "mission", "history"],
             "Reporter's Office Editor": ["citation-and-style-manual", "pamphlets"],
             "Rules Committee Editor": ["rules", "case-related-forms", "rules-comments"],
         }
