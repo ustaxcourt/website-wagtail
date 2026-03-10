@@ -1,6 +1,7 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import LITCPage
+from home.models.utils.execute_script import ExecuteScript
 import logging
 
 logger = logging.getLogger(__name__)
@@ -1934,6 +1935,38 @@ class LITCPageInitializer(PageInitializer):
     def create(self):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
+
+    def update(self):
+        if Page.objects.filter(slug="litc-cities").exists():
+            logger.info(
+                "- Low Income Taxpayer Clinic Cities page already exists, skipping."
+            )
+            return
+        home_page = Page.objects.get(slug="home")
+        self.create_page_info(home_page)
+
+    def run(self):
+        command_name = "Create LITC Cities page"
+
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update()
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = "LITC Cities page created successfully."
+            script_entry.save()
+
+        except Exception as e:
+            error_msg = f"Unexpected error during LITC Cities page creation: {type(e).__name__} - {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {error_msg}"
+            script_entry.save()
+            raise
 
     def create_page_info(self, home_page):
         slug = "litc-cities"
