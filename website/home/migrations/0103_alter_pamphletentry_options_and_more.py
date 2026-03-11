@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0101_remove_newsitem_category"),
+        ("home", "0102_alter_pressreleasepage_options"),
     ]
 
     operations = [
