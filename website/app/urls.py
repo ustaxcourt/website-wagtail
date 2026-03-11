@@ -17,6 +17,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
 from wagtail_transfer import urls as wagtailtransfer_urls
+from wagtail_transfer import admin_urls as wagtailtransfer_admin_urls
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +109,7 @@ urlpatterns = [
         search_views.definitions_search,
         name="definitions_search",
     ),
+    path("admin/wagtail-transfer/", include(wagtailtransfer_admin_urls)),
     path("wagtail-transfer/", include(wagtailtransfer_urls)),
 ]
 
