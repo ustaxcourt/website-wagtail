@@ -165,6 +165,10 @@
             padding: 0;
         }
 
+        .enhanced-page .dedication .dedication-image.dedication-image--landscape {
+            max-width: 300px;
+        }
+
         .enhanced-page .dedication.dedication-right .dedication-image {
             float: right;
             margin: 0 0 17.5px 1.5rem;
@@ -175,6 +179,15 @@
             width: 100%;
             height: auto;
             display: block;
+        }
+
+        .enhanced-page .dedication .dedication-image:focus {
+            outline: 2px solid #005EA2;
+            outline-offset: 2px;
+        }
+
+        .enhanced-page .dedication .dedication-image:focus:not(:focus-visible) {
+            outline: none;
         }
 
         .enhanced-page .dedication .dedication-text p {

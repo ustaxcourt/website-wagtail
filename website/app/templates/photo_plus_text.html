@@ -4,8 +4,8 @@
         <h2 class="dedication-title">{{ block.value.title }}</h2>
     {% endif %}
     {% if block.value.photo %}
-        <div class="dedication-image">
-            {% image block.value.photo width-600 as photo_rendition %}
+        {% image block.value.photo width-600 as photo_rendition %}
+        <div class="dedication-image {% if photo_rendition.width > photo_rendition.height %}dedication-image--landscape{% endif %}">
             <img src="{{ photo_rendition.url }}" width="{{ photo_rendition.width }}" height="{{ photo_rendition.height }}" alt="{{ block.value.alt_text }}" tabindex="0" role="img">
         </div>
     {% endif %}
