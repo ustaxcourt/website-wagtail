@@ -1,7 +1,7 @@
 from home.models.pages.standard import StandardPage
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, HelpPanel, InlinePanel
 from wagtail.fields import RichTextField
-from wagtail.models import ParentalKey
+from wagtail.models import ParentalKey, Orderable
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 from django.db import models
@@ -12,6 +12,9 @@ class PamphletsPage(StandardPage):
         super().__init__(*args, **kwargs)
 
     content_panels = StandardPage.content_panels + [
+        HelpPanel(
+            "Note that entries displayed on this form appear in the opposite order on the live public page."
+        ),
         InlinePanel("entries", label="Entries"),
     ]
 
@@ -23,12 +26,12 @@ class PamphletsPage(StandardPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        entries = PamphletEntry.objects.all().order_by("-volume_number")
+        entries = self.entries.order_by("-sort_order")
         context["entries"] = entries
         return context
 
 
-class PamphletEntry(models.Model):
+class PamphletEntry(Orderable):
     title = models.CharField(max_length=255)
     pdf = models.ForeignKey(
         "wagtaildocs.Document",
@@ -37,10 +40,9 @@ class PamphletEntry(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    code = models.CharField(max_length=255, blank=True)
-    date_range = models.CharField(max_length=255)
-    citation = RichTextField(blank=True)
-    volume_number = models.FloatField(default=0)
+    code = models.CharField(verbose_name="Page Range", max_length=255, blank=True)
+    date_range = models.CharField(verbose_name="Date Range", max_length=255)
+    citation = RichTextField(verbose_name="Cases", blank=True)
 
     parentpage = ParentalKey(
         "PamphletsPage", related_name="entries", on_delete=models.CASCADE
@@ -52,5 +54,4 @@ class PamphletEntry(models.Model):
         FieldPanel("code"),
         FieldPanel("date_range"),
         FieldPanel("citation"),
-        FieldPanel("volume_number"),
     ]
