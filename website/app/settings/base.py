@@ -366,6 +366,15 @@ def _task_ips():
         return []
 
 
+def get_json_from_os_env(env_variable_name):
+    try:
+        sources_json = os.getenv(env_variable_name, "{}")
+        result = json.loads(sources_json)
+        return result
+    except json.JSONDecodeError:
+        return None
+
+
 ALLOWED_HOSTS += _task_ips()
 
 USE_X_FORWARDED_HOST = True
@@ -443,8 +452,8 @@ WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 
 WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSFER_SECRET_KEY")
 
-sources_json = os.getenv("WAGTAILTRANSFER_SOURCES", "{}")
-WAGTAILTRANSFER_SOURCES = json.loads(sources_json)
+# sources_json = os.getenv("WAGTAILTRANSFER_SOURCES", "{}")
+WAGTAILTRANSFER_SOURCES = get_json_from_os_env("WAGTAILTRANSFER_SOURCES")
 
 WAGTAILTRANSFER_SOURCES_JSON = os.getenv("WAGTAILTRANSFER_SOURCES", "{}")
 
