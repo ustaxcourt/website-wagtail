@@ -16,7 +16,6 @@ from wagtail.models import (
     RevisionMixin,
     PreviewableMixin,
     WorkflowMixin,
-    PageQuerySet,
 )
 from wagtail.fields import StreamField
 from django.core.exceptions import ValidationError
@@ -46,7 +45,6 @@ class NavigationRibbon(
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="navigation_ribbon"
     )
-    objects = PageQuerySet.as_manager()
 
     content_panels = [
         FieldPanel("name"),
