@@ -461,11 +461,11 @@ WAGTAILTRANSFER_SOURCES_JSON = os.getenv("WAGTAILTRANSFER_SOURCES", "{}")
 
 # WAGTAILTRANSFER_SOURCES = {
 #     'Stephen': {
-#         'BASE_URL': 'https://stephen-sandbox-web.ustaxcourt.gov/',
+#         'BASE_URL': 'https://stephen-sandbox-web.ustaxcourt.gov/wagtail-transfer/',
 #         'SECRET_KEY': 'SuperSecretWagtailTransferKey$123',
 #     },
 #     'Ahmed': {
-#         'BASE_URL': 'https://ahmed-sandbox-web.ustaxcourt.gov/',
+#         'BASE_URL': 'https://ahmed-sandbox-web.ustaxcourt.gov/wagtail-transfer/',
 #         'SECRET_KEY': 'WAGTRANSFER!1098%',
 #     },
 # }
