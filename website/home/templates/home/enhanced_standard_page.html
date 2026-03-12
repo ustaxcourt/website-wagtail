@@ -50,8 +50,6 @@
         .enhanced-page.enhanced-page.grid-container > h6,
         .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
         .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr,p:empty) ~ p)),
-        Extra p tag that is empty, makes this rule weird since I am not displaying empty p tags
-        {% comment %} .enhanced-page.enhanced-page.grid-container > ul:has(+ p), {% endcomment %}
         .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
         .enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
         enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
@@ -146,33 +144,6 @@
             margin-bottom: 0.5em;
             display: block;
             font-weight: normal;
-        }
-
-        .enhanced-page .dedication {
-            gap: 1rem;
-        }
-
-        .enhanced-page .dedication .dedication-image {
-            width: 480px;
-            float: right;
-            display: block;
-            padding: 20px 10px 20px 10px;
-        }
-
-        .enhanced-page .dedication .dedication-image img {
-            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
-            width: 100%;
-            height: auto;
-            display: inline-block;
-            margin-bottom: 21px;
-        }
-
-        .enhanced-page .dedication .dedication-text {
-            flex: 1;
-        }
-
-        .enhanced-page .dedication .dedication-text .title {
-            font-weight: bold;
         }
 
         .enhanced-page #video-container .video-desc-block {
@@ -383,15 +354,14 @@
                 left: -12px;
             }
 
-            .enhanced-page .heading-wrapper h2,
-            .enhanced-page .heading-wrapper h3,
-            .enhanced-page .heading-wrapper h4,
-            .enhanced-page .heading-wrapper h5,
-            .enhanced-page .heading-wrapper h6 {
-                {% comment %} padding-left: 16px; {% endcomment %}
-            }
             .enhanced-page.grid-container .heading-wrapper a {
                 margin-right: 16px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .enhanced-page .dedication .dedication-image img {
+                width: 176px;
             }
         }
 
@@ -408,10 +378,15 @@
             }
 
             .enhanced-page .dedication .dedication-image {
-                width: 100%;
-                height: auto;
-                display: inline-block;
-                margin-bottom: 21px;
+                float: none;
+                width:100%;
+                display: flex;
+                justify-content: center;
+                margin:0px 0px 15px 0px;
+            }
+
+            .enhanced-page .dedication .title{
+                text-align: center;
             }
 
             .enhanced-page .dedication .dedication-text blockquote {
