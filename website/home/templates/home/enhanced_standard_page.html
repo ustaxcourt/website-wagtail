@@ -50,8 +50,6 @@
         .enhanced-page.enhanced-page.grid-container > h6,
         .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
         .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr,p:empty) ~ p)),
-        Extra p tag that is empty, makes this rule weird since I am not displaying empty p tags
-        {% comment %} .enhanced-page.enhanced-page.grid-container > ul:has(+ p), {% endcomment %}
         .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
         .enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
         enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
@@ -362,9 +360,8 @@
         }
 
         @media (max-width: 992px) {
-            .enhanced-page .dedication.dedication .dedication-image img {
-                {% comment %} width: 176px; {% endcomment %}
-                {% comment %} height: 263px; {% endcomment %}
+            .enhanced-page .dedication .dedication-image img {
+                width: 176px;
             }
         }
 
@@ -380,7 +377,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .enhanced-page .dedication.dedication .dedication-image {
+            .enhanced-page .dedication .dedication-image {
                 float: none;
                 width:100%;
                 display: flex;
@@ -388,7 +385,7 @@
                 margin:0px 0px 15px 0px;
             }
 
-            .enhanced-page .dedication.dedication .title{
+            .enhanced-page .dedication .title{
                 text-align: center;
             }
 
