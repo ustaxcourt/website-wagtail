@@ -34,6 +34,9 @@ jobs:
         make pytest
 
     - name: Run Cypress Tests
+      env:
+        CYPRESS_ADMIN_USERNAME: ${{ secrets.CYPRESS_ADMIN_USERNAME || 'admin' }}
+        CYPRESS_ADMIN_PASSWORD: ${{ secrets.CYPRESS_ADMIN_PASSWORD || 'ustcAdminPW!' }}
       run: |
         cd website
         make migrate
