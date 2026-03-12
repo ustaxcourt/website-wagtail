@@ -31,4 +31,4 @@ class PhotoDedicationBlock(blocks.StructBlock):
 
     class Meta:
         icon = "image"
-        label = "Photo Dedication"
+        label = "Photo + Text"
