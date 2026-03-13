@@ -50,8 +50,6 @@
         .enhanced-page.enhanced-page.grid-container > h6,
         .enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
         .enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr,p:empty) ~ p)),
-        Extra p tag that is empty, makes this rule weird since I am not displaying empty p tags
-        {% comment %} .enhanced-page.enhanced-page.grid-container > ul:has(+ p), {% endcomment %}
         .enhanced-page.enhanced-page.grid-container > p:has(+ ul),
         .enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
         enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
@@ -410,9 +408,6 @@
             .enhanced-page .heading-wrapper h3,
             .enhanced-page .heading-wrapper h4,
             .enhanced-page .heading-wrapper h5,
-            .enhanced-page .heading-wrapper h6 {
-                {% comment %} padding-left: 16px; {% endcomment %}
-            }
             .enhanced-page.grid-container .heading-wrapper a {
                 margin-right: 16px;
             }
