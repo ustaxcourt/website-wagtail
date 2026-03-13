@@ -6,7 +6,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0104_reverse_pamphletentry_sort_order"),
+        ("home", "0105_migrate_photo_dedication_data"),
     ]
 
     operations = [
