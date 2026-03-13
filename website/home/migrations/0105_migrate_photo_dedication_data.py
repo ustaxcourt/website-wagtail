@@ -9,14 +9,20 @@ from django.db import migrations
 
 
 def convert_photo_dedication_data(apps, schema_editor):
-    EnhancedStandardPage = apps.get_model("home", "EnhancedStandardPage")
-    for page in EnhancedStandardPage.objects.all():
-        if not page.body:
+    """Use raw SQL to avoid StreamField deserialization issues in migrations."""
+    connection = schema_editor.connection
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT page_ptr_id, body FROM home_enhancedstandardpage")
+    rows = cursor.fetchall()
+
+    for page_id, body_raw in rows:
+        if not body_raw:
             continue
 
-        body_data = json.loads(
-            page.body.raw_data if hasattr(page.body, "raw_data") else page.body
-        )
+        # PostgreSQL jsonb returns already-parsed Python objects;
+        # SQLite returns a JSON string
+        body_data = json.loads(body_raw) if isinstance(body_raw, str) else body_raw
 
         if not isinstance(body_data, list):
             continue
@@ -30,21 +36,20 @@ def convert_photo_dedication_data(apps, schema_editor):
             photo = value.get("photo")
 
             if isinstance(photo, dict):
-                # Extract image ID from old ImageBlock format
                 image_id = photo.get("image")
                 old_alt = photo.get("alt_text", "")
 
-                # Set photo to just the image ID
                 value["photo"] = image_id
                 changed = True
 
-                # If block-level alt_text is empty, copy from old ImageBlock
                 if not value.get("alt_text") and old_alt:
                     value["alt_text"] = old_alt
 
         if changed:
-            page.body = json.dumps(body_data)
-            page.save(update_fields=["body"])
+            cursor.execute(
+                "UPDATE home_enhancedstandardpage SET body = %s WHERE page_ptr_id = %s",
+                [json.dumps(body_data), page_id],
+            )
 
 
 def reverse_migration(apps, schema_editor):
