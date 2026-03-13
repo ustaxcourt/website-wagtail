@@ -246,6 +246,7 @@ web_modules/
 .DS_Store
 
 website/cypress/screenshots/*
+website/cypress.env.json
 website/media
 website/static
 website_secrets
