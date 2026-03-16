@@ -2,6 +2,7 @@ from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
 
+# photo+text block for dedication section on dawson page and enhanced standard page
 class PhotoDedicationBlock(blocks.StructBlock):
     image_position = blocks.ChoiceBlock(
         choices=[
