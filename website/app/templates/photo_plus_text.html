@@ -1,43 +1,15 @@
-{% load static %} {% load wagtailcore_tags wagtailimages_tags %}
-<style>
-    .enhanced-page .dedication {
-        margin-bottom: 3rem;
-        display: block;
-    }
-
-    .enhanced-page .dedication::after {
-        content: "";
-        display: block;
-        clear: both;
-    }
-
-    .enhanced-page .dedication .title {
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    .enhanced-page .dedication .dedication-image {
-        float: right;
-        width:200px;
-        margin: 0px 0px 17.5px 18px;
-    }
-
-    .enhanced-page .dedication .dedication-image img {
-        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
-        max-width: 200px;
-        height: auto;
-        display: block;
-    }
-    .dedication .dedication-text p{
-        margin-bottom: 15px;
-    }
-</style>
-<div class="dedication">
-<h2 class="title" tabindex="0">{{ block.value.title }}</h2>
-    {% if block.value.photo %}
-        <div class="dedication-image" tabindex="0" >{% image block.value.photo width-600 alt=block.value.alt_text %}</div>
+{% load wagtailcore_tags wagtailimages_tags %}
+<div class="dedication dedication-{{ block.value.image_position|default:'left' }}">
+    {% if block.value.title %}
+        <h2 class="dedication-title">{{ block.value.title }}</h2>
     {% endif %}
-    <div class="dedication-text" tabindex="0">
-        {{ block.value.paragraph_text | richtext }}
+    {% if block.value.photo %}
+        {% image block.value.photo width-600 as photo_rendition %}
+        <div class="dedication-image {% if photo_rendition.width > photo_rendition.height %}dedication-image--landscape{% endif %}">
+            <img src="{{ photo_rendition.url }}" width="{{ photo_rendition.width }}" height="{{ photo_rendition.height }}" alt="{{ block.value.alt_text }}" tabindex="0" role="img">
+        </div>
+    {% endif %}
+    <div class="dedication-text">
+        {{ block.value.paragraph_text|richtext }}
     </div>
 </div>
