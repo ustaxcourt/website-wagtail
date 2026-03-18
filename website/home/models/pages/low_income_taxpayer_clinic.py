@@ -1,5 +1,5 @@
 from wagtail import blocks
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
@@ -41,6 +41,12 @@ class LITCStateBlock(blocks.StructBlock):
 
 
 class LITCPage(ModerationMixin, Page):
+    introductory_paragraph = RichTextField(
+        blank=True,
+        help_text="Optional introductory paragraph for the page.",
+        default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
+    )
+
     low_income_taxpayer_clinics = StreamField(
         [("state", LITCStateBlock())],
         use_json_field=True,
