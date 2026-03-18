@@ -1972,8 +1972,6 @@ class LITCPageInitializer(PageInitializer):
         slug = "clinics-and-pro-bono-programs"
         title = "Clinics and Pro Bono Programs"
 
-        introductory_paragraph = "The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers."
-
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")
             return
@@ -2005,7 +2003,6 @@ class LITCPageInitializer(PageInitializer):
             slug=slug,
             seo_title=title,
             search_description="LITC Cities",
-            introductory_paragraph=introductory_paragraph,
             low_income_taxpayer_clinics=low_income_taxpayer_clinic_data,
             show_in_menus=True,
         )

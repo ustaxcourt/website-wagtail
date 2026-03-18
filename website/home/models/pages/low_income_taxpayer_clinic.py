@@ -15,7 +15,8 @@ class LITCClinicBlock(blocks.StructBlock):
     website = blocks.URLBlock(required=False)
     email = blocks.EmailBlock(required=False)
     small_case_procedures_only = blocks.BooleanBlock(
-        required=False, help_text="Indicates if the clinic handles only small cases"
+        required=False,
+        help_text="Indicates the clinic only represents taxpayers who have elected the small tax case procedures.",
     )
 
     class Meta:
@@ -26,7 +27,7 @@ class LITCClinicBlock(blocks.StructBlock):
 class LITCCityBlock(blocks.StructBlock):
     name = blocks.CharBlock()
     small_cases_only = blocks.BooleanBlock(
-        required=False, help_text="Indicates if the clinic handles only small cases"
+        required=False, help_text="Indicates the city only holds small case trials."
     )
     clinics = blocks.ListBlock(LITCClinicBlock())
 
@@ -47,15 +48,42 @@ class LITCPage(ModerationMixin, Page):
         default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
     )
 
+    introductory_paragraph_new = blocks.StreamBlock(
+        [
+            (
+                "paragraph",
+                blocks.RichTextBlock(
+                    help_text="Write your paragraph here.",
+                    default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
+                ),
+            ),
+        ],
+        required=False,
+        max_num=1,
+        help_text="You can add up to one paragraph here.",
+    )
+
     low_income_taxpayer_clinics = StreamField(
         [("state", LITCStateBlock())],
         use_json_field=True,
         blank=True,
     )
 
+    # Asterisks name is the temporary name
+    asterisks_information = blocks.StreamBlock(
+        [
+            ("paragraph", blocks.RichTextBlock(help_text="Write your paragraph here.")),
+        ],
+        required=False,
+        max_num=2,
+        help_text="You can add up to two paragraphs here.",
+    )
+
     promote_panels = custom_promote_panels
 
     content_panels = Page.content_panels + [
+        FieldPanel("introductory_paragraph"),
+        # FieldPanel("asterisks_information"),
         FieldPanel("low_income_taxpayer_clinics"),
     ]
 
