@@ -48,7 +48,7 @@ class LITCPage(ModerationMixin, Page):
         default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
     )
 
-    introductory_paragraph_new = blocks.StreamBlock(
+    introductory_paragraph_new = StreamField(
         [
             (
                 "paragraph",
@@ -58,9 +58,8 @@ class LITCPage(ModerationMixin, Page):
                 ),
             ),
         ],
-        required=False,
-        max_num=1,
-        help_text="You can add up to one paragraph here.",
+        use_json_field=True,
+        blank=True,
     )
 
     low_income_taxpayer_clinics = StreamField(
@@ -70,20 +69,19 @@ class LITCPage(ModerationMixin, Page):
     )
 
     # Asterisks name is the temporary name
-    asterisks_information = blocks.StreamBlock(
+    asterisks_information = StreamField(
         [
             ("paragraph", blocks.RichTextBlock(help_text="Write your paragraph here.")),
         ],
-        required=False,
-        max_num=2,
-        help_text="You can add up to two paragraphs here.",
+        use_json_field=True,
+        blank=True,
     )
 
     promote_panels = custom_promote_panels
 
     content_panels = Page.content_panels + [
         FieldPanel("introductory_paragraph"),
-        # FieldPanel("asterisks_information"),
+        FieldPanel("asterisks_information"),
         FieldPanel("low_income_taxpayer_clinics"),
     ]
 
