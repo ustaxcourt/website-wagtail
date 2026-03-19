@@ -77,8 +77,10 @@ class TestRedirectBehavior(TestCase):
         self._test_redirect("/index.html", "/")
 
     def test_press_release_archives_redirect(self):
-        """Test that /press_release_archives.html redirects to /press-releases/archives."""
-        self._test_redirect("/press_release_archives.html", "/press-releases/archives")
+        """Test that /press_release_archives.html redirects to /news-and-announcements/archives."""
+        self._test_redirect(
+            "/press_release_archives.html", "/news-and-announcements/archives"
+        )
 
     def test_dawson_faqs_redirect(self):
         """Test that /dawson_faqs.html redirects to /dawson-faqs-basics."""
