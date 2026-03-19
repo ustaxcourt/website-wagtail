@@ -6,6 +6,7 @@ on:
       - qa
     tags:
       - qa-deploy
+  workflow_call:
 
 
 concurrency:
