@@ -79,12 +79,16 @@ run:
 run-debug:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=app.settings.debug python manage.py runserver
 
-setup: init
+setup-pip: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
+
+setup-npm:
 	npm install
 	npx gulp copyAssets
 	npx gulp compile
+
+setup: setup-pip setup-npm
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "webmaster@ustaxcourt.gov"

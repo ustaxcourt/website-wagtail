@@ -12,6 +12,10 @@ on:
   pull_request:
     types: [labeled]
 
+concurrency:
+  group: qa-merge
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
@@ -92,15 +96,17 @@ jobs:
       - name: Install dependencies
         run: |
           cd website
-          make setup
+          make setup-pip
 
       - name: Check migrations against merged result
         id: migration_check
         run: |
           cd website
           . .venv/bin/activate
+          set +e
           DJANGO_SETTINGS_MODULE=app.settings.local python manage.py migrate --no-input 2>&1 | tee /tmp/migration_output.txt
           EXIT_CODE=${PIPESTATUS[0]}
+          set -e
 
           if grep -qi "conflicting migrations" /tmp/migration_output.txt; then
             echo "success=false" >> $GITHUB_OUTPUT
@@ -156,4 +162,6 @@ jobs:
   deploy:
     needs: merge-to-qa
     uses: ./.github/workflows/qa_deploy.yml
+    with:
+      ref: qa
     secrets: inherit

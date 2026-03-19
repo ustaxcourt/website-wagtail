@@ -7,6 +7,12 @@ on:
     tags:
       - qa-deploy
   workflow_call:
+    inputs:
+      ref:
+        description: 'Git ref to deploy (defaults to qa branch)'
+        required: false
+        type: string
+        default: 'qa'
 
 
 concurrency:
@@ -26,6 +32,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref || 'qa' }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform

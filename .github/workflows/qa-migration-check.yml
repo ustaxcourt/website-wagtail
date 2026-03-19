@@ -2,7 +2,7 @@ name: QA Migration Check
 
 # Runs after every push to `qa` to detect Django migration conflicts
 # (e.g. two branches that both added a migration with the same number/parent).
-# Uses an in-memory SQLite DB — no AWS infrastructure needed.
+# Uses a local SQLite DB — no AWS infrastructure needed.
 
 on:
   push:
@@ -24,14 +24,16 @@ jobs:
       - name: Install dependencies
         run: |
           cd website
-          make setup
+          make setup-pip
 
       - name: Run migrations against fresh SQLite DB
         run: |
           cd website
           . .venv/bin/activate
+          set +e
           DJANGO_SETTINGS_MODULE=app.settings.local python manage.py migrate --no-input 2>&1 | tee /tmp/migration_output.txt
           EXIT_CODE=${PIPESTATUS[0]}
+          set -e
 
           if grep -qi "conflicting migrations" /tmp/migration_output.txt; then
             echo "::error::Migration graph conflict detected — two branches introduced migrations with the same parent. Resolve by adding a merge migration (python manage.py makemigrations --merge)."
