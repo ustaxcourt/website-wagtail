@@ -11,16 +11,17 @@
             margin-bottom: 15px;
         }
 
-        .notice div {
-            font-size: 17px;
-            font-weight: 700;
-            margin: 15px 0;
-        }
-        .notice div p {
+        .notice div p, .simple-text {
             display: inline;
             font-size: 17px;
             font-weight: 700;
 
+        }
+        .notice .simple-text {
+            display: inline-block;
+        }
+        .notice-item {
+            margin-bottom: 17px;
         }
 
         .description {
@@ -227,7 +228,17 @@
         {% if page.asterisks_notice %}
             <div class="notice">
                 {% for block in page.asterisks_notice %}
-                <div><span style="color:#DB0000;" class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span> {{ block.value.text }}</div>
+                <div class="notice-item">
+                    <span style="color:#DB0000; font-weight: 700;" class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
+                    {% for content_block in block.value.content %}
+                        {% if content_block.block_type == "callout" %}
+                            <div class="callout">{{ content_block }}</div>
+                        {% endif %}
+                        {% if content_block.block_type == "simple_text" %}
+                            <div class="simple-text">{{ content_block.value }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
                 {% endfor %}
                 {% comment %} <p><span style="color:#DB0000;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p> {% endcomment %}
                 {% comment %} <p><span style="color:#DB0000;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p> {% endcomment %}

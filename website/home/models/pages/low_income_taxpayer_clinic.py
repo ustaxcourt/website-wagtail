@@ -6,6 +6,7 @@ from wagtail.search import index
 from home.models.custom_blocks.common import custom_promote_panels
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+from home.models.pages.enhanced_standard import StyledCalloutBlock
 
 
 class LITCClinicBlock(blocks.StructBlock):
@@ -51,6 +52,7 @@ class LITCPage(ModerationMixin, Page):
                     default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
                 ),
             ),
+            ("callout", StyledCalloutBlock()),
         ],
         use_json_field=True,
         blank=True,
@@ -68,17 +70,13 @@ class LITCPage(ModerationMixin, Page):
         blank=True,
     )
 
-    # Asterisks name is the temporary name
     asterisks_notice = StreamField(
         blocks.StreamBlock(
             [
-                # ("One_Asterisks_for_cities", blocks.RichTextBlock(help_text="Write your paragraph here.", default="<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">*</span> Indicates the city only holds trials for small tax cases.</p>")),
-                # ("Two_Asterisks_for_clinics", blocks.RichTextBlock(help_text="Write your paragraph here.", default="<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>")),
                 (
                     "asterisk_notice",
                     blocks.StructBlock(
                         [
-                            # ("asterisks_count(*)", blocks.IntegerBlock(min_value=0, max_value=2, default=0)),
                             (
                                 "asterisks_count",
                                 blocks.ChoiceBlock(
@@ -89,9 +87,20 @@ class LITCPage(ModerationMixin, Page):
                                 ),
                             ),
                             (
-                                "text",
-                                blocks.RichTextBlock(
-                                    help_text="Write your explanation text here."
+                                "content",
+                                blocks.StreamBlock(
+                                    [
+                                        (
+                                            "simple_text",
+                                            blocks.RichTextBlock(
+                                                help_text="Standard text explanation."
+                                            ),
+                                        ),
+                                        ("callout", StyledCalloutBlock()),
+                                    ],
+                                    max_num=1,
+                                    required=True,
+                                    label="Notice Content",
                                 ),
                             ),
                         ],
@@ -100,25 +109,32 @@ class LITCPage(ModerationMixin, Page):
                     ),
                 ),
             ],
-            # max_num=2,
         ),
         use_json_field=True,
         blank=True,
         default=[
-            # ("One_Asterisks_for_cities", "<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">*</span> Indicates the city only holds trials for small tax cases.</p>"),
-            # ("Two_Asterisks_for_clinics", "<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>"),
             (
                 "asterisk_notice",
                 {
                     "asterisks_count": "*",
-                    "text": "Indicates the city only holds trials for small tax cases.",
+                    "content": [
+                        (
+                            "simple_text",
+                            "Indicates the city only holds trials for small tax cases.",
+                        )
+                    ],
                 },
             ),
             (
                 "asterisk_notice",
                 {
                     "asterisks_count": "**",
-                    "text": "Indicates the clinic only represents taxpayers who have elected the small tax case procedure.",
+                    "content": [
+                        (
+                            "simple_text",
+                            "Indicates the clinic only represents taxpayers who have elected the small tax case procedure.",
+                        ),
+                    ],
                 },
             ),
         ],
