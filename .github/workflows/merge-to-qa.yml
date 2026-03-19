@@ -102,7 +102,7 @@ jobs:
         id: migration_check
         run: |
           cd website
-          . .venv/bin/activate
+          . ../.venv/bin/activate
           set +e
           DJANGO_SETTINGS_MODULE=app.settings.local python manage.py migrate --no-input 2>&1 | tee /tmp/migration_output.txt
           EXIT_CODE=${PIPESTATUS[0]}
