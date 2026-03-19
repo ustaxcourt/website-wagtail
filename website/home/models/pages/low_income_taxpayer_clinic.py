@@ -1,5 +1,5 @@
 from wagtail import blocks
-from wagtail.fields import StreamField, RichTextField
+from wagtail.fields import StreamField
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index
@@ -42,13 +42,7 @@ class LITCStateBlock(blocks.StructBlock):
 
 
 class LITCPage(ModerationMixin, Page):
-    introductory_paragraph = RichTextField(
-        blank=True,
-        help_text="Optional introductory paragraph for the page.",
-        default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
-    )
-
-    introductory_paragraph_new = StreamField(
+    introductory_paragraph = StreamField(
         [
             (
                 "paragraph",
@@ -60,6 +54,12 @@ class LITCPage(ModerationMixin, Page):
         ],
         use_json_field=True,
         blank=True,
+        default=[
+            (
+                "paragraph",
+                "<p>The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.</p>",
+            ),
+        ],
     )
 
     low_income_taxpayer_clinics = StreamField(
@@ -69,19 +69,66 @@ class LITCPage(ModerationMixin, Page):
     )
 
     # Asterisks name is the temporary name
-    asterisks_information = StreamField(
-        [
-            ("paragraph", blocks.RichTextBlock(help_text="Write your paragraph here.")),
-        ],
+    asterisks_notice = StreamField(
+        blocks.StreamBlock(
+            [
+                # ("One_Asterisks_for_cities", blocks.RichTextBlock(help_text="Write your paragraph here.", default="<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">*</span> Indicates the city only holds trials for small tax cases.</p>")),
+                # ("Two_Asterisks_for_clinics", blocks.RichTextBlock(help_text="Write your paragraph here.", default="<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>")),
+                (
+                    "asterisk_notice",
+                    blocks.StructBlock(
+                        [
+                            # ("asterisks_count(*)", blocks.IntegerBlock(min_value=0, max_value=2, default=0)),
+                            (
+                                "asterisks_count",
+                                blocks.ChoiceBlock(
+                                    choices=[("", "None"), ("*", "*"), ("**", "**")],
+                                    default="",
+                                    required=False,
+                                    help_text="Set the number of asterisks to display (0, 1 or 2).",
+                                ),
+                            ),
+                            (
+                                "text",
+                                blocks.RichTextBlock(
+                                    help_text="Write your explanation text here."
+                                ),
+                            ),
+                        ],
+                        icon="info-circle",
+                        label="Asterisk Notice",
+                    ),
+                ),
+            ],
+            # max_num=2,
+        ),
         use_json_field=True,
         blank=True,
+        default=[
+            # ("One_Asterisks_for_cities", "<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">*</span> Indicates the city only holds trials for small tax cases.</p>"),
+            # ("Two_Asterisks_for_clinics", "<p><span style=\"color:#DB0000;\" class=\"small-case-indicator\">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>"),
+            (
+                "asterisk_notice",
+                {
+                    "asterisks_count": "*",
+                    "text": "Indicates the city only holds trials for small tax cases.",
+                },
+            ),
+            (
+                "asterisk_notice",
+                {
+                    "asterisks_count": "**",
+                    "text": "Indicates the clinic only represents taxpayers who have elected the small tax case procedure.",
+                },
+            ),
+        ],
     )
 
     promote_panels = custom_promote_panels
 
     content_panels = Page.content_panels + [
         FieldPanel("introductory_paragraph"),
-        FieldPanel("asterisks_information"),
+        FieldPanel("asterisks_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
     ]
 

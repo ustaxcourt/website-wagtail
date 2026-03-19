@@ -11,9 +11,16 @@
             margin-bottom: 15px;
         }
 
-        .notice p {
+        .notice div {
             font-size: 17px;
             font-weight: 700;
+            margin: 15px 0;
+        }
+        .notice div p {
+            display: inline;
+            font-size: 17px;
+            font-weight: 700;
+
         }
 
         .description {
@@ -201,9 +208,11 @@
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1 class="page-title">Participating Clinics and Pro Bono Programs</h1>
-        <h2 class="description">
-            {{ page.introductory_paragraph|richtext }}
-        </h2>
+        {% if page.introductory_paragraph %}
+            <h2 class="description">
+                {{ page.introductory_paragraph }}
+            </h2>
+        {% endif %}
         <div class="alphabet-wrapper">
             <button class="alphabet-toggle" aria-expanded="false" aria-controls="alphabet-nav">
                 <span>Filter by Letter</span>
@@ -215,10 +224,15 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="notice">
-            <p><span style="color:#DB0000;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p>
-            <p><span style="color:#DB0000;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>
-        </div>
+        {% if page.asterisks_notice %}
+            <div class="notice">
+                {% for block in page.asterisks_notice %}
+                <div><span style="color:#DB0000;" class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span> {{ block.value.text }}</div>
+                {% endfor %}
+                {% comment %} <p><span style="color:#DB0000;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p> {% endcomment %}
+                {% comment %} <p><span style="color:#DB0000;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p> {% endcomment %}
+            </div>
+        {% endif %}
 
         <div class="clinic-list grid">
             {% for state in sorted_clinics %}
