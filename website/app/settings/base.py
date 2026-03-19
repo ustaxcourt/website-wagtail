@@ -469,3 +469,10 @@ WAGTAILTRANSFER_SOURCES_JSON = os.getenv("WAGTAILTRANSFER_SOURCES", "{}")
 #         'SECRET_KEY': 'WAGTRANSFER!1098%',
 #     },
 # }
+
+WAGTAILTRANSFER_NO_FOLLOW_MODELS = [
+    "wagtailcore.page",
+    "contenttypes.contenttype",
+    "auth.user",
+    "wagtailcore.revision",
+]
