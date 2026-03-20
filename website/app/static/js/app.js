@@ -19,16 +19,16 @@ function refreshScrollToTopButton() {
     }
     button.classList.add('visible');
 
-    const img = button.querySelector('img');
-    const screenWidth = window.screen.width;
-    //only do this on desktop
-    if(screenWidth < 1025) {
+    // If the footer is taller than the viewport (tall stacked mobile layout), scootching would
+    // push the button off the top of the screen — keep it fixed at the bottom instead.
+    // On tablet/desktop the footer is shorter than the viewport, so scootch above its top edge.
+    if(footer.offsetHeight >= window.innerHeight) {
         button.style.bottom = `${GAP_TO_BOTTOM_FOOTER}px`;
         return;
     }
 
-    //when the footer top is closer to the top of the viewport than  the bottom of the viewport is to the top of the viewport, we need to scootch
-    let scootchNeeded = (footerRect.top < window.innerHeight) ;
+    // Scootch the button above the footer when its top edge enters the viewport from the bottom.
+    const scootchNeeded = footerRect.top > 0 && footerRect.top < window.innerHeight;
     if(scootchNeeded) {
         button.style.bottom = `${window.innerHeight - footerRect.top + GAP_TO_BOTTOM_FOOTER}px`;
     } else {
