@@ -10,6 +10,8 @@ jobs:
     environment: qa
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - name: Set Environment
         id: set_env
@@ -36,3 +38,10 @@ jobs:
         run: |
           cd infra
           echo "Y" | ./destroy.sh
+
+      - name: Reset qa branch to main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin main
+          git push origin origin/main:refs/heads/qa --force
