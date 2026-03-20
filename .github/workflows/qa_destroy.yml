@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'qa-destroy'
+  workflow_dispatch:
 
 jobs:
   destroy:
@@ -16,12 +17,7 @@ jobs:
       - name: Set Environment
         id: set_env
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/qa-destroy ]]; then
-            echo "ENVIRONMENT=qa" >> $GITHUB_ENV
-          else
-            echo "Debug: No matching condition found"
-            exit 1
-          fi
+          echo "ENVIRONMENT=qa" >> $GITHUB_ENV
       - name: Checkout qa tag
         uses: actions/checkout@v3
         with:
