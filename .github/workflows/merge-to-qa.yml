@@ -159,6 +159,17 @@ jobs:
               body: '✅ Branch `${{ github.event.pull_request.head.ref }}` has been merged into `qa` for testing.'
             })
 
+      - name: Remove qa-ready label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'qa-ready'
+            })
+
   deploy:
     needs: merge-to-qa
     uses: ./.github/workflows/qa_deploy.yml
