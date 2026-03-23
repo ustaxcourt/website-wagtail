@@ -1,9 +1,11 @@
 import os
-import boto3
 from typing import Optional, Dict, Any, List, Set
 
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.template import loader
+from django.utils.html import strip_tags
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from wagtail.models import Revision, TaskState, Page
@@ -62,6 +64,23 @@ def build_edit_url(obj, domain_name: Optional[str]) -> Optional[str]:
     if domain_name:
         return f"https://{domain_name}{path}"
     return path
+
+
+def send_digest_email(
+    recipient_emails: List[str], email_html: str, domain_name: Optional[str]
+) -> int:
+    """Send the moderator digest using Django's configured email backend."""
+    source_email = getattr(settings, "DEFAULT_FROM_EMAIL", None)
+    if not source_email and domain_name:
+        source_email = f"noreply@{domain_name}"
+
+    return send_mail(
+        subject="Wagtail Daily Moderator Digest",
+        message=strip_tags(email_html),
+        from_email=source_email,
+        recipient_list=recipient_emails,
+        html_message=email_html,
+    )
 
 
 class Command(BaseCommand):
@@ -248,27 +267,14 @@ class Command(BaseCommand):
         }
         email_html = loader.get_template("mail/moderation_digest.html").render(context)
 
-        # 4) Send via SES
-        ses_region = os.getenv("AWS_REGION", "us-east-1")
-        source_email = f"noreply@{domain_name}"
+        # 4) Send using Django's configured email backend
         self.stdout.write(
-            f"Sending email via SES (region: {ses_region}, from: {source_email}, to: {recipient_emails})"
+            f"Sending email via Django email backend (from: {settings.DEFAULT_FROM_EMAIL}, to: {recipient_emails})"
         )
-        client = boto3.client("ses", region_name=ses_region)
         try:
-            response = client.send_email(
-                Destination={"ToAddresses": recipient_emails},
-                Message={
-                    "Body": {"Html": {"Charset": "UTF-8", "Data": email_html}},
-                    "Subject": {
-                        "Charset": "UTF-8",
-                        "Data": "Wagtail Daily Moderator Digest",
-                    },
-                },
-                Source=f"noreply@{domain_name}",
-            )
+            sent_count = send_digest_email(recipient_emails, email_html, domain_name)
             self.stdout.write(
-                self.style.SUCCESS(f"Email sent! Message ID: {response['MessageId']}")
+                self.style.SUCCESS(f"Email sent to {sent_count} recipient(s).")
             )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error sending email: {e}"))
