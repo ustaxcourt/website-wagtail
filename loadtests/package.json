@@ -18,6 +18,6 @@
     "artillery": "^2.0.27"
   },
   "overrides": {
-    "fast-xml-parser": ">=5.3.5"
+    "fast-xml-parser": "^5.3.5"
   }
 }
