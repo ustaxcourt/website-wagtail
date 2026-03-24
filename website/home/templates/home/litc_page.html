@@ -25,6 +25,11 @@
             display: flex;
             flex-wrap: nowrap;
         }
+        .notice-item span{
+            color:#DB0000;
+            font-weight: 700;
+            margin-right: 5px;
+        }
 
         .description {
             font-size: 17px;
@@ -231,7 +236,10 @@
             <div class="notice">
                 {% for block in page.asterisks_notice %}
                 <div class="notice-item">
-                    <span style="color:#DB0000; font-weight: 700;" class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
+                    {% if block.value.asterisks_count != "" %}
+                        <span class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
+                    {% endif %}
+
                     {% for content_block in block.value.content %}
                         {% if content_block.block_type == "callout" %}
                             <div class="callout">{{ content_block }}</div>
