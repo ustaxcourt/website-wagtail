@@ -154,14 +154,6 @@ resource "aws_ecs_task_definition" "this" {
         valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:SECRET_KEY::"
       },
       {
-        name = "WAGTAILTRANSFER_SECRET_KEY",
-        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:WAGTAILTRANSFER_SECRET_KEY::"
-      },
-      {
-        name = "WAGTAILTRANSFER_SOURCES",
-        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:WAGTAILTRANSFER_SOURCES::"
-      },
-      {
         name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET",
         valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET::"
       },
