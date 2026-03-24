@@ -34,8 +34,6 @@ resource "aws_secretsmanager_secret_version" "ecs_task_secrets_version" {
     DATABASE_URL = "postgresql://${aws_db_instance.default.username}:${aws_db_instance.default.password}@${aws_db_instance.default.endpoint}/postgres"
     SECRET_KEY = var.secret_key
     SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET = var.social_auth_azuread_tenant_oauth2_secret
-    WAGTAILTRANSFER_SECRET_KEY = replace(var.wagtailtransfer_secret_key, "\"", "\\\"")
-    WAGTAILTRANSFER_SOURCES = replace(var.wagtailtransfer_sources, "\"", "\\\"")
   })
 }
 
