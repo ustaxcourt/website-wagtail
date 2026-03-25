@@ -30,6 +30,9 @@
             font-weight: 700;
             margin-right: 5px;
         }
+        .notice-item:has(.callout) {
+            display: block;
+        }
 
         .description {
             font-size: 17px;
@@ -232,9 +235,9 @@
                 {% endfor %}
             </div>
         </div>
-        {% if page.asterisks_notice %}
+        {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
             <div class="notice">
-                {% for block in page.asterisks_notice %}
+                {% for block in page.city_asterisk_notice %}
                 <div class="notice-item">
                     {% if block.value.asterisks_count != "" %}
                         <span class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
@@ -247,6 +250,23 @@
                         {% if content_block.block_type == "simple_text" %}
                             <div class="simple-text">{{ content_block.value }}</div>
                         {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                {% for block in page.clinic_asterisk_notice %}
+                    <div class="notice-item">
+                        {% if block.value.asterisks_count != "" %}
+                            <span class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
+                        {% endif %}
+
+                        {% for content_block in block.value.content %}
+                            {% if content_block.block_type == "callout" %}
+                                <div class="callout">{{ content_block }}</div>
+                            {% endif %}
+                            {% if content_block.block_type == "simple_text" %}
+                                <div class="simple-text">{{ content_block.value }}</div>
+                            {% endif %}
                     {% endfor %}
                 </div>
                 {% endfor %}

@@ -70,7 +70,7 @@ class LITCPage(ModerationMixin, Page):
         blank=True,
     )
 
-    asterisks_notice = StreamField(
+    city_asterisk_notice = StreamField(
         blocks.StreamBlock(
             [
                 (
@@ -80,10 +80,10 @@ class LITCPage(ModerationMixin, Page):
                             (
                                 "asterisks_count",
                                 blocks.ChoiceBlock(
-                                    choices=[("", "None"), ("*", "*"), ("**", "**")],
+                                    choices=[("", "None"), ("*", "*")],
                                     default="",
                                     required=False,
-                                    help_text="Set the number of asterisks to display (0, 1 or 2).",
+                                    help_text="Set the number of asterisks to display (0 or 1).",
                                 ),
                             ),
                             (
@@ -105,7 +105,7 @@ class LITCPage(ModerationMixin, Page):
                             ),
                         ],
                         icon="info-circle",
-                        label="Asterisk Notice",
+                        label="City Asterisk Notice",
                     ),
                 ),
             ],
@@ -125,6 +125,53 @@ class LITCPage(ModerationMixin, Page):
                     ],
                 },
             ),
+        ],
+        help_text="This notice will be used to explain the meaning of a single asterisk next to city names in the clinic listings.",
+    )
+
+    clinic_asterisk_notice = StreamField(
+        blocks.StreamBlock(
+            [
+                (
+                    "asterisk_notice",
+                    blocks.StructBlock(
+                        [
+                            (
+                                "asterisks_count",
+                                blocks.ChoiceBlock(
+                                    choices=[("", "None"), ("**", "**")],
+                                    default="",
+                                    required=False,
+                                    help_text="Set the number of asterisks to display (0 or 2).",
+                                ),
+                            ),
+                            (
+                                "content",
+                                blocks.StreamBlock(
+                                    [
+                                        (
+                                            "simple_text",
+                                            blocks.RichTextBlock(
+                                                help_text="Standard text explanation."
+                                            ),
+                                        ),
+                                        ("callout", StyledCalloutBlock()),
+                                    ],
+                                    max_num=1,
+                                    required=True,
+                                    label="Notice Content",
+                                ),
+                            ),
+                        ],
+                        icon="info-circle",
+                        label="Clinic Asterisk Notice",
+                    ),
+                ),
+            ],
+        ),
+        use_json_field=True,
+        blank=True,
+        default=[
             (
                 "asterisk_notice",
                 {
@@ -138,13 +185,16 @@ class LITCPage(ModerationMixin, Page):
                 },
             ),
         ],
+        help_text="This notice will be used to explain the meaning of double asterisks next to clinic names in the clinic listings.",
     )
 
     promote_panels = custom_promote_panels
 
     content_panels = Page.content_panels + [
         FieldPanel("introductory_paragraph"),
-        FieldPanel("asterisks_notice"),
+        # FieldPanel("asterisks_notice"),
+        FieldPanel("city_asterisk_notice"),
+        FieldPanel("clinic_asterisk_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
     ]
 
