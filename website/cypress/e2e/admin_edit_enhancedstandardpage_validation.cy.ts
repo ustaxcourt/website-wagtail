@@ -37,7 +37,7 @@ describe('Enhanced Standard Page Edit Validation', () => {
     cy.get('button.c-sf-add-button').click();
 
     let componentsExpectedToFind: string[] = ["Heading", "Heading 2", "Heading 3", "Heading 4", "Paragraph", "Indented Paragraph", "Snippet", "Button",
-        "Horizontal Rule", "Iframe", "Alert", "Image", "Photo Dedication", "Table", "Unstyled table", "Enhanced Table", "List", "List of Links",
+        "Horizontal Rule", "Iframe", "Alert", "Image", "Photo + Text", "Table", "Unstyled table", "Enhanced Table", "List", "List of Links",
         "Question and Answer", "Columns", "Embedded video", "Card Set", "Accordion Block", "Callout Block", "Grid", "Card Tiles", "Quick Access Tiles"
     ];
     //Find the element that represents the menu that appears when the "+" button is clicked
@@ -46,14 +46,15 @@ describe('Enhanced Standard Page Edit Validation', () => {
         cy.get('div.w-combobox__option-text').each(($el, index, $list) => {
 
             //Determine if component is in the array of expected components
-            let textToSearchFor: string = $el.text();
-            let message: string = 'Component "' + textToSearchFor + '" is in list of expected components';
+            const rawText: string = $el.text();
+            const textToSearchFor: string = rawText.replace(/\s+/g, ' ').trim();
+            let message: string = `Component '${textToSearchFor}' is in list of expected components`;
             expect(componentsExpectedToFind, message).to.include(textToSearchFor);
 
             //Update the array to remove the found component
             if (componentsExpectedToFind.includes(textToSearchFor))
             {
-                componentsExpectedToFind = componentsExpectedToFind.filter(x => x != textToSearchFor);
+                componentsExpectedToFind = componentsExpectedToFind.filter(x => x !== textToSearchFor);
             }
         }).then(() => {
             //Determine if there are any components that were not found in the menu that should be displayed.
