@@ -41,3 +41,12 @@ variable "prevent_db_deletion" {
   type = bool
   default = true
 }
+
+
+variable "wagtailtransfer_secret_key" {
+  type = string
+}
+
+variable "wagtailtransfer_sources" {
+  type = string
+}
