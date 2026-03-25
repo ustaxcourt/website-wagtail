@@ -66,13 +66,19 @@ def build_edit_url(obj, domain_name: Optional[str]) -> Optional[str]:
     return path
 
 
+def get_digest_from_email(domain_name: Optional[str]) -> Optional[str]:
+    """Return the sender address used for the moderator digest email."""
+    source_email = getattr(settings, "DEFAULT_FROM_EMAIL", None)
+    if not source_email and domain_name:
+        source_email = f"noreply@{domain_name}"
+    return source_email or None
+
+
 def send_digest_email(
     recipient_emails: List[str], email_html: str, domain_name: Optional[str]
 ) -> int:
     """Send the moderator digest using Django's configured email backend."""
-    source_email = getattr(settings, "DEFAULT_FROM_EMAIL", None)
-    if not source_email and domain_name:
-        source_email = f"noreply@{domain_name}"
+    source_email = get_digest_from_email(domain_name)
 
     return send_mail(
         subject="Wagtail Daily Moderator Digest",
@@ -104,7 +110,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('"Moderators" group not found.'))
             return
 
-        # Convert set to list for the boto3 client
+        # Convert set to list for the email backend call
         recipient_emails = list(moderator_emails)
 
         if not recipient_emails:
@@ -268,13 +274,20 @@ class Command(BaseCommand):
         email_html = loader.get_template("mail/moderation_digest.html").render(context)
 
         # 4) Send using Django's configured email backend
+        source_email = get_digest_from_email(domain_name)
         self.stdout.write(
-            f"Sending email via Django email backend (from: {settings.DEFAULT_FROM_EMAIL}, to: {recipient_emails})"
+            f"Sending email via Django email backend (from: {source_email}, to: {recipient_emails})"
         )
         try:
-            sent_count = send_digest_email(recipient_emails, email_html, domain_name)
+            sent_message_count = send_digest_email(
+                recipient_emails, email_html, domain_name
+            )
             self.stdout.write(
-                self.style.SUCCESS(f"Email sent to {sent_count} recipient(s).")
+                self.style.SUCCESS(
+                    "Email backend reported "
+                    f"{sent_message_count} message(s) sent to "
+                    f"{len(recipient_emails)} recipient(s)."
+                )
             )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error sending email: {e}"))
