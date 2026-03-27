@@ -6,13 +6,15 @@
     {% if block.value.photo %}
         {% image block.value.photo width-600 as photo_rendition %}
         <div class="dedication-image {% if photo_rendition.width > photo_rendition.height %}dedication-image--landscape{% endif %}">
-            {% for link_item in block.value.link %}
+            {% with link_item=block.value.link.0 %}
+            {% if link_item %}
                 <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
-            {% endfor %}
-            <img src="{{ photo_rendition.url }}" width="{{ photo_rendition.width }}" height="{{ photo_rendition.height }}" alt="{{ block.value.alt_text }}" tabindex="0" role="img">
-            {% if block.value.link %}
+            {% endif %}
+            <img src="{{ photo_rendition.url }}" width="{{ photo_rendition.width }}" height="{{ photo_rendition.height }}" alt="{{ block.value.alt_text }}" {% if not link_item %}tabindex="0"{% endif %} role="img">
+            {% if link_item %}
                 </a>
             {% endif %}
+            {% endwith %}
         </div>
     {% endif %}
     <div class="dedication-text">

@@ -32,13 +32,15 @@
                 {{ block.value.text |safe }}
             {% elif block.block_type == 'image' %}
                 <div class="centered-image">
-                    {% for link_item in block.value.link %}
+                    {% with link_item=block.value.link.0 %}
+                    {% if link_item %}
                         <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
-                    {% endfor %}
+                    {% endif %}
                     {% picture block.value.image format-jpeg width-1000 loading="lazy" %}
-                    {% if block.value.link %}
+                    {% if link_item %}
                         </a>
                     {% endif %}
+                    {% endwith %}
                 </div>
             {% elif block.block_type == 'hr' %}
                 <hr />
