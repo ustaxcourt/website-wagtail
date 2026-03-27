@@ -58,7 +58,10 @@ class FindACasePageInitializer(PageInitializer):
                     {"type": "hr", "value": True},
                     {
                         "type": "image",
-                        "value": uploaded_images["find-a-case.jpg"]["id"],
+                        "value": {
+                            "image": uploaded_images["find-a-case.jpg"]["id"],
+                            "link": [],
+                        },
                     },
                     {"type": "hr", "value": True},
                     {
