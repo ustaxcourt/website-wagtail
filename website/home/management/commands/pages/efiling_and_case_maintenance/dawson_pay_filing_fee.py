@@ -148,9 +148,12 @@ class DawsonPayFilingFeeInitializer(PageInitializer):
                     {
                         "type": "image",
                         "value": {
-                            "image": images[
-                                "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png"
-                            ].id,
+                            "image": {
+                                "image": images[
+                                    "dawson_filing_fee_option_pay_by_debit_credit_pay_now.png"
+                                ].id,
+                                "alt": "",
+                            },
                             "link": [],
                         },
                     },
