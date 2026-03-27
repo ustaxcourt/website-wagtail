@@ -16,6 +16,8 @@
             font-size: 17px;
             font-weight: 700;
 
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
         .notice .simple-text {
             display: inline-block;
@@ -238,37 +240,29 @@
         {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
             <div class="notice">
                 {% for block in page.city_asterisk_notice %}
-                <div class="notice-item">
-                    {% if block.value.asterisks_count != "" %}
-                        <span class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
+                    {% if block.block_type == "asterisk_notice" %}
+                        <div class="notice-item">
+                            {% if block.value.asterisks_count != "" %}
+                                <span class="small-case-indicator">{{ block.value.asterisks_count }}</span>
+                            {% endif %}
+                            <div class="simple-text">{{ block.value.text|richtext }}</div>
+                        </div>
+                    {% elif block.block_type == "callout" %}
+                        <div class="callout">{{ block }}</div>
                     {% endif %}
-
-                    {% for content_block in block.value.content %}
-                        {% if content_block.block_type == "callout" %}
-                            <div class="callout">{{ content_block }}</div>
-                        {% endif %}
-                        {% if content_block.block_type == "simple_text" %}
-                            <div class="simple-text">{{ content_block.value }}</div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
                 {% endfor %}
 
                 {% for block in page.clinic_asterisk_notice %}
-                    <div class="notice-item">
-                        {% if block.value.asterisks_count != "" %}
-                            <span class="small-case-indicator">{{ block.value.asterisks_count|richtext }}</span>
-                        {% endif %}
-
-                        {% for content_block in block.value.content %}
-                            {% if content_block.block_type == "callout" %}
-                                <div class="callout">{{ content_block }}</div>
+                    {% if block.block_type == "asterisk_notice" %}
+                        <div class="notice-item">
+                            {% if block.value.asterisks_count != "" %}
+                                <span class="small-case-indicator">{{ block.value.asterisks_count }}</span>
                             {% endif %}
-                            {% if content_block.block_type == "simple_text" %}
-                                <div class="simple-text">{{ content_block.value }}</div>
-                            {% endif %}
-                    {% endfor %}
-                </div>
+                            <div class="simple-text">{{ block.value.text|richtext }}</div>
+                        </div>
+                    {% elif block.block_type == "callout" %}
+                        <div class="callout">{{ block }}</div>
+                    {% endif %}
                 {% endfor %}
             </div>
         {% endif %}

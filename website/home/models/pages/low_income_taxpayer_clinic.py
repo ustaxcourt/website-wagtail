@@ -87,20 +87,9 @@ class LITCPage(ModerationMixin, Page):
                                 ),
                             ),
                             (
-                                "content",
-                                blocks.StreamBlock(
-                                    [
-                                        (
-                                            "simple_text",
-                                            blocks.RichTextBlock(
-                                                help_text="Standard text explanation."
-                                            ),
-                                        ),
-                                        ("callout", StyledCalloutBlock()),
-                                    ],
-                                    max_num=1,
-                                    required=True,
-                                    label="Notice Content",
+                                "text",
+                                blocks.RichTextBlock(
+                                    help_text="Standard text explanation."
                                 ),
                             ),
                         ],
@@ -108,6 +97,7 @@ class LITCPage(ModerationMixin, Page):
                         label="City Asterisk Notice",
                     ),
                 ),
+                ("callout", StyledCalloutBlock()),
             ],
         ),
         use_json_field=True,
@@ -117,12 +107,7 @@ class LITCPage(ModerationMixin, Page):
                 "asterisk_notice",
                 {
                     "asterisks_count": "*",
-                    "content": [
-                        (
-                            "simple_text",
-                            "Indicates the city only holds trials for small tax cases.",
-                        )
-                    ],
+                    "text": "Indicates the city only holds trials for small tax cases.",
                 },
             ),
         ],
@@ -146,20 +131,9 @@ class LITCPage(ModerationMixin, Page):
                                 ),
                             ),
                             (
-                                "content",
-                                blocks.StreamBlock(
-                                    [
-                                        (
-                                            "simple_text",
-                                            blocks.RichTextBlock(
-                                                help_text="Standard text explanation."
-                                            ),
-                                        ),
-                                        ("callout", StyledCalloutBlock()),
-                                    ],
-                                    max_num=1,
-                                    required=True,
-                                    label="Notice Content",
+                                "text",
+                                blocks.RichTextBlock(
+                                    help_text="Standard text explanation."
                                 ),
                             ),
                         ],
@@ -167,6 +141,7 @@ class LITCPage(ModerationMixin, Page):
                         label="Clinic Asterisk Notice",
                     ),
                 ),
+                ("callout", StyledCalloutBlock()),
             ],
         ),
         use_json_field=True,
@@ -176,12 +151,7 @@ class LITCPage(ModerationMixin, Page):
                 "asterisk_notice",
                 {
                     "asterisks_count": "**",
-                    "content": [
-                        (
-                            "simple_text",
-                            "Indicates the clinic only represents taxpayers who have elected the small tax case procedure.",
-                        ),
-                    ],
+                    "text": "Indicates the clinic only represents taxpayers who have elected the small tax case procedure.",
                 },
             ),
         ],
