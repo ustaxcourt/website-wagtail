@@ -1,11 +1,17 @@
-"""Data migration: convert image blocks from bare int format to
-ImageWithLinkBlock StructBlock format.
+"""Data migration: convert image blocks to ImageWithLinkBlock StructBlock format.
 
-Existing pages store image blocks as:
-    {"type": "image", "value": 42}
+Existing pages may store image blocks in one of two legacy formats:
 
-The new ImageWithLinkBlock expects:
-    {"type": "image", "value": {"image": 42, "link": []}}
+  1. Bare integer (old ImageChooserBlock format):
+         {"type": "image", "value": 42}
+
+  2. ImageBlock dict (old ImageBlock format):
+         {"type": "image", "value": {"image": 42, "alt_text": "...", "decorative": false}}
+
+The new ImageWithLinkBlock expects the image to be nested under an ``image`` key
+and a ``link`` StreamBlock list alongside it:
+
+    {"type": "image", "value": {"image": {"image": 42, ...}, "link": []}}
 
 This must run before update_index or any StreamField deserialization
 of pages containing old-format image blocks.
@@ -41,6 +47,12 @@ def convert_image_block_data(apps, schema_editor):
             value = block.get("value")
 
             if isinstance(value, int):
+                # Old bare-int format → wrap into nested ImageBlock dict then ImageWithLinkBlock
+                block["value"] = {"image": {"image": value}, "link": []}
+                changed = True
+            elif isinstance(value, dict) and "link" not in value:
+                # Old ImageBlock dict format (e.g. {"image": <id>, "alt_text": ..., "decorative": ...})
+                # → wrap into ImageWithLinkBlock, preserving the existing ImageBlock data
                 block["value"] = {"image": value, "link": []}
                 changed = True
 
@@ -75,14 +87,15 @@ def reverse_migration(apps, schema_editor):
 
             value = block.get("value")
             if isinstance(value, dict) and "image" in value:
-                image_val = value["image"]
+                image_block_val = value["image"]
                 image_id = None
-                if isinstance(image_val, int):
-                    image_id = image_val
-                elif isinstance(image_val, dict):
-                    possible_id = image_val.get("id")
-                    if isinstance(possible_id, int):
-                        image_id = possible_id
+                if isinstance(image_block_val, dict):
+                    # image_block_val is an ImageBlock dict: {"image": <int_id>, ...}
+                    inner = image_block_val.get("image")
+                    if isinstance(inner, int):
+                        image_id = inner
+                elif isinstance(image_block_val, int):
+                    image_id = image_block_val
                 if image_id is not None:
                     block["value"] = image_id
                     changed = True
