@@ -160,6 +160,7 @@ jobs:
             })
 
       - name: Remove qa-ready label
+        if: always()
         uses: actions/github-script@v6
         with:
           script: |
