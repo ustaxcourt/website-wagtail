@@ -59,7 +59,10 @@ class FindACasePageInitializer(PageInitializer):
                     {
                         "type": "image",
                         "value": {
-                            "image": uploaded_images["find-a-case.jpg"]["id"],
+                            "image": {
+                                "image": uploaded_images["find-a-case.jpg"]["id"],
+                                "alt_text": "Screenshot of the DAWSON Find a Case search interface",
+                            },
                             "link": [],
                         },
                     },
