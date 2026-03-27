@@ -75,8 +75,17 @@ def reverse_migration(apps, schema_editor):
 
             value = block.get("value")
             if isinstance(value, dict) and "image" in value:
-                block["value"] = value["image"]
-                changed = True
+                image_val = value["image"]
+                image_id = None
+                if isinstance(image_val, int):
+                    image_id = image_val
+                elif isinstance(image_val, dict):
+                    possible_id = image_val.get("id")
+                    if isinstance(possible_id, int):
+                        image_id = possible_id
+                if image_id is not None:
+                    block["value"] = image_id
+                    changed = True
 
         if changed:
             cursor.execute(
