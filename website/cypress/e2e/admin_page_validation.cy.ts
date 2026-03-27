@@ -6,8 +6,8 @@
  */
 
 describe('Admin Page Edit Validation', () => {
-  const ADMIN_USERNAME = 'admin';
-  const ADMIN_PASSWORD = 'ustcAdminPW!';
+  const ADMIN_USERNAME = Cypress.env('ADMIN_USERNAME') || 'admin';
+  const ADMIN_PASSWORD = Cypress.env('ADMIN_PASSWORD') || 'ustcAdminPW!';
 
   let allPages: any[] = [];
   let testResults: Array<{
