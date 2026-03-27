@@ -162,7 +162,6 @@ class LITCPage(ModerationMixin, Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("introductory_paragraph"),
-        # FieldPanel("asterisks_notice"),
         FieldPanel("city_asterisk_notice"),
         FieldPanel("clinic_asterisk_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
