@@ -8,7 +8,6 @@ from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
 
 # from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.admin.panels import FieldPanel
-from wagtail.images.blocks import ImageBlock
 from wagtail.search import index
 
 from home.blocks import SVGDocumentChooserBlock
@@ -18,6 +17,7 @@ from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
+from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
@@ -315,7 +315,7 @@ _BASE_BLOCK_TYPES = [
             ],
         ),
     ),
-    ("image", ImageBlock()),
+    ("image", ImageWithLinkBlock()),
     ("photo_dedication", PhotoDedicationBlock()),
     (
         "table",
