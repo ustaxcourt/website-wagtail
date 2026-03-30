@@ -1937,16 +1937,16 @@ class LITCPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def update(self):
-        if Page.objects.filter(slug="litc-cities").exists():
+        if Page.objects.filter(slug="clinics-and-pro-bono-programs").exists():
             logger.info(
-                "- Low Income Taxpayer Clinic Cities page already exists, skipping."
+                "- Clinics and Pro Bono Programs page already exists, skipping."
             )
             return
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
     def run(self):
-        command_name = "Create LITC Cities page"
+        command_name = "Create Clinics and Pro Bono Programs page"
 
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already ran. Update not necessary.")
@@ -1969,8 +1969,8 @@ class LITCPageInitializer(PageInitializer):
             raise
 
     def create_page_info(self, home_page):
-        slug = "litc-cities"
-        title = "Low Income Taxpayer Clinic Cities"
+        slug = "clinics-and-pro-bono-programs"
+        title = "Clinics and Pro Bono Programs"
 
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -2002,7 +2002,7 @@ class LITCPageInitializer(PageInitializer):
             title=title,
             slug=slug,
             seo_title=title,
-            search_description="LITC Cities",
+            search_description="Clinics and pro bono programs that provide free or low-cost legal assistance to low-income taxpayers with tax disputes.",
             low_income_taxpayer_clinics=low_income_taxpayer_clinic_data,
             show_in_menus=True,
         )
