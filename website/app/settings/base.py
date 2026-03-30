@@ -36,6 +36,7 @@ AUTHENTICATION_BACKENDS = [
 INSTALLED_APPS = [
     "home",
     "search",
+    "chatbot",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",

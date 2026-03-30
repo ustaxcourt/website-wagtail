@@ -99,6 +99,7 @@ urlpatterns = [
     ),
     path("documents/", include(wagtaildocs_urls)),
     path("", include("social_django.urls", namespace="social")),
+    path("chatbot/", include("chatbot.urls")),
     path("search/", search_views.search, name="search"),
     path(
         "definitions-search/",
