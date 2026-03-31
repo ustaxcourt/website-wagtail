@@ -88,6 +88,29 @@ make setup
 make check
 ```
 
+### Testing
+
+#### Unit tests
+```shell
+make pytest
+```
+
+#### E2E tests (Cypress)
+```shell
+make test-e2e
+```
+
+Admin-related Cypress tests read credentials from `cypress.env.json` (gitignored). This file is auto-generated with local defaults when you run `make setup` or `make reset`. To use different credentials, edit `website/cypress.env.json` directly — it will not be overwritten once it exists.
+
+```json
+{
+  "ADMIN_USERNAME": "admin",
+  "ADMIN_PASSWORD": "ustcAdminPW!"
+}
+```
+
+In GitHub Actions, credentials are supplied via the `CYPRESS_ADMIN_USERNAME` and `CYPRESS_ADMIN_PASSWORD` **repository secrets** (set once under *Settings → Secrets and variables → Actions → Repository secrets* — not per-environment).
+
 ### Data/Model migrations.
 
 First run `makemigrations` to generate the data model changes.

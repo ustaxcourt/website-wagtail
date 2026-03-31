@@ -34,10 +34,15 @@ jobs:
         make pytest
 
     - name: Run Cypress Tests
+      env:
+        CYPRESS_ADMIN_USERNAME: ${{ secrets.CYPRESS_ADMIN_USERNAME || 'admin' }}
+        CYPRESS_ADMIN_PASSWORD: ${{ secrets.CYPRESS_ADMIN_PASSWORD || 'ustcAdminPW!' }}
       run: |
         cd website
         make migrate
+        make superuser
         make createpages
+        make updatepages
         make run &
         echo "Waiting for application to be ready on port 8000..."
         for i in {1..30}; do
