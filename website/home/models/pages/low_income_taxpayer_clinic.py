@@ -6,6 +6,7 @@ from wagtail.search import index
 from home.models.custom_blocks.common import custom_promote_panels
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
+from home.models.pages.enhanced_standard import StyledCalloutBlock
 
 
 class LITCClinicBlock(blocks.StructBlock):
@@ -15,7 +16,8 @@ class LITCClinicBlock(blocks.StructBlock):
     website = blocks.URLBlock(required=False)
     email = blocks.EmailBlock(required=False)
     small_case_procedures_only = blocks.BooleanBlock(
-        required=False, help_text="Indicates if the clinic handles only small cases"
+        required=False,
+        help_text="Indicates the clinic only represents taxpayers who have elected the small tax case procedures.",
     )
 
     class Meta:
@@ -26,7 +28,7 @@ class LITCClinicBlock(blocks.StructBlock):
 class LITCCityBlock(blocks.StructBlock):
     name = blocks.CharBlock()
     small_cases_only = blocks.BooleanBlock(
-        required=False, help_text="Indicates if the clinic handles only small cases"
+        required=False, help_text="Indicates the city only holds small case trials."
     )
     clinics = blocks.ListBlock(LITCClinicBlock())
 
@@ -41,15 +43,127 @@ class LITCStateBlock(blocks.StructBlock):
 
 
 class LITCPage(ModerationMixin, Page):
+    introductory_paragraph = StreamField(
+        [
+            (
+                "paragraph",
+                blocks.RichTextBlock(
+                    help_text="Write your paragraph here.",
+                    default="The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.",
+                ),
+            ),
+            ("callout", StyledCalloutBlock()),
+        ],
+        use_json_field=True,
+        blank=True,
+        default=[
+            (
+                "paragraph",
+                "<p>The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court. The Tax Court does not endorse or recommend any specific tax clinic or organization. LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.</p>",
+            ),
+        ],
+    )
+
     low_income_taxpayer_clinics = StreamField(
         [("state", LITCStateBlock())],
         use_json_field=True,
         blank=True,
     )
 
+    city_asterisk_notice = StreamField(
+        blocks.StreamBlock(
+            [
+                (
+                    "asterisk_notice",
+                    blocks.StructBlock(
+                        [
+                            (
+                                "asterisks_count",
+                                blocks.ChoiceBlock(
+                                    choices=[("", "None"), ("*", "*")],
+                                    default="",
+                                    required=False,
+                                    help_text="Set the number of asterisks to display (0 or 1).",
+                                ),
+                            ),
+                            (
+                                "text",
+                                blocks.RichTextBlock(
+                                    help_text="Standard text explanation."
+                                ),
+                            ),
+                        ],
+                        icon="info-circle",
+                        label="City Asterisk Notice",
+                    ),
+                ),
+                ("callout", StyledCalloutBlock()),
+            ],
+        ),
+        use_json_field=True,
+        blank=True,
+        default=[
+            (
+                "asterisk_notice",
+                {
+                    "asterisks_count": "*",
+                    "text": "Indicates the city only holds trials for small tax cases.",
+                },
+            ),
+        ],
+        help_text="This notice will be used to explain the meaning of a single asterisk next to city names in the clinic listings.",
+    )
+
+    clinic_asterisk_notice = StreamField(
+        blocks.StreamBlock(
+            [
+                (
+                    "asterisk_notice",
+                    blocks.StructBlock(
+                        [
+                            (
+                                "asterisks_count",
+                                blocks.ChoiceBlock(
+                                    choices=[("", "None"), ("**", "**")],
+                                    default="",
+                                    required=False,
+                                    help_text="Set the number of asterisks to display (0 or 2).",
+                                ),
+                            ),
+                            (
+                                "text",
+                                blocks.RichTextBlock(
+                                    help_text="Standard text explanation."
+                                ),
+                            ),
+                        ],
+                        icon="info-circle",
+                        label="Clinic Asterisk Notice",
+                    ),
+                ),
+                ("callout", StyledCalloutBlock()),
+            ],
+        ),
+        use_json_field=True,
+        blank=True,
+        default=[
+            (
+                "asterisk_notice",
+                {
+                    "asterisks_count": "**",
+                    "text": "Indicates the clinic only represents taxpayers who have elected the small tax case procedure.",
+                },
+            ),
+        ],
+        help_text="This notice will be used to explain the meaning of double asterisks next to clinic names in the clinic listings.",
+    )
+
     promote_panels = custom_promote_panels
 
     content_panels = Page.content_panels + [
+        FieldPanel("introductory_paragraph"),
+        FieldPanel("city_asterisk_notice"),
+        FieldPanel("clinic_asterisk_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
     ]
 

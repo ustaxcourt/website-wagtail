@@ -7,7 +7,7 @@ from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from django.core.exceptions import ValidationError
-from wagtail.models import DraftStateMixin, RevisionMixin, PageQuerySet, WorkflowMixin
+from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.search import index
 from home.mixins.moderation import ModerationMixin
@@ -56,7 +56,6 @@ class JudgeProfile(
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="judgeprofile"
     )
-    objects = PageQuerySet.as_manager()
 
     content_panels = [
         FieldPanel("first_name"),
@@ -187,7 +186,6 @@ class JudgeCollection(
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="judgecollection"
     )
-    objects = PageQuerySet.as_manager()
 
     content_panels = [
         FieldPanel("name"),
@@ -306,7 +304,6 @@ class JudgeRole(
         help_text="Assign a judge to this role",
     )
     _revisions = GenericRelation("wagtailcore.Revision", related_query_name="judgerole")
-    objects = PageQuerySet.as_manager()
 
     content_panels = [
         FieldPanel("role_name"),

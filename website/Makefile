@@ -79,7 +79,10 @@ run:
 run-debug:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=app.settings.debug python manage.py runserver
 
-setup: init
+cypress-env:
+	@test -f cypress.env.json || (echo '{"ADMIN_USERNAME":"admin","ADMIN_PASSWORD":"ustcAdminPW!"}' > cypress.env.json && echo "Created cypress.env.json")
+
+setup: init cypress-env
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
 	npm install
@@ -105,6 +108,9 @@ production-checks:
 # an idempotent command for creating the pages after all the models / migrations have finished running
 createpages:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_pages
+
+createlitccitiespage:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py create_litc_cities_page
 
 updatepages:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py update_pages

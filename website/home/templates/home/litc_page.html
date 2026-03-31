@@ -11,9 +11,29 @@
             margin-bottom: 15px;
         }
 
-        .notice p {
+        .notice-item .simple-text p, .notice .simple-text {
+            display: inline;
             font-size: 17px;
             font-weight: 700;
+
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .notice .simple-text {
+            display: inline-block;
+        }
+        .notice-item {
+            margin-bottom: 17px;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        .notice-item span{
+            color:#DB0000;
+            font-weight: 700;
+            margin-right: 5px;
+        }
+        .notice-item:has(.callout) {
+            display: block;
         }
 
         .description {
@@ -201,12 +221,15 @@
 {% block content %}
     <div class="grid-container padding-bottom-2 padding-top-2">
         <h1 class="page-title">Participating Clinics and Pro Bono Programs</h1>
-        <h2 class="description">
-            The Low-Income Taxpayer Clinics (LITCs) listed are not part of the Internal Revenue Service (IRS) or the United States Tax Court.
-            The Tax Court does not endorse or recommend any specific tax clinic or organization.
-            LITCs located next to the State and City/Place of Trial are available to assist eligible taxpayers.
-            Please check the <a href="https://ustaxcourt.gov/petitioners-start/#START4" style="color: var(--color-primary); text-decoration:underline;">Guidance for Low Income Tax Clinics</a> page for more information.
-        </h2>
+        {% for block in page.introductory_paragraph %}
+            {% if block.block_type == "paragraph" %}
+                <div class="description">
+                    {{ block.value|richtext }}
+                </div>
+            {% elif block.block_type == "callout" %}
+                {% include "callout_block.html" with block=block %}
+            {% endif %}
+        {% endfor %}
         <div class="alphabet-wrapper">
             <button class="alphabet-toggle" aria-expanded="false" aria-controls="alphabet-nav">
                 <span>Filter by Letter</span>
@@ -218,10 +241,35 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="notice">
-            <p><span style="color:#DB0000;" class="small-case-indicator">*</span> Indicates the city only holds trials for small tax cases.</p>
-            <p><span style="color:#DB0000;" class="small-case-indicator">**</span> Indicates the clinic only represents taxpayers who have elected the small tax case procedure</p>
-        </div>
+        {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
+            <div class="notice">
+                {% for block in page.city_asterisk_notice %}
+                    {% if block.block_type == "asterisk_notice" %}
+                        <div class="notice-item">
+                            {% if block.value.asterisks_count != "" %}
+                                <span class="small-case-indicator">{{ block.value.asterisks_count }}</span>
+                            {% endif %}
+                            <div class="simple-text">{{ block.value.text|richtext }}</div>
+                        </div>
+                    {% elif block.block_type == "callout" %}
+                        <div class="callout">{% include "callout_block.html" with block=block %}</div>
+                    {% endif %}
+                {% endfor %}
+
+                {% for block in page.clinic_asterisk_notice %}
+                    {% if block.block_type == "asterisk_notice" %}
+                        <div class="notice-item">
+                            {% if block.value.asterisks_count != "" %}
+                                <span class="small-case-indicator">{{ block.value.asterisks_count }}</span>
+                            {% endif %}
+                            <div class="simple-text">{{ block.value.text|richtext }}</div>
+                        </div>
+                    {% elif block.block_type == "callout" %}
+                        <div class="callout">{% include "callout_block.html" with block=block %}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <div class="clinic-list grid">
             {% for state in sorted_clinics %}
@@ -289,7 +337,7 @@
                     toggle.setAttribute('aria-expanded', isOpen);
                 });
 
-                // Close the dropdown after clicking a letter on mobile
+                //Close the dropdown after clicking a letter on mobile.
                 alphabet.querySelectorAll('.alphabet-link').forEach(function (link) {
                     link.addEventListener('click', function () {
                         if (window.innerWidth <= 768) {

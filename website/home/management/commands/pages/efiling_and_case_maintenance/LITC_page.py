@@ -1,6 +1,7 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import LITCPage
+from home.models.utils.execute_script import ExecuteScript
 import logging
 
 logger = logging.getLogger(__name__)
@@ -1935,9 +1936,41 @@ class LITCPageInitializer(PageInitializer):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
+    def update(self):
+        if Page.objects.filter(slug="clinics-and-pro-bono-programs").exists():
+            logger.info(
+                "- Clinics and Pro Bono Programs page already exists, skipping."
+            )
+            return
+        home_page = Page.objects.get(slug="home")
+        self.create_page_info(home_page)
+
+    def run(self):
+        command_name = "Create Clinics and Pro Bono Programs page"
+
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already ran. Update not necessary.")
+            return
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update()
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = "LITC Cities page created successfully."
+            script_entry.save()
+
+        except Exception as e:
+            error_msg = f"Unexpected error during LITC Cities page creation: {type(e).__name__} - {str(e)}"
+            logger.error(error_msg)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {error_msg}"
+            script_entry.save()
+            raise
+
     def create_page_info(self, home_page):
-        slug = "litc-cities"
-        title = "Low Income Taxpayer Clinic Cities"
+        slug = "clinics-and-pro-bono-programs"
+        title = "Clinics and Pro Bono Programs"
 
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -1969,7 +2002,7 @@ class LITCPageInitializer(PageInitializer):
             title=title,
             slug=slug,
             seo_title=title,
-            search_description="Press Releases",
+            search_description="Clinics and pro bono programs that provide free or low-cost legal assistance to low-income taxpayers with tax disputes.",
             low_income_taxpayer_clinics=low_income_taxpayer_clinic_data,
             show_in_menus=True,
         )
