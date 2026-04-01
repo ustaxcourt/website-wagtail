@@ -3,8 +3,7 @@ resource "aws_db_instance" "default" {
   allocated_storage   = 10
   engine              = "postgres"
   engine_version      = "16.8"
-  # instance_class      = "db.t3.micro"
-  instance_class      = "db.t3.small"
+  instance_class      = "db.t3.micro"
   username            = "master"
   password            = var.database_password
   backup_retention_period = 14
