@@ -79,6 +79,9 @@ run:
 run-debug:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=app.settings.debug python manage.py runserver
 
+cypress-env:
+	@test -f cypress.env.json || (echo '{"ADMIN_USERNAME":"admin","ADMIN_PASSWORD":"ustcAdminPW!"}' > cypress.env.json && echo "Created cypress.env.json")
+
 setup-pip: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
@@ -88,7 +91,7 @@ setup-npm:
 	npx gulp copyAssets
 	npx gulp compile
 
-setup: setup-pip setup-npm
+setup: setup-pip setup-npm cypress-env
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "webmaster@ustaxcourt.gov"
