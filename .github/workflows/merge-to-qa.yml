@@ -10,7 +10,7 @@ name: Merge PR to QA
 
 on:
   pull_request:
-    types: [labeled]
+    types: [labeled, opened]
 
 concurrency:
   group: qa-merge
@@ -22,7 +22,9 @@ permissions:
 
 jobs:
   merge-to-qa:
-    if: github.event.label.name == 'qa-ready'
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'qa-ready') ||
+      (github.event.action == 'opened' && contains(github.event.pull_request.labels.*.name, 'qa-ready'))
     runs-on: ubuntu-latest
 
     steps:
