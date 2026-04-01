@@ -45,8 +45,10 @@ variable "prevent_db_deletion" {
 
 variable "wagtailtransfer_secret_key" {
   type = string
+  sensitive = true
 }
 
 variable "wagtailtransfer_sources" {
   type = string
+  sensitive = true
 }
