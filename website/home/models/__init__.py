@@ -10,7 +10,6 @@ from home.models.settings import (
     Footer,
     GoogleAnalyticsSettings,
     GoogleTagManagerSettings,
-    TrustedSites,
 )
 from home.models.config import IconCategories
 from home.models.snippets.news_item import NewsItem
