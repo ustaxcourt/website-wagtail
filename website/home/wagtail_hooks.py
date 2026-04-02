@@ -145,6 +145,13 @@ def global_admin_js():
     )
 
 
+@hooks.register("insert_global_admin_js")
+def image_alt_text_admin_js():
+    return format_html(
+        '<script src="{}"></script>', static("home/js/image_alt_text_admin.js")
+    )
+
+
 @hooks.register("insert_global_admin_css")
 def hide_typed_table_caption():
     """

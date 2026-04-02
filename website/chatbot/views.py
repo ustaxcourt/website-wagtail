@@ -1,10 +1,13 @@
 import json
 import logging
+import os
 
 import boto3
 from botocore.exceptions import ClientError
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from wagtail.images.models import Image
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +66,79 @@ def ask(request):
         )
         answer = response["output"]["message"]["content"][0]["text"]
         return JsonResponse({"response": answer})
+    except ClientError as e:
+        logger.error("Bedrock ClientError: %s", e)
+        return JsonResponse(
+            {"error": "Could not reach the AI service. Please try again later."},
+            status=503,
+        )
+    except Exception as e:
+        logger.error("Unexpected error calling Bedrock: %s", e)
+        return JsonResponse({"error": "An unexpected error occurred."}, status=500)
+
+
+_IMAGE_FORMAT_MAP = {
+    "jpg": "jpeg",
+    "jpeg": "jpeg",
+    "png": "png",
+    "gif": "gif",
+    "webp": "webp",
+}
+
+
+@login_required
+@require_POST
+def generate_alt_text(request):
+    try:
+        body = json.loads(request.body)
+        image_id = int(body.get("image_id"))
+    except (json.JSONDecodeError, AttributeError, TypeError, ValueError):
+        return JsonResponse({"error": "Invalid request body."}, status=400)
+
+    try:
+        image = Image.objects.get(pk=image_id)
+    except Image.DoesNotExist:
+        return JsonResponse({"error": "Image not found."}, status=404)
+
+    try:
+        with image.file.open("rb") as f:
+            image_bytes = f.read()
+    except Exception as e:
+        logger.error("Error reading image file: %s", e)
+        return JsonResponse({"error": "Could not read image file."}, status=500)
+
+    ext = os.path.splitext(image.file.name)[1].lower().lstrip(".")
+    bedrock_format = _IMAGE_FORMAT_MAP.get(ext, "jpeg")
+
+    try:
+        client = boto3.client("bedrock-runtime", region_name=BEDROCK_REGION)
+        response = client.converse(
+            modelId=BEDROCK_MODEL_ID,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "image": {
+                                "format": bedrock_format,
+                                "source": {"bytes": image_bytes},
+                            }
+                        },
+                        {
+                            "text": (
+                                "Write a short, descriptive alt text for this image "
+                                "suitable for a government website. Be concise (under "
+                                "125 characters). Do not start with 'Image of' or "
+                                "'Photo of'. Just describe what is shown."
+                            )
+                        },
+                    ],
+                }
+            ],
+            inferenceConfig={"maxTokens": 100, "temperature": 0.2},
+        )
+        alt_text = response["output"]["message"]["content"][0]["text"].strip()
+        return JsonResponse({"alt_text": alt_text})
     except ClientError as e:
         logger.error("Bedrock ClientError: %s", e)
         return JsonResponse(
