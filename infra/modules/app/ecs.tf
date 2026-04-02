@@ -70,6 +70,23 @@ resource "aws_iam_role_policy" "ecs_task_cloudfront_invalidation" {
   })
 }
 
+# Add Bedrock policy to the ECS task role
+resource "aws_iam_role_policy" "ecs_task_bedrock_access" {
+  name = "${var.environment}-ecs-task-bedrock-access"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["bedrock:InvokeModel"]
+        Resource = "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+      }
+    ]
+  })
+}
+
 # Add SES policy to the ECS task role
 resource "aws_iam_role_policy" "ses_send_email_policy" {
   name = "${var.environment}-ses-send-email-policy"
