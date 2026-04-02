@@ -1,0 +1,95 @@
+<style>
+  .enhanced-page #video-container .video-desc-block {
+      margin-top: 2em;
+      padding: 40px;
+      background-color: rgba(255, 255, 255, 1.00);
+      border-radius: 0px;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.33);
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+  }
+  .enhanced-page #video-container .video-desc-block.below-video{
+      flex-direction: column;
+  }
+  .enhanced-page #video-container .video-desc-block.below-video .video-wrapper {
+      {% comment %} flex: 0 0 100%;  {% endcomment %}
+      max-width: 1200px;
+      margin: 0 auto;
+  }
+  .enhanced-page #video-container .video-desc-block.right-of-video .description-block {
+      {% comment %} margin-left: 5px; {% endcomment %}
+      {% comment %} flex: 1; {% endcomment %}
+  }
+  {% comment %} .enhanced-page #video-container .video-desc-block.below-video .description-block {
+      margin-top: 20px;
+  } {% endcomment %}
+
+  .enhanced-page #video-container .video-desc-block .video-wrapper {
+      {% comment %} position: relative;
+      padding-bottom: 27.75%;
+      padding-left: 14%;
+      height: 0; {% endcomment %}
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      {% comment %} width: 100%; {% endcomment %}
+      width: 80%;
+      max-width: 1200px;
+      {% comment %} margin: 0 auto; {% endcomment %}
+      margin: 0;
+      flex: 0 calc(50% - 10px) 0;
+  }
+
+  .enhanced-page #video-container .video-desc-block .video-wrapper iframe {
+      {% comment %} position: absolute;
+      top: 0;
+      left: 0;
+      aspect-ratio: 16 / 9; {% endcomment %}
+      width: 100%;
+      height: 100%;
+      border: 0;
+  }
+
+  @media (max-width: 768px) {
+      {% comment %} .video-wrapper {
+          padding-bottom: 56.25% !important;
+      } {% endcomment %}
+
+      .enhanced-page #video-container .video-wrapper iframe {
+          width: 100% !important;
+          height: 100% !important;
+      }
+  }
+
+  {% comment %} .enhanced-page #video-container .description-block {
+      margin-top: -20px;
+  } {% endcomment %}
+
+  .enhanced-page #video-container .description-block blockquote {
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      border-left: 0.25rem solid #eceeef;
+  }
+
+  .enhanced-page #video-container .description-block blockquote cite {
+      display: block;
+      color: #1b1b1b;
+      font-style: italic;
+  }
+</style>
+<div id="video-container">
+    <h2>{{ block.value.title }}</h2>
+    <div class="video-desc-block {{ block.value.text_location }}-video">
+        <div class="video-wrapper">
+            <iframe title="Victor Lundy:Sculptor of Space"
+                    aria-label="Watch on YouTube"
+                    src="{{ block.value.video_url }}"
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen></iframe>
+        </div>
+        <div class="description-block">
+            <p>{{ block.value.description }}</p>
+        </div>
+    </div>
+</div>

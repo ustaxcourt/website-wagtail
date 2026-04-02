@@ -90,7 +90,7 @@
                 {% include "photo_plus_text.html" with block=block %}
             {% elif block.block_type == 'embedded_video' %}
                 <hr />
-                <div id="video-container">
+                {% comment %} <div id="video-container">
                     <h2>{{ block.value.title }}</h2>
                     <div class="video-desc-block">
                         <div class="video-wrapper">
@@ -105,7 +105,8 @@
                             <p>{{ block.value.description }}</p>
                         </div>
                     </div>
-                </div>
+                </div> {% endcomment %}
+                {% include "embedded_video.html" with block=block %}
             {% elif block.block_type == 'directory' %}
                 {% include "home/directory_detail.html" with block=block %}
             {% elif block.block_type == 'columns' %}

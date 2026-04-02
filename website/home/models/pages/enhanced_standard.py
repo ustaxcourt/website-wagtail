@@ -377,6 +377,13 @@ _BASE_BLOCK_TYPES = [
                 ("title", blocks.CharBlock(required=False)),
                 ("description", blocks.RichTextBlock(required=False)),
                 ("video_url", blocks.URLBlock(required=False)),
+                (
+                    "text_location",
+                    blocks.ChoiceBlock(
+                        choices=[("below", "Below"), ("right-of", "Right")],
+                        default="below",
+                    ),
+                ),
             ]
         ),
     ),
