@@ -13,8 +13,8 @@
   }
 
   function init() {
-    const titleInput = document.querySelector("#id_title");
-    if (!titleInput) return;
+    const descriptionInput = document.querySelector("#id_description");
+    if (!descriptionInput) return;
 
     const btn = document.createElement("button");
     btn.type = "button";
@@ -23,7 +23,7 @@
     btn.style.marginTop = "0.5rem";
     btn.style.display = "block";
 
-    titleInput.parentNode.appendChild(btn);
+    descriptionInput.parentNode.appendChild(btn);
 
     btn.addEventListener("click", async function () {
       btn.disabled = true;
@@ -40,8 +40,8 @@
         });
         const data = await res.json();
         if (data.alt_text) {
-          titleInput.value = data.alt_text;
-          titleInput.dispatchEvent(new Event("change", { bubbles: true }));
+          descriptionInput.value = data.alt_text;
+          descriptionInput.dispatchEvent(new Event("change", { bubbles: true }));
         } else {
           alert(data.error || "Failed to generate alt text.");
         }

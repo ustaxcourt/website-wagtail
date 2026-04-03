@@ -11,7 +11,7 @@ from wagtail.images.models import Image
 
 logger = logging.getLogger(__name__)
 
-BEDROCK_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
+BEDROCK_MODEL_ID = "us.amazon.nova-2-lite-v1:0"
 BEDROCK_REGION = "us-east-1"
 
 SYSTEM_PROMPT = """You are a helpful assistant for the United States Tax Court website.
@@ -19,6 +19,8 @@ You help people understand how to file a petition, what to expect during their c
 and how to navigate Tax Court procedures. Answer questions clearly and concisely.
 If a question is outside the scope of U.S. Tax Court procedures, politely say so and
 redirect the user to the relevant Tax Court resources at ustaxcourt.gov.
+
+You also are used to provite alt-text descriptions for images.
 
 Key facts about the U.S. Tax Court:
 - The U.S. Tax Court is a federal court where taxpayers can dispute IRS determinations
@@ -37,6 +39,9 @@ Key facts about the U.S. Tax Court:
 - Free legal help may be available through Low Income Taxpayer Clinics (LITCs)
   or Calendar Call clinics.
 - The court's rules of practice and procedure govern all cases.
+
+It is imperative that you never, ever use obscene language or even off-color language
+that might be deemed offensive by the general public.
 """
 
 
