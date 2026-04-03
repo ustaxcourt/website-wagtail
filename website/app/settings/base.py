@@ -469,4 +469,3 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "home.pamphletentry": ["title", "code"],
     "home.standardpage": ["page_ptr_id"],
 }
-# comment for deploy
