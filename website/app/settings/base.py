@@ -463,5 +463,8 @@ WAGTAILTRANSFER_NO_FOLLOW_MODELS = [
     "wagtailcore.revision",
 ]
 
-WAGTAILTRANSFER_LOOKUP_FIELDS = {"wagtailcore.collection": ["name"]}
+WAGTAILTRANSFER_LOOKUP_FIELDS = {
+    "wagtailcore.collection": ["name"],
+    "wagtailcore.page": ["slug"],
+}
 # comment for deploy
