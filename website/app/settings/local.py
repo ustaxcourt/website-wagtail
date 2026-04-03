@@ -43,16 +43,3 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = False
 
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
-
-WAGTAILTRANSFER_SECRET_KEY = "WAGTRANSFER!1098%"
-
-WAGTAILTRANSFER_SOURCES = {
-    "Ahmed": {
-        "BASE_URL": "https://ahmed-sandbox-web.ustaxcourt.gov/wagtail-transfer/",
-        "SECRET_KEY": "WAGTRANSFER!1098%",
-    },
-    "Stephen": {
-        "BASE_URL": "https://stephen-sandbox-web.ustaxcourt.gov/wagtail-transfer/",
-        "SECRET_KEY": "gfjjCxzuKlkEu81K56Y9tWP3HpTsO982BH6XcZqWKYyfvosXW5",
-    },
-}
