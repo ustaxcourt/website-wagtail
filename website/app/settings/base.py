@@ -461,6 +461,7 @@ WAGTAILTRANSFER_NO_FOLLOW_MODELS = [
     "contenttypes.contenttype",
     "auth.user",
     "wagtailcore.revision",
+    "home.pamphletspage",
 ]
 
 WAGTAILTRANSFER_LOOKUP_FIELDS = {
