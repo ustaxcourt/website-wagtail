@@ -435,6 +435,8 @@ WAGTAILSEARCH_HITS_MAX_AGE = 180  # days
 
 AWS_SES_REGION_NAME = "us-east-1"
 DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
-WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+WAGTAILADMIN_NOTIFICATION_USE_HTML = (
+    True  # A different comment to test QA workflow changes
+)
 
 WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
