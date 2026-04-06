@@ -36,11 +36,21 @@
       border: 0;
   }
 
+  @media (max-width: 1024px) {
+      .enhanced-page #video-container .video-desc-block.below-video .video-wrapper {
+          width: 100%;
+          margin: 0;
+      }
+  }
+
   @media (max-width: 768px) {
 
-      .enhanced-page #video-container .video-wrapper iframe {
-          width: 100% !important;
-          height: 100% !important;
+    .enhanced-page #video-container .video-desc-block{
+        padding: 20px;
+    }
+    .enhanced-page #video-container .video-desc-block.right-of-video .video-wrapper {
+          width: 100%;
+          margin: 0;
       }
   }
 
