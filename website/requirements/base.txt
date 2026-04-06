@@ -52,6 +52,7 @@ typing_extensions==4.12.2
 urllib3==2.6.3
 virtualenv==20.36.1
 wagtail>=7.2,<7.3
+wagtail-external-links-report==0.1.0
 whitenoise==6.8.2
 Willow
 social-auth-app-django==5.6.0

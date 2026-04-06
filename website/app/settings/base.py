@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_ses",
     "fontawesomefree",
+    "wagtail_external_links_report",
     "social_django",
     "wagtail.contrib.frontend_cache",
     "app.role_switcher",
