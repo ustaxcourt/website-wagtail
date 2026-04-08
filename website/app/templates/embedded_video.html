@@ -88,7 +88,7 @@
         <div class="video-wrapper" tabindex="0">
             <iframe title="Victor Lundy:Sculptor of Space"
                     aria-label="Watch on YouTube"
-                    src="{{ block.value.video_url }}"
+                    src="{{ block.value.video_url }}?enablejsapi=1"
                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen
@@ -99,3 +99,21 @@
         </div>
     </div>
 </div>
+<script>
+    window.addEventListener('message', function(event) {
+        if (event.origin !== 'https://www.youtube.com') return;
+        try {
+            var data = JSON.parse(event.data);
+            var info = data.info || {};
+            var hasError = info.error ||
+                           (info.videoData && info.videoData.errorCode);
+            if (data.event === 'infoDelivery' && hasError) {
+                document.querySelectorAll('#video-container .video-wrapper iframe').forEach(function(iframe) {
+                    if (iframe.contentWindow === event.source) {
+                        iframe.closest('.video-wrapper').style.display = 'none';
+                    }
+                });
+            }
+        } catch(e) {}
+    });
+</script>
