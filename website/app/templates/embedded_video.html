@@ -66,6 +66,10 @@
       }
   }
 
+  .enhanced-page #video-container h2 {
+      margin-bottom: 15px;
+  }
+
   .enhanced-page #video-container .description-block blockquote {
       padding: 0.5rem 1rem;
       margin-bottom: 1rem;
@@ -81,13 +85,14 @@
 <div id="video-container">
     <h2>{{ block.value.title }}</h2>
     <div class="video-desc-block {{ block.value.text_location }}-video">
-        <div class="video-wrapper">
+        <div class="video-wrapper" tabindex="0">
             <iframe title="Victor Lundy:Sculptor of Space"
                     aria-label="Watch on YouTube"
                     src="{{ block.value.video_url }}"
                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen></iframe>
+                    allowfullscreen
+                    onerror="this.closest('.video-wrapper').style.display='none'"></iframe>
         </div>
         <div class="description-block">
             <p>{{ block.value.description }}</p>
