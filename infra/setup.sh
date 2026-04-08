@@ -22,7 +22,7 @@ required_env_vars=(
 )
 check_env_vars "${required_env_vars[@]}"
 
-if [ "$ENVIRONMENT" = "sandbox" ]; then
+if [ "$ENVIRONMENT" = "sandbox" ] || [ "$ENVIRONMENT" = "qa" ]; then
   export TF_VAR_prevent_db_deletion="false"
 fi
 
