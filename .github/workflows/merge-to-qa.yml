@@ -1,0 +1,185 @@
+name: Merge PR to QA
+
+# Merges a PR's branch into the `qa` branch when labeled `qa-ready`.
+# Runs a migration check against the merged result BEFORE pushing,
+# so a migration conflict aborts cleanly without touching qa or triggering a deploy.
+#
+# NOTE: This workflow uses GITHUB_TOKEN, which will NOT trigger the
+# qa_deploy workflow on push. Deploy is handled by the `deploy` job below,
+# which calls qa_deploy.yml directly as a reusable workflow.
+
+on:
+  pull_request:
+    types: [labeled, opened]
+
+concurrency:
+  group: qa-merge
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge-to-qa:
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'qa-ready') ||
+      (github.event.action == 'opened' && contains(github.event.pull_request.labels.*.name, 'qa-ready'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Ensure QA branch exists
+        run: |
+          if git ls-remote --exit-code --heads origin qa; then
+            echo "QA branch exists"
+          else
+            echo "QA branch does not exist, creating from main"
+            git checkout main
+            git checkout -b qa
+            git push origin qa
+          fi
+
+      - name: Merge feature branch into QA locally
+        id: merge
+        run: |
+          FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          echo "Merging $FEATURE_BRANCH into qa (local only, not yet pushed)..."
+          git checkout qa
+          git pull origin qa
+          if git merge --no-ff "origin/$FEATURE_BRANCH" \
+               -m "Merge $FEATURE_BRANCH into qa for QA testing"; then
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            git merge --abort
+            echo "success=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR — code conflict
+        if: steps.merge.outputs.success == 'false'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: [
+                '❌ **Merge conflict** when merging `${{ github.event.pull_request.head.ref }}` into `qa`.',
+                '',
+                'Please resolve manually:',
+                '```',
+                'git fetch origin',
+                'git checkout qa && git pull origin qa',
+                'git merge origin/${{ github.event.pull_request.head.ref }}',
+                '# resolve conflicts, then:',
+                'git push origin qa',
+                '```'
+              ].join('\n')
+            })
+
+      - name: Fail on code conflict
+        if: steps.merge.outputs.success == 'false'
+        run: exit 1
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Install dependencies
+        run: |
+          cd website
+          make setup-pip
+
+      - name: Check migrations against merged result
+        id: migration_check
+        run: |
+          cd website
+          . ../.venv/bin/activate
+          set +e
+          DJANGO_SETTINGS_MODULE=app.settings.local python manage.py migrate --no-input 2>&1 | tee /tmp/migration_output.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          set -e
+
+          if grep -qi "conflicting migrations" /tmp/migration_output.txt; then
+            echo "success=false" >> $GITHUB_OUTPUT
+            echo "reason=conflict" >> $GITHUB_OUTPUT
+          elif [ "$EXIT_CODE" -ne 0 ]; then
+            echo "success=false" >> $GITHUB_OUTPUT
+            echo "reason=error" >> $GITHUB_OUTPUT
+          else
+            echo "success=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR — migration problem
+        if: steps.migration_check.outputs.success == 'false'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const isConflict = '${{ steps.migration_check.outputs.reason }}' === 'conflict';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: [
+                `❌ **Migration ${isConflict ? 'conflict' : 'error'}** detected in the merged result — \`qa\` was not updated.`,
+                '',
+                isConflict
+                  ? 'Two branches have migrations with the same parent. Fix with:'
+                  : 'Migration failed to apply. Check the workflow logs for details. If there is a conflict, fix with:',
+                '```',
+                'python manage.py makemigrations --merge',
+                '```',
+                'Then push the merge migration to your branch and re-apply the `qa-ready` label.'
+              ].join('\n')
+            })
+
+      - name: Fail on migration problem
+        if: steps.migration_check.outputs.success == 'false'
+        run: exit 1
+
+      - name: Push merged result to QA
+        run: git push origin qa
+
+      - name: Comment on PR — merged successfully
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ Branch `${{ github.event.pull_request.head.ref }}` has been merged into `qa` for testing.'
+            })
+
+      - name: Remove qa-ready label
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'qa-ready'
+              });
+            } catch (e) {
+              if (e.status !== 404) throw e;
+            }
+
+  deploy:
+    needs: merge-to-qa
+    uses: ./.github/workflows/qa_deploy.yml
+    with:
+      ref: qa
+    secrets: inherit
