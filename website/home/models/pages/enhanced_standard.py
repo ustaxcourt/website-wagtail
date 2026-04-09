@@ -428,6 +428,20 @@ _BASE_BLOCK_TYPES = [
         "grid",
         GridBlock(),
     ),
+    (
+        "qaBlock123",
+        blocks.ListBlock(
+            blocks.StructBlock(
+                [
+                    ("question", blocks.CharBlock(required=False)),
+                    ("answer", blocks.RichTextBlock()),
+                    ("anchortag", blocks.CharBlock()),
+                ]
+            ),
+            label="QABLOCK123",
+            help_text="Add a question and answer with anchor tag for linking",
+        ),
+    ),
 ]
 
 
