@@ -46,10 +46,10 @@ coverage:
 	. $(VENV) && coverage html -d coverage_html && open coverage_html/index.html
 
 test-e2e:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress run --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress run --browser chrome $(if $(baseUrl),--config baseUrl=$(baseUrl),)
 
 cypress-open:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress open --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress open --browser chrome $(if $(baseUrl),--config baseUrl=$(baseUrl),)
 
 pytest:
 	. $(VENV) && pytest
