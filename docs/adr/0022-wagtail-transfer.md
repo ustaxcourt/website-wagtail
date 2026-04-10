@@ -10,7 +10,7 @@ Drafting
 
 There is a need within the application to be able to copy pages, snippets, and referenced images and documents from one environment to another to ensure those objects are the same across the environments. This need allows a page to be created and validated in a lower environment and then be copied to a higher environment without the risk that the page's designer may accidentally alter the page's content when trying to recreate the page. It also allows a page from a higher environment to be copied to a lower environment for troubleshooting purposes.
 
-Wagtail Transfer is an open-source library that handles the heavy lifting in performing such a transfer between Wagtail environments once properly configured. Environments are configured as source/destination pairs with transfers initiated from the destination environment. Those with permissions to initate such a transfer are able to choose the source environment, which page, snippet, folder of pages, or collection of snippets they would like to transfer, and the folder in the destination environment in which the page(s) will be copied to.
+Wagtail Transfer is an open-source library that handles the heavy lifting in performing such a transfer between Wagtail environments once properly configured. Environments are configured as source/destination pairs with transfers initiated from the destination environment. Those with permissions to initiate such a transfer are able to choose the source environment, which page, snippet, folder of pages, or collection of snippets they would like to transfer, and the folder in the destination environment in which the page(s) will be copied to.
 
 ## Decision
 
