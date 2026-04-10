@@ -6,7 +6,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0109_migrate_image_block_data"),
+        ("home", "0110_litcpage_city_asterisk_notice_and_more"),
     ]
 
     operations = [
