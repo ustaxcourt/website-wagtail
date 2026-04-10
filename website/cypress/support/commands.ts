@@ -25,6 +25,28 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import { Result } from 'axe-core';
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      adminLogin(username: string, password: string): Chainable<void>;
+    }
+  }
+}
+
+const isLocalhost = (): boolean => {
+  const baseUrl = Cypress.config('baseUrl') || '';
+  return baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
+};
+
+Cypress.Commands.add('adminLogin', (username: string, password: string) => {
+  const loginPath = isLocalhost() ? '/admin/login/' : '/admin/local-login';
+  cy.visit(loginPath);
+  cy.get('input[name="username"]').type(username);
+  cy.get('input[name="password"]').type(password);
+  cy.get('button[type="submit"], input[type="submit"]').click();
+  cy.url({ timeout: 10000 }).should('include', '/admin/');
+});
+
 export function terminalLog(violations: Result[]): void {
   const violationData = violations.map(
     ({ description, id, impact, nodes }) => ({
