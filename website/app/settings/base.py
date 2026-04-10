@@ -437,7 +437,6 @@ LOGGING = {
             "level": "INFO",
             "handlers": ["simple"],
         },
-        "wagtail_transfer": {"level": "DEBUG", "propagate": False, "handlers": ["aws"]},
     },
 }
 
