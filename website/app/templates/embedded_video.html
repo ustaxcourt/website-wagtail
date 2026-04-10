@@ -1,6 +1,5 @@
 <style>
   .enhanced-page #video-container .video-desc-block {
-      margin-top: 2em;
       padding: 40px;
       background-color: rgba(255, 255, 255, 1.00);
       border-radius: 0px;
@@ -86,7 +85,7 @@
 <div id="video-container">
     <h2>{{ block.value.title }}</h2>
     <div class="video-desc-block {{ block.value.text_location }}-video">
-        <div class="video-wrapper" tabindex="0">
+        <div class="video-wrapper" tabindex="0" role="region" aria-label="{{ block.value.title }}">
             <iframe title="Victor Lundy:Sculptor of Space"
                     aria-label="Watch on YouTube"
                     src="{{ block.value.video_url }}?enablejsapi=1"
@@ -95,7 +94,7 @@
                     allowfullscreen
                     onerror="this.closest('.video-wrapper').style.display='none'"></iframe>
         </div>
-        <div class="description-block" tabindex="0">
+        <div class="description-block" tabindex="0" role="region" aria-label="{{ block.value.title }} description">
             <p>{{ block.value.description }}</p>
         </div>
     </div>
