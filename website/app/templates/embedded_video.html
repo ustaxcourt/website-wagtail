@@ -84,9 +84,9 @@
 </style>
 <div id="video-container">
     <h2>{{ block.value.title }}</h2>
-    <div class="video-desc-block {{ block.value.text_location }}-video">
-        <div class="video-wrapper" tabindex="0" role="region" aria-label="{{ block.value.title }}">
-            <iframe title="Victor Lundy:Sculptor of Space"
+    <div class="video-desc-block {{ block.value.text_location }}-video" role="region" aria-label="{{ block.value.title|default:'Embedded video' }}" tabindex="0">
+        <div class="video-wrapper">
+            <iframe title="{{ block.value.title|default:'Embedded video' }}"
                     aria-label="Watch on YouTube"
                     src="{{ block.value.video_url }}?enablejsapi=1"
                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -94,7 +94,7 @@
                     allowfullscreen
                     onerror="this.closest('.video-wrapper').style.display='none'"></iframe>
         </div>
-        <div class="description-block" tabindex="0" role="region" aria-label="{{ block.value.title }} description">
+        <div class="description-block">
             <p>{{ block.value.description }}</p>
         </div>
     </div>
