@@ -465,5 +465,4 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "wagtailcore.collection": ["name"],
     "wagtailcore.page": ["slug"],
     "home.pamphletentry": ["title", "code"],
-    "home.standardpage": ["page_ptr_id"],
 }
