@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.frontend_cache",
     "app.role_switcher",
     "django_filters",
+    "wagtail_transfer",
 ]
 
 MIDDLEWARE = [
@@ -365,6 +366,15 @@ def _task_ips():
         return []
 
 
+def get_json_from_os_env(env_variable_name):
+    try:
+        sources_json = os.getenv(env_variable_name, "{}")
+        result = json.loads(sources_json)
+        return result
+    except json.JSONDecodeError:
+        return None
+
+
 ALLOWED_HOSTS += _task_ips()
 
 USE_X_FORWARDED_HOST = True
@@ -438,3 +448,21 @@ DEFAULT_FROM_EMAIL = f"noreply@{os.getenv('DOMAIN_NAME')}"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
 
 WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
+
+WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSFER_SECRET_KEY")
+
+WAGTAILTRANSFER_SOURCES = get_json_from_os_env("WAGTAILTRANSFER_SOURCES")
+
+WAGTAILTRANSFER_NO_FOLLOW_MODELS = [
+    "wagtailcore.page",
+    "contenttypes.contenttype",
+    "auth.user",
+    "wagtailcore.revision",
+    "home.pamphletspage",
+]
+
+WAGTAILTRANSFER_LOOKUP_FIELDS = {
+    "wagtailcore.collection": ["name"],
+    "wagtailcore.page": ["slug"],
+    "home.pamphletentry": ["title", "code"],
+}
