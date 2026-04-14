@@ -22,7 +22,7 @@ required_env_vars=(
 )
 check_env_vars "${required_env_vars[@]}"
 
-if [ "$ENVIRONMENT" = "sandbox" ]; then
+if [ "$ENVIRONMENT" = "sandbox" ] || [ "$ENVIRONMENT" = "qa" ]; then
   export TF_VAR_prevent_db_deletion="false"
 fi
 
@@ -35,3 +35,5 @@ export TF_VAR_github_sha=$GITHUB_SHA
 export TF_VAR_social_auth_azuread_tenant_oauth2_key=$SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_KEY
 export TF_VAR_social_auth_azuread_tenant_oauth2_secret=$SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET
 export TF_VAR_social_auth_azuread_tenant_oauth2_tenant_id=$SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID
+export TF_VAR_wagtailtransfer_secret_key=$WAGTAILTRANSFER_SECRET_KEY
+export TF_VAR_wagtailtransfer_sources=$WAGTAILTRANSFER_SOURCES

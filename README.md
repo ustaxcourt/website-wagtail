@@ -331,6 +331,8 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - set `DJANGO_SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
   - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
+  - set `WAGTAILTRANSFER_SECRET_KEY`, used by Wagtail Transfer
+  - set `WAGTAILTRANSFER_SOURCES`, used by Wagtail Transfer
 - create an iam `deployer` user
   - attach policies directly, create a new policy called `deployer-policy`, paste in the `deployer-policy.json`
   - attach the new policy to your user
@@ -484,35 +486,44 @@ Or, the following equivalent command.
 ## Deploying to QA
 
 ### Overview
-To deploy to the QA environment, ensure you are on the `qa` branch.
-This repository is configured to automatically deploy whenever commits are pushed to `qa`.
-Deployment typically completes within a few minutes.
 
-You can monitor deployment progress in real time via GitHub Actions:
-https://github.com/ustaxcourt/website-wagtail/actions
+To deploy a pull request to QA, apply the `qa-ready` label to the PR — either at the time you create it, or at any point afterward. This will trigger an action that attempts the deploy and removes the label on success.
+
+You can monitor progress in [GitHub Actions](https://github.com/ustaxcourt/website-wagtail/actions).
+
+> **Note:** Do not push directly to the `qa` branch. Use the `qa-ready` label so the migration check runs before the merge.
 
 ---
 
-## Steps
+### Steps
 
-1. Ensure your local repository is on the `qa` branch:
-    ```shell
-    git checkout qa
-    ```
+1. Open your pull request on GitHub (or create a new one with the label already applied).
 
-2. Commit your changes:
-    ```shell
-    git commit -m "commit message"
-    ```
+2. Apply the `qa-ready` label to the PR.
 
-3. Push your changes to the remote QA branch:
-    ```shell
-    git push
-    ```
+3. The workflow will post a comment on the PR with the result:
+   - **Success** — your branch has been merged into `qa` and a deploy has been triggered.
+   - **Merge conflict** — the workflow could not merge your branch into `qa`. Follow the instructions in the PR comment to resolve manually.
+   - **Migration conflict or error** — migrations failed against the merged result. Run `python manage.py makemigrations --merge`, push the merge migration to your branch, then re-apply the `qa-ready` label.
 
-4. Monitor your workflow in GitHub → Actions.
-   - View logs for each step of the pipeline.
-   - Confirm the QA deployment completes successfully.
+4. Monitor the deployment in GitHub → Actions and confirm it completes successfully.
+
+---
+
+### Manual Deploy (Advanced)
+
+If you need to push directly to `qa` without going through the label workflow — for example, to resolve a merge conflict on the branch itself — you can do so manually:
+
+1. ```shell
+   git checkout qa && git pull origin qa
+   ```
+2. Merge your branch and resolve any conflicts:
+   ```shell
+   git merge origin/your-feature-branch
+   # resolve conflicts if needed, then:
+   git push origin qa
+   ```
+3. Monitor the deployment in GitHub → Actions.
 
 ---
 

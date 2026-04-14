@@ -46,10 +46,10 @@ coverage:
 	. $(VENV) && coverage html -d coverage_html && open coverage_html/index.html
 
 test-e2e:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress run --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
 cypress-open:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress open --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress open --browser chrome
 
 pytest:
 	. $(VENV) && pytest
@@ -82,12 +82,16 @@ run-debug:
 cypress-env:
 	@test -f cypress.env.json || (echo '{"ADMIN_USERNAME":"admin","ADMIN_PASSWORD":"ustcAdminPW!"}' > cypress.env.json && echo "Created cypress.env.json")
 
-setup: init cypress-env
+setup-pip: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
+
+setup-npm:
 	npm install
 	npx gulp copyAssets
 	npx gulp compile
+
+setup: setup-pip setup-npm cypress-env
 
 superuser:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} DJANGO_SUPERUSER_PASSWORD=$${password:-ustcAdminPW!} python manage.py createsuperuser --noinput --username "admin" --email "webmaster@ustaxcourt.gov"
