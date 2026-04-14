@@ -48,7 +48,7 @@
     .enhanced-page #video-container .video-desc-block.right-of-video .video-wrapper {
         float: left;
         width: 60%;
-        margin-right: 20px;
+        margin-right: 25px;
         margin-bottom: 20px;
         margin-top: 0;
     }
@@ -94,7 +94,7 @@
                     allowfullscreen
                     onerror="this.closest('.video-wrapper').style.display='none'"></iframe>
         </div>
-        <div class="description-block">
+        <div tabindex="0" class="description-block">
             <p>{{ block.value.description }}</p>
         </div>
     </div>
