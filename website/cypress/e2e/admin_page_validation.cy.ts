@@ -20,11 +20,7 @@ describe('Admin Page Edit Validation', () => {
 
   it('logs in and collects all page IDs from admin interface', () => {
     // Login to admin first
-    cy.visit('/admin/login/');
-    cy.get('input[name="username"]').type(ADMIN_USERNAME);
-    cy.get('input[name="password"]').type(ADMIN_PASSWORD);
-    cy.get('button[type="submit"], input[type="submit"]').click();
-    cy.url({ timeout: 10000 }).should('include', '/admin/');
+    cy.adminLogin(ADMIN_USERNAME, ADMIN_PASSWORD);
 
     // Now collect pages
     // Function to collect pages with pagination
