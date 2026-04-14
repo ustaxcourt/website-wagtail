@@ -38,6 +38,8 @@ const isLocalhost = (): boolean => {
   return baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
 };
 
+// Note: in AWS deployments the app will default to SSO login, so to run tests
+// against aws environments we specifically visit the "local-login" instead.
 Cypress.Commands.add('adminLogin', (username: string, password: string) => {
     const loginPath = isLocalhost() ? '/admin/login/' : '/admin/local-login/';
   cy.visit(loginPath);
