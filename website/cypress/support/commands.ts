@@ -39,12 +39,16 @@ const isLocalhost = (): boolean => {
 };
 
 Cypress.Commands.add('adminLogin', (username: string, password: string) => {
-  const loginPath = isLocalhost() ? '/admin/login/' : '/admin/local-login';
+    const loginPath = isLocalhost() ? '/admin/login/' : '/admin/local-login/';
   cy.visit(loginPath);
   cy.get('input[name="username"]').type(username);
-  cy.get('input[name="password"]').type(password);
+  cy.get('input[name="password"]').type(password, { log: false });
   cy.get('button[type="submit"], input[type="submit"]').click();
-  cy.url({ timeout: 10000 }).should('include', '/admin/');
+cy.url({ timeout: 10000 }).should((url) => {
+    expect(url).to.include('/admin/');
+    expect(url).not.to.include('/admin/login');
+    expect(url).not.to.include('/admin/local-login');
+  });
 });
 
 export function terminalLog(violations: Result[]): void {
