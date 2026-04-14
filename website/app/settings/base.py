@@ -465,4 +465,11 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "wagtailcore.collection": ["name"],
     "wagtailcore.page": ["slug"],
     "home.pamphletentry": ["title", "code"],
+    "home.commontext": ["name"],
+    "home.executescript": ["command_name"],
+    "home.judgecollection": ["name"],
+    "home.judgeprofile": ["first_name", "middle_initial", "last_name"],
+    "home.judgerole": ["role_name"],
+    "home.navigationribbon": ["name"],
+    "home.simplecard": ["card_title"],
 }
