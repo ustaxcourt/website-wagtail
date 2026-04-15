@@ -16,6 +16,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.documents.models import Document
+from wagtail_transfer import urls as wagtailtransfer_urls
 
 
 def all_legacy_documents_redirect(request, filename):
@@ -105,6 +106,7 @@ urlpatterns = [
         search_views.definitions_search,
         name="definitions_search",
     ),
+    path("wagtail-transfer/", include(wagtailtransfer_urls)),
 ]
 
 # Redirects localhost:8000/admin to local-login

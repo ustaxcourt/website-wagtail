@@ -30,6 +30,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     zlib1g-dev \
     libwebp-dev \
     curl \
+    git \
  && rm -rf /var/lib/apt/lists/*
 
 # Install the application server.
