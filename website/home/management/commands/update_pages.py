@@ -9,12 +9,24 @@ from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.navigation import NavigationInitializer
 
+from wagtail.documents.models import Document
+
 # Ensure Home Page is initialized first
 pages_to_update = (
     about_the_court_pages_to_update
     + efiling_and_case_maintenance_pages_to_update
     + [FooterInitializer, NavigationInitializer, HomePageInitializer]
 )
+
+
+def create_file_hash_for_documents():
+    """Backwards migration: create file hashes for documents if missing."""
+    print("Creating file hashes for documents...")
+    # Document = apps.get_model("wagtaildocs", "Document")
+    for doc in Document.objects.filter(file_hash=""):
+        print(f"Generating file hash for document id={doc.id} name='{doc.title}'")
+        doc._set_file_hash()
+        doc.save(update_fields=["file_hash"])
 
 
 class Command(BaseCommand):
@@ -26,3 +38,5 @@ class Command(BaseCommand):
             page_instance.run()
 
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
+
+        create_file_hash_for_documents()
