@@ -23,11 +23,7 @@ describe('Enhanced Standard Page Edit Validation', () => {
 
   it('logs in and verifies expected components can be added to a new Enhanced Standard Page', () => {
     // Login to admin first
-    cy.visit('/admin/login/');
-    cy.get('input[name="username"]').type(ADMIN_USERNAME);
-    cy.get('input[name="password"]').type(ADMIN_PASSWORD);
-    cy.get('button[type="submit"], input[type="submit"]').click();
-    cy.url({ timeout: 10000 }).should('include', '/admin/');
+    cy.adminLogin(ADMIN_USERNAME, ADMIN_PASSWORD);
 
     //Navigate to the "New: Enhanced Standard Page" page in Wagtail Admin for adding a page in the Home folder
     cy.visit('/admin/pages/add/home/enhancedstandardpage/3/');
