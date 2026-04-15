@@ -472,4 +472,5 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "home.judgerole": ["role_name"],
     "home.navigationribbon": ["name"],
     "home.simplecard": ["card_title"],
+    "wagtaildocs.documnet": ["title", "file_hash"],
 }
