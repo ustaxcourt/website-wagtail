@@ -1,5 +1,7 @@
+{% load static %}
+{% load wagtailcore_tags %}
 <style>
-  .enhanced-page #video-container .video-desc-block {
+  .enhanced-page .video-container .video-desc-block {
       padding: 40px;
       background-color: rgba(255, 255, 255, 1.00);
       border-radius: 0px;
@@ -8,18 +10,18 @@
       align-items: flex-start;
       gap: 20px;
   }
-  .enhanced-page #video-container .video-desc-block.below-video{
+  .enhanced-page .video-container .video-desc-block.below-video{
       flex-direction: column;
   }
-  .enhanced-page #video-container .video-desc-block.below-video .video-wrapper {
+  .enhanced-page .video-container .video-desc-block.below-video .video-wrapper {
       max-width: 1200px;
       margin: 0 auto;
   }
-  .enhanced-page #video-container .video-desc-block.right-of-video .description-block {
+  .enhanced-page .video-container .video-desc-block.right-of-video .description-block {
       display: block;
   }
 
-  .enhanced-page #video-container .video-desc-block .video-wrapper {
+  .enhanced-page .video-container .video-desc-block .video-wrapper {
       overflow: hidden;
       aspect-ratio: 16 / 9;
       width: 80%;
@@ -28,24 +30,24 @@
       flex: 0 0 calc(50% - 10px);
   }
 
-  .enhanced-page #video-container .video-desc-block .video-wrapper iframe {
+  .enhanced-page .video-container .video-desc-block .video-wrapper iframe {
       width: 100%;
       height: 100%;
       border: 0;
   }
 
   @media (max-width: 1024px) {
-      .enhanced-page #video-container .video-desc-block.below-video .video-wrapper {
+      .enhanced-page .video-container .video-desc-block.below-video .video-wrapper {
           width: 100%;
           margin: 0;
       }
   }
 
-    .enhanced-page #video-container .video-desc-block.right-of-video {
+    .enhanced-page .video-container .video-desc-block.right-of-video {
         display: flow-root;
     }
 
-    .enhanced-page #video-container .video-desc-block.right-of-video .video-wrapper {
+    .enhanced-page .video-container .video-desc-block.right-of-video .video-wrapper {
         float: left;
         width: 60%;
         margin-right: 25px;
@@ -55,34 +57,34 @@
 
   @media (max-width: 768px) {
 
-    .enhanced-page #video-container .video-desc-block{
+    .enhanced-page .video-container .video-desc-block{
         padding: 20px;
     }
-    .enhanced-page #video-container .video-desc-block.right-of-video .video-wrapper {
+    .enhanced-page .video-container .video-desc-block.right-of-video .video-wrapper {
           width: 100%;
           margin: 0 0 20px 0;
           float: none;
       }
   }
 
-  .enhanced-page #video-container h2 {
+  .enhanced-page .video-container h2 {
       margin-top: 0;
       margin-bottom: 15px;
   }
 
-  .enhanced-page #video-container .description-block blockquote {
+  .enhanced-page .video-container .description-block blockquote {
       padding: 0.5rem 1rem;
       margin-bottom: 1rem;
       border-left: 0.25rem solid #eceeef;
   }
 
-  .enhanced-page #video-container .description-block blockquote cite {
+  .enhanced-page .video-container .description-block blockquote cite {
       display: block;
       color: #1b1b1b;
       font-style: italic;
   }
 </style>
-<div id="video-container">
+<div class="video-container">
     <h2>{{ block.value.title }}</h2>
     <div class="video-desc-block {{ block.value.text_location }}-video" role="region" aria-label="{{ block.value.title|default:'Embedded video' }}" tabindex="0">
         <div class="video-wrapper">
@@ -95,25 +97,28 @@
                     onerror="this.closest('.video-wrapper').style.display='none'"></iframe>
         </div>
         <div tabindex="0" class="description-block">
-            <p>{{ block.value.description }}</p>
+            {{ block.value.description|richtext }}
         </div>
     </div>
 </div>
 <script>
-    window.addEventListener('message', function(event) {
-        if (event.origin !== 'https://www.youtube.com') return;
-        try {
-            var data = JSON.parse(event.data);
-            var info = data.info || {};
-            var hasError = info.error ||
-                           (info.videoData && info.videoData.errorCode);
-            if (data.event === 'infoDelivery' && hasError) {
-                document.querySelectorAll('#video-container .video-wrapper iframe').forEach(function(iframe) {
-                    if (iframe.contentWindow === event.source) {
-                        iframe.closest('.video-wrapper').style.display = 'none';
-                    }
-                });
-            }
-        } catch(e) {}
-    });
+     if (!window.__embeddedVideoMessageListenerRegistered) {
+         window.__embeddedVideoMessageListenerRegistered = true;
+         window.addEventListener('message', function(event) {
+             if (event.origin !== 'https://www.youtube.com') return;
+             try {
+                 var data = JSON.parse(event.data);
+                 var info = data.info || {};
+                 var hasError = info.error ||
+                                (info.videoData && info.videoData.errorCode);
+                 if (data.event === 'infoDelivery' && hasError) {
+                     document.querySelectorAll('#video-container .video-wrapper iframe').forEach(function(iframe) {
+                         if (iframe.contentWindow === event.source) {
+                             iframe.closest('.video-wrapper').style.display = 'none';
+                         }
+                     });
+                 }
+             } catch(e) {}
+         });
+     }
 </script>
