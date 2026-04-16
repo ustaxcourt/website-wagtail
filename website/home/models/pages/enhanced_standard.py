@@ -97,6 +97,11 @@ class AccordianBlock(blocks.StructBlock):
         required=True,
         help_text="Add text or special elements to the body",
     )
+    default_to_open = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to have the accordion open by default when the page loads.",
+    )
 
     class Meta:
         label = "Accordion Block"

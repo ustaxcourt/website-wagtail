@@ -131,23 +131,23 @@
 </style>
 {% with data=block.value|default:self %}
 <div id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
-  <div class="accordian-header">
-    <h3 class="accordian-title">
+<div class="accordian-header {% if data.default_to_open %}active{% endif %}">
+    <h3 class="accordian-title {% if data.default_to_open %}active{% endif %}">
       <button
-        type="button"
-        class="accordian-header-button"
-        aria-expanded="false"
-        aria-controls="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
-        id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
-      >
-        {{ data.title }}
-        <span class="accordian-icon" aria-hidden="true"></span>
-      </button>
+          type="button"
+          class="accordian-header-button {% if data.default_to_open %}active{% endif %}"
+          aria-expanded="{% if data.default_to_open %}true{% else %}false{% endif %}"
+          aria-controls="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
+          id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
+        >
+          {{ data.title }}
+          <span class="accordian-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true"></span>
+        </button>
     </h3>
   </div>
   <div
     id="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
-    class="accordian-content hidden"
+    class="accordian-content {% if not data.default_to_open %}hidden{% endif %}"
     role="region"
     aria-labelledby="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
   >
