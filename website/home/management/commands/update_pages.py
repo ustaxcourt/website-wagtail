@@ -10,6 +10,7 @@ from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.navigation import NavigationInitializer
 
 from wagtail.documents.models import Document
+from wagtail.images.models import Image
 
 # Ensure Home Page is initialized first
 pages_to_update = (
@@ -21,12 +22,18 @@ pages_to_update = (
 
 def create_file_hash_for_documents():
     """Backwards migration: create file hashes for documents if missing."""
-    print("Creating file hashes for documents...")
-    # Document = apps.get_model("wagtaildocs", "Document")
     for doc in Document.objects.filter(file_hash=""):
         print(f"Generating file hash for document id={doc.id} name='{doc.title}'")
         doc._set_file_hash()
         doc.save(update_fields=["file_hash"])
+
+
+def create_file_hash_for_images():
+    """Backwards migration: create file hashes for images if missing."""
+    for img in Image.objects.filter(file_hash=""):
+        print(f"Generating file hash for image id={img.id} name='{img.title}'")
+        img._set_file_hash()
+        img.save(update_fields=["file_hash"])
 
 
 class Command(BaseCommand):
@@ -40,3 +47,4 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("All pages have been updated."))
 
         create_file_hash_for_documents()
+        create_file_hash_for_images()
