@@ -376,7 +376,20 @@ _BASE_BLOCK_TYPES = [
             [
                 ("title", blocks.CharBlock(required=False)),
                 ("description", blocks.RichTextBlock(required=False)),
-                ("video_url", blocks.URLBlock(required=False)),
+                (
+                    "video_url",
+                    blocks.URLBlock(
+                        required=True,
+                        help_text="Use the YouTube embed URL (e.g. https://www.youtube.com/embed/VIDEO_ID), not the watch URL.",
+                    ),
+                ),
+                (
+                    "text_location",
+                    blocks.ChoiceBlock(
+                        choices=[("below", "Below"), ("right-of", "Right")],
+                        default="below",
+                    ),
+                ),
             ]
         ),
     ),
