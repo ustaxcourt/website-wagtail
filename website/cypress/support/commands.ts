@@ -25,6 +25,34 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import { Result } from 'axe-core';
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      adminLogin(username: string, password: string): Chainable<void>;
+    }
+  }
+}
+
+const isLocalhost = (): boolean => {
+  const baseUrl = Cypress.config('baseUrl') || '';
+  return baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
+};
+
+// Note: in AWS deployments the app will default to SSO login, so to run tests
+// against aws environments we specifically visit the "local-login" instead.
+Cypress.Commands.add('adminLogin', (username: string, password: string) => {
+    const loginPath = isLocalhost() ? '/admin/login/' : '/admin/local-login/';
+  cy.visit(loginPath);
+  cy.get('input[name="username"]').type(username);
+  cy.get('input[name="password"]').type(password, { log: false });
+  cy.get('button[type="submit"], input[type="submit"]').click();
+cy.url({ timeout: 10000 }).should((url) => {
+    expect(url).to.include('/admin/');
+    expect(url).not.to.include('/admin/login');
+    expect(url).not.to.include('/admin/local-login');
+  });
+});
+
 export function terminalLog(violations: Result[]): void {
   const violationData = violations.map(
     ({ description, id, impact, nodes }) => ({
