@@ -470,6 +470,7 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "home.judgecollection": ["name"],
     "home.judgeprofile": ["first_name", "middle_initial", "last_name"],
     "home.judgerole": ["role_name"],
+    "home.navigationmenu": ["live"],
     "home.navigationribbon": ["name"],
     "home.simplecard": ["card_title"],
     "wagtaildocs.document": ["title", "file_hash"],
