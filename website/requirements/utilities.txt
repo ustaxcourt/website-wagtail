@@ -1,0 +1,5 @@
+# Dependencies for utility scripts (not required by the Django app itself)
+# Install with: pip install -r requirements/utilities.txt
+
+-r base.txt
+pymupdf==1.25.5
