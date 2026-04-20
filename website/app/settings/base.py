@@ -468,6 +468,7 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "home.commontext": ["name"],
     "home.executescript": ["command_name"],
     "home.judgecollection": ["name"],
+    "home.judgecollectionorderable": ["judge_id", "collection_id"],
     "home.judgeprofile": ["first_name", "middle_initial", "last_name"],
     "home.judgerole": ["role_name"],
     "home.navigationmenu": ["live"],
