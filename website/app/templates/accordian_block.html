@@ -153,7 +153,7 @@
   >
     {% for block in data.description %}
         {% if block.block_type == 'heading' %}
-        {% with level=data.level text=data.text id=data.id %}
+        {% with level=block.value.level text=block.value.text id=block.value.id %}
           {% if level == 'h2' %}
             <h2{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h2>
           {% elif level == 'h3' %}
