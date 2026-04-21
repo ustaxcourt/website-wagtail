@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-Script to connect to a running ECS container in the sandbox environment via SSH.
+Script to connect to a running ECS container via SSH.
+
+Discovers available website clusters in the current AWS account and prompts
+the user to select one if multiple are found.
 
 Usage:
     source ./.venv/bin/activate
@@ -13,26 +16,26 @@ from boto3 import Session
 from botocore.exceptions import ClientError, NoCredentialsError
 from os import environ
 
+CLUSTER_SUFFIX: str = "-website-cluster"
+SERVICE_SUFFIX: str = "-website-service"
+CONTAINER_SUFFIX: str = "-website-container"
 
 AWS_CLI_PROFILE_NAME: str = environ.get("AWS_PROFILE", "error")
-CLUSTER_NAME: str = "sandbox-website-cluster"
-SERVICE_NAME: str = "sandbox-website-service"
-CONTAINER_NAME: str = "sandbox-website-container"
 
 session = Session(profile_name=AWS_CLI_PROFILE_NAME)
 ecs_client = session.client("ecs", region_name="us-east-1")
 
 
-def get_running_task_arn() -> str | None:
-    """Get the ARN of a running task in the sandbox ECS cluster."""
+def get_website_clusters() -> list[str]:
+    """Return all cluster names matching the website cluster naming convention."""
     try:
-        response = ecs_client.list_tasks(
-            cluster=CLUSTER_NAME, serviceName=SERVICE_NAME, desiredStatus="RUNNING"
-        )
-        if not response["taskArns"]:
-            print(f"ERROR: No running tasks found in cluster {CLUSTER_NAME}")
-            exit(1)
-        return response["taskArns"][0]
+        arns: list[str] = []
+        paginator = ecs_client.get_paginator("list_clusters")
+        for page in paginator.paginate():
+            arns.extend(page["clusterArns"])
+
+        names = [arn.split("/")[-1] for arn in arns]
+        return [name for name in names if name.endswith(CLUSTER_SUFFIX)]
     except ClientError as e:
         print(f"AWS error: {e}")
         exit(1)
@@ -41,7 +44,39 @@ def get_running_task_arn() -> str | None:
         exit(1)
 
 
-def connect_to_container(task_arn: str) -> None:
+def select_cluster(clusters: list[str]) -> str:
+    """Prompt the user to select a cluster if more than one is available."""
+    if len(clusters) == 1:
+        print(f"Found cluster: {clusters[0]}")
+        return clusters[0]
+
+    print("Multiple website clusters found:")
+    for i, name in enumerate(clusters, start=1):
+        print(f"  {i}) {name}")
+
+    while True:
+        raw = input(f"Select a cluster [1-{len(clusters)}]: ").strip()
+        if raw.isdigit() and 1 <= int(raw) <= len(clusters):
+            return clusters[int(raw) - 1]
+        print("Invalid selection, please try again.")
+
+
+def get_running_task_arn(cluster_name: str, service_name: str) -> str:
+    """Get the ARN of a running task in the given ECS cluster."""
+    try:
+        response = ecs_client.list_tasks(
+            cluster=cluster_name, serviceName=service_name, desiredStatus="RUNNING"
+        )
+        if not response["taskArns"]:
+            print(f"ERROR: No running tasks found in cluster {cluster_name}")
+            exit(1)
+        return response["taskArns"][0]
+    except ClientError as e:
+        print(f"AWS error: {e}")
+        exit(1)
+
+
+def connect_to_container(cluster_name: str, container_name: str, task_arn: str) -> None:
     """Connect to the ECS container using AWS CLI."""
     cmd = [
         "aws",
@@ -50,11 +85,11 @@ def connect_to_container(task_arn: str) -> None:
         "--profile",
         AWS_CLI_PROFILE_NAME,
         "--cluster",
-        CLUSTER_NAME,
+        cluster_name,
         "--task",
         task_arn,
         "--container",
-        CONTAINER_NAME,
+        container_name,
         "--interactive",
         "--command",
         "/bin/bash",
@@ -72,10 +107,23 @@ def connect_to_container(task_arn: str) -> None:
 
 def main():
     """Main function to connect to ECS container."""
+    clusters = get_website_clusters()
+
+    if not clusters:
+        print(
+            f"ERROR: No website clusters found (looking for '*{CLUSTER_SUFFIX}') in AWS profile '{AWS_CLI_PROFILE_NAME}'"
+        )
+        exit(1)
+
+    cluster_name = select_cluster(clusters)
+    env_prefix = cluster_name[: -len(CLUSTER_SUFFIX)]
+    service_name = f"{env_prefix}{SERVICE_SUFFIX}"
+    container_name = f"{env_prefix}{CONTAINER_SUFFIX}"
+
     print("Fetching ECS task ARN...")
-    task_arn = get_running_task_arn()
-    print(f"Connecting ECS task: {task_arn}...")
-    connect_to_container(task_arn)
+    task_arn = get_running_task_arn(cluster_name, service_name)
+    print(f"Connecting to ECS task: {task_arn}...")
+    connect_to_container(cluster_name, container_name, task_arn)
 
 
 if __name__ == "__main__":
