@@ -303,7 +303,8 @@ WAGTAIL_SITE_NAME = "USTC Website"
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.database",
+        "BACKEND": "wagtail.contrib.postgres_search.backend",
+        "SEARCH_CONFIG": "english_hyphen",
     }
 }
 
