@@ -10,12 +10,17 @@
       align-items: flex-start;
       gap: 20px;
   }
-  .enhanced-page .video-container .video-desc-block.below-video{
+  .enhanced-page .video-container .video-desc-block.below-video {
       flex-direction: column;
   }
   .enhanced-page .video-container .video-desc-block.below-video .video-wrapper {
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
+      flex: none;
+  }
+  .enhanced-page .video-container .video-desc-block.below-video .description-block {
+      width: 100%;
   }
   .enhanced-page .video-container .video-desc-block.right-of-video .description-block {
       display: block;
@@ -43,28 +48,28 @@
       }
   }
 
-    .enhanced-page .video-container .video-desc-block.right-of-video {
-        display: flow-root;
-    }
+  .enhanced-page .video-container .video-desc-block.right-of-video {
+      display: flow-root;
+  }
 
-    .enhanced-page .video-container .video-desc-block.right-of-video .video-wrapper {
-        float: left;
-        width: 60%;
-        margin-right: 25px;
-        margin-bottom: 20px;
-        margin-top: 0;
-    }
+  .enhanced-page .video-container .video-desc-block.right-of-video .video-wrapper {
+      float: left;
+      width: 60%;
+      margin-right: 25px;
+      margin-bottom: 20px;
+      margin-top: 0;
+  }
 
   @media (max-width: 768px) {
 
-    .enhanced-page .video-container .video-desc-block{
+    .enhanced-page .video-container .video-desc-block {
         padding: 20px;
     }
     .enhanced-page .video-container .video-desc-block.right-of-video .video-wrapper {
-          width: 100%;
-          margin: 0 0 20px 0;
-          float: none;
-      }
+        width: 100%;
+        margin: 0 0 20px 0;
+        float: none;
+    }
   }
 
   .enhanced-page .video-container h2 {
@@ -83,42 +88,43 @@
       color: #1b1b1b;
       font-style: italic;
   }
+
 </style>
 <div class="video-container">
-    <h2>{{ block.value.title }}</h2>
-    <div class="video-desc-block {{ block.value.text_location }}-video" role="region" aria-label="{{ block.value.title|default:'Embedded video' }}" tabindex="0">
+    <h2 id="video-title-{{ block.id }}" tabindex="0">{{ block.value.title }}</h2>
+    <div class="video-desc-block {{ block.value.text_location }}-video">
         <div class="video-wrapper">
             <iframe title="{{ block.value.title|default:'Embedded video' }}"
-                    aria-label="Watch on YouTube"
+                    aria-describedby="video-desc-{{ block.id }}"
                     src="{{ block.value.video_url }}?enablejsapi=1"
                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen
                     onerror="this.closest('.video-wrapper').style.display='none'"></iframe>
         </div>
-        <div tabindex="0" class="description-block">
+        <div class="description-block" id="video-desc-{{ block.id }}" tabindex="0">
             {{ block.value.description|richtext }}
         </div>
     </div>
 </div>
 <script>
-     if (!window.__embeddedVideoMessageListenerRegistered) {
-         window.__embeddedVideoMessageListenerRegistered = true;
-         window.addEventListener('message', function(event) {
-             if (event.origin !== 'https://www.youtube.com') return;
-             try {
-                 var data = JSON.parse(event.data);
-                 var info = data.info || {};
-                 var hasError = info.error ||
-                                (info.videoData && info.videoData.errorCode);
-                 if (data.event === 'infoDelivery' && hasError) {
-                     document.querySelectorAll('#video-container .video-wrapper iframe').forEach(function(iframe) {
-                         if (iframe.contentWindow === event.source) {
-                             iframe.closest('.video-wrapper').style.display = 'none';
-                         }
-                     });
-                 }
-             } catch(e) {}
-         });
-     }
+    if (!window.__embeddedVideoMessageListenerRegistered) {
+        window.__embeddedVideoMessageListenerRegistered = true;
+        window.addEventListener('message', function(event) {
+            if (event.origin !== 'https://www.youtube.com') return;
+            try {
+                var data = JSON.parse(event.data);
+                var info = data.info || {};
+                var hasError = info.error ||
+                               (info.videoData && info.videoData.errorCode);
+                if (data.event === 'infoDelivery' && hasError) {
+                    document.querySelectorAll('.video-container .video-wrapper iframe').forEach(function(iframe) {
+                        if (iframe.contentWindow === event.source) {
+                            iframe.closest('.video-wrapper').style.display = 'none';
+                        }
+                    });
+                }
+            } catch(e) {}
+        });
+    }
 </script>
