@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """
-Script to connect to a running ECS container via SSH.
+Script to connect to a running ECS container using `aws ecs execute-command`
+(ECS Exec via AWS Systems Manager Session Manager).
 
 Discovers available website clusters in the current AWS account and prompts
 the user to select one if multiple are found.
+
+Prerequisites:
+    - AWS CLI configured with the target profile/account
+    - ECS Exec enabled for the task/service
+    - Session Manager plugin installed for the AWS CLI
 
 Usage:
     source ./.venv/bin/activate
@@ -20,9 +26,11 @@ CLUSTER_SUFFIX: str = "-website-cluster"
 SERVICE_SUFFIX: str = "-website-service"
 CONTAINER_SUFFIX: str = "-website-container"
 
-AWS_CLI_PROFILE_NAME: str = environ.get("AWS_PROFILE", "error")
+AWS_CLI_PROFILE_NAME: str | None = environ.get("AWS_PROFILE")
 
-session = Session(profile_name=AWS_CLI_PROFILE_NAME)
+session = (
+    Session(profile_name=AWS_CLI_PROFILE_NAME) if AWS_CLI_PROFILE_NAME else Session()
+)
 ecs_client = session.client("ecs", region_name="us-east-1")
 
 
@@ -35,7 +43,7 @@ def get_website_clusters() -> list[str]:
             arns.extend(page["clusterArns"])
 
         names = [arn.split("/")[-1] for arn in arns]
-        return [name for name in names if name.endswith(CLUSTER_SUFFIX)]
+        return sorted(name for name in names if name.endswith(CLUSTER_SUFFIX))
     except ClientError as e:
         print(f"AWS error: {e}")
         exit(1)
@@ -82,8 +90,7 @@ def connect_to_container(cluster_name: str, container_name: str, task_arn: str) 
         "aws",
         "ecs",
         "execute-command",
-        "--profile",
-        AWS_CLI_PROFILE_NAME,
+        *(["--profile", AWS_CLI_PROFILE_NAME] if AWS_CLI_PROFILE_NAME else []),
         "--cluster",
         cluster_name,
         "--task",
