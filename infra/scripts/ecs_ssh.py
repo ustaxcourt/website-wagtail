@@ -19,7 +19,7 @@ Usage:
 from sys import exit
 from subprocess import run, CalledProcessError
 from boto3 import Session
-from botocore.exceptions import ClientError, NoCredentialsError
+from botocore.exceptions import ClientError, NoCredentialsError, ProfileNotFound
 from os import environ
 
 CLUSTER_SUFFIX: str = "-website-cluster"
@@ -28,9 +28,15 @@ CONTAINER_SUFFIX: str = "-website-container"
 
 AWS_CLI_PROFILE_NAME: str | None = environ.get("AWS_PROFILE")
 
-session = (
-    Session(profile_name=AWS_CLI_PROFILE_NAME) if AWS_CLI_PROFILE_NAME else Session()
-)
+try:
+    session = (
+        Session(profile_name=AWS_CLI_PROFILE_NAME)
+        if AWS_CLI_PROFILE_NAME
+        else Session()
+    )
+except ProfileNotFound:
+    print(f"ERROR: AWS profile '{AWS_CLI_PROFILE_NAME}' not found")
+    exit(1)
 ecs_client = session.client("ecs", region_name="us-east-1")
 
 
@@ -82,6 +88,9 @@ def get_running_task_arn(cluster_name: str, service_name: str) -> str:
     except ClientError as e:
         print(f"AWS error: {e}")
         exit(1)
+    except NoCredentialsError:
+        print("ERROR: No AWS credentials found")
+        exit(1)
 
 
 def connect_to_container(cluster_name: str, container_name: str, task_arn: str) -> None:
@@ -118,7 +127,7 @@ def main():
 
     if not clusters:
         print(
-            f"ERROR: No website clusters found (looking for '*{CLUSTER_SUFFIX}') in AWS profile '{AWS_CLI_PROFILE_NAME}'"
+            f"ERROR: No website clusters found (looking for '*{CLUSTER_SUFFIX}') in AWS profile '{AWS_CLI_PROFILE_NAME or 'default'}'"
         )
         exit(1)
 
