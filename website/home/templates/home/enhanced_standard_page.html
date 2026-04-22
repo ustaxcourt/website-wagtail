@@ -444,7 +444,7 @@
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
     <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
-        <h1 data-testid="page-title" tabindex="0">
+        <h1 data-testid="page-title" tabindex="-1">
             <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
             <span class="page-title-breadcrumb" style="display: none;"></span>
         </h1>
@@ -466,6 +466,13 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageTitle = document.querySelector('[data-testid="page-title"]');
+            if (pageTitle && !document.querySelector('.card-tile')) {
+                pageTitle.setAttribute('tabindex', '0');
+            }
+        });
+
         // Actions to reset the breadcrumb at the top of the page
         function resetBreadcrumb(eventFromListener) {
             eventFromListener.preventDefault();
