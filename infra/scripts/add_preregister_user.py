@@ -41,7 +41,14 @@ def add_preregister_user(profile_name: str, email: str, group_name: str) -> bool
         response = client.get_secret_value(SecretId="website_secrets")
         secret = json.loads(response["SecretString"])
 
-        users_to_preregister = json.loads(secret.get("USERS_TO_PREREGISTER", "{}"))
+        raw = secret.get("USERS_TO_PREREGISTER", "{}")
+        if isinstance(raw, str):
+            users_to_preregister = json.loads(raw)
+        elif isinstance(raw, dict):
+            users_to_preregister = raw
+        else:
+            print(f"Unexpected type for USERS_TO_PREREGISTER: {type(raw)}")
+            return False
 
         if group_name not in users_to_preregister:
             print(f"Group '{group_name}' not found in USERS_TO_PREREGISTER")
@@ -55,7 +62,7 @@ def add_preregister_user(profile_name: str, email: str, group_name: str) -> bool
             return True
 
         group.append(email)
-        secret["USERS_TO_PREREGISTER"] = json.dumps(users_to_preregister)
+        secret["USERS_TO_PREREGISTER"] = users_to_preregister
 
         client.update_secret(
             SecretId="website_secrets", SecretString=json.dumps(secret)
@@ -116,7 +123,7 @@ def main():
         sys.exit(0)
 
     profile_name = args[0]
-    email = args[1]
+    email = args[1].strip().lower()
     group_name = args[2] if len(args) == 3 else DEFAULT_GROUP
 
     if not profile_name.strip():
