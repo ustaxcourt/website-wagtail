@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from home.management.commands.pages.efiling_and_case_maintenance import (
     efiling_and_case_maintenance_pages_to_update,
@@ -21,17 +22,27 @@ pages_to_update = (
 
 
 def create_file_hash_for_documents():
-    """Backwards migration: create file hashes for documents if missing."""
+    """Create file hashes for documents if missing."""
+    logger = logging.getLogger(__name__)
+
     for doc in Document.objects.filter(file_hash=""):
-        print(f"Generating file hash for document id={doc.id} name='{doc.title}'")
+        logger.info(f"Generating file hash for document id={doc.id} name='{doc.title}'")
+        """The below command uses a private Wagtail API function to set the file hash of the image being
+        worked on. Highlighting this use in case a future version of Wagtail causes this call to be
+        obsolete or to throw errors."""
         doc._set_file_hash()
         doc.save(update_fields=["file_hash"])
 
 
 def create_file_hash_for_images():
-    """Backwards migration: create file hashes for images if missing."""
+    """Create file hashes for images if missing."""
+    logger = logging.getLogger(__name__)
+
     for img in Image.objects.filter(file_hash=""):
-        print(f"Generating file hash for image id={img.id} name='{img.title}'")
+        logger.info(f"Generating file hash for image id={img.id} name='{img.title}'")
+        """The below command uses a private Wagtail API function to set the file hash of the image being
+        worked on. Highlighting this use in case a future version of Wagtail causes this call to be
+        obsolete or to throw errors."""
         img._set_file_hash()
         img.save(update_fields=["file_hash"])
 
