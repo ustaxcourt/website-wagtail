@@ -25,6 +25,11 @@ jobs:
         set -e
         make setup
 
+    - name: Check for missing migrations
+      run: |
+        cd website
+        python manage.py makemigrations --check --dry-run
+
     - name: Run pre-commit hooks
       run: pre-commit run --all-files
 
