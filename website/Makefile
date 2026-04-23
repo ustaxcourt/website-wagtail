@@ -37,6 +37,9 @@ migratecheck:
 makemigrations:
 	. $(VENV) && python manage.py makemigrations
 
+check-migrations:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py makemigrations --check --dry-run
+
 showmigrations:
 	. $(VENV) && python manage.py showmigrations
 
