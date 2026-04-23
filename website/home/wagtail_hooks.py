@@ -21,7 +21,12 @@ from home.models import NavigationMenu, JudgeRole, Header
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
-from .views import SearchDefinitionsReportView, SVG_CHOOSER_VIEWSET, PDF_CHOOSER_VIEWSET
+from .views import (
+    SearchDefinitionsReportView,
+    SVG_CHOOSER_VIEWSET,
+    PDF_CHOOSER_VIEWSET,
+    CustomDocumentChooserViewSet,
+)
 
 import logging
 
@@ -477,3 +482,8 @@ def register_svg_viewset():
 @hooks.register("register_admin_viewset")
 def register_pdf_viewset():
     return PDF_CHOOSER_VIEWSET
+
+
+@hooks.register("register_admin_viewset")
+def register_custom_document_chooser():
+    return CustomDocumentChooserViewSet("custom_documents")

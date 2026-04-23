@@ -14,6 +14,8 @@ from wagtail.admin.filters import (
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
 from django.utils import timezone
+from wagtail.search.query import PlainText
+from django.db.models import Q
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -485,3 +487,26 @@ class PDFChooserViewSet(DocumentChooserViewSet):
 
 
 PDF_CHOOSER_VIEWSET = PDFChooserViewSet("pdf_chooser")
+
+
+class CustomDocumentChooserViewSet(DocumentChooserViewSet):
+    def get_queryset(self):
+        # Start with the default queryset
+        qs = super().get_queryset()
+
+        # Get the search term from request
+        search_term = self.request.GET.get("q", "").strip()
+
+        if search_term:
+            # Perform default Wagtail search
+            wagtail_results = qs.search(PlainText(search_term))
+
+            # Perform LIKE search on title and file name
+            like_results = qs.filter(
+                Q(title__icontains=search_term) | Q(file__icontains=search_term)
+            )
+
+            # Combine results (union removes duplicates)
+            qs = (like_results | wagtail_results).distinct()
+
+        return qs
