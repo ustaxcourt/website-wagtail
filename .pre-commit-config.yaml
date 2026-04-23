@@ -27,4 +27,5 @@ repos:
       entry: bash -c 'source .venv/bin/activate && cd website && python manage.py makemigrations --check --dry-run --noinput'
       language: system
       pass_filenames: false
+      files: ^website/
       types: [python]
