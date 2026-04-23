@@ -24,7 +24,7 @@ repos:
   hooks:
     - id: django-migrations-check
       name: Check for missing Django migrations
-      entry: bash -c 'source .venv/bin/activate && cd website && python manage.py makemigrations --check --dry-run'
+      entry: bash -c 'source .venv/bin/activate && cd website && python manage.py makemigrations --check --dry-run --noinput'
       language: system
       pass_filenames: false
       types: [python]
