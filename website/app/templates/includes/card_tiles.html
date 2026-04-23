@@ -541,6 +541,8 @@
                     breadcrumbSpan.style.display = 'none';
                 }
                 if (titleStart) {
+                    titleStart.removeAttribute('tabindex');
+                    titleStart.removeAttribute('role');
                     titleStart.style.textDecoration = 'none';
                     titleStart.style.cursor = 'default';
                 }
