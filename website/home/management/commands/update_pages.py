@@ -27,11 +27,8 @@ def create_file_hash_for_documents():
 
     for doc in Document.objects.filter(file_hash=""):
         logger.info(f"Generating file hash for document id={doc.id} name='{doc.title}'")
-        """The below command uses a private Wagtail API function to set the file hash of the image being
-        worked on. Highlighting this use in case a future version of Wagtail causes this call to be
-        obsolete or to throw errors."""
-        doc._set_file_hash()
-        doc.save(update_fields=["file_hash"])
+        """The below method implicitly sets the file's hash if it is empty when it is called."""
+        doc.get_file_hash()
 
 
 def create_file_hash_for_images():
@@ -40,11 +37,8 @@ def create_file_hash_for_images():
 
     for img in Image.objects.filter(file_hash=""):
         logger.info(f"Generating file hash for image id={img.id} name='{img.title}'")
-        """The below command uses a private Wagtail API function to set the file hash of the image being
-        worked on. Highlighting this use in case a future version of Wagtail causes this call to be
-        obsolete or to throw errors."""
-        img._set_file_hash()
-        img.save(update_fields=["file_hash"])
+        """The below method implicitly sets the image's hash if it is empty when it is called."""
+        img.get_file_hash()
 
 
 class Command(BaseCommand):
