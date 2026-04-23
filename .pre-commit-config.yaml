@@ -19,3 +19,12 @@ repos:
     - id: ruff-check
     # Run the formatter.
     - id: ruff-format
+
+- repo: local
+  hooks:
+    - id: django-migrations-check
+      name: Check for missing Django migrations
+      entry: bash -c 'source .venv/bin/activate && cd website && python manage.py makemigrations --check --dry-run'
+      language: system
+      pass_filenames: false
+      types: [python]
