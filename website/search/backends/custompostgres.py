@@ -7,7 +7,11 @@ from django.db.models import Q
 
 class CustomPostgresSearchResults(PostgresSearchResults):
     def get_queryset(self):
-        like_results = self.query_compiler.queryset.filter(
+        like_results = set()
+
+        # all_objects = self.model.objects.all()
+
+        like_results = self.model.objects.filter(
             Q(title__icontains=self.query_compiler.query.query_string)
             | Q(file__icontains=self.query_compiler.query.query_string)
         )
