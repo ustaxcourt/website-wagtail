@@ -19,11 +19,11 @@ class CustomPostgresSearchResults(PostgresSearchResults):
             | Q(file__icontains=self.query_compiler.query.query_string)
         )
 
-        logger.error("like_results: " | like_results)
+        logger.error(f"like_results: {like_results}")
 
         # Start with the default queryset
         qs = super().get_queryset()
-        logger.error("qs: " | qs)
+        logger.error(f"qs: {qs}")
 
         # # Get the search term from request
         # search_term = self.request.GET.get("q", "").strip()
