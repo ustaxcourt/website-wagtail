@@ -25,7 +25,6 @@ from .views import (
     SearchDefinitionsReportView,
     SVG_CHOOSER_VIEWSET,
     PDF_CHOOSER_VIEWSET,
-    CustomDocumentChooserViewSet,
 )
 
 import logging
@@ -482,8 +481,3 @@ def register_svg_viewset():
 @hooks.register("register_admin_viewset")
 def register_pdf_viewset():
     return PDF_CHOOSER_VIEWSET
-
-
-@hooks.register("register_admin_viewset")
-def register_custom_document_chooser():
-    return CustomDocumentChooserViewSet("custom_documents")
