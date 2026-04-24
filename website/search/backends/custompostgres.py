@@ -19,11 +19,11 @@ class CustomPostgresSearchResults(PostgresSearchResults):
             | Q(file__icontains=self.query_compiler.query.query_string)
         )
 
-        logger.warning("like_results: " | like_results)
+        logger.error("like_results: " | like_results)
 
         # Start with the default queryset
         qs = super().get_queryset()
-        logger.warning("qs: " | qs)
+        logger.error("qs: " | qs)
 
         # # Get the search term from request
         # search_term = self.request.GET.get("q", "").strip()
@@ -63,6 +63,9 @@ class CustomPostgresSearchBackend(PostgresSearchBackend):
         :param operator: The operator to use when combining search terms (``"and"`` or ``"or"``).
         :param order_by_relevance: Whether to order results by relevance.
         """
+        logger = logging.getLogger(__name__)
+        logger.error("Called CustomPostgresSearchBackend.autocomplete")
+
         if self.autocomplete_query_compiler_class is None:
             raise NotImplementedError(
                 "This search backend does not support the autocomplete API"
