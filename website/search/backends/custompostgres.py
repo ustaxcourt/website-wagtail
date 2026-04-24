@@ -45,6 +45,9 @@ class CustomPostgresSearchResults(PostgresSearchResults):
 
 class CustomPostgresSearchBackend(PostgresSearchBackend):
     results_class = CustomPostgresSearchResults
+    logger = logging.getLogger(__name__)
+    logger.error("Called CustomPostgresSearchBackend constructor")
+    print("print Called CustomPostgresSearchBackend constructor")
 
     def autocomplete(
         self,
