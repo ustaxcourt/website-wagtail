@@ -205,3 +205,15 @@ role: check-env-is-aws
 	@aws iam list-attached-role-policies --role-name github-workflow-deployer \
 	  --query 'AttachedPolicies[*].[PolicyName, PolicyArn]' --output text | \
 	  awk '{printf "%s: %s\n", $$1, $$2}'
+
+test-e2e:
+	@$(MAKE) -C website test-e2e args="$(args)"
+
+cypress-open:
+	@$(MAKE) -C website cypress-open args="$(args)"
+
+test-e2e-aws:
+	@$(MAKE) -C website test-e2e-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)"
+
+cypress-open-aws:
+	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)"

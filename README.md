@@ -100,6 +100,53 @@ make pytest
 make test-e2e
 ```
 
+#### E2E tests against AWS lower environments
+
+These commands run Cypress from your local machine against an AWS-hosted environment and pull admin credentials from AWS Secrets Manager using your local `awscli` session.
+
+Prerequisites:
+
+- `awscli` is installed and authenticated (`aws sso login --profile ...` or equivalent)
+- `jq` is installed
+- The target environment has a `website_secrets` secret with one of:
+  - `CYPRESS_ADMIN_PASSWORD`
+  - `ADMIN_PASSWORD`
+  - `DJANGO_SUPERUSER_PASSWORD`
+
+Examples:
+
+```shell
+# Run against dev-web
+make test-e2e-aws aws_env=dev-web
+
+# Run against train-web and include admin validation specs
+make test-e2e-aws aws_env=train-web args=include-admin
+
+# Run against a sandbox URL pattern: https://alice-sandbox-web.ustaxcourt.gov
+make test-e2e-aws aws_env=sandbox sandbox_name=alice
+
+# Run against any explicit URL
+make test-e2e-aws base_url=https://my-custom-env.ustaxcourt.gov
+
+# Open interactive Cypress runner against AWS env
+make cypress-open-aws aws_env=dev-web
+```
+
+Optional arguments for `test-e2e-aws` and `cypress-open-aws`:
+
+- `secret_id` (default: `website_secrets`)
+- `region` (default: `AWS_DEFAULT_REGION` or `us-east-1`)
+- `browser` (default: `chrome`)
+- `spec` (optional Cypress spec glob)
+
+Artifacts from each run are copied to:
+
+```text
+website/cypress/artifacts/<aws_env-or-custom>/<YYYYMMDD-HHMMSS>/
+```
+
+Each artifact folder includes screenshots/videos/downloads (when present) and a `metadata.txt` file with run details.
+
 Admin-related Cypress tests read credentials from `cypress.env.json` (gitignored). This file is auto-generated with local defaults when you run `make setup` or `make reset`. To use different credentials, edit `website/cypress.env.json` directly — it will not be overwritten once it exists.
 
 ```json

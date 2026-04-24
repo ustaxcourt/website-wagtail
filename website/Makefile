@@ -48,8 +48,32 @@ coverage:
 test-e2e:
 	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress run --browser chrome
 
+test-e2e-aws:
+	@chmod +x ./scripts/cypress/run_against_aws.sh
+	./scripts/cypress/run_against_aws.sh --mode run \
+		$(if $(aws_env),--aws-env $(aws_env),) \
+		$(if $(sandbox_name),--sandbox-name $(sandbox_name),) \
+		$(if $(base_url),--base-url $(base_url),) \
+		$(if $(secret_id),--secret-id $(secret_id),) \
+		$(if $(region),--region $(region),) \
+		$(if $(spec),--spec $(spec),) \
+		$(if $(browser),--browser $(browser),--browser chrome) \
+		$(if $(filter include-admin,$(args)),--include-admin,)
+
 cypress-open:
 	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress open --browser chrome
+
+cypress-open-aws:
+	@chmod +x ./scripts/cypress/run_against_aws.sh
+	./scripts/cypress/run_against_aws.sh --mode open \
+		$(if $(aws_env),--aws-env $(aws_env),) \
+		$(if $(sandbox_name),--sandbox-name $(sandbox_name),) \
+		$(if $(base_url),--base-url $(base_url),) \
+		$(if $(secret_id),--secret-id $(secret_id),) \
+		$(if $(region),--region $(region),) \
+		$(if $(spec),--spec $(spec),) \
+		$(if $(browser),--browser $(browser),--browser chrome) \
+		$(if $(filter include-admin,$(args)),--include-admin,)
 
 pytest:
 	. $(VENV) && pytest
