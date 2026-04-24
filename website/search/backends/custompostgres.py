@@ -45,6 +45,7 @@ class CustomPostgresSearchResults(PostgresSearchResults):
 
 class CustomPostgresSearchBackend(PostgresSearchBackend):
     results_class = CustomPostgresSearchResults
+    ###comment for sandbox deploy
     logger = logging.getLogger(__name__)
     logger.error("Called CustomPostgresSearchBackend constructor")
     print("print Called CustomPostgresSearchBackend constructor")
