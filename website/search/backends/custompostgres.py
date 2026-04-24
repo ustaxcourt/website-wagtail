@@ -2,11 +2,14 @@ from modelsearch.backends.database.postgres.postgres import (
     PostgresSearchResults,
     PostgresSearchBackend,
 )
+import logging
 from django.db.models import Q
 
 
 class CustomPostgresSearchResults(PostgresSearchResults):
     def get_queryset(self):
+        logger = logging.getLogger(__name__)
+
         like_results = set()
 
         # all_objects = self.model.objects.all()
@@ -16,11 +19,11 @@ class CustomPostgresSearchResults(PostgresSearchResults):
             | Q(file__icontains=self.query_compiler.query.query_string)
         )
 
-        print("like_results: " | like_results)
+        logger.warning("like_results: " | like_results)
 
         # Start with the default queryset
         qs = super().get_queryset()
-        print("qs: " | qs)
+        logger.warning("qs: " | qs)
 
         # # Get the search term from request
         # search_term = self.request.GET.get("q", "").strip()
