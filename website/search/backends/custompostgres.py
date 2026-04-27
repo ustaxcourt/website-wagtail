@@ -2,40 +2,23 @@ from modelsearch.backends.database.postgres.postgres import (
     PostgresSearchResults,
     PostgresSearchBackend,
 )
-import logging
 from django.db.models import Q
 
 
 class CustomPostgresSearchResults(PostgresSearchResults):
     def get_queryset(self):
-        logger = logging.getLogger(__name__)
+        like_results = self.model.objects.none()
 
-        like_results = set()
+        # Run a LIKE query against the title and file properties of models
+        # that have those properties (e.g., Documents & Images)
+        if hasattr(self.model, "title") and hasattr(self.model, "file"):
+            like_results = self.model.objects.filter(
+                Q(title__icontains=self.query_compiler.query.query_string)
+                | Q(file__icontains=self.query_compiler.query.query_string)
+            )
 
-        # all_objects = self.model.objects.all()
-
-        like_results = self.model.objects.filter(
-            Q(title__icontains=self.query_compiler.query.query_string)
-            | Q(file__icontains=self.query_compiler.query.query_string)
-        )
-
-        logger.error(f"like_results: {like_results}")
-
-        # Start with the default queryset
+        # Get the default queryset
         qs = super().get_queryset()
-        logger.error(f"qs: {qs}")
-
-        # # Get the search term from request
-        # search_term = self.request.GET.get("q", "").strip()
-
-        # if search_term:
-        #     # Perform default Wagtail search
-        #     wagtail_results = qs.search(PlainText(search_term))
-
-        #     # Perform LIKE search on title and file name
-        #     like_results = qs.filter(
-        #         Q(title__icontains=search_term) | Q(file__icontains=search_term)
-        #     )
 
         # Combine results (union removes duplicates)
         qs = (like_results | qs).distinct()
@@ -45,10 +28,6 @@ class CustomPostgresSearchResults(PostgresSearchResults):
 
 class CustomPostgresSearchBackend(PostgresSearchBackend):
     results_class = CustomPostgresSearchResults
-    ###comment for sandbox deploy
-    logger = logging.getLogger(__name__)
-    logger.error("Called CustomPostgresSearchBackend constructor")
-    print("print Called CustomPostgresSearchBackend constructor")
 
     def autocomplete(
         self,
@@ -67,9 +46,6 @@ class CustomPostgresSearchBackend(PostgresSearchBackend):
         :param operator: The operator to use when combining search terms (``"and"`` or ``"or"``).
         :param order_by_relevance: Whether to order results by relevance.
         """
-        logger = logging.getLogger(__name__)
-        logger.error("Called CustomPostgresSearchBackend.autocomplete")
-
         if self.autocomplete_query_compiler_class is None:
             raise NotImplementedError(
                 "This search backend does not support the autocomplete API"
