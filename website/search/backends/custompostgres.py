@@ -1,4 +1,4 @@
-from modelsearch.backends.database.postgres.postgres import (
+from wagtail.search.backends.database.postgres.postgres import (
     PostgresSearchResults,
     PostgresSearchBackend,
 )
