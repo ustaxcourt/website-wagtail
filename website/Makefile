@@ -46,7 +46,7 @@ coverage:
 	. $(VENV) && coverage html -d coverage_html && open coverage_html/index.html
 
 test-e2e:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress run --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
 test-e2e-aws:
 	@chmod +x ./scripts/cypress/run_against_aws.sh
@@ -61,7 +61,7 @@ test-e2e-aws:
 		$(if $(filter include-admin,$(args)),--include-admin,)
 
 cypress-open:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress open --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress open --browser chrome
 
 cypress-open-aws:
 	@chmod +x ./scripts/cypress/run_against_aws.sh
