@@ -18,12 +18,13 @@ class CustomPostgresSearchResults(PostgresSearchResults):
                 | Q(file__icontains=self.query_compiler.query.query_string)
             )
 
-            # Combine results (union removes duplicates)
+            # Combine results into a list of primary keys from the objects in each queryset
             fts_ids = list(qs.values_list("pk", flat=True))
             like_ids = list(like_results.values_list("pk", flat=True))
             combined_ids = set(fts_ids + like_ids)
 
-            # Create a fresh QuerySet matching the combined IDs
+            # Create a fresh QuerySet matching the combined IDs (the "in" portion of this query
+            # removes duplicates)
             qs = self.model.objects.filter(pk__in=combined_ids)
 
         return qs
