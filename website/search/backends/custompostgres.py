@@ -7,21 +7,21 @@ from django.db.models import Q
 
 class CustomPostgresSearchResults(PostgresSearchResults):
     def get_queryset(self):
-        like_results = self.model.objects.none()
+        # Get the default queryset
+        qs = super().get_queryset()
 
         # Run a LIKE query against the title and file properties of models
         # that have those properties (e.g., Documents & Images)
         if hasattr(self.model, "title") and hasattr(self.model, "file"):
+            like_results = self.model.objects.none()
+
             like_results = self.model.objects.filter(
                 Q(title__icontains=self.query_compiler.query.query_string)
                 | Q(file__icontains=self.query_compiler.query.query_string)
             )
 
-        # Get the default queryset
-        qs = super().get_queryset()
-
-        # Combine results (union removes duplicates)
-        qs = like_results.union(qs).distinct()
+            # Combine results (union removes duplicates)
+            qs = (like_results | qs).distinct()
 
         return qs
 
