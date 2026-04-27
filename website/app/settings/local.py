@@ -49,5 +49,3 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
-
-print(f"Finished local: ENVIRONMENT: {ENVIRONMENT}")

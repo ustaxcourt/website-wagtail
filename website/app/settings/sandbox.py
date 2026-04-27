@@ -32,5 +32,3 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "search.backends.custompostgres",
     }
 }
-
-print(f"Finished sandbox: ENVIRONMENT: {ENVIRONMENT}")
