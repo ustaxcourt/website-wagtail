@@ -21,7 +21,7 @@ class CustomPostgresSearchResults(PostgresSearchResults):
         qs = super().get_queryset()
 
         # Combine results (union removes duplicates)
-        qs = (like_results | qs).distinct()
+        qs = like_results.union(qs).distinct()
 
         return qs
 
