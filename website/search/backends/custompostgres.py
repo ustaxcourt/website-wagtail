@@ -13,15 +13,18 @@ class CustomPostgresSearchResults(PostgresSearchResults):
         # Run a LIKE query against the title and file properties of models
         # that have those properties (e.g., Documents & Images)
         if hasattr(self.model, "title") and hasattr(self.model, "file"):
-            like_results = self.model.objects.none()
-
             like_results = self.model.objects.filter(
                 Q(title__icontains=self.query_compiler.query.query_string)
                 | Q(file__icontains=self.query_compiler.query.query_string)
             )
 
             # Combine results (union removes duplicates)
-            qs = (like_results | qs).distinct()
+            fts_ids = list(qs.values_list("pk", flat=True))
+            like_ids = list(like_results.values_list("pk", flat=True))
+            combined_ids = set(fts_ids + like_ids)
+
+            # Create a fresh QuerySet matching the combined IDs
+            qs = self.model.objects.filter(pk__in=combined_ids)
 
         return qs
 
