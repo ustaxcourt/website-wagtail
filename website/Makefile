@@ -37,6 +37,9 @@ migratecheck:
 makemigrations:
 	. $(VENV) && python manage.py makemigrations
 
+check-migrations:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py makemigrations --check --dry-run || { echo "Missing migrations detected. Run 'make makemigrations' and commit the generated file." >&2; exit 1; }
+
 showmigrations:
 	. $(VENV) && python manage.py showmigrations
 
