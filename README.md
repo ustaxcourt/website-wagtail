@@ -331,6 +331,8 @@ Use make command `make aws-setup` to complete the necessary aws infra setup. It 
   - set `DJANGO_SUPERUSER_PASSWORD`, used to initialize wagtail with a superuser called `admin`
   - set `SECRET_KEY`, used by django (`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`)
   - set `DOMAIN_NAME` which should be the domain name you want to use for your sandbox environment, i.e. `something.ustaxcourt.gov` (or in prod `ustaxcourt.gov`)
+  - set `WAGTAILTRANSFER_SECRET_KEY`, used by Wagtail Transfer
+  - set `WAGTAILTRANSFER_SOURCES`, used by Wagtail Transfer
 - create an iam `deployer` user
   - attach policies directly, create a new policy called `deployer-policy`, paste in the `deployer-policy.json`
   - attach the new policy to your user

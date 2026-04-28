@@ -1,6 +1,16 @@
+/// <reference types="node" />
+
 import { defineConfig } from "cypress";
 
 const includeAdminValidation = process.env.CYPRESS_INCLUDE_ADMIN_VALIDATION === 'true';
+const adminValidationSpecPattern = '**/admin*_validation.cy.{js,jsx,ts,tsx}';
+const baseUrl = process.env.CYPRESS_BASE_URL || 'http://localhost:8000';
+const adminUsername = process.env.CYPRESS_ADMIN_USERNAME || undefined;
+const adminPassword = process.env.CYPRESS_ADMIN_PASSWORD || undefined;
+const env = {
+  ...(adminUsername ? { ADMIN_USERNAME: adminUsername } : {}),
+  ...(adminPassword ? { ADMIN_PASSWORD: adminPassword } : {}),
+};
 
 export default defineConfig({
   e2e: {
@@ -18,10 +28,11 @@ export default defineConfig({
         },
       })
     },
-    baseUrl: 'http://127.0.0.1:8000',
+    baseUrl,
+    ...(Object.keys(env).length > 0 ? { env } : {}),
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     excludeSpecPattern: includeAdminValidation
       ? []
-      : ['**/admin_page_validation.cy.{js,jsx,ts,tsx}']
+      : [adminValidationSpecPattern]
   },
 });

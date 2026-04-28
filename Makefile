@@ -47,7 +47,9 @@ aws-setup: check-env-is-aws aws-init
 		"DATABASE_HOSTNAME": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_DB_RECOVERY", \
 		"BASTION_HOST_IP": "MISSING_CONFIG_AT_WEBSITE_SECRETS_USED_FOR_DB_RECOVERY", \
 		"USERS_TO_PREREGISTER": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
-		"USERS_TO_PREREGISTER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS" \
+		"USERS_TO_PREREGISTER_PASSWORD": "MISSING_CONFIG_AT_WEBSITE_SECRETS", \
+		"WAGTAILTRANSFER_SECRET_KEY": "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'", \
+		"WAGTAILTRANSFER_SOURCES": "{}" \
 	}'; \
 	if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
 		echo "Secret exists. Updating secret..."; \
@@ -76,6 +78,19 @@ aws-setup: check-env-is-aws aws-init
 	aws iam attach-user-policy --user-name deployer --policy-arn "$$POLICY_ARN";
 
 	aws iam create-access-key --user-name deployer > ./infra/iam/$(env)_generated-deployer-access-key.json || true
+
+# this command is used to setting up the bastion ssh keys and the aws secret manager secrets
+# that will be used for the terraform setup during the ci/cd pipeline
+aws-setup-wagtail-transfer: check-env-is-aws aws-init
+	@echo "Setting up AWS environment for $(env)..."
+
+	@if aws secretsmanager describe-secret --secret-id website_secrets --region us-east-1 > /dev/null 2>&1; then \
+		echo "Secret 'website_secrets' exists. Setting Wagtail Transfer keys to default values if they do not exist..."; \
+		SECRET_STRING=$$(aws secretsmanager get-secret-value --secret-id website_secrets --query SecretString --output text | jq 'if has("WAGTAILTRANSFER_SOURCES") then .["WAGTAILTRANSFER_SOURCES"] = .["WAGTAILTRANSFER_SOURCES"] else .["WAGTAILTRANSFER_SOURCES"] = "{}" end' | jq 'if has("WAGTAILTRANSFER_SECRET_KEY") then .["WAGTAILTRANSFER_SECRET_KEY"] = .["WAGTAILTRANSFER_SECRET_KEY"] else .["WAGTAILTRANSFER_SECRET_KEY"] = "'"$$(head -c 50 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#$%^&*(-_=+)' | head -c 50)"'" end'); \
+		aws secretsmanager update-secret --secret-id website_secrets --region us-east-1 --secret-string "$$SECRET_STRING"; \
+	else \
+		echo "Secret 'website_secrets' does not exist. Run 'aws-setup' instead."; \
+	fi
 
 init:
 	@echo "Initializing environment: $(env)"
@@ -119,6 +134,7 @@ destroy: check-env-is-aws
 	cd infra && ENVIRONMENT=$(env) ./destroy.sh
 
 tag:
+	git push
 	git tag -f $(tag)
 	git push -f origin $(tag)
 

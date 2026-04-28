@@ -21,7 +21,11 @@ from home.models import NavigationMenu, JudgeRole, Header
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
-from .views import SearchDefinitionsReportView, SVG_CHOOSER_VIEWSET, PDF_CHOOSER_VIEWSET
+from .views import (
+    SearchDefinitionsReportView,
+    SVG_CHOOSER_VIEWSET,
+    PDF_CHOOSER_VIEWSET,
+)
 
 import logging
 
