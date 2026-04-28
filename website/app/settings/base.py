@@ -303,7 +303,7 @@ WAGTAIL_SITE_NAME = "USTC Website"
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.database",
+        "BACKEND": "search.backends.custompostgres",
     }
 }
 
@@ -465,4 +465,15 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "wagtailcore.collection": ["name"],
     "wagtailcore.page": ["slug"],
     "home.pamphletentry": ["title", "code"],
+    "home.commontext": ["name"],
+    "home.executescript": ["command_name", "execution_type"],
+    "home.judgecollection": ["name"],
+    "home.judgecollectionorderable": ["judge_id", "collection_id"],
+    "home.judgeprofile": ["first_name", "middle_initial", "last_name"],
+    "home.judgerole": ["role_name"],
+    "home.navigationmenu": ["live"],
+    "home.navigationribbon": ["name"],
+    "home.simplecard": ["card_title"],
+    "wagtaildocs.document": ["title", "file_hash"],
+    "wagtailimages.image": ["title", "file_hash"],
 }
