@@ -17,6 +17,7 @@ Options:
   --region <aws-region>        AWS region (default: AWS_DEFAULT_REGION or us-east-1)
   --browser <browser>          Browser passed to Cypress (default: chrome)
   --include-admin              Include admin validation specs
+  --skip-health-check          Skip preflight HTTP health check
   --spec <spec-glob>           Optional Cypress --spec filter
 
 Examples:
@@ -43,6 +44,7 @@ secret_id="website_secrets"
 region="${AWS_DEFAULT_REGION:-us-east-1}"
 browser="chrome"
 include_admin=false
+skip_health_check=false
 spec=""
 
 while [[ $# -gt 0 ]]; do
@@ -77,6 +79,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --include-admin)
       include_admin=true
+      shift
+      ;;
+    --skip-health-check)
+      skip_health_check=true
       shift
       ;;
     --spec)
@@ -127,21 +133,41 @@ fi
 require_command aws
 require_command jq
 require_command npx
+require_command curl
 
 echo "Loading admin credentials from AWS Secrets Manager secret '$secret_id' in '$region'..."
 secret_json=$(aws secretsmanager get-secret-value \
   --secret-id "$secret_id" \
   --region "$region" \
   --query SecretString \
-  --output text)
+  --output text 2>/dev/null || true)
 
 if [[ -z "$secret_json" || "$secret_json" == "None" ]]; then
-  echo "Error: secret '$secret_id' has no SecretString payload." >&2
-  exit 1
+  repo_root=$(cd "$(dirname "$0")/../../.." && pwd)
+  load_secrets_script="$repo_root/infra/load-secrets.sh"
+  if [[ -f "$load_secrets_script" ]]; then
+    echo "Direct secret lookup failed. Trying fallback via infra/load-secrets.sh..."
+    set +u
+    source "$load_secrets_script"
+    set -u
+    if [[ -n "${CYPRESS_ADMIN_PASSWORD:-}" || -n "${ADMIN_PASSWORD:-}" || -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]]; then
+      admin_username="${CYPRESS_ADMIN_USERNAME:-${ADMIN_USERNAME:-admin}}"
+      admin_password="${CYPRESS_ADMIN_PASSWORD:-${ADMIN_PASSWORD:-${DJANGO_SUPERUSER_PASSWORD:-}}}"
+    fi
+  fi
 fi
 
-admin_username=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_USERNAME // .ADMIN_USERNAME // "admin"')
-admin_password=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_PASSWORD // .ADMIN_PASSWORD // .DJANGO_SUPERUSER_PASSWORD // empty')
+if [[ -z "${admin_password:-}" ]]; then
+  if [[ -z "$secret_json" || "$secret_json" == "None" ]]; then
+    echo "Error: secret '$secret_id' has no SecretString payload, and infra/load-secrets.sh fallback did not provide admin credentials." >&2
+    exit 1
+  fi
+fi
+
+if [[ -z "${admin_password:-}" ]]; then
+  admin_username=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_USERNAME // .ADMIN_USERNAME // "admin"')
+  admin_password=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_PASSWORD // .ADMIN_PASSWORD // .DJANGO_SUPERUSER_PASSWORD // empty')
+fi
 
 if [[ -z "$admin_password" || "$admin_password" == "null" ]]; then
   echo "Error: could not find admin password in '$secret_id'. Expected one of: CYPRESS_ADMIN_PASSWORD, ADMIN_PASSWORD, DJANGO_SUPERUSER_PASSWORD" >&2
@@ -158,6 +184,29 @@ mkdir -p "$artifacts_dir"
 
 echo "Running Cypress against: $base_url"
 echo "Artifacts will be copied to: $artifacts_dir"
+
+if [[ "$skip_health_check" != "true" ]]; then
+  http_status=$(curl -sSL -o /dev/null -w "%{http_code}" "$base_url" || echo "000")
+  if [[ "$http_status" -ge 500 || "$http_status" == "000" ]]; then
+    echo "Error: Preflight health check failed for '$base_url' (HTTP $http_status)." >&2
+    echo "The target AWS environment appears unavailable. Skipping Cypress execution." >&2
+    cat > "$artifacts_dir/metadata.txt" <<EOF
+mode=${mode}
+base_url=${base_url}
+aws_env=${aws_env}
+sandbox_name=${sandbox_name}
+secret_id=${secret_id}
+region=${region}
+include_admin=${include_admin}
+browser=${browser}
+run_timestamp=${run_stamp}
+health_check_status=${http_status}
+health_check_failed=true
+exit_code=65
+EOF
+    exit 65
+  fi
+fi
 
 cypress_cmd=(
   npx cypress "$mode"
@@ -191,6 +240,7 @@ sandbox_name=${sandbox_name}
 secret_id=${secret_id}
 region=${region}
 include_admin=${include_admin}
+skip_health_check=${skip_health_check}
 browser=${browser}
 run_timestamp=${run_stamp}
 exit_code=${cypress_exit}
