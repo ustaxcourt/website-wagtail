@@ -19,6 +19,12 @@ DATABASES = {
     }
 }
 
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+    }
+}
+
 
 # Disable migrations for faster tests
 class DisableMigrations:

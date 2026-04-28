@@ -21,3 +21,9 @@ SITE_IS_LIVE = date.today() >= date(2025, 6, 1)
 EMAIL_BACKEND = "django_ses.SESBackend"
 
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "search.backends.custompostgres",
+    }
+}
