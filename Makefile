@@ -134,6 +134,7 @@ destroy: check-env-is-aws
 	cd infra && ENVIRONMENT=$(env) ./destroy.sh
 
 tag:
+	git push
 	git tag -f $(tag)
 	git push -f origin $(tag)
 

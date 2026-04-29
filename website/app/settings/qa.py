@@ -28,3 +28,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 WAGTAILADMIN_BASE_URL = f"https://{os.getenv('DOMAIN_NAME')}"
 
 WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "search.backends.custompostgres",
+    }
+}
