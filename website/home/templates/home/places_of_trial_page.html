@@ -93,6 +93,10 @@
                         <p>{{ block.value.message|richtext }}</p>
                     </div>
                 </div>
+            {% elif block.block_type == "text" %}
+                <div class="text-block">
+                    <p>{{ block.value|richtext }}</p>
+                </div>
             {% endif %}
         {% endfor %}
         <div class="alphabet">
