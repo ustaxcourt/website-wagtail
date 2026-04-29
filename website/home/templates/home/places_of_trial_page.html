@@ -103,11 +103,11 @@
             {% endfor %}
         </div>
         <div class="grid">
-            {% for state in page.places_of_trial %}
-                {% with state_letter=state.value.state|slice:":1" %}
+            {% for state in sorted_places %}
+                {% with state_letter=state.state|slice:":1" %}
                     <div class="state-card" id="{{ state_letter }}">
-                        <div class="state-header">{{ state.value.state }}</div>
-                        {% for city in state.value.cities %}
+                        <div class="state-header">{{ state.state }}</div>
+                        {% for city in state.cities %}
                             <div class="city">{{ city.name }}</div>
                             {% if city.address %}
                                 <div class="address">

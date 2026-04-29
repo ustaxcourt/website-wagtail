@@ -57,3 +57,27 @@ class PlacesOfTrialPage(ModerationMixin, Page):
         index.SearchField("body"),
         index.SearchField("places_of_trial"),
     ]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+
+        sorted_places = []
+
+        # Now we will order the states alphabetically and the cities within each state alphabetically as well
+        ordered_states = sorted(
+            self.places_of_trial, key=lambda x: x.value["state"].lower()
+        )
+        for state_block in ordered_states:
+            ordered_cities = sorted(
+                state_block.value["cities"], key=lambda x: x["name"].lower()
+            )
+
+            sorted_places.append(
+                {
+                    "state": state_block.value["state"],
+                    "cities": ordered_cities,
+                }
+            )
+
+        context["sorted_places"] = sorted_places
+        return context
