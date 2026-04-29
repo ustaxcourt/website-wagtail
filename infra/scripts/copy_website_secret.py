@@ -3,11 +3,11 @@
 Script to copy a single property from website_secrets in one AWS account to another.
 
 Usage:
-    python3 copy_secret_property.py <source_profile> <destination_profile> <property_name> [--dry-run]
+    python3 copy_website_secret.py <source_profile> <destination_profile> <property_name> [--dry-run]
 
 Example:
-    python3 copy_secret_property.py production sandbox DATABASE_PASSWORD
-    python3 copy_secret_property.py sandbox production SECRET_KEY --dry-run
+    python3 copy_website_secret.py production sandbox DATABASE_PASSWORD
+    python3 copy_website_secret.py sandbox production SECRET_KEY --dry-run
 
 Options:
     --dry-run    Show what the destination secret would look like without making changes
@@ -235,13 +235,13 @@ def main():
     # Check argument count
     if len(args) != 3:
         print(
-            "Usage: python3 copy_secret_property.py <source_profile> <destination_profile> <property_name> [--dry-run]"
+            "Usage: python3 copy_website_secret.py <source_profile> <destination_profile> <property_name> [--dry-run]"
         )
         print(
-            "Example: python3 copy_secret_property.py production sandbox DATABASE_PASSWORD"
+            "Example: python3 copy_website_secret.py production sandbox DATABASE_PASSWORD"
         )
         print(
-            "         python3 copy_secret_property.py sandbox production SECRET_KEY --dry-run"
+            "         python3 copy_website_secret.py sandbox production SECRET_KEY --dry-run"
         )
         print()
         print(
