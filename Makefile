@@ -213,7 +213,28 @@ cypress-open:
 	@$(MAKE) -C website cypress-open args="$(args)"
 
 test-e2e-aws:
-	@$(MAKE) -C website test-e2e-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)"
+	@$(MAKE) -C website test-e2e-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
 
 cypress-open-aws:
-	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)"
+	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
+
+aws-cypress-set-credentials:
+	@if [ -z "$(admin_username)" ] || [ -z "$(admin_password)" ]; then \
+		echo "Usage: make aws-cypress-set-credentials admin_username=<user> admin_password=<pass>"; \
+		echo "       Optionally add: secret_id=<name> region=<aws-region>"; \
+		exit 1; \
+	fi
+	@echo "Writing CYPRESS_ADMIN_USERNAME / CYPRESS_ADMIN_PASSWORD to secret '$(or $(secret_id),website_secrets)' in $(or $(region),us-east-1)..."
+	@SECRET=$$(aws secretsmanager get-secret-value \
+		--secret-id "$(or $(secret_id),website_secrets)" \
+		--region "$(or $(region),us-east-1)" \
+		--query SecretString --output text); \
+	UPDATED=$$(printf '%s' "$$SECRET" | jq \
+		--arg u "$(admin_username)" \
+		--arg p "$(admin_password)" \
+		'. + {CYPRESS_ADMIN_USERNAME: $$u, CYPRESS_ADMIN_PASSWORD: $$p}'); \
+	aws secretsmanager update-secret \
+		--secret-id "$(or $(secret_id),website_secrets)" \
+		--region "$(or $(region),us-east-1)" \
+		--secret-string "$$UPDATED"
+	@echo "Done. Re-run your test-e2e-aws command — credentials will be picked up automatically."

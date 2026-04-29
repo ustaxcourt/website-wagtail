@@ -50,6 +50,7 @@ test-e2e:
 
 test-e2e-aws:
 	@chmod +x ./scripts/cypress/run_against_aws.sh
+	CYPRESS_ADMIN_USERNAME="$(admin_username)" CYPRESS_ADMIN_PASSWORD="$(admin_password)" \
 	./scripts/cypress/run_against_aws.sh --mode run \
 		$(if $(aws_env),--aws-env $(aws_env),) \
 		$(if $(sandbox_name),--sandbox-name $(sandbox_name),) \
@@ -65,6 +66,7 @@ cypress-open:
 
 cypress-open-aws:
 	@chmod +x ./scripts/cypress/run_against_aws.sh
+	CYPRESS_ADMIN_USERNAME="$(admin_username)" CYPRESS_ADMIN_PASSWORD="$(admin_password)" \
 	./scripts/cypress/run_against_aws.sh --mode open \
 		$(if $(aws_env),--aws-env $(aws_env),) \
 		$(if $(sandbox_name),--sandbox-name $(sandbox_name),) \

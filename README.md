@@ -122,7 +122,10 @@ make test-e2e-aws aws_env=dev-web
 # Run against train-web and include admin validation specs
 make test-e2e-aws aws_env=train-web args=include-admin
 
-# Run against a sandbox URL pattern: https://alice-sandbox-web.ustaxcourt.gov
+# Run against the logged-in sandbox account's DOMAIN_NAME from website_secrets
+make test-e2e-aws aws_env=sandbox
+
+# Optional override for a specific sandbox URL pattern: https://alice-sandbox-web.ustaxcourt.gov
 make test-e2e-aws aws_env=sandbox sandbox_name=alice
 
 # Run against any explicit URL

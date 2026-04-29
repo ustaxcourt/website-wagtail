@@ -10,7 +10,7 @@ Options:
   --mode <run|open>            Cypress mode (required)
   --aws-env <dev-web|train-web|sandbox>
                                Named lower environment
-  --sandbox-name <name>        Sandbox prefix for URL construction
+  --sandbox-name <name>        Optional sandbox prefix override for URL construction
                                (<name>-sandbox-web.ustaxcourt.gov)
   --base-url <https://...>     Explicit Cypress base URL override
   --secret-id <name>           AWS Secrets Manager secret id (default: website_secrets)
@@ -23,6 +23,7 @@ Options:
 Examples:
   ./scripts/cypress/run_against_aws.sh --mode run --aws-env dev-web
   ./scripts/cypress/run_against_aws.sh --mode run --aws-env train-web --include-admin
+  ./scripts/cypress/run_against_aws.sh --mode run --aws-env sandbox
   ./scripts/cypress/run_against_aws.sh --mode run --base-url https://alice-sandbox-web.ustaxcourt.gov
   ./scripts/cypress/run_against_aws.sh --mode open --aws-env sandbox --sandbox-name alice
 EOF
@@ -107,17 +108,53 @@ if [[ "$mode" != "run" && "$mode" != "open" ]]; then
   exit 1
 fi
 
+require_command aws
+require_command jq
+require_command npx
+require_command curl
+
+secret_json=""
+
+load_secret_json() {
+  secret_json=$(aws secretsmanager get-secret-value \
+    --secret-id "$secret_id" \
+    --region "$region" \
+    --query SecretString \
+    --output text 2>/dev/null || true)
+
+  if [[ -z "$secret_json" || "$secret_json" == "None" ]]; then
+    repo_root=$(cd "$(dirname "$0")/../../.." && pwd)
+    load_secrets_script="$repo_root/infra/load-secrets.sh"
+    if [[ -f "$load_secrets_script" ]]; then
+      echo "Direct secret lookup failed. Trying fallback via infra/load-secrets.sh..."
+      set +u
+      source "$load_secrets_script"
+      set -u
+    fi
+  fi
+}
+
 if [[ -z "$base_url" ]]; then
   case "$aws_env" in
     dev-web|train-web)
       base_url="https://${aws_env}.ustaxcourt.gov"
       ;;
     sandbox)
-      if [[ -z "$sandbox_name" ]]; then
-        echo "Error: --sandbox-name is required when --aws-env sandbox is used." >&2
-        exit 1
+      if [[ -n "$sandbox_name" ]]; then
+        base_url="https://${sandbox_name}-sandbox-web.ustaxcourt.gov"
+      else
+        echo "Resolving sandbox domain from AWS secret '$secret_id'..."
+        load_secret_json
+        domain_name="${DOMAIN_NAME:-}"
+        if [[ -z "$domain_name" && -n "$secret_json" && "$secret_json" != "None" ]]; then
+          domain_name=$(echo "$secret_json" | jq -r '.DOMAIN_NAME // empty')
+        fi
+        if [[ -z "$domain_name" ]]; then
+          echo "Error: could not resolve sandbox DOMAIN_NAME from '$secret_id'. Pass --sandbox-name or --base-url instead." >&2
+          exit 1
+        fi
+        base_url="https://${domain_name}"
       fi
-      base_url="https://${sandbox_name}-sandbox-web.ustaxcourt.gov"
       ;;
     "")
       echo "Error: provide either --base-url or --aws-env." >&2
@@ -130,44 +167,34 @@ if [[ -z "$base_url" ]]; then
   esac
 fi
 
-require_command aws
-require_command jq
-require_command npx
-require_command curl
+# Highest-priority override: credentials supplied via calling environment
+if [[ -n "${CYPRESS_ADMIN_PASSWORD:-}" ]]; then
+  echo "Using admin credentials from CYPRESS_ADMIN_PASSWORD environment variable."
+  admin_username="${CYPRESS_ADMIN_USERNAME:-admin}"
+  admin_password="${CYPRESS_ADMIN_PASSWORD}"
+else
+  echo "Loading admin credentials from AWS Secrets Manager secret '$secret_id' in '$region'..."
+  if [[ -z "$secret_json" ]]; then
+    load_secret_json
+  fi
 
-echo "Loading admin credentials from AWS Secrets Manager secret '$secret_id' in '$region'..."
-secret_json=$(aws secretsmanager get-secret-value \
-  --secret-id "$secret_id" \
-  --region "$region" \
-  --query SecretString \
-  --output text 2>/dev/null || true)
+  if [[ -n "${CYPRESS_ADMIN_PASSWORD:-}" || -n "${ADMIN_PASSWORD:-}" || -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]]; then
+    admin_username="${CYPRESS_ADMIN_USERNAME:-${ADMIN_USERNAME:-admin}}"
+    admin_password="${CYPRESS_ADMIN_PASSWORD:-${ADMIN_PASSWORD:-${DJANGO_SUPERUSER_PASSWORD:-}}}"
+  fi
 
-if [[ -z "$secret_json" || "$secret_json" == "None" ]]; then
-  repo_root=$(cd "$(dirname "$0")/../../.." && pwd)
-  load_secrets_script="$repo_root/infra/load-secrets.sh"
-  if [[ -f "$load_secrets_script" ]]; then
-    echo "Direct secret lookup failed. Trying fallback via infra/load-secrets.sh..."
-    set +u
-    source "$load_secrets_script"
-    set -u
-    if [[ -n "${CYPRESS_ADMIN_PASSWORD:-}" || -n "${ADMIN_PASSWORD:-}" || -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]]; then
-      admin_username="${CYPRESS_ADMIN_USERNAME:-${ADMIN_USERNAME:-admin}}"
-      admin_password="${CYPRESS_ADMIN_PASSWORD:-${ADMIN_PASSWORD:-${DJANGO_SUPERUSER_PASSWORD:-}}}"
+  if [[ -z "${admin_password:-}" ]]; then
+    if [[ -z "$secret_json" || "$secret_json" == "None" ]]; then
+      echo "Error: secret '$secret_id' has no SecretString payload, and infra/load-secrets.sh fallback did not provide admin credentials." >&2
+      exit 1
     fi
   fi
-fi
 
-if [[ -z "${admin_password:-}" ]]; then
-  if [[ -z "$secret_json" || "$secret_json" == "None" ]]; then
-    echo "Error: secret '$secret_id' has no SecretString payload, and infra/load-secrets.sh fallback did not provide admin credentials." >&2
-    exit 1
+  if [[ -z "${admin_password:-}" ]]; then
+    admin_username=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_USERNAME // .ADMIN_USERNAME // "admin"')
+    admin_password=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_PASSWORD // .ADMIN_PASSWORD // .DJANGO_SUPERUSER_PASSWORD // empty')
   fi
-fi
-
-if [[ -z "${admin_password:-}" ]]; then
-  admin_username=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_USERNAME // .ADMIN_USERNAME // "admin"')
-  admin_password=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_PASSWORD // .ADMIN_PASSWORD // .DJANGO_SUPERUSER_PASSWORD // empty')
-fi
+fi  # end CYPRESS_ADMIN_PASSWORD env var check
 
 if [[ -z "$admin_password" || "$admin_password" == "null" ]]; then
   echo "Error: could not find admin password in '$secret_id'. Expected one of: CYPRESS_ADMIN_PASSWORD, ADMIN_PASSWORD, DJANGO_SUPERUSER_PASSWORD" >&2
