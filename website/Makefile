@@ -145,3 +145,12 @@ rollbackall:
 
 backfillliverevisions:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py backfill_live_revisions
+
+get-website-secret:
+	. $(VENV) && python ../infra/scripts/get_website_secret.py $(args)
+
+copy-website-secret:
+	. $(VENV) && python ../infra/scripts/copy_website_secret.py $(args)
+
+add-preregister-user:
+	. $(VENV) && python ../infra/scripts/add_preregister_user.py $(args)
