@@ -26,7 +26,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .alphabet button {
+        .alphabet .alphabet-link {
             padding: 0.5rem 1rem;
             border: 1px solid #dcdee0;
             background-color: #fff;
@@ -37,7 +37,7 @@
             transition: background-color 0.2s ease;
         }
 
-        .alphabet button:hover {
+        .alphabet .alphabet-link:hover {
             border-color: #007BFF;
         }
 
@@ -102,7 +102,7 @@
         <div class="alphabet">
             {% for letter in "ACDFGHIKLMNOPSTUVW" %}
                 <a href="#{{ letter }}" class="alphabet-link">
-                    <button>{{ letter }}</button>
+                    {{ letter }}
                 </a>
             {% endfor %}
         </div>
