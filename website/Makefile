@@ -37,6 +37,9 @@ migratecheck:
 makemigrations:
 	. $(VENV) && python manage.py makemigrations
 
+check-migrations:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py makemigrations --check --dry-run || { echo "Missing migrations detected. Run 'make makemigrations' and commit the generated file." >&2; exit 1; }
+
 showmigrations:
 	. $(VENV) && python manage.py showmigrations
 
@@ -142,3 +145,12 @@ rollbackall:
 
 backfillliverevisions:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py backfill_live_revisions
+
+get-website-secret:
+	. $(VENV) && python ../infra/scripts/get_website_secret.py $(args)
+
+copy-website-secret:
+	. $(VENV) && python ../infra/scripts/copy_website_secret.py $(args)
+
+add-preregister-user:
+	. $(VENV) && python ../infra/scripts/add_preregister_user.py $(args)
