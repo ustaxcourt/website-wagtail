@@ -127,8 +127,11 @@ load_secret_json() {
     load_secrets_script="$repo_root/infra/load-secrets.sh"
     if [[ -f "$load_secrets_script" ]]; then
       echo "Direct secret lookup failed. Trying fallback via infra/load-secrets.sh..."
+      original_pwd="$(pwd)"
       set +u
+      cd "$repo_root"
       source "$load_secrets_script"
+      cd "$original_pwd"
       set -u
     fi
   fi
@@ -213,7 +216,14 @@ echo "Running Cypress against: $base_url"
 echo "Artifacts will be copied to: $artifacts_dir"
 
 if [[ "$skip_health_check" != "true" ]]; then
-  http_status=$(curl -sSL -o /dev/null -w "%{http_code}" "$base_url" || echo "000")
+  http_status=$(curl -sSL \
+    --connect-timeout 10 \
+    --max-time 30 \
+    --retry 2 \
+    --retry-delay 1 \
+    -o /dev/null \
+    -w "%{http_code}" \
+    "$base_url" || echo "000")
   if [[ "$http_status" -ge 500 || "$http_status" == "000" ]]; then
     echo "Error: Preflight health check failed for '$base_url' (HTTP $http_status)." >&2
     echo "The target AWS environment appears unavailable. Skipping Cypress execution." >&2
@@ -239,7 +249,6 @@ cypress_cmd=(
   npx cypress "$mode"
   --browser "$browser"
   --config "baseUrl=${base_url}"
-  --env "ADMIN_USERNAME=${admin_username},ADMIN_PASSWORD=${admin_password}"
 )
 
 if [[ -n "$spec" ]]; then
@@ -248,6 +257,8 @@ fi
 
 set +e
 CYPRESS_INCLUDE_ADMIN_VALIDATION="$include_admin" \
+CYPRESS_ADMIN_USERNAME="$admin_username" \
+CYPRESS_ADMIN_PASSWORD="$admin_password" \
   "${cypress_cmd[@]}"
 cypress_exit=$?
 set -e

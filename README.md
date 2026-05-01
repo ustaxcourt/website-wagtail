@@ -141,6 +141,15 @@ Optional arguments for `test-e2e-aws` and `cypress-open-aws`:
 - `region` (default: `AWS_DEFAULT_REGION` or `us-east-1`)
 - `browser` (default: `chrome`)
 - `spec` (optional Cypress spec glob)
+- `skip-health-check` (optional flag; bypasses the preflight URL check when you intentionally want Cypress to run without endpoint health validation)
+
+To store dedicated Cypress admin credentials in `website_secrets` without putting the password in command history:
+
+```shell
+ADMIN_USERNAME=admin make aws-cypress-set-credentials
+```
+
+You will be prompted securely for the password. You can still use `ADMIN_PASSWORD` if needed for non-interactive workflows.
 
 Artifacts from each run are copied to:
 

@@ -52,7 +52,6 @@ test-e2e:
 	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
 test-e2e-aws:
-	@chmod +x ./scripts/cypress/run_against_aws.sh
 	CYPRESS_ADMIN_USERNAME="$(admin_username)" CYPRESS_ADMIN_PASSWORD="$(admin_password)" \
 	./scripts/cypress/run_against_aws.sh --mode run \
 		$(if $(aws_env),--aws-env $(aws_env),) \
@@ -68,7 +67,6 @@ cypress-open:
 	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress open --browser chrome
 
 cypress-open-aws:
-	@chmod +x ./scripts/cypress/run_against_aws.sh
 	CYPRESS_ADMIN_USERNAME="$(admin_username)" CYPRESS_ADMIN_PASSWORD="$(admin_password)" \
 	./scripts/cypress/run_against_aws.sh --mode open \
 		$(if $(aws_env),--aws-env $(aws_env),) \
