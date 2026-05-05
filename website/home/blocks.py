@@ -61,7 +61,7 @@ class QuickAccessTileBlock(blocks.StructBlock):
     )
     description = blocks.RichTextBlock(
         required=False,
-        features=["bold", "italic", "link"],
+        features=["bold", "italic"],
         help_text="Optional body text",
     )
     icon = SVGChooserBlock(required=True)
