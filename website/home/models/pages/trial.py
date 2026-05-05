@@ -58,8 +58,8 @@ class PlacesOfTrialPage(ModerationMixin, Page):
         index.SearchField("places_of_trial"),
     ]
 
-    def get_context(self, request):
-        context = super().get_context(request)
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
 
         sorted_places = []
 
