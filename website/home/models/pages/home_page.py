@@ -32,11 +32,6 @@ class QuickAccessTileBlock(blocks.StructBlock):
     description = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
     icon = SVGChooserBlock(required=True)
 
-    # related_page = blocks.PageChooserBlock(
-    #     required=False,
-    # )
-
-    # external_url = blocks.URLBlock(required=False, help_text="External link URL")
     link = blocks.StreamBlock(
         [
             ("related_page", blocks.PageChooserBlock()),
