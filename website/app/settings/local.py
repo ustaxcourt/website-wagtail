@@ -49,3 +49,24 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
+
+WAGTAILTRANSFER_SECRET_KEY = "TEST_STRING"  # os.getenv("WAGTAILTRANSFER_SECRET_KEY")
+
+WAGTAILTRANSFER_SOURCES = {
+    "Ahmed": {
+        "BASE_URL": "https://ahmed-sandbox-web.ustaxcourt.gov/wagtail-transfer/",
+        "SECRET_KEY": "WAGTRANSFER!1098%",
+    },
+    "Stephen": {
+        "BASE_URL": "https://stephen-sandbox-web.ustaxcourt.gov/wagtail-transfer/",
+        "SECRET_KEY": "gfjjCxzuKlkEu81K56Y9tWP3HpTsO982BH6XcZqWKYyfvosXW5",
+    },
+    "QA": {
+        "BASE_URL": "https://qa-web.ustaxcourt.gov/wagtail-transfer/",
+        "SECRET_KEY": "0162a55f8ad7533cdbf64d712476b56d5a3ceedc63b2a24b4cfeecd10b1fc03f",
+    },
+    "Dev": {
+        "BASE_URL": "https://dev-web.ustaxcourt.gov/wagtail-transfer/",
+        "SECRET_KEY": "0OJgYCAd0EYpCEYRW0Uw99hMQ5MBLWkyCgMGECpoUvC4ESr5KT",
+    },
+}
