@@ -22,19 +22,11 @@ def create_redirects_from_dataset(dataset, config):
             from_link = row[config["from_index"]]
             to_link = row[config["to_index"]]
 
-            data = {
-                "old_path": from_link,
-                "redirect_link": to_link,
-                "is_permanent": config["permanent"],
-            }
-
-            if config["site"]:
-                data["site"] = config["site"].pk
-
             Redirect.objects.create(
-                old_path=data["old_path"],
-                redirect_link=data["redirect_link"],
-                is_permanent=data["is_permanent"],
+                old_path=from_link,
+                redirect_link=to_link,
+                is_permanent=config["is_permanent"],
+                site=config["site"],
             )
             successes += 1
         except Exception as e:
@@ -86,7 +78,7 @@ class Migration(migrations.Migration):
                 logger.info(f"  {err}")
 
     dependencies = [
-        ("home", "0114_alter_newsitem_created_by_alter_newsitem_updated_by"),
+        ("home", "0115_alter_enhancedstandardpage_body"),
         (
             "wagtailredirects",
             "0008_add_verbose_name_plural",
