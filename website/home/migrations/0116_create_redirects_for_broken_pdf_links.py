@@ -25,7 +25,7 @@ def create_redirects_from_dataset(dataset, config):
             Redirect.objects.create(
                 old_path=from_link,
                 redirect_link=to_link,
-                is_permanent=config["is_permanent"],
+                is_permanent=config["permanent"],
                 site=config["site"],
             )
             successes += 1
