@@ -77,6 +77,11 @@ class Migration(migrations.Migration):
             for err in import_summary["errors"]:
                 logger.info(f"  {err}")
 
+            if len(import_summary["errors"] > 0):
+                raise Exception(
+                    "An error occurred creating redirect for broken PDF links. See above."
+                )
+
     dependencies = [
         ("home", "0115_alter_enhancedstandardpage_body"),
         (
