@@ -43,3 +43,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 WAGTAILADMIN_NOTIFICATION_USE_HTML = False
 
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
+
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+    }
+}

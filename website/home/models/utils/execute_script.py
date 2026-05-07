@@ -54,6 +54,7 @@ class ExecuteScript(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name="created_scripts",
+        blank=True,
     )
 
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,6 +63,7 @@ class ExecuteScript(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name="updated_scripts",
+        blank=True,
     )
 
     panels = [

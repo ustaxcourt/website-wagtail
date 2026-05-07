@@ -34,6 +34,8 @@ resource "aws_secretsmanager_secret_version" "ecs_task_secrets_version" {
     DATABASE_URL = "postgresql://${aws_db_instance.default.username}:${aws_db_instance.default.password}@${aws_db_instance.default.endpoint}/postgres"
     SECRET_KEY = var.secret_key
     SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET = var.social_auth_azuread_tenant_oauth2_secret
+    WAGTAILTRANSFER_SECRET_KEY = var.wagtailtransfer_secret_key
+    WAGTAILTRANSFER_SOURCES = var.wagtailtransfer_sources
   })
 }
 
@@ -171,6 +173,14 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET",
         valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_SECRET::"
+      },
+      {
+        name = "WAGTAILTRANSFER_SECRET_KEY",
+        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:WAGTAILTRANSFER_SECRET_KEY::"
+      },
+      {
+        name = "WAGTAILTRANSFER_SOURCES",
+        valueFrom = "${aws_secretsmanager_secret.ecs_task_secrets.arn}:WAGTAILTRANSFER_SOURCES::"
       },
     ],
 

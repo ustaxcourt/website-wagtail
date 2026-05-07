@@ -37,6 +37,9 @@ migratecheck:
 makemigrations:
 	. $(VENV) && python manage.py makemigrations
 
+check-migrations:
+	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py makemigrations --check --dry-run || { echo "Missing migrations detected. Run 'make makemigrations' and commit the generated file." >&2; exit 1; }
+
 showmigrations:
 	. $(VENV) && python manage.py showmigrations
 
@@ -46,10 +49,10 @@ coverage:
 	. $(VENV) && coverage html -d coverage_html && open coverage_html/index.html
 
 test-e2e:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress run --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
 cypress-open:
-	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) npx cypress open --browser chrome
+	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress open --browser chrome
 
 pytest:
 	. $(VENV) && pytest
@@ -142,3 +145,12 @@ rollbackall:
 
 backfillliverevisions:
 	. $(VENV) && DJANGO_SETTINGS_MODULE=$${settings:-app.settings.local} python manage.py backfill_live_revisions
+
+get-website-secret:
+	. $(VENV) && python ../infra/scripts/get_website_secret.py $(args)
+
+copy-website-secret:
+	. $(VENV) && python ../infra/scripts/copy_website_secret.py $(args)
+
+add-preregister-user:
+	. $(VENV) && python ../infra/scripts/add_preregister_user.py $(args)

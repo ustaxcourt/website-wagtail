@@ -98,6 +98,11 @@ class AccordianBlock(blocks.StructBlock):
         required=True,
         help_text="Add text or special elements to the body",
     )
+    default_to_open = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to have the accordion open by default when the page loads.",
+    )
 
     class Meta:
         label = "Accordion Block"
@@ -377,7 +382,20 @@ _BASE_BLOCK_TYPES = [
             [
                 ("title", blocks.CharBlock(required=False)),
                 ("description", blocks.RichTextBlock(required=False)),
-                ("video_url", blocks.URLBlock(required=False)),
+                (
+                    "video_url",
+                    blocks.URLBlock(
+                        required=True,
+                        help_text="Use the YouTube embed URL (e.g. https://www.youtube.com/embed/VIDEO_ID), not the watch URL.",
+                    ),
+                ),
+                (
+                    "text_location",
+                    blocks.ChoiceBlock(
+                        choices=[("below", "Below"), ("right-of", "Right")],
+                        default="below",
+                    ),
+                ),
             ]
         ),
     ),

@@ -25,6 +25,11 @@ jobs:
         set -e
         make setup
 
+    - name: Check for missing migrations
+      run: |
+        cd website
+        make check-migrations
+
     - name: Run pre-commit hooks
       run: pre-commit run --all-files
 
