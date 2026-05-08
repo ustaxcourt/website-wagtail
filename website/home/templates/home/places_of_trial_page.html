@@ -26,7 +26,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .alphabet button {
+        .alphabet .alphabet-link {
             padding: 0.5rem 1rem;
             border: 1px solid #dcdee0;
             background-color: #fff;
@@ -35,10 +35,12 @@
             cursor: pointer;
             border-radius: 4px;
             transition: background-color 0.2s ease;
+            font-weight: normal;
         }
 
-        .alphabet button:hover {
+        .alphabet .alphabet-link:hover {
             border-color: #007BFF;
+            text-decoration: none;
         }
 
         .grid {
@@ -90,24 +92,28 @@
                 <div class="notice">
                     <div class="notice-content">
                         <i class="fa-solid fa-circle-info"></i>
-                        <p>{{ block.value.message|richtext }}</p>
+                        {{ block.value.message|richtext }}
                     </div>
+                </div>
+            {% elif block.block_type == "text" %}
+                <div class="text-block">
+                    {{ block.value|richtext }}
                 </div>
             {% endif %}
         {% endfor %}
         <div class="alphabet">
             {% for letter in "ACDFGHIKLMNOPSTUVW" %}
                 <a href="#{{ letter }}" class="alphabet-link">
-                    <button>{{ letter }}</button>
+                    {{ letter }}
                 </a>
             {% endfor %}
         </div>
         <div class="grid">
-            {% for state in page.places_of_trial %}
-                {% with state_letter=state.value.state|slice:":1" %}
+            {% for state in sorted_places %}
+                {% with state_letter=state.state|slice:":1" %}
                     <div class="state-card" id="{{ state_letter }}">
-                        <div class="state-header">{{ state.value.state }}</div>
-                        {% for city in state.value.cities %}
+                        <div class="state-header">{{ state.state }}</div>
+                        {% for city in state.cities %}
                             <div class="city">{{ city.name }}</div>
                             {% if city.address %}
                                 <div class="address">
