@@ -1,6 +1,8 @@
 /// <reference types="node" />
 
 import { defineConfig } from "cypress";
+import * as path from "path";
+import * as XLSX from "xlsx";
 
 const includeAdminValidation = process.env.CYPRESS_INCLUDE_ADMIN_VALIDATION === 'true';
 const adminValidationSpecPattern = '**/admin*_validation.cy.{js,jsx,ts,tsx}';
@@ -25,6 +27,14 @@ export default defineConfig({
         log(message) {
           console.log(message);
           return null;
+        },
+        getRedirectsFromXlsx(xlsxRelativePath: string) {
+          const fullPath = path.resolve(__dirname, xlsxRelativePath);
+          const wb = XLSX.readFile(fullPath);
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json<string[]>(ws, { header: 1 }) as string[][];
+          // Skip header row; columns are: From, To, Type, Site
+          return rows.slice(1).map(([from, to]) => ({ from, to }));
         },
       })
     },

@@ -100,6 +100,65 @@ make pytest
 make test-e2e
 ```
 
+#### E2E tests against AWS lower environments
+
+These commands run Cypress from your local machine against an AWS-hosted environment and pull admin credentials from AWS Secrets Manager using your local `awscli` session.
+
+Prerequisites:
+
+- `awscli` is installed and authenticated (`aws sso login --profile ...` or equivalent)
+- `jq` is installed
+- The target environment has a `website_secrets` secret with one of:
+  - `CYPRESS_ADMIN_PASSWORD`
+  - `ADMIN_PASSWORD`
+  - `DJANGO_SUPERUSER_PASSWORD`
+
+Examples:
+
+```shell
+# Run against dev-web
+make test-e2e-aws aws_env=dev-web
+
+# Run against train-web and include admin validation specs
+make test-e2e-aws aws_env=train-web args=include-admin
+
+# Run against the logged-in sandbox account's DOMAIN_NAME from website_secrets
+make test-e2e-aws aws_env=sandbox
+
+# Optional override for a specific sandbox URL pattern: https://alice-sandbox-web.ustaxcourt.gov
+make test-e2e-aws aws_env=sandbox sandbox_name=alice
+
+# Run against any explicit URL
+make test-e2e-aws base_url=https://my-custom-env.ustaxcourt.gov
+
+# Open interactive Cypress runner against AWS env
+make cypress-open-aws aws_env=dev-web
+```
+
+Optional arguments for `test-e2e-aws` and `cypress-open-aws`:
+
+- `secret_id` (default: `website_secrets`)
+- `region` (default: `AWS_DEFAULT_REGION` or `us-east-1`)
+- `browser` (default: `chrome`)
+- `spec` (optional Cypress spec glob)
+- `skip-health-check` (optional flag; bypasses the preflight URL check when you intentionally want Cypress to run without endpoint health validation)
+
+To store dedicated Cypress admin credentials in `website_secrets` without putting the password in command history:
+
+```shell
+ADMIN_USERNAME=admin make aws-cypress-set-credentials
+```
+
+You will be prompted securely for the password. You can still use `ADMIN_PASSWORD` if needed for non-interactive workflows.
+
+Artifacts from each run are copied to:
+
+```text
+website/cypress/artifacts/<aws_env-or-custom>/<YYYYMMDD-HHMMSS>/
+```
+
+Each artifact folder includes screenshots/videos/downloads (when present) and a `metadata.txt` file with run details.
+
 Admin-related Cypress tests read credentials from `cypress.env.json` (gitignored). This file is auto-generated with local defaults when you run `make setup` or `make reset`. To use different credentials, edit `website/cypress.env.json` directly — it will not be overwritten once it exists.
 
 ```json
