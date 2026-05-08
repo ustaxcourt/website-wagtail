@@ -39,7 +39,6 @@ class QuickAccessTileBlock(blocks.StructBlock):
         ],
         min_num=1,
         max_num=1,
-        required=False,
         help_text="Choose where this tile should link.",
     )
 
@@ -58,7 +57,6 @@ class FullWidthQuickAccessTileBlock(blocks.StructBlock):
         ],
         min_num=1,
         max_num=1,
-        required=True,
         help_text="Choose where this tile should link.",
     )
 
