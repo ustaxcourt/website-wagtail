@@ -14,6 +14,8 @@ from wagtail.admin.filters import (
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
 from django.utils import timezone
+from wagtail_external_links_report.views import ExternalLinksReportView
+from home.utils.custom_link_extractor import CustomLinkExtractor
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -485,3 +487,11 @@ class PDFChooserViewSet(DocumentChooserViewSet):
 
 
 PDF_CHOOSER_VIEWSET = PDFChooserViewSet("pdf_chooser")
+
+
+class CustomExternalLinksReportView(ExternalLinksReportView):
+    results_template_name = "home/custom_external_links_report_results.html"
+    page_title = "External Links"
+
+    def get_extractor(self):
+        return CustomLinkExtractor()
