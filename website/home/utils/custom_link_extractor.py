@@ -13,7 +13,11 @@ class CustomLinkExtractor(LinkExtractor):
             soup = BeautifulSoup(html, "html.parser")
             for a in soup.find_all("a", href=True):
                 href = a["href"]
-                if not href.startswith("mailto:") and not href.startswith("tel:"):
+                if (
+                    not href.startswith("mailto:")
+                    and not href.startswith("tel:")
+                    and not href.startswith("#")
+                ):
                     links.append(
                         {
                             "text": a.get_text(strip=True),
