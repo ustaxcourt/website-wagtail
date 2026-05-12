@@ -32,11 +32,16 @@ class QuickAccessTileBlock(blocks.StructBlock):
     description = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
     icon = SVGChooserBlock(required=True)
 
-    related_page = blocks.PageChooserBlock(
+    link = blocks.StreamBlock(
+        [
+            ("related_page", blocks.PageChooserBlock()),
+            ("external_url", blocks.URLBlock()),
+        ],
+        min_num=1,
+        max_num=1,
         required=False,
+        help_text="Choose where this tile should link.",
     )
-
-    external_url = blocks.URLBlock(required=False, help_text="External link URL")
 
     class Meta:
         label = "Quick Access Tile"
@@ -46,11 +51,16 @@ class FullWidthQuickAccessTileBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=255, required=True, help_text="Tile text")
     icon = SVGChooserBlock(required=True)
 
-    related_page = blocks.PageChooserBlock(
-        required=False,
+    link = blocks.StreamBlock(
+        [
+            ("related_page", blocks.PageChooserBlock()),
+            ("external_url", blocks.URLBlock()),
+        ],
+        min_num=1,
+        max_num=1,
+        required=True,
+        help_text="Choose where this tile should link.",
     )
-
-    external_url = blocks.URLBlock(required=False, help_text="External link URL")
 
     class Meta:
         label = "Quick Access Tile"

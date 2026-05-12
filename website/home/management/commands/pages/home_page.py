@@ -148,7 +148,9 @@ class HomePageInitializer(PageInitializer):
                     "title": "Begin the Petition Filing Process",
                     "description": "Start your case on DAWSON to file and track your petition.",
                     "icon": {"svg_file": home_page_documents["start_icon.svg"].pk},
-                    "related_page": self.get_page("dawson").pk,
+                    "link": [
+                        {"type": "related_page", "value": self.get_page("dawson").pk}
+                    ],
                 },
             },
             {
@@ -157,7 +159,12 @@ class HomePageInitializer(PageInitializer):
                     "title": "Learn How to Start a Case",
                     "description": "Read these FAQ’s before filing to prepare for starting your case.",
                     "icon": {"svg_file": home_page_documents["learn_icon.svg"].pk},
-                    "related_page": self.get_page("petitioners-start").pk,
+                    "link": [
+                        {
+                            "type": "related_page",
+                            "value": self.get_page("petitioners-start").pk,
+                        }
+                    ],
                 },
             },
             {
@@ -166,7 +173,12 @@ class HomePageInitializer(PageInitializer):
                     "title": "DAWSON Case Management",
                     "description": "Our online system, DAWSON, allows users to file documents and track their case status.",
                     "icon": {"svg_file": home_page_documents["DAWSON_icon.svg"].pk},
-                    "external_url": self.get_environment_specific_dawson_url(),
+                    "link": [
+                        {
+                            "type": "external_url",
+                            "value": self.get_environment_specific_dawson_url(),
+                        }
+                    ],
                 },
             },
             {
@@ -175,7 +187,9 @@ class HomePageInitializer(PageInitializer):
                     "title": "Tax Court Rules",
                     "description": "The Court's current Rules of Practice & Procedure, forms, and fee schedule.",
                     "icon": {"svg_file": home_page_documents["rules_icon.svg"].pk},
-                    "related_page": self.get_page("rules").pk,
+                    "link": [
+                        {"type": "related_page", "value": self.get_page("rules").pk}
+                    ],
                 },
             },
             {
@@ -184,7 +198,12 @@ class HomePageInitializer(PageInitializer):
                     "title": "Today's Opinions",
                     "description": "Access the most recent court opinions issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["opinions_icon.svg"].pk},
-                    "external_url": f"{self.get_environment_specific_dawson_url()}/todays-opinions",
+                    "link": [
+                        {
+                            "type": "external_url",
+                            "value": f"{self.get_environment_specific_dawson_url()}/todays-opinions",
+                        }
+                    ],
                 },
             },
             {
@@ -193,7 +212,12 @@ class HomePageInitializer(PageInitializer):
                     "title": "Today’s Orders",
                     "description": "Access the most recent court orders issued by Tax Court judges.",
                     "icon": {"svg_file": home_page_documents["orders_icon.svg"].pk},
-                    "external_url": f"{self.get_environment_specific_dawson_url()}/todays-orders",
+                    "link": [
+                        {
+                            "type": "external_url",
+                            "value": f"{self.get_environment_specific_dawson_url()}/todays-orders",
+                        }
+                    ],
                 },
             },
             {
@@ -204,7 +228,12 @@ class HomePageInitializer(PageInitializer):
                     "icon": {
                         "svg_file": home_page_documents["practitioners_icon.svg"].pk
                     },
-                    "related_page": self.get_page("practitioners").pk,
+                    "link": [
+                        {
+                            "type": "related_page",
+                            "value": self.get_page("practitioners").pk,
+                        }
+                    ],
                 },
             },
             {
@@ -213,7 +242,12 @@ class HomePageInitializer(PageInitializer):
                     "title": "Case Related Forms",
                     "description": "Forms for filing petitions, motions, and other court documents.",
                     "icon": {"svg_file": home_page_documents["PDF_icon.svg"].pk},
-                    "related_page": self.get_page("case-related-forms").pk,
+                    "link": [
+                        {
+                            "type": "related_page",
+                            "value": self.get_page("case-related-forms").pk,
+                        }
+                    ],
                 },
             },
             {
@@ -222,7 +256,12 @@ class HomePageInitializer(PageInitializer):
                     "title": "Find a Trial Session",
                     "description": "Search for scheduled trial sessions by location, type, or judge.",
                     "icon": {"svg_file": home_page_documents["calendar_icon.svg"].pk},
-                    "external_url": f"{self.get_environment_specific_dawson_url()}/trial-sessions",
+                    "link": [
+                        {
+                            "type": "external_url",
+                            "value": f"{self.get_environment_specific_dawson_url()}/trial-sessions",
+                        }
+                    ],
                 },
             },
         ]
@@ -232,7 +271,12 @@ class HomePageInitializer(PageInitializer):
                 "value": {
                     "title": "Find a Case, Order, Opinion or Practitioner",
                     "icon": {"svg_file": home_page_documents["search_icon.svg"].pk},
-                    "external_url": self.get_environment_specific_dawson_url(),
+                    "link": [
+                        {
+                            "type": "external_url",
+                            "value": self.get_environment_specific_dawson_url(),
+                        }
+                    ],
                 },
             },
         ]
