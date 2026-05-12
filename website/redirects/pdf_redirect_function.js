@@ -8,6 +8,15 @@
             request.uri = request.uri.slice(6);
           }
 
+          // Block bucket-root and directory-style requests so S3 cannot
+          // return a bucket listing if ListBucket is ever re-granted.
+          if (request.uri === "" || request.uri === "/" || request.uri.endsWith("/")) {
+            return {
+              statusCode: 403,
+              statusDescription: "Forbidden"
+            };
+          }
+
           var uri = request.uri;
 
           // Exact path redirects (manual override)
