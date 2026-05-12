@@ -61,7 +61,7 @@ class QuickAccessTileBlock(blocks.StructBlock):
     )
     description = blocks.RichTextBlock(
         required=False,
-        features=["bold", "italic", "link"],
+        features=["bold", "italic"],
         help_text="Optional body text",
     )
     icon = SVGChooserBlock(required=True)
@@ -79,20 +79,10 @@ class QuickAccessTileBlock(blocks.StructBlock):
             ("external_url", blocks.URLBlock()),
         ],
         min_num=1,
+        max_num=1,
         required=False,
         help_text="Choose where this tile should link.",
     )
-
-    def clean(self, value):
-        cleaned_data = super().clean(value)
-        links = cleaned_data.get("link")
-        if links and len(links) > 1:
-            raise ValidationError(
-                {
-                    "link": "Only one link (internal or external) is allowed per quick access tile."
-                }
-            )
-        return cleaned_data
 
     class Meta:
         label = "Quick Access Tile"

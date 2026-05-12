@@ -206,3 +206,60 @@ role: check-env-is-aws
 	@aws iam list-attached-role-policies --role-name github-workflow-deployer \
 	  --query 'AttachedPolicies[*].[PolicyName, PolicyArn]' --output text | \
 	  awk '{printf "%s: %s\n", $$1, $$2}'
+
+test-e2e:
+	@$(MAKE) -C website test-e2e args="$(args)"
+
+cypress-open:
+	@$(MAKE) -C website cypress-open args="$(args)"
+
+test-e2e-aws:
+	@$(MAKE) -C website test-e2e-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
+
+cypress-open-aws:
+	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
+
+aws-cypress-set-credentials:
+	@ADMIN_USERNAME_VALUE="$(or $(ADMIN_USERNAME),$(admin_username))"; \
+	ADMIN_PASSWORD_VALUE="$(ADMIN_PASSWORD)"; \
+	if ! command -v aws >/dev/null 2>&1; then \
+		echo "Error: aws CLI is required for aws-cypress-set-credentials."; \
+		exit 1; \
+	fi; \
+	if ! command -v jq >/dev/null 2>&1; then \
+		echo "Error: jq is required for aws-cypress-set-credentials."; \
+		exit 1; \
+	fi; \
+	if [ -z "$$ADMIN_USERNAME_VALUE" ]; then \
+		echo "Usage: ADMIN_USERNAME=<user> ADMIN_PASSWORD=<pass> make aws-cypress-set-credentials"; \
+		echo "       Or omit ADMIN_PASSWORD to be prompted securely."; \
+		echo "       Optionally add: secret_id=<name> region=<aws-region>"; \
+		exit 1; \
+	fi; \
+	if [ -z "$$ADMIN_PASSWORD_VALUE" ]; then \
+		printf "Admin password: "; \
+		trap 'stty echo' EXIT INT TERM; \
+		stty -echo; \
+		IFS= read -r ADMIN_PASSWORD_VALUE; \
+		stty echo; \
+		trap - EXIT INT TERM; \
+		printf '\n'; \
+	fi; \
+	if [ -z "$$ADMIN_PASSWORD_VALUE" ]; then \
+		echo "Error: admin password is required."; \
+		exit 1; \
+	fi; \
+	echo "Writing CYPRESS_ADMIN_USERNAME / CYPRESS_ADMIN_PASSWORD to secret '$(or $(secret_id),website_secrets)' in $(or $(region),us-east-1)..."; \
+	SECRET=$$(aws secretsmanager get-secret-value \
+		--secret-id "$(or $(secret_id),website_secrets)" \
+		--region "$(or $(region),us-east-1)" \
+		--query SecretString --output text); \
+	UPDATED=$$(printf '%s' "$$SECRET" | jq \
+		--arg u "$$ADMIN_USERNAME_VALUE" \
+		--arg p "$$ADMIN_PASSWORD_VALUE" \
+		'. + {CYPRESS_ADMIN_USERNAME: $$u, CYPRESS_ADMIN_PASSWORD: $$p}'); \
+	aws secretsmanager update-secret \
+		--secret-id "$(or $(secret_id),website_secrets)" \
+		--region "$(or $(region),us-east-1)" \
+		--secret-string "$$UPDATED"
+	@echo "Done. Re-run your test-e2e-aws command — credentials will be picked up automatically."

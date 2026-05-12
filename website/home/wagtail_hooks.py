@@ -14,6 +14,7 @@ from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
 from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBatch
+from wagtail.contrib.redirects.models import Redirect
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.models import Page
@@ -229,6 +230,42 @@ def purge_cloudfront_cache_for_file(file_url):
         logger.error(
             f"Error purging CloudFront cache for {file_url}: {e}", exc_info=True
         )
+        return
+
+    try:
+        refresh_redirects_for_local_environments(cache_path)
+    except Exception as e:
+        logger.error(
+            f"Error updating redirect in local environment for {cache_path} : {e}",
+            exc_info=True,
+        )
+
+
+def refresh_redirects_for_local_environments(cache_path):
+    # The local environment's Document URL path is /documents/{doc_id}/{file_name}.
+    # Other environments' Document URL path is /files/documents/{file_name}.
+    # Redirects that are created as part of home migration 0115 use the Document URL path for non-local environments.
+    # The code in this if block updates the redirects to use the local environment Document URL path if run against a local environment.
+    # This code will also update redirects for images or any other items that are transmitted via CloudFront in non-local environments.
+    if settings.ENVIRONMENT == "local":
+        logger.debug(f"Checking for redirect to update for {cache_path}")
+        last_slash_index = cache_path.rfind("/")
+        if last_slash_index != -1:
+            file_name_to_find_in_redirect = cache_path[last_slash_index + 1 :]
+            redirect_to_update = (
+                Redirect.objects.filter(
+                    redirect_link__iendswith=file_name_to_find_in_redirect
+                )
+                .order_by("id")
+                .first()
+            )
+            if redirect_to_update is not None:
+                logger.debug(
+                    f"Updating redirect with redirect_link: {redirect_to_update.redirect_link} to {cache_path}"
+                )
+                redirect_to_update.redirect_link = cache_path
+                redirect_to_update.save()
+                logger.debug("Redirect updated")
 
 
 @receiver(post_save, sender=Document)
