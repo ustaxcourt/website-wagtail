@@ -544,21 +544,22 @@ class CustomExternalLinksReportView(ExternalLinksReportView):
             for row in value["table"].rows:
                 for cell in row:
                     for child in cell.value:
-                        html = child.value.source
-                        soup = BeautifulSoup(html, "html.parser")
-                        for a in soup.find_all("a", href=True):
-                            href = a["href"]
-                            if (
-                                not href.startswith("mailto:")
-                                and not href.startswith("tel:")
-                                and not href.startswith("#")
-                            ):
-                                links.append(
-                                    {
-                                        "text": a.get_text(strip=True),
-                                        "url": href,
-                                    }
-                                )
+                        if hasattr(child.value, "source"):
+                            html = child.value.source
+                            soup = BeautifulSoup(html, "html.parser")
+                            for a in soup.find_all("a", href=True):
+                                href = a["href"]
+                                if (
+                                    not href.startswith("mailto:")
+                                    and not href.startswith("tel:")
+                                    and not href.startswith("#")
+                                ):
+                                    links.append(
+                                        {
+                                            "text": a.get_text(strip=True),
+                                            "url": href,
+                                        }
+                                    )
 
         return links
 
