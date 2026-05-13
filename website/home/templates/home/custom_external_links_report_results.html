@@ -66,9 +66,7 @@
                             {% for link in page.external_links %}
                                 <tr>
                                     <td>
-                                        {% if link.text != link.url %}
-                                            {{ link.text }}
-                                        {% endif %}
+                                        {{ link.text }}
                                     </td>
                                     <td>
                                         <a href="{{ link.url }}" target="_blank">{{ link.url }}</a>

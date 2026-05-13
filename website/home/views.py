@@ -16,6 +16,12 @@ from django.utils.html import format_html
 from django.utils import timezone
 from wagtail_external_links_report.views import ExternalLinksReportView
 from home.utils.custom_link_extractor import CustomLinkExtractor
+from home.models.custom_blocks.button import ButtonBlock
+from home.blocks import QuickAccessTileBlock
+from home.models.pages.enhanced_standard import CardTileBlock, TableListBlock
+from wagtail.contrib.typed_table_block.blocks import TypedTable
+from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
+from bs4 import BeautifulSoup
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -494,4 +500,95 @@ class CustomExternalLinksReportView(ExternalLinksReportView):
     page_title = "External Links"
 
     def get_extractor(self):
-        return CustomLinkExtractor()
+        return CustomLinkExtractor(
+            custom_handlers={
+                ButtonBlock: self.extract_from_button_block,
+                QuickAccessTileBlock: self.extract_from_quick_access_tile_block,
+                CardTileBlock: self.extract_from_card_tile_block,
+                TableListBlock: self.extract_from_table_list_block,
+                TypedTable: self.extract_from_typed_table_block,
+                ImageWithLinkBlock: self.extract_from_image_with_link_block,
+            }
+        )
+
+    def extract_from_button_block(self, value):
+        links = []
+        if value["url"]:
+            for child in value["url"]:
+                if hasattr(child, "block_type") and child.block_type == "external_url":
+                    links.append({"text": value["text"], "url": child.value})
+
+        return links
+
+    def extract_from_quick_access_tile_block(self, value):
+        links = []
+        if value["link"]:
+            for child in value["link"]:
+                if hasattr(child, "block_type") and child.block_type == "external_url":
+                    links.append({"text": value["title"], "url": child.value})
+
+        return links
+
+    def extract_from_card_tile_block(self, value):
+        links = []
+        if value["link"]:
+            for child in value["link"]:
+                if hasattr(child, "block_type") and child.block_type == "external_url":
+                    links.append({"text": value["card_header"], "url": child.value})
+
+        return links
+
+    def extract_from_table_list_block(self, value):
+        links = []
+        if value["table"]:
+            for row in value["table"].rows:
+                for cell in row:
+                    for child in cell.value:
+                        html = child.value.source
+                        soup = BeautifulSoup(html, "html.parser")
+                        for a in soup.find_all("a", href=True):
+                            href = a["href"]
+                            if (
+                                not href.startswith("mailto:")
+                                and not href.startswith("tel:")
+                                and not href.startswith("#")
+                            ):
+                                links.append(
+                                    {
+                                        "text": a.get_text(strip=True),
+                                        "url": href,
+                                    }
+                                )
+
+        return links
+
+    def extract_from_typed_table_block(self, value):
+        links = []
+        for row in value.rows:
+            for cell in row:
+                html = cell.value.source
+                soup = BeautifulSoup(html, "html.parser")
+                for a in soup.find_all("a", href=True):
+                    href = a["href"]
+                    if (
+                        not href.startswith("mailto:")
+                        and not href.startswith("tel:")
+                        and not href.startswith("#")
+                    ):
+                        links.append(
+                            {
+                                "text": a.get_text(strip=True),
+                                "url": href,
+                            }
+                        )
+
+        return links
+
+    def extract_from_image_with_link_block(self, value):
+        links = []
+        if value["link"]:
+            for child in value["link"]:
+                if hasattr(child, "block_type") and child.block_type == "external_url":
+                    links.append({"text": value["image"].title, "url": child.value})
+
+        return links
