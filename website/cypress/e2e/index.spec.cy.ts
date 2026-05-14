@@ -40,6 +40,17 @@ describe('index page', () => {
     cy.url().should('include', '/case-related-forms/')
   })
 
+  it('quick access tile links point to destinations other than the home page', () => {
+    cy.url().then((homeUrl) => {
+      cy.get('.cards-grid a').each(($a) => {
+        const href = $a.attr('href')
+        expect(href, 'tile link href should not be empty').to.exist
+        expect(href).to.not.equal(homeUrl)
+        expect(href).to.not.equal('/')
+      })
+    })
+  })
+
   it('search buttons contain text or title attribute for accessibility', () => {
     cy.get('[data-testid="search-button"]').should(($button) => {
 
