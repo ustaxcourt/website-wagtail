@@ -296,22 +296,6 @@ data "aws_iam_policy_document" "s3_policy" {
       values   = [aws_cloudfront_distribution.app.arn]
     }
   }
-
-  statement {
-    actions   = ["s3:ListBucket"]
-    resources = [aws_s3_bucket.private_bucket.arn]
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.app.arn]
-    }
-  }
 }
 
 resource "aws_s3_bucket_policy" "cloudfront_access_policy" {
