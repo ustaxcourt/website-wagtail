@@ -21,7 +21,7 @@ Options:
 Examples:
   ./scripts/cypress/run_against_aws.sh --mode run --aws-env dev-web
   ./scripts/cypress/run_against_aws.sh --mode run --aws-env alice-sandbox --include-admin
-  ./scripts/cypress/run_against_aws.sh --mode open
+  AWS_PROFILE=my-profile ./scripts/cypress/run_against_aws.sh --mode open
   ./scripts/cypress/run_against_aws.sh --mode run --base-url https://custom.ustaxcourt.gov
 EOF
 }
@@ -143,9 +143,12 @@ load_secret_json() {
 if [[ -z "$base_url" ]]; then
   echo "Resolving base URL from AWS secret '$secret_id' (profile: ${AWS_PROFILE})..."
   load_secret_json
-  domain_name="${DOMAIN_NAME:-}"
-  if [[ -z "$domain_name" && -n "$secret_json" && "$secret_json" != "None" ]]; then
+  domain_name=""
+  if [[ -n "$secret_json" && "$secret_json" != "None" ]]; then
     domain_name=$(echo "$secret_json" | jq -r '.DOMAIN_NAME // empty')
+  fi
+  if [[ -z "$domain_name" ]]; then
+    domain_name="${DOMAIN_NAME:-}"
   fi
   if [[ -z "$domain_name" ]]; then
     echo "Error: could not resolve DOMAIN_NAME from '$secret_id'. Pass --base-url instead." >&2
