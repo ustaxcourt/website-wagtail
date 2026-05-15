@@ -40,6 +40,21 @@ describe('index page', () => {
     cy.url().should('include', '/case-related-forms/')
   })
 
+  it('quick access tile links point to destinations other than the home page', () => {
+    cy.url().then((homeUrl) => {
+      const homeResolved = new URL(homeUrl)
+      cy.get('.cards-grid a').each(($a) => {
+        const href = $a.attr('href')
+        expect(href, 'tile link href should not be empty').to.be.a('string').and.not.be.empty
+        const resolvedUrl = new URL(href!, homeUrl)
+        // Cross-origin links are never the home page; only check pathname for same-origin links
+        if (resolvedUrl.origin === homeResolved.origin) {
+          expect(resolvedUrl.pathname, 'tile link should not point to home page').to.not.equal(homeResolved.pathname)
+        }
+      })
+    })
+  })
+
   it('search buttons contain text or title attribute for accessibility', () => {
     cy.get('[data-testid="search-button"]').should(($button) => {
 
