@@ -5,7 +5,9 @@ import * as path from "path";
 import * as XLSX from "xlsx";
 
 const includeAdminValidation = process.env.CYPRESS_INCLUDE_ADMIN_VALIDATION === 'true';
+const includeLocalValidation = process.env.CYPRESS_INCLUDE_LOCAL_VALIDATION === 'true';
 const adminValidationSpecPattern = '**/admin*_validation.cy.{js,jsx,ts,tsx}';
+const localValidationSpecPattern = '**/local*cy.{js,jsx,ts,tsx}';
 const baseUrl = process.env.CYPRESS_BASE_URL || 'http://localhost:8000';
 const adminUsername = process.env.CYPRESS_ADMIN_USERNAME || undefined;
 const adminPassword = process.env.CYPRESS_ADMIN_PASSWORD || undefined;
@@ -13,6 +15,17 @@ const env = {
   ...(adminUsername ? { ADMIN_USERNAME: adminUsername } : {}),
   ...(adminPassword ? { ADMIN_PASSWORD: adminPassword } : {}),
 };
+
+function getExcludeSpecPattern() {
+  let result : string[] = [];
+  if (!includeAdminValidation) {
+    result.push(adminValidationSpecPattern);
+  }
+  if (!includeLocalValidation) {
+    result.push(localValidationSpecPattern);
+  }
+  return result;
+}
 
 export default defineConfig({
   e2e: {
@@ -41,8 +54,6 @@ export default defineConfig({
     baseUrl,
     ...(Object.keys(env).length > 0 ? { env } : {}),
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
-    excludeSpecPattern: includeAdminValidation
-      ? []
-      : [adminValidationSpecPattern]
+    excludeSpecPattern: getExcludeSpecPattern()
   },
 });
