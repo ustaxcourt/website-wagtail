@@ -49,7 +49,7 @@
         <tbody>
             {% for page in pages %}
                 {% page_permissions page as page_perms %}
-                <tr class="{% if not page.live %}unpublished{% endif %} {% block page_row_classname %}{% endblock %}">
+                <tr class="{% if not page.live %}unpublished{% endif %} {% block page_row_classname %}{% endblock %}" id="{{ page.slug }}">
                     <td class="title" valign="top" data-listing-page-title colspan="2">
                         {% block page_title %}
                             {% i18n_enabled as show_locale_labels %}
