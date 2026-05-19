@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% block extra_css %}
+    <style>
+        #private-seminar-page {
+            padding-top: 45px;
+            padding-bottom: 45px;
+        }
+
+        .disclosure-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .disclosure-table th {
+            background-color: #005ea2;
+            color: #fff;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .disclosure-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #dfe1e2;
+            vertical-align: top;
+        }
+
+        .disclosure-table tr:nth-child(odd) td {
+            background-color: #f5f5f5;
+        }
+
+        @media (max-width: 768px) {
+            .disclosure-table,
+            .disclosure-table thead,
+            .disclosure-table tbody,
+            .disclosure-table th,
+            .disclosure-table td,
+            .disclosure-table tr {
+                display: block;
+            }
+
+            .disclosure-table thead tr {
+                display: none;
+            }
+
+            .disclosure-table td {
+                position: relative;
+                padding-left: 50%;
+            }
+
+            .disclosure-table td::before {
+                position: absolute;
+                left: 1rem;
+                top: 0.75rem;
+                font-weight: 700;
+                width: 45%;
+                content: attr(data-label);
+            }
+        }
+    </style>
+{% endblock %}
+{% block body_class %}template-private-seminar-disclosures{% endblock %}
+{% block content %}
+    <div id="private-seminar-page" class="grid-container">
+        <h1 data-testid="page-title">
+            <a href="{{ page.url }}">{{ page.title }}</a> / Private Seminar Disclosures
+        </h1>
+        <hr />
+        <p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>
+        {% if disclosures %}
+            <table class="disclosure-table" data-testid="disclosures-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Judge</th>
+                        <th scope="col">Program Provider</th>
+                        <th scope="col">Program Title</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Program Topics</th>
+                        <th scope="col">Supporter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for disclosure in disclosures %}
+                        <tr>
+                            <td data-label="Judge">{{ disclosure.judge.display_name }}</td>
+                            <td data-label="Program Provider">{{ disclosure.program_provider }}</td>
+                            <td data-label="Program Title">{{ disclosure.program_title }}</td>
+                            <td data-label="Date">{{ disclosure.date|date:"F j, Y" }}</td>
+                            <td data-label="Location">{{ disclosure.location }}</td>
+                            <td data-label="Program Topics">{{ disclosure.program_topics|richtext }}</td>
+                            <td data-label="Supporter">{{ disclosure.supporter }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No seminar disclosures have been filed at this time.</p>
+        {% endif %}
+    </div>
+{% endblock content %}

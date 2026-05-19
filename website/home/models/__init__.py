@@ -4,6 +4,7 @@ from home.models.snippets.judges import (
     JudgeCollection,
     JudgeProfile,
     JudgeRole,
+    PrivateSeminarDisclosure,
 )
 from home.models.settings import (
     Header,

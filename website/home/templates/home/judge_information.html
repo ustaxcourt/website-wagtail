@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load filters %}
+{% block extra_css %}
+    <style>
+        #judge-information-page {
+            padding-top: 45px;
+            padding-bottom: 45px;
+        }
+
+        #judge-information-page h1 .page-title-breadcrumb {
+            display: none;
+        }
+
+        #judge-information-page h1 .page-title-start.has-breadcrumb {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Filter buttons */
+        .judge-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .judge-filter-btn {
+            padding: 0.5rem 1.25rem;
+            border: 2px solid #1b2a4a;
+            background-color: transparent;
+            color: #1b2a4a;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .judge-filter-btn:hover {
+            background-color: #1b2a4a;
+            color: #fff;
+        }
+
+        .judge-filter-btn.active {
+            background-color: #1b2a4a;
+            color: #fff;
+        }
+
+        /* Section header bar */
+        .judge-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1b1b1b;
+        }
+
+        .judge-section-header::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            min-height: 1.4em;
+            background-color: #005ea2;
+            border-radius: 2px;
+            flex-shrink: 0;
+            align-self: stretch;
+        }
+
+        .judge-section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #dfe1e2;
+        }
+
+        /* Judge card grid */
+        .judge-card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .judge-card-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .judge-card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .judge-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .judge-card {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #dfe1e2;
+            padding: 1rem;
+            text-decoration: none;
+            color: #1b1b1b;
+            background-color: #fff;
+            border-radius: 4px;
+            transition: box-shadow 0.15s;
+        }
+
+        .judge-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+        }
+
+        .judge-card .judge-name {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .judge-card .judge-role {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* Bottom tiles */
+        .judge-bottom-tiles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .judge-bottom-tiles {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .judge-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            border: 1px solid #dfe1e2;
+            padding: 2rem 1.5rem;
+            text-decoration: none;
+            color: #1b1b1b;
+            background-color: #fff;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            transition: box-shadow 0.15s;
+        }
+
+        .judge-tile:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+        }
+
+        .judge-tile i {
+            font-size: 2rem;
+            color: #005ea2;
+        }
+
+        .judge-section[data-hidden="true"] {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block body_class %}template-judge-information{% endblock %}
+{% block content %}
+    <div id="judge-information-page" class="grid-container">
+        <h1 data-testid="page-title" tabindex="0">
+            <span class="page-title-start" id="page-title-start">{{ page.title }}</span><span class="page-title-breadcrumb" id="page-title-breadcrumb"></span>
+        </h1>
+        <hr />
+        {% if page.intro_text %}
+            <div class="judge-intro">{{ page.intro_text|richtext }}</div>
+        {% endif %}
+        <!-- Filter buttons -->
+        <div class="judge-filter-bar" role="group" aria-label="Filter judges by type">
+            <button class="judge-filter-btn active"
+                    data-filter="all"
+                    aria-pressed="true">All Judges</button>
+            {% for group in judge_groups %}
+                <button class="judge-filter-btn"
+                        data-filter="{{ group.filter_key }}"
+                        aria-pressed="false">{{ group.filter_label }}</button>
+            {% endfor %}
+        </div>
+        <!-- Judge sections -->
+        {% for group in judge_groups %}
+            <div class="judge-section" data-section="{{ group.filter_key }}">
+                <div class="judge-section-header">{{ group.label }}</div>
+                <div class="judge-card-grid">
+                    {% for item in group.judges %}
+                        <a class="judge-card"
+                           href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|lower }}/"
+                           data-testid="judge-card-{{ item.judge.id }}">
+                            <span class="judge-name">{{ item.judge.display_name }}</span>
+                            <span class="judge-role">{{ item.role_label }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <!-- Bottom tiles -->
+        <div class="judge-bottom-tiles">
+            <a class="judge-tile"
+               href="{{ page.url }}private-seminar-disclosures/"
+               data-testid="tile-private-seminar-disclosures">
+                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                <span>Private Seminar Disclosures</span>
+            </a>
+            <a class="judge-tile"
+               href="{{ judicial_conduct_url }}"
+               data-testid="tile-judicial-conduct">
+                <i class="fa fa-gavel" aria-hidden="true"></i>
+                <span>Judicial Conduct and Disability Complaint Procedures</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        (function () {
+            const ALL_FILTER = 'all';
+
+            function getFilterFromUrl() {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('filter') || ALL_FILTER;
+            }
+
+            function setFilterInUrl(filterKey) {
+                const url = new URL(window.location.href);
+                if (filterKey === ALL_FILTER) {
+                    url.searchParams.delete('filter');
+                } else {
+                    url.searchParams.set('filter', filterKey);
+                }
+                window.history.pushState({filter: filterKey}, '', url.toString());
+            }
+
+            function applyFilter(filterKey) {
+                const buttons = document.querySelectorAll('.judge-filter-btn');
+                const sections = document.querySelectorAll('.judge-section');
+                const breadcrumb = document.getElementById('page-title-breadcrumb');
+                const titleStart = document.getElementById('page-title-start');
+
+                buttons.forEach(function (btn) {
+                    const isActive = btn.dataset.filter === filterKey;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+
+                sections.forEach(function (section) {
+                    if (filterKey === ALL_FILTER || section.dataset.section === filterKey) {
+                        section.removeAttribute('data-hidden');
+                    } else {
+                        section.setAttribute('data-hidden', 'true');
+                    }
+                });
+
+                // Update breadcrumb
+                if (filterKey === ALL_FILTER) {
+                    breadcrumb.style.display = 'none';
+                    breadcrumb.textContent = '';
+                    titleStart.classList.remove('has-breadcrumb');
+                } else {
+                    // Find the active button label for breadcrumb text
+                    const activeBtn = document.querySelector('.judge-filter-btn[data-filter="' + filterKey + '"]');
+                    const label = activeBtn ? activeBtn.textContent.trim() : filterKey;
+                    breadcrumb.textContent = ' / ' + label;
+                    breadcrumb.style.display = 'inline';
+                    titleStart.classList.add('has-breadcrumb');
+                }
+            }
+
+            function onTitleStartClick(e) {
+                e.preventDefault();
+                applyFilter(ALL_FILTER);
+                setFilterInUrl(ALL_FILTER);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const titleStart = document.getElementById('page-title-start');
+                titleStart.addEventListener('click', onTitleStartClick);
+                titleStart.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') { onTitleStartClick(e); }
+                });
+
+                document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        const filterKey = btn.dataset.filter;
+                        applyFilter(filterKey);
+                        setFilterInUrl(filterKey);
+                    });
+                });
+
+                // Apply filter from URL on load
+                const initial = getFilterFromUrl();
+                applyFilter(initial);
+            });
+
+            window.addEventListener('popstate', function (e) {
+                const filterKey = (e.state && e.state.filter) ? e.state.filter : getFilterFromUrl();
+                applyFilter(filterKey);
+            });
+        })();
+    </script>
+{% endblock content %}

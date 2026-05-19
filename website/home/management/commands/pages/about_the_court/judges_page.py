@@ -329,9 +329,9 @@ all_judges = [
         "last_name": "Carluzzo",
         "suffix": "",
         "display_name": "Lewis R. Carluzzo",
-        "title": "Special Trial Judge",
+        "title": "Senior Special Trial Judge",
         "chambers_telephone": "(202) 521-3339",
-        "bio": "Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025.",
+        "bio": "Senior Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025. Assumed senior status as Senior Special Trial Judge on May 2, 2025.",
     },
     {
         "first_name": "Diana",
@@ -381,7 +381,7 @@ class JudgesPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        title = "Judges"
+        title = "Judge Information"
 
         if Page.objects.filter(slug=self.slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -389,13 +389,10 @@ class JudgesPageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        judge_collection = JudgeCollection.objects.update_or_create(name="Judges")[0]
-        senior_judge_collection = JudgeCollection.objects.update_or_create(
-            name="Senior Judges"
-        )[0]
-        special_trial_judge_collection = JudgeCollection.objects.update_or_create(
-            name="Special Trial Judges"
-        )[0]
+        JudgeCollection.objects.update_or_create(name="Judges")
+        JudgeCollection.objects.update_or_create(name="Senior Judges")
+        JudgeCollection.objects.update_or_create(name="Special Trial Judges")
+        JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
 
         for judge in all_judges:
             JudgeProfile.objects.update_or_create(
@@ -411,7 +408,7 @@ class JudgesPageInitializer(PageInitializer):
                 },
             )
 
-        # Create judge role
+        # Create judge roles
         JudgeRole.objects.update_or_create(
             role_name="Chief Judge",
             defaults={
@@ -428,61 +425,14 @@ class JudgesPageInitializer(PageInitializer):
             },
         )
 
-        # Create the page first
+        # Create the page
         _ = home_page.add_child(
             instance=JudgeIndex(
                 title=title,
                 slug=self.slug,
                 seo_title=title,
                 search_description=title,
-                body=[
-                    {
-                        "type": "columns",
-                        "value": {
-                            "column": [
-                                [  # First column
-                                    {
-                                        "type": "h2WithAnchorTag",
-                                        "value": {
-                                            "text": "Judges",
-                                            "anchortag": "JUDGES",
-                                        },
-                                    },
-                                    {
-                                        "type": "judgeCollection",
-                                        "value": judge_collection.id,
-                                    },
-                                ],
-                                [  # Second column
-                                    {
-                                        "type": "h2WithAnchorTag",
-                                        "value": {
-                                            "text": "Senior Judges",
-                                            "anchortag": "SENIOR",
-                                        },
-                                    },
-                                    {
-                                        "type": "judgeCollection",
-                                        "value": senior_judge_collection.id,
-                                    },
-                                ],
-                                [  # Third column
-                                    {
-                                        "type": "h2WithAnchorTag",
-                                        "value": {
-                                            "text": "Special Trial Judges",
-                                            "anchortag": "SPECIAL",
-                                        },
-                                    },
-                                    {
-                                        "type": "judgeCollection",
-                                        "value": special_trial_judge_collection.id,
-                                    },
-                                ],
-                            ]
-                        },
-                    }
-                ],
+                intro_text="See the Judge's biography by clicking on the cards.",
             )
         )
 
