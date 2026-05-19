@@ -9,6 +9,9 @@ class CustomLinkExtractor(LinkExtractor):
         """Recursively extract links depending on value type."""
         links = []
 
+        # Handles external links in Enhanced Tables, Styled Tables, and Unstyled Tables
+        # Other custom handlers are called by similar logic in the base LinkExtractor's
+        # extract_from_value() method.
         for block_cls, handler in self.custom_handlers.items():
             if isinstance(value, TypedTable) and isinstance(value, block_cls):
                 return handler(value)
@@ -38,6 +41,7 @@ class CustomLinkExtractor(LinkExtractor):
             and value["url"] is not None
             and isinstance(value["url"], str)
         ):
+            # Handles external links in a List of Links component
             links.append({"text": value["title"], "url": value["url"]})
             return links
         else:
