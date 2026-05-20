@@ -512,13 +512,13 @@ Additionally, we will use tags to facilitate deployment to sandbox instances.
 
 ## The Workflow
 1. Pick up a story on the main board,
-2. Create feature branch that includes the Jira story ID e.g. `[type]/[brief-description]-[jira-id]`
+2. Create feature branch that includes the Jira issue key e.g. `[type]/[brief-description]-[jira-key]`
     - `type`: the type of change.
       - `page`: code that adds a new wagtail page to the repo, e.g. `page/about-us-1234`
       - `fix`: code that fixes a bug or adds/clarifies documentation, e.g. `fix/broken-dropdown-1234`
       - `feature`: code that adds or enhances functionality of the app, e.g. `feature/new-disco-theme-1234`
     - `brief-description`: a few words to describe the purpose of the branch
-    - `jira-id`: the value of the **Issue ID** in Jira (e.g., WAG-123)
+    - `jira-key`: the value of the **Issue key** in Jira (e.g., WAG-123)
 3. Develop and test locally
 4. When ready for review, push branch to github (if not done already) and create a draft PR to `main`
 5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox` , e.g.
