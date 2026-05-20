@@ -16,10 +16,18 @@
             text-decoration: underline;
             cursor: pointer;
         }
+        #judge-information-page .page-title{
+            margin-bottom: 15px;
+        }
+
+        #judge-information-page .judge-intro {
+            margin-bottom: 34px;
+        }
 
         /* Filter buttons */
         .judge-filter-bar {
             display: flex;
+            justify-content: flex-end;
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 2rem;
@@ -53,17 +61,19 @@
             align-items: center;
             gap: 0.75rem;
             margin-bottom: 1rem;
-            font-size: 1.1rem;
+            font-size: 24px;
             font-weight: 700;
-            color: #1b1b1b;
+            color: white;
+            background-color: #005EA2;
+            padding: 5px;
         }
 
         .judge-section-header::before {
             content: '';
             display: inline-block;
-            width: 4px;
+            width: 2px;
             min-height: 1.4em;
-            background-color: #005ea2;
+            background-color: white;
             border-radius: 2px;
             flex-shrink: 0;
             align-self: stretch;
@@ -182,7 +192,6 @@
         <h1 data-testid="page-title" tabindex="0">
             <span class="page-title-start" id="page-title-start">{{ page.title }}</span><span class="page-title-breadcrumb" id="page-title-breadcrumb"></span>
         </h1>
-        <hr />
         {% if page.intro_text %}
             <div class="judge-intro">{{ page.intro_text|richtext }}</div>
         {% endif %}
