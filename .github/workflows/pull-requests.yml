@@ -40,13 +40,7 @@ jobs:
       run: |
         cd website
         coverage run -m pytest
-        coverage report -m | tee coverage-report.txt
-        coverage xml
-
-    - name: Enforce Coverage Threshold
-      run: |
-        cd website
-        coverage report --fail-under=75
+        coverage report -m --fail-under=75 | tee coverage-report.txt
 
     - name: Add Coverage to Step Summary
       if: always() && hashFiles('website/coverage-report.txt') != ''
