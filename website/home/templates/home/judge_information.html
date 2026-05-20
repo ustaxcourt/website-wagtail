@@ -30,6 +30,7 @@
             justify-content: flex-end;
             flex-wrap: wrap;
             gap: 0.5rem;
+            margin-top: 1.5rem;
             margin-bottom: 2rem;
         }
 
@@ -241,36 +242,44 @@
     <script>
         (function () {
             const ALL_FILTER = 'all';
+            let activeFilters = new Set();
 
-            function getFilterFromUrl() {
+            function getFiltersFromUrl() {
                 const params = new URLSearchParams(window.location.search);
-                return params.get('filter') || ALL_FILTER;
+                const val = params.get('filters');
+                if (!val) return new Set();
+                return new Set(val.split(',').filter(Boolean));
             }
 
-            function setFilterInUrl(filterKey) {
+            function setFiltersInUrl(filters) {
                 const url = new URL(window.location.href);
-                if (filterKey === ALL_FILTER) {
-                    url.searchParams.delete('filter');
+                if (filters.size === 0) {
+                    url.searchParams.delete('filters');
                 } else {
-                    url.searchParams.set('filter', filterKey);
+                    url.searchParams.set('filters', Array.from(filters).join(','));
                 }
-                window.history.pushState({filter: filterKey}, '', url.toString());
+                window.history.pushState({filters: Array.from(filters)}, '', url.toString());
             }
 
-            function applyFilter(filterKey) {
-                const buttons = document.querySelectorAll('.judge-filter-btn');
+            function applyFilters() {
                 const sections = document.querySelectorAll('.judge-section');
                 const breadcrumb = document.getElementById('page-title-breadcrumb');
                 const titleStart = document.getElementById('page-title-start');
 
-                buttons.forEach(function (btn) {
-                    const isActive = btn.dataset.filter === filterKey;
+                // Update button states
+                document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
+                    const key = btn.dataset.filter;
+                    const isActive = key === ALL_FILTER
+                        ? activeFilters.size === 0
+                        : activeFilters.has(key);
                     btn.classList.toggle('active', isActive);
                     btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
                 });
 
+                // Show/hide sections
                 sections.forEach(function (section) {
-                    if (filterKey === ALL_FILTER || section.dataset.section === filterKey) {
+                    const show = activeFilters.size === 0 || activeFilters.has(section.dataset.section);
+                    if (show) {
                         section.removeAttribute('data-hidden');
                     } else {
                         section.setAttribute('data-hidden', 'true');
@@ -278,15 +287,16 @@
                 });
 
                 // Update breadcrumb
-                if (filterKey === ALL_FILTER) {
+                if (activeFilters.size === 0) {
                     breadcrumb.style.display = 'none';
                     breadcrumb.textContent = '';
                     titleStart.classList.remove('has-breadcrumb');
                 } else {
-                    // Find the active button label for breadcrumb text
-                    const activeBtn = document.querySelector('.judge-filter-btn[data-filter="' + filterKey + '"]');
-                    const label = activeBtn ? activeBtn.textContent.trim() : filterKey;
-                    breadcrumb.textContent = ' / ' + label;
+                    const labels = Array.from(activeFilters).map(function (key) {
+                        const btn = document.querySelector('.judge-filter-btn[data-filter="' + key + '"]');
+                        return btn ? btn.textContent.trim() : key;
+                    });
+                    breadcrumb.textContent = ' / ' + labels.join(', ');
                     breadcrumb.style.display = 'inline';
                     titleStart.classList.add('has-breadcrumb');
                 }
@@ -294,11 +304,16 @@
 
             function onTitleStartClick(e) {
                 e.preventDefault();
-                applyFilter(ALL_FILTER);
-                setFilterInUrl(ALL_FILTER);
+                activeFilters.clear();
+                applyFilters();
+                setFiltersInUrl(activeFilters);
             }
 
             document.addEventListener('DOMContentLoaded', function () {
+                // Restore from URL on load
+                activeFilters = getFiltersFromUrl();
+                applyFilters();
+
                 const titleStart = document.getElementById('page-title-start');
                 titleStart.addEventListener('click', onTitleStartClick);
                 titleStart.addEventListener('keypress', function (e) {
@@ -307,20 +322,25 @@
 
                 document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
                     btn.addEventListener('click', function () {
-                        const filterKey = btn.dataset.filter;
-                        applyFilter(filterKey);
-                        setFilterInUrl(filterKey);
+                        const key = btn.dataset.filter;
+                        if (key === ALL_FILTER) {
+                            activeFilters.clear();
+                        } else {
+                            if (activeFilters.has(key)) {
+                                activeFilters.delete(key);
+                            } else {
+                                activeFilters.add(key);
+                            }
+                        }
+                        applyFilters();
+                        setFiltersInUrl(activeFilters);
                     });
                 });
-
-                // Apply filter from URL on load
-                const initial = getFilterFromUrl();
-                applyFilter(initial);
             });
 
-            window.addEventListener('popstate', function (e) {
-                const filterKey = (e.state && e.state.filter) ? e.state.filter : getFilterFromUrl();
-                applyFilter(filterKey);
+            window.addEventListener('popstate', function () {
+                activeFilters = getFiltersFromUrl();
+                applyFilters();
             });
         })();
     </script>

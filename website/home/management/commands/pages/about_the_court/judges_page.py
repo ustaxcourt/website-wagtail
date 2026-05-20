@@ -5,8 +5,10 @@ from home.models import (
     JudgeProfile,
     JudgeCollection,
     JudgeRole,
+    PrivateSeminarDisclosure,
 )
 import logging
+import datetime
 
 
 logger = logging.getLogger(__name__)
@@ -437,6 +439,76 @@ class JudgesPageInitializer(PageInitializer):
         )
 
         logger.info(f"Created the '{title}' page with judge collections.")
+
+        # Seed sample private seminar disclosures
+        self._seed_seminar_disclosures()
+
+    def _seed_seminar_disclosures(self):
+        sample_disclosures = [
+            {
+                "judge_last_name": "Kerrigan",
+                "program_provider": "American Bar Association",
+                "program_title": "Tax Law and Practice Symposium",
+                "date": datetime.date(2025, 3, 14),
+                "location": "Washington, DC",
+                "program_topics": "<ul><li>Federal Tax Procedure</li><li>Tax Court Practice</li><li>Recent Developments in Tax Law</li></ul>",
+                "supporter": "American Bar Association Tax Section",
+            },
+            {
+                "judge_last_name": "Arbeit",
+                "program_provider": "Georgetown University Law Center",
+                "program_title": "Advanced Federal Tax Institute",
+                "date": datetime.date(2025, 5, 2),
+                "location": "Washington, DC",
+                "program_topics": "<ul><li>Corporate Taxation</li><li>Partnership Taxation</li><li>International Tax</li></ul>",
+                "supporter": "",
+            },
+            {
+                "judge_last_name": "Ashford",
+                "program_provider": "New York University School of Law",
+                "program_title": "NYU Annual Institute on Federal Taxation",
+                "date": datetime.date(2025, 10, 20),
+                "location": "New York, NY",
+                "program_topics": "<ul><li>Estate and Gift Tax</li><li>Tax Controversies</li><li>Tax Planning Strategies</li></ul>",
+                "supporter": "NYU School of Law",
+            },
+            {
+                "judge_last_name": "Cohen",
+                "program_provider": "Federal Bar Association",
+                "program_title": "Tax Law Conference",
+                "date": datetime.date(2024, 9, 12),
+                "location": "Chicago, IL",
+                "program_topics": "<ul><li>Tax Litigation Updates</li><li>IRS Enforcement Trends</li></ul>",
+                "supporter": "",
+            },
+            {
+                "judge_last_name": "Fried",
+                "program_provider": "Tax Court Bar Association",
+                "program_title": "Special Trial Judge Practice Seminar",
+                "date": datetime.date(2025, 1, 22),
+                "location": "Washington, DC",
+                "program_topics": "<ul><li>Small Tax Case Procedures</li><li>Evidence in Tax Cases</li><li>Bench Trials</li></ul>",
+                "supporter": "Tax Court Bar Association",
+            },
+        ]
+
+        for item in sample_disclosures:
+            judge = JudgeProfile.objects.filter(
+                last_name__iexact=item["judge_last_name"]
+            ).first()
+            if not judge:
+                continue
+            PrivateSeminarDisclosure.objects.get_or_create(
+                judge=judge,
+                program_title=item["program_title"],
+                date=item["date"],
+                defaults={
+                    "program_provider": item["program_provider"],
+                    "location": item["location"],
+                    "program_topics": item["program_topics"],
+                    "supporter": item["supporter"],
+                },
+            )
 
     def update(self):
         try:

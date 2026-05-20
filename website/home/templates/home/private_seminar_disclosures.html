@@ -7,97 +7,126 @@
             padding-bottom: 45px;
         }
 
-        .disclosure-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
+        .disclosure-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
         }
 
-        .disclosure-table th {
-            background-color: #005ea2;
-            color: #fff;
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 600;
+        .disclosure-year-select {
+            padding: 0.4rem 0.75rem;
+            border: 1px solid #dfe1e2;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            min-width: 120px;
         }
 
-        .disclosure-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #dfe1e2;
-            vertical-align: top;
-        }
-
-        .disclosure-table tr:nth-child(odd) td {
-            background-color: #f5f5f5;
+        .disclosure-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
 
         @media (max-width: 768px) {
-            .disclosure-table,
-            .disclosure-table thead,
-            .disclosure-table tbody,
-            .disclosure-table th,
-            .disclosure-table td,
-            .disclosure-table tr {
-                display: block;
+            .disclosure-grid {
+                grid-template-columns: 1fr;
             }
+        }
 
-            .disclosure-table thead tr {
-                display: none;
-            }
+        .disclosure-card {
+            border: 1px solid #dfe1e2;
+            padding: 1.25rem 1.5rem;
+            background-color: #fff;
+            border-radius: 4px;
+        }
 
-            .disclosure-table td {
-                position: relative;
-                padding-left: 50%;
-            }
+        .disclosure-card .judge-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #1b1b1b;
+        }
 
-            .disclosure-table td::before {
-                position: absolute;
-                left: 1rem;
-                top: 0.75rem;
-                font-weight: 700;
-                width: 45%;
-                content: attr(data-label);
-            }
+        .disclosure-card dl {
+            margin: 0;
+        }
+
+        .disclosure-card dt {
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: #1b1b1b;
+        }
+
+        .disclosure-card dd {
+            margin-left: 0;
+            color: #1b1b1b;
+        }
+
+        .disclosure-card dd ul {
+            margin: 0.25rem 0 0 1.25rem;
+            padding: 0;
+        }
+
+        .disclosure-empty {
+            color: #555;
+            margin-top: 1rem;
         }
     </style>
 {% endblock %}
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        <h1 data-testid="page-title">
+        <h1 data-testid="page-title" tabindex="0">
             <a href="{{ page.url }}">{{ page.title }}</a> / Private Seminar Disclosures
         </h1>
         <hr />
-        <p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>
+        <p>
+            The Tax Court follows the <a href="https://www.uscourts.gov/sites/default/files/guide-vol02d.pdf">private seminar disclosure reporting policy</a> of all Federal US Courts which requires attending judges and judicial employees to report attendance at privately funded programs.
+        </p>
+        {% if years %}
+            <div class="disclosure-controls">
+                <form method="get" id="year-filter-form">
+                    <label for="year-select" class="usa-sr-only">Filter by year</label>
+                    <select id="year-select"
+                            name="year"
+                            class="disclosure-year-select"
+                            onchange="document.getElementById('year-filter-form').submit()">
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                            <option value="{{ year }}" {% if selected_year == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        {% endif %}
         {% if disclosures %}
-            <table class="disclosure-table" data-testid="disclosures-table">
-                <thead>
-                    <tr>
-                        <th scope="col">Judge</th>
-                        <th scope="col">Program Provider</th>
-                        <th scope="col">Program Title</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Program Topics</th>
-                        <th scope="col">Supporter</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for disclosure in disclosures %}
-                        <tr>
-                            <td data-label="Judge">{{ disclosure.judge.display_name }}</td>
-                            <td data-label="Program Provider">{{ disclosure.program_provider }}</td>
-                            <td data-label="Program Title">{{ disclosure.program_title }}</td>
-                            <td data-label="Date">{{ disclosure.date|date:"F j, Y" }}</td>
-                            <td data-label="Location">{{ disclosure.location }}</td>
-                            <td data-label="Program Topics">{{ disclosure.program_topics|richtext }}</td>
-                            <td data-label="Supporter">{{ disclosure.supporter }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="disclosure-grid">
+                {% for disclosure in disclosures %}
+                    <div class="disclosure-card">
+                        <div class="judge-name">{{ disclosure.judge.display_name }}</div>
+                        <dl>
+                            <dt>Program Provider(s):</dt>
+                            <dd>{{ disclosure.program_provider }}</dd>
+                            <dt>Program:</dt>
+                            <dd>{{ disclosure.program_title }}</dd>
+                            <dt>Date:</dt>
+                            <dd>{{ disclosure.date|date:"m/d/Y" }}</dd>
+                            <dt>Location:</dt>
+                            <dd>{{ disclosure.location }}</dd>
+                            {% if disclosure.program_topics %}
+                                <dt>Program Topics:</dt>
+                                <dd>{{ disclosure.program_topics|richtext }}</dd>
+                            {% endif %}
+                            {% if disclosure.supporter %}
+                                <dt>Supporter(s):</dt>
+                                <dd>{{ disclosure.supporter }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-            <p>No seminar disclosures have been filed at this time.</p>
+            <p class="disclosure-empty">No seminar disclosures have been filed at this time.</p>
         {% endif %}
     </div>
 {% endblock content %}

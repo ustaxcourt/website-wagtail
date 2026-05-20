@@ -187,10 +187,24 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
     @route(r"^private-seminar-disclosures/$")
     def private_seminar_disclosures(self, request):
         context = self.get_context(request)
-        disclosures = PrivateSeminarDisclosure.objects.select_related("judge").order_by(
-            "-date", "judge__last_name"
+        all_disclosures = PrivateSeminarDisclosure.objects.select_related(
+            "judge"
+        ).order_by("-date", "judge__last_name")
+
+        years = sorted(
+            all_disclosures.dates("date", "year", order="DESC"),
+            reverse=True,
         )
-        context["disclosures"] = disclosures
+        selected_year = request.GET.get("year", "")
+        if selected_year:
+            try:
+                all_disclosures = all_disclosures.filter(date__year=int(selected_year))
+            except (ValueError, TypeError):
+                selected_year = ""
+
+        context["disclosures"] = all_disclosures
+        context["years"] = [y.year for y in years]
+        context["selected_year"] = selected_year
         return render(request, "home/private_seminar_disclosures.html", context)
 
     class Meta:
