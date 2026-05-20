@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
     - name: Checkout Repository
@@ -33,10 +36,32 @@ jobs:
     - name: Run pre-commit hooks
       run: pre-commit run --all-files
 
-    - name: Run Unit Tests
+    - name: Run Unit Tests with Coverage
       run: |
         cd website
-        make pytest
+        coverage run -m pytest
+        coverage report -m | tee coverage-report.txt
+        coverage xml
+
+    - name: Enforce Coverage Threshold
+      run: |
+        cd website
+        coverage report --fail-under=75
+
+    - name: Add Coverage to Step Summary
+      if: always() && hashFiles('website/coverage-report.txt') != ''
+      run: |
+        echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat website/coverage-report.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+
+    - name: Post Coverage Comment
+      if: always() && github.event_name == 'pull_request' && hashFiles('website/coverage-report.txt') != ''
+      uses: MishaKav/pytest-coverage-comment@v1.9.0
+      with:
+        pytest-coverage-path: ./website/coverage-report.txt
+        title: Test Coverage Report
 
     - name: Run Cypress Tests
       env:
