@@ -1,5 +1,5 @@
-## Monday Ticket
-Please include the Monday ticket ID in the correct format.
+## Jira Ticket
+Please include the Jira issue ID in the correct format.
 
 **Format:** `WAG-XXX` (the dash is important)
 
