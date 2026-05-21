@@ -83,32 +83,23 @@ class TestGetSearchSnippet:
 
     def test_falls_back_to_intro(self):
         page = MagicMock()
-        specific = MagicMock()
-        specific.search_description = None
-        specific.intro = "<p>Intro text</p>"
-        del specific.body  # no body attribute
-        page.specific = specific
+        page.specific = SimpleNamespace(
+            search_description=None, intro="<p>Intro text</p>"
+        )
         result = get_search_snippet(page)
         assert "Intro text" in result
 
     def test_falls_back_to_string_body(self):
         page = MagicMock()
-        specific = MagicMock()
-        specific.search_description = None
-        specific.body = "<p>Body content here</p>"
-        # Remove intro so body is used; body is a string so it falls into strip_tags
-        del specific.intro
-        page.specific = specific
+        page.specific = SimpleNamespace(
+            search_description=None, body="<p>Body content here</p>"
+        )
         result = get_search_snippet(page)
         # Body is a plain string — result may be empty if the code doesn't handle plain strings
         assert isinstance(result, str)
 
     def test_returns_empty_string_when_no_content(self):
         page = MagicMock()
-        specific = MagicMock()
-        specific.search_description = None
-        del specific.body
-        del specific.intro
-        page.specific = specific
+        page.specific = SimpleNamespace(search_description=None)
         result = get_search_snippet(page)
         assert result == ""

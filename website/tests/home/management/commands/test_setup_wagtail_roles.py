@@ -84,10 +84,14 @@ class TestSetupSnippetPermissions:
         cmd.style.SUCCESS = lambda x: x
         cmd.style.WARNING = lambda x: x
 
-        Group.objects.get_or_create(name="Editors")
+        editors_group, _ = Group.objects.get_or_create(name="Editors")
+        initial_permission_count = editors_group.permissions.count()
+
         cmd.setup_snippet_permissions()
-        # Should complete without error
-        assert True
+
+        editors_group.refresh_from_db()
+        assert editors_group.permissions.count() > 0
+        assert editors_group.permissions.count() > initial_permission_count
 
 
 @pytest.mark.django_db
@@ -158,7 +162,7 @@ class TestSetupChiefJudgeWorkflow:
         Workflow.objects.filter(name="Moderators approval").delete()
         cmd.setup_chief_judge_workflow()
         output = out.getvalue()
-        assert "not found" in output or "WARNING" in output or True  # Just no exception
+        assert "not found" in output or "WARNING" in output
 
     def test_setup_chief_judge_workflow_no_group(self):
         """When no Chief Judge Moderator group, logs warning and returns."""
