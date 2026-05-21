@@ -381,6 +381,126 @@ describe("Judge Information — Figma design spec (mobile)", () => {
         cy.injectAxe();
         cy.checkA11y("#judge-information-page", { includedImpacts: ["serious", "critical"], retries: 3 }, terminalLog);
     });
+
+    it("desktop filter bar is hidden at mobile", () => {
+        cy.get(".judge-filter-bar").should("not.be.visible");
+    });
+
+    it("mobile filter toggle button is visible", () => {
+        cy.get("#mobile-filter-toggle").should("be.visible");
+    });
+
+    it("mobile filter toggle: white background, dark border by default", () => {
+        cy.get("#mobile-filter-toggle")
+            .should("have.css", "background-color", "rgb(255, 255, 255)")
+            .and("have.css", "border-top-color", "rgb(22, 46, 81)");
+    });
+
+    it("mobile filter toggle: has fa-filter icon", () => {
+        cy.get("#mobile-filter-toggle i.fa-filter").should("have.attr", "aria-hidden", "true");
+    });
+
+    it("mobile filter panel is hidden on load", () => {
+        cy.get("#mobile-filter-panel").should("not.be.visible");
+    });
+
+    it("tapping Filter opens the panel", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get("#mobile-filter-panel").should("be.visible");
+        cy.get("#mobile-filter-toggle").should("have.attr", "aria-expanded", "true");
+    });
+
+    it("panel shows all 5 filter options as checkboxes", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get("#mobile-filter-panel .mobile-filter-option").should("have.length", 5);
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="all"]').should("contain", "All Judges");
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]').should("contain", "Judges");
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="senior-judges"]').should("contain", "Senior Judges");
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="special-trial-judges"]').should("contain", "Special Trial Judges");
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="senior-special-trial-judges"]').should("contain", "Senior Special Trial Judges");
+    });
+
+    it("All Judges is checked by default in the panel", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="all"]')
+            .should("have.attr", "aria-checked", "true")
+            .find("i").should("have.class", "fa-square-check");
+    });
+
+    it("panel has Apply and Clear filters buttons", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get("#mobile-filter-apply").should("be.visible").and("contain", "Apply");
+        cy.get("#mobile-filter-clear").should("be.visible").and("contain", "Clear filters");
+    });
+
+    it("selecting a filter option in panel checks it", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]').click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]')
+            .should("have.attr", "aria-checked", "true")
+            .find("i").should("have.class", "fa-square-check");
+    });
+
+    it("Apply closes the panel and filters the sections", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]').click();
+        cy.get("#mobile-filter-apply").click();
+        cy.get("#mobile-filter-panel").should("not.be.visible");
+        cy.get('.judge-section[data-section="judges"]').should("be.visible");
+        cy.get('.judge-section[data-section="senior-judges"]').should("not.be.visible");
+    });
+
+    it("Apply shows count badge on toggle button when filters active", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]').click();
+        cy.get("#mobile-filter-apply").click();
+        cy.get("#mobile-filter-count").should("be.visible").and("contain", "1");
+    });
+
+    it("Apply turns toggle button dark when filters are active", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]').click();
+        cy.get("#mobile-filter-apply").click();
+        cy.get("#mobile-filter-toggle").should("have.css", "background-color", "rgb(22, 46, 81)");
+    });
+
+    it("Clear filters inside panel unchecks all options and checks All Judges", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]').click();
+        cy.get("#mobile-filter-clear").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="all"]')
+            .should("have.attr", "aria-checked", "true");
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="judges"]')
+            .should("have.attr", "aria-checked", "false");
+    });
+
+    it("Escape key closes the panel", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get("#mobile-filter-panel").should("be.visible");
+        cy.realPress("Escape");
+        cy.get("#mobile-filter-panel").should("not.be.visible");
+    });
+
+    it("clicking outside the panel closes it", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get("#mobile-filter-panel").should("be.visible");
+        cy.get("h1").click({ force: true });
+        cy.get("#mobile-filter-panel").should("not.be.visible");
+    });
+
+    it("Space/Enter key on a filter option toggles it", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="senior-judges"]').focus().realPress("Space");
+        cy.get('#mobile-filter-panel .mobile-filter-option[data-filter="senior-judges"]')
+            .should("have.attr", "aria-checked", "true");
+    });
+
+    it("panel options have top border separator between each (except first)", () => {
+        cy.get("#mobile-filter-toggle").click();
+        cy.get("#mobile-filter-panel .mobile-filter-option").eq(1)
+            .should("have.css", "border-top-width", "1px")
+            .and("have.css", "border-top-color", "rgb(223, 225, 226)");
+    });
 });
 
 // ─── 508 / accessibility ─────────────────────────────────────────────────────

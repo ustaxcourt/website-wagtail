@@ -200,8 +200,164 @@
             }
         }
 
+        /* Mobile filter bar */
+        .mobile-filter-bar {
+            display: none;
+            position: relative;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-filter-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
+            padding: 10px;
+            background-color: #ffffff;
+            color: #162e51;
+            border: 1px solid #162e51;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 20px;
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .mobile-filter-toggle.panel-open,
+        .mobile-filter-toggle.has-filters {
+            background-color: #162e51;
+            color: #ffffff;
+        }
+
+        .mobile-filter-toggle.has-filters .mobile-filter-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            color: #162e51;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            margin-left: 4px;
+        }
+
+        .mobile-filter-count {
+            display: none;
+        }
+
+        .mobile-filter-panel {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .mobile-filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 20px;
+            color: #1a4480;
+        }
+
+        .mobile-filter-option + .mobile-filter-option {
+            border-top: 1px solid #dfe1e2;
+        }
+
+        .mobile-filter-option .filter-checkbox {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            color: #a9aeb1;
+            font-size: 20px;
+        }
+
+        .mobile-filter-option.selected .filter-checkbox {
+            color: #005ea2;
+        }
+
+        .mobile-filter-option:hover {
+            background-color: #f0f4f9;
+        }
+
+        .mobile-filter-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-top: 1px solid #dfe1e2;
+            gap: 10px;
+        }
+
+        .mobile-filter-clear {
+            padding: 8px 16px;
+            background-color: #ffffff;
+            color: #005ea2;
+            border: 1px solid #005ea2;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .mobile-filter-apply {
+            padding: 10px 16px;
+            background-color: #005ea2;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .mobile-filter-clear:hover { background-color: #f0f4f9; }
+        .mobile-filter-apply:hover { background-color: #004785; }
+
+        .mobile-filter-toggle:focus-visible,
+        .mobile-filter-clear:focus-visible,
+        .mobile-filter-apply:focus-visible {
+            outline: 3px solid #005ea2;
+            outline-offset: 2px;
+        }
+
+        .mobile-filter-option:focus-visible {
+            outline: 3px solid #005ea2;
+            outline-offset: -2px;
+        }
+
         /* Mobile adjustments (≤640px) */
         @media (max-width: 640px) {
+            .judge-filter-bar {
+                display: none;
+            }
+
+            .mobile-filter-bar {
+                display: block;
+            }
+
             .judge-card-grid {
                 grid-template-columns: 1fr;
             }
@@ -261,6 +417,46 @@
                         data-filter="{{ group.filter_key }}"
                         aria-pressed="false">{{ group.filter_label }}</button>
             {% endfor %}
+        </div>
+        <!-- Mobile filter bar -->
+        <div class="mobile-filter-bar" id="mobile-filter-bar">
+            <button class="mobile-filter-toggle"
+                    id="mobile-filter-toggle"
+                    aria-expanded="false"
+                    aria-controls="mobile-filter-panel"
+                    aria-haspopup="true">
+                <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                <span>Filter</span>
+                <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
+            </button>
+            <div class="mobile-filter-panel"
+                 id="mobile-filter-panel"
+                 role="dialog"
+                 aria-label="Filter judges by type"
+                 hidden>
+                <div class="mobile-filter-option"
+                     role="checkbox"
+                     tabindex="0"
+                     data-filter="all"
+                     aria-checked="true">
+                    <i class="fa-solid fa-square-check filter-checkbox" aria-hidden="true"></i>
+                    <span>All Judges</span>
+                </div>
+                {% for group in judge_groups %}
+                    <div class="mobile-filter-option"
+                         role="checkbox"
+                         tabindex="0"
+                         data-filter="{{ group.filter_key }}"
+                         aria-checked="false">
+                        <i class="fa-regular fa-square filter-checkbox" aria-hidden="true"></i>
+                        <span>{{ group.filter_label }}</span>
+                    </div>
+                {% endfor %}
+                <div class="mobile-filter-actions">
+                    <button class="mobile-filter-clear" id="mobile-filter-clear">Clear filters</button>
+                    <button class="mobile-filter-apply" id="mobile-filter-apply">Apply</button>
+                </div>
+            </div>
         </div>
         <!-- Screen reader filter announcement -->
         <div id="filter-announcement" aria-live="polite" aria-atomic="true" class="usa-sr-only"></div>
@@ -375,6 +571,7 @@
                 // Restore from URL on load
                 activeFilters = getFiltersFromUrl();
                 applyFilters();
+                if (typeof window.syncMobilePanel === 'function') { window.syncMobilePanel(); }
 
                 const titleStart = document.getElementById('page-title-start');
                 titleStart.addEventListener('click', onTitleStartClick);
@@ -407,7 +604,124 @@
             window.addEventListener('popstate', function () {
                 activeFilters = getFiltersFromUrl();
                 applyFilters();
+                syncMobilePanel();
             });
+
+            // ── Mobile filter panel ──────────────────────────────────────────
+            (function () {
+                const toggle = document.getElementById('mobile-filter-toggle');
+                const panel = document.getElementById('mobile-filter-panel');
+                const applyBtn = document.getElementById('mobile-filter-apply');
+                const clearBtn = document.getElementById('mobile-filter-clear');
+                const countBadge = document.getElementById('mobile-filter-count');
+                if (!toggle || !panel) return;
+
+                let pendingFilters = new Set();
+
+                function openPanel() {
+                    pendingFilters = new Set(activeFilters);
+                    renderCheckboxes();
+                    panel.removeAttribute('hidden');
+                    toggle.setAttribute('aria-expanded', 'true');
+                    toggle.classList.add('panel-open');
+                }
+
+                function closePanel() {
+                    panel.setAttribute('hidden', '');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.classList.remove('panel-open');
+                }
+
+                function renderCheckboxes() {
+                    panel.querySelectorAll('.mobile-filter-option').forEach(function (opt) {
+                        const key = opt.dataset.filter;
+                        const checked = key === ALL_FILTER
+                            ? pendingFilters.size === 0
+                            : pendingFilters.has(key);
+                        opt.setAttribute('aria-checked', checked ? 'true' : 'false');
+                        const icon = opt.querySelector('i.filter-checkbox');
+                        if (icon) {
+                            icon.className = checked
+                                ? 'fa-solid fa-square-check filter-checkbox'
+                                : 'fa-regular fa-square filter-checkbox';
+                        }
+                        opt.classList.toggle('selected', checked);
+                    });
+                }
+
+                function updateToggleState() {
+                    const count = activeFilters.size;
+                    const hasFilters = count > 0;
+                    toggle.classList.toggle('has-filters', hasFilters);
+                    if (countBadge) {
+                        countBadge.textContent = hasFilters ? String(count) : '';
+                        countBadge.style.display = hasFilters ? 'inline-flex' : 'none';
+                    }
+                }
+
+                toggle.addEventListener('click', function () {
+                    if (panel.hasAttribute('hidden')) {
+                        openPanel();
+                    } else {
+                        closePanel();
+                    }
+                });
+
+                panel.querySelectorAll('.mobile-filter-option').forEach(function (opt) {
+                    function selectOption() {
+                        const key = opt.dataset.filter;
+                        if (key === ALL_FILTER) {
+                            pendingFilters.clear();
+                        } else {
+                            if (pendingFilters.has(key)) {
+                                pendingFilters.delete(key);
+                            } else {
+                                pendingFilters.add(key);
+                            }
+                        }
+                        renderCheckboxes();
+                    }
+                    opt.addEventListener('click', selectOption);
+                    opt.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            selectOption();
+                        }
+                    });
+                });
+
+                applyBtn.addEventListener('click', function () {
+                    userInteracted = true;
+                    activeFilters = new Set(pendingFilters);
+                    applyFilters();
+                    setFiltersInUrl(activeFilters);
+                    updateToggleState();
+                    closePanel();
+                });
+
+                clearBtn.addEventListener('click', function () {
+                    pendingFilters.clear();
+                    renderCheckboxes();
+                });
+
+                document.addEventListener('click', function (e) {
+                    const bar = document.getElementById('mobile-filter-bar');
+                    if (bar && !bar.contains(e.target) && !panel.hasAttribute('hidden')) {
+                        closePanel();
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && !panel.hasAttribute('hidden')) {
+                        closePanel();
+                        toggle.focus();
+                    }
+                });
+
+                // keep toggle badge in sync when filters change via URL/popstate
+                window.syncMobilePanel = updateToggleState;
+                updateToggleState();
+            })();
         })();
     </script>
 {% endblock content %}
