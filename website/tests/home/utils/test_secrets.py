@@ -1,14 +1,99 @@
 import pytest
 import string
+import json
+import os
+from unittest.mock import patch, mock_open
 from moto import mock_aws
 import boto3
 from botocore.exceptions import ClientError
-import os
+from django.test import override_settings
 from home.utils.secrets import (
     generate_random_password,
     get_secret,
-)  # Update import path as needed
-import json
+    environment_is_local,
+    read_local_secrets,
+    write_local_secrets,
+    get_secret_from_local,
+)
+
+
+class TestEnvironmentIsLocal:
+    @override_settings(ENVIRONMENT="local")
+    def test_returns_true_when_local(self):
+        assert environment_is_local() is True
+
+    @override_settings(ENVIRONMENT="production")
+    def test_returns_false_when_not_local(self):
+        assert environment_is_local() is False
+
+
+class TestReadLocalSecrets:
+    @override_settings(BASE_DIR="/tmp")
+    def test_returns_empty_dict_when_file_not_found(self):
+        with patch("os.path.isfile", return_value=False):
+            assert read_local_secrets() == {}
+
+    @override_settings(BASE_DIR="/tmp")
+    def test_returns_dict_when_file_found(self):
+        data = {"key": "value"}
+        with patch("os.path.isfile", return_value=True):
+            with patch("builtins.open", mock_open(read_data=json.dumps(data))):
+                assert read_local_secrets() == data
+
+    @override_settings(BASE_DIR="/tmp")
+    def test_raises_runtime_error_on_invalid_json(self):
+        with patch("os.path.isfile", return_value=True):
+            with patch("builtins.open", mock_open(read_data="not-json")):
+                with pytest.raises(RuntimeError):
+                    read_local_secrets()
+
+
+class TestWriteLocalSecrets:
+    def test_writes_json_to_file(self):
+        data = {"key": "value"}
+        m = mock_open()
+        with patch("builtins.open", m):
+            write_local_secrets(data, "test_file")
+        m.assert_called_once_with("test_file", "w")
+
+
+class TestGetSecretFromLocal:
+    @override_settings(BASE_DIR="/tmp")
+    def test_returns_existing_secret(self):
+        with patch(
+            "home.utils.secrets.read_local_secrets", return_value={"my_key": "my_val"}
+        ):
+            assert get_secret_from_local("my_key") == "my_val"
+
+    @override_settings(BASE_DIR="/tmp")
+    def test_creates_new_secret_when_missing(self):
+        with patch("home.utils.secrets.read_local_secrets", return_value={}):
+            with patch("home.utils.secrets.write_local_secrets") as mock_write:
+                with patch(
+                    "home.utils.secrets.generate_random_password",
+                    return_value="new-pwd",
+                ):
+                    result = get_secret_from_local("new_key")
+                    assert result == "new-pwd"
+                    mock_write.assert_called_once()
+
+
+class TestGetSecretRouting:
+    @override_settings(ENVIRONMENT="local")
+    def test_calls_local_when_environment_is_local(self):
+        with patch(
+            "home.utils.secrets.get_secret_from_local", return_value="local-val"
+        ) as m:
+            assert get_secret("my_secret") == "local-val"
+            m.assert_called_once_with("my_secret")
+
+    @override_settings(ENVIRONMENT="production")
+    def test_calls_aws_when_not_local(self):
+        with patch(
+            "home.utils.secrets.get_secret_from_aws", return_value="aws-val"
+        ) as m:
+            assert get_secret("my_secret") == "aws-val"
+            m.assert_called_once_with("my_secret")
 
 
 def test_generate_random_password_default_length():
