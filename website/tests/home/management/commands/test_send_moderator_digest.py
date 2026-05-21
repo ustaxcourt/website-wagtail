@@ -56,26 +56,24 @@ def test_send_moderator_digest_module_does_not_import_boto3():
     assert "boto3." not in source
 
 
+@pytest.mark.django_db
+@override_settings(DEFAULT_FROM_EMAIL="noreply@example.com")
 def test_command_reports_message_and_recipient_counts_separately():
-    fake_model = SimpleNamespace(objects=Mock())
-    fake_group = SimpleNamespace(
-        user_set=SimpleNamespace(
-            all=lambda: [
-                SimpleNamespace(
-                    username="mod1",
-                    first_name="Mod",
-                    last_name="One",
-                    email="mod1@example.com",
-                ),
-                SimpleNamespace(
-                    username="mod2",
-                    first_name="Mod",
-                    last_name="Two",
-                    email="mod2@example.com",
-                ),
-            ]
+    from django.contrib.auth.models import Group, User
+
+    moderators_group = Group.objects.create(name="Moderators")
+    for i, (first, last, email) in enumerate(
+        [
+            ("Mod", "One", "mod1@example.com"),
+            ("Mod", "Two", "mod2@example.com"),
+        ]
+    ):
+        user = User.objects.create_user(
+            username=f"mod{i}", first_name=first, last_name=last, email=email
         )
-    )
+        user.groups.add(moderators_group)
+
+    fake_model = SimpleNamespace(objects=Mock())
     fake_revision = SimpleNamespace(
         content_type=SimpleNamespace(model_class=lambda: fake_model),
         object_id="1",
@@ -112,9 +110,6 @@ def test_command_reports_message_and_recipient_counts_separately():
 
     with (
         patch.object(
-            send_moderator_digest.Group.objects, "get", return_value=fake_group
-        ),
-        patch.object(
             send_moderator_digest.Revision.objects, "filter", return_value=revision_qs
         ),
         patch.object(
@@ -134,9 +129,10 @@ def test_command_reports_message_and_recipient_counts_separately():
     ):
         call_command("send_moderator_digest", stdout=stdout)
 
-    output = stdout.getvalue()
-
-    assert "Email backend reported 1 message(s) sent to 2 recipient(s)." in output
+    assert (
+        "Email backend reported 1 message(s) sent to 2 recipient(s)."
+        in stdout.getvalue()
+    )
 
 
 @pytest.mark.django_db
