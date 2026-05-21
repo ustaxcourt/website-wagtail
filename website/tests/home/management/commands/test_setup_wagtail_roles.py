@@ -141,8 +141,12 @@ class TestSetupSnippetWorkflow:
         if not WorkflowTask.objects.filter(workflow=workflow).exists():
             WorkflowTask.objects.create(workflow=workflow, task=task, sort_order=1)
 
+        from wagtail.models import WorkflowContentType
+
         cmd.setup_snippet_workflow()
-        # Should run without error
+
+        cmd.setup_chief_judge_workflow.assert_called_once()
+        assert WorkflowContentType.objects.filter(workflow=workflow).exists()
 
 
 @pytest.mark.django_db
@@ -188,7 +192,10 @@ class TestSetupChiefJudgeWorkflow:
 
         Group.objects.filter(name="Chief Judge Moderator").delete()
         cmd.setup_chief_judge_workflow()
-        # Should run without error
+
+        output = out.getvalue()
+        assert "Chief Judge Moderator" in output
+        assert "not found" in output
 
     def test_setup_chief_judge_workflow_with_all_present(self):
         """When workflow and group both exist, runs successfully."""
@@ -214,4 +221,6 @@ class TestSetupChiefJudgeWorkflow:
         Group.objects.get_or_create(name="Chief Judge Moderator")
 
         cmd.setup_chief_judge_workflow()
-        # Should run without error
+
+        output = out.getvalue()
+        assert "Chief Judge Moderator" in output

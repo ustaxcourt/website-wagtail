@@ -31,10 +31,14 @@ class TestClearReviewByOnWorkflowCancelled:
         instance.save.assert_not_called()
 
     def test_no_op_when_instance_is_none(self):
-        """Signal should not crash when instance is None."""
+        """Signal should not call save when instance is None."""
         from home.signals import clear_review_by_on_workflow_cancelled
+        from home.mixins.moderation import ModerationMixin
+        from unittest.mock import patch
 
-        clear_review_by_on_workflow_cancelled(sender=None, instance=None)
+        with patch.object(ModerationMixin, "save") as mock_save:
+            clear_review_by_on_workflow_cancelled(sender=None, instance=None)
+            mock_save.assert_not_called()
 
     def test_no_op_when_instance_not_moderation_mixin(self):
         """Signal should not touch non-ModerationMixin objects."""
@@ -81,5 +85,9 @@ class TestClearReviewByOnWorkflowApproved:
 
     def test_no_op_when_instance_is_none(self):
         from home.signals import clear_review_by_on_workflow_approved
+        from home.mixins.moderation import ModerationMixin
+        from unittest.mock import patch
 
-        clear_review_by_on_workflow_approved(sender=None, instance=None)
+        with patch.object(ModerationMixin, "save") as mock_save:
+            clear_review_by_on_workflow_approved(sender=None, instance=None)
+            mock_save.assert_not_called()
