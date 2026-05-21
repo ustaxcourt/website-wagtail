@@ -494,6 +494,12 @@ class CustomExternalLinksReportView(ExternalLinksReportView):
     results_template_name = "home/custom_external_links_report_results.html"
     page_title = "External Links"
     list_export = ["title", "slug", "link_text", "link_url"]
+    export_headings = {
+        "title": "Source Page Name",
+        "slug": "Source Slug",
+        "link_text": "Link Label",
+        "link_url": "Link Destination",
+    }
 
     def get_extractor(self):
         return CustomLinkExtractor()
