@@ -478,10 +478,93 @@ describe("Judge Information — 508 accessibility", () => {
         checkHeaderOrder();
     });
 
-    it("filter buttons are keyboard-navigable with Tab", () => {
-        cy.get('.judge-filter-btn[data-filter="all"]').focus();
-        cy.get('.judge-filter-btn[data-filter="all"]').should("be.focused");
+    it("Tab walks through all filter buttons in DOM order", () => {
+        const filterKeys = ["all", "judges", "senior-judges", "special-trial-judges", "senior-special-trial-judges"];
+        cy.get(`.judge-filter-btn[data-filter="${filterKeys[0]}"]`).focus();
+        for (let i = 1; i < filterKeys.length; i++) {
+            cy.realPress("Tab");
+            cy.get(`.judge-filter-btn[data-filter="${filterKeys[i]}"]`).should("be.focused");
+        }
+    });
+
+    it("Shift+Tab walks filter buttons in reverse order", () => {
+        cy.get('.judge-filter-btn[data-filter="senior-special-trial-judges"]').focus();
+        cy.realPress(["Shift", "Tab"]);
+        cy.get('.judge-filter-btn[data-filter="special-trial-judges"]').should("be.focused");
+        cy.realPress(["Shift", "Tab"]);
+        cy.get('.judge-filter-btn[data-filter="senior-judges"]').should("be.focused");
+    });
+
+    it("Space activates a filter button and updates sections", () => {
+        cy.get('.judge-filter-btn[data-filter="judges"]').focus().realPress("Space");
+        cy.get('.judge-filter-btn[data-filter="judges"]').should("have.attr", "aria-pressed", "true");
+        cy.get('.judge-section[data-section="judges"]').should("be.visible");
+        cy.get('.judge-section[data-section="senior-judges"]').should("not.be.visible");
+    });
+
+    it("Enter activates a filter button and updates sections", () => {
+        cy.get('.judge-filter-btn[data-filter="senior-judges"]').focus().realPress("Enter");
+        cy.get('.judge-filter-btn[data-filter="senior-judges"]').should("have.attr", "aria-pressed", "true");
+        cy.get('.judge-section[data-section="senior-judges"]').should("be.visible");
+        cy.get('.judge-section[data-section="judges"]').should("not.be.visible");
+    });
+
+    it("Tab reaches the first judge card after the filter bar", () => {
+        // Tab past all 5 filter buttons then confirm focus lands on a judge card
+        cy.get('.judge-filter-btn[data-filter="senior-special-trial-judges"]').focus();
         cy.realPress("Tab");
-        cy.get('.judge-filter-btn[data-filter="judges"]').should("be.focused");
+        cy.focused().should("have.class", "judge-card");
+    });
+
+    it("Tab walks through judge cards in order within a section", () => {
+        cy.get(".judge-card").first().focus();
+        cy.realPress("Tab");
+        cy.focused().should("have.class", "judge-card");
+        // Confirm the second focused card follows the first in DOM order
+        cy.focused().then(($second) => {
+            cy.get(".judge-card").eq(1).then(($expected) => {
+                expect($second[0]).to.equal($expected[0]);
+            });
+        });
+    });
+
+    it("Tab reaches both bottom tiles after the judge cards", () => {
+        cy.get('[data-testid="tile-private-seminar-disclosures"]').focus();
+        cy.get('[data-testid="tile-private-seminar-disclosures"]').should("be.focused");
+        cy.realPress("Tab");
+        cy.get('[data-testid="tile-judicial-conduct"]').should("be.focused");
+    });
+
+    it("Enter on a judge card navigates to the detail page", () => {
+        cy.get(".judge-card").first().then(($card) => {
+            const href = $card.attr("href")!;
+            cy.get(".judge-card").first().focus().realPress("Enter");
+            cy.url().should("include", href);
+        });
+    });
+
+    it("Enter on Private Seminar Disclosures tile navigates to disclosures page", () => {
+        cy.get('[data-testid="tile-private-seminar-disclosures"]').focus().realPress("Enter");
+        cy.url().should("include", "/judges/private-seminar-disclosures/");
+    });
+
+    it("focus order follows visual top-to-bottom layout (filter bar → cards → tiles)", () => {
+        // Collect the vertical position of each focusable group's first element
+        const selectors = [
+            ".judge-filter-btn",
+            ".judge-card",
+            ".judge-tile",
+        ];
+        const tops: number[] = [];
+        selectors.forEach((sel) => {
+            cy.get(sel).first().then(($el) => {
+                tops.push($el[0].getBoundingClientRect().top);
+            });
+        });
+        cy.then(() => {
+            for (let i = 1; i < tops.length; i++) {
+                expect(tops[i]).to.be.greaterThan(tops[i - 1]);
+            }
+        });
     });
 });
