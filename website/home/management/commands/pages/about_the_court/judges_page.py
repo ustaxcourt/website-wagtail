@@ -512,8 +512,15 @@ class JudgesPageInitializer(PageInitializer):
 
     def update(self):
         try:
-            _ = Page.objects.get(slug=self.slug)
+            page = Page.objects.get(slug=self.slug)
             logger.info(f"Updating existing page '{self.slug}'.")
+            # Ensure the page title is up to date
+            if page.title != "Judge Information":
+                page.title = "Judge Information"
+                page.seo_title = "Judge Information"
+                page.save()
+                logger.info("Updated page title to 'Judge Information'.")
+            JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
         except Page.DoesNotExist:
             logger.info(f"Page '{self.slug}' does not exist.")
