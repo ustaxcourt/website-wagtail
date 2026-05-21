@@ -300,6 +300,7 @@
         (function () {
             const ALL_FILTER = 'all';
             let activeFilters = new Set();
+            let userInteracted = false;
 
             function getFiltersFromUrl() {
                 const params = new URLSearchParams(window.location.search);
@@ -349,7 +350,7 @@
                     breadcrumb.style.display = 'none';
                     breadcrumb.textContent = '';
                     titleStart.classList.remove('has-breadcrumb');
-                    if (announcement) { announcement.textContent = 'Showing all judges.'; }
+                    if (announcement && userInteracted) { announcement.textContent = 'Showing all judges.'; }
                 } else {
                     const labels = Array.from(activeFilters).map(function (key) {
                         const btn = document.querySelector('.judge-filter-btn[data-filter="' + key + '"]');
@@ -358,11 +359,12 @@
                     breadcrumb.textContent = ' / ' + labels.join(', ');
                     breadcrumb.style.display = 'inline';
                     titleStart.classList.add('has-breadcrumb');
-                    if (announcement) { announcement.textContent = 'Showing ' + labels.join(' and ') + '.'; }
+                    if (announcement && userInteracted) { announcement.textContent = 'Showing ' + labels.join(' and ') + '.'; }
                 }
             }
 
             function onTitleStartClick(e) {
+                userInteracted = true;
                 e.preventDefault();
                 activeFilters.clear();
                 applyFilters();
@@ -385,6 +387,7 @@
 
                 document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
                     btn.addEventListener('click', function () {
+                        userInteracted = true;
                         const key = btn.dataset.filter;
                         if (key === ALL_FILTER) {
                             activeFilters.clear();

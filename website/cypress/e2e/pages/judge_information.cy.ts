@@ -1,4 +1,4 @@
-import { checkA11y, checkHeaderOrder, checkHeaderStyles } from "../../support/commands";
+import { checkA11y, checkHeaderOrder, checkHeaderStyles, checkA11yWithModerate, terminalLog } from "../../support/commands";
 
 describe("Judge Information page", () => {
     beforeEach(() => {
@@ -9,7 +9,13 @@ describe("Judge Information page", () => {
         cy.get('[data-testid="page-title"]').should("contain", "Judge Information");
         checkA11y();
         checkHeaderOrder();
-        checkHeaderStyles();
+    });
+
+    it("section headers match Figma specs (24px, weight 600, white on #005EA2)", () => {
+        cy.get(".judge-section-header").first().should("have.css", "font-size", "24px");
+        cy.get(".judge-section-header").first().should("have.css", "font-weight", "600");
+        cy.get(".judge-section-header").first().should("have.css", "color", "rgb(255, 255, 255)");
+        cy.get(".judge-section-header").first().should("have.css", "background-color", "rgb(0, 94, 162)");
     });
 
     it("displays introductory text", () => {
@@ -176,5 +182,306 @@ describe("Judge Information — Judge detail page", () => {
         cy.get("h1").should("exist").and("not.be.empty");
         checkA11y();
         checkHeaderOrder();
+    });
+});
+
+// ─── Figma design spec — desktop ────────────────────────────────────────────
+
+describe("Judge Information — Figma design spec (desktop)", () => {
+    beforeEach(() => {
+        cy.viewport(1440, 900);
+        cy.visit("/judges/");
+    });
+
+    it("filter bar: inactive button has correct border, color, font, radius", () => {
+        cy.get('.judge-filter-btn[data-filter="judges"]').as("btn");
+        cy.get("@btn").should("have.css", "border-top-color", "rgb(223, 225, 226)");
+        cy.get("@btn").should("have.css", "border-top-width", "1px");
+        cy.get("@btn").should("have.css", "color", "rgb(26, 68, 128)");
+        cy.get("@btn").should("have.css", "font-size", "17px");
+        cy.get("@btn").should("have.css", "font-weight", "400");
+        cy.get("@btn").should("have.css", "border-top-left-radius", "2px");
+    });
+
+    it("filter bar: active button has correct background and text color", () => {
+        cy.get('.judge-filter-btn[data-filter="all"]').as("btn");
+        cy.get("@btn").should("have.css", "background-color", "rgb(22, 46, 81)");
+        cy.get("@btn").should("have.css", "color", "rgb(255, 255, 255)");
+    });
+
+    it("filter bar: gap between buttons is 5px", () => {
+        cy.get(".judge-filter-bar").should("have.css", "gap", "5px");
+    });
+
+    it("section header: correct size, weight, color, background, shadow", () => {
+        cy.get(".judge-section-header").first().as("hdr");
+        cy.get("@hdr").should("have.css", "font-size", "24px");
+        cy.get("@hdr").should("have.css", "font-weight", "600");
+        cy.get("@hdr").should("have.css", "line-height", "30px");
+        cy.get("@hdr").should("have.css", "color", "rgb(255, 255, 255)");
+        cy.get("@hdr").should("have.css", "background-color", "rgb(0, 94, 162)");
+        cy.get("@hdr").should("have.css", "border-top-color", "rgb(0, 0, 0)");
+        cy.get("@hdr").should("have.css", "border-top-width", "1px");
+        cy.get("@hdr").invoke("css", "box-shadow").should("include", "rgba(0, 0, 0, 0.25)");
+    });
+
+    it("judge cards: correct background, radius, shadow, padding", () => {
+        cy.get(".judge-card").first().as("card");
+        cy.get("@card").should("have.css", "background-color", "rgb(250, 250, 250)");
+        cy.get("@card").should("have.css", "border-top-left-radius", "5px");
+        cy.get("@card").should("have.css", "border-top-right-radius", "5px");
+        cy.get("@card").should("have.css", "border-bottom-left-radius", "0px");
+        cy.get("@card").should("have.css", "border-bottom-right-radius", "0px");
+        cy.get("@card").invoke("css", "box-shadow").should("include", "rgba(0, 0, 0, 0.25)");
+        cy.get("@card").should("have.css", "padding-top", "15px");
+        cy.get("@card").should("have.css", "padding-left", "15px");
+    });
+
+    it("judge card name: 20px, weight 600, line-height 25px, black", () => {
+        cy.get(".judge-card .judge-name").first().as("name");
+        cy.get("@name").should("have.css", "font-size", "20px");
+        cy.get("@name").should("have.css", "font-weight", "600");
+        cy.get("@name").should("have.css", "line-height", "25px");
+        cy.get("@name").should("have.css", "color", "rgb(0, 0, 0)");
+    });
+
+    it("judge card role: 17px, line-height 20px, black", () => {
+        cy.get(".judge-card .judge-role").first().as("role");
+        cy.get("@role").should("have.css", "font-size", "17px");
+        cy.get("@role").should("have.css", "line-height", "20px");
+        cy.get("@role").should("have.css", "color", "rgb(0, 0, 0)");
+    });
+
+    it("judge card grid: 4 columns at desktop (≥835px)", () => {
+        cy.get(".judge-card-grid").first().then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(4);
+        });
+    });
+
+    it("bottom tiles: blue border, correct radius, shadow, font", () => {
+        cy.get(".judge-tile").first().as("tile");
+        cy.get("@tile").should("have.css", "border-top-color", "rgb(0, 94, 162)");
+        cy.get("@tile").should("have.css", "border-top-width", "1px");
+        cy.get("@tile").should("have.css", "border-top-left-radius", "5px");
+        cy.get("@tile").invoke("css", "box-shadow").should("include", "rgba(86, 92, 101, 0.1)");
+        cy.get("@tile").should("have.css", "font-size", "24px");
+        cy.get("@tile").should("have.css", "font-weight", "600");
+        cy.get("@tile").should("have.css", "line-height", "30px");
+        cy.get("@tile").should("have.css", "padding-top", "29px");
+        cy.get("@tile").should("have.css", "padding-left", "22px");
+    });
+
+    it("bottom tiles: column flex direction at desktop", () => {
+        cy.get(".judge-tile").first().should("have.css", "flex-direction", "column");
+    });
+
+    it("judicial conduct tile uses fa-landmark icon", () => {
+        cy.get('[data-testid="tile-judicial-conduct"] i')
+            .should("have.class", "fa-landmark")
+            .and("have.attr", "aria-hidden", "true");
+    });
+
+    it("private seminar tile uses fa-file-lines icon", () => {
+        cy.get('[data-testid="tile-private-seminar-disclosures"] i')
+            .should("have.class", "fa-file-lines")
+            .and("have.attr", "aria-hidden", "true");
+    });
+});
+
+// ─── Figma design spec — tablet ─────────────────────────────────────────────
+
+describe("Judge Information — Figma design spec (tablet)", () => {
+    beforeEach(() => {
+        cy.viewport(834, 1112);
+        cy.visit("/judges/");
+    });
+
+    it("judge card grid: 3 columns at tablet (834px)", () => {
+        cy.get(".judge-card-grid").first().then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(3);
+        });
+    });
+
+    it("bottom tiles remain 2-column at tablet", () => {
+        cy.get(".judge-bottom-tiles").then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(2);
+        });
+    });
+
+    it("section header font size unchanged at tablet", () => {
+        cy.get(".judge-section-header").first().should("have.css", "font-size", "24px");
+    });
+
+    it("passes accessibility checks at tablet viewport", () => {
+        cy.injectAxe();
+        cy.checkA11y("#judge-information-page", { includedImpacts: ["serious", "critical"], retries: 3 }, terminalLog);
+    });
+});
+
+// ─── Figma design spec — mobile ─────────────────────────────────────────────
+
+describe("Judge Information — Figma design spec (mobile)", () => {
+    beforeEach(() => {
+        cy.viewport(390, 844);
+        cy.visit("/judges/");
+    });
+
+    it("judge card grid: 1 column at mobile", () => {
+        cy.get(".judge-card-grid").first().then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(1);
+        });
+    });
+
+    it("bottom tiles stack to 1 column at mobile", () => {
+        cy.get(".judge-bottom-tiles").then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(1);
+        });
+    });
+
+    it("section header: 20px font, 22px line-height at mobile", () => {
+        cy.get(".judge-section-header").first().as("hdr");
+        cy.get("@hdr").should("have.css", "font-size", "20px");
+        cy.get("@hdr").should("have.css", "line-height", "22px");
+    });
+
+    it("judge card name: 18px at mobile", () => {
+        cy.get(".judge-card .judge-name").first().should("have.css", "font-size", "18px");
+    });
+
+    it("judge card role: 16px at mobile", () => {
+        cy.get(".judge-card .judge-role").first().should("have.css", "font-size", "16px");
+    });
+
+    it("bottom tiles: row flex direction at mobile", () => {
+        cy.get(".judge-tile").first().should("have.css", "flex-direction", "row");
+    });
+
+    it("bottom tiles: 20px font, 22px line-height at mobile", () => {
+        cy.get(".judge-tile").first().as("tile");
+        cy.get("@tile").should("have.css", "font-size", "20px");
+        cy.get("@tile").should("have.css", "line-height", "22px");
+    });
+
+    it("bottom tiles: text color #162e51 at mobile", () => {
+        cy.get(".judge-tile").first().should("have.css", "color", "rgb(22, 46, 81)");
+    });
+
+    it("bottom tiles: padding 22px at mobile", () => {
+        cy.get(".judge-tile").first().as("tile");
+        cy.get("@tile").should("have.css", "padding-top", "22px");
+        cy.get("@tile").should("have.css", "padding-left", "22px");
+    });
+
+    it("passes accessibility checks at mobile viewport", () => {
+        cy.injectAxe();
+        cy.checkA11y("#judge-information-page", { includedImpacts: ["serious", "critical"], retries: 3 }, terminalLog);
+    });
+});
+
+// ─── 508 / accessibility ─────────────────────────────────────────────────────
+
+describe("Judge Information — 508 accessibility", () => {
+    beforeEach(() => {
+        cy.viewport(1440, 900);
+        cy.visit("/judges/");
+    });
+
+    it("passes axe audit including moderate violations", () => {
+        cy.injectAxe();
+        cy.checkA11y("#judge-information-page", { includedImpacts: ["moderate", "serious", "critical"], retries: 3 }, terminalLog);
+    });
+
+    it("filter bar has role=group with aria-label", () => {
+        cy.get(".judge-filter-bar")
+            .should("have.attr", "role", "group")
+            .and("have.attr", "aria-label", "Filter judges by type");
+    });
+
+    it("all filter buttons have aria-pressed attribute", () => {
+        cy.get(".judge-filter-btn").each(($btn) => {
+            cy.wrap($btn).should("have.attr", "aria-pressed");
+        });
+    });
+
+    it("active filter button has aria-pressed=true, inactive has aria-pressed=false", () => {
+        cy.get('.judge-filter-btn[data-filter="all"]').should("have.attr", "aria-pressed", "true");
+        cy.get('.judge-filter-btn[data-filter="judges"]').should("have.attr", "aria-pressed", "false");
+    });
+
+    it("aria-pressed updates when a filter is clicked", () => {
+        cy.get('.judge-filter-btn[data-filter="judges"]').click();
+        cy.get('.judge-filter-btn[data-filter="judges"]').should("have.attr", "aria-pressed", "true");
+        cy.get('.judge-filter-btn[data-filter="all"]').should("have.attr", "aria-pressed", "false");
+    });
+
+    it("aria-live region exists and is empty on load", () => {
+        cy.get("#filter-announcement")
+            .should("have.attr", "aria-live", "polite")
+            .and("have.attr", "aria-atomic", "true")
+            .and("be.empty");
+    });
+
+    it("aria-live region announces when a filter is applied", () => {
+        cy.get('.judge-filter-btn[data-filter="judges"]').click();
+        cy.get("#filter-announcement").should("not.be.empty");
+        cy.get("#filter-announcement").invoke("text").should("include", "Judges");
+    });
+
+    it("aria-live region announces 'all judges' when filters are cleared", () => {
+        cy.get('.judge-filter-btn[data-filter="judges"]').click();
+        cy.get('.judge-filter-btn[data-filter="all"]').click();
+        cy.get("#filter-announcement").invoke("text").should("include", "all judges");
+    });
+
+    it("page title span has role=button with tabindex=0", () => {
+        cy.get("#page-title-start")
+            .should("have.attr", "role", "button")
+            .and("have.attr", "tabindex", "0");
+    });
+
+    it("Space key on page title span clears filters", () => {
+        cy.get('.judge-filter-btn[data-filter="judges"]').click();
+        cy.get('.judge-section[data-section="judges"]').should("be.visible");
+        cy.get(".judge-section").not('[data-section="judges"]').first().should("not.be.visible");
+
+        cy.get("#page-title-start").focus().type(" ");
+
+        cy.get('.judge-filter-btn[data-filter="all"]').should("have.attr", "aria-pressed", "true");
+        cy.get(".judge-section").each(($s) => cy.wrap($s).should("be.visible"));
+    });
+
+    it("Enter key on page title span clears filters", () => {
+        cy.get('.judge-filter-btn[data-filter="senior-judges"]').click();
+        cy.get("#page-title-start").focus().type("{enter}");
+        cy.get('.judge-filter-btn[data-filter="all"]').should("have.attr", "aria-pressed", "true");
+    });
+
+    it("all Font Awesome icons within judge page have aria-hidden=true", () => {
+        cy.get("#judge-information-page i.fa-solid, #judge-information-page i.fa-regular").each(($icon) => {
+            cy.wrap($icon).should("have.attr", "aria-hidden", "true");
+        });
+    });
+
+    it("judge card links have descriptive text (name + role)", () => {
+        cy.get(".judge-card").first().then(($card) => {
+            const text = $card.text().trim();
+            expect(text.length).to.be.greaterThan(5);
+        });
+    });
+
+    it("heading hierarchy is correct (h1 → h2, no skips)", () => {
+        checkHeaderOrder();
+    });
+
+    it("filter buttons are keyboard-navigable with Tab", () => {
+        cy.get('.judge-filter-btn[data-filter="all"]').focus();
+        cy.get('.judge-filter-btn[data-filter="all"]').should("be.focused");
+        cy.realPress("Tab");
+        cy.get('.judge-filter-btn[data-filter="judges"]').should("be.focused");
     });
 });
