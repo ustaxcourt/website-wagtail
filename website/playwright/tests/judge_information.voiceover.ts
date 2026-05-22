@@ -11,13 +11,18 @@
  * Run with:
  *   npx playwright test --config playwright/playwright.config.ts
  *
- * Requirements:
- *   - macOS with VoiceOver enabled permission granted to the terminal/IDE
- *   - System Preferences → Privacy & Security → Accessibility → allow Terminal
- *   - Dev server running at http://localhost:8000
+ * Requirements (one-time per machine):
+ *   1. Grant Accessibility permission to your terminal app:
+ *      System Settings → Privacy & Security → Accessibility → enable Terminal (or iTerm2)
+ *   2. Run the guidepup setup to verify the permission is working:
+ *      npx @guidepup/setup
+ *   3. Dev server must be running: make run
+ *
+ * If you see "VoiceOver not supported", the Accessibility permission has not
+ * been granted — complete step 1 and 2 above, then re-run.
  */
 
-import { voTest as test } from "@guidepup/playwright";
+import { voiceOverTest as test } from "@guidepup/playwright";
 import { expect } from "@playwright/test";
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || "http://localhost:8000";
@@ -129,7 +134,7 @@ test.describe("Judge Information — VoiceOver: filter bar", () => {
             voiceOver,
             (p) => p.toLowerCase().includes("all judges"),
         );
-        expect(phrase.toLowerCase()).to.include("all judges");
+        expect(phrase.toLowerCase()).toContain("all judges");
         expect(
             phrase.toLowerCase().includes("pressed") ||
             phrase.toLowerCase().includes("selected"),
@@ -143,7 +148,7 @@ test.describe("Judge Information — VoiceOver: filter bar", () => {
         await voiceOver.press("Tab");
         const phrase = await voiceOver.lastSpokenPhrase();
         // Should announce as "Judges, toggle button" without "pressed" / "selected"
-        expect(phrase.toLowerCase()).to.include("judges");
+        expect(phrase.toLowerCase()).toContain("judges");
         expect(
             phrase.toLowerCase().includes("not pressed") ||
                 !phrase.toLowerCase().includes("selected"),
@@ -186,7 +191,7 @@ test.describe("Judge Information — VoiceOver: judge cards", () => {
             60,
         );
         // Should include a name and a role, and be identified as a link
-        expect(phrase.toLowerCase()).to.include("link");
+        expect(phrase.toLowerCase()).toContain("link");
         expect(phrase.trim().length).toBeGreaterThan(10);
     });
 
@@ -199,7 +204,7 @@ test.describe("Judge Information — VoiceOver: judge cards", () => {
         }
         const phrase = await voiceOver.lastSpokenPhrase();
         // First interactive element after filters is the first judge card link
-        expect(phrase.toLowerCase()).to.include("link");
+        expect(phrase.toLowerCase()).toContain("link");
     });
 });
 
@@ -218,8 +223,8 @@ test.describe("Judge Information — VoiceOver: bottom tiles", () => {
             (p) => p.toLowerCase().includes("private seminar disclosures"),
             80,
         );
-        expect(phrase.toLowerCase()).to.include("private seminar disclosures");
-        expect(phrase.toLowerCase()).to.include("link");
+        expect(phrase.toLowerCase()).toContain("private seminar disclosures");
+        expect(phrase.toLowerCase()).toContain("link");
     });
 
     test("Judicial Conduct tile is announced as a link", async ({ page, voiceOver }) => {
@@ -230,8 +235,8 @@ test.describe("Judge Information — VoiceOver: bottom tiles", () => {
             (p) => p.toLowerCase().includes("judicial conduct"),
             80,
         );
-        expect(phrase.toLowerCase()).to.include("judicial conduct");
-        expect(phrase.toLowerCase()).to.include("link");
+        expect(phrase.toLowerCase()).toContain("judicial conduct");
+        expect(phrase.toLowerCase()).toContain("link");
     });
 
     test("tile icons are not announced (aria-hidden)", async ({ page, voiceOver }) => {
@@ -243,8 +248,8 @@ test.describe("Judge Information — VoiceOver: bottom tiles", () => {
             (p) => p.toLowerCase().includes("private seminar disclosures"),
             80,
         );
-        expect(phrase.toLowerCase()).not.to.include("image");
-        expect(phrase.toLowerCase()).not.to.include("icon");
+        expect(phrase.toLowerCase()).not.toContain("image");
+        expect(phrase.toLowerCase()).not.toContain("icon");
     });
 });
 
@@ -266,7 +271,7 @@ test.describe("Judge Information — VoiceOver: mobile filter panel", () => {
             (p) => p.toLowerCase().includes("filter") && p.toLowerCase().includes("button"),
             40,
         );
-        expect(phrase.toLowerCase()).to.include("filter");
+        expect(phrase.toLowerCase()).toContain("filter");
         expect(
             phrase.toLowerCase().includes("collapsed") ||
             phrase.toLowerCase().includes("pop up") ||
@@ -315,7 +320,7 @@ test.describe("Judge Information — VoiceOver: mobile filter panel", () => {
             (p) => p.toLowerCase().includes("checkbox"),
             20,
         );
-        expect(phrase.toLowerCase()).to.include("checkbox");
+        expect(phrase.toLowerCase()).toContain("checkbox");
         expect(
             phrase.toLowerCase().includes("checked") ||
             phrase.toLowerCase().includes("unchecked"),
@@ -336,6 +341,6 @@ test.describe("Judge Information — VoiceOver: mobile filter panel", () => {
         await voiceOver.press("Escape");
         await page.waitForTimeout(200);
         const phrase = await voiceOver.lastSpokenPhrase();
-        expect(phrase.toLowerCase()).to.include("filter");
+        expect(phrase.toLowerCase()).toContain("filter");
     });
 });

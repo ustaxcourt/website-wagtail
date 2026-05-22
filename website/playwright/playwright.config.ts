@@ -1,18 +1,19 @@
 import { defineConfig } from "@playwright/test";
-import { voConfig } from "@guidepup/playwright";
+import { screenReaderConfig } from "@guidepup/playwright";
 
 export default defineConfig({
-    ...voConfig,
+    ...screenReaderConfig,
     testDir: "./tests",
+    testMatch: "**/*.voiceover.ts",
     timeout: 60_000,
     use: {
+        ...screenReaderConfig.use,
         baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:8000",
-        headless: false,
     },
     projects: [
         {
             name: "voiceover",
-            use: { ...voConfig.use },
+            use: { ...screenReaderConfig.use },
         },
     ],
 });
