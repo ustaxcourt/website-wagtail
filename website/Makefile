@@ -51,6 +51,9 @@ coverage:
 test-e2e:
 	CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(filter include-admin,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
+test-voiceover:
+	PLAYWRIGHT_BASE_URL="$(baseUrl)" npx playwright test --config playwright/playwright.config.ts
+
 test-e2e-aws:
 	./scripts/cypress/run_against_aws.sh --mode run \
 		$(if $(aws_env),--aws-env $(aws_env),) \
