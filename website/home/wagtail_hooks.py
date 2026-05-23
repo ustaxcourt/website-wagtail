@@ -30,7 +30,7 @@ from .views import (
 
 import logging
 
-from home.views import NewsItemReportView
+from home.views import NewsItemReportView, PrivateSeminarDisclosureReportView
 from wagtail.admin.menu import AdminOnlyMenuItem
 
 logger = logging.getLogger(__name__)
@@ -506,6 +506,33 @@ def register_searched_definitions_report_url():
             "reports/search-definitions-report/results/",
             SearchDefinitionsReportView.as_view(results_only=True),
             name="search_definitions_report_results",
+        ),
+    ]
+
+
+@hooks.register("register_reports_menu_item")
+def register_private_seminar_disclosure_report_menu_item():
+    # MenuItem (not AdminOnlyMenuItem) — visible to Admins, Moderators, and Editors.
+    return MenuItem(
+        "Private Seminar Disclosures Report",
+        reverse("private_seminar_disclosure_report"),
+        icon_name="clipboard-list",
+        order=720,
+    )
+
+
+@hooks.register("register_admin_urls")
+def register_private_seminar_disclosure_report_urls():
+    return [
+        path(
+            "reports/private-seminar-disclosures/",
+            PrivateSeminarDisclosureReportView.as_view(),
+            name="private_seminar_disclosure_report",
+        ),
+        path(
+            "reports/private-seminar-disclosures/results/",
+            PrivateSeminarDisclosureReportView.as_view(results_only=True),
+            name="private_seminar_disclosure_report_results",
         ),
     ]
 

@@ -40,11 +40,16 @@
             border-radius: 4px;
         }
 
+        /* Judge name: bold + highlighted per design spec.
+           TODO: confirm exact highlight color from Figma once token is refreshed. */
         .disclosure-card .judge-name {
+            display: inline-block;
             font-size: 1.05rem;
             font-weight: 700;
+            background-color: #faf3d1; /* USWDS gold-5 — placeholder, confirm with Figma */
+            padding: 0.1rem 0.4rem;
             margin-bottom: 0.75rem;
-            color: #1b1b1b;
+            border-radius: 2px;
         }
 
         .disclosure-card dl {
@@ -80,7 +85,11 @@
             <a href="{{ page.url }}">{{ page.title }}</a> / Private Seminar Disclosures
         </h1>
         <hr />
-        <p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>
+        <div class="seminar-intro">
+            {% if page.seminar_intro_text %}
+                {{ page.seminar_intro_text|richtext }}
+            {% endif %}
+        </div>
         {% if years %}
             <div class="disclosure-controls">
                 <form method="get" id="year-filter-form">
@@ -88,6 +97,7 @@
                     <select id="year-select"
                             name="year"
                             class="disclosure-year-select"
+                            aria-label="Filter disclosures by year"
                             onchange="document.getElementById('year-filter-form').submit()">
                         <option value="">All Years</option>
                         {% for year in years %}
@@ -124,7 +134,13 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="disclosure-empty">No seminar disclosures have been filed at this time.</p>
+            <p class="disclosure-empty" data-testid="empty-message">
+                {% if page.seminar_empty_text %}
+                    {{ page.seminar_empty_text }}
+                {% else %}
+                    There are no disclosures to report at this time.
+                {% endif %}
+            </p>
         {% endif %}
     </div>
 {% endblock content %}
