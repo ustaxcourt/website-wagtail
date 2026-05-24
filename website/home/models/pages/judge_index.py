@@ -235,7 +235,15 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
             reverse=True,
         )
 
-        selected_year = request.GET.get("year", "")
+        selected_year = request.GET.get("year", "").strip()
+
+        # Redirect bare ?year= (empty string) to the clean URL so "All Years"
+        # removes the query param entirely rather than leaving ?year=.
+        if "year" in request.GET and selected_year == "":
+            from django.shortcuts import redirect as django_redirect
+
+            return django_redirect(request.path)
+
         disclosures = base_qs
         if selected_year:
             try:

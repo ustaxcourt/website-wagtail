@@ -33,23 +33,27 @@
             }
         }
 
+        /* Card: two-zone layout matching Figma spec (Frame 14 / Frame 15) */
         .disclosure-card {
             border: 1px solid #dfe1e2;
-            padding: 1.25rem 1.5rem;
             background-color: #fff;
             border-radius: 4px;
+            overflow: hidden;
         }
 
-        /* Judge name: bold + highlighted per design spec.
-           TODO: confirm exact highlight color from Figma once token is refreshed. */
+        /* Zone 1 — Judge name header band (Figma Frame 14: rgb(241,249,252)) */
         .disclosure-card .judge-name {
-            display: inline-block;
-            font-size: 1.05rem;
-            font-weight: 700;
-            background-color: #faf3d1; /* USWDS gold-5 — placeholder, confirm with Figma */
-            padding: 0.1rem 0.4rem;
-            margin-bottom: 0.75rem;
-            border-radius: 2px;
+            display: block;
+            font-size: 1.25rem;     /* 20px */
+            font-weight: 600;
+            color: #1b1b1b;
+            background-color: #f1f9fc; /* rgb(241,249,252) — confirmed Figma */
+            padding: 0.75rem 1.25rem;
+        }
+
+        /* Zone 2 — Field body (Figma Frame 15: white) */
+        .disclosure-card .disclosure-body {
+            padding: 1rem 1.25rem;
         }
 
         .disclosure-card dl {
@@ -57,12 +61,14 @@
         }
 
         .disclosure-card dt {
-            font-weight: 700;
+            font-weight: 600;       /* Figma: 600 */
+            font-size: 1.0625rem;   /* 17px */
             margin-top: 0.5rem;
             color: #1b1b1b;
         }
 
         .disclosure-card dd {
+            font-size: 1.0625rem;   /* 17px */
             margin-left: 0;
             color: #1b1b1b;
         }
@@ -112,24 +118,26 @@
                 {% for disclosure in disclosures %}
                     <div class="disclosure-card">
                         <div class="judge-name">{{ disclosure.judge.display_name }}</div>
-                        <dl>
-                            <dt>Program Provider(s):</dt>
-                            <dd>{{ disclosure.program_provider }}</dd>
-                            <dt>Program:</dt>
-                            <dd>{{ disclosure.program_title }}</dd>
-                            <dt>Date:</dt>
-                            <dd>{{ disclosure.date|date:"m/d/Y" }}</dd>
-                            <dt>Location:</dt>
-                            <dd>{{ disclosure.location }}</dd>
-                            {% if disclosure.program_topics %}
-                                <dt>Program Topics:</dt>
-                                <dd>{{ disclosure.program_topics|richtext }}</dd>
-                            {% endif %}
-                            {% if disclosure.supporter %}
-                                <dt>Supporter(s):</dt>
-                                <dd>{{ disclosure.supporter }}</dd>
-                            {% endif %}
-                        </dl>
+                        <div class="disclosure-body">
+                            <dl>
+                                <dt>Program Provider(s):</dt>
+                                <dd>{{ disclosure.program_provider }}</dd>
+                                <dt>Program:</dt>
+                                <dd>{{ disclosure.program_title }}</dd>
+                                <dt>Date:</dt>
+                                <dd>{{ disclosure.date|date:"m/d/Y" }}</dd>
+                                <dt>Location:</dt>
+                                <dd>{{ disclosure.location }}</dd>
+                                {% if disclosure.program_topics %}
+                                    <dt>Program Topics:</dt>
+                                    <dd>{{ disclosure.program_topics|richtext }}</dd>
+                                {% endif %}
+                                {% if disclosure.supporter %}
+                                    <dt>Supporter(s):</dt>
+                                    <dd>{{ disclosure.supporter }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
