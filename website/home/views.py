@@ -16,7 +16,6 @@ from django.utils.html import format_html
 from django.utils import timezone
 from wagtail_external_links_report.views import ExternalLinksReportView
 from home.utils.custom_link_extractor import CustomLinkExtractor
-from wagtail.admin.views.generic.base import BaseListingView
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -505,14 +504,10 @@ class CustomExternalLinksReportView(ExternalLinksReportView):
         return CustomLinkExtractor()
 
     def get_context_data(self, **kwargs):
-        context = BaseListingView.get_context_data(self, **kwargs)
-        extractor = self.get_extractor()
-
-        for page in context["object_list"]:
-            page.external_links = extractor.extract_from_page(page)
+        context = super().get_context_data(**kwargs)
 
         if self.is_export:
-            context["object_list"] = self.export_rows(context["object_list"])
+            context["object_list"] = self.export_rows(context["page_obj"])
 
         return context
 

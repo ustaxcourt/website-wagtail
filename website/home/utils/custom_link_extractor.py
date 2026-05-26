@@ -10,12 +10,15 @@ from wagtail.blocks import StructValue
 
 
 class CustomLinkExtractor(LinkExtractor):
-    def _get_external_link_with_text_from_attribute(value, text_attribute):
+    @staticmethod
+    def _get_external_link_with_text_from_attribute(
+        value, text_attribute, link_attribute="url"
+    ):
         links = []
-        if value["url"]:
-            for child in value["url"]:
+        if value[link_attribute]:
+            for child in value[link_attribute]:
                 if hasattr(child, "block_type") and child.block_type == "external_url":
-                    links.extend({"text": value[text_attribute], "url": child.value})
+                    links.append({"text": value[text_attribute], "url": child.value})
 
         return links
 
@@ -23,22 +26,36 @@ class CustomLinkExtractor(LinkExtractor):
         """Recursively extract links depending on value type."""
         links = []
 
-        if isinstance(value, StructValue) and isinstance(value, ButtonBlock):
-            links.extend(self._get_external_link_with_text_from_attribute("text"))
-            return links
-
-        if isinstance(value, StructValue) and isinstance(value, QuickAccessTileBlock):
-            links.extend(self._get_external_link_with_text_from_attribute("title"))
-            return links
-
-        if isinstance(value, StructValue) and isinstance(value, CardTileBlock):
+        if isinstance(value, StructValue) and isinstance(value.block, ButtonBlock):
             links.extend(
-                self._get_external_link_with_text_from_attribute("card_header")
+                self._get_external_link_with_text_from_attribute(value, "text")
             )
             return links
 
-        if isinstance(value, StructValue) and isinstance(value, ImageWithLinkBlock):
-            links.extend(self._get_external_link_with_text_from_attribute("image"))
+        if isinstance(value, StructValue) and isinstance(
+            value.block, QuickAccessTileBlock
+        ):
+            links.extend(
+                self._get_external_link_with_text_from_attribute(value, "title", "link")
+            )
+            return links
+
+        if isinstance(value, StructValue) and isinstance(value.block, CardTileBlock):
+            links.extend(
+                self._get_external_link_with_text_from_attribute(
+                    value, "card_header", "link"
+                )
+            )
+            return links
+
+        if isinstance(value, StructValue) and isinstance(
+            value.block, ImageWithLinkBlock
+        ):
+            image = value.get("image")
+            image_text = image.contextual_alt_text if image else ""
+            for child in value.get("link") or []:
+                if hasattr(child, "block_type") and child.block_type == "external_url":
+                    links.append({"text": image_text, "url": child.value})
             return links
 
         # Handles external links in Enhanced Tables, Styled Tables, and Unstyled Tables
