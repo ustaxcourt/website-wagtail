@@ -512,13 +512,13 @@ Additionally, we will use tags to facilitate deployment to sandbox instances.
 
 ## The Workflow
 1. Pick up a story on the main board,
-2. Create feature branch that includes the Monday.com story ID e.g. `[type]/[brief-description]-[monday-id]`
+2. Create feature branch that includes the Jira issue key e.g. `[type]/[brief-description]-[jira-key]`
     - `type`: the type of change.
       - `page`: code that adds a new wagtail page to the repo, e.g. `page/about-us-1234`
       - `fix`: code that fixes a bug or adds/clarifies documentation, e.g. `fix/broken-dropdown-1234`
       - `feature`: code that adds or enhances functionality of the app, e.g. `feature/new-disco-theme-1234`
     - `brief-description`: a few words to describe the purpose of the branch
-    - `monday-id`: the value of the **Item ID** in Monday.com
+    - `jira-key`: the value of the **Issue key** in Jira (e.g., WAG-123)
 3. Develop and test locally
 4. When ready for review, push branch to github (if not done already) and create a draft PR to `main`
 5. Deploy your feature to your sandbox by tagging your feature branch with `sandbox` , e.g.
@@ -533,7 +533,7 @@ Or, the following equivalent command.
 > Additionally, you can add/reassign tags using the Github website.
 
 6. Developer notifies team that feature is ready for review:
-  - by moving the story card in Monday.com to the `Waiting for review` lane, and
+  - by moving the story card in Jira to the `Waiting for review` lane, and
   - by notifying the stakeholders (UX, PO) in Teams that the feature is ready for testing.
 7. UX verifies AC in sandbox
 8. PO verifies AC in sandbox
