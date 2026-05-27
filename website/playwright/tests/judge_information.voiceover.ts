@@ -350,6 +350,82 @@ test.describe("Judge Information — judge cards", () => {
         expect(new Set(cards).size).toBe(cards.length);
     });
 
+    test("every judge card is Tab-reachable in DOM order and announces name + role — DOM-driven", async ({ page }) => {
+        // ── 1. Extract expected cards from the live DOM ───────────────────────────
+        // Source of truth: whatever the server renders is what we assert against.
+        // If judges are added/removed the test adapts automatically.
+        const expectedCards = await page.evaluate(() => {
+            function visibleText(node: Element): string {
+                if (node.getAttribute("aria-hidden") === "true") return "";
+                return Array.from(node.childNodes)
+                    .map(c =>
+                        c.nodeType === Node.TEXT_NODE
+                            ? (c.textContent ?? "")
+                            : visibleText(c as Element),
+                    )
+                    .join(" ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+            }
+            return Array.from(document.querySelectorAll("a.judge-card")).map(card => ({
+                name:     card.querySelector(".judge-name")?.textContent?.trim() ?? "",
+                role:     card.querySelector(".judge-role")?.textContent?.trim() ?? "",
+                section:  card.closest(".judge-section")?.getAttribute("data-section") ?? "",
+                fullText: visibleText(card as HTMLElement),
+            }));
+        });
+
+        expect(expectedCards.length, "page must have at least one judge card").toBeGreaterThan(0);
+
+        // ── 2. Anchor to the first section h2 via its id (added by WAG-1246) ──────
+        // Each section h2 has id="{{ group.filter_key }}" and tabindex="-1".
+        // tabindex="-1" means it is NOT in the tab order but CAN receive
+        // programmatic focus — so focusing it sets our position in the DOM
+        // without disrupting keyboard navigation expectations.
+        // One Tab from here lands on the first judge card link.
+        const firstSectionHeaderId = await page.evaluate(() =>
+            document.querySelector(".judge-section .judge-section-header")?.id ?? null,
+        );
+        expect(firstSectionHeaderId, "first section h2 must have an id (WAG-1246 requirement)").toBeTruthy();
+
+        await page.evaluate(
+            id => (document.getElementById(id!) as HTMLElement | null)?.focus(),
+            firstSectionHeaderId,
+        );
+        await page.keyboard.press("Tab"); // h2 is tabindex=-1 → Tab exits to first card
+
+        // ── 3. Tab through every card in DOM order ─────────────────────────────────
+        // h2 section dividers between groups have tabindex="-1" so they are skipped
+        // by Tab — cards from all sections flow as one continuous tab sequence.
+        for (let i = 0; i < expectedCards.length; i++) {
+            const expected     = expectedCards[i];
+            const announcement = await getAnnouncement(page);
+            const lower        = announcement.toLowerCase();
+
+            expect(
+                lower,
+                `Card ${i + 1}/${expectedCards.length} — section "${expected.section}" ` +
+                `— expected name "${expected.name}" in: "${announcement}"`,
+            ).toContain(expected.name.toLowerCase());
+
+            expect(
+                lower,
+                `Card ${i + 1}/${expectedCards.length} (${expected.name}): ` +
+                `expected role "${expected.role}" in: "${announcement}"`,
+            ).toContain(expected.role.toLowerCase());
+
+            expect(
+                lower,
+                `Card ${i + 1}/${expectedCards.length} (${expected.name}): ` +
+                `expected "link" in: "${announcement}"`,
+            ).toContain("link");
+
+            if (i < expectedCards.length - 1) {
+                await page.keyboard.press("Tab");
+            }
+        }
+    });
+
     test("judge card photos are aria-hidden — VoiceOver reads name and title only, not 'image'", async ({ page }) => {
         // Without aria-hidden="true" on the photo, VoiceOver announces:
         //   "Patrick J. Urda Chief Judge [long URL or filename] image, link"
@@ -962,6 +1038,88 @@ voiceOverTest.describe("Judge Information — VoiceOver full-page sweep", () => 
                     expect(log, `VoiceOver never announced: ${label}`).toMatch(pattern);
                 }
             }
+        },
+    );
+
+    voiceOverTest(
+        "VoiceOver speaks every judge's name and role — DOM-driven full card traversal",
+        async ({ page, voiceOver }) => {
+            // ── 1. Get the expected card list directly from the live DOM ──────────────
+            // Whatever the server renders is what VoiceOver must speak.
+            // The test adapts automatically when judges are added or removed in the CMS —
+            // no hardcoded names, no stale assertions.
+            const expectedCards = await page.evaluate(() =>
+                Array.from(document.querySelectorAll("a.judge-card")).map(card => ({
+                    name:    card.querySelector(".judge-name")?.textContent?.trim() ?? "",
+                    role:    card.querySelector(".judge-role")?.textContent?.trim() ?? "",
+                    section: card.closest(".judge-section")?.getAttribute("data-section") ?? "",
+                })),
+            );
+            expect(expectedCards.length, "page must have at least one judge card").toBeGreaterThan(0);
+
+            // ── 2. Enter the page and navigate to the first judge section h2 ──────────
+            // VoiceOver's findNextLink searches forward from the current cursor
+            // position — if we start at h1 the search wraps through page header/nav
+            // links before reaching the judge cards.  We replicate the same setup as
+            // the full-page sweep: walk the filter group, exit it, then jump to the
+            // first section h2.  From that anchor, findNextLink finds judge cards only.
+            await enterWebContent(page, voiceOver);
+
+            await voiceOver.next();                  // intro paragraph
+            await voiceOver.next();                  // "Filter judges by type, group"
+            await voiceOver.next();                  // "All Judges, pressed, button"
+            await voiceOver.next();                  // "Judges, button"
+            await voiceOver.next();                  // "Senior Judges, button"
+            await voiceOver.next();                  // "Special Trial Judges, button"
+            await voiceOver.next();                  // "Senior Special Trial Judges, button"
+            await voiceOver.perform(voiceOverKeyCodeCommands.stopInteractingWithItem);
+            await voiceOver.perform(voiceOverKeyCodeCommands.findNextHeading); // → §1 h2
+
+            // ── 3. Walk every link in document order using findNextLink ───────────────
+            // findNextLink targets <a href> elements only — the <button> filter buttons
+            // are skipped entirely.  Document order on this page is:
+            //   judge cards (all 4 sections, left-to-right, top-to-bottom)
+            //   → "Private Seminar Disclosures" tile
+            //   → "Judicial Conduct and Disability Complaint Procedures" tile
+            //
+            // After each jump, lastSpokenPhrase() returns exactly what VoiceOver said
+            // aloud — the accessible name of the link plus role/state suffixes.
+            // We collect every phrase and stop as soon as both bottom tiles have been
+            // announced (they come after the last judge card so we know we're done).
+            const spoken: string[] = [];
+            let tilesFound = 0;
+            const maxLinks = expectedCards.length + 10; // cards + tiles + small buffer
+
+            for (let i = 0; i < maxLinks && tilesFound < 2; i++) {
+                await voiceOver.perform(voiceOverKeyCodeCommands.findNextLink);
+                const phrase = await voiceOver.lastSpokenPhrase();
+                spoken.push(phrase);
+                if (/private seminar disclosures/i.test(phrase)) tilesFound++;
+                if (/judicial conduct/i.test(phrase))            tilesFound++;
+            }
+
+            expect(tilesFound, "loop must reach both bottom tiles to confirm all cards were traversed").toBe(2);
+
+            // ── 4. Assert every judge's name and role was actually spoken ─────────────
+            // Joining into one string lets us check each card with a single
+            // .toContain() call and get a clear failure message naming the card.
+            const fullLog = spoken.join("\n").toLowerCase();
+
+            for (const card of expectedCards) {
+                expect(
+                    fullLog,
+                    `VoiceOver never spoke name "${card.name}" (section: ${card.section})`,
+                ).toContain(card.name.toLowerCase());
+
+                expect(
+                    fullLog,
+                    `VoiceOver never spoke role "${card.role}" for "${card.name}" (section: ${card.section})`,
+                ).toContain(card.role.toLowerCase());
+            }
+
+            // ── 5. Bottom tiles also confirmed ────────────────────────────────────────
+            expect(fullLog, "VoiceOver never spoke 'Private Seminar Disclosures'").toMatch(/private seminar disclosures/);
+            expect(fullLog, "VoiceOver never spoke 'Judicial Conduct'").toMatch(/judicial conduct/);
         },
     );
 });
