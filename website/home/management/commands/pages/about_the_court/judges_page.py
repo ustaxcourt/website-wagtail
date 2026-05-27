@@ -435,6 +435,7 @@ class JudgesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description=title,
                 intro_text="See the Judge's biography by clicking on the cards.",
+                seminar_intro_text="<p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>",
             )
         )
 
@@ -514,12 +515,21 @@ class JudgesPageInitializer(PageInitializer):
         try:
             page = Page.objects.get(slug=self.slug)
             logger.info(f"Updating existing page '{self.slug}'.")
+            specific = page.specific
+            changed = False
             # Ensure the page title is up to date
             if page.title != "Judge Information":
-                page.title = "Judge Information"
-                page.seo_title = "Judge Information"
-                page.save()
+                specific.title = "Judge Information"
+                specific.seo_title = "Judge Information"
+                changed = True
                 logger.info("Updated page title to 'Judge Information'.")
+            # Ensure seminar intro text is set
+            if not specific.seminar_intro_text:
+                specific.seminar_intro_text = "<p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>"
+                changed = True
+                logger.info("Set seminar_intro_text on JudgeIndex page.")
+            if changed:
+                specific.save()
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
         except Page.DoesNotExist:

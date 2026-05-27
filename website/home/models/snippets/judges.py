@@ -34,7 +34,7 @@ class JudgeProfile(
     DraftStateMixin,
     RevisionMixin,
     index.Indexed,
-    models.Model,
+    ClusterableModel,
 ):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
@@ -72,6 +72,7 @@ class JudgeProfile(
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
+        InlinePanel("seminar_disclosures", label="Private Seminar Disclosures"),
     ]
     panels = content_panels + [PublishingPanel()]
 
@@ -395,13 +396,11 @@ class JudgeRole(
         return self._revisions
 
 
-@register_snippet
 class PrivateSeminarDisclosure(models.Model):
-    judge = models.ForeignKey(
+    judge = ParentalKey(
         "JudgeProfile",
         on_delete=models.CASCADE,
         related_name="seminar_disclosures",
-        help_text="The judge associated with this disclosure",
     )
     program_provider = models.CharField(max_length=255, help_text="Program Provider")
     program_title = models.CharField(max_length=255, help_text="Program Title")
@@ -413,16 +412,6 @@ class PrivateSeminarDisclosure(models.Model):
     supporter = models.CharField(
         max_length=255, blank=True, help_text="Supporter (if any)"
     )
-
-    panels = [
-        FieldPanel("judge"),
-        FieldPanel("program_provider"),
-        FieldPanel("program_title"),
-        FieldPanel("date"),
-        FieldPanel("location"),
-        FieldPanel("program_topics"),
-        FieldPanel("supporter"),
-    ]
 
     class Meta:
         ordering = ["-date", "judge__last_name"]
