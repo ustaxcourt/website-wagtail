@@ -246,9 +246,10 @@ describe("Judge Information — Figma design spec (desktop)", () => {
         cy.get("@name").should("have.css", "color", "rgb(0, 0, 0)");
     });
 
-    it("judge card role: 17px, line-height 20px, black", () => {
+    it("judge card role: 17px, weight 400 (not bold), line-height 20px, black", () => {
         cy.get(".judge-card .judge-role").first().as("role");
         cy.get("@role").should("have.css", "font-size", "17px");
+        cy.get("@role").should("have.css", "font-weight", "400");
         cy.get("@role").should("have.css", "line-height", "20px");
         cy.get("@role").should("have.css", "color", "rgb(0, 0, 0)");
     });
@@ -275,6 +276,73 @@ describe("Judge Information — Figma design spec (desktop)", () => {
 
     it("bottom tiles: column flex direction at desktop", () => {
         cy.get(".judge-tile").first().should("have.css", "flex-direction", "column");
+    });
+
+    it("h1 has page-title class so 15px margin-bottom is applied", () => {
+        cy.get('h1[data-testid="page-title"]')
+            .should("have.class", "page-title")
+            .and("have.css", "margin-bottom", "15px");
+    });
+
+    it("section header margin-bottom is 24px (Figma spacing spec)", () => {
+        cy.get(".judge-section-header").first()
+            .should("have.css", "margin-bottom", "24px");
+    });
+
+    it("judge card grid: gap is 8px (Figma spacing spec)", () => {
+        cy.get(".judge-card-grid").first()
+            .should("have.css", "gap", "8px");
+    });
+
+    it("each section h2 has an id attribute matching its filter key", () => {
+        cy.get(".judge-section").each(($section) => {
+            const filterKey = $section.attr("data-section");
+            cy.wrap($section)
+                .find(".judge-section-header")
+                .should("have.attr", "id", filterKey);
+        });
+    });
+
+    it("each section h2 has tabindex=-1 for programmatic anchor focus", () => {
+        cy.get(".judge-section-header").each(($h2) => {
+            cy.wrap($h2).should("have.attr", "tabindex", "-1");
+        });
+    });
+
+    it("HR separator exists immediately before the bottom tiles grid", () => {
+        cy.get(".judge-tiles-rule").should("exist").and("be.visible");
+        cy.get(".judge-tiles-rule + .judge-bottom-tiles").should("exist");
+    });
+
+    it("filter bar margin-top is 34px (PDF global spacing spec)", () => {
+        cy.get(".judge-filter-bar")
+            .should("have.css", "margin-top", "34px");
+    });
+
+    it("filter bar margin-bottom is 34px (PDF global spacing spec)", () => {
+        cy.get(".judge-filter-bar")
+            .should("have.css", "margin-bottom", "34px");
+    });
+
+    it("card grid margin-bottom is 34px (PDF global spacing spec)", () => {
+        cy.get(".judge-card-grid").first()
+            .should("have.css", "margin-bottom", "34px");
+    });
+
+    it("HR rule margin-top and margin-bottom are 34px (PDF global spacing spec)", () => {
+        cy.get(".judge-tiles-rule")
+            .should("have.css", "margin-top", "34px")
+            .and("have.css", "margin-bottom", "34px");
+    });
+
+    it("page padding-top is 45px (PDF global spacing spec)", () => {
+        cy.get("#judge-information-page")
+            .should("have.css", "padding-top", "45px");
+    });
+
+    it("page padding-bottom is 45px (PDF global spacing spec)", () => {
+        cy.get("#judge-information-page")
+            .should("have.css", "padding-bottom", "45px");
     });
 
     it("judicial conduct tile uses fa-landmark icon", () => {
@@ -305,11 +373,19 @@ describe("Judge Information — Figma design spec (tablet)", () => {
         });
     });
 
-    it("bottom tiles remain 2-column at tablet", () => {
+    it("bottom tiles collapse to 1-column (long QAT) at tablet", () => {
         cy.get(".judge-bottom-tiles").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
-            expect(cols).to.have.length(2);
+            expect(cols).to.have.length(1);
         });
+    });
+
+    it("bottom tiles: row flex direction at tablet (long QAT layout)", () => {
+        cy.get(".judge-tile").first().should("have.css", "flex-direction", "row");
+    });
+
+    it("bottom tiles: left-aligned (justify-content flex-start) at tablet", () => {
+        cy.get(".judge-tile").first().should("have.css", "justify-content", "flex-start");
     });
 
     it("section header font size unchanged at tablet", () => {
@@ -362,6 +438,10 @@ describe("Judge Information — Figma design spec (mobile)", () => {
         cy.get(".judge-tile").first().should("have.css", "flex-direction", "row");
     });
 
+    it("bottom tiles: left-aligned (justify-content flex-start) at mobile", () => {
+        cy.get(".judge-tile").first().should("have.css", "justify-content", "flex-start");
+    });
+
     it("bottom tiles: 20px font, 22px line-height at mobile", () => {
         cy.get(".judge-tile").first().as("tile");
         cy.get("@tile").should("have.css", "font-size", "20px");
@@ -376,6 +456,26 @@ describe("Judge Information — Figma design spec (mobile)", () => {
         cy.get(".judge-tile").first().as("tile");
         cy.get("@tile").should("have.css", "padding-top", "22px");
         cy.get("@tile").should("have.css", "padding-left", "22px");
+    });
+
+    it("page padding-top is 25px at mobile (PDF global spacing spec)", () => {
+        cy.get("#judge-information-page")
+            .should("have.css", "padding-top", "25px");
+    });
+
+    it("page padding-bottom is 25px at mobile (PDF global spacing spec)", () => {
+        cy.get("#judge-information-page")
+            .should("have.css", "padding-bottom", "25px");
+    });
+
+    it("mobile filter bar margin-top is 34px (PDF global spacing spec)", () => {
+        cy.get(".mobile-filter-bar")
+            .should("have.css", "margin-top", "34px");
+    });
+
+    it("mobile filter bar margin-bottom is 34px (PDF global spacing spec)", () => {
+        cy.get(".mobile-filter-bar")
+            .should("have.css", "margin-bottom", "34px");
     });
 
     it("passes accessibility checks at mobile viewport", () => {
@@ -397,8 +497,13 @@ describe("Judge Information — Figma design spec (mobile)", () => {
             .and("have.css", "border-top-color", "rgb(22, 46, 81)");
     });
 
-    it("mobile filter toggle: has fa-filter icon", () => {
-        cy.get("#mobile-filter-toggle i.fa-filter").should("have.attr", "aria-hidden", "true");
+    it("mobile filter toggle: uses filter_icon.svg (not Font Awesome fa-filter)", () => {
+        // Must match the site-wide SVG filter icon used on definitions_page and litc_page
+        cy.get("#mobile-filter-toggle img.mobile-filter-icon")
+            .should("exist")
+            .and("have.attr", "aria-hidden", "true")
+            .and("have.attr", "src").and("include", "filter_icon.svg");
+        cy.get("#mobile-filter-toggle i.fa-filter").should("not.exist");
     });
 
     it("mobile filter panel is hidden on load", () => {
@@ -609,6 +714,36 @@ describe("Judge Information — 508 accessibility", () => {
 
     it("heading hierarchy is correct (h1 → h2, no skips)", () => {
         checkHeaderOrder();
+    });
+
+    it("each section h2 has an id — required for admin-side anchor linking and AT navigation", () => {
+        cy.get(".judge-section").each(($section) => {
+            const filterKey = $section.attr("data-section");
+            cy.wrap($section)
+                .find(".judge-section-header")
+                .should("have.attr", "id", filterKey)
+                .and("not.be.empty");
+        });
+    });
+
+    it("each section h2 has tabindex=-1 so #hash anchor navigation sends focus to the heading", () => {
+        cy.get(".judge-section-header").each(($h2) => {
+            cy.wrap($h2).should("have.attr", "tabindex", "-1");
+        });
+    });
+
+    it("all 4 section ids are reachable as URL fragments (h2 tagName + correct id)", () => {
+        const filterKeys = [
+            "judges",
+            "senior-judges",
+            "special-trial-judges",
+            "senior-special-trial-judges",
+        ];
+        filterKeys.forEach((key) => {
+            cy.get(`#${key}`)
+                .should("exist")
+                .and("have.prop", "tagName", "H2");
+        });
     });
 
     it("Tab walks through all filter buttons in DOM order", () => {

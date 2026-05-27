@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
 {% load filters %}
+{% load static %}
 {% block extra_css %}
     <style>
         #judge-information-page {
@@ -16,7 +17,7 @@
             text-decoration: underline;
             cursor: pointer;
         }
-        #judge-information-page .page-title{
+        #judge-information-page .page-title {
             margin-bottom: 15px;
         }
 
@@ -30,8 +31,8 @@
             justify-content: flex-end;
             flex-wrap: wrap;
             gap: 5px;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
+            margin-top: 34px;
+            margin-bottom: 34px;
         }
 
         .judge-filter-btn {
@@ -62,7 +63,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 1rem;
+            margin-bottom: 24px;
             font-size: 24px;
             font-weight: 600;
             line-height: 30px;
@@ -84,19 +85,12 @@
             align-self: stretch;
         }
 
-        .judge-section-header::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background-color: #d9d9d9;
-        }
-
         /* Judge card grid */
         .judge-card-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 2rem;
+            gap: 8px;
+            margin-bottom: 34px;
         }
 
         .judge-card {
@@ -126,6 +120,7 @@
 
         .judge-card .judge-role {
             font-size: 17px;
+            font-weight: 400;
             line-height: 20px;
             color: #000000;
         }
@@ -135,7 +130,6 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
-            margin-top: 2rem;
         }
 
         .judge-tile {
@@ -193,10 +187,44 @@
             outline-offset: 2px;
         }
 
+        /* HR separator above bottom tiles */
+        .judge-tiles-rule {
+            border: none;
+            border-top: 1px solid #dfe1e2;
+            margin: 34px 0;
+        }
+
+        /* Filter icon — invert to white when toggle is active */
+        .mobile-filter-toggle.panel-open .mobile-filter-icon,
+        .mobile-filter-toggle.has-filters .mobile-filter-icon {
+            filter: invert(1);
+        }
+
         /* Tablet adjustments (≤834px) */
         @media (max-width: 834px) {
             .judge-card-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* Long QAT layout at tablet — full-width, horizontal */
+            .judge-bottom-tiles {
+                grid-template-columns: 1fr;
+            }
+
+            .judge-tile {
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                gap: 18px;
+                padding: 22px;
+                font-size: 20px;
+                line-height: 22px;
+                color: #162e51;
+            }
+
+            .judge-tile i {
+                font-size: 1.5rem;
+                flex-shrink: 0;
             }
         }
 
@@ -204,8 +232,8 @@
         .mobile-filter-bar {
             display: none;
             position: relative;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
+            margin-top: 34px;
+            margin-bottom: 34px;
         }
 
         .mobile-filter-toggle {
@@ -350,6 +378,11 @@
 
         /* Mobile adjustments (≤640px) */
         @media (max-width: 640px) {
+            #judge-information-page {
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
             .judge-filter-bar {
                 display: none;
             }
@@ -383,6 +416,7 @@
             .judge-tile {
                 flex-direction: row;
                 align-items: center;
+                justify-content: flex-start;
                 padding: 22px;
                 font-size: 20px;
                 line-height: 22px;
@@ -401,7 +435,7 @@
 {% block body_class %}template-judge-information{% endblock %}
 {% block content %}
     <div id="judge-information-page" class="grid-container">
-        <h1 data-testid="page-title">
+        <h1 class="page-title" data-testid="page-title">
             <span class="page-title-start" id="page-title-start" role="button" tabindex="0">{{ page.title }}</span><span class="page-title-breadcrumb" id="page-title-breadcrumb"></span>
         </h1>
         {% if page.intro_text %}
@@ -425,7 +459,7 @@
                     aria-expanded="false"
                     aria-controls="mobile-filter-panel"
                     aria-haspopup="true">
-                <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="18" height="12" aria-hidden="true" class="mobile-filter-icon">
                 <span>Filter</span>
                 <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
             </button>
@@ -463,7 +497,7 @@
         <!-- Judge sections -->
         {% for group in judge_groups %}
             <div class="judge-section" data-section="{{ group.filter_key }}">
-                <h2 class="judge-section-header">{{ group.label }}</h2>
+                <h2 class="judge-section-header" id="{{ group.filter_key }}" tabindex="-1">{{ group.label }}</h2>
                 <div class="judge-card-grid">
                     {% for item in group.judges %}
                         <a class="judge-card"
@@ -477,6 +511,7 @@
             </div>
         {% endfor %}
         <!-- Bottom tiles -->
+        <hr class="judge-tiles-rule">
         <div class="judge-bottom-tiles">
             <a class="judge-tile"
                href="{{ page.url }}private-seminar-disclosures/"

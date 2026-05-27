@@ -650,6 +650,177 @@ test.describe("Judge Information — DOM text accessibility audit", () => {
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// 6b. DESIGN-SPEC DOM REQUIREMENTS
+//     These are the structural guarantees that VoiceOver navigation depends on.
+//     They were identified during the UX/design review of WAG-1246 and are placed
+//     here because they directly affect what screen-reader users can and cannot do.
+//
+//     Each test captures a specific failure mode that caused a real design review
+//     comment — tests that were missing and would have caught the issue earlier.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+test.describe("Judge Information — design-spec requirements (WAG-1246 review)", () => {
+    test.beforeEach(async ({ page }) => { await page.goto(JUDGES_URL); });
+
+    test("h1 has class='page-title' so its 15px margin-bottom CSS rule is applied", async ({ page }) => {
+        // The CSS selector is '#judge-information-page .page-title'.
+        // Without class="page-title" on the <h1>, the rule never fires and there is
+        // no spacing between the page title and the intro paragraph.
+        const h1 = page.locator("h1[data-testid='page-title']");
+        const classes = await h1.getAttribute("class");
+        expect(classes, "h1 must include 'page-title' for 15px spacing to apply").toContain("page-title");
+
+        const marginBottom = await h1.evaluate(
+            (el) => parseFloat(getComputedStyle(el).marginBottom),
+        );
+        expect(marginBottom, "h1 margin-bottom must be 15px").toBe(15);
+    });
+
+    test("section header margin-bottom is 24px (not 16px/1rem)", async ({ page }) => {
+        // Figma spec: 24px between the section header bar and the first judge card.
+        // Previously this was set to 1rem (16px), violating the global spacing document.
+        const header = page.locator(".judge-section-header").first();
+        const marginBottom = await header.evaluate(
+            (el) => parseFloat(getComputedStyle(el).marginBottom),
+        );
+        expect(marginBottom, "section header margin-bottom must be 24px").toBe(24);
+    });
+
+    test("judge card grid gap is 8px (not 20px)", async ({ page }) => {
+        // Figma annotation: "Theres a 8px gap in between" (between judge cards).
+        // Previously gap was 20px, giving cards too much breathing room vs. mockup.
+        const grid = page.locator(".judge-card-grid").first();
+        const gap = await grid.evaluate(
+            (el) => parseFloat(getComputedStyle(el).gap),
+        );
+        expect(gap, "judge card grid gap must be 8px").toBe(8);
+    });
+
+    test("judge card role text is not bold (font-weight 400)", async ({ page }) => {
+        // Figma annotation: "The bottom text is NOT bolded".
+        // The judge name (.judge-name) is weight 600; the role (.judge-role) must
+        // stay at 400 so the two are visually distinct.
+        const role = page.locator(".judge-card .judge-role").first();
+        const weight = await role.evaluate(
+            (el) => getComputedStyle(el).fontWeight,
+        );
+        expect(weight, "judge-role font-weight must be 400 (normal)").toBe("400");
+    });
+
+    test("every visible section h2 has a non-empty id attribute", async ({ page }) => {
+        // The id is required for two things:
+        //   1. Direct anchor linking from the admin side (#judges, #senior-judges, …)
+        //   2. Programmatic focus — tabindex=-1 is useless without an id target
+        // Without id, hash-URL navigation silently no-ops.
+        const headers = page.locator(".judge-section-header");
+        const count = await headers.count();
+        expect(count).toBeGreaterThan(0);
+
+        for (let i = 0; i < count; i++) {
+            const id = await headers.nth(i).getAttribute("id");
+            expect(id, `h2 at index ${i} must have a non-empty id`).toBeTruthy();
+        }
+    });
+
+    test("every section h2 id matches the parent section's data-section key", async ({ page }) => {
+        // The id must be the same value as the section's data-section attribute so
+        // that filter buttons (data-filter) and headings share a consistent naming scheme.
+        const sections = page.locator(".judge-section");
+        const count = await sections.count();
+        expect(count).toBeGreaterThan(0);
+
+        for (let i = 0; i < count; i++) {
+            const section = sections.nth(i);
+            const filterKey = await section.getAttribute("data-section");
+            const h2Id = await section.locator(".judge-section-header").getAttribute("id");
+            expect(h2Id, `h2 id must equal data-section="${filterKey}"`).toBe(filterKey);
+        }
+    });
+
+    test("every section h2 has tabindex=-1 (required for #hash anchor focus to land on heading)", async ({ page }) => {
+        // Browsers only send focus to an element on #hash navigation if the element
+        // is focusable.  Without tabindex=-1, clicking a #judges anchor link scrolls
+        // the page but focus stays wherever it was — a disorienting experience for
+        // keyboard and screen-reader users.
+        const headers = page.locator(".judge-section-header");
+        const count = await headers.count();
+
+        for (let i = 0; i < count; i++) {
+            const tabindex = await headers.nth(i).getAttribute("tabindex");
+            expect(tabindex, `h2 at index ${i} must have tabindex="-1"`).toBe("-1");
+        }
+    });
+
+    test("HR separator (.judge-tiles-rule) exists between judge sections and bottom tiles", async ({ page }) => {
+        // Figma annotation: "There is also a Horizontal rule above this to separate
+        // it from the cards."  Without the HR, the tiles visually run into the last
+        // judge section with no clear boundary.
+        const hr = page.locator(".judge-tiles-rule");
+        await expect(hr, "HR separator must exist before .judge-bottom-tiles").toBeVisible();
+
+        // Verify DOM order: HR must immediately precede the tiles grid
+        const isBeforeTiles = await hr.evaluate((el) => {
+            const next = el.nextElementSibling;
+            return next?.classList.contains("judge-bottom-tiles") ?? false;
+        });
+        expect(isBeforeTiles, ".judge-tiles-rule must be the immediate sibling before .judge-bottom-tiles").toBe(true);
+    });
+
+    test("mobile filter toggle uses filter_icon.svg (not Font Awesome fa-filter)", async ({ page }) => {
+        // The filter icon on this page was using fa-solid fa-filter (Font Awesome),
+        // while definitions_page and litc_page use the shared filter_icon.svg from
+        // the USTC design library.  Using Font Awesome here creates visual inconsistency.
+        await page.setViewportSize({ width: 390, height: 844 });
+
+        const imgIcon = page.locator("#mobile-filter-toggle img.mobile-filter-icon");
+        await expect(imgIcon, "filter toggle must use img.mobile-filter-icon").toBeVisible();
+
+        const src = await imgIcon.getAttribute("src");
+        expect(src, "filter icon src must include filter_icon.svg").toContain("filter_icon.svg");
+
+        const ariaHidden = await imgIcon.getAttribute("aria-hidden");
+        expect(ariaHidden, "filter icon must be aria-hidden (decorative)").toBe("true");
+
+        // Font Awesome icon must not be present
+        const faIcon = page.locator("#mobile-filter-toggle i.fa-filter");
+        await expect(faIcon, "fa-filter icon must not be used").toHaveCount(0);
+    });
+
+    test("bottom tiles are left-aligned (justify-content flex-start) at tablet viewport", async ({ page }) => {
+        // Figma annotation: "In tablet view, the design is using the long QAT rather
+        // than regular ones."  Long QAT = full-width single-column, horizontal layout
+        // with icon on the left.  justify-content: flex-start ensures the icon + text
+        // group anchors left rather than centering inside the full-width tile.
+        await page.setViewportSize({ width: 834, height: 1112 });
+
+        const tile = page.locator(".judge-tile").first();
+        const justifyContent = await tile.evaluate(
+            (el) => getComputedStyle(el).justifyContent,
+        );
+        expect(justifyContent, "judge-tile must be flex-start at tablet").toBe("flex-start");
+
+        const flexDirection = await tile.evaluate(
+            (el) => getComputedStyle(el).flexDirection,
+        );
+        expect(flexDirection, "judge-tile must be flex-direction row at tablet").toBe("row");
+    });
+
+    test("bottom tiles are left-aligned (justify-content flex-start) at mobile viewport", async ({ page }) => {
+        // Mobile (≤640px): same long-QAT style — icon on left, text to its right,
+        // group left-anchored.  Previously justify-content was unset (inherited 'center'
+        // from the base tile), causing the icon+text row to float in the middle.
+        await page.setViewportSize({ width: 390, height: 844 });
+
+        const tile = page.locator(".judge-tile").first();
+        const justifyContent = await tile.evaluate(
+            (el) => getComputedStyle(el).justifyContent,
+        );
+        expect(justifyContent, "judge-tile must be flex-start at mobile").toBe("flex-start");
+    });
+});
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // 7. VOICEOVER FULL-PAGE SWEEP
 //    Drives real VoiceOver through every major section of the page using
 //    VO+Right (next) to walk sequentially and jump commands for long-distance
