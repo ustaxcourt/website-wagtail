@@ -7,10 +7,14 @@
             padding-bottom: 45px;
         }
 
+        #private-seminar-page .page-title {
+            margin-bottom: 15px;
+        }
+
         .disclosure-controls {
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 1.5rem;
+            margin-bottom: 34px;
         }
 
         .disclosure-year-select {
@@ -24,10 +28,16 @@
         .disclosure-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 34px;
         }
 
-        @media (max-width: 768px) {
+        /* Mobile adjustments (≤640px) — aligns with project-wide breakpoint */
+        @media (max-width: 640px) {
+            #private-seminar-page {
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
             .disclosure-grid {
                 grid-template-columns: 1fr;
             }
@@ -87,7 +97,7 @@
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        <h1 data-testid="page-title" tabindex="0">
+        <h1 class="page-title" data-testid="page-title" tabindex="0">
             <a href="{{ page.url }}">{{ page.title }}</a> / Private Seminar Disclosures
         </h1>
         <hr />

@@ -607,4 +607,102 @@ voiceOverTest.describe("Private Seminar Disclosures — VoiceOver full-page swee
             }
         },
     );
+
+    voiceOverTest(
+        "VoiceOver speaks every disclosure card's judge name and all required field labels — DOM-driven full card traversal",
+        async ({ page, voiceOver }) => {
+            // ── 1. Get the expected card list directly from the live DOM ──────────────
+            // Source of truth: whatever the server renders is what VoiceOver must speak.
+            // Test adapts automatically when disclosures are added/removed in the CMS.
+            // If no disclosures exist, the test verifies the empty-state message instead.
+            const expectedCards = await page.evaluate(() =>
+                Array.from(document.querySelectorAll(".disclosure-card")).map(card => ({
+                    judgeName: card.querySelector(".judge-name")?.textContent?.trim() ?? "",
+                    fields:    Array.from(card.querySelectorAll(".disclosure-body dt"))
+                                    .map(dt => dt.textContent?.trim() ?? ""),
+                })),
+            );
+
+            const hasCards = expectedCards.length > 0;
+
+            // ── 2. Enter the page and position VoiceOver on the h1 ───────────────────
+            await enterWebContent(page, voiceOver);
+
+            if (!hasCards) {
+                // ── Empty state path ──────────────────────────────────────────────────
+                // Walk forward until we find the empty-state message.  It should appear
+                // within a few next() calls after the intro text.
+                let found = false;
+                for (let i = 0; i < 10 && !found; i++) {
+                    await voiceOver.next();
+                    const phrase = await voiceOver.lastSpokenPhrase();
+                    if (/no disclosures|nothing to report|at this time/i.test(phrase)) found = true;
+                }
+                const log = (await voiceOver.spokenPhraseLog()).join("\n").toLowerCase();
+                expect(log, "VoiceOver must announce the empty-state message").toMatch(
+                    /no disclosures|nothing to report|at this time/,
+                );
+                return;
+            }
+
+            // ── 3. Navigate past h1, intro, and optional year filter ─────────────────
+            // This mirrors the setup in the full-page sweep so we start from a
+            // deterministic position — right before the first disclosure card.
+            await voiceOver.next(); // back-link inside h1
+            await voiceOver.next(); // intro text
+
+            const hasFilter = await page.locator("#year-select").count() > 0;
+            if (hasFilter) {
+                await voiceOver.next(); // year-filter combobox
+                await voiceOver.perform(voiceOverKeyCodeCommands.stopInteractingWithItem);
+            }
+
+            // ── 4. Walk every disclosure card using next() ────────────────────────────
+            // Disclosure cards are <div> elements — not links — so findNextLink skips
+            // them entirely.  next() (VO+Right) reads sequentially through every
+            // element in the VO reading order: judge-name div → each dt → each dd.
+            //
+            // We walk until we've seen every expected judge name, then stop.
+            // maxSteps budget: per card ≈ 1 (name) + 8 (4×dt+dd pairs) + 1 (border) = ~10 steps.
+            const maxSteps = expectedCards.length * 12 + 20;
+            const namesRemaining = new Set(expectedCards.map(c => c.judgeName.toLowerCase()));
+            const requiredLabels = new Set(["program provider", "program:", "date:", "location:"]);
+            const foundLabels    = new Set<string>();
+
+            for (let i = 0; i < maxSteps && namesRemaining.size > 0; i++) {
+                await voiceOver.next();
+                const phrase = await voiceOver.lastSpokenPhrase();
+                const lower  = phrase.toLowerCase();
+
+                // Check for judge names
+                for (const name of namesRemaining) {
+                    if (lower.includes(name)) namesRemaining.delete(name);
+                }
+
+                // Check for required field labels
+                for (const label of requiredLabels) {
+                    if (lower.includes(label)) foundLabels.add(label);
+                }
+            }
+
+            // ── 5. Assert every judge's name was actually spoken ──────────────────────
+            const log = (await voiceOver.spokenPhraseLog()).join("\n").toLowerCase();
+
+            for (const card of expectedCards) {
+                expect(
+                    log,
+                    `VoiceOver never spoke judge name "${card.judgeName}"`,
+                ).toContain(card.judgeName.toLowerCase());
+            }
+
+            // ── 6. Assert all required field labels were spoken at least once ─────────
+            // These appear in every card — if VoiceOver skipped any, the dt structure is broken.
+            for (const label of requiredLabels) {
+                expect(
+                    log,
+                    `VoiceOver never announced field label "${label}"`,
+                ).toContain(label);
+            }
+        },
+    );
 });

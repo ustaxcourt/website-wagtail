@@ -414,3 +414,82 @@ describe("Private Seminar Disclosures — Figma design spec", () => {
         });
     });
 });
+
+// ─── PDF global spacing spec ──────────────────────────────────────────────────
+// Values from UX Documentation.pdf (same spec applied to all pages):
+//   Desktop page padding: 45px  •  h1 margin-bottom: 15px
+//   Content block gaps:   34px  •  Mobile page padding: 25px (≤640px)
+
+describe("Private Seminar Disclosures — PDF global spacing spec", () => {
+    it("page padding-top is 45px at desktop (PDF global spacing spec)", () => {
+        cy.viewport(1440, 900);
+        cy.visit(PAGE_URL);
+        cy.get("#private-seminar-page").should("have.css", "padding-top", "45px");
+    });
+
+    it("page padding-bottom is 45px at desktop (PDF global spacing spec)", () => {
+        cy.viewport(1440, 900);
+        cy.visit(PAGE_URL);
+        cy.get("#private-seminar-page").should("have.css", "padding-bottom", "45px");
+    });
+
+    it("h1 has page-title class so 15px margin-bottom is applied (PDF global spacing spec)", () => {
+        cy.visit(PAGE_URL);
+        cy.get('h1[data-testid="page-title"]')
+            .should("have.class", "page-title")
+            .and("have.css", "margin-bottom", "15px");
+    });
+
+    it("disclosure-controls margin-bottom is 34px (PDF global spacing spec)", () => {
+        cy.visit(PAGE_URL);
+        cy.get("body").then(($body) => {
+            if ($body.find(".disclosure-controls").length === 0) return;
+            cy.get(".disclosure-controls").should("have.css", "margin-bottom", "34px");
+        });
+    });
+
+    it("disclosure-grid gap is 34px (PDF global spacing spec)", () => {
+        cy.viewport(1440, 900);
+        cy.visit(PAGE_URL);
+        cy.get("body").then(($body) => {
+            if ($body.find(".disclosure-grid").length === 0) return;
+            cy.get(".disclosure-grid").should("have.css", "gap", "34px");
+        });
+    });
+
+    it("page padding-top is 25px at mobile (PDF global spacing spec)", () => {
+        cy.viewport(390, 844);
+        cy.visit(PAGE_URL);
+        cy.get("#private-seminar-page").should("have.css", "padding-top", "25px");
+    });
+
+    it("page padding-bottom is 25px at mobile (PDF global spacing spec)", () => {
+        cy.viewport(390, 844);
+        cy.visit(PAGE_URL);
+        cy.get("#private-seminar-page").should("have.css", "padding-bottom", "25px");
+    });
+
+    it("disclosure grid collapses to 1 column at 640px mobile breakpoint (project standard)", () => {
+        cy.viewport(640, 844);
+        cy.visit(PAGE_URL);
+        cy.get("body").then(($body) => {
+            if ($body.find(".disclosure-grid").length === 0) return;
+            cy.get(".disclosure-grid").then(($grid) => {
+                const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+                expect(cols).to.have.length(1);
+            });
+        });
+    });
+
+    it("disclosure grid is still 2 columns at 641px (just above mobile breakpoint)", () => {
+        cy.viewport(641, 900);
+        cy.visit(PAGE_URL);
+        cy.get("body").then(($body) => {
+            if ($body.find(".disclosure-grid").length === 0) return;
+            cy.get(".disclosure-grid").then(($grid) => {
+                const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+                expect(cols).to.have.length(2);
+            });
+        });
+    });
+});
