@@ -14,6 +14,9 @@ from wagtail.admin.filters import (
 from wagtail.admin.ui.tables import Column
 from django.utils.html import format_html
 from django.utils import timezone
+from wagtail_external_links_report.views import ExternalLinksReportView
+from home.utils.custom_link_extractor import CustomLinkExtractor
+from wagtail.admin.views.generic.base import BaseListingView
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -485,3 +488,44 @@ class PDFChooserViewSet(DocumentChooserViewSet):
 
 
 PDF_CHOOSER_VIEWSET = PDFChooserViewSet("pdf_chooser")
+
+
+class CustomExternalLinksReportView(ExternalLinksReportView):
+    results_template_name = "home/custom_external_links_report_results.html"
+    page_title = "External Links"
+    list_export = ["title", "slug", "link_text", "link_url"]
+    export_headings = {
+        "title": "Source Page Name",
+        "slug": "Source Slug",
+        "link_text": "Link Label",
+        "link_url": "Link Destination",
+    }
+
+    def get_extractor(self):
+        return CustomLinkExtractor()
+
+    def get_context_data(self, **kwargs):
+        context = BaseListingView.get_context_data(self, **kwargs)
+        extractor = self.get_extractor()
+
+        for page in context["object_list"]:
+            page.external_links = extractor.extract_from_page(page)
+
+        if self.is_export:
+            context["object_list"] = self.export_rows(context["object_list"])
+
+        return context
+
+    def export_rows(self, page_list):
+        rows = []
+        for page in page_list:
+            for link in page.external_links:
+                rows.append(
+                    {
+                        "title": page.title,
+                        "slug": page.slug,
+                        "link_text": link["text"],
+                        "link_url": link["url"],
+                    }
+                )
+        return rows
