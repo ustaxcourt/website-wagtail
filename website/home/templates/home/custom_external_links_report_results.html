@@ -1,0 +1,97 @@
+{% extends "wagtailadmin/reports/base_page_report_results.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block results %}
+    <style>
+        table.listing td:has(.inner-table) {
+            padding-block: 0;
+        }
+        .inner-table tr:first-child {
+            border-top: none !important;
+        }
+        .inner-table tbody:last-child {
+            border-bottom: none !important;
+        }
+        .inner-table td {
+            padding-inline-start: 0 !important;
+            padding-block: calc(0.5em * var(--w-density-factor));
+        }
+        .inner-table td a {
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            display: inline-block; /* Helps with wrapping in some browsers */
+        }
+    </style>
+    <table class="listing {% block table_classname %}{% endblock %}">
+        <col width="20%" />
+        <col width="10%" />
+        <col width="10%" />
+        <col width="30%" />
+        <col width="30%" />
+        <thead>
+            {% block post_parent_page_headers %}
+                <tr class="table-headers">
+                    <th class="title" colspan="2">
+                        Source Page Name
+                        {% block extra_columns %}
+                        {% endblock %}
+                    </th>
+                    <th>Source Slug</th>
+                    <th colspan="2">
+                        <table width="100%" class="inner-table">
+                            <col width="30%" />
+                            <col width="70%" />
+                                <tr>
+                                    <td>
+                                        Link Label
+                                    </td>
+                                    <td>
+                                        Link Destination
+                                    </td>
+                                </tr>
+                        </table>
+                    </th>
+                </tr>
+            {% endblock %}
+        </thead>
+        <tbody>
+            {% for page in pages %}
+                {% page_permissions page as page_perms %}
+                <tr class="{% if not page.live %}unpublished{% endif %} {% block page_row_classname %}{% endblock %}" id="{{ page.slug }}">
+                    <td class="title" valign="top" data-listing-page-title colspan="2" width="40%">
+                        {% block page_title %}
+                            {% i18n_enabled as show_locale_labels %}
+                            {% include "wagtailadmin/pages/listing/_page_title_explore.html" with show_locale_labels=show_locale_labels %}
+                        {% endblock %}
+                    </td>
+                    <td>
+                        {{ page.slug }}
+                    </td>
+                    <td colspan="2">
+                        <table width="100%" class="inner-table" table-layout="fixed">
+                            <col width="30%" />
+                            <col width="70%" />
+                            {% for link in page.external_links %}
+                                <tr>
+                                    <td>
+                                        {{ link.text }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ link.url }}" target="_blank">{{ link.url }}</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2">
+                                        <em>No external links</em>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

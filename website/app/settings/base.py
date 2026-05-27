@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "app.role_switcher",
     "django_filters",
     "wagtail_transfer",
+    "wagtail_external_links_report",
 ]
 
 MIDDLEWARE = [
@@ -477,3 +478,5 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "wagtaildocs.document": ["title", "file_hash"],
     "wagtailimages.image": ["title", "file_hash"],
 }
+
+EXTERNAL_LINKS_REPORT_CLASS = "home.views.CustomExternalLinksReportView"

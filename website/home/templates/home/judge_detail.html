@@ -1,20 +1,99 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load wagtailcore_tags %}
 {% load custom_tags %}
 {% block content %}
-    <div class="grid-container padding-bottom-2 padding-top-2">
-        <h1>{{ judge|judge_display_name }}</h1>
+<style>
+    .last-updated {
+        text-align: right;
+        color: #565C65;
+    }
+    .judge-name {
+        margin-bottom: 15px;
+        margin-top: 0;
+    }
+    .contact-info p {
+        margin-bottom: 34px;
+        margin-top: 0;
+    }
+
+    .contact-info p a {
+        text-decoration: underline;
+        color: inherit;
+        font-weight: normal;
+    }
+    .contact-info p a:hover {
+        text-decoration: underline;
+    }
+
+    h2:has(+ .judge-bio) {
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+    .judge-bio {
+        margin-top: 0;
+        margin-bottom: 34px;
+    }
+    .back-to-judges {
+        display: inline-flex;
+        color: white;
+        text-decoration: none;
+
+        align-items: center;
+
+        height:40px;
+        padding: 12px 20px;
+        background-color: var(--color-primary);
+        text-align: center;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    .icon-chevron-left {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin-right: 8px;
+
+
+        background-color: currentColor;
+
+        -webkit-mask-position: center;
+         mask-position: center;
+
+         -webkit-mask-image: url({% static "images/icons/chevron-left.svg" %});
+         mask-image: url({% static "images/icons/chevron-left.svg" %});
+
+         -webkit-mask-repeat: no-repeat;
+         mask-repeat: no-repeat;
+
+         -webkit-mask-size: contain;
+         mask-size: contain;
+    }
+    .grid-container.padding-bottom-2.padding-top-2.judge-detail {
+        padding-bottom: 45px;
+        padding-top: 45px;
+    }
+    @media (max-width: 768px) {
+        .grid-container.padding-bottom-2.padding-top-2.judge-detail {
+            padding-bottom: 25px;
+            padding-top: 25px;
+        }
+    }
+</style>
+    <div class="grid-container padding-bottom-2 padding-top-2 judge-detail">
+        <a href="/judges" class="back-to-judges" aria-label="Back to judges"><span class="icon-chevron-left"></span> Back</a>
+        <h1 class="judge-name" tabindex="0">{{ judge|judge_display_name }}</h1>
         {% if judge.chambers_telephone %}
-            <div class="contact-info margin-bottom-2">
+            <div class="contact-info margin-bottom-2" tabindex="0">
                 <p>
                     <strong>Chambers Telephone Number:</strong> {{ judge.chambers_telephone |phone_link|safe }}
                 </p>
             </div>
         {% endif %}
-        <h2>Biography</h2>
-        <div class="judge-bio">{{ judge.bio|richtext }}</div>
-        <p>
-            <strong>Last updated:</strong> {{ judge.last_updated_date|date:"F j, Y" }}.
+        <h2 tabindex="0">Biography</h2>
+        <div class="judge-bio" tabindex="0">{{ judge.bio|richtext }}</div>
+        <p class="last-updated" tabindex="0">
+            Last updated: {{ judge.last_updated_date|date:"F j, Y" }}.
         </p>
     </div>
 {% endblock %}
