@@ -435,7 +435,7 @@ class JudgesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description=title,
                 intro_text="See the Judge's biography by clicking on the cards.",
-                seminar_intro_text="<p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>",
+                seminar_intro_text="<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all Federal US Courts which requires educational program providers and judges to disclose certain information relevant to judges' attendance at privately-funded educational programs. Any organization covered by the policy that issues an invitation to a federal judge to attend an educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that judge, in excess of $480, must disclose financial and programmatic information and publish it on the Court's website for three years time.</p>",
             )
         )
 
@@ -526,9 +526,28 @@ class JudgesPageInitializer(PageInitializer):
                 specific.seo_title = "Judge Information"
                 changed = True
                 logger.info("Updated page title to 'Judge Information'.")
-            # Ensure seminar intro text is set
-            if not specific.seminar_intro_text:
-                specific.seminar_intro_text = "<p>The following are private seminar disclosures submitted by judges of the United States Tax Court.</p>"
+            # Ensure seminar intro text matches the Figma policy paragraph.
+            # Also correct the old short placeholder if it is still in the DB.
+            _correct_intro = (
+                "<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/"
+                "privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-"
+                "privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all "
+                "Federal US Courts which requires educational program providers and judges to disclose certain "
+                "information relevant to judges' attendance at privately-funded educational programs. Any "
+                "organization covered by the policy that issues an invitation to a federal judge to attend an "
+                "educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that "
+                "judge, in excess of $480, must disclose financial and programmatic information and publish it on "
+                "the Court's website for three years time.</p>"
+            )
+            _old_placeholder = (
+                "<p>The following are private seminar disclosures submitted by "
+                "judges of the United States Tax Court.</p>"
+            )
+            if (
+                not specific.seminar_intro_text
+                or specific.seminar_intro_text == _old_placeholder
+            ):
+                specific.seminar_intro_text = _correct_intro
                 changed = True
                 logger.info("Set seminar_intro_text on JudgeIndex page.")
             if changed:

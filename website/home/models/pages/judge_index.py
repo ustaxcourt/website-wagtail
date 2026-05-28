@@ -211,6 +211,7 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
     @route(r"^private-seminar-disclosures/$")
     def private_seminar_disclosures(self, request):
         from home.models.settings import PrivateSeminarDisclosureSettings
+        from django.core.paginator import Paginator
 
         # Determine the disclosure window from the configurable setting.
         settings_obj = PrivateSeminarDisclosureSettings.load(request_or_site=request)
@@ -251,8 +252,15 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
             except (ValueError, TypeError):
                 selected_year = ""
 
+        # Paginate — 10 cards per page (Figma shows numbered pagination)
+        paginator = Paginator(disclosures, 10)
+        page_number = request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+
         context = self.get_context(request)
-        context["disclosures"] = disclosures
+        context["disclosures"] = page_obj
+        context["page_obj"] = page_obj
+        context["paginator"] = paginator
         context["years"] = available_years
         context["selected_year"] = selected_year
         context["disclosure_years"] = disclosure_years
