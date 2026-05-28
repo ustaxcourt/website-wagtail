@@ -66,15 +66,22 @@
             margin-top: 18px;
         }
 
-        /* Mobile: single column ≤640px */
-        @media (max-width: 640px) {
+        /* Tablet adjustments (≤834px) — Figma: "Tablet: Private Seminar Disclosures" 834px frame */
+        @media (max-width: 834px) {
             #private-seminar-page {
-                padding-top: 25px;
+                padding-top: 25px;   /* global spacing spec: 25px mobile/tablet */
                 padding-bottom: 25px;
             }
+        }
 
+        /* Mobile adjustments (≤640px) — single column, full-width filter */
+        @media (max-width: 640px) {
             .disclosure-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .disclosure-year-select {
+                width: 100%;   /* filter stretches full-width at mobile */
             }
         }
 
