@@ -5,6 +5,7 @@ on:
         branches:
           - main
     pull_request:
+      types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 jobs:
   build:
@@ -12,6 +13,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      COVERAGE_MINIMUM: "75"
 
     steps:
     - name: Checkout Repository
@@ -41,22 +44,79 @@ jobs:
         cd website
         . ../.venv/bin/activate
         coverage run -m pytest
-        coverage report -m --fail-under=75 | tee coverage-report.txt
+        coverage report -m | tee coverage-report.txt
+        coverage xml -o coverage.xml
+
+    - name: Parse coverage metrics
+      id: coverage_metrics
+      if: always() && hashFiles('website/coverage-report.txt') != ''
+      run: |
+        COVERAGE_PERCENT=$(awk '/TOTAL/ {gsub("%", "", $NF); print $NF}' website/coverage-report.txt)
+        echo "coverage_percent=$COVERAGE_PERCENT" >> "$GITHUB_OUTPUT"
 
     - name: Add Coverage to Step Summary
       if: always() && hashFiles('website/coverage-report.txt') != ''
       run: |
-        echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        cat website/coverage-report.txt >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
+        COVERAGE_PERCENT='${{ steps.coverage_metrics.outputs.coverage_percent }}'
+        COVERAGE_MINIMUM='${{ env.COVERAGE_MINIMUM }}'
+        STATUS="PASS"
+        if python - <<'PY'
+          import os
+          raise SystemExit(0 if float(os.environ["COVERAGE_PERCENT"]) < float(os.environ["COVERAGE_MINIMUM"]) else 1)
+        PY
+        then
+          STATUS="FAIL"
+        fi
+
+        echo "## Coverage Report" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| --- | ---: |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Total Coverage | ${COVERAGE_PERCENT}% |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Minimum Required | ${COVERAGE_MINIMUM}% |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Status | ${STATUS} |" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "<details><summary>Detailed coverage output</summary>" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo '```' >> "$GITHUB_STEP_SUMMARY"
+        cat website/coverage-report.txt >> "$GITHUB_STEP_SUMMARY"
+        echo '```' >> "$GITHUB_STEP_SUMMARY"
+        echo "</details>" >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Enforce minimum coverage
+      if: always() && hashFiles('website/coverage-report.txt') != ''
+      env:
+        COVERAGE_PERCENT: ${{ steps.coverage_metrics.outputs.coverage_percent }}
+      run: |
+        python - <<'PY'
+          import os
+          import sys
+
+          coverage = float(os.environ["COVERAGE_PERCENT"])
+          minimum = float(os.environ["COVERAGE_MINIMUM"])
+
+          if coverage < minimum:
+              print(f"::error::Coverage gate failed: {coverage:.2f}% is below required minimum {minimum:.2f}%")
+              sys.exit(1)
+
+          print(f"Coverage gate passed: {coverage:.2f}% >= {minimum:.2f}%")
+        PY
+
+    - name: Upload coverage artifacts
+      if: always() && hashFiles('website/coverage-report.txt') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: |
+          website/coverage-report.txt
+          website/coverage.xml
 
     - name: Post Coverage Comment
       if: always() && github.event_name == 'pull_request' && hashFiles('website/coverage-report.txt') != ''
       uses: MishaKav/pytest-coverage-comment@v1.7.2
       with:
         pytest-coverage-path: ./website/coverage-report.txt
-        title: Test Coverage Report
+        title: "Test Coverage Report (min: ${{ env.COVERAGE_MINIMUM }}%)"
 
     - name: Run Cypress Tests
       env:
