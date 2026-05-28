@@ -511,6 +511,9 @@ class JudgesPageInitializer(PageInitializer):
                 },
             )
 
+    def run(self):
+        self.update()
+
     def update(self):
         try:
             page = Page.objects.get(slug=self.slug)
@@ -532,6 +535,7 @@ class JudgesPageInitializer(PageInitializer):
                 specific.save()
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
+            self._seed_seminar_disclosures()
         except Page.DoesNotExist:
             logger.info(f"Page '{self.slug}' does not exist.")
             return
