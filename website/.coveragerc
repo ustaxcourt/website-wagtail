@@ -2,8 +2,8 @@
 source = .
 branch = True
 omit =
-    tests/*
-    *test.py
+    */tests/*
+    */test_*.py
     */migrations/*
     manage.py
     app/settings/*
@@ -11,8 +11,8 @@ omit =
 
 [report]
 omit =
-    tests/*  # Exclude any directory named 'tests'
-    *test.py   # Exclude any file ending in 'test.py'
+    */tests/*
+    */test_*.py
     */migrations/*
     manage.py
     app/settings/*
