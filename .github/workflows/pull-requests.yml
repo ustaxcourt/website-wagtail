@@ -60,10 +60,7 @@ jobs:
         COVERAGE_PERCENT='${{ steps.coverage_metrics.outputs.coverage_percent }}'
         COVERAGE_MINIMUM='${{ env.COVERAGE_MINIMUM }}'
         STATUS="PASS"
-        if python - <<'PY'
-          import os
-          raise SystemExit(0 if float(os.environ["COVERAGE_PERCENT"]) < float(os.environ["COVERAGE_MINIMUM"]) else 1)
-        PY
+        if python -c "import os,sys; c=float(os.environ['COVERAGE_PERCENT']); m=float(os.environ['COVERAGE_MINIMUM']); sys.exit(0 if c < m else 1)"
         then
           STATUS="FAIL"
         fi
@@ -88,19 +85,7 @@ jobs:
       env:
         COVERAGE_PERCENT: ${{ steps.coverage_metrics.outputs.coverage_percent }}
       run: |
-        python - <<'PY'
-          import os
-          import sys
-
-          coverage = float(os.environ["COVERAGE_PERCENT"])
-          minimum = float(os.environ["COVERAGE_MINIMUM"])
-
-          if coverage < minimum:
-              print(f"::error::Coverage gate failed: {coverage:.2f}% is below required minimum {minimum:.2f}%")
-              sys.exit(1)
-
-          print(f"Coverage gate passed: {coverage:.2f}% >= {minimum:.2f}%")
-        PY
+        python -c "import os,sys; c=float(os.environ['COVERAGE_PERCENT']); m=float(os.environ['COVERAGE_MINIMUM']); print(f'::error::Coverage gate failed: {c:.2f}% is below required minimum {m:.2f}%') if c < m else print(f'Coverage gate passed: {c:.2f}% >= {m:.2f}%'); sys.exit(1 if c < m else 0)"
 
     - name: Upload coverage artifacts
       if: always() && hashFiles('website/coverage-report.txt') != ''
