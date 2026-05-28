@@ -200,8 +200,8 @@
             filter: invert(1);
         }
 
-        /* Tablet adjustments (≤1024px) */
-        @media (max-width: 1024px) {
+        /* Tablet adjustments (≤834px) */
+        @media (max-width: 834px) {
             .judge-card-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
@@ -223,7 +223,7 @@
             }
 
             .judge-tile i {
-                font-size: 1.5rem;
+                font-size: 2.5rem; /* 40px — matches Figma tablet spec (Frame 297) */
                 flex-shrink: 0;
             }
         }
@@ -426,7 +426,7 @@
             }
 
             .judge-tile i {
-                font-size: 1.5rem;
+                font-size: 2.5rem; /* 40px — matches Figma mobile spec */
                 flex-shrink: 0;
             }
         }

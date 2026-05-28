@@ -388,6 +388,10 @@ describe("Judge Information — Figma design spec (tablet)", () => {
         cy.get(".judge-tile").first().should("have.css", "justify-content", "flex-start");
     });
 
+    it("bottom tile icon: 40px at tablet — Figma Frame 297 spec", () => {
+        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+    });
+
     it("section header font size unchanged at tablet", () => {
         cy.get(".judge-section-header").first().should("have.css", "font-size", "24px");
     });
@@ -436,6 +440,10 @@ describe("Judge Information — Figma design spec (mobile)", () => {
 
     it("bottom tiles: row flex direction at mobile", () => {
         cy.get(".judge-tile").first().should("have.css", "flex-direction", "row");
+    });
+
+    it("bottom tile icon: 40px at mobile — Figma mobile spec", () => {
+        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
     });
 
     it("bottom tiles: left-aligned (justify-content flex-start) at mobile", () => {
@@ -834,5 +842,83 @@ describe("Judge Information — 508 accessibility", () => {
                 expect(tops[i]).to.be.greaterThan(tops[i - 1]);
             }
         });
+    });
+});
+
+// ─── Figma design spec — breakpoint boundaries ───────────────────────────────
+// These tests pin the exact pixel where the layout switches.
+// They exist specifically to catch breakpoint drift (e.g. 834px → 1024px).
+
+describe("Judge Information — Figma design spec (breakpoint boundaries)", () => {
+    it("at 835px: tiles are 2-column desktop layout (above tablet breakpoint)", () => {
+        cy.viewport(835, 900);
+        cy.visit("/judges/");
+        cy.get(".judge-bottom-tiles").then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(2);
+        });
+    });
+
+    it("at 834px: tiles collapse to 1-column long QAT (tablet breakpoint)", () => {
+        cy.viewport(834, 1112);
+        cy.visit("/judges/");
+        cy.get(".judge-bottom-tiles").then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(1);
+        });
+    });
+
+    it("at 835px: judge card grid is NOT 3-column (desktop layout above tablet breakpoint)", () => {
+        cy.viewport(835, 900);
+        cy.visit("/judges/");
+        cy.get(".judge-card-grid").first().then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols.length).to.be.greaterThan(3);
+        });
+    });
+
+    it("at 834px: judge card grid is 3-column (tablet breakpoint)", () => {
+        cy.viewport(834, 1112);
+        cy.visit("/judges/");
+        cy.get(".judge-card-grid").first().then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(3);
+        });
+    });
+
+    it("at 641px: tiles are still 1-column (between mobile and tablet breakpoints)", () => {
+        cy.viewport(641, 900);
+        cy.visit("/judges/");
+        cy.get(".judge-bottom-tiles").then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(1);
+        });
+    });
+
+    it("at 640px: tiles are 1-column (mobile breakpoint)", () => {
+        cy.viewport(640, 900);
+        cy.visit("/judges/");
+        cy.get(".judge-bottom-tiles").then(($grid) => {
+            const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
+            expect(cols).to.have.length(1);
+        });
+    });
+
+    it("tile icon is 40px at desktop (Figma Frame 310 spec)", () => {
+        cy.viewport(1440, 900);
+        cy.visit("/judges/");
+        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+    });
+
+    it("tile icon is 40px at tablet — does not shrink (Figma Frame 297 spec)", () => {
+        cy.viewport(834, 1112);
+        cy.visit("/judges/");
+        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+    });
+
+    it("tile icon is 40px at mobile — does not shrink (Figma mobile spec)", () => {
+        cy.viewport(390, 844);
+        cy.visit("/judges/");
+        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
     });
 });
