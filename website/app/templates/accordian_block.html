@@ -132,7 +132,7 @@
     }
   }
 </style>
-{% with data=block.value|default:self %}
+{% with data=block.value %}
 <div id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
 <div class="accordian-header {% if data.default_to_open %}active{% endif %}">
     <h3 class="accordian-title {% if data.default_to_open %}active{% endif %}">
