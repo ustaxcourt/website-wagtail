@@ -43,9 +43,8 @@ jobs:
       run: |
         cd website
         . ../.venv/bin/activate
-        coverage run -m pytest
-        coverage report -m | tee coverage-report.txt
-        coverage xml -o coverage.xml
+        set -o pipefail
+        pytest --cov --cov-report=term-missing --cov-report=xml:coverage.xml | tee coverage-report.txt
 
     - name: Parse coverage metrics
       id: coverage_metrics

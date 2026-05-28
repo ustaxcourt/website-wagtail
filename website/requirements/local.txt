@@ -1,6 +1,7 @@
 -r base.txt
 
 coverage==7.6.10
+pytest-cov==7.1.0
 djlint==1.36.4
 django-debug-toolbar
 mypy==1.14.1
