@@ -527,6 +527,22 @@ class JudgesPageInitializer(PageInitializer):
             return
 
     def update_judge_roles_and_profiles(self):
+        # Ensure Carluzzo (Senior Special Trial Judge) exists — he may be missing on
+        # sandboxes seeded before he was added to all_judges.
+        JudgeProfile.objects.update_or_create(
+            first_name="Lewis",
+            middle_initial="R.",
+            last_name="Carluzzo",
+            suffix="",
+            defaults={
+                "display_name": "Lewis R. Carluzzo",
+                "title": "Senior Special Trial Judge",
+                "chambers_telephone": "(202) 521-3339",
+                "bio": "Senior Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025. Assumed senior status as Senior Special Trial Judge on May 2, 2025.",
+            },
+        )
+        logger.info("Ensured Lewis R. Carluzzo (Senior Special Trial Judge) exists.")
+
         # Find the current judge with chief judge role
         chief_judge_role = JudgeRole.objects.filter(role_name="Chief Judge").first()
         if chief_judge_role:
