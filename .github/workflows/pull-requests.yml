@@ -56,12 +56,12 @@ jobs:
 
     - name: Add Coverage to Step Summary
       if: always() && hashFiles('website/coverage-report.txt') != ''
+      env:
+        COVERAGE_PERCENT: ${{ steps.coverage_metrics.outputs.coverage_percent }}
       run: |
-        COVERAGE_PERCENT='${{ steps.coverage_metrics.outputs.coverage_percent }}'
-        COVERAGE_MINIMUM='${{ env.COVERAGE_MINIMUM }}'
-        STATUS="PASS"
-        if python -c "import os,sys; c=float(os.environ['COVERAGE_PERCENT']); m=float(os.environ['COVERAGE_MINIMUM']); sys.exit(0 if c < m else 1)"
-        then
+        if python -c "import os,sys; sys.exit(0 if float(os.environ['COVERAGE_PERCENT']) >= float(os.environ['COVERAGE_MINIMUM']) else 1)"; then
+          STATUS="PASS"
+        else
           STATUS="FAIL"
         fi
 
