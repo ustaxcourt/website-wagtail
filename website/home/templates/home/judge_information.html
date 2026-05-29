@@ -433,7 +433,9 @@
         <!-- Bottom tiles — QuickAccessTilesBlock, editable in Wagtail admin -->
         {% if page.bottom_tiles %}
             <hr class="judge-tiles-rule">
-            {% include_block page.bottom_tiles %}
+            {% for block in page.bottom_tiles %}
+                {% include "quick_access_tiles_block.html" with block=block %}
+            {% endfor %}
         {% endif %}
     </div>
     <script>
