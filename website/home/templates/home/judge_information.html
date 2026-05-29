@@ -457,7 +457,7 @@
         <!-- Judge sections -->
         {% for group in judge_groups %}
             <div class="judge-section" data-section="{{ group.filter_key }}">
-                <h2 class="judge-section-header" id="{{ group.filter_key }}" tabindex="-1">{{ group.label }}</h2>
+                <h2 class="judge-section-header" id="{{ group.filter_key }}" tabindex="0">{{ group.label }}</h2>
                 <div class="judge-card-grid">
                     {% for item in group.judges %}
                         <a class="judge-card"
