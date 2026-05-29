@@ -54,7 +54,7 @@ virtualenv==20.36.1
 wagtail>=7.3,<7.4
 # Forked to fix base model lookup bug (upstream PR #173)
 # Revert to official package once https://github.com/wagtail/wagtail-transfer/pull/173 is merged
-wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@240daba
+wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@2418438
 whitenoise==6.8.2
 Willow
 social-auth-app-django==5.6.0
