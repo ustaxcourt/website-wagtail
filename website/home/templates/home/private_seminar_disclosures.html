@@ -42,14 +42,15 @@
         /* ── Controls row (year filter) ─────────────────────────────────── */
         .disclosure-controls {
             display: flex;
-            justify-content: flex-start;    /* Figma: left-aligned */
+            justify-content: flex-end;      /* Figma: right-aligned */
             margin-top: 34px;               /* 34px content block gap */
             margin-bottom: 0;
         }
 
         .disclosure-year-select {
             width: 234px;               /* Figma: 234px fixed */
-            padding: 0.4rem 0.75rem;
+            height: 39px;               /* Figma: input container h=39 */
+            padding: 0 0.75rem;
             border: 1px solid #1b1b1b; /* Figma: dark border */
             background-color: #fff;
             font-size: 1rem;            /* 16px — Figma fs=16 */
@@ -101,7 +102,7 @@
             display: block;
             font-size: 1.25rem;         /* 20px */
             font-weight: 600;
-            line-height: 1.5625;        /* 25px */
+            line-height: 1.25;          /* 25px — Figma lh=25 on fs=20 → 25/20=1.25 */
             color: #1b1b1b;
             background-color: #f1f9fc;
             padding: 13px 20px;         /* Figma: paddingTop/Bottom=13, Left/Right=20 */
@@ -170,6 +171,7 @@
         .disclosure-pagination {
             display: flex;
             align-items: center;
+            justify-content: flex-end;  /* Figma: right-aligned (right edge of container) */
             gap: 7px;
             margin-top: 34px;
         }
@@ -236,7 +238,7 @@
         <p class="seminar-list-label" data-testid="seminar-list-label">
             Below is the Running list of Tax Court Disclosures:
         </p>
-        {# Year filter — left-aligned, 234px wide, dark border (#1b1b1b) per Figma #}
+        {# Year filter — right-aligned, 234px wide, dark border (#1b1b1b) per Figma #}
         {% if years %}
             <div class="disclosure-controls">
                 <form method="get" id="year-filter-form">
