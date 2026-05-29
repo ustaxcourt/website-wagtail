@@ -157,9 +157,10 @@
             text-decoration: none;
         }
 
-        .judge-tile i {
-            font-size: 2.5rem;
-            color: #005ea2;
+        .judge-tile-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
         }
 
         .judge-section[data-hidden="true"] {
@@ -222,9 +223,9 @@
                 color: #162e51;
             }
 
-            .judge-tile i {
-                font-size: 2.5rem; /* 40px — matches Figma tablet spec (Frame 297) */
-                flex-shrink: 0;
+            .judge-tile-icon {
+                width: 40px;   /* Figma tablet spec */
+                height: 40px;
             }
         }
 
@@ -425,9 +426,9 @@
                 gap: 18px;
             }
 
-            .judge-tile i {
-                font-size: 2.5rem; /* 40px — matches Figma mobile spec */
-                flex-shrink: 0;
+            .judge-tile-icon {
+                width: 40px;   /* Figma mobile spec */
+                height: 40px;
             }
         }
     </style>
@@ -516,13 +517,19 @@
             <a class="judge-tile"
                href="{{ page.url }}private-seminar-disclosures/"
                data-testid="tile-private-seminar-disclosures">
-                <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                <img src="{% static 'images/icons/icon-article.svg' %}"
+                     alt=""
+                     aria-hidden="true"
+                     class="judge-tile-icon">
                 <span>Private Seminar Disclosures</span>
             </a>
             <a class="judge-tile"
                href="{{ judicial_conduct_url }}"
                data-testid="tile-judicial-conduct">
-                <i class="fa-solid fa-landmark" aria-hidden="true"></i>
+                <img src="{% static 'images/icons/icon-account-balance.svg' %}"
+                     alt=""
+                     aria-hidden="true"
+                     class="judge-tile-icon">
                 <span>Judicial Conduct and Disability Complaint Procedures</span>
             </a>
         </div>
