@@ -64,6 +64,9 @@
             column-gap: 15px;   /* Figma: 1152 - (568.5 × 2) = 15px */
             row-gap: 18px;      /* Figma: outer frame gap=18 between rows */
             margin-top: 18px;
+            /* Reset <ul> browser defaults */
+            list-style: none;
+            padding: 0;
         }
 
         /* Tablet adjustments (≤834px) — Figma: "Tablet: Private Seminar Disclosures" 834px frame */
@@ -93,6 +96,7 @@
         }
 
         /* Zone 1 — Judge name header (Figma Frame 14: #f1f9fc) */
+        /* <h2> used so screen readers can navigate by heading; reset browser h2 margin */
         .disclosure-card .judge-name {
             display: block;
             font-size: 1.25rem;         /* 20px */
@@ -102,6 +106,7 @@
             background-color: #f1f9fc;
             padding: 13px 20px;         /* Figma: paddingTop/Bottom=13, Left/Right=20 */
             border-bottom: 1px solid #dfe1e2;
+            margin: 0;                  /* reset browser h2 default margin */
         }
 
         /* Zone 2 — Field body (Figma Frame 15: white) */
@@ -249,13 +254,13 @@
                 </form>
             </div>
         {% endif %}
-        {# Disclosure card grid #}
+        {# Disclosure card grid — <ul role="list"> for 508: screen readers announce item count #}
         {% if disclosures %}
-            <div class="disclosure-grid" data-testid="disclosure-grid">
+            <ul class="disclosure-grid" role="list" data-testid="disclosure-grid">
                 {% for disclosure in disclosures %}
-                    <div class="disclosure-card" data-testid="disclosure-card">
-                        {# Header band: light blue, judge name (fs=20 fw=600) #}
-                        <div class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</div>
+                    <li class="disclosure-card" data-testid="disclosure-card">
+                        {# <h2> so screen readers can navigate by heading; no tabindex needed (static content) #}
+                        <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
                         {# Body: stacked field groups with thin dividers per Figma #}
                         <div class="disclosure-body">
                             {# Group 1: Program Provider(s) — label then value #}
@@ -287,9 +292,9 @@
                                 </div>
                             {% endif %}
                         </div>
-                    </div>
+                    </li>
                 {% endfor %}
-            </div>
+            </ul>
             {# Pagination — Figma: numbered buttons + Next, USWDS palette #}
             {% if paginator.num_pages > 1 %}
                 <nav class="disclosure-pagination" aria-label="Disclosure pages">
