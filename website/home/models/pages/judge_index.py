@@ -13,6 +13,7 @@ from home.models.snippets.judges import (
     JudgeRole,
     JudgeCollection,
     PrivateSeminarDisclosure,
+    RESTRICTED_ROLES,
 )
 from home.models.custom_blocks.common import custom_promote_panels
 
@@ -121,7 +122,7 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
                 continue
 
             ordered_judges = list(
-                collection.ordered_judges.select_related("judge").order_by("sort_order")
+                collection.ordered_judges.select_related("judge").all()
             )
             if not ordered_judges:
                 continue
@@ -136,6 +137,16 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
                         "role_label": role_label,
                     }
                 )
+
+            # Sort: restricted roles (Chief Judge / Chief Special Trial Judge) first,
+            # then all others alphabetically by last name then first name.
+            judges_with_roles.sort(
+                key=lambda d: (
+                    0 if d["role_label"] in RESTRICTED_ROLES else 1,
+                    d["judge"].last_name.lower(),
+                    d["judge"].first_name.lower(),
+                )
+            )
 
             count = len(judges_with_roles)
             label = (
