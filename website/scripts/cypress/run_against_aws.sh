@@ -240,6 +240,7 @@ fi
 
 set +e
 CYPRESS_INCLUDE_ADMIN_VALIDATION="$include_admin" \
+CYPRESS_INCLUDE_LOCAL_VALIDATION="false" \
 CYPRESS_ADMIN_USERNAME="$admin_username" \
 CYPRESS_ADMIN_PASSWORD="$admin_password" \
   "${cypress_cmd[@]}"

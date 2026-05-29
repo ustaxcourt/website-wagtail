@@ -58,3 +58,4 @@ wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@2418438
 whitenoise==6.8.2
 Willow
 social-auth-app-django==5.6.0
+wagtail-external-links-report==0.1.0
