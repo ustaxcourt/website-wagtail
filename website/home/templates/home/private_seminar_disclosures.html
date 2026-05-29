@@ -61,10 +61,11 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            /* Filter funnel icon (left) + chevron (right) */
+            /* Filter funnel icon (left) — Figma node 13711-3544 filter_list, #162E51
+               Chevron (right) — Figma node 13920:16383 unfold_more (double-arrow), #1B1B1B */
             background-image:
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10 18H14V16H10V18ZM3 6V8H21V6H3ZM6 13H18V11H6V13Z' fill='%23162E51'/%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%231b1b1b' d='M4.516 7.548c.436-.446 1.043-.481 1.576 0L10 11.295l3.908-3.747c.533-.481 1.141-.446 1.574 0 .436.445.408 1.197 0 1.615l-4.695 4.502c-.434.446-1.145.446-1.576 0L4.516 9.163c-.409-.418-.436-1.17 0-1.615z'/%3E%3C/svg%3E");
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.9998 4.85833L12.6415 7.5L13.8165 6.325L9.9998 2.5L6.1748 6.325L7.35814 7.5L9.9998 4.85833ZM9.9998 15.1417L7.35814 12.5L6.18314 13.675L9.9998 17.5L13.8248 13.675L12.6415 12.5L9.9998 15.1417Z' fill='%231b1b1b'/%3E%3C/svg%3E");
             background-repeat: no-repeat, no-repeat;
             background-position: left 8px center, right 10px center;
             background-size: 20px 20px, 20px 20px;
@@ -234,6 +235,13 @@
             gap: 4px;
         }
 
+        /* Figma navigate_next icon for pagination Next button (18x18, color matches button text) */
+        .pagination-next-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
         .disclosure-empty {
             color: #555;
             margin-top: 1rem;
@@ -335,7 +343,10 @@
                             <a class="pagination-btn pagination-btn--next"
                                href="?{% if selected_year %}year={{ selected_year }}&{% endif %}page={{ page_obj.next_page_number }}"
                                aria-label="Next page">
-                                Next &#8250;
+                                Next
+                                <svg class="pagination-next-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.49988 4.5L6.44238 5.5575L9.87738 9L6.44238 12.4425L7.49988 13.5L11.9999 9L7.49988 4.5Z" fill="currentColor"/>
+                                </svg>
                             </a>
                         {% endif %}
                     {% endwith %}
