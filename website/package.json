@@ -12,6 +12,7 @@
     "cypress-real-events": "^1.14.0"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.14.7",
     "@types/node": "^24.0.14",
     "@uswds/compile": "^1.2.0",
     "axe-core": "4.10.2",

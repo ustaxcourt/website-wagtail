@@ -31,6 +31,8 @@ export default defineConfig({
   e2e: {
     experimentalStudio: true,
     setupNodeEvents(on, config) {
+      require('@cypress/code-coverage/task')(on, config);
+
       // implement node event listeners here
       on('task', {
         table(message) {
@@ -49,7 +51,9 @@ export default defineConfig({
           // Skip header row; columns are: From, To, Type, Site
           return rows.slice(1).map(([from, to]) => ({ from, to }));
         },
-      })
+      });
+
+      return config;
     },
     baseUrl,
     ...(Object.keys(env).length > 0 ? { env } : {}),
