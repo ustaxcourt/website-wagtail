@@ -183,14 +183,33 @@
                 height: 50px;
             }
         }
-        /* Mobile: ≤640px — keep Figma spacing */
+        /* Mobile: ≤640px — Figma node 13945-4914 (Mobile QAT, 288×88 tile)
+           - 22px padding uniform; icon (40×40) + 18px gap + text; both vertically centered
+           - Title: 20px / 22px line-height Source Sans 3 600
+           - Override the shared block's mobile grid so the title row uses align-items:center
+             and the description row only takes space when description is non-empty.
+        */
         @media (max-width: 640px) {
             #judge-information-page .quick-access-tile {
-                padding: 20px 16px;
+                padding: 22px;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+                grid-template-columns: 40px 1fr;
+                column-gap: 18px;
+                align-items: center;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
+                width: 40px;
+                height: 40px;
+                padding: 5px;
+                margin: 0;
             }
             #judge-information-page .quick-access-tile h2 {
                 font-size: 20px;
-                line-height: 25px;
+                line-height: 22px;
+                font-weight: 600;
+                margin: 0;
+                text-align: left;
             }
         }
 
