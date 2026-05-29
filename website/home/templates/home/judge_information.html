@@ -125,43 +125,7 @@
             color: #000000;
         }
 
-        /* Bottom tiles */
-        .judge-bottom-tiles {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .judge-tile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            border: 1px solid #005ea2;
-            padding: 29px 22px;
-            text-decoration: none;
-            color: #1b1b1b;
-            background-color: #fff;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 24px;
-            line-height: 30px;
-            text-align: center;
-            box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.1);
-            transition: box-shadow 0.15s;
-        }
-
-        .judge-tile:hover {
-            box-shadow: 0px 6px 10px 0px rgba(86, 92, 101, 0.2);
-            text-decoration: none;
-        }
-
-        .judge-tile-icon {
-            width: 50px;
-            height: 50px;
-            flex-shrink: 0;
-        }
+        /* Bottom tiles — rendered via QuickAccessTilesBlock */
 
         .judge-section[data-hidden="true"] {
             display: none;
@@ -174,11 +138,6 @@
         }
 
         .judge-card:focus-visible {
-            outline: 3px solid #005ea2;
-            outline-offset: 2px;
-        }
-
-        .judge-tile:focus-visible {
             outline: 3px solid #005ea2;
             outline-offset: 2px;
         }
@@ -207,26 +166,6 @@
                 grid-template-columns: repeat(3, 1fr);
             }
 
-            /* Long QAT layout at tablet — full-width, horizontal */
-            .judge-bottom-tiles {
-                grid-template-columns: 1fr;
-            }
-
-            .judge-tile {
-                flex-direction: row;
-                justify-content: flex-start;
-                text-align: left;
-                gap: 18px;
-                padding: 22px;
-                font-size: 20px;
-                line-height: 22px;
-                color: #162e51;
-            }
-
-            .judge-tile-icon {
-                width: 40px;   /* Figma tablet spec */
-                height: 40px;
-            }
         }
 
         /* Mobile filter bar */
@@ -396,10 +335,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .judge-bottom-tiles {
-                grid-template-columns: 1fr;
-            }
-
             .judge-section-header {
                 font-size: 20px;
                 line-height: 22px;
@@ -414,22 +349,6 @@
                 font-size: 16px;
             }
 
-            .judge-tile {
-                flex-direction: row;
-                align-items: center;
-                justify-content: flex-start;
-                padding: 22px;
-                font-size: 20px;
-                line-height: 22px;
-                color: #162e51;
-                text-align: left;
-                gap: 18px;
-            }
-
-            .judge-tile-icon {
-                width: 40px;   /* Figma mobile spec */
-                height: 40px;
-            }
         }
     </style>
 {% endblock %}
@@ -511,28 +430,11 @@
                 </div>
             </div>
         {% endfor %}
-        <!-- Bottom tiles -->
-        <hr class="judge-tiles-rule">
-        <div class="judge-bottom-tiles">
-            <a class="judge-tile"
-               href="{{ page.url }}private-seminar-disclosures/"
-               data-testid="tile-private-seminar-disclosures">
-                <img src="{% static 'images/icons/icon-article.svg' %}"
-                     alt=""
-                     aria-hidden="true"
-                     class="judge-tile-icon">
-                <span>Private Seminar Disclosures</span>
-            </a>
-            <a class="judge-tile"
-               href="{{ judicial_conduct_url }}"
-               data-testid="tile-judicial-conduct">
-                <img src="{% static 'images/icons/icon-account-balance.svg' %}"
-                     alt=""
-                     aria-hidden="true"
-                     class="judge-tile-icon">
-                <span>Judicial Conduct and Disability Complaint Procedures</span>
-            </a>
-        </div>
+        <!-- Bottom tiles — QuickAccessTilesBlock, editable in Wagtail admin -->
+        {% if page.bottom_tiles %}
+            <hr class="judge-tiles-rule">
+            {% include_block page.bottom_tiles %}
+        {% endif %}
     </div>
     <script>
         (function () {

@@ -427,6 +427,9 @@ class JudgesPageInitializer(PageInitializer):
             },
         )
 
+        # Load SVG icons as Wagtail Documents
+        bottom_tiles_data = self._build_bottom_tiles_data()
+
         # Create the page
         _ = home_page.add_child(
             instance=JudgeIndex(
@@ -435,6 +438,7 @@ class JudgesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description=title,
                 intro_text="See the Judge's biography by clicking on the cards.",
+                bottom_tiles=bottom_tiles_data,
             )
         )
 
@@ -526,6 +530,7 @@ class JudgesPageInitializer(PageInitializer):
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
             self._seed_seminar_disclosures()
+            self._seed_bottom_tiles(page)
         except Page.DoesNotExist:
             logger.info(f"Page '{self.slug}' does not exist.")
             return
@@ -595,3 +600,86 @@ class JudgesPageInitializer(PageInitializer):
         _ = live_chief_judge_role.save()
 
         logger.info(f"Judge roles and profiles updated in page: '{self.slug}'.")
+
+    def _build_bottom_tiles_data(self):
+        """Return StreamField JSON for the two bottom quick-access tiles."""
+        article_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="icon-article.svg",
+            title="Icon: Article (Private Seminar Disclosures)",
+        )
+        balance_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="icon-account-balance.svg",
+            title="Icon: Account Balance (Judicial Conduct)",
+        )
+        judges_page = Page.objects.filter(slug=self.slug).first()
+        judicial_conduct_page = Page.objects.filter(
+            slug="judicial-conduct-and-disability-procedures"
+        ).first()
+
+        seminar_link = (
+            [
+                {
+                    "type": "external_url",
+                    "value": f"{judges_page.full_url}private-seminar-disclosures/",
+                }
+            ]
+            if judges_page
+            else []
+        )
+        conduct_link = (
+            [{"type": "related_page", "value": judicial_conduct_page.pk}]
+            if judicial_conduct_page
+            else []
+        )
+
+        return [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": [
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": "Private Seminar Disclosures",
+                                "description": "",
+                                "icon": {"svg_file": article_doc.pk},
+                                "content_alignment": "center",
+                                "link": seminar_link,
+                            },
+                        },
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": "Judicial Conduct and Disability Complaint Procedures",
+                                "description": "",
+                                "icon": {"svg_file": balance_doc.pk},
+                                "content_alignment": "center",
+                                "link": conduct_link,
+                            },
+                        },
+                    ],
+                },
+            }
+        ]
+
+    def _seed_bottom_tiles(self, page):
+        """Seed bottom_tiles on an existing JudgeIndex page if not yet set."""
+        from home.models.pages.judge_index import JudgeIndex
+
+        try:
+            judge_index = JudgeIndex.objects.get(pk=page.pk)
+        except JudgeIndex.DoesNotExist:
+            logger.warning("JudgeIndex page not found — skipping bottom_tiles seed.")
+            return
+
+        if judge_index.bottom_tiles:
+            logger.info("bottom_tiles already set — skipping seed.")
+            return
+
+        judge_index.bottom_tiles = self._build_bottom_tiles_data()
+        judge_index.save()
+        logger.info("Seeded bottom_tiles on JudgeIndex page.")

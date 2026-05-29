@@ -1,4 +1,4 @@
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.models import Page
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
@@ -16,6 +16,7 @@ from home.models.snippets.judges import (
     RESTRICTED_ROLES,
 )
 from home.models.custom_blocks.common import custom_promote_panels
+from home.blocks import QuickAccessTilesBlock
 
 # Keep these exported for backward compatibility with __init__.py imports
 # (they are no longer used by JudgeIndex itself)
@@ -90,9 +91,17 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
         help_text="Introductory text displayed below the page title.",
     )
 
+    bottom_tiles = StreamField(
+        [("quick_access_tiles", QuickAccessTilesBlock())],
+        blank=True,
+        use_json_field=True,
+        help_text="Quick-access tiles rendered below the judge card grid.",
+    )
+
     content_panels = [
         FieldPanel("title"),
         FieldPanel("intro_text"),
+        FieldPanel("bottom_tiles"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
