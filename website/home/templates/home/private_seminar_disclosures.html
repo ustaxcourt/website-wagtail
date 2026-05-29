@@ -48,14 +48,24 @@
         }
 
         .disclosure-year-select {
-            width: 234px;               /* Figma: 234px fixed */
-            height: 39px;               /* Figma: input container h=39 */
-            padding: 0 0.75rem;
-            border: 1px solid #1b1b1b; /* Figma: dark border */
+            width: 234px;                   /* Figma: 234px fixed at all breakpoints */
+            height: 39px;                   /* Figma: input container h=39 */
+            padding: 0 2rem 0 0.5625rem;    /* left=9px (Figma text offset), right=32px (space for chevron) */
+            border: 1px solid #1b1b1b;      /* Figma: dark border stroke=#1b1b1b */
             background-color: #fff;
-            font-size: 1rem;            /* 16px — Figma fs=16 */
+            font-size: 1rem;                /* 16px — Figma fs=16 */
             font-weight: 400;
             color: #1b1b1b;
+            cursor: pointer;
+            /* Remove OS-native appearance so our border/bg/padding apply in all browsers */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* Custom chevron matching Figma's USWDS caret icon (20×20, #1b1b1b, 10px from right) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%231b1b1b' d='M4.516 7.548c.436-.446 1.043-.481 1.576 0L10 11.295l3.908-3.747c.533-.481 1.141-.446 1.574 0 .436.445.408 1.197 0 1.615l-4.695 4.502c-.434.446-1.145.446-1.576 0L4.516 9.163c-.409-.418-.436-1.17 0-1.615z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px 20px;
         }
 
         /* ── 2-column card grid ─────────────────────────────────────────── */
@@ -78,14 +88,19 @@
             }
         }
 
-        /* Mobile adjustments (≤640px) — single column, full-width filter */
+        /* Mobile adjustments (≤640px) — single column, centered 234px filter */
         @media (max-width: 640px) {
             .disclosure-grid {
                 grid-template-columns: 1fr;
             }
 
+            /* Figma mobile: filter is 234px centered (27px margin each side in 288px content) */
+            .disclosure-controls {
+                justify-content: center;
+            }
+
             .disclosure-year-select {
-                width: 100%;   /* filter stretches full-width at mobile */
+                width: 234px;   /* Same fixed width as desktop/tablet — NOT full-width */
             }
         }
 
