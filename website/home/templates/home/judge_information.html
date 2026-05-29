@@ -154,9 +154,12 @@
             margin: 34px 0;
         }
 
-        /* Bottom tiles — Figma-scoped overrides for JudgeIndex (node 13945-3870)
-           These override the shared QuickAccessTile styles so other pages using
-           the block are not affected. */
+        /* Bottom tiles — Figma-scoped overrides for JudgeIndex
+           Desktop: node 13945-3870 (568x182 tile)
+           Tablet:  node 13945-3925 (776x104 tile, horizontal layout)
+           Mobile:  node 13945-4914 (288x88 tile, horizontal layout, navy text)
+           Hide empty tile-description rows so the title isn't pushed into a
+           narrow column when there is no body copy. */
         #judge-information-page .quick-access-tile {
             border: 1px solid #005EA2;
             padding: 29px 22px;
@@ -173,6 +176,14 @@
             height: 50px;
             padding: 5px;
         }
+        /* Hide the empty description placeholder so it doesn't reserve a grid row
+           or push the layout. Wagtail's |richtext filter on an empty value still
+           renders an empty <p>, so target both :empty and a wrapping <p> with no
+           text content. */
+        #judge-information-page .quick-access-tile .tile-description:empty,
+        #judge-information-page .quick-access-tile .tile-description p:empty {
+            display: none;
+        }
         /* Tablet: ≤992px — single-column full-width tiles, icon-left layout */
         @media (max-width: 992px) {
             #judge-information-page .quick-access-tile {
@@ -184,11 +195,10 @@
             }
         }
         /* Mobile: ≤640px — Figma node 13945-4914 (Mobile QAT, 288×88 tile)
-           - 22px padding uniform; icon (40×40) + 18px gap + text; both vertically centered
-           - Title: 20px / 22px line-height Source Sans 3 600
-           - Override the shared block's mobile grid so the title row uses align-items:center
-             and the description row only takes space when description is non-empty.
-        */
+           - 22px padding uniform; icon (40×40) + 18px gap + text; vertically centered
+           - Title: Source Sans 3 600 20px / 22px, color #162E51 (Tax Court navy)
+           - When description is empty, the tile-description rule above keeps
+             the title centered next to the icon (no extra row). */
         @media (max-width: 640px) {
             #judge-information-page .quick-access-tile {
                 padding: 22px;
@@ -205,6 +215,7 @@
                 margin: 0;
             }
             #judge-information-page .quick-access-tile h2 {
+                color: #162E51;
                 font-size: 20px;
                 line-height: 22px;
                 font-weight: 600;
