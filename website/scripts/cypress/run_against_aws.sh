@@ -8,11 +8,9 @@ Usage:
 
 Options:
   --mode <run|open>            Cypress mode (required)
-  --aws-env <dev-web|train-web|sandbox>
-                               Named lower environment
-  --sandbox-name <name>        Optional sandbox prefix override for URL construction
-                               (<name>-sandbox-web.ustaxcourt.gov)
-  --base-url <https://...>     Explicit Cypress base URL override
+  --aws-env <profile>          AWS profile name to use; overrides AWS_PROFILE env var.
+                               If omitted, falls back to AWS_PROFILE.
+  --base-url <https://...>     Explicit Cypress base URL (skips DOMAIN_NAME lookup)
   --secret-id <name>           AWS Secrets Manager secret id (default: website_secrets)
   --region <aws-region>        AWS region (default: AWS_DEFAULT_REGION or us-east-1)
   --browser <browser>          Browser passed to Cypress (default: chrome)
@@ -22,10 +20,9 @@ Options:
 
 Examples:
   ./scripts/cypress/run_against_aws.sh --mode run --aws-env dev-web
-  ./scripts/cypress/run_against_aws.sh --mode run --aws-env train-web --include-admin
-  ./scripts/cypress/run_against_aws.sh --mode run --aws-env sandbox
-  ./scripts/cypress/run_against_aws.sh --mode run --base-url https://alice-sandbox-web.ustaxcourt.gov
-  ./scripts/cypress/run_against_aws.sh --mode open --aws-env sandbox --sandbox-name alice
+  ./scripts/cypress/run_against_aws.sh --mode run --aws-env alice-sandbox --include-admin
+  AWS_PROFILE=my-profile ./scripts/cypress/run_against_aws.sh --mode open
+  ./scripts/cypress/run_against_aws.sh --mode run --base-url https://custom.ustaxcourt.gov
 EOF
 }
 
@@ -39,7 +36,6 @@ require_command() {
 
 mode=""
 aws_env=""
-sandbox_name=""
 base_url=""
 secret_id="website_secrets"
 region="${AWS_DEFAULT_REGION:-us-east-1}"
@@ -56,10 +52,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --aws-env)
       aws_env="$2"
-      shift 2
-      ;;
-    --sandbox-name)
-      sandbox_name="$2"
       shift 2
       ;;
     --base-url)
@@ -108,6 +100,17 @@ if [[ "$mode" != "run" && "$mode" != "open" ]]; then
   exit 1
 fi
 
+# Resolve AWS profile: --aws-env > AWS_PROFILE env var
+if [[ -n "$aws_env" ]]; then
+  export AWS_PROFILE="$aws_env"
+elif [[ -z "${AWS_PROFILE:-}" ]]; then
+  echo "Error: provide --aws-env or set AWS_PROFILE." >&2
+  usage
+  exit 1
+fi
+
+echo "Using AWS profile: ${AWS_PROFILE}"
+
 require_command aws
 require_command jq
 require_command npx
@@ -138,36 +141,20 @@ load_secret_json() {
 }
 
 if [[ -z "$base_url" ]]; then
-  case "$aws_env" in
-    dev-web|train-web)
-      base_url="https://${aws_env}.ustaxcourt.gov"
-      ;;
-    sandbox)
-      if [[ -n "$sandbox_name" ]]; then
-        base_url="https://${sandbox_name}-sandbox-web.ustaxcourt.gov"
-      else
-        echo "Resolving sandbox domain from AWS secret '$secret_id'..."
-        load_secret_json
-        domain_name="${DOMAIN_NAME:-}"
-        if [[ -z "$domain_name" && -n "$secret_json" && "$secret_json" != "None" ]]; then
-          domain_name=$(echo "$secret_json" | jq -r '.DOMAIN_NAME // empty')
-        fi
-        if [[ -z "$domain_name" ]]; then
-          echo "Error: could not resolve sandbox DOMAIN_NAME from '$secret_id'. Pass --sandbox-name or --base-url instead." >&2
-          exit 1
-        fi
-        base_url="https://${domain_name}"
-      fi
-      ;;
-    "")
-      echo "Error: provide either --base-url or --aws-env." >&2
-      exit 1
-      ;;
-    *)
-      echo "Error: unsupported --aws-env '$aws_env'. Use dev-web, train-web, sandbox, or pass --base-url." >&2
-      exit 1
-      ;;
-  esac
+  echo "Resolving base URL from AWS secret '$secret_id' (profile: ${AWS_PROFILE})..."
+  load_secret_json
+  domain_name=""
+  if [[ -n "$secret_json" && "$secret_json" != "None" ]]; then
+    domain_name=$(echo "$secret_json" | jq -r '.DOMAIN_NAME // empty')
+  fi
+  if [[ -z "$domain_name" ]]; then
+    domain_name="${DOMAIN_NAME:-}"
+  fi
+  if [[ -z "$domain_name" ]]; then
+    echo "Error: could not resolve DOMAIN_NAME from '$secret_id'. Pass --base-url instead." >&2
+    exit 1
+  fi
+  base_url="https://${domain_name}"
 fi
 
 # Highest-priority override: credentials supplied via calling environment
@@ -181,9 +168,9 @@ else
     load_secret_json
   fi
 
-  if [[ -n "${CYPRESS_ADMIN_PASSWORD:-}" || -n "${ADMIN_PASSWORD:-}" || -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]]; then
+  if [[ -n "${ADMIN_PASSWORD:-}" || -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]]; then
     admin_username="${CYPRESS_ADMIN_USERNAME:-${ADMIN_USERNAME:-admin}}"
-    admin_password="${CYPRESS_ADMIN_PASSWORD:-${ADMIN_PASSWORD:-${DJANGO_SUPERUSER_PASSWORD:-}}}"
+    admin_password="${ADMIN_PASSWORD:-${DJANGO_SUPERUSER_PASSWORD:-}}"
   fi
 
   if [[ -z "${admin_password:-}" ]]; then
@@ -197,18 +184,15 @@ else
     admin_username=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_USERNAME // .ADMIN_USERNAME // "admin"')
     admin_password=$(echo "$secret_json" | jq -r '.CYPRESS_ADMIN_PASSWORD // .ADMIN_PASSWORD // .DJANGO_SUPERUSER_PASSWORD // empty')
   fi
-fi  # end CYPRESS_ADMIN_PASSWORD env var check
+fi
 
-if [[ -z "$admin_password" || "$admin_password" == "null" ]]; then
+if [[ -z "${admin_password:-}" || "${admin_password}" == "null" ]]; then
   echo "Error: could not find admin password in '$secret_id'. Expected one of: CYPRESS_ADMIN_PASSWORD, ADMIN_PASSWORD, DJANGO_SUPERUSER_PASSWORD" >&2
   exit 1
 fi
 
 run_stamp=$(date +%Y%m%d-%H%M%S)
-label="$aws_env"
-if [[ -z "$label" ]]; then
-  label="custom"
-fi
+label="${AWS_PROFILE}"
 artifacts_dir="cypress/artifacts/${label}/${run_stamp}"
 mkdir -p "$artifacts_dir"
 
@@ -230,8 +214,7 @@ if [[ "$skip_health_check" != "true" ]]; then
     cat > "$artifacts_dir/metadata.txt" <<EOF
 mode=${mode}
 base_url=${base_url}
-aws_env=${aws_env}
-sandbox_name=${sandbox_name}
+aws_profile=${AWS_PROFILE}
 secret_id=${secret_id}
 region=${region}
 include_admin=${include_admin}
@@ -257,6 +240,7 @@ fi
 
 set +e
 CYPRESS_INCLUDE_ADMIN_VALIDATION="$include_admin" \
+CYPRESS_INCLUDE_LOCAL_VALIDATION="false" \
 CYPRESS_ADMIN_USERNAME="$admin_username" \
 CYPRESS_ADMIN_PASSWORD="$admin_password" \
   "${cypress_cmd[@]}"
@@ -273,8 +257,7 @@ done
 cat > "$artifacts_dir/metadata.txt" <<EOF
 mode=${mode}
 base_url=${base_url}
-aws_env=${aws_env}
-sandbox_name=${sandbox_name}
+aws_profile=${AWS_PROFILE}
 secret_id=${secret_id}
 region=${region}
 include_admin=${include_admin}
