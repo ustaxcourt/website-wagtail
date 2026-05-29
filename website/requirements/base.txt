@@ -24,7 +24,7 @@ fontawesomefree==6.6.0
 filelock==3.20.3
 filetype==1.2.0
 identify==2.6.4
-idna==3.10
+idna==3.15
 iniconfig==2.0.0
 jmespath==1.0.1
 l18n==2021.3
@@ -49,12 +49,13 @@ soupsieve==2.6
 sqlparse==0.5.4
 telepath==0.3.1
 typing_extensions==4.12.2
-urllib3==2.6.3
+urllib3==2.7.0
 virtualenv==20.36.1
 wagtail>=7.3,<7.4
 # Forked to fix base model lookup bug (upstream PR #173)
 # Revert to official package once https://github.com/wagtail/wagtail-transfer/pull/173 is merged
-wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@240daba
+wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@2418438
 whitenoise==6.8.2
 Willow
 social-auth-app-django==5.6.0
+wagtail-external-links-report==0.1.0
