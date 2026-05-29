@@ -154,6 +154,46 @@
             margin: 34px 0;
         }
 
+        /* Bottom tiles — Figma-scoped overrides for JudgeIndex (node 13945-3870)
+           These override the shared QuickAccessTile styles so other pages using
+           the block are not affected. */
+        #judge-information-page .quick-access-tile {
+            border: 1px solid #005EA2;
+            padding: 29px 22px;
+            justify-content: flex-start;
+        }
+        #judge-information-page .quick-access-tile h2 {
+            color: #1B1B1B;
+            font-size: 24px;
+            line-height: 30px;
+            margin-top: 0;
+        }
+        #judge-information-page .quick-access-tile .tile-icon {
+            width: 50px;
+            height: 50px;
+            padding: 5px;
+        }
+        /* Tablet: ≤992px — single-column full-width tiles, icon-left layout */
+        @media (max-width: 992px) {
+            #judge-information-page .quick-access-tile {
+                padding: 29px 22px;
+            }
+            #judge-information-page .quick-access-tile .tile-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        /* Mobile: ≤640px — keep Figma spacing */
+        @media (max-width: 640px) {
+            #judge-information-page .quick-access-tile {
+                padding: 20px 16px;
+            }
+            #judge-information-page .quick-access-tile h2 {
+                font-size: 20px;
+                line-height: 25px;
+            }
+        }
+
         /* Filter icon — invert to white when toggle is active */
         .mobile-filter-toggle.panel-open .mobile-filter-icon,
         .mobile-filter-toggle.has-filters .mobile-filter-icon {
