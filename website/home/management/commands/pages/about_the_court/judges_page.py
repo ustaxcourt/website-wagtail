@@ -614,9 +614,14 @@ class JudgesPageInitializer(PageInitializer):
             title="Icon: Account Balance (Judicial Conduct)",
         )
         judges_page = Page.objects.filter(slug=self.slug).first()
-        judicial_conduct_page = Page.objects.filter(
-            slug="judicial-conduct-and-disability-procedures"
-        ).first()
+        # JCDP page has slug "jcdp" in this repo; fall back to the older slug
+        # if it ever changes.
+        judicial_conduct_page = (
+            Page.objects.filter(slug="jcdp").first()
+            or Page.objects.filter(
+                slug="judicial-conduct-and-disability-procedures"
+            ).first()
+        )
 
         seminar_link = (
             [
