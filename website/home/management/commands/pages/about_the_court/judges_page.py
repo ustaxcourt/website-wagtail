@@ -640,26 +640,21 @@ class JudgesPageInitializer(PageInitializer):
                 "value": {
                     "tiles_hover_enabled": True,
                     "icon_position": "desktop_top_mobile_left",
+                    # tiles is a ListBlock — items are plain dicts (no type/value wrapper)
                     "tiles": [
                         {
-                            "type": "item",
-                            "value": {
-                                "title": "Private Seminar Disclosures",
-                                "description": "",
-                                "icon": {"svg_file": article_doc.pk},
-                                "content_alignment": "center",
-                                "link": seminar_link,
-                            },
+                            "title": "Private Seminar Disclosures",
+                            "description": "",
+                            "icon": {"svg_file": article_doc.pk},
+                            "content_alignment": "center",
+                            "link": seminar_link,
                         },
                         {
-                            "type": "item",
-                            "value": {
-                                "title": "Judicial Conduct and Disability Complaint Procedures",
-                                "description": "",
-                                "icon": {"svg_file": balance_doc.pk},
-                                "content_alignment": "center",
-                                "link": conduct_link,
-                            },
+                            "title": "Judicial Conduct and Disability Complaint Procedures",
+                            "description": "",
+                            "icon": {"svg_file": balance_doc.pk},
+                            "content_alignment": "center",
+                            "link": conduct_link,
                         },
                     ],
                 },
