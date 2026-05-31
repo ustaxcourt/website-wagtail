@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags static %}
 {% block extra_css %}
     <style>
         #private-seminar-page {
@@ -24,7 +24,7 @@
         .disclosure-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 22px;
         }
 
         @media (max-width: 768px) {
@@ -34,17 +34,80 @@
         }
 
         .disclosure-card {
-            border: 1px solid #dfe1e2;
-            padding: 1.25rem 1.5rem;
-            background-color: #fff;
-            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #005EA2;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 29px 22px;
+            box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.10);
+        }
+
+        @media (max-width: 640px) {
+            .disclosure-card {
+                padding: 22px;
+            }
+        }
+
+        .disclosure-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 640px) {
+            .disclosure-card-header {
+                gap: 18px;
+            }
+        }
+
+        .disclosure-card-header .header-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 640px) {
+            .disclosure-card-header .header-icon {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .disclosure-card-header .header-icon img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .disclosure-card-header h2 {
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 30px;
+            color: #1B1B1B;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        @media (max-width: 640px) {
+            .disclosure-card-header h2 {
+                font-size: 20px;
+                line-height: 22px;
+                color: #162E51;
+            }
         }
 
         .disclosure-card .judge-name {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: #1b1b1b;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 25px;
+            margin-bottom: 15px;
+            color: #000000;
         }
 
         .disclosure-card dl {
@@ -60,6 +123,24 @@
         .disclosure-card dd {
             margin-left: 0;
             color: #1b1b1b;
+        }
+
+        /* Responsive row layout for dt/dd */
+        @media (min-width: 480px) {
+            .disclosure-card dl {
+                display: grid;
+                grid-template-columns: max-content 1fr;
+                column-gap: 0.5rem;
+                align-items: baseline;
+            }
+            .disclosure-card dt {
+                grid-column: 1;
+                margin-top: 0.5rem;
+            }
+            .disclosure-card dd {
+                grid-column: 2;
+                margin-top: 0.5rem;
+            }
         }
 
         .disclosure-card dd ul {
@@ -91,7 +172,7 @@
                             onchange="document.getElementById('year-filter-form').submit()">
                         <option value="">All Years</option>
                         {% for year in years %}
-                            <option value="{{ year }}" {% if selected_year == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                            <option value="{{ year }}" {% if selected_year == year|slugify %}selected{% endif %}>{{ year }}</option>
                         {% endfor %}
                     </select>
                 </form>
@@ -101,6 +182,12 @@
             <div class="disclosure-grid">
                 {% for disclosure in disclosures %}
                     <div class="disclosure-card">
+                        <div class="disclosure-card-header">
+                            <div class="header-icon">
+                                <img src="{% static 'images/icons/icon-article.svg' %}" alt="" aria-hidden="true">
+                            </div>
+                            <h2>Private Seminar Disclosure</h2>
+                        </div>
                         <div class="judge-name">{{ disclosure.judge.display_name }}</div>
                         <dl>
                             <dt>Program Provider(s):</dt>
