@@ -147,6 +147,17 @@
             outline-offset: 2px;
         }
 
+        /* H2 section headers carry tabindex=0 so keyboard users can navigate
+           between sections. Without an explicit :focus-visible the focus ring
+           is invisible against the blue bar, which made them look "not tabable"
+           in QA. Use a contrasting white outline + offset that reads against
+           #005ea2. */
+        .judge-section-header:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: -3px;
+            box-shadow: 0 0 0 3px #162e51;
+        }
+
         /* HR separator above bottom tiles */
         .judge-tiles-rule {
             border: none;
@@ -164,17 +175,28 @@
             border: 1px solid #005EA2;
             padding: 29px 22px;
             justify-content: flex-start;
+            border-radius: 5px;
+            box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.10);
         }
         #judge-information-page .quick-access-tile h2 {
             color: #1B1B1B;
             font-size: 24px;
             line-height: 30px;
             margin-top: 0;
+            font-family: "Source Sans 3", sans-serif;
+            font-weight: 600;
         }
         #judge-information-page .quick-access-tile .tile-icon {
             width: 50px;
             height: 50px;
             padding: 5px;
+            margin: 0;
+        }
+        #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
         }
         /* Hide the empty description placeholder so it doesn't reserve a grid row
            or push the layout. Wagtail's |richtext filter on an empty value still
@@ -184,14 +206,46 @@
         #judge-information-page .quick-access-tile .tile-description p:empty {
             display: none;
         }
-        /* Tablet: ≤992px — single-column full-width tiles, icon-left layout */
+        /* Tablet: ≤992px — Figma node 13945:3933 (776x104 tile, horizontal layout)
+           - SINGLE COLUMN grid (shared block defaults to 2-column at ≤992px,
+             which makes iPad Air 820px split into two narrow tiles and the title
+             wraps; Figma's tablet artboard is 834px with a full-width 776px tile)
+           - 29px/22px padding (NOT shared block's 20px/25px)
+           - icon (50x50) + 18px gap + text on a single row, vertically centered
+           - title: Source Sans 3 600 24px / 30px line-height, color #1B1B1B
+           - title fits on ONE LINE per Figma (text container is 664x30)
+           Shared block applies its tablet rules with !important, so we have to
+           !important these overrides to beat it. */
         @media (max-width: 992px) {
+            #judge-information-page .quick-access-tiles-grid {
+                grid-template-columns: 1fr !important;
+            }
             #judge-information-page .quick-access-tile {
                 padding: 29px 22px;
             }
-            #judge-information-page .quick-access-tile .tile-icon {
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+                display: grid !important;
+                grid-template-columns: 50px 1fr !important;
+                column-gap: 18px !important;
+                row-gap: 0 !important;
+                align-items: center !important;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
                 width: 50px;
                 height: 50px;
+                padding: 5px;
+                margin: 0 !important;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left h2 {
+                margin: 0 !important;
+            }
+            #judge-information-page .quick-access-tile h2 {
+                color: #1B1B1B;
+                font-family: "Source Sans 3", sans-serif;
+                font-size: 24px;
+                line-height: 30px;
+                font-weight: 600;
+                text-align: left;
             }
         }
         /* Mobile: ≤640px — Figma node 13945-4914 (Mobile QAT, 288×88 tile)
@@ -202,8 +256,13 @@
         @media (max-width: 640px) {
             #judge-information-page .quick-access-tile {
                 padding: 22px;
+                border: 1px solid #005EA2;
+                border-radius: 5px;
+                box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.10);
+                min-height: 88px;
             }
             #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+                display: grid;
                 grid-template-columns: 40px 1fr;
                 column-gap: 18px;
                 align-items: center;
@@ -216,11 +275,16 @@
             }
             #judge-information-page .quick-access-tile h2 {
                 color: #162E51;
+                font-family: "Source Sans 3", sans-serif;
                 font-size: 20px;
                 line-height: 22px;
                 font-weight: 600;
                 margin: 0;
                 text-align: left;
+                /* Figma node 13945-4914 text container is 186px wide.
+                   Constrain the title to this width so the wrap matches Figma
+                   on mobile viewports wider than 320px. */
+                max-width: 186px;
             }
         }
 

@@ -623,11 +623,16 @@ class JudgesPageInitializer(PageInitializer):
             ).first()
         )
 
+        # Use the page's relative URL (`/judges/`) rather than full_url so the
+        # tile link works across environments (dev/sandbox/prod) and across
+        # different ports on local dev. PSD is a RoutablePageMixin sub-path on
+        # JudgeIndex, not a separate Page in the tree, so it can't be linked
+        # via related_page — external_url with a relative path is the safe option.
         seminar_link = (
             [
                 {
                     "type": "external_url",
-                    "value": f"{judges_page.full_url}private-seminar-disclosures/",
+                    "value": f"{judges_page.url}private-seminar-disclosures/",
                 }
             ]
             if judges_page
