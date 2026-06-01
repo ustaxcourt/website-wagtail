@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
+{% load filters %}
 {% block extra_css %}
     <style>
         /* ── Page container ─────────────────────────────────────────────── */
@@ -112,6 +113,13 @@
             border: 1px solid #dfe1e2;
             background-color: #fff;
             overflow: hidden;
+        }
+
+        /* 508: cards are tab-focusable. Show a clear focus ring so keyboard
+           users can see which card is currently active. */
+        .disclosure-card:focus-visible {
+            outline: 3px solid #005ea2;
+            outline-offset: 2px;
         }
 
         /* Zone 1 — Judge name header (Figma Frame 14: #f1f9fc) */
@@ -285,39 +293,51 @@
         {% if disclosures %}
             <ul class="disclosure-grid" role="list" data-testid="disclosure-grid">
                 {% for disclosure in disclosures %}
-                    <li class="disclosure-card" data-testid="disclosure-card">
-                        {# <h2> so screen readers can navigate by heading; no tabindex needed (static content) #}
-                        <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
-                        {# Body: stacked field groups with thin dividers per Figma #}
-                        <div class="disclosure-body">
-                            {# Group 1: Program Provider(s) — label then value #}
-                            <div class="disclosure-field-group">
-                                <p class="field-label">Program Provider(s):</p>
-                                <p class="field-value">{{ disclosure.program_provider }}</p>
-                            </div>
-                            <hr class="field-divider" aria-hidden="true">
-                            {# Group 2: Program / Date / Location — Figma combines label+value inline #}
-                            <div class="disclosure-field-group">
-                                <p class="field-value field-value--bold">Program: {{ disclosure.program_title }}</p>
-                                <p class="field-value field-value--light">Date: {{ disclosure.date|date:"m/d/Y" }}</p>
-                                <p class="field-value field-value--bold">Location: {{ disclosure.location }}</p>
-                            </div>
-                            {% if disclosure.program_topics %}
-                                <hr class="field-divider" aria-hidden="true">
-                                {# Group 3: Program Topics #}
+                    {% comment %}
+                        508: each card is tab-focusable (tabindex=0) and announced
+                        as a single article. The aria-label concatenates all visible
+                        fields so screen readers read the entire contents on focus.
+                        The inner markup is hidden from the accessibility tree
+                        (aria-hidden) so the screen reader doesn't double-announce.
+                    {% endcomment %}
+                    <li class="disclosure-card"
+                        data-testid="disclosure-card"
+                        tabindex="0"
+                        role="article"
+                        aria-label="{{ disclosure.judge.display_name }}. Program Provider: {{ disclosure.program_provider }}. Program: {{ disclosure.program_title }}. Date: {{ disclosure.date|date:'F j, Y' }}. Location: {{ disclosure.location }}.{% if disclosure.program_topics %} Program Topics: {{ disclosure.program_topics|aria_text }}.{% endif %}{% if disclosure.supporter %} Supporters: {{ disclosure.supporter }}.{% endif %}">
+                        <div aria-hidden="true">
+                            <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
+                            {# Body: stacked field groups with thin dividers per Figma #}
+                            <div class="disclosure-body">
+                                {# Group 1: Program Provider(s) — label then value #}
                                 <div class="disclosure-field-group">
-                                    <p class="field-label">Program Topics:</p>
-                                    <div class="field-value">{{ disclosure.program_topics|richtext }}</div>
+                                    <p class="field-label">Program Provider(s):</p>
+                                    <p class="field-value">{{ disclosure.program_provider }}</p>
                                 </div>
-                            {% endif %}
-                            {% if disclosure.supporter %}
-                                <hr class="field-divider" aria-hidden="true">
-                                {# Group 4: Supporter(s) #}
+                                <hr class="field-divider">
+                                {# Group 2: Program / Date / Location — Figma combines label+value inline #}
                                 <div class="disclosure-field-group">
-                                    <p class="field-label">Supporter(s):</p>
-                                    <p class="field-value">{{ disclosure.supporter }}</p>
+                                    <p class="field-value field-value--bold">Program: {{ disclosure.program_title }}</p>
+                                    <p class="field-value field-value--light">Date: {{ disclosure.date|date:"m/d/Y" }}</p>
+                                    <p class="field-value field-value--bold">Location: {{ disclosure.location }}</p>
                                 </div>
-                            {% endif %}
+                                {% if disclosure.program_topics %}
+                                    <hr class="field-divider">
+                                    {# Group 3: Program Topics #}
+                                    <div class="disclosure-field-group">
+                                        <p class="field-label">Program Topics:</p>
+                                        <div class="field-value">{{ disclosure.program_topics|richtext }}</div>
+                                    </div>
+                                {% endif %}
+                                {% if disclosure.supporter %}
+                                    <hr class="field-divider">
+                                    {# Group 4: Supporter(s) #}
+                                    <div class="disclosure-field-group">
+                                        <p class="field-label">Supporter(s):</p>
+                                        <p class="field-value">{{ disclosure.supporter }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </li>
                 {% endfor %}
