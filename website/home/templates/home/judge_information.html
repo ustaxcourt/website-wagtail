@@ -192,22 +192,34 @@
             padding: 5px;
             margin: 0;
         }
-        /* Desktop: icon, title, description stacked vertically (per QAT design
-           library — icon on top, then title, then description on its own line).
-           Tablet (≤992px) and mobile (≤640px) media queries below switch this
-           to a horizontal icon-left layout with title to the right. */
+        /* Desktop: icon, title, description stacked vertically. Tablet (≤992px)
+           and mobile (≤640px) media queries below switch this to a horizontal
+           icon-left layout with title to the right. */
         #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
             gap: 12px;
         }
-        /* Hide the empty description placeholder so it doesn't reserve a grid row
-           or push the layout. Wagtail's |richtext filter on an empty value still
-           renders an empty <p>, so target both :empty and a wrapping <p> with no
-           text content. */
+        /* Honor the content_alignment field from the Wagtail admin (left /
+           center / right). Without these explicit rules the desktop tile-content
+           defaults to align-items: stretch and the alignment dropdown does
+           nothing visible. */
+        #judge-information-page .quick-access-tile.align-left .tile-content {
+            align-items: flex-start;
+        }
+        #judge-information-page .quick-access-tile.align-center .tile-content {
+            align-items: center;
+        }
+        #judge-information-page .quick-access-tile.align-right .tile-content {
+            align-items: flex-end;
+        }
+        /* Hide the empty description placeholder so it doesn't reserve a flex
+           row and add a phantom 12px gap below the title. Wagtail's |richtext
+           filter on an empty value still renders an empty <p>, so :empty alone
+           won't match the wrapping div (it has whitespace + a <p>). Use :has()
+           to hide the wrapper when there's no non-empty <p> inside. */
         #judge-information-page .quick-access-tile .tile-description:empty,
-        #judge-information-page .quick-access-tile .tile-description p:empty {
+        #judge-information-page .quick-access-tile .tile-description:not(:has(p:not(:empty))) {
             display: none;
         }
         /* Tablet: ≤992px — Figma node 13945:3933 (776x104 tile, horizontal layout)
@@ -230,7 +242,7 @@
             #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
                 display: grid !important;
                 grid-template-columns: 50px 1fr !important;
-                column-gap: 18px !important;
+                column-gap: 12px !important;
                 row-gap: 0 !important;
                 align-items: center !important;
             }
@@ -268,7 +280,7 @@
             #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
                 display: grid;
                 grid-template-columns: 40px 1fr;
-                column-gap: 18px;
+                column-gap: 12px;
                 align-items: center;
             }
             #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
