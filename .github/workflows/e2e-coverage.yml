@@ -50,7 +50,7 @@ jobs:
           make createpages
           make updatepages
 
-          COVERAGE_FILE=.coverage.e2e coverage run --parallel-mode manage.py runserver 0.0.0.0:8000 > /tmp/e2e-server.log 2>&1 &
+          COVERAGE_FILE=.coverage.e2e coverage run --parallel-mode manage.py runserver --noreload 0.0.0.0:8000 > /tmp/e2e-server.log 2>&1 &
           SERVER_PID=$!
 
           cleanup() {
