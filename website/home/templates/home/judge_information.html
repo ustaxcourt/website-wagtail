@@ -192,11 +192,15 @@
             padding: 5px;
             margin: 0;
         }
+        /* Desktop: icon, title, description stacked vertically (per QAT design
+           library — icon on top, then title, then description on its own line).
+           Tablet (≤992px) and mobile (≤640px) media queries below switch this
+           to a horizontal icon-left layout with title to the right. */
         #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 15px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
         }
         /* Hide the empty description placeholder so it doesn't reserve a grid row
            or push the layout. Wagtail's |richtext filter on an empty value still
