@@ -36,26 +36,73 @@
         }
 
         .judge-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             padding: 10px;
             border: 1px solid #dfe1e2;
-            background-color: transparent;
+            background-color: #fff;
             color: #1a4480;
             font-weight: 400;
             cursor: pointer;
             border-radius: 2px;
             font-size: 17px;
             line-height: 24px;
-            transition: background-color 0.15s, color 0.15s;
+            transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+        }
+
+        /* Checkbox icon — inline SVGs in the markup. The .checked / .unchecked
+           visibility is toggled by .active on the parent button. */
+        .judge-filter-btn .filter-checkbox {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .judge-filter-btn .filter-checkbox.checked { display: none; }
+        .judge-filter-btn .filter-checkbox.unchecked { display: inline-block; }
+        .judge-filter-btn.active .filter-checkbox.checked { display: inline-block; }
+        .judge-filter-btn.active .filter-checkbox.unchecked { display: none; }
+
+        /* Inactive checkbox outline:
+           - Default (no type filter selected yet) → matches Figma `#1B1B1B`
+           - Once any type filter has been selected → switches to blue `#005EA2`
+             so the inactive boxes share the color family with the active
+             filled-blue check. The .has-filters class is toggled in JS based on
+             activeFilters.size. */
+        .judge-filter-btn .filter-checkbox.unchecked rect {
+            stroke: #1B1B1B;
+        }
+        .judge-filter-bar.has-filters .judge-filter-btn .filter-checkbox.unchecked rect {
+            stroke: #005EA2;
         }
 
         .judge-filter-btn:hover {
-            background-color: #162e51;
-            color: #fff;
+            border-color: #162e51;
         }
 
+        /* Type-specific filter buttons (Judges / Senior Judges / etc.) active
+           state: navy border, white background, blue text stays the same. */
         .judge-filter-btn.active {
-            background-color: #162e51;
-            color: #fff;
+            border-color: #162e51;
+        }
+
+        /* "All Judges" gets a distinct active treatment per Figma node
+           13695-3264: solid navy background with white text. */
+        .judge-filter-btn[data-filter="all"].active {
+            background-color: #1A4480;
+            border-color: #162e51;
+            color: #ffffff;
+        }
+
+        /* Vertical divider after the All Judges button, separating the global
+           "show everything" filter from the type-specific filters. */
+        .judge-filter-divider {
+            display: inline-block;
+            width: 2px;
+            height: 39px;
+            background-color: #D9D9D9;
+            margin: 0 11px;
+            vertical-align: middle;
         }
 
         /* Section header bar */
@@ -514,11 +561,23 @@
         <div class="judge-filter-bar" role="group" aria-label="Filter judges by type">
             <button class="judge-filter-btn active"
                     data-filter="all"
-                    aria-pressed="true">All Judges</button>
+                    aria-pressed="true">
+                <span>All Judges</span>
+            </button>
+            <span class="judge-filter-divider" aria-hidden="true"></span>
             {% for group in judge_groups %}
                 <button class="judge-filter-btn"
                         data-filter="{{ group.filter_key }}"
-                        aria-pressed="false">{{ group.filter_label }}</button>
+                        aria-pressed="false">
+                    <svg class="filter-checkbox unchecked" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="1" y="1" width="18" height="18" stroke="#005EA2" stroke-width="2"/>
+                    </svg>
+                    <svg class="filter-checkbox checked" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect width="20" height="20" fill="#005EA2"/>
+                        <path d="M5 10.5L8.5 14L15 7" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                    <span>{{ group.filter_label }}</span>
+                </button>
             {% endfor %}
         </div>
         <!-- Mobile filter bar -->
@@ -641,7 +700,17 @@
                 const titleStart = document.getElementById('page-title-start');
                 const announcement = document.getElementById('filter-announcement');
 
-                // Update button states
+                // Toggle has-filters on the bar so the unchecked outline color
+                // can shift from the default (#1B1B1B) to blue (#005EA2) once a
+                // type filter is selected.
+                const filterBar = document.querySelector('.judge-filter-bar');
+                if (filterBar) {
+                    filterBar.classList.toggle('has-filters', activeFilters.size > 0);
+                }
+
+                // Update button states. The checkbox icon (inline SVG) auto-
+                // swaps via the .active CSS rule on the button — no JS needed
+                // for the icon swap.
                 document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
                     const key = btn.dataset.filter;
                     const isActive = key === ALL_FILTER
@@ -670,7 +739,10 @@
                 } else {
                     const labels = Array.from(activeFilters).map(function (key) {
                         const btn = document.querySelector('.judge-filter-btn[data-filter="' + key + '"]');
-                        return btn ? btn.textContent.trim() : key;
+                        // Read the <span> text so the checkbox <i> glyph isn't
+                        // pulled into the breadcrumb label.
+                        const span = btn ? btn.querySelector('span') : null;
+                        return (span ? span.textContent : btn ? btn.textContent : key).trim();
                     });
                     breadcrumb.textContent = ' / ' + labels.join(', ');
                     breadcrumb.style.display = 'inline';
