@@ -382,4 +382,24 @@
             </p>
         {% endif %}
     </div>
+    <script>
+        // The year filter is a native <select> with onchange="form.submit()".
+        // Arrow keys on a focused select change the value (firing onchange and
+        // submitting the form), but Enter on a closed select does not change
+        // the value, so the form never submits and Enter appears to do nothing.
+        // Open the dropdown on Enter so users can navigate options with arrow
+        // keys and confirm with Enter (which fires onchange natively).
+        (function () {
+            var select = document.getElementById('year-select');
+            if (!select) return;
+            select.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (typeof select.showPicker === 'function') {
+                        try { select.showPicker(); } catch (err) { /* not allowed in some contexts */ }
+                    }
+                }
+            });
+        })();
+    </script>
 {% endblock content %}
