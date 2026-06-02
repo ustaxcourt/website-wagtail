@@ -593,11 +593,36 @@
             let activeFilters = new Set();
             let userInteracted = false;
 
+            // The set of valid filter keys is whatever the rendered filter
+            // buttons advertise via data-filter (excluding "all"). That keeps
+            // the JS in sync with the actual sections on the page — if a judge
+            // type has no judges, no button is rendered and the corresponding
+            // key is treated as invalid in the URL.
+            function getValidFilterKeys() {
+                const keys = new Set();
+                document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
+                    const key = btn.dataset.filter;
+                    if (key && key !== ALL_FILTER) keys.add(key);
+                });
+                return keys;
+            }
+
+            // Read filters from ?filters=… and drop any token that isn't a
+            // valid key. Per AC: "Ignoring one filter phrase should not affect
+            // whether another filter phrase from the querystring is used or
+            // ignored. If all filter phrases are ignored, then the page should
+            // use the 'All Judges' filter." Returning an empty Set causes
+            // applyFilters() to show all judges.
             function getFiltersFromUrl() {
                 const params = new URLSearchParams(window.location.search);
                 const val = params.get('filters');
                 if (!val) return new Set();
-                return new Set(val.split(',').filter(Boolean));
+                const validKeys = getValidFilterKeys();
+                return new Set(
+                    val.split(',').filter(function (token) {
+                        return token && validKeys.has(token);
+                    })
+                );
             }
 
             function setFiltersInUrl(filters) {
@@ -663,8 +688,24 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
-                // Restore from URL on load
+                // Restore from URL on load (invalid filter tokens are dropped
+                // inside getFiltersFromUrl). Sync the address bar to the
+                // sanitized set so a manipulated URL like ?filters=judges,foo
+                // shows ?filters=judges after the page loads.
                 activeFilters = getFiltersFromUrl();
+                const rawParam = new URLSearchParams(window.location.search).get('filters') || '';
+                const rawTokens = rawParam.split(',').filter(Boolean);
+                const sanitizedTokens = Array.from(activeFilters);
+                if (rawTokens.length !== sanitizedTokens.length) {
+                    // Replace (not push) so the broken URL doesn't pollute history.
+                    const url = new URL(window.location.href);
+                    if (sanitizedTokens.length === 0) {
+                        url.searchParams.delete('filters');
+                    } else {
+                        url.searchParams.set('filters', sanitizedTokens.join(','));
+                    }
+                    window.history.replaceState({filters: sanitizedTokens}, '', url.toString());
+                }
                 applyFilters();
                 if (typeof window.syncMobilePanel === 'function') { window.syncMobilePanel(); }
 
