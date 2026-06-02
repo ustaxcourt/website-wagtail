@@ -52,7 +52,7 @@ test-e2e:
 	CYPRESS_COVERAGE=false CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(findstring include-admin,$(args)),true,false) CYPRESS_INCLUDE_LOCAL_VALIDATION=$(if $(findstring include-local,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
 test-e2e-coverage:
-	CYPRESS_COVERAGE=true CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(findstring include-admin,$(args)),true,false) CYPRESS_INCLUDE_LOCAL_VALIDATION=$(if $(findstring include-local,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
+	CYPRESS_COVERAGE=false CYPRESS_INCLUDE_ADMIN_VALIDATION=$(if $(findstring include-admin,$(args)),true,false) CYPRESS_INCLUDE_LOCAL_VALIDATION=$(if $(findstring include-local,$(args)),true,false) CYPRESS_BASE_URL="$(baseUrl)" CYPRESS_ADMIN_USERNAME="$(value adminUsername)" CYPRESS_ADMIN_PASSWORD="$(value adminPassword)" npx cypress run --browser chrome
 
 test-e2e-aws:
 	./scripts/cypress/run_against_aws.sh --mode run \
