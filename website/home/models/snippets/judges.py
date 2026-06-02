@@ -177,7 +177,9 @@ class JudgeCollectionOrderable(Orderable):
     ]
 
     class Meta(Orderable.Meta):  # Ensure Meta from Orderable is inherited
-        pass
+        # A judge can only appear once in a given collection. The InlinePanel
+        # otherwise lets an editor add the same judge multiple times.
+        unique_together = ("collection", "judge")
 
 
 @register_snippet
