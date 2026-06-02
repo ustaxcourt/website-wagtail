@@ -14,6 +14,7 @@ concurrency:
 jobs:
   e2e-coverage:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
@@ -50,7 +51,7 @@ jobs:
           make createpages
           make updatepages
 
-          COVERAGE_FILE=.coverage.e2e coverage run --parallel-mode manage.py runserver --noreload 0.0.0.0:8000 > /tmp/e2e-server.log 2>&1 &
+          COVERAGE_FILE=.coverage.e2e coverage run --rcfile=.coveragerc.e2e --parallel-mode manage.py runserver --noreload 0.0.0.0:8000 > /tmp/e2e-server.log 2>&1 &
           SERVER_PID=$!
 
           cleanup() {
