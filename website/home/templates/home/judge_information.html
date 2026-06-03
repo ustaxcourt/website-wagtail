@@ -25,6 +25,13 @@
             margin-bottom: 34px;
         }
 
+        /* Focus ring for the (now tab-focusable) intro paragraph so keyboard
+           users can see where Tab landed. */
+        #judge-information-page .judge-intro:focus-visible {
+            outline: 3px solid #005ea2;
+            outline-offset: 2px;
+        }
+
         /* Filter buttons */
         .judge-filter-bar {
             display: flex;
@@ -532,6 +539,16 @@
             }
         }
 
+        /* Tablet side margins per UX Documentation PDF (page 1, "Tablet"):
+           "Side margins of 29px". Scoped to 641-992px so mobile (≤640px)
+           keeps its own side spacing. */
+        @media (min-width: 641px) and (max-width: 992px) {
+            #judge-information-page {
+                padding-left: 29px;
+                padding-right: 29px;
+            }
+        }
+
         @media (max-width: 640px) {
             #judge-information-page {
                 padding-top: 25px;
@@ -572,7 +589,14 @@
             <span class="page-title-start" id="page-title-start" role="button" tabindex="0">{{ page.title }}</span><span class="page-title-breadcrumb" id="page-title-breadcrumb"></span>
         </h1>
         {% if page.intro_text %}
-            <div class="judge-intro">{{ page.intro_text|richtext }}</div>
+            {% comment %}
+                tabindex=0 puts the intro into the keyboard tab order so
+                screen reader users tabbing through the page hear it. Without
+                this, focus jumps from the page title straight to the filter
+                buttons and the intro paragraph is announced only by a
+                "read-all" navigation, not a "next-focusable" Tab.
+            {% endcomment %}
+            <div class="judge-intro" tabindex="0">{{ page.intro_text|richtext }}</div>
         {% endif %}
         <!-- Filter buttons -->
         <div class="judge-filter-bar" role="group" aria-label="Filter judges by type">
