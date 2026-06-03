@@ -513,18 +513,35 @@
         }
 
         /* Mobile adjustments (≤640px) */
+        /* iPad portrait + below (≤992px): the inline filter bar wraps to two
+           lines because the five buttons add up to ~830px, so swap in the
+           mobile-style Filter toggle button instead. Per Figma node 14914:3023
+           the button is a fixed 200px wide on iPad and right-aligned. */
+        @media (max-width: 992px) {
+            .judge-filter-bar {
+                display: none;
+            }
+
+            .mobile-filter-bar {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .mobile-filter-toggle {
+                width: 200px;
+            }
+        }
+
         @media (max-width: 640px) {
             #judge-information-page {
                 padding-top: 25px;
                 padding-bottom: 25px;
             }
 
-            .judge-filter-bar {
-                display: none;
-            }
-
-            .mobile-filter-bar {
-                display: block;
+            /* Phone: full-width Filter toggle (easier to tap than a 200px
+               pill). Overrides the 200px width set in the ≤992px block above. */
+            .mobile-filter-toggle {
+                width: 100%;
             }
 
             .judge-card-grid {
