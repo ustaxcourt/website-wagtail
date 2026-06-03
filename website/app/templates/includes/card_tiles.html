@@ -274,7 +274,7 @@
            tabindex="0"
            aria-label="{{ tile.card_header }}"
            data-link-type="{{ link.block_type }}"
-           {% if link.block_type == 'internal_page' %}
+           {% if link.block_type == 'internal_page' and link.value %}
                data-href="{% pageurl link.value %}"
            {% elif link.block_type == 'external_url' %}
                data-href="{{ link.value }}" data-is-external="true"

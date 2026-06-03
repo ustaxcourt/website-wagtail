@@ -34,7 +34,7 @@
    data-is-link="true"
    {% if link_item.block_type == 'external_url' %}
       href="{{ link_item.value }}"
-   {% elif link_item.block_type == 'internal_page' %}
+   {% elif link_item.block_type == 'internal_page' and link_item.value %}
       href="{% pageurl link_item.value %}"
    {% elif link_item.block_type == 'internal_pdf' %}
       href="{{ link_item.value.url }}"

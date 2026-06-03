@@ -34,7 +34,7 @@
                 <div class="centered-image">
                     {% with link_item=block.value.link.0 %}
                     {% if link_item %}
-                        <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
+                        <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' and link_item.value %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
                     {% endif %}
                     {% picture block.value.image format-jpeg width-1000 loading="lazy" %}
                     {% if link_item %}

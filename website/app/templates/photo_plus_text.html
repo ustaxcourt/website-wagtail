@@ -8,7 +8,7 @@
         <div class="dedication-image {% if photo_rendition.width > photo_rendition.height %}dedication-image--landscape{% endif %}">
             {% with link_item=block.value.link.0 %}
             {% if link_item %}
-                <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
+                <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' and link_item.value %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
             {% endif %}
             <img src="{{ photo_rendition.url }}" width="{{ photo_rendition.width }}" height="{{ photo_rendition.height }}" alt="{{ block.value.alt_text }}" {% if not link_item %}tabindex="0"{% endif %} role="img">
             {% if link_item %}
