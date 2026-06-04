@@ -340,7 +340,7 @@
     <div class="grid-container">
         <div class="cards-grid">
             {% for tile in page.quick_access_tiles %}
-                <a href="{% for link_item in tile.value.link %}{% if link_item.block_type == 'related_page' %}{{ link_item.value.url }}{% else %}{{ link_item.value }}{% endif %}{% endfor %}" class="nav-link" aria-label="{{ tile.value.title }}">
+                <a href="{% for link_item in tile.value.link %}{% if link_item.block_type == 'related_page' %}{{ link_item.value.url }}{% else %}{{ link_item.value }}{% endif %}{% endfor %}" class="nav-link" aria-label="{{ tile.value.title }}" data-gtm-element="quick-access-tile" data-gtm-label="{{ tile.value.title }}">
                     <div class="nav-card">
                       {% if tile.value.icon %}
                           <div class="icon">
@@ -354,7 +354,7 @@
             {% endfor %}
             {% for tile in page.full_width_quick_access_tile %}
             <div class="toggle-on-at-or-below-tablet-size">
-              <a href="{% for link_item in tile.value.link %}{% if link_item.block_type == 'related_page' %}{{ link_item.value.url }}{% else %}{{ link_item.value }}{% endif %}{% endfor %}" class="nav-link" aria-label="{{ tile.value.title }}">
+              <a href="{% for link_item in tile.value.link %}{% if link_item.block_type == 'related_page' %}{{ link_item.value.url }}{% else %}{{ link_item.value }}{% endif %}{% endfor %}" class="nav-link" aria-label="{{ tile.value.title }}" data-gtm-element="quick-access-tile" data-gtm-label="{{ tile.value.title }}">
                   <div class="nav-card">
                     {% if tile.value.icon %}
                       <div class="icon">
@@ -371,7 +371,7 @@
           </div>
         <div class="wide-nav-cards">
           {% for tile in page.full_width_quick_access_tile %}
-            <a href="{% for link_item in tile.value.link %}{% if link_item.block_type == 'related_page' %}{{ link_item.value.url }}{% else %}{{ link_item.value }}{% endif %}{% endfor %}" class="nav-link" aria-label="{{ tile.value.title }}">
+            <a href="{% for link_item in tile.value.link %}{% if link_item.block_type == 'related_page' %}{{ link_item.value.url }}{% else %}{{ link_item.value }}{% endif %}{% endfor %}" class="nav-link" aria-label="{{ tile.value.title }}" data-gtm-element="quick-access-tile" data-gtm-label="{{ tile.value.title }}">
                 <div class="wide-nav-card">
                   {% if tile.value.icon %}
                     <div class="icon">
