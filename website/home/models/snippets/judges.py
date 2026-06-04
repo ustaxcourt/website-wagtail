@@ -399,6 +399,12 @@ class JudgeRole(
 
 @register_snippet
 class PrivateSeminarDisclosure(models.Model):
+    # Explicit BigAutoField to match the project-wide DEFAULT_AUTO_FIELD
+    # (the `home` AppConfig overrides that default to AutoField for legacy
+    # reasons; this declaration restores consistency for the newer model
+    # without forcing a cascade across the rest of the app).
+    id = models.BigAutoField(primary_key=True)
+
     judge = models.ForeignKey(
         "JudgeProfile",
         on_delete=models.CASCADE,

@@ -23,6 +23,19 @@ describe("Judge Information page", () => {
         cy.get(".judge-intro").should("exist").and("not.be.empty");
     });
 
+    it("intro paragraph is tab-focusable so screen reader users hear it", () => {
+        // Tab-focusability was added so screen reader users walking the page
+        // with Tab land on the intro (instead of jumping H1 → filter buttons
+        // and missing the paragraph entirely).
+        cy.get(".judge-intro").should("have.attr", "tabindex", "0");
+    });
+
+    it("Tab from page title lands on the intro paragraph next", () => {
+        cy.get("#page-title-start").focus();
+        cy.realPress("Tab");
+        cy.get(".judge-intro").should("be.focused");
+    });
+
     it("displays all 5 filter buttons", () => {
         cy.get(".judge-filter-bar button").should("have.length.at.least", 2);
         cy.get('.judge-filter-btn[data-filter="all"]').should("contain", "All Judges");
@@ -303,9 +316,12 @@ describe("Judge Information — Figma design spec (desktop)", () => {
         });
     });
 
-    it("each section h2 has tabindex=-1 for programmatic anchor focus", () => {
+    it("each section h2 has tabindex=0 so keyboard users can Tab to section landmarks", () => {
+        // Per UX feedback the section headers were made keyboard-focusable
+        // (tabindex=0) with a visible focus ring so the section bar is
+        // reachable by Tab, not just via #hash anchors.
         cy.get(".judge-section-header").each(($h2) => {
-            cy.wrap($h2).should("have.attr", "tabindex", "-1");
+            cy.wrap($h2).should("have.attr", "tabindex", "0");
         });
     });
 
@@ -734,9 +750,9 @@ describe("Judge Information — 508 accessibility", () => {
         });
     });
 
-    it("each section h2 has tabindex=-1 so #hash anchor navigation sends focus to the heading", () => {
+    it("each section h2 has tabindex=0 so keyboard users can Tab onto section landmarks", () => {
         cy.get(".judge-section-header").each(($h2) => {
-            cy.wrap($h2).should("have.attr", "tabindex", "-1");
+            cy.wrap($h2).should("have.attr", "tabindex", "0");
         });
     });
 
@@ -824,12 +840,16 @@ describe("Judge Information — 508 accessibility", () => {
         cy.url().should("include", "/judges/private-seminar-disclosures/");
     });
 
-    it("focus order follows visual top-to-bottom layout (filter bar → cards → tiles)", () => {
-        // Collect the vertical position of each focusable group's first element
+    it("focus order follows visual top-to-bottom layout (intro → filter bar → cards → bottom tiles)", () => {
+        // Collect the vertical position of each focusable group's first element.
+        // Bottom tiles are now rendered via the shared QuickAccessTilesBlock,
+        // so the link selector is .quick-access-tile-link (not the old
+        // .judge-tile class which was removed in the QAT refactor).
         const selectors = [
+            ".judge-intro",
             ".judge-filter-btn",
             ".judge-card",
-            ".judge-tile",
+            ".quick-access-tile-link",
         ];
         const tops: number[] = [];
         selectors.forEach((sel) => {

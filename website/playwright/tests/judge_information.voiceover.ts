@@ -94,16 +94,24 @@ async function getAnnouncement(page: Page): Promise<string> {
  * Press Tab until the focused element satisfies a predicate.
  * Returns the announcement for the matching element.
  * Throws a clear error after maxTabs presses so failures are easy to diagnose.
+ *
+ * The predicate may be sync OR async (async predicates can read additional
+ * state from the page via `page.evaluate`). A previous version typed `match`
+ * as a sync `(string) => boolean`, but the caller in "Tab moves from the last
+ * filter button directly to the first judge card" passed an async predicate.
+ * Since an async function always returns a Promise — which is truthy — the
+ * loop would exit on the very first iteration without checking the real
+ * condition. Awaiting the result and constraining the return type fixes that.
  */
 async function tabUntil(
     page:    Page,
-    match:   (announcement: string) => boolean,
+    match:   (announcement: string) => boolean | Promise<boolean>,
     maxTabs: number = 40,
 ): Promise<string> {
     for (let i = 0; i < maxTabs; i++) {
         await page.keyboard.press("Tab");
         const a = await getAnnouncement(page);
-        if (match(a)) return a;
+        if (await match(a)) return a;
     }
     const last = await getAnnouncement(page);
     throw new Error(
@@ -153,6 +161,24 @@ test.describe("Judge Information — page structure", () => {
         const intro = page.locator(".judge-intro");
         await expect(intro).toBeVisible();
         await expect(intro).toContainText(/biography|clicking on the cards/i);
+    });
+
+    test("intro paragraph is keyboard-tab-focusable so Tab users hear it announced", async ({ page }) => {
+        // Static <p>/<div> text isn't in the Tab order by default, so a
+        // screen-reader user pressing Tab from the h1 would jump straight to
+        // the filter buttons and never hear the intro. tabindex="0" puts the
+        // intro into the focus chain so Tab from the page title lands on it
+        // and the screen reader announces its content on focus.
+        const intro = page.locator(".judge-intro");
+        await expect(intro).toHaveAttribute("tabindex", "0");
+
+        // Tab from the page-title button lands on the intro next.
+        await page.locator("#page-title-start").focus();
+        await page.keyboard.press("Tab");
+        const focusedClass = await page.evaluate(
+            () => document.activeElement?.className ?? "",
+        );
+        expect(focusedClass).toContain("judge-intro");
     });
 
     test("'Judge Biographies' section is an h2 — jumpable via VoiceOver heading rotor", async ({ page }) => {
@@ -378,11 +404,11 @@ test.describe("Judge Information — judge cards", () => {
         expect(expectedCards.length, "page must have at least one judge card").toBeGreaterThan(0);
 
         // ── 2. Anchor to the first section h2 via its id (added by WAG-1246) ──────
-        // Each section h2 has id="{{ group.filter_key }}" and tabindex="-1".
-        // tabindex="-1" means it is NOT in the tab order but CAN receive
-        // programmatic focus — so focusing it sets our position in the DOM
-        // without disrupting keyboard navigation expectations.
-        // One Tab from here lands on the first judge card link.
+        // Each section h2 has id="{{ group.filter_key }}" and tabindex="0".
+        // (The header is in the tab order so keyboard users can land on it as a
+        // landmark.)  We focus it programmatically here purely to establish our
+        // starting position in the DOM; one Tab from here advances to the first
+        // judge card link in the section below.
         const firstSectionHeaderId = await page.evaluate(() =>
             document.querySelector(".judge-section .judge-section-header")?.id ?? null,
         );
@@ -813,17 +839,17 @@ test.describe("Judge Information — design-spec requirements (WAG-1246 review)"
         }
     });
 
-    test("every section h2 has tabindex=-1 (required for #hash anchor focus to land on heading)", async ({ page }) => {
-        // Browsers only send focus to an element on #hash navigation if the element
-        // is focusable.  Without tabindex=-1, clicking a #judges anchor link scrolls
-        // the page but focus stays wherever it was — a disorienting experience for
-        // keyboard and screen-reader users.
+    test("every section h2 has tabindex=0 (keyboard users can Tab onto each section landmark)", async ({ page }) => {
+        // Per UX feedback the section headers were promoted to tabindex=0 (not
+        // tabindex=-1) so a keyboard-only user can Tab through them as landmarks.
+        // Browsers still send #hash anchor focus to an element with any non-null
+        // tabindex, so anchor navigation continues to work.
         const headers = page.locator(".judge-section-header");
         const count = await headers.count();
 
         for (let i = 0; i < count; i++) {
             const tabindex = await headers.nth(i).getAttribute("tabindex");
-            expect(tabindex, `h2 at index ${i} must have tabindex="-1"`).toBe("-1");
+            expect(tabindex, `h2 at index ${i} must have tabindex="0"`).toBe("0");
         }
     });
 

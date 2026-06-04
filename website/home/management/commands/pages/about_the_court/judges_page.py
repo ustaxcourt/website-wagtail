@@ -444,8 +444,20 @@ class JudgesPageInitializer(PageInitializer):
 
         logger.info(f"Created the '{title}' page with judge collections.")
 
-        # Seed sample private seminar disclosures
-        self._seed_seminar_disclosures()
+        # Sample seminar disclosures are dev-fixture data only — they name real
+        # judges with fabricated programs and dates and would be misleading on
+        # any non-local environment. Gated on ENVIRONMENT="local" (matches the
+        # pattern used by other env-specific seeders in this codebase).
+        from django.conf import settings as _django_settings
+
+        if getattr(_django_settings, "ENVIRONMENT", "") == "local":
+            self._seed_seminar_disclosures()
+        else:
+            logger.info(
+                "Skipping _seed_seminar_disclosures: ENVIRONMENT is "
+                f"{getattr(_django_settings, 'ENVIRONMENT', '<unset>')!r}, "
+                "sample disclosures only seed on local."
+            )
 
     def _seed_seminar_disclosures(self):
         sample_disclosures = [
@@ -529,7 +541,16 @@ class JudgesPageInitializer(PageInitializer):
                 logger.info("Updated page title to 'Judge Information'.")
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
-            self._seed_seminar_disclosures()
+            # Same env gate as in create() — sample disclosures are dev-only.
+            from django.conf import settings as _django_settings
+
+            if getattr(_django_settings, "ENVIRONMENT", "") == "local":
+                self._seed_seminar_disclosures()
+            else:
+                logger.info(
+                    "Skipping _seed_seminar_disclosures during update: "
+                    f"ENVIRONMENT is {getattr(_django_settings, 'ENVIRONMENT', '<unset>')!r}."
+                )
             self._seed_bottom_tiles(page)
         except Page.DoesNotExist:
             logger.info(f"Page '{self.slug}' does not exist.")

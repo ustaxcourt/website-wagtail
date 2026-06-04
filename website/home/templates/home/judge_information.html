@@ -853,7 +853,14 @@
             window.addEventListener('popstate', function () {
                 activeFilters = getFiltersFromUrl();
                 applyFilters();
-                syncMobilePanel();
+                // syncMobilePanel is defined inside the mobile-filter-panel IIFE
+                // below and exposed as window.syncMobilePanel. Call it through
+                // the window prefix with a typeof guard so this handler doesn't
+                // throw a ReferenceError if the IIFE hasn't run (no toggle on
+                // page) or has been refactored.
+                if (typeof window.syncMobilePanel === 'function') {
+                    window.syncMobilePanel();
+                }
             });
 
             // ── Mobile filter panel ──────────────────────────────────────────
