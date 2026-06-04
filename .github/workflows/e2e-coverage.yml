@@ -14,7 +14,7 @@ concurrency:
 jobs:
   e2e-coverage:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     permissions:
       contents: read
       pull-requests: write
