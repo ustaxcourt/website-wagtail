@@ -427,10 +427,13 @@ class JudgesPageInitializer(PageInitializer):
             },
         )
 
-        # Load SVG icons as Wagtail Documents
-        bottom_tiles_data = self._build_bottom_tiles_data()
-
-        # Create the page
+        # Create the page. bottom_tiles is intentionally left empty here —
+        # _build_bottom_tiles_data() needs both this JudgeIndex page (for the
+        # PSD sub-route URL) and the JCDP page to exist in the tree, and at
+        # create() time neither is guaranteed yet (this page is about to be
+        # added; JCDP is initialized by a sibling Initializer). update() runs
+        # after the full create() pass and calls _seed_bottom_tiles(), which
+        # populates tiles with correct links once both pages exist.
         _ = home_page.add_child(
             instance=JudgeIndex(
                 title=title,
@@ -438,7 +441,6 @@ class JudgesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description=title,
                 intro_text="See the Judge's biography by clicking on the cards.",
-                bottom_tiles=bottom_tiles_data,
             )
         )
 

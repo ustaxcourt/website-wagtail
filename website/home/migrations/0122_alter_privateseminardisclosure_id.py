@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0131_delete_stray_pluralized_judge_roles"),
+        ("home", "0121_dedupe_and_unique_judge_collection_orderable"),
     ]
 
     operations = [

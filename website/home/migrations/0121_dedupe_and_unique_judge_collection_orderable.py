@@ -1,5 +1,5 @@
 """
-0129: Remove duplicate JudgeCollectionOrderable rows and enforce a unique
+0121: Remove duplicate JudgeCollectionOrderable rows and enforce a unique
 constraint on (collection, judge) so the admin InlinePanel can no longer save
 two rows for the same judge in the same collection.
 
@@ -39,11 +39,11 @@ def dedupe_orderables(apps, schema_editor):
         extras.delete()
         total_removed += n
         logger.info(
-            f"0129: deduped collection={dup['collection_id']} "
+            f"0121: deduped collection={dup['collection_id']} "
             f"judge={dup['judge_id']} (removed {n})"
         )
 
-    logger.info(f"0129: total duplicate orderables removed: {total_removed}")
+    logger.info(f"0121: total duplicate orderables removed: {total_removed}")
 
 
 def noop(apps, schema_editor):
@@ -52,7 +52,7 @@ def noop(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0128_reseed_bottom_tiles_after_admin_edits"),
+        ("home", "0120_seed_judge_index_bottom_tiles"),
     ]
 
     operations = [
