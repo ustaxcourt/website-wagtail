@@ -132,23 +132,23 @@ describe("Judge Information page", () => {
     });
 
     it("displays the two bottom tiles", () => {
-        cy.get('[data-testid="tile-private-seminar-disclosures"]')
+        cy.get('a.quick-access-tile-link[href*="/judges/private-seminar-disclosures"]')
             .should("exist")
             .and("contain", "Private Seminar Disclosures");
-        cy.get('[data-testid="tile-judicial-conduct"]')
+        cy.get('a.quick-access-tile-link[href*="/jcdp"]')
             .should("exist")
             .and("contain", "Judicial Conduct and Disability Complaint Procedures");
     });
 
     it("Private Seminar Disclosures tile navigates to the disclosures page", () => {
-        cy.get('[data-testid="tile-private-seminar-disclosures"]').click();
+        cy.get('a.quick-access-tile-link[href*="/judges/private-seminar-disclosures"]').click();
         cy.url().should("include", "/judges/private-seminar-disclosures/");
         cy.get('[data-testid="page-title"]').should("contain", "Private Seminar Disclosures");
         checkA11y();
     });
 
     it("Judicial Conduct tile navigates away from the judges page", () => {
-        cy.get('[data-testid="tile-judicial-conduct"]').then(($tile) => {
+        cy.get('a.quick-access-tile-link[href*="/jcdp"]').then(($tile) => {
             const href = $tile.attr("href");
             expect(href).to.exist;
             expect(href).not.to.include("/judges/");
@@ -218,8 +218,10 @@ describe("Judge Information — Figma design spec (desktop)", () => {
     });
 
     it("filter bar: active button has correct background and text color", () => {
+        // Figma node 13695-3264: "All Judges" active treatment is the lighter
+        // navy #1A4480 (rgb 26,68,128), not the border navy #162E51.
         cy.get('.judge-filter-btn[data-filter="all"]').as("btn");
-        cy.get("@btn").should("have.css", "background-color", "rgb(22, 46, 81)");
+        cy.get("@btn").should("have.css", "background-color", "rgb(26, 68, 128)");
         cy.get("@btn").should("have.css", "color", "rgb(255, 255, 255)");
     });
 
@@ -275,20 +277,23 @@ describe("Judge Information — Figma design spec (desktop)", () => {
     });
 
     it("bottom tiles: blue border, correct radius, shadow, font", () => {
-        cy.get(".judge-tile").first().as("tile");
+        // In the QAT markup, padding/border/shadow live on .quick-access-tile;
+        // typography (font-size/weight/line-height) lives on its inner h2.
+        cy.get(".quick-access-tile").first().as("tile");
         cy.get("@tile").should("have.css", "border-top-color", "rgb(0, 94, 162)");
         cy.get("@tile").should("have.css", "border-top-width", "1px");
         cy.get("@tile").should("have.css", "border-top-left-radius", "5px");
         cy.get("@tile").invoke("css", "box-shadow").should("include", "rgba(86, 92, 101, 0.1)");
-        cy.get("@tile").should("have.css", "font-size", "24px");
-        cy.get("@tile").should("have.css", "font-weight", "600");
-        cy.get("@tile").should("have.css", "line-height", "30px");
         cy.get("@tile").should("have.css", "padding-top", "29px");
         cy.get("@tile").should("have.css", "padding-left", "22px");
+        cy.get("@tile").find("h2").as("title");
+        cy.get("@title").should("have.css", "font-size", "24px");
+        cy.get("@title").should("have.css", "font-weight", "600");
+        cy.get("@title").should("have.css", "line-height", "30px");
     });
 
     it("bottom tiles: column flex direction at desktop", () => {
-        cy.get(".judge-tile").first().should("have.css", "flex-direction", "column");
+        cy.get(".quick-access-tile").first().should("have.css", "flex-direction", "column");
     });
 
     it("h1 has page-title class so 15px margin-bottom is applied", () => {
@@ -326,8 +331,12 @@ describe("Judge Information — Figma design spec (desktop)", () => {
     });
 
     it("HR separator exists immediately before the bottom tiles grid", () => {
+        // The shared QAT include emits a <style> block before its container
+        // <div>, so the HR's direct next sibling is <style>, not the
+        // container. Use the general-sibling combinator (~) to assert order
+        // without caring about the interleaved style element.
         cy.get(".judge-tiles-rule").should("exist").and("be.visible");
-        cy.get(".judge-tiles-rule + .judge-bottom-tiles").should("exist");
+        cy.get(".judge-tiles-rule ~ .quick-access-tiles-container").should("exist");
     });
 
     it("filter bar margin-top is 34px (PDF global spacing spec)", () => {
@@ -361,16 +370,21 @@ describe("Judge Information — Figma design spec (desktop)", () => {
             .should("have.css", "padding-bottom", "45px");
     });
 
-    it("judicial conduct tile uses fa-landmark icon", () => {
-        cy.get('[data-testid="tile-judicial-conduct"] i')
-            .should("have.class", "fa-landmark")
-            .and("have.attr", "aria-hidden", "true");
+    it("judicial conduct tile renders an aria-hidden SVG icon", () => {
+        // QAT refactor: tiles use inline SVG via {% include_svg %} from the
+        // Wagtail Document, not Font Awesome <i>. The icon DIV stays
+        // aria-hidden so screen readers skip it.
+        cy.get('a.quick-access-tile-link[href*="/jcdp"] .tile-icon')
+            .should("have.attr", "aria-hidden", "true")
+            .find("svg")
+            .should("exist");
     });
 
-    it("private seminar tile uses fa-file-lines icon", () => {
-        cy.get('[data-testid="tile-private-seminar-disclosures"] i')
-            .should("have.class", "fa-file-lines")
-            .and("have.attr", "aria-hidden", "true");
+    it("private seminar tile renders an aria-hidden SVG icon", () => {
+        cy.get('a.quick-access-tile-link[href*="/judges/private-seminar-disclosures"] .tile-icon')
+            .should("have.attr", "aria-hidden", "true")
+            .find("svg")
+            .should("exist");
     });
 });
 
@@ -390,22 +404,28 @@ describe("Judge Information — Figma design spec (tablet)", () => {
     });
 
     it("bottom tiles collapse to 1-column (long QAT) at tablet", () => {
-        cy.get(".judge-bottom-tiles").then(($grid) => {
+        cy.get("#judge-information-page .quick-access-tiles-grid").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
             expect(cols).to.have.length(1);
         });
     });
 
-    it("bottom tiles: row flex direction at tablet (long QAT layout)", () => {
-        cy.get(".judge-tile").first().should("have.css", "flex-direction", "row");
+    it("bottom tiles: horizontal layout at tablet (long QAT)", () => {
+        // QAT refactor: tile horizontal layout is achieved via the inner
+        // .tile-content using display: grid (icon column + text column), not
+        // via flex-direction: row on the tile itself.
+        cy.get(".quick-access-tile .tile-content").first().should("have.css", "display", "grid");
     });
 
     it("bottom tiles: left-aligned (justify-content flex-start) at tablet", () => {
-        cy.get(".judge-tile").first().should("have.css", "justify-content", "flex-start");
+        cy.get(".quick-access-tile").first().should("have.css", "justify-content", "flex-start");
     });
 
-    it("bottom tile icon: 40px at tablet — Figma Frame 297 spec", () => {
-        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+    it("bottom tile icon container: 50px at tablet (Figma Frame 297 single-row layout)", () => {
+        // QAT inline-SVG icons; the container is 50px (icon + 5px padding each
+        // side gives 40px visible icon per Figma). Replaces the old
+        // Font Awesome `<i>` font-size assertion.
+        cy.get(".quick-access-tile .tile-icon").first().should("have.css", "width", "50px");
     });
 
     it("section header font size unchanged at tablet", () => {
@@ -434,7 +454,7 @@ describe("Judge Information — Figma design spec (mobile)", () => {
     });
 
     it("bottom tiles stack to 1 column at mobile", () => {
-        cy.get(".judge-bottom-tiles").then(($grid) => {
+        cy.get("#judge-information-page .quick-access-tiles-grid").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
             expect(cols).to.have.length(1);
         });
@@ -454,30 +474,34 @@ describe("Judge Information — Figma design spec (mobile)", () => {
         cy.get(".judge-card .judge-role").first().should("have.css", "font-size", "16px");
     });
 
-    it("bottom tiles: row flex direction at mobile", () => {
-        cy.get(".judge-tile").first().should("have.css", "flex-direction", "row");
+    it("bottom tiles: horizontal layout at mobile", () => {
+        // See tablet test — same QAT layout pattern (grid on .tile-content)
+        // produces the icon-left, text-right layout shown in Figma mobile spec.
+        cy.get(".quick-access-tile .tile-content").first().should("have.css", "display", "grid");
     });
 
     it("bottom tile icon: 40px at mobile — Figma mobile spec", () => {
-        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+        // QAT inline-SVG icons; .tile-icon has explicit 40px width/height at mobile.
+        cy.get(".quick-access-tile .tile-icon").first().should("have.css", "width", "40px");
     });
 
     it("bottom tiles: left-aligned (justify-content flex-start) at mobile", () => {
-        cy.get(".judge-tile").first().should("have.css", "justify-content", "flex-start");
+        cy.get(".quick-access-tile").first().should("have.css", "justify-content", "flex-start");
     });
 
     it("bottom tiles: 20px font, 22px line-height at mobile", () => {
-        cy.get(".judge-tile").first().as("tile");
-        cy.get("@tile").should("have.css", "font-size", "20px");
-        cy.get("@tile").should("have.css", "line-height", "22px");
+        // Typography lives on the inner h2 in the QAT markup, not on the tile container.
+        cy.get(".quick-access-tile h2").first().as("title");
+        cy.get("@title").should("have.css", "font-size", "20px");
+        cy.get("@title").should("have.css", "line-height", "22px");
     });
 
     it("bottom tiles: text color #162e51 at mobile", () => {
-        cy.get(".judge-tile").first().should("have.css", "color", "rgb(22, 46, 81)");
+        cy.get(".quick-access-tile h2").first().should("have.css", "color", "rgb(22, 46, 81)");
     });
 
     it("bottom tiles: padding 22px at mobile", () => {
-        cy.get(".judge-tile").first().as("tile");
+        cy.get(".quick-access-tile").first().as("tile");
         cy.get("@tile").should("have.css", "padding-top", "22px");
         cy.get("@tile").should("have.css", "padding-left", "22px");
     });
@@ -802,9 +826,24 @@ describe("Judge Information — 508 accessibility", () => {
     });
 
     it("Tab reaches the first judge card after the filter bar", () => {
-        // Tab past all 5 filter buttons then confirm focus lands on a judge card
+        // After the last filter button, Tab lands on the first visible section
+        // h2 (now tabindex=0 — a keyboard landmark per UX feedback), then on
+        // the first judge card. Walk Tab forward until we find a .judge-card.
         cy.get('.judge-filter-btn[data-filter="senior-special-trial-judges"]').focus();
-        cy.realPress("Tab");
+        const advanceUntilCard = (attemptsLeft: number) => {
+            if (attemptsLeft <= 0) {
+                throw new Error("Tab never reached a .judge-card after the filter bar");
+            }
+            cy.realPress("Tab");
+            cy.focused().then(($el) => {
+                if (!$el.hasClass("judge-card")) {
+                    advanceUntilCard(attemptsLeft - 1);
+                }
+            });
+        };
+        // 5 section h2s + safety margin; first .judge-card should be reached
+        // within a handful of Tabs.
+        advanceUntilCard(10);
         cy.focused().should("have.class", "judge-card");
     });
 
@@ -821,10 +860,10 @@ describe("Judge Information — 508 accessibility", () => {
     });
 
     it("Tab reaches both bottom tiles after the judge cards", () => {
-        cy.get('[data-testid="tile-private-seminar-disclosures"]').focus();
-        cy.get('[data-testid="tile-private-seminar-disclosures"]').should("be.focused");
+        cy.get('a.quick-access-tile-link[href*="/judges/private-seminar-disclosures"]').focus();
+        cy.get('a.quick-access-tile-link[href*="/judges/private-seminar-disclosures"]').should("be.focused");
         cy.realPress("Tab");
-        cy.get('[data-testid="tile-judicial-conduct"]').should("be.focused");
+        cy.get('a.quick-access-tile-link[href*="/jcdp"]').should("be.focused");
     });
 
     it("Enter on a judge card navigates to the detail page", () => {
@@ -836,7 +875,7 @@ describe("Judge Information — 508 accessibility", () => {
     });
 
     it("Enter on Private Seminar Disclosures tile navigates to disclosures page", () => {
-        cy.get('[data-testid="tile-private-seminar-disclosures"]').focus().realPress("Enter");
+        cy.get('a.quick-access-tile-link[href*="/judges/private-seminar-disclosures"]').focus().realPress("Enter");
         cy.url().should("include", "/judges/private-seminar-disclosures/");
     });
 
@@ -844,7 +883,7 @@ describe("Judge Information — 508 accessibility", () => {
         // Collect the vertical position of each focusable group's first element.
         // Bottom tiles are now rendered via the shared QuickAccessTilesBlock,
         // so the link selector is .quick-access-tile-link (not the old
-        // .judge-tile class which was removed in the QAT refactor).
+        // .quick-access-tile class which was removed in the QAT refactor).
         const selectors = [
             ".judge-intro",
             ".judge-filter-btn",
@@ -870,19 +909,26 @@ describe("Judge Information — 508 accessibility", () => {
 // They exist specifically to catch breakpoint drift (e.g. 834px → 1024px).
 
 describe("Judge Information — Figma design spec (breakpoint boundaries)", () => {
-    it("at 835px: tiles are 2-column desktop layout (above tablet breakpoint)", () => {
-        cy.viewport(835, 900);
+    it("at 993px: tiles unlock multi-column layout (above tablet breakpoint)", () => {
+        // Page-scoped CSS in judge_information.html forces .quick-access-tiles-grid
+        // to a single column at max-width: 992px (overrides the shared QAT
+        // block — full-width iPad Air tiles per Figma node 13945:3933). At
+        // ≥993px the shared block's auto-fit min(33.3%) kicks in (up to 3
+        // tracks). Either way, the assertion is "more than 1 column" — that
+        // captures the boundary behavior without coupling to the exact track
+        // count, which is auto-fit-driven and depends on tile count.
+        cy.viewport(993, 900);
         cy.visit("/judges/");
-        cy.get(".judge-bottom-tiles").then(($grid) => {
+        cy.get("#judge-information-page .quick-access-tiles-grid").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
-            expect(cols).to.have.length(2);
+            expect(cols.length).to.be.greaterThan(1);
         });
     });
 
     it("at 834px: tiles collapse to 1-column long QAT (tablet breakpoint)", () => {
         cy.viewport(834, 1112);
         cy.visit("/judges/");
-        cy.get(".judge-bottom-tiles").then(($grid) => {
+        cy.get("#judge-information-page .quick-access-tiles-grid").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
             expect(cols).to.have.length(1);
         });
@@ -909,7 +955,7 @@ describe("Judge Information — Figma design spec (breakpoint boundaries)", () =
     it("at 641px: tiles are still 1-column (between mobile and tablet breakpoints)", () => {
         cy.viewport(641, 900);
         cy.visit("/judges/");
-        cy.get(".judge-bottom-tiles").then(($grid) => {
+        cy.get("#judge-information-page .quick-access-tiles-grid").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
             expect(cols).to.have.length(1);
         });
@@ -918,27 +964,29 @@ describe("Judge Information — Figma design spec (breakpoint boundaries)", () =
     it("at 640px: tiles are 1-column (mobile breakpoint)", () => {
         cy.viewport(640, 900);
         cy.visit("/judges/");
-        cy.get(".judge-bottom-tiles").then(($grid) => {
+        cy.get("#judge-information-page .quick-access-tiles-grid").then(($grid) => {
             const cols = window.getComputedStyle($grid[0]).gridTemplateColumns.split(" ");
             expect(cols).to.have.length(1);
         });
     });
 
-    it("tile icon is 40px at desktop (Figma Frame 310 spec)", () => {
+    it("tile icon container is 50px at desktop (Figma Frame 310 spec)", () => {
+        // QAT refactor: inline-SVG icons; .tile-icon is sized via width/height
+        // (50px container = 40px visible icon + 5px padding on each side).
         cy.viewport(1440, 900);
         cy.visit("/judges/");
-        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+        cy.get(".quick-access-tile .tile-icon").first().should("have.css", "width", "50px");
     });
 
-    it("tile icon is 40px at tablet — does not shrink (Figma Frame 297 spec)", () => {
+    it("tile icon container is 50px at tablet — does not shrink (Figma Frame 297 spec)", () => {
         cy.viewport(834, 1112);
         cy.visit("/judges/");
-        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+        cy.get(".quick-access-tile .tile-icon").first().should("have.css", "width", "50px");
     });
 
-    it("tile icon is 40px at mobile — does not shrink (Figma mobile spec)", () => {
+    it("tile icon container is 40px at mobile (Figma mobile spec)", () => {
         cy.viewport(390, 844);
         cy.visit("/judges/");
-        cy.get(".judge-tile i").first().should("have.css", "font-size", "40px");
+        cy.get(".quick-access-tile .tile-icon").first().should("have.css", "width", "40px");
     });
 });
