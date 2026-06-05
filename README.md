@@ -100,6 +100,27 @@ make pytest
 make test-e2e
 ```
 
+#### VoiceOver / screen reader tests (Playwright)
+
+These tests use [@guidepup/playwright](https://www.guidepup.dev/) to drive macOS VoiceOver via Playwright and verify that pages are navigable and announced correctly by a screen reader. They are macOS-only.
+
+One-time setup (installs VoiceOver automation permissions):
+```shell
+make setup-voiceover
+```
+
+Run all VoiceOver tests against the local dev server:
+```shell
+make test-voiceover
+```
+
+Run against a different base URL (e.g. a sandbox environment):
+```shell
+make test-voiceover baseUrl=https://alice-sandbox-web.ustaxcourt.gov
+```
+
+Test files live in `website/playwright/tests/`. Each test file mirrors its corresponding Cypress spec and focuses on screen reader announcement order, landmark navigation, and ARIA live region behaviour.
+
 #### E2E tests against AWS lower environments
 
 These commands run Cypress from your local machine against an AWS-hosted environment and pull admin credentials from AWS Secrets Manager using your local `awscli` session.
