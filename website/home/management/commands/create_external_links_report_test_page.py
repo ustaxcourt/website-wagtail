@@ -29,13 +29,13 @@ class Command(BaseCommand):
             initializer.delete()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "External Links Report test page deleted (if it existed)."
+                    "External Links Report Test Page deleted (if it existed)."
                 )
             )
         else:
             initializer.create()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "External Links Report test page created. Visit /external-links-report-test/ to view it."
+                    "External Links Report Test Page created. Visit /external-links-report-test/ to view it."
                 )
             )
