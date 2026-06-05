@@ -94,16 +94,24 @@ async function getAnnouncement(page: Page): Promise<string> {
  * Press Tab until the focused element satisfies a predicate.
  * Returns the announcement for the matching element.
  * Throws a clear error after maxTabs presses so failures are easy to diagnose.
+ *
+ * The predicate may be sync OR async (async predicates can read additional
+ * state from the page via `page.evaluate`). A previous version typed `match`
+ * as a sync `(string) => boolean`, but the caller in "Tab moves from the last
+ * filter button directly to the first judge card" passed an async predicate.
+ * Since an async function always returns a Promise — which is truthy — the
+ * loop would exit on the very first iteration without checking the real
+ * condition. Awaiting the result and constraining the return type fixes that.
  */
 async function tabUntil(
     page:    Page,
-    match:   (announcement: string) => boolean,
+    match:   (announcement: string) => boolean | Promise<boolean>,
     maxTabs: number = 40,
 ): Promise<string> {
     for (let i = 0; i < maxTabs; i++) {
         await page.keyboard.press("Tab");
         const a = await getAnnouncement(page);
-        if (match(a)) return a;
+        if (await match(a)) return a;
     }
     const last = await getAnnouncement(page);
     throw new Error(
@@ -153,6 +161,24 @@ test.describe("Judge Information — page structure", () => {
         const intro = page.locator(".judge-intro");
         await expect(intro).toBeVisible();
         await expect(intro).toContainText(/biography|clicking on the cards/i);
+    });
+
+    test("intro paragraph is keyboard-tab-focusable so Tab users hear it announced", async ({ page }) => {
+        // Static <p>/<div> text isn't in the Tab order by default, so a
+        // screen-reader user pressing Tab from the h1 would jump straight to
+        // the filter buttons and never hear the intro. tabindex="0" puts the
+        // intro into the focus chain so Tab from the page title lands on it
+        // and the screen reader announces its content on focus.
+        const intro = page.locator(".judge-intro");
+        await expect(intro).toHaveAttribute("tabindex", "0");
+
+        // Tab from the page-title button lands on the intro next.
+        await page.locator("#page-title-start").focus();
+        await page.keyboard.press("Tab");
+        const focusedClass = await page.evaluate(
+            () => document.activeElement?.className ?? "",
+        );
+        expect(focusedClass).toContain("judge-intro");
     });
 
     test("'Judge Biographies' section is an h2 — jumpable via VoiceOver heading rotor", async ({ page }) => {
@@ -348,6 +374,82 @@ test.describe("Judge Information — judge cards", () => {
         expect(cards.length).toBeGreaterThanOrEqual(3);
         // Every announcement must be unique — no duplicate names
         expect(new Set(cards).size).toBe(cards.length);
+    });
+
+    test("every judge card is Tab-reachable in DOM order and announces name + role — DOM-driven", async ({ page }) => {
+        // ── 1. Extract expected cards from the live DOM ───────────────────────────
+        // Source of truth: whatever the server renders is what we assert against.
+        // If judges are added/removed the test adapts automatically.
+        const expectedCards = await page.evaluate(() => {
+            function visibleText(node: Element): string {
+                if (node.getAttribute("aria-hidden") === "true") return "";
+                return Array.from(node.childNodes)
+                    .map(c =>
+                        c.nodeType === Node.TEXT_NODE
+                            ? (c.textContent ?? "")
+                            : visibleText(c as Element),
+                    )
+                    .join(" ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+            }
+            return Array.from(document.querySelectorAll("a.judge-card")).map(card => ({
+                name:     card.querySelector(".judge-name")?.textContent?.trim() ?? "",
+                role:     card.querySelector(".judge-role")?.textContent?.trim() ?? "",
+                section:  card.closest(".judge-section")?.getAttribute("data-section") ?? "",
+                fullText: visibleText(card as HTMLElement),
+            }));
+        });
+
+        expect(expectedCards.length, "page must have at least one judge card").toBeGreaterThan(0);
+
+        // ── 2. Anchor to the first section h2 via its id (added by WAG-1246) ──────
+        // Each section h2 has id="{{ group.filter_key }}" and tabindex="0".
+        // (The header is in the tab order so keyboard users can land on it as a
+        // landmark.)  We focus it programmatically here purely to establish our
+        // starting position in the DOM; one Tab from here advances to the first
+        // judge card link in the section below.
+        const firstSectionHeaderId = await page.evaluate(() =>
+            document.querySelector(".judge-section .judge-section-header")?.id ?? null,
+        );
+        expect(firstSectionHeaderId, "first section h2 must have an id (WAG-1246 requirement)").toBeTruthy();
+
+        await page.evaluate(
+            id => (document.getElementById(id!) as HTMLElement | null)?.focus(),
+            firstSectionHeaderId,
+        );
+        await page.keyboard.press("Tab"); // h2 is tabindex=-1 → Tab exits to first card
+
+        // ── 3. Tab through every card in DOM order ─────────────────────────────────
+        // h2 section dividers between groups have tabindex="-1" so they are skipped
+        // by Tab — cards from all sections flow as one continuous tab sequence.
+        for (let i = 0; i < expectedCards.length; i++) {
+            const expected     = expectedCards[i];
+            const announcement = await getAnnouncement(page);
+            const lower        = announcement.toLowerCase();
+
+            expect(
+                lower,
+                `Card ${i + 1}/${expectedCards.length} — section "${expected.section}" ` +
+                `— expected name "${expected.name}" in: "${announcement}"`,
+            ).toContain(expected.name.toLowerCase());
+
+            expect(
+                lower,
+                `Card ${i + 1}/${expectedCards.length} (${expected.name}): ` +
+                `expected role "${expected.role}" in: "${announcement}"`,
+            ).toContain(expected.role.toLowerCase());
+
+            expect(
+                lower,
+                `Card ${i + 1}/${expectedCards.length} (${expected.name}): ` +
+                `expected "link" in: "${announcement}"`,
+            ).toContain("link");
+
+            if (i < expectedCards.length - 1) {
+                await page.keyboard.press("Tab");
+            }
+        }
     });
 
     test("judge card photos are aria-hidden — VoiceOver reads name and title only, not 'image'", async ({ page }) => {
@@ -650,6 +752,177 @@ test.describe("Judge Information — DOM text accessibility audit", () => {
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// 6b. DESIGN-SPEC DOM REQUIREMENTS
+//     These are the structural guarantees that VoiceOver navigation depends on.
+//     They were identified during the UX/design review of WAG-1246 and are placed
+//     here because they directly affect what screen-reader users can and cannot do.
+//
+//     Each test captures a specific failure mode that caused a real design review
+//     comment — tests that were missing and would have caught the issue earlier.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+test.describe("Judge Information — design-spec requirements (WAG-1246 review)", () => {
+    test.beforeEach(async ({ page }) => { await page.goto(JUDGES_URL); });
+
+    test("h1 has class='page-title' so its 15px margin-bottom CSS rule is applied", async ({ page }) => {
+        // The CSS selector is '#judge-information-page .page-title'.
+        // Without class="page-title" on the <h1>, the rule never fires and there is
+        // no spacing between the page title and the intro paragraph.
+        const h1 = page.locator("h1[data-testid='page-title']");
+        const classes = await h1.getAttribute("class");
+        expect(classes, "h1 must include 'page-title' for 15px spacing to apply").toContain("page-title");
+
+        const marginBottom = await h1.evaluate(
+            (el) => parseFloat(getComputedStyle(el).marginBottom),
+        );
+        expect(marginBottom, "h1 margin-bottom must be 15px").toBe(15);
+    });
+
+    test("section header margin-bottom is 24px (not 16px/1rem)", async ({ page }) => {
+        // Figma spec: 24px between the section header bar and the first judge card.
+        // Previously this was set to 1rem (16px), violating the global spacing document.
+        const header = page.locator(".judge-section-header").first();
+        const marginBottom = await header.evaluate(
+            (el) => parseFloat(getComputedStyle(el).marginBottom),
+        );
+        expect(marginBottom, "section header margin-bottom must be 24px").toBe(24);
+    });
+
+    test("judge card grid gap is 8px (not 20px)", async ({ page }) => {
+        // Figma annotation: "Theres a 8px gap in between" (between judge cards).
+        // Previously gap was 20px, giving cards too much breathing room vs. mockup.
+        const grid = page.locator(".judge-card-grid").first();
+        const gap = await grid.evaluate(
+            (el) => parseFloat(getComputedStyle(el).gap),
+        );
+        expect(gap, "judge card grid gap must be 8px").toBe(8);
+    });
+
+    test("judge card role text is not bold (font-weight 400)", async ({ page }) => {
+        // Figma annotation: "The bottom text is NOT bolded".
+        // The judge name (.judge-name) is weight 600; the role (.judge-role) must
+        // stay at 400 so the two are visually distinct.
+        const role = page.locator(".judge-card .judge-role").first();
+        const weight = await role.evaluate(
+            (el) => getComputedStyle(el).fontWeight,
+        );
+        expect(weight, "judge-role font-weight must be 400 (normal)").toBe("400");
+    });
+
+    test("every visible section h2 has a non-empty id attribute", async ({ page }) => {
+        // The id is required for two things:
+        //   1. Direct anchor linking from the admin side (#judges, #senior-judges, …)
+        //   2. Programmatic focus — tabindex=-1 is useless without an id target
+        // Without id, hash-URL navigation silently no-ops.
+        const headers = page.locator(".judge-section-header");
+        const count = await headers.count();
+        expect(count).toBeGreaterThan(0);
+
+        for (let i = 0; i < count; i++) {
+            const id = await headers.nth(i).getAttribute("id");
+            expect(id, `h2 at index ${i} must have a non-empty id`).toBeTruthy();
+        }
+    });
+
+    test("every section h2 id matches the parent section's data-section key", async ({ page }) => {
+        // The id must be the same value as the section's data-section attribute so
+        // that filter buttons (data-filter) and headings share a consistent naming scheme.
+        const sections = page.locator(".judge-section");
+        const count = await sections.count();
+        expect(count).toBeGreaterThan(0);
+
+        for (let i = 0; i < count; i++) {
+            const section = sections.nth(i);
+            const filterKey = await section.getAttribute("data-section");
+            const h2Id = await section.locator(".judge-section-header").getAttribute("id");
+            expect(h2Id, `h2 id must equal data-section="${filterKey}"`).toBe(filterKey);
+        }
+    });
+
+    test("every section h2 has tabindex=0 (keyboard users can Tab onto each section landmark)", async ({ page }) => {
+        // Per UX feedback the section headers were promoted to tabindex=0 (not
+        // tabindex=-1) so a keyboard-only user can Tab through them as landmarks.
+        // Browsers still send #hash anchor focus to an element with any non-null
+        // tabindex, so anchor navigation continues to work.
+        const headers = page.locator(".judge-section-header");
+        const count = await headers.count();
+
+        for (let i = 0; i < count; i++) {
+            const tabindex = await headers.nth(i).getAttribute("tabindex");
+            expect(tabindex, `h2 at index ${i} must have tabindex="0"`).toBe("0");
+        }
+    });
+
+    test("HR separator (.judge-tiles-rule) exists between judge sections and bottom tiles", async ({ page }) => {
+        // Figma annotation: "There is also a Horizontal rule above this to separate
+        // it from the cards."  Without the HR, the tiles visually run into the last
+        // judge section with no clear boundary.
+        const hr = page.locator(".judge-tiles-rule");
+        await expect(hr, "HR separator must exist before .judge-bottom-tiles").toBeVisible();
+
+        // Verify DOM order: HR must immediately precede the tiles grid
+        const isBeforeTiles = await hr.evaluate((el) => {
+            const next = el.nextElementSibling;
+            return next?.classList.contains("judge-bottom-tiles") ?? false;
+        });
+        expect(isBeforeTiles, ".judge-tiles-rule must be the immediate sibling before .judge-bottom-tiles").toBe(true);
+    });
+
+    test("mobile filter toggle uses filter_icon.svg (not Font Awesome fa-filter)", async ({ page }) => {
+        // The filter icon on this page was using fa-solid fa-filter (Font Awesome),
+        // while definitions_page and litc_page use the shared filter_icon.svg from
+        // the USTC design library.  Using Font Awesome here creates visual inconsistency.
+        await page.setViewportSize({ width: 390, height: 844 });
+
+        const imgIcon = page.locator("#mobile-filter-toggle img.mobile-filter-icon");
+        await expect(imgIcon, "filter toggle must use img.mobile-filter-icon").toBeVisible();
+
+        const src = await imgIcon.getAttribute("src");
+        expect(src, "filter icon src must include filter_icon.svg").toContain("filter_icon.svg");
+
+        const ariaHidden = await imgIcon.getAttribute("aria-hidden");
+        expect(ariaHidden, "filter icon must be aria-hidden (decorative)").toBe("true");
+
+        // Font Awesome icon must not be present
+        const faIcon = page.locator("#mobile-filter-toggle i.fa-filter");
+        await expect(faIcon, "fa-filter icon must not be used").toHaveCount(0);
+    });
+
+    test("bottom tiles are left-aligned (justify-content flex-start) at tablet viewport", async ({ page }) => {
+        // Figma annotation: "In tablet view, the design is using the long QAT rather
+        // than regular ones."  Long QAT = full-width single-column, horizontal layout
+        // with icon on the left.  justify-content: flex-start ensures the icon + text
+        // group anchors left rather than centering inside the full-width tile.
+        await page.setViewportSize({ width: 834, height: 1112 });
+
+        const tile = page.locator(".judge-tile").first();
+        const justifyContent = await tile.evaluate(
+            (el) => getComputedStyle(el).justifyContent,
+        );
+        expect(justifyContent, "judge-tile must be flex-start at tablet").toBe("flex-start");
+
+        const flexDirection = await tile.evaluate(
+            (el) => getComputedStyle(el).flexDirection,
+        );
+        expect(flexDirection, "judge-tile must be flex-direction row at tablet").toBe("row");
+    });
+
+    test("bottom tiles are left-aligned (justify-content flex-start) at mobile viewport", async ({ page }) => {
+        // Mobile (≤640px): same long-QAT style — icon on left, text to its right,
+        // group left-anchored.  Previously justify-content was unset (inherited 'center'
+        // from the base tile), causing the icon+text row to float in the middle.
+        await page.setViewportSize({ width: 390, height: 844 });
+
+        const tile = page.locator(".judge-tile").first();
+        const justifyContent = await tile.evaluate(
+            (el) => getComputedStyle(el).justifyContent,
+        );
+        expect(justifyContent, "judge-tile must be flex-start at mobile").toBe("flex-start");
+    });
+});
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // 7. VOICEOVER FULL-PAGE SWEEP
 //    Drives real VoiceOver through every major section of the page using
 //    VO+Right (next) to walk sequentially and jump commands for long-distance
@@ -791,6 +1064,88 @@ voiceOverTest.describe("Judge Information — VoiceOver full-page sweep", () => 
                     expect(log, `VoiceOver never announced: ${label}`).toMatch(pattern);
                 }
             }
+        },
+    );
+
+    voiceOverTest(
+        "VoiceOver speaks every judge's name and role — DOM-driven full card traversal",
+        async ({ page, voiceOver }) => {
+            // ── 1. Get the expected card list directly from the live DOM ──────────────
+            // Whatever the server renders is what VoiceOver must speak.
+            // The test adapts automatically when judges are added or removed in the CMS —
+            // no hardcoded names, no stale assertions.
+            const expectedCards = await page.evaluate(() =>
+                Array.from(document.querySelectorAll("a.judge-card")).map(card => ({
+                    name:    card.querySelector(".judge-name")?.textContent?.trim() ?? "",
+                    role:    card.querySelector(".judge-role")?.textContent?.trim() ?? "",
+                    section: card.closest(".judge-section")?.getAttribute("data-section") ?? "",
+                })),
+            );
+            expect(expectedCards.length, "page must have at least one judge card").toBeGreaterThan(0);
+
+            // ── 2. Enter the page and navigate to the first judge section h2 ──────────
+            // VoiceOver's findNextLink searches forward from the current cursor
+            // position — if we start at h1 the search wraps through page header/nav
+            // links before reaching the judge cards.  We replicate the same setup as
+            // the full-page sweep: walk the filter group, exit it, then jump to the
+            // first section h2.  From that anchor, findNextLink finds judge cards only.
+            await enterWebContent(page, voiceOver);
+
+            await voiceOver.next();                  // intro paragraph
+            await voiceOver.next();                  // "Filter judges by type, group"
+            await voiceOver.next();                  // "All Judges, pressed, button"
+            await voiceOver.next();                  // "Judges, button"
+            await voiceOver.next();                  // "Senior Judges, button"
+            await voiceOver.next();                  // "Special Trial Judges, button"
+            await voiceOver.next();                  // "Senior Special Trial Judges, button"
+            await voiceOver.perform(voiceOverKeyCodeCommands.stopInteractingWithItem);
+            await voiceOver.perform(voiceOverKeyCodeCommands.findNextHeading); // → §1 h2
+
+            // ── 3. Walk every link in document order using findNextLink ───────────────
+            // findNextLink targets <a href> elements only — the <button> filter buttons
+            // are skipped entirely.  Document order on this page is:
+            //   judge cards (all 4 sections, left-to-right, top-to-bottom)
+            //   → "Private Seminar Disclosures" tile
+            //   → "Judicial Conduct and Disability Complaint Procedures" tile
+            //
+            // After each jump, lastSpokenPhrase() returns exactly what VoiceOver said
+            // aloud — the accessible name of the link plus role/state suffixes.
+            // We collect every phrase and stop as soon as both bottom tiles have been
+            // announced (they come after the last judge card so we know we're done).
+            const spoken: string[] = [];
+            let tilesFound = 0;
+            const maxLinks = expectedCards.length + 10; // cards + tiles + small buffer
+
+            for (let i = 0; i < maxLinks && tilesFound < 2; i++) {
+                await voiceOver.perform(voiceOverKeyCodeCommands.findNextLink);
+                const phrase = await voiceOver.lastSpokenPhrase();
+                spoken.push(phrase);
+                if (/private seminar disclosures/i.test(phrase)) tilesFound++;
+                if (/judicial conduct/i.test(phrase))            tilesFound++;
+            }
+
+            expect(tilesFound, "loop must reach both bottom tiles to confirm all cards were traversed").toBe(2);
+
+            // ── 4. Assert every judge's name and role was actually spoken ─────────────
+            // Joining into one string lets us check each card with a single
+            // .toContain() call and get a clear failure message naming the card.
+            const fullLog = spoken.join("\n").toLowerCase();
+
+            for (const card of expectedCards) {
+                expect(
+                    fullLog,
+                    `VoiceOver never spoke name "${card.name}" (section: ${card.section})`,
+                ).toContain(card.name.toLowerCase());
+
+                expect(
+                    fullLog,
+                    `VoiceOver never spoke role "${card.role}" for "${card.name}" (section: ${card.section})`,
+                ).toContain(card.role.toLowerCase());
+            }
+
+            // ── 5. Bottom tiles also confirmed ────────────────────────────────────────
+            expect(fullLog, "VoiceOver never spoke 'Private Seminar Disclosures'").toMatch(/private seminar disclosures/);
+            expect(fullLog, "VoiceOver never spoke 'Judicial Conduct'").toMatch(/judicial conduct/);
         },
     );
 });

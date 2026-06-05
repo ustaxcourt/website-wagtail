@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
 {% load filters %}
+{% load static %}
 {% block extra_css %}
     <style>
         #judge-information-page {
@@ -16,12 +17,19 @@
             text-decoration: underline;
             cursor: pointer;
         }
-        #judge-information-page .page-title{
+        #judge-information-page .page-title {
             margin-bottom: 15px;
         }
 
         #judge-information-page .judge-intro {
             margin-bottom: 34px;
+        }
+
+        /* Focus ring for the (now tab-focusable) intro paragraph so keyboard
+           users can see where Tab landed. */
+        #judge-information-page .judge-intro:focus-visible {
+            outline: 3px solid #005ea2;
+            outline-offset: 2px;
         }
 
         /* Filter buttons */
@@ -30,31 +38,78 @@
             justify-content: flex-end;
             flex-wrap: wrap;
             gap: 5px;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
+            margin-top: 34px;
+            margin-bottom: 34px;
         }
 
         .judge-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             padding: 10px;
             border: 1px solid #dfe1e2;
-            background-color: transparent;
+            background-color: #fff;
             color: #1a4480;
             font-weight: 400;
             cursor: pointer;
             border-radius: 2px;
             font-size: 17px;
             line-height: 24px;
-            transition: background-color 0.15s, color 0.15s;
+            transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+        }
+
+        /* Checkbox icon — inline SVGs in the markup. The .checked / .unchecked
+           visibility is toggled by .active on the parent button. */
+        .judge-filter-btn .filter-checkbox {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .judge-filter-btn .filter-checkbox.checked { display: none; }
+        .judge-filter-btn .filter-checkbox.unchecked { display: inline-block; }
+        .judge-filter-btn.active .filter-checkbox.checked { display: inline-block; }
+        .judge-filter-btn.active .filter-checkbox.unchecked { display: none; }
+
+        /* Inactive checkbox outline:
+           - Default (no type filter selected yet) → matches Figma `#1B1B1B`
+           - Once any type filter has been selected → switches to blue `#005EA2`
+             so the inactive boxes share the color family with the active
+             filled-blue check. The .has-filters class is toggled in JS based on
+             activeFilters.size. */
+        .judge-filter-btn .filter-checkbox.unchecked rect {
+            stroke: #1B1B1B;
+        }
+        .judge-filter-bar.has-filters .judge-filter-btn .filter-checkbox.unchecked rect {
+            stroke: #005EA2;
         }
 
         .judge-filter-btn:hover {
-            background-color: #162e51;
-            color: #fff;
+            border-color: #162e51;
         }
 
+        /* Type-specific filter buttons (Judges / Senior Judges / etc.) active
+           state: navy border, white background, blue text stays the same. */
         .judge-filter-btn.active {
-            background-color: #162e51;
-            color: #fff;
+            border-color: #162e51;
+        }
+
+        /* "All Judges" gets a distinct active treatment per Figma node
+           13695-3264: solid navy background with white text. */
+        .judge-filter-btn[data-filter="all"].active {
+            background-color: #1A4480;
+            border-color: #162e51;
+            color: #ffffff;
+        }
+
+        /* Vertical divider after the All Judges button, separating the global
+           "show everything" filter from the type-specific filters. */
+        .judge-filter-divider {
+            display: inline-block;
+            width: 2px;
+            height: 39px;
+            background-color: #D9D9D9;
+            margin: 0 11px;
+            vertical-align: middle;
         }
 
         /* Section header bar */
@@ -62,7 +117,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 1rem;
+            margin-bottom: 24px;
             font-size: 24px;
             font-weight: 600;
             line-height: 30px;
@@ -84,19 +139,12 @@
             align-self: stretch;
         }
 
-        .judge-section-header::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background-color: #d9d9d9;
-        }
-
         /* Judge card grid */
         .judge-card-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 2rem;
+            gap: 8px;
+            margin-bottom: 34px;
         }
 
         .judge-card {
@@ -126,47 +174,12 @@
 
         .judge-card .judge-role {
             font-size: 17px;
+            font-weight: 400;
             line-height: 20px;
             color: #000000;
         }
 
-        /* Bottom tiles */
-        .judge-bottom-tiles {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-top: 2rem;
-        }
-
-        .judge-tile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            border: 1px solid #005ea2;
-            padding: 29px 22px;
-            text-decoration: none;
-            color: #1b1b1b;
-            background-color: #fff;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 24px;
-            line-height: 30px;
-            text-align: center;
-            box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.1);
-            transition: box-shadow 0.15s;
-        }
-
-        .judge-tile:hover {
-            box-shadow: 0px 6px 10px 0px rgba(86, 92, 101, 0.2);
-            text-decoration: none;
-        }
-
-        .judge-tile i {
-            font-size: 2.5rem;
-            color: #005ea2;
-        }
+        /* Bottom tiles — rendered via QuickAccessTilesBlock */
 
         .judge-section[data-hidden="true"] {
             display: none;
@@ -183,14 +196,171 @@
             outline-offset: 2px;
         }
 
-        .judge-tile:focus-visible {
+        #page-title-start:focus-visible {
             outline: 3px solid #005ea2;
             outline-offset: 2px;
         }
 
-        #page-title-start:focus-visible {
-            outline: 3px solid #005ea2;
-            outline-offset: 2px;
+        /* H2 section headers carry tabindex=0 so keyboard users can navigate
+           between sections. Without an explicit :focus-visible the focus ring
+           is invisible against the blue bar, which made them look "not tabable"
+           in QA. Use a contrasting white outline + offset that reads against
+           #005ea2. */
+        .judge-section-header:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: -3px;
+            box-shadow: 0 0 0 3px #162e51;
+        }
+
+        /* HR separator above bottom tiles */
+        .judge-tiles-rule {
+            border: none;
+            border-top: 1px solid #dfe1e2;
+            margin: 34px 0;
+        }
+
+        /* Bottom tiles — Figma-scoped overrides for JudgeIndex
+           Desktop: node 13945-3870 (568x182 tile)
+           Tablet:  node 13945-3925 (776x104 tile, horizontal layout)
+           Mobile:  node 13945-4914 (288x88 tile, horizontal layout, navy text)
+           Hide empty tile-description rows so the title isn't pushed into a
+           narrow column when there is no body copy. */
+        #judge-information-page .quick-access-tile {
+            border: 1px solid #005EA2;
+            padding: 29px 22px;
+            justify-content: flex-start;
+            border-radius: 5px;
+            box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.10);
+        }
+        #judge-information-page .quick-access-tile h2 {
+            color: #1B1B1B;
+            font-size: 24px;
+            line-height: 30px;
+            margin: 0;
+            font-family: "Source Sans 3", sans-serif;
+            font-weight: 600;
+        }
+        #judge-information-page .quick-access-tile .tile-icon {
+            width: 50px;
+            height: 50px;
+            padding: 5px;
+            margin: 0;
+        }
+        /* Desktop: icon, title, description stacked vertically. Tablet (≤992px)
+           and mobile (≤640px) media queries below switch this to a horizontal
+           icon-left layout with title to the right. */
+        #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        /* Honor the content_alignment field from the Wagtail admin (left /
+           center / right). Without these explicit rules the desktop tile-content
+           defaults to align-items: stretch and the alignment dropdown does
+           nothing visible. */
+        #judge-information-page .quick-access-tile.align-left .tile-content {
+            align-items: flex-start;
+        }
+        #judge-information-page .quick-access-tile.align-center .tile-content {
+            align-items: center;
+        }
+        #judge-information-page .quick-access-tile.align-right .tile-content {
+            align-items: flex-end;
+        }
+        /* Hide the empty description placeholder so it doesn't reserve a flex
+           row and add a phantom 12px gap below the title. Wagtail's |richtext
+           filter on an empty value still renders an empty <p>, so :empty alone
+           won't match the wrapping div (it has whitespace + a <p>). Use :has()
+           to hide the wrapper when there's no non-empty <p> inside. */
+        #judge-information-page .quick-access-tile .tile-description:empty,
+        #judge-information-page .quick-access-tile .tile-description:not(:has(p:not(:empty))) {
+            display: none;
+        }
+        /* Tablet: ≤992px — Figma node 13945:3933 (776x104 tile, horizontal layout)
+           - SINGLE COLUMN grid (shared block defaults to 2-column at ≤992px,
+             which makes iPad Air 820px split into two narrow tiles and the title
+             wraps; Figma's tablet artboard is 834px with a full-width 776px tile)
+           - 29px/22px padding (NOT shared block's 20px/25px)
+           - icon (50x50) + 18px gap + text on a single row, vertically centered
+           - title: Source Sans 3 600 24px / 30px line-height, color #1B1B1B
+           - title fits on ONE LINE per Figma (text container is 664x30)
+           Shared block applies its tablet rules with !important, so we have to
+           !important these overrides to beat it. */
+        @media (max-width: 992px) {
+            #judge-information-page .quick-access-tiles-grid {
+                grid-template-columns: 1fr !important;
+            }
+            #judge-information-page .quick-access-tile {
+                padding: 29px 22px;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+                display: grid !important;
+                column-gap: 12px !important;
+                row-gap: 0 !important;
+                align-items: center !important;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
+                width: 50px;
+                height: 50px;
+                padding: 5px;
+                margin: 0 !important;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left h2 {
+                margin: 0 !important;
+            }
+            #judge-information-page .quick-access-tile h2 {
+                color: #1B1B1B;
+                font-family: "Source Sans 3", sans-serif;
+                font-size: 24px;
+                line-height: 30px;
+                font-weight: 600;
+                text-align: left;
+            }
+        }
+        /* Mobile: ≤640px — Figma node 13945-4914 (Mobile QAT, 288×88 tile)
+           - 22px padding uniform; icon (40×40) + 18px gap + text; vertically centered
+           - Title: Source Sans 3 600 20px / 22px, color #162E51 (Tax Court navy)
+           - When description is empty, the tile-description rule above keeps
+             the title centered next to the icon (no extra row). */
+        @media (max-width: 640px) {
+            #judge-information-page .quick-access-tile {
+                padding: 22px;
+                border: 1px solid #005EA2;
+                border-radius: 5px;
+                box-shadow: 0px 4px 4px 0px rgba(86, 92, 101, 0.10);
+                min-height: 88px;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+                display: grid;
+                grid-template-columns: 40px 1fr;
+                column-gap: 12px;
+                align-items: center;
+            }
+            #judge-information-page .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
+                width: 40px;
+                height: 40px;
+                padding: 5px;
+                margin: 0;
+            }
+            #judge-information-page .quick-access-tile h2 {
+                color: #162E51;
+                font-family: "Source Sans 3", sans-serif;
+                font-size: 20px;
+                line-height: 22px;
+                font-weight: 600;
+                margin: 0;
+                text-align: left;
+                /* Figma node 13945-4914 text container is 186px wide.
+                   Constrain the title to this width so the wrap matches Figma
+                   on mobile viewports wider than 320px. */
+                max-width: 186px;
+            }
+        }
+
+        /* Filter icon — invert to white when toggle is active */
+        .mobile-filter-toggle.panel-open .mobile-filter-icon,
+        .mobile-filter-toggle.has-filters .mobile-filter-icon {
+            filter: invert(1);
         }
 
         /* Tablet adjustments (≤834px) */
@@ -198,14 +368,15 @@
             .judge-card-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+
         }
 
         /* Mobile filter bar */
         .mobile-filter-bar {
             display: none;
             position: relative;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
+            margin-top: 34px;
+            margin-bottom: 34px;
         }
 
         .mobile-filter-toggle {
@@ -349,20 +520,48 @@
         }
 
         /* Mobile adjustments (≤640px) */
-        @media (max-width: 640px) {
+        /* iPad portrait + below (≤992px): the inline filter bar wraps to two
+           lines because the five buttons add up to ~830px, so swap in the
+           mobile-style Filter toggle button instead. Per Figma node 14914:3023
+           the button is a fixed 200px wide on iPad and right-aligned. */
+        @media (max-width: 992px) {
             .judge-filter-bar {
                 display: none;
             }
 
             .mobile-filter-bar {
-                display: block;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .mobile-filter-toggle {
+                width: 200px;
+            }
+        }
+
+        /* Tablet side margins per UX Documentation PDF (page 1, "Tablet"):
+           "Side margins of 29px". Scoped to 641-992px so mobile (≤640px)
+           keeps its own side spacing. */
+        @media (min-width: 641px) and (max-width: 992px) {
+            #judge-information-page {
+                padding-left: 29px;
+                padding-right: 29px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            #judge-information-page {
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
+            /* Phone: full-width Filter toggle (easier to tap than a 200px
+               pill). Overrides the 200px width set in the ≤992px block above. */
+            .mobile-filter-toggle {
+                width: 100%;
             }
 
             .judge-card-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .judge-bottom-tiles {
                 grid-template-columns: 1fr;
             }
 
@@ -380,42 +579,46 @@
                 font-size: 16px;
             }
 
-            .judge-tile {
-                flex-direction: row;
-                align-items: center;
-                padding: 22px;
-                font-size: 20px;
-                line-height: 22px;
-                color: #162e51;
-                text-align: left;
-                gap: 18px;
-            }
-
-            .judge-tile i {
-                font-size: 1.5rem;
-                flex-shrink: 0;
-            }
         }
     </style>
 {% endblock %}
 {% block body_class %}template-judge-information{% endblock %}
 {% block content %}
     <div id="judge-information-page" class="grid-container">
-        <h1 data-testid="page-title">
+        <h1 class="page-title" data-testid="page-title">
             <span class="page-title-start" id="page-title-start" role="button" tabindex="0">{{ page.title }}</span><span class="page-title-breadcrumb" id="page-title-breadcrumb"></span>
         </h1>
         {% if page.intro_text %}
-            <div class="judge-intro">{{ page.intro_text|richtext }}</div>
+            {% comment %}
+                tabindex=0 puts the intro into the keyboard tab order so
+                screen reader users tabbing through the page hear it. Without
+                this, focus jumps from the page title straight to the filter
+                buttons and the intro paragraph is announced only by a
+                "read-all" navigation, not a "next-focusable" Tab.
+            {% endcomment %}
+            <div class="judge-intro" tabindex="0">{{ page.intro_text|richtext }}</div>
         {% endif %}
         <!-- Filter buttons -->
         <div class="judge-filter-bar" role="group" aria-label="Filter judges by type">
             <button class="judge-filter-btn active"
                     data-filter="all"
-                    aria-pressed="true">All Judges</button>
+                    aria-pressed="true">
+                <span>All Judges</span>
+            </button>
+            <span class="judge-filter-divider" aria-hidden="true"></span>
             {% for group in judge_groups %}
                 <button class="judge-filter-btn"
                         data-filter="{{ group.filter_key }}"
-                        aria-pressed="false">{{ group.filter_label }}</button>
+                        aria-pressed="false">
+                    <svg class="filter-checkbox unchecked" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="1" y="1" width="18" height="18" stroke="#005EA2" stroke-width="2"/>
+                    </svg>
+                    <svg class="filter-checkbox checked" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect width="20" height="20" fill="#005EA2"/>
+                        <path d="M5 10.5L8.5 14L15 7" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                    <span>{{ group.filter_label }}</span>
+                </button>
             {% endfor %}
         </div>
         <!-- Mobile filter bar -->
@@ -425,7 +628,7 @@
                     aria-expanded="false"
                     aria-controls="mobile-filter-panel"
                     aria-haspopup="true">
-                <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="18" height="12" aria-hidden="true" class="mobile-filter-icon">
                 <span>Filter</span>
                 <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
             </button>
@@ -463,7 +666,7 @@
         <!-- Judge sections -->
         {% for group in judge_groups %}
             <div class="judge-section" data-section="{{ group.filter_key }}">
-                <h2 class="judge-section-header">{{ group.label }}</h2>
+                <h2 class="judge-section-header" id="{{ group.filter_key }}" tabindex="0">{{ group.label }}</h2>
                 <div class="judge-card-grid">
                     {% for item in group.judges %}
                         <a class="judge-card"
@@ -476,21 +679,13 @@
                 </div>
             </div>
         {% endfor %}
-        <!-- Bottom tiles -->
-        <div class="judge-bottom-tiles">
-            <a class="judge-tile"
-               href="{{ page.url }}private-seminar-disclosures/"
-               data-testid="tile-private-seminar-disclosures">
-                <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
-                <span>Private Seminar Disclosures</span>
-            </a>
-            <a class="judge-tile"
-               href="{{ judicial_conduct_url }}"
-               data-testid="tile-judicial-conduct">
-                <i class="fa-solid fa-landmark" aria-hidden="true"></i>
-                <span>Judicial Conduct and Disability Complaint Procedures</span>
-            </a>
-        </div>
+        <!-- Bottom tiles — QuickAccessTilesBlock, editable in Wagtail admin -->
+        {% if page.bottom_tiles %}
+            <hr class="judge-tiles-rule">
+            {% for block in page.bottom_tiles %}
+                {% include "quick_access_tiles_block.html" with block=block %}
+            {% endfor %}
+        {% endif %}
     </div>
     <script>
         (function () {
@@ -498,11 +693,36 @@
             let activeFilters = new Set();
             let userInteracted = false;
 
+            // The set of valid filter keys is whatever the rendered filter
+            // buttons advertise via data-filter (excluding "all"). That keeps
+            // the JS in sync with the actual sections on the page — if a judge
+            // type has no judges, no button is rendered and the corresponding
+            // key is treated as invalid in the URL.
+            function getValidFilterKeys() {
+                const keys = new Set();
+                document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
+                    const key = btn.dataset.filter;
+                    if (key && key !== ALL_FILTER) keys.add(key);
+                });
+                return keys;
+            }
+
+            // Read filters from ?filters=… and drop any token that isn't a
+            // valid key. Per AC: "Ignoring one filter phrase should not affect
+            // whether another filter phrase from the querystring is used or
+            // ignored. If all filter phrases are ignored, then the page should
+            // use the 'All Judges' filter." Returning an empty Set causes
+            // applyFilters() to show all judges.
             function getFiltersFromUrl() {
                 const params = new URLSearchParams(window.location.search);
                 const val = params.get('filters');
                 if (!val) return new Set();
-                return new Set(val.split(',').filter(Boolean));
+                const validKeys = getValidFilterKeys();
+                return new Set(
+                    val.split(',').filter(function (token) {
+                        return token && validKeys.has(token);
+                    })
+                );
             }
 
             function setFiltersInUrl(filters) {
@@ -521,7 +741,17 @@
                 const titleStart = document.getElementById('page-title-start');
                 const announcement = document.getElementById('filter-announcement');
 
-                // Update button states
+                // Toggle has-filters on the bar so the unchecked outline color
+                // can shift from the default (#1B1B1B) to blue (#005EA2) once a
+                // type filter is selected.
+                const filterBar = document.querySelector('.judge-filter-bar');
+                if (filterBar) {
+                    filterBar.classList.toggle('has-filters', activeFilters.size > 0);
+                }
+
+                // Update button states. The checkbox icon (inline SVG) auto-
+                // swaps via the .active CSS rule on the button — no JS needed
+                // for the icon swap.
                 document.querySelectorAll('.judge-filter-btn').forEach(function (btn) {
                     const key = btn.dataset.filter;
                     const isActive = key === ALL_FILTER
@@ -550,7 +780,10 @@
                 } else {
                     const labels = Array.from(activeFilters).map(function (key) {
                         const btn = document.querySelector('.judge-filter-btn[data-filter="' + key + '"]');
-                        return btn ? btn.textContent.trim() : key;
+                        // Read the <span> text so the checkbox <i> glyph isn't
+                        // pulled into the breadcrumb label.
+                        const span = btn ? btn.querySelector('span') : null;
+                        return (span ? span.textContent : btn ? btn.textContent : key).trim();
                     });
                     breadcrumb.textContent = ' / ' + labels.join(', ');
                     breadcrumb.style.display = 'inline';
@@ -568,8 +801,24 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
-                // Restore from URL on load
+                // Restore from URL on load (invalid filter tokens are dropped
+                // inside getFiltersFromUrl). Sync the address bar to the
+                // sanitized set so a manipulated URL like ?filters=judges,foo
+                // shows ?filters=judges after the page loads.
                 activeFilters = getFiltersFromUrl();
+                const rawParam = new URLSearchParams(window.location.search).get('filters') || '';
+                const rawTokens = rawParam.split(',').filter(Boolean);
+                const sanitizedTokens = Array.from(activeFilters);
+                if (rawTokens.length !== sanitizedTokens.length) {
+                    // Replace (not push) so the broken URL doesn't pollute history.
+                    const url = new URL(window.location.href);
+                    if (sanitizedTokens.length === 0) {
+                        url.searchParams.delete('filters');
+                    } else {
+                        url.searchParams.set('filters', sanitizedTokens.join(','));
+                    }
+                    window.history.replaceState({filters: sanitizedTokens}, '', url.toString());
+                }
                 applyFilters();
                 if (typeof window.syncMobilePanel === 'function') { window.syncMobilePanel(); }
 
@@ -604,7 +853,14 @@
             window.addEventListener('popstate', function () {
                 activeFilters = getFiltersFromUrl();
                 applyFilters();
-                syncMobilePanel();
+                // syncMobilePanel is defined inside the mobile-filter-panel IIFE
+                // below and exposed as window.syncMobilePanel. Call it through
+                // the window prefix with a typeof guard so this handler doesn't
+                // throw a ReferenceError if the IIFE hasn't run (no toggle on
+                // page) or has been refactored.
+                if (typeof window.syncMobilePanel === 'function') {
+                    window.syncMobilePanel();
+                }
             });
 
             // ── Mobile filter panel ──────────────────────────────────────────

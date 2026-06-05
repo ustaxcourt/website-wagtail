@@ -38,7 +38,7 @@ def revert_seminar_intro_text(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0120_alter_privateseminardisclosure_judge"),
+        ("home", "0123_judgeindex_seminar_text_and_disclosure_settings"),
     ]
 
     operations = [

@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0118_remove_judgeindex_body_judgeindex_intro_text_and_more"),
+        ("home", "0122_alter_privateseminardisclosure_id"),
     ]
 
     operations = [

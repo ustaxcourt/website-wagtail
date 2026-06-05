@@ -1,6 +1,6 @@
 import datetime
 
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.models import Page
 from django.db import models
@@ -16,8 +16,10 @@ from home.models.snippets.judges import (
     JudgeRole,
     JudgeCollection,
     PrivateSeminarDisclosure,
+    RESTRICTED_ROLES,
 )
 from home.models.custom_blocks.common import custom_promote_panels
+from home.blocks import QuickAccessTilesBlock
 
 # Keep these exported for backward compatibility with __init__.py imports
 # (they are no longer used by JudgeIndex itself)
@@ -111,11 +113,19 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
         ),
     )
 
+    bottom_tiles = StreamField(
+        [("quick_access_tiles", QuickAccessTilesBlock())],
+        blank=True,
+        use_json_field=True,
+        help_text="Quick-access tiles rendered below the judge card grid.",
+    )
+
     content_panels = [
         FieldPanel("title"),
         FieldPanel("intro_text"),
         FieldPanel("seminar_intro_text"),
         FieldPanel("seminar_empty_text"),
+        FieldPanel("bottom_tiles"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
@@ -145,7 +155,7 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
                 continue
 
             ordered_judges = list(
-                collection.ordered_judges.select_related("judge").order_by("sort_order")
+                collection.ordered_judges.select_related("judge").all()
             )
             if not ordered_judges:
                 continue
@@ -160,6 +170,16 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
                         "role_label": role_label,
                     }
                 )
+
+            # Sort: restricted roles (Chief Judge / Chief Special Trial Judge) first,
+            # then all others alphabetically by last name then first name.
+            judges_with_roles.sort(
+                key=lambda d: (
+                    0 if d["role_label"] in RESTRICTED_ROLES else 1,
+                    d["judge"].last_name.lower(),
+                    d["judge"].first_name.lower(),
+                )
+            )
 
             count = len(judges_with_roles)
             label = (

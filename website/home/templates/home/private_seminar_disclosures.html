@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags static %}
 {% load filters %}
 {% block extra_css %}
     <style>
@@ -283,7 +283,7 @@
                             onchange="document.getElementById('year-filter-form').submit()">
                         <option value="">All Years</option>
                         {% for year in years %}
-                            <option value="{{ year }}" {% if selected_year == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                            <option value="{{ year }}" {% if selected_year == year|slugify %}selected{% endif %}>{{ year }}</option>
                         {% endfor %}
                     </select>
                 </form>

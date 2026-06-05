@@ -49,7 +49,7 @@ def noop(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0121_seed_seminar_intro_text"),
+        ("home", "0124_seed_seminar_intro_text"),
     ]
 
     operations = [

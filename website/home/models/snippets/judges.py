@@ -178,7 +178,9 @@ class JudgeCollectionOrderable(Orderable):
     ]
 
     class Meta(Orderable.Meta):  # Ensure Meta from Orderable is inherited
-        pass
+        # A judge can only appear once in a given collection. The InlinePanel
+        # otherwise lets an editor add the same judge multiple times.
+        unique_together = ("collection", "judge")
 
 
 @register_snippet
@@ -397,10 +399,17 @@ class JudgeRole(
 
 
 class PrivateSeminarDisclosure(models.Model):
-    judge = ParentalKey(
+    # Explicit BigAutoField to match the project-wide DEFAULT_AUTO_FIELD
+    # (the `home` AppConfig overrides that default to AutoField for legacy
+    # reasons; this declaration restores consistency for the newer model
+    # without forcing a cascade across the rest of the app).
+    id = models.BigAutoField(primary_key=True)
+
+    judge = models.ForeignKey(
         "JudgeProfile",
         on_delete=models.CASCADE,
         related_name="seminar_disclosures",
+        help_text="The judge associated with this disclosure",
     )
     program_provider = models.CharField(max_length=255, help_text="Program Provider")
     program_title = models.CharField(max_length=255, help_text="Program Title")
