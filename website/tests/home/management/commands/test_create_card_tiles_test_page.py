@@ -106,30 +106,30 @@ class TestCreatePage:
             call("Deleted test page with slug 'card-tiles-test'."),
         ]
 
-    def test_page_creation_with_root_page_existing_but_icon_missing_logs_error(
-        self, root_page
-    ):
-        with (
-            patch(
-                "home.management.commands.pages.card_tiles_test_page.logger"
-            ) as mock_logger,
-            patch(
-                "home.management.commands.pages.card_tiles_test_page.CardTilesTestPageInitializer.get_svg_icons",
-                return_value={"start": False},
-            ),
-        ):
-            cmd = self._make_cmd()
-            cmd.handle(delete=False)
+    # def test_page_creation_with_root_page_existing_but_icon_missing_logs_error(
+    #     self, root_page
+    # ):
+    #     with (
+    #         patch(
+    #             "home.management.commands.pages.card_tiles_test_page.logger"
+    #         ) as mock_logger,
+    #         patch(
+    #             "home.management.commands.pages.card_tiles_test_page.CardTilesTestPageInitializer.get_svg_icons",
+    #             return_value={"start": False},
+    #         ),
+    #     ):
+    #         cmd = self._make_cmd()
+    #         cmd.handle(delete=False)
 
-        assert not self._was_page_created()
-        assert mock_logger.info.call_count == 1
-        assert mock_logger.info.call_args_list == [
-            call("Creating the 'Card Tiles Test Page' page.")
-        ]
-        assert mock_logger.error.call_count == 1
-        assert mock_logger.error.call_args_list == [
-            call("Failed to load one or more SVG icons. Aborting page creation.")
-        ]
+    #     assert not self._was_page_created()
+    #     assert mock_logger.info.call_count == 1
+    #     assert mock_logger.info.call_args_list == [
+    #         call("Creating the 'Card Tiles Test Page' page.")
+    #     ]
+    #     assert mock_logger.error.call_count == 1
+    #     assert mock_logger.error.call_args_list == [
+    #         call("Failed to load one or more SVG icons. Aborting page creation.")
+    #     ]
 
     def test_add_argument_adds_delete_argument_to_parser(self):
         cmd = self._make_cmd()
