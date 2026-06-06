@@ -340,3 +340,115 @@ class PrivateSeminarDisclosureModelTest(JudgeIndexSetUpMixin):
             PrivateSeminarDisclosure._meta.ordering,
             ["-date", "judge__last_name"],
         )
+
+
+@override_settings(**OVERRIDE)
+class SeedBottomTilesRevisionTest(JudgeIndexSetUpMixin):
+    """Regression tests for the dev-web bug where _seed_bottom_tiles wrote
+    to the model via .save() but never created a Wagtail revision. The
+    public page rendered the tiles correctly (reads model fields directly)
+    but the admin editor read the last revision (which pre-dated the
+    seeding) and showed the bottom_tiles StreamField empty. Fix is to call
+    save_revision().publish() after the model save so the admin and the
+    public page stay in sync.
+    """
+
+    # A minimal, valid bottom_tiles StreamField payload. We bypass
+    # _build_bottom_tiles_data() because in production it loads SVG icons via
+    # Wagtail Documents (requires the Documents collection + media files),
+    # neither of which are set up in this lightweight unit-test environment.
+    # The behavior under test is the revision lifecycle, not tile content.
+    _FAKE_TILES = [
+        {
+            "type": "quick_access_tiles",
+            "value": {
+                "tiles_hover_enabled": True,
+                "icon_position": "desktop_top_mobile_left",
+                "tiles": [],
+            },
+        }
+    ]
+
+    def _seed(self):
+        from unittest.mock import patch
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        # The seeder looks up the page by slug, so make this instance's slug
+        # match what the initializer expects.
+        self.judge_index.slug = "judges"
+        self.judge_index.save()
+
+        page = Page.objects.get(pk=self.judge_index.pk)
+        initializer = JudgesPageInitializer()
+        with patch.object(
+            initializer, "_build_bottom_tiles_data", return_value=self._FAKE_TILES
+        ):
+            initializer._seed_bottom_tiles(page)
+
+    def test_seed_creates_a_published_revision_with_bottom_tiles(self):
+        # Sanity-check the starting state — no bottom_tiles on the model
+        # and no revisions in history (treebeard add_child does not create one).
+        self.judge_index.refresh_from_db()
+        self.assertFalse(bool(self.judge_index.bottom_tiles))
+        self.assertIsNone(self.judge_index.latest_revision)
+
+        self._seed()
+
+        # Model fields are populated.
+        self.judge_index.refresh_from_db()
+        self.assertTrue(bool(self.judge_index.bottom_tiles))
+        # A revision was created and published so the admin editor sees
+        # the same content as the public page.
+        self.assertIsNotNone(self.judge_index.latest_revision)
+        revision_obj = self.judge_index.latest_revision.as_object()
+        self.assertTrue(bool(revision_obj.bottom_tiles))
+
+    def test_seed_with_stale_existing_revision_updates_admin_state(self):
+        # Reproduce the dev-web shape: page already has a revision capturing
+        # an empty bottom_tiles state (the "before 1246 deploy" snapshot).
+        # The seeder must overwrite that revision so the admin reflects the
+        # seeded tiles.
+        self.judge_index.slug = "judges"
+        self.judge_index.save()
+        stale = self.judge_index.save_revision()
+        stale.publish()
+        self.judge_index.refresh_from_db()
+        self.assertFalse(
+            bool(self.judge_index.latest_revision.as_object().bottom_tiles)
+        )
+
+        self._seed()
+
+        self.judge_index.refresh_from_db()
+        latest = self.judge_index.latest_revision.as_object()
+        self.assertTrue(bool(latest.bottom_tiles))
+        self.assertNotEqual(self.judge_index.latest_revision_id, stale.id)
+
+    def test_seed_skips_when_bottom_tiles_already_populated(self):
+        # Belt-and-suspenders: confirm that admin-customized bottom_tiles are
+        # preserved across deploys. If bottom_tiles is non-empty, the seed
+        # short-circuits and does NOT create a new revision.
+        self.judge_index.slug = "judges"
+        self.judge_index.bottom_tiles = [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": [],
+                },
+            }
+        ]
+        self.judge_index.save()
+        marker_rev = self.judge_index.save_revision()
+        marker_rev.publish()
+        self.judge_index.refresh_from_db()
+        existing_rev_id = self.judge_index.latest_revision_id
+
+        self._seed()
+
+        self.judge_index.refresh_from_db()
+        # No new revision should have been created.
+        self.assertEqual(self.judge_index.latest_revision_id, existing_rev_id)

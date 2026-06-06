@@ -540,6 +540,11 @@ class JudgesPageInitializer(PageInitializer):
                 page.title = "Judge Information"
                 page.seo_title = "Judge Information"
                 page.save()
+                # Same admin-vs-live revision divergence guard as in
+                # _seed_bottom_tiles below — without save_revision().publish()
+                # the admin editor reads the previous revision and the title
+                # change won't appear in the admin until a later edit.
+                page.save_revision().publish()
                 logger.info("Updated page title to 'Judge Information'.")
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
@@ -710,4 +715,12 @@ class JudgesPageInitializer(PageInitializer):
 
         judge_index.bottom_tiles = self._build_bottom_tiles_data()
         judge_index.save()
+        # Also create + publish a Wagtail revision capturing the seeded state.
+        # Without this the admin editor reads from the page's previous revision
+        # (which pre-dates bottom_tiles) and shows the field as empty even
+        # though the published page renders the tiles. Seen on dev-web after
+        # the 1246 deploy: public /judges/ rendered the tiles correctly while
+        # the admin edit page showed the StreamField empty until any later
+        # revision-creating action ran.
+        judge_index.save_revision().publish()
         logger.info("Seeded bottom_tiles on JudgeIndex page.")
