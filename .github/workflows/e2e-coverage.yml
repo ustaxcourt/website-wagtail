@@ -57,7 +57,12 @@ jobs:
           cleanup() {
             if kill -0 "$SERVER_PID" 2>/dev/null; then
               kill -INT "$SERVER_PID" 2>/dev/null || true
-              wait "$SERVER_PID" || true
+              # Wait up to 30s for coverage data to be written, then force-kill
+              (sleep 30; kill -KILL "$SERVER_PID" 2>/dev/null || true) &
+              KILL_TIMER_PID=$!
+              wait "$SERVER_PID" 2>/dev/null || true
+              kill "$KILL_TIMER_PID" 2>/dev/null || true
+              wait "$KILL_TIMER_PID" 2>/dev/null || true
             fi
           }
 
