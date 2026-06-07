@@ -55,6 +55,24 @@ describe('index page', () => {
     })
   })
 
+  it('quick access tiles have GTM tracking attributes', () => {
+    cy.get('[data-gtm-element="quick-access-tile"]').then(($tiles) => {
+      expect($tiles.length).to.be.greaterThan(0)
+      $tiles.each((_, el) => {
+        expect(el.getAttribute('data-gtm-label')).to.be.a('string').and.not.be.empty
+      })
+    })
+  })
+
+  it('nav menu items have GTM tracking attributes', () => {
+    cy.get('[data-gtm-element="nav-menu-item"]').then(($links) => {
+      expect($links.length).to.be.greaterThan(0)
+      $links.each((_, el) => {
+        expect(el.getAttribute('data-gtm-label')).to.be.a('string').and.not.be.empty
+      })
+    })
+  })
+
   it('search buttons contain text or title attribute for accessibility', () => {
     cy.get('[data-testid="search-button"]').should(($button) => {
 

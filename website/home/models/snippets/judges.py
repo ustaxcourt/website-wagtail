@@ -18,7 +18,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-AUTO_MANAGED_COLLECTIONS = ["Judges", "Senior Judges", "Special Trial Judges"]
+AUTO_MANAGED_COLLECTIONS = [
+    "Judges",
+    "Senior Judges",
+    "Special Trial Judges",
+    "Senior Special Trial Judges",
+]
 RESTRICTED_ROLES = ["Chief Judge", "Chief Special Trial Judge"]
 
 
@@ -46,6 +51,7 @@ class JudgeProfile(
             ("Judge", "Judge"),
             ("Senior Judge", "Senior Judge"),
             ("Special Trial Judge", "Special Trial Judge"),
+            ("Senior Special Trial Judge", "Senior Special Trial Judge"),
         ],
     )
     chambers_telephone = models.CharField(
@@ -171,7 +177,9 @@ class JudgeCollectionOrderable(Orderable):
     ]
 
     class Meta(Orderable.Meta):  # Ensure Meta from Orderable is inherited
-        pass
+        # A judge can only appear once in a given collection. The InlinePanel
+        # otherwise lets an editor add the same judge multiple times.
+        unique_together = ("collection", "judge")
 
 
 @register_snippet
@@ -387,3 +395,47 @@ class JudgeRole(
     @property
     def revisions(self):
         return self._revisions
+
+
+@register_snippet
+class PrivateSeminarDisclosure(models.Model):
+    # Explicit BigAutoField to match the project-wide DEFAULT_AUTO_FIELD
+    # (the `home` AppConfig overrides that default to AutoField for legacy
+    # reasons; this declaration restores consistency for the newer model
+    # without forcing a cascade across the rest of the app).
+    id = models.BigAutoField(primary_key=True)
+
+    judge = models.ForeignKey(
+        "JudgeProfile",
+        on_delete=models.CASCADE,
+        related_name="seminar_disclosures",
+        help_text="The judge associated with this disclosure",
+    )
+    program_provider = models.CharField(max_length=255, help_text="Program Provider")
+    program_title = models.CharField(max_length=255, help_text="Program Title")
+    date = models.DateField(help_text="Date of the program")
+    location = models.CharField(max_length=255, help_text="Location of the program")
+    program_topics = RichTextField(
+        blank=True, help_text="Program topics (may be bulleted)"
+    )
+    supporter = models.CharField(
+        max_length=255, blank=True, help_text="Supporter (if any)"
+    )
+
+    panels = [
+        FieldPanel("judge"),
+        FieldPanel("program_provider"),
+        FieldPanel("program_title"),
+        FieldPanel("date"),
+        FieldPanel("location"),
+        FieldPanel("program_topics"),
+        FieldPanel("supporter"),
+    ]
+
+    class Meta:
+        ordering = ["-date", "judge__last_name"]
+        verbose_name = "Private Seminar Disclosure"
+        verbose_name_plural = "Private Seminar Disclosures"
+
+    def __str__(self):
+        return f"{self.judge} — {self.program_title} ({self.date})"

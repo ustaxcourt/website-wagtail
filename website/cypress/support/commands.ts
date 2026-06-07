@@ -82,6 +82,19 @@ export function checkA11y(context?: any, options: Record<string, unknown> = {}) 
     );
 }
 
+export function checkA11yWithModerate() {
+  cy.injectAxe();
+  fixStatusPageIframe();
+  cy.checkA11y(
+    undefined,
+    {
+      includedImpacts: ['moderate', 'serious', 'critical'],
+      retries: 3,
+    },
+    terminalLog,
+  );
+}
+
 export function checkHeaderOrder() {
     const headers = ['h1', 'h2', 'h3', 'h4'];
     cy.document().then((doc) => {
