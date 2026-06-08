@@ -67,3 +67,26 @@ class GoogleTagManagerSettings(BaseGenericSetting):
     panels = [
         FieldPanel("gtm_container_id"),
     ]
+
+
+@register_setting
+class PrivateSeminarDisclosureSettings(BaseGenericSetting):
+    """
+    Site-wide settings for the Private Seminar Disclosures feature.
+    Controls how long a disclosure remains visible on the public website.
+    """
+
+    disclosure_years = models.PositiveIntegerField(
+        default=3,
+        help_text=(
+            "Number of years a seminar disclosure remains visible on the public website. "
+            "Disclosures older than this are automatically hidden. Default: 3."
+        ),
+    )
+
+    panels = [
+        FieldPanel("disclosure_years"),
+    ]
+
+    class Meta:
+        verbose_name = "Private Seminar Disclosure Settings"

@@ -34,7 +34,7 @@ class JudgeProfile(
     DraftStateMixin,
     RevisionMixin,
     index.Indexed,
-    models.Model,
+    ClusterableModel,
 ):
     first_name = models.CharField(max_length=255)
     middle_initial = models.CharField(max_length=255, blank=True)
@@ -421,16 +421,6 @@ class PrivateSeminarDisclosure(models.Model):
     supporter = models.CharField(
         max_length=255, blank=True, help_text="Supporter (if any)"
     )
-
-    panels = [
-        FieldPanel("judge"),
-        FieldPanel("program_provider"),
-        FieldPanel("program_title"),
-        FieldPanel("date"),
-        FieldPanel("location"),
-        FieldPanel("program_topics"),
-        FieldPanel("supporter"),
-    ]
 
     class Meta:
         ordering = ["-date", "judge__last_name"]

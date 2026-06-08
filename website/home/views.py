@@ -1,22 +1,26 @@
-from django.db.models.functions import Lower, Trim
-from wagtail.admin.views.reports import ReportView
-from wagtail.documents.views.chooser import DocumentChooserViewSet
-import django_filters
+from collections import OrderedDict
 from datetime import date, datetime
 
-from search.models.definitionsQuery import DefinitionsQuery
-from home.models.pages.definitions import DefinitionsPage
-from .models import NewsItem, Banner
+import django_filters
+from django.db.models.functions import Lower, Trim
+from django.utils import timezone
+from django.utils.html import format_html, strip_tags
 from wagtail.admin.filters import (
     WagtailFilterSet,
     DateRangePickerWidget,
 )
 from wagtail.admin.ui.tables import Column
-from django.utils.html import format_html
-from django.utils import timezone
-from wagtail_external_links_report.views import ExternalLinksReportView
-from home.utils.custom_link_extractor import CustomLinkExtractor
+from wagtail.admin.views.reports import ReportView
 from wagtail.admin.views.generic.base import BaseListingView
+from wagtail.documents.views.chooser import DocumentChooserViewSet
+
+from wagtail_external_links_report.views import ExternalLinksReportView
+
+from search.models.definitionsQuery import DefinitionsQuery
+from home.models.pages.definitions import DefinitionsPage
+from home.models.snippets.judges import PrivateSeminarDisclosure
+from home.utils.custom_link_extractor import CustomLinkExtractor
+from .models import NewsItem, Banner
 
 
 class NewsItemReportFilterSet(WagtailFilterSet):
@@ -456,6 +460,116 @@ class SearchDefinitionsReportView(ReportView):
     def get_filename(self):
         today = date.today().strftime("%Y-%m-%d")
         return f"Search_Terms_Report_{today}"
+
+
+# ------------------- Private Seminar Disclosures Report --------------------
+
+
+class PrivateSeminarDisclosureReportView(ReportView):
+    """
+    Wagtail admin report for Private Seminar Disclosures.
+
+    Shows every disclosure within the configured disclosure window
+    (default: 3 years).  Accessible to Administrators, Moderators, and Editors.
+    Supports CSV and Excel export; Excel filename is fixed per the ticket spec.
+    """
+
+    title = "Private Seminar Disclosures Report"
+    index_url_name = "private_seminar_disclosure_report"
+    index_results_url_name = "private_seminar_disclosure_report_results"
+
+    # No filter UI needed — the report already scopes to the disclosure window.
+    filterset_class = None
+
+    columns = [
+        Column(
+            "judge_name",
+            label="Judge Name",
+            accessor=lambda d: format_html("<strong>{}</strong>", d.judge.display_name),
+        ),
+        Column("program_provider", label="Program Provider(s)"),
+        Column("program_title", label="Program Title"),
+        Column(
+            "date",
+            label="Date",
+            accessor=lambda d: d.date.strftime("%m/%d/%Y"),
+        ),
+        Column("location", label="Location"),
+        Column(
+            "program_topics",
+            label="Program Topics",
+            accessor=lambda d: format_html("{}", strip_tags(d.program_topics))
+            if d.program_topics
+            else "—",
+        ),
+        Column(
+            "supporter",
+            label="Supporter(s)",
+            accessor=lambda d: d.supporter or "—",
+        ),
+    ]
+
+    export_headings = {
+        "judge_name": "Judge Name",
+        "program_provider": "Program Provider(s)",
+        "program_title": "Program Title",
+        "date": "Date",
+        "location": "Location",
+        "program_topics": "Program Topics",
+        "supporter": "Supporter(s)",
+    }
+
+    list_export = [
+        "judge_name",
+        "program_provider",
+        "program_title",
+        "date",
+        "location",
+        "program_topics",
+        "supporter",
+    ]
+
+    def _get_cutoff(self):
+        """Return the earliest date whose disclosures should be shown."""
+        from home.models.settings import PrivateSeminarDisclosureSettings
+
+        settings_obj = PrivateSeminarDisclosureSettings.load(
+            request_or_site=self.request
+        )
+        years = settings_obj.disclosure_years
+        today = date.today()
+        try:
+            return today.replace(year=today.year - years)
+        except ValueError:
+            # 29 Feb when cutoff year is not a leap year
+            return today.replace(year=today.year - years, day=28)
+
+    def get_queryset(self):
+        return (
+            PrivateSeminarDisclosure.objects.select_related("judge")
+            .filter(date__gte=self._get_cutoff())
+            .order_by("-date", "judge__last_name")
+        )
+
+    def to_row_dict(self, item):
+        row = OrderedDict()
+        row["judge_name"] = item.judge.display_name
+        row["program_provider"] = item.program_provider
+        row["program_title"] = item.program_title
+        row["date"] = item.date
+        row["location"] = item.location
+        row["program_topics"] = (
+            strip_tags(item.program_topics) if item.program_topics else ""
+        )
+        row["supporter"] = item.supporter or ""
+        return row
+
+    def get_heading(self, queryset, field):
+        return self.export_headings.get(field, field.replace("_", " ").title())
+
+    def get_filename(self):
+        # Filename specified by ticket; Wagtail appends the extension (.csv / .xlsx).
+        return "Private Seminar Disclosure 3 year"
 
 
 # ------------------- SVG --------------------

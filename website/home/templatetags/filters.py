@@ -48,3 +48,34 @@ def slugify_text(text):
     Convert text to a URL-friendly slug
     """
     return slugify(text)
+
+
+@register.filter
+def aria_text(value):
+    """
+    Flatten a rich-text fragment into a single screen-reader-friendly string.
+
+    Insert ", " before each closing </li>, </p>, </h1-6>, </br>, </div> tag so
+    list items / paragraphs are spoken as separate phrases instead of running
+    together. Then strip remaining HTML tags.
+
+    Intended for use in ARIA labels.
+    """
+    if not value:
+        return ""
+    import re
+    from django.utils.html import strip_tags
+
+    s = str(value)
+    # Insert separators before block-level closing tags
+    s = re.sub(
+        r"</(li|p|h[1-6]|br|div)>",
+        r"</\1>, ",
+        s,
+        flags=re.IGNORECASE,
+    )
+    text = strip_tags(s)
+    # Collapse runs of whitespace + trailing punctuation noise
+    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"(,\s*)+", ", ", text)
+    return text.rstrip(", ")
