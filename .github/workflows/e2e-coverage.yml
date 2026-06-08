@@ -51,12 +51,12 @@ jobs:
           make createpages
           make updatepages
 
-          COVERAGE_FILE=.coverage.e2e coverage run --rcfile=.coveragerc.e2e --parallel-mode manage.py runserver --noreload 0.0.0.0:8000 > /tmp/e2e-server.log 2>&1 &
+          COVERAGE_FILE=.coverage.e2e python scripts/run_covered_server.py > /tmp/e2e-server.log 2>&1 &
           SERVER_PID=$!
 
           cleanup() {
             if kill -0 "$SERVER_PID" 2>/dev/null; then
-              kill -INT "$SERVER_PID" 2>/dev/null || true
+              kill -TERM "$SERVER_PID" 2>/dev/null || true
               # Wait up to 30s for coverage data to be written, then force-kill
               (sleep 30; kill -KILL "$SERVER_PID" 2>/dev/null || true) &
               KILL_TIMER_PID=$!
