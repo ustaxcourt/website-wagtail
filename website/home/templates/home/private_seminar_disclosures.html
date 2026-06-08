@@ -299,26 +299,20 @@
         {% if disclosures %}
             <ul class="disclosure-grid" role="list" data-testid="disclosure-grid">
                 {% for disclosure in disclosures %}
-                    {% comment %}
-                        508: each card is tab-focusable (tabindex=0) and announced
-                        as a single article. The aria-label concatenates all visible
-                        fields so screen readers read the entire contents on focus.
-                        The inner markup is hidden from the accessibility tree
-                        (aria-hidden) so the screen reader doesn't double-announce.
-                    {% endcomment %}
-                    {# role="article" on the <li> would override its implicit
-                       listitem role and break aria-required-children on the
-                       <ul role="list"> parent. Keep the listitem role; the
-                       tabindex=0 + aria-label below provide the focus and
-                       announcement behavior we want for AT users. #}
+                    {# Cards are tab-focusable (tabindex=0) so keyboard users
+                       can pause on each card, but the inner content is left
+                       visible to assistive tech so VoiceOver users in browse
+                       mode and the Headings/Links rotors can navigate to
+                       specific fields. An aria-label + aria-hidden wrapper
+                       would have forced a one-shot announcement and hidden
+                       the h2 from the rotor, which is a real 508 regression
+                       for non-Tab navigation patterns. #}
                     <li class="disclosure-card"
                         data-testid="disclosure-card"
-                        tabindex="0"
-                        aria-label="{{ disclosure.judge.display_name }}. Program Provider: {{ disclosure.program_provider }}. Program: {{ disclosure.program_title }}. Date: {{ disclosure.date|date:'F j, Y' }}. Location: {{ disclosure.location }}.{% if disclosure.program_topics %} Program Topics: {{ disclosure.program_topics|aria_text }}.{% endif %}{% if disclosure.supporter %} Supporters: {{ disclosure.supporter }}.{% endif %}">
-                        <div aria-hidden="true">
-                            <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
-                            {# Body: stacked field groups with thin dividers per Figma #}
-                            <div class="disclosure-body">
+                        tabindex="0">
+                        <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
+                        {# Body: stacked field groups with thin dividers per Figma #}
+                        <div class="disclosure-body">
                                 {# Group 1: Program Provider(s) — label then value #}
                                 <div class="disclosure-field-group">
                                     <p class="field-label">Program Provider(s):</p>
@@ -347,7 +341,6 @@
                                         <p class="field-value">{{ disclosure.supporter }}</p>
                                     </div>
                                 {% endif %}
-                            </div>
                         </div>
                     </li>
                 {% endfor %}

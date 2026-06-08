@@ -19,10 +19,15 @@ OLD_PLACEHOLDER = (
 
 
 def set_seminar_intro_text(apps, schema_editor):
+    # Only update rows that are still on the known old placeholder (or empty).
+    # An earlier draft excluded the CORRECT_INTRO and updated everything else,
+    # which would have clobbered any admin-customized intro copy. Now we only
+    # touch the two known "uninitialized" states so admin edits are preserved
+    # across re-runs of this migration.
     JudgeIndex = apps.get_model("home", "JudgeIndex")
     updated = (
         JudgeIndex.objects.filter(slug="judges")
-        .exclude(seminar_intro_text=CORRECT_INTRO)
+        .filter(seminar_intro_text__in=[OLD_PLACEHOLDER, ""])
         .update(seminar_intro_text=CORRECT_INTRO)
     )
     if updated:

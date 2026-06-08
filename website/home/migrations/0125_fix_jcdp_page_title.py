@@ -1,5 +1,5 @@
 """
-0122: Fix the JCDP page title in the DB.
+0125: Fix the JCDP page title in the DB.
 
 The JCDP page was created via JudicialConductAndDisabilityProceduresPageInitializer
 with title "Judicial Conduct and Disability Procedures" (no "Complaint"). The
@@ -26,21 +26,21 @@ def fix_jcdp_title(apps, schema_editor):
         try:
             page = Page.objects.get(slug="jcdp")
         except Page.DoesNotExist:
-            logger.info("0122: jcdp page not found — skipping.")
+            logger.info("0125: jcdp page not found — skipping.")
             return
 
         specific = page.specific
         if specific.title == CORRECT_TITLE and specific.seo_title == CORRECT_TITLE:
-            logger.info("0122: jcdp page title already correct — skipping.")
+            logger.info("0125: jcdp page title already correct — skipping.")
             return
 
         specific.title = CORRECT_TITLE
         specific.seo_title = CORRECT_TITLE
         specific.save()
         specific.save_revision().publish()
-        logger.info(f"0122: jcdp page title set to {CORRECT_TITLE!r}.")
+        logger.info(f"0125: jcdp page title set to {CORRECT_TITLE!r}.")
     except Exception as e:
-        logger.warning(f"0122: could not update jcdp page title: {e}")
+        logger.warning(f"0125: could not update jcdp page title: {e}")
 
 
 def noop(apps, schema_editor):

@@ -94,12 +94,20 @@ class JudgeIndexSetUpMixin(TestCase):
         self.chief_role = JudgeRole(role_name="Chief Judge", judge=self.judge_smith)
         self.chief_role.save()
 
-        # Create a disclosure for smith
+        # Create a disclosure for smith.
+        # The date is calculated relative to today so the fixture stays
+        # within a fresh 3-year window (default disclosure_years) but
+        # outside a 1-year window — keeping the disclosure-window tests
+        # stable as calendar time moves forward. A literal date here
+        # would silently start failing once it crossed a cutoff.
+        self.disclosure_date = datetime.date.today() - datetime.timedelta(
+            days=int(365 * 2)
+        )
         self.disclosure = PrivateSeminarDisclosure.objects.create(
             judge=self.judge_smith,
             program_provider="ACME Legal",
             program_title="Tax Law Seminar",
-            date=datetime.date(2024, 6, 15),
+            date=self.disclosure_date,
             location="Washington, DC",
         )
 
@@ -334,7 +342,7 @@ class PrivateSeminarDisclosureModelTest(JudgeIndexSetUpMixin):
     """Tests for PrivateSeminarDisclosure model."""
 
     def test_str_format(self):
-        expected = "Jane Smith — Tax Law Seminar (2024-06-15)"
+        expected = f"Jane Smith — Tax Law Seminar ({self.disclosure_date})"
         self.assertEqual(str(self.disclosure), expected)
 
     def test_meta_ordering(self):
@@ -525,7 +533,7 @@ class DisclosureWindowTest(JudgeIndexSetUpMixin):
         self.settings_obj.disclosure_years = 1
         self.settings_obj.save()
 
-        # 2024-06-15 fixture is ~2 years old (today is 2026) — outside 1-year window.
+        # Fixture date is today − 2 years (set in setUp) — outside a 1-year window.
         response = self.judge_index.private_seminar_disclosures(self._get())
         self.assertNotIn("Tax Law Seminar", response.content.decode())
 
@@ -597,7 +605,7 @@ class PrivateSeminarDisclosureReportViewTest(JudgeIndexSetUpMixin):
         client = Client()
         client.force_login(self.admin)
         response = client.get("/admin/reports/private-seminar-disclosures/")
-        # The 2024-06-15 fixture is within a 3-year window from 2026.
+        # The fixture date is today − 2 years (set in setUp) — within a 3-year window.
         self.assertIn(b"Tax Law Seminar", response.content)
 
     def test_report_excludes_disclosure_outside_window(self):

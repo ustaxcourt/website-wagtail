@@ -275,47 +275,57 @@ test.describe("Private Seminar Disclosures — disclosure cards", () => {
         }
     });
 
-    test("each disclosure card contains dt labels for all required fields", async ({ page }) => {
-        // dt elements are read by VoiceOver before each dd value.
-        // Without them, the user hears a string of values with no field labels:
-        //   "Tax Institute    Federal Tax Conference    01/15/2024   Washington D.C."
-        // With dt: "Program Provider(s): Tax Institute   Program: …" — meaningful.
-        const cards = page.locator(".disclosure-card");
-        const count = await cards.count();
-        if (count === 0) return;
-
-        const card = cards.first().locator(".disclosure-body");
-        const dtTexts = await card.locator("dt").allTextContents();
-        expect(dtTexts.some(t => /program provider/i.test(t))).toBe(true);
-        expect(dtTexts.some(t => /^program:/i.test(t))).toBe(true);
-        expect(dtTexts.some(t => /date/i.test(t))).toBe(true);
-        expect(dtTexts.some(t => /location/i.test(t))).toBe(true);
-    });
-
-    test("dt and dd counts match within the disclosure body — no orphaned labels", async ({ page }) => {
-        // An orphaned <dt> with no following <dd> causes VoiceOver to announce a
-        // field label with no value — the user is left waiting for content that never comes.
+    test("each disclosure card contains text labels for all required fields", async ({ page }) => {
+        // The card body markup uses `.disclosure-field-group` rather than
+        // dl/dt/dd. "Program Provider(s):" lives in a `.field-label`; Program,
+        // Date, and Location are inlined into `.field-value` strings (e.g.
+        // "Date: 06/15/2024"). VoiceOver reads each <p> on its own, so the
+        // labels are still announced — they're just in a different element.
         const cards = page.locator(".disclosure-card");
         const count = await cards.count();
         if (count === 0) return;
 
         const body = cards.first().locator(".disclosure-body");
-        const dtCount = await body.locator("dt").count();
-        const ddCount = await body.locator("dd").count();
-        expect(dtCount).toBeGreaterThanOrEqual(4); // at least 4 required fields
-        expect(ddCount).toBe(dtCount);             // one value for every label
+        const bodyText = (await body.textContent()) ?? "";
+        expect(/program provider/i.test(bodyText)).toBe(true);
+        expect(/program:/i.test(bodyText)).toBe(true);
+        expect(/date/i.test(bodyText)).toBe(true);
+        expect(/location/i.test(bodyText)).toBe(true);
+    });
+
+    test("disclosure body groups labels with their values — no orphaned labels", async ({ page }) => {
+        // An explicit `.field-label` (Provider / Topics / Supporter) must
+        // always sit inside a `.disclosure-field-group` next to its
+        // corresponding `.field-value`, so VoiceOver reads label → value in
+        // order. We assert each label paragraph has a sibling value paragraph
+        // inside the same field-group.
+        const cards = page.locator(".disclosure-card");
+        const count = await cards.count();
+        if (count === 0) return;
+
+        const orphans = await cards.first().evaluate((el) => {
+            const labels = Array.from(el.querySelectorAll(".disclosure-body .field-label"));
+            return labels
+                .filter((label) => {
+                    const group = label.closest(".disclosure-field-group");
+                    return !group || !group.querySelector(".field-value");
+                })
+                .map((l) => l.textContent?.trim());
+        });
+        expect(orphans, `expected zero orphaned labels, got: ${JSON.stringify(orphans)}`).toEqual([]);
     });
 
     test("date field is formatted MM/DD/YYYY — VoiceOver reads it naturally", async ({ page }) => {
         // Dates like '2024-01-15' are announced as "two thousand twenty-four hyphen…"
         // MM/DD/YYYY is announced as "January fifteenth twenty twenty-four" on most platforms.
+        // The Date is inlined into `.field-value--light` as "Date: MM/DD/YYYY".
         const cards = page.locator(".disclosure-card");
         if (await cards.count() === 0) return;
 
-        const dateDD = cards.first().locator(".disclosure-body dt").filter({ hasText: "Date:" })
-            .locator("+ dd");
-        const dateText = await dateDD.textContent();
-        expect((dateText ?? "").trim()).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+        const dateText = await cards.first()
+            .locator(".field-value--light", { hasText: "Date:" })
+            .textContent();
+        expect((dateText ?? "").trim()).toMatch(/^Date:\s*\d{2}\/\d{2}\/\d{4}$/);
     });
 
     test("judge name header background is Figma-confirmed light blue (visual + AT safe)", async ({ page }) => {
@@ -618,8 +628,12 @@ voiceOverTest.describe("Private Seminar Disclosures — VoiceOver full-page swee
             const expectedCards = await page.evaluate(() =>
                 Array.from(document.querySelectorAll(".disclosure-card")).map(card => ({
                     judgeName: card.querySelector(".judge-name")?.textContent?.trim() ?? "",
-                    fields:    Array.from(card.querySelectorAll(".disclosure-body dt"))
-                                    .map(dt => dt.textContent?.trim() ?? ""),
+                    // Card body uses .disclosure-field-group instead of dl/dt/dd.
+                    // Collect each <p class="field-label"> + each .field-value
+                    // text so we can audit that VoiceOver hits every visible label.
+                    fields: Array.from(
+                        card.querySelectorAll(".disclosure-body .field-label, .disclosure-body .field-value"),
+                    ).map(el => el.textContent?.trim() ?? ""),
                 })),
             );
 
@@ -658,12 +672,14 @@ voiceOverTest.describe("Private Seminar Disclosures — VoiceOver full-page swee
             }
 
             // ── 4. Walk every disclosure card using next() ────────────────────────────
-            // Disclosure cards are <div> elements — not links — so findNextLink skips
-            // them entirely.  next() (VO+Right) reads sequentially through every
-            // element in the VO reading order: judge-name div → each dt → each dd.
+            // Disclosure cards are <li> elements with tabindex=0 — not links — so
+            // findNextLink skips them entirely. next() (VO+Right) reads sequentially
+            // through every element in the VO reading order: judge-name h2 → each
+            // .field-label / .field-value <p>.
             //
             // We walk until we've seen every expected judge name, then stop.
-            // maxSteps budget: per card ≈ 1 (name) + 8 (4×dt+dd pairs) + 1 (border) = ~10 steps.
+            // maxSteps budget: per card ≈ 1 (name) + ~7 (label/value paragraphs) +
+            // 1 (border) = ~10 steps.
             const maxSteps = expectedCards.length * 12 + 20;
             const namesRemaining = new Set(expectedCards.map(c => c.judgeName.toLowerCase()));
             const requiredLabels = new Set(["program provider", "program:", "date:", "location:"]);
@@ -696,7 +712,8 @@ voiceOverTest.describe("Private Seminar Disclosures — VoiceOver full-page swee
             }
 
             // ── 6. Assert all required field labels were spoken at least once ─────────
-            // These appear in every card — if VoiceOver skipped any, the dt structure is broken.
+            // These appear in every card — if VoiceOver skipped any, the
+            // .disclosure-field-group structure is broken.
             for (const label of requiredLabels) {
                 expect(
                     log,

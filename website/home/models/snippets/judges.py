@@ -72,7 +72,6 @@ class JudgeProfile(
         FieldPanel("title"),
         FieldPanel("chambers_telephone"),
         FieldPanel("bio"),
-        InlinePanel("seminar_disclosures", label="Private Seminar Disclosures"),
     ]
     panels = content_panels + [PublishingPanel()]
 
@@ -398,6 +397,7 @@ class JudgeRole(
         return self._revisions
 
 
+@register_snippet
 class PrivateSeminarDisclosure(models.Model):
     # Explicit BigAutoField to match the project-wide DEFAULT_AUTO_FIELD
     # (the `home` AppConfig overrides that default to AutoField for legacy
