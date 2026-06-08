@@ -259,10 +259,12 @@
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        {# H1: page title with an inline back-link to Judge Information, so
+        {% comment %}
+           H1: page title with an inline back-link to Judge Information, so
            keyboard / AT users get an in-heading way back to the parent
            page (and to satisfy the [data-testid="page-title"] a Cypress +
-           VoiceOver expectations). #}
+           VoiceOver expectations).
+        {% endcomment %}
         <h1 class="page-title" data-testid="page-title" tabindex="0">
             <a href="/judges/" class="page-title-back-link">Judge Information</a>
             <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
@@ -299,14 +301,16 @@
         {% if disclosures %}
             <ul class="disclosure-grid" role="list" data-testid="disclosure-grid">
                 {% for disclosure in disclosures %}
-                    {# Cards are tab-focusable (tabindex=0) so keyboard users
+                    {% comment %}
+                       Cards are tab-focusable (tabindex=0) so keyboard users
                        can pause on each card, but the inner content is left
                        visible to assistive tech so VoiceOver users in browse
                        mode and the Headings/Links rotors can navigate to
                        specific fields. An aria-label + aria-hidden wrapper
                        would have forced a one-shot announcement and hidden
                        the h2 from the rotor, which is a real 508 regression
-                       for non-Tab navigation patterns. #}
+                       for non-Tab navigation patterns.
+                    {% endcomment %}
                     <li class="disclosure-card"
                         data-testid="disclosure-card"
                         tabindex="0">
