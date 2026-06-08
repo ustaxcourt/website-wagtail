@@ -259,8 +259,14 @@
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        {# H1: Figma shows "Private Seminar Disclosures" as the standalone page title (fs=32 fw=400) #}
-        <h1 class="page-title" data-testid="page-title" tabindex="0">Private Seminar Disclosures</h1>
+        {# H1: page title with an inline back-link to Judge Information, so
+           keyboard / AT users get an in-heading way back to the parent
+           page (and to satisfy the [data-testid="page-title"] a Cypress +
+           VoiceOver expectations). #}
+        <h1 class="page-title" data-testid="page-title" tabindex="0">
+            <a href="/judges/" class="page-title-back-link">Judge Information</a>
+            <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
+        </h1>
         {# Intro: policy paragraph from CMS richtext field #}
         <div class="seminar-intro" data-testid="seminar-intro">
             {% if page.seminar_intro_text %}
@@ -300,10 +306,14 @@
                         The inner markup is hidden from the accessibility tree
                         (aria-hidden) so the screen reader doesn't double-announce.
                     {% endcomment %}
+                    {# role="article" on the <li> would override its implicit
+                       listitem role and break aria-required-children on the
+                       <ul role="list"> parent. Keep the listitem role; the
+                       tabindex=0 + aria-label below provide the focus and
+                       announcement behavior we want for AT users. #}
                     <li class="disclosure-card"
                         data-testid="disclosure-card"
                         tabindex="0"
-                        role="article"
                         aria-label="{{ disclosure.judge.display_name }}. Program Provider: {{ disclosure.program_provider }}. Program: {{ disclosure.program_title }}. Date: {{ disclosure.date|date:'F j, Y' }}. Location: {{ disclosure.location }}.{% if disclosure.program_topics %} Program Topics: {{ disclosure.program_topics|aria_text }}.{% endif %}{% if disclosure.supporter %} Supporters: {{ disclosure.supporter }}.{% endif %}">
                         <div aria-hidden="true">
                             <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
