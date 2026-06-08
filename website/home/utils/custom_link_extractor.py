@@ -17,7 +17,9 @@ class CustomLinkExtractor(LinkExtractor):
         if value[link_attribute]:
             for child in value[link_attribute]:
                 if hasattr(child, "block_type") and child.block_type == "external_url":
-                    links.append({"text": value[text_attribute], "url": child.value})
+                    links.append(
+                        {"text": value[text_attribute].__str__(), "url": child.value}
+                    )
 
         return links
 
