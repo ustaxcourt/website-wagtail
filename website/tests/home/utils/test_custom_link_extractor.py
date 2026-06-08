@@ -2,12 +2,9 @@
 
 import pytest
 from home.utils.custom_link_extractor import CustomLinkExtractor
-
 from home.models.pages.enhanced_standard import EnhancedStandardPage
-
-
-class DummyPage:
-    body = []
+from wagtail.images.tests.utils import Image, get_test_image_file
+from wagtail.models import Collection
 
 
 class TestCustomExtractor:
@@ -239,6 +236,42 @@ class TestCustomExtractor:
     @pytest.mark.django_db
     def test_extract_from_value_returns_expected_result(self, input, expected):
         result = None
+        extractor = CustomLinkExtractor()
+
+        page = EnhancedStandardPage(body=[input])
+        result = extractor.extract_from_page(page)
+        assert result == expected
+
+    @pytest.mark.django_db
+    def test_extract_from_imageWithLinkBlock_returns_expected_result(self):
+        imageTitle = "External Link in Image"
+
+        rootCollection = Collection.add_root(name="Root")
+
+        testImage = Image.objects.create(
+            title=imageTitle, file=get_test_image_file(), collection=rootCollection
+        )
+
+        input = {
+            "type": "image",
+            "value": {
+                "image": {
+                    "image": testImage.pk,
+                    "alt_text": "Image Alt Text",
+                    "decorative": False,
+                },
+                "link": [
+                    {
+                        "type": "external_url",
+                        "value": "https://www.google.com",
+                        "id": "9e652d82-488d-4d6a-b25b-6e4edcec0f0c",
+                    }
+                ],
+            },
+            "id": "735b91e3-bca6-4559-969f-b494225b6f94",
+        }
+        expected = [{"text": imageTitle, "url": "https://www.google.com"}]
+
         extractor = CustomLinkExtractor()
 
         page = EnhancedStandardPage(body=[input])
