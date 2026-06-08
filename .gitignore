@@ -43,14 +43,19 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
+.nyc_output/
 nosetests.xml
 coverage.xml
 coverage-report.txt
+e2e-coverage.xml
+e2e-coverage-report.txt
 *.cover
 *.py,cover
 .hypothesis/
 .pytest_cache/
 cover/
+coverage/
+e2e_coverage_html/
 website/cypress/artifacts/
 
 # Translations
