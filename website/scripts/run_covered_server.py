@@ -17,6 +17,11 @@ import runpy
 import signal
 import sys
 
+# runpy.run_path on a .py file does not update sys.path the way `python
+# manage.py` does. Add website/ (parent of this scripts/ dir) explicitly so
+# that `app`, `home`, and other project packages are importable.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import coverage
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings.local")
