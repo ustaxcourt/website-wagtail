@@ -1,6 +1,7 @@
 """
 Unit tests for JudgeIndex page and related models.
-Covers _build_judge_groups(), page rendering, routes, and PrivateSeminarDisclosure.
+Covers _build_judge_groups(), page rendering, routes, PrivateSeminarDisclosure,
+the 3-year disclosure window, and the admin report view.
 """
 
 import datetime
@@ -22,6 +23,7 @@ from home.models.snippets.judges import (
     JudgeRole,
     PrivateSeminarDisclosure,
 )
+from home.models.settings import PrivateSeminarDisclosureSettings
 
 
 OVERRIDE = dict(
@@ -92,12 +94,20 @@ class JudgeIndexSetUpMixin(TestCase):
         self.chief_role = JudgeRole(role_name="Chief Judge", judge=self.judge_smith)
         self.chief_role.save()
 
-        # Create a disclosure for smith
+        # Create a disclosure for smith.
+        # The date is calculated relative to today so the fixture stays
+        # within a fresh 3-year window (default disclosure_years) but
+        # outside a 1-year window — keeping the disclosure-window tests
+        # stable as calendar time moves forward. A literal date here
+        # would silently start failing once it crossed a cutoff.
+        self.disclosure_date = datetime.date.today() - datetime.timedelta(
+            days=int(365 * 2)
+        )
         self.disclosure = PrivateSeminarDisclosure.objects.create(
             judge=self.judge_smith,
             program_provider="ACME Legal",
             program_title="Tax Law Seminar",
-            date=datetime.date(2024, 6, 15),
+            date=self.disclosure_date,
             location="Washington, DC",
         )
 
@@ -297,7 +307,8 @@ class PrivateSeminarDisclosuresRouteTest(JudgeIndexSetUpMixin):
         )
         response = self.judge_index.private_seminar_disclosures(request)
         content = response.content.decode()
-        self.assertIn("No seminar disclosures have been filed", content)
+        # Default seminar_empty_text value from the model field
+        self.assertIn("There are no disclosures to report at this time.", content)
 
     def test_year_filter_returns_matching_disclosures(self):
         request = self._get_request(
@@ -331,7 +342,7 @@ class PrivateSeminarDisclosureModelTest(JudgeIndexSetUpMixin):
     """Tests for PrivateSeminarDisclosure model."""
 
     def test_str_format(self):
-        expected = "Jane Smith — Tax Law Seminar (2024-06-15)"
+        expected = f"Jane Smith — Tax Law Seminar ({self.disclosure_date})"
         self.assertEqual(str(self.disclosure), expected)
 
     def test_meta_ordering(self):
@@ -468,6 +479,151 @@ class SeedBottomTilesRevisionTest(JudgeIndexSetUpMixin):
 
         self.judge_index.refresh_from_db()
         self.assertIsNone(self.judge_index.latest_revision)
+
+
+@override_settings(**OVERRIDE)
+class DisclosureWindowTest(JudgeIndexSetUpMixin):
+    """
+    Tests that the private_seminar_disclosures route honours the
+    PrivateSeminarDisclosureSettings.disclosure_years window.
+    """
+
+    def setUp(self):
+        super().setUp()
+        # Ensure a fresh settings object with the default 3-year window.
+        PrivateSeminarDisclosureSettings.objects.all().delete()
+        self.settings_obj = PrivateSeminarDisclosureSettings.objects.create(
+            disclosure_years=3
+        )
+
+    def _get(self, path="/"):
+        request = self.factory.get(path)
+        request.site = Site.objects.get(is_default_site=True)
+        return request
+
+    def test_disclosure_within_window_is_shown(self):
+        """A disclosure dated less than 3 years ago should appear."""
+        recent = datetime.date.today() - datetime.timedelta(days=365)
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Provider A",
+            program_title="Recent Seminar",
+            date=recent,
+            location="DC",
+        )
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertIn("Recent Seminar", response.content.decode())
+
+    def test_disclosure_outside_window_is_hidden(self):
+        """A disclosure dated more than 3 years ago should NOT appear."""
+        old_date = datetime.date.today() - datetime.timedelta(days=4 * 365)
+        PrivateSeminarDisclosure.objects.all().delete()
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Old Provider",
+            program_title="Old Seminar",
+            date=old_date,
+            location="DC",
+        )
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertNotIn("Old Seminar", response.content.decode())
+
+    def test_configurable_window_respected(self):
+        """Setting disclosure_years=1 should hide disclosures older than 1 year."""
+        self.settings_obj.disclosure_years = 1
+        self.settings_obj.save()
+
+        # Fixture date is today − 2 years (set in setUp) — outside a 1-year window.
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertNotIn("Tax Law Seminar", response.content.decode())
+
+    def test_year_dropdown_only_contains_window_years(self):
+        """Year filter options must not include years outside the disclosure window."""
+        old_date = datetime.date.today() - datetime.timedelta(days=4 * 365)
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Old Provider",
+            program_title="Old Seminar",
+            date=old_date,
+            location="DC",
+        )
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        content = response.content.decode()
+        self.assertNotIn(str(old_date.year), content)
+
+    def test_empty_text_is_customisable(self):
+        """seminar_empty_text field should appear in the rendered empty state."""
+        PrivateSeminarDisclosure.objects.all().delete()
+        self.judge_index.seminar_empty_text = "Custom empty message for testing."
+        self.judge_index.save_revision().publish()
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertIn("Custom empty message for testing.", response.content.decode())
+
+    def test_intro_text_rendered(self):
+        """seminar_intro_text should appear on the page."""
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        # Default intro text contains "private seminar disclosures"
+        self.assertIn("private seminar disclosures", response.content.decode().lower())
+
+
+@override_settings(**OVERRIDE)
+class PrivateSeminarDisclosureReportViewTest(JudgeIndexSetUpMixin):
+    """
+    Tests for PrivateSeminarDisclosureReportView.
+    Uses Django test client to exercise the full view stack.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        self.admin = User.objects.create_superuser(
+            username="report_admin", password="pw", email="admin@example.com"
+        )
+        PrivateSeminarDisclosureSettings.objects.all().delete()
+        PrivateSeminarDisclosureSettings.objects.create(disclosure_years=3)
+
+    def test_report_requires_login(self):
+        from django.test import Client
+
+        client = Client()
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        self.assertNotEqual(response.status_code, 200)
+
+    def test_report_accessible_to_admin(self):
+        from django.test import Client
+
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_report_shows_disclosure_within_window(self):
+        from django.test import Client
+
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        # The fixture date is today − 2 years (set in setUp) — within a 3-year window.
+        self.assertIn(b"Tax Law Seminar", response.content)
+
+    def test_report_excludes_disclosure_outside_window(self):
+        """Disclosures older than disclosure_years should not appear in the report."""
+        from django.test import Client
+
+        old_date = datetime.date.today() - datetime.timedelta(days=4 * 365)
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Old Provider",
+            program_title="Very Old Seminar",
+            date=old_date,
+            location="DC",
+        )
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        self.assertNotIn(b"Very Old Seminar", response.content)
 
 
 @override_settings(**OVERRIDE)

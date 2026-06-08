@@ -1,6 +1,9 @@
+import datetime
+
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.models import Page
+from django.db import models
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
 from django.http import Http404
@@ -91,6 +94,25 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
         help_text="Introductory text displayed below the page title.",
     )
 
+    seminar_intro_text = RichTextField(
+        blank=True,
+        default=(
+            "The following are private seminar disclosures submitted by judges "
+            "of the United States Tax Court."
+        ),
+        help_text="Introductory text shown at the top of the Private Seminar Disclosures page.",
+    )
+
+    seminar_empty_text = models.CharField(
+        max_length=500,
+        blank=True,
+        default="There are no disclosures to report at this time.",
+        help_text=(
+            "Text displayed on the Private Seminar Disclosures page when there "
+            "are no current disclosures within the configured time window."
+        ),
+    )
+
     bottom_tiles = StreamField(
         [("quick_access_tiles", QuickAccessTilesBlock())],
         blank=True,
@@ -101,6 +123,8 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
     content_panels = [
         FieldPanel("title"),
         FieldPanel("intro_text"),
+        FieldPanel("seminar_intro_text"),
+        FieldPanel("seminar_empty_text"),
         FieldPanel("bottom_tiles"),
     ]
 
@@ -206,25 +230,60 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
 
     @route(r"^private-seminar-disclosures/$")
     def private_seminar_disclosures(self, request):
-        context = self.get_context(request)
-        all_disclosures = PrivateSeminarDisclosure.objects.select_related(
-            "judge"
-        ).order_by("-date", "judge__last_name")
+        from home.models.settings import PrivateSeminarDisclosureSettings
+        from django.core.paginator import Paginator
 
-        years = sorted(
-            all_disclosures.dates("date", "year", order="DESC"),
+        # Determine the disclosure window from the configurable setting.
+        settings_obj = PrivateSeminarDisclosureSettings.load(request_or_site=request)
+        disclosure_years = settings_obj.disclosure_years
+
+        today = datetime.date.today()
+        try:
+            cutoff = today.replace(year=today.year - disclosure_years)
+        except ValueError:
+            # Handles 29 Feb when the cutoff year is not a leap year.
+            cutoff = today.replace(year=today.year - disclosure_years, day=28)
+
+        base_qs = (
+            PrivateSeminarDisclosure.objects.select_related("judge")
+            .filter(date__gte=cutoff)
+            .order_by("-date", "judge__last_name")
+        )
+
+        # Build the year dropdown from the filtered window only.
+        available_years = sorted(
+            {d.date.year for d in base_qs},
             reverse=True,
         )
-        selected_year = request.GET.get("year", "")
+
+        selected_year = request.GET.get("year", "").strip()
+
+        # Redirect bare ?year= (empty string) to the clean URL so "All Years"
+        # removes the query param entirely rather than leaving ?year=.
+        if "year" in request.GET and selected_year == "":
+            from django.shortcuts import redirect as django_redirect
+
+            return django_redirect(request.path)
+
+        disclosures = base_qs
         if selected_year:
             try:
-                all_disclosures = all_disclosures.filter(date__year=int(selected_year))
+                disclosures = base_qs.filter(date__year=int(selected_year))
             except (ValueError, TypeError):
                 selected_year = ""
 
-        context["disclosures"] = all_disclosures
-        context["years"] = [y.year for y in years]
+        # Paginate — 10 cards per page (Figma shows numbered pagination)
+        paginator = Paginator(disclosures, 10)
+        page_number = request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = self.get_context(request)
+        context["disclosures"] = page_obj
+        context["page_obj"] = page_obj
+        context["paginator"] = paginator
+        context["years"] = available_years
         context["selected_year"] = selected_year
+        context["disclosure_years"] = disclosure_years
         return render(request, "home/private_seminar_disclosures.html", context)
 
     class Meta:
