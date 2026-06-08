@@ -535,11 +535,17 @@ class JudgesPageInitializer(PageInitializer):
         try:
             page = Page.objects.get(slug=self.slug)
             logger.info(f"Updating existing page '{self.slug}'.")
-            # Ensure the page title is up to date
+            # Ensure the page title is up to date. save_revision().publish()
+            # both records the change as a Wagtail revision (so the admin
+            # editor shows the new title) and writes through to the live
+            # page model. A plain page.save() would leave the latest
+            # revision stale, so the admin would still show the old title
+            # until the page was edited again.
             if page.title != "Judge Information":
-                page.title = "Judge Information"
-                page.seo_title = "Judge Information"
-                page.save()
+                specific = page.specific
+                specific.title = "Judge Information"
+                specific.seo_title = "Judge Information"
+                specific.save_revision().publish()
                 logger.info("Updated page title to 'Judge Information'.")
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
@@ -709,5 +715,12 @@ class JudgesPageInitializer(PageInitializer):
             return
 
         judge_index.bottom_tiles = self._build_bottom_tiles_data()
-        judge_index.save()
+        # save_revision().publish() snapshots the seeded bottom_tiles into a
+        # new Wagtail revision and then writes that revision through to the
+        # live page model. A plain judge_index.save() updates the live model
+        # but leaves the latest revision stale, so the admin editor opens
+        # the previous revision (which pre-dates bottom_tiles) and renders
+        # the StreamField empty even though the public page shows the tiles.
+        # Seen on dev-web after the 1246 deploy.
+        judge_index.save_revision().publish()
         logger.info("Seeded bottom_tiles on JudgeIndex page.")
