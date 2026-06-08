@@ -1,0 +1,183 @@
+name: Cypress E2E Coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+
+concurrency:
+  group: e2e-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python
+
+      - name: Set up Node
+        uses: ./.github/actions/setup-node
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          cd website
+          set -e
+          make setup
+
+      - name: Run Cypress with backend coverage
+        env:
+          CYPRESS_ADMIN_USERNAME: ${{ secrets.CYPRESS_ADMIN_USERNAME || 'admin' }}
+          CYPRESS_ADMIN_PASSWORD: ${{ secrets.CYPRESS_ADMIN_PASSWORD || 'ustcAdminPW!' }}
+        run: |
+          cd website
+          . ../.venv/bin/activate
+          rm -f .coverage.e2e .coverage.e2e.* e2e-coverage-report.txt e2e-coverage.xml
+          rm -rf e2e_coverage_html .nyc_output coverage
+
+          make migrate
+          make superuser
+          make createpages
+          make updatepages
+
+          COVERAGE_FILE=.coverage.e2e python scripts/run_covered_server.py > /tmp/e2e-server.log 2>&1 &
+          SERVER_PID=$!
+
+          cleanup() {
+            if kill -0 "$SERVER_PID" 2>/dev/null; then
+              kill -TERM "$SERVER_PID" 2>/dev/null || true
+              # Wait up to 30s for coverage data to be written, then force-kill
+              (sleep 30; kill -KILL "$SERVER_PID" 2>/dev/null || true) &
+              KILL_TIMER_PID=$!
+              wait "$SERVER_PID" 2>/dev/null || true
+              kill "$KILL_TIMER_PID" 2>/dev/null || true
+              wait "$KILL_TIMER_PID" 2>/dev/null || true
+            fi
+          }
+
+          trap cleanup EXIT
+
+          echo "Waiting for application to be ready on port 8000..."
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000 > /dev/null; then
+              echo "Application is ready!"
+              break
+            fi
+            echo "Waiting for port 8000... ($i/30)"
+            sleep 2
+          done
+
+          if ! curl -fsS http://127.0.0.1:8000 > /dev/null; then
+            echo "Application failed to start on port 8000 within the expected time." >&2
+            cat /tmp/e2e-server.log >&2 || true
+            exit 1
+          fi
+
+          make test-e2e-coverage
+
+      - name: Generate E2E coverage report
+        id: coverage_metrics
+        if: success() && hashFiles('website/.coverage.e2e*') != ''
+        run: |
+          cd website
+          . ../.venv/bin/activate
+          COVERAGE_FILE=.coverage.e2e coverage combine
+          COVERAGE_FILE=.coverage.e2e coverage report --show-missing | tee e2e-coverage-report.txt
+          COVERAGE_FILE=.coverage.e2e coverage xml -o e2e-coverage.xml
+          COVERAGE_FILE=.coverage.e2e coverage html -d e2e_coverage_html
+          COVERAGE_PERCENT=$(awk '/TOTAL/ {gsub("%", "", $NF); print $NF}' e2e-coverage-report.txt)
+          echo "coverage_percent=$COVERAGE_PERCENT" >> "$GITHUB_OUTPUT"
+
+      - name: Add E2E coverage to step summary
+        if: success() && hashFiles('website/e2e-coverage-report.txt') != ''
+        env:
+          COVERAGE_PERCENT: ${{ steps.coverage_metrics.outputs.coverage_percent }}
+        run: |
+          echo "## Cypress E2E Coverage" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| --- | ---: |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total Coverage | ${COVERAGE_PERCENT}% |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Workflow | Cypress E2E Coverage |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "<details><summary>Detailed coverage output</summary>" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat website/e2e-coverage-report.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "</details>" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload E2E coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-coverage-report
+          path: |
+            /tmp/e2e-server.log
+            website/cypress/screenshots
+            website/cypress/videos
+            website/.nyc_output
+            website/coverage
+            website/e2e-coverage-report.txt
+            website/e2e-coverage.xml
+            website/e2e_coverage_html
+          if-no-files-found: ignore
+
+      - name: Post E2E coverage comment
+        if: success() && github.event_name == 'pull_request' && hashFiles('website/e2e-coverage-report.txt') != ''
+        uses: actions/github-script@v6
+        env:
+          COVERAGE_PERCENT: ${{ steps.coverage_metrics.outputs.coverage_percent }}
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- cypress-e2e-coverage -->';
+            const report = fs.readFileSync('website/e2e-coverage-report.txt', 'utf8').trim();
+            const body = [
+              marker,
+              '## Cypress E2E Coverage',
+              '',
+              `Total backend coverage exercised by Cypress: **${process.env.COVERAGE_PERCENT}%**`,
+              '',
+              '<details><summary>Detailed coverage output</summary>',
+              '',
+              '```text',
+              report,
+              '```',
+              '</details>'
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const existing = comments.find((comment) => comment.body && comment.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                comment_id: existing.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body,
+              });
+            }

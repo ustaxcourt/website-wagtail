@@ -12,6 +12,7 @@
     "cypress-real-events": "^1.14.0"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.14.7",
     "@guidepup/playwright": "^0.15.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^24.0.14",
