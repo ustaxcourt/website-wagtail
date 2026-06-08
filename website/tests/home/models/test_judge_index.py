@@ -452,3 +452,86 @@ class SeedBottomTilesRevisionTest(JudgeIndexSetUpMixin):
         self.judge_index.refresh_from_db()
         # No new revision should have been created.
         self.assertEqual(self.judge_index.latest_revision_id, existing_rev_id)
+
+    def test_seed_bottom_tiles_skips_when_page_is_not_a_judge_index(self):
+        # Pass a plain Page (not backed by a JudgeIndex row) to _seed_bottom_tiles.
+        # The JudgeIndex.DoesNotExist branch should fire and return without error.
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        # The home_page from setUp is a plain Page — it has no JudgeIndex row.
+        plain_page = Page.objects.get(slug="home-judge-index-test")
+        initializer = JudgesPageInitializer()
+        # Should return silently without creating any revision on judge_index.
+        initializer._seed_bottom_tiles(plain_page)
+
+        self.judge_index.refresh_from_db()
+        self.assertIsNone(self.judge_index.latest_revision)
+
+
+@override_settings(**OVERRIDE)
+class JudgesPageInitializerUpdateTest(JudgeIndexSetUpMixin):
+    """Tests for JudgesPageInitializer.update() — specifically the title-correction
+    branch (WAG-1246) that uses save_revision().publish() instead of a plain save()
+    so the Wagtail admin editor stays in sync with the live page model.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.judge_index.slug = "judges"
+        self.judge_index.save()
+
+    def _run_update(self):
+        from unittest.mock import patch
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        initializer = JudgesPageInitializer()
+        with (
+            patch.object(initializer, "update_judge_roles_and_profiles"),
+            patch.object(initializer, "_seed_seminar_disclosures"),
+            patch.object(initializer, "_seed_bottom_tiles"),
+        ):
+            initializer.update()
+
+    def test_update_corrects_stale_title_and_publishes_revision(self):
+        # Reproduce the pre-1246 dev-web state: page exists but has the old title.
+        self.judge_index.title = "Judges"
+        self.judge_index.seo_title = "Judges"
+        self.judge_index.save()
+        self.assertIsNone(self.judge_index.latest_revision)
+
+        self._run_update()
+
+        self.judge_index.refresh_from_db()
+        self.assertEqual(self.judge_index.title, "Judge Information")
+        self.assertEqual(self.judge_index.seo_title, "Judge Information")
+        # save_revision().publish() must have been called so the admin shows
+        # the corrected title, not the stale pre-fix revision.
+        self.assertIsNotNone(self.judge_index.latest_revision)
+        rev_obj = self.judge_index.latest_revision.as_object()
+        self.assertEqual(rev_obj.title, "Judge Information")
+
+    def test_update_skips_title_correction_when_already_correct(self):
+        # Title is already "Judge Information" — no revision should be created.
+        self.assertIsNone(self.judge_index.latest_revision)
+
+        self._run_update()
+
+        self.judge_index.refresh_from_db()
+        self.assertEqual(self.judge_index.title, "Judge Information")
+        self.assertIsNone(self.judge_index.latest_revision)
+
+    def test_update_is_noop_when_page_slug_not_found(self):
+        # The initializer slug "judges" doesn't match any page.
+        self.judge_index.slug = "not-judges"
+        self.judge_index.save()
+
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        # Should return silently without raising.
+        JudgesPageInitializer().update()

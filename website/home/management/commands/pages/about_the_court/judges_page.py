@@ -542,9 +542,10 @@ class JudgesPageInitializer(PageInitializer):
             # revision stale, so the admin would still show the old title
             # until the page was edited again.
             if page.title != "Judge Information":
-                page.title = "Judge Information"
-                page.seo_title = "Judge Information"
-                page.save_revision().publish()
+                specific = page.specific
+                specific.title = "Judge Information"
+                specific.seo_title = "Judge Information"
+                specific.save_revision().publish()
                 logger.info("Updated page title to 'Judge Information'.")
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
