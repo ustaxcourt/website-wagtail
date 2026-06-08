@@ -569,7 +569,13 @@ class JudgesPageInitializer(PageInitializer):
                 changed = True
                 logger.info("Set seminar_intro_text on JudgeIndex page.")
             if changed:
-                specific.save()
+                # save_revision().publish() writes a fresh Wagtail revision
+                # AND propagates fields to the live page model. A plain
+                # specific.save() would leave the latest revision stale so
+                # the admin editor would still show the old title /
+                # seminar_intro_text until the page was edited by hand —
+                # the same dev-web symptom main fixed for _seed_bottom_tiles.
+                specific.save_revision().publish()
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
             # Same env gate as in create() — sample disclosures are dev-only.
@@ -738,5 +744,12 @@ class JudgesPageInitializer(PageInitializer):
             return
 
         judge_index.bottom_tiles = self._build_bottom_tiles_data()
-        judge_index.save()
+        # save_revision().publish() snapshots the seeded bottom_tiles into a
+        # new Wagtail revision and then writes that revision through to the
+        # live page model. A plain judge_index.save() updates the live model
+        # but leaves the latest revision stale, so the admin editor opens
+        # the previous revision (which pre-dates bottom_tiles) and renders
+        # the StreamField empty even though the public page shows the tiles.
+        # Seen on dev-web after the 1246 deploy.
+        judge_index.save_revision().publish()
         logger.info("Seeded bottom_tiles on JudgeIndex page.")
