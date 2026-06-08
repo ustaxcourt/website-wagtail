@@ -1,0 +1,24 @@
+[run]
+# Only instrument the project's own packages — not Django, Wagtail, or stdlib.
+# Keeping source narrow is the primary way to avoid the dev server becoming
+# orders-of-magnitude slower when running under `coverage run`.
+source = home,app,redirects,search
+# Disable branch coverage: it roughly doubles tracing overhead and is
+# unnecessary for measuring which server-side lines are exercised by Cypress.
+branch = False
+omit =
+    */tests/*
+    */test_*.py
+    */migrations/*
+    manage.py
+    app/settings/*
+    app/wsgi.py
+
+[report]
+omit =
+    */tests/*
+    */test_*.py
+    */migrations/*
+    manage.py
+    app/settings/*
+    app/wsgi.py
