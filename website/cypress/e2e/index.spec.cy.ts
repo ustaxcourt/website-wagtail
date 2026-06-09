@@ -73,6 +73,23 @@ describe('index page', () => {
     })
   })
 
+  it('has DAWSON login link in the header pointing to the DAWSON login page', () => {
+    cy.get('[data-testid="header-dawson-login-link"]')
+      .should('exist')
+      .and('be.visible')
+      .and('have.attr', 'href', 'https://app.dawson.ustaxcourt.gov/login')
+      .and('have.attr', 'target', '_blank')
+      .and('have.attr', 'rel', 'noopener noreferrer')
+  })
+
+  it('has DAWSON login link visible on mobile viewport', () => {
+    cy.viewport('iphone-x')
+    cy.get('[data-testid="header-dawson-login-link"]')
+      .should('exist')
+      .and('be.visible')
+      .and('have.attr', 'href', 'https://app.dawson.ustaxcourt.gov/login')
+  })
+
   it('search buttons contain text or title attribute for accessibility', () => {
     cy.get('[data-testid="search-button"]').should(($button) => {
 
