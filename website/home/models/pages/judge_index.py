@@ -97,10 +97,16 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
     seminar_intro_text = RichTextField(
         blank=True,
         default=(
-            "The following are private seminar disclosures submitted by judges "
-            "of the United States Tax Court."
+            "<p>The following are private seminar disclosures submitted by "
+            "judges of the United States Tax Court.</p>"
+            "<p>Below is the Running list of Tax Court Disclosures:</p>"
         ),
-        help_text="Introductory text shown at the top of the Private Seminar Disclosures page.",
+        help_text=(
+            "Introductory text shown at the top of the Private Seminar "
+            "Disclosures page (hidden automatically when there are no "
+            "disclosures to display). Includes the 'Below is...' line by "
+            "default so editors can change it without code changes."
+        ),
     )
 
     seminar_empty_text = models.CharField(

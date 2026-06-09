@@ -560,29 +560,58 @@ class DisclosureWindowTest(JudgeIndexSetUpMixin):
         self.assertIn("Custom empty message for testing.", response.content.decode())
 
     def test_intro_text_rendered_when_disclosures_exist(self):
-        """seminar_intro_text should appear on the page when there are
-        disclosures to display.
+        """seminar_intro_text should render the editable intro block when
+        there are disclosures. The "Below is the Running list of Tax
+        Court Disclosures:" sentence is part of that single editable
+        RichTextField now (no hardcoded copy in the template).
         """
-        response = self.judge_index.private_seminar_disclosures(self._get())
-        # Default intro text contains "private seminar disclosures"
-        self.assertIn("private seminar disclosures", response.content.decode().lower())
-        # The "Below is..." label is part of the intro block — also visible.
-        self.assertIn(
-            "Running list of Tax Court Disclosures", response.content.decode()
+        # Seed both lines into the editable field so the assertions don't
+        # rely on the model's `default=`, which is only applied on first
+        # save of a new instance.
+        self.judge_index.seminar_intro_text = (
+            "<p>The following are private seminar disclosures submitted by "
+            "judges of the United States Tax Court.</p>"
+            "<p>Below is the Running list of Tax Court Disclosures:</p>"
         )
+        self.judge_index.save_revision().publish()
+
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        body = response.content.decode()
+        self.assertIn('data-testid="seminar-intro"', body)
+        self.assertIn("private seminar disclosures", body.lower())
+        self.assertIn("Running list of Tax Court Disclosures", body)
+
+    def test_running_list_sentence_is_editable_via_intro_field(self):
+        """If an editor changes seminar_intro_text in admin, the new text
+        appears on the page and the previously-hardcoded "Below is..."
+        sentence does NOT reappear from anywhere else in the template.
+        """
+        self.judge_index.seminar_intro_text = (
+            "<p>Editor-written intro paragraph.</p>"
+            "<p>Editor-written running-list sentence.</p>"
+        )
+        self.judge_index.save_revision().publish()
+
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        body = response.content.decode()
+        self.assertIn("Editor-written intro paragraph.", body)
+        self.assertIn("Editor-written running-list sentence.", body)
+        # The previously-hardcoded sentence must not leak in from the template.
+        self.assertNotIn("Below is the Running list of Tax Court Disclosures", body)
+        # The static label wrapper element is gone too — no <p> with
+        # class="seminar-list-label" should appear in the rendered HTML.
+        self.assertNotIn('class="seminar-list-label"', body)
 
     def test_intro_text_hidden_when_no_disclosures(self):
-        """AC #7: when there are no disclosures, the introductory text
-        (both the editable seminar_intro_text paragraph and the static
-        "Below is the Running list..." label) is hidden so the page
-        doesn't promise a list it can't deliver. The empty-state message
-        speaks for itself.
+        """AC #7: when there are no disclosures, the introductory text is
+        hidden so the page doesn't promise a list it can't deliver. The
+        empty-state message speaks for itself.
         """
         PrivateSeminarDisclosure.objects.all().delete()
         response = self.judge_index.private_seminar_disclosures(self._get())
         body = response.content.decode()
-        # The seminar-intro container wraps the editable policy paragraph;
-        # both it and the static "Below is..." label disappear together.
+        # The seminar-intro container wraps the editable RichTextField that
+        # now holds both the policy paragraph AND the "Below is..." sentence.
         self.assertNotIn('data-testid="seminar-intro"', body)
         self.assertNotIn("Running list of Tax Court Disclosures", body)
         # The editable empty-state message takes its place.
@@ -647,6 +676,35 @@ class PrivateSeminarDisclosureReportViewTest(JudgeIndexSetUpMixin):
         client.force_login(self.admin)
         response = client.get("/admin/reports/private-seminar-disclosures/")
         self.assertNotIn(b"Very Old Seminar", response.content)
+
+    def test_export_filename_uses_default_disclosure_years(self):
+        """At the default 3-year window the CSV export filename should be
+        "Private Seminar Disclosure 3 year.csv". The number comes from
+        PrivateSeminarDisclosureSettings.disclosure_years, not a hardcode.
+        """
+        from django.test import Client
+
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/?export=csv")
+        disposition = response.get("Content-Disposition", "")
+        self.assertIn("Private Seminar Disclosure 3 year.csv", disposition)
+
+    def test_export_filename_reflects_admin_changed_disclosure_years(self):
+        """If an editor changes the disclosure window in Settings, the
+        export filename updates to match — proves the filename is driven
+        by the editable setting and not a literal string.
+        """
+        from django.test import Client
+
+        PrivateSeminarDisclosureSettings.objects.all().delete()
+        PrivateSeminarDisclosureSettings.objects.create(disclosure_years=5)
+
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/?export=xlsx")
+        disposition = response.get("Content-Disposition", "")
+        self.assertIn("Private Seminar Disclosure 5 year.xlsx", disposition)
 
 
 @override_settings(**OVERRIDE)

@@ -27,17 +27,16 @@
             margin-bottom: 0;
         }
 
+        /* All <p> children inside the editable intro share the same
+           Figma rhythm — the second paragraph (the running-list line)
+           used to be a separate hardcoded element; it's now just the
+           next paragraph in seminar_intro_text. */
         .seminar-intro p {
             margin-bottom: 0;
         }
 
-        .seminar-list-label {
-            font-size: 1.0625rem;
-            font-weight: 400;
-            line-height: 1.25;
-            color: #000;
-            margin-top: 15px;       /* Figma Frame 624 gap=15 between its 3 children */
-            margin-bottom: 0;
+        .seminar-intro p + p {
+            margin-top: 15px;       /* Figma Frame 624 gap=15 between intro paragraphs */
         }
 
         /* ── Controls row (year filter) ─────────────────────────────────── */
@@ -269,19 +268,14 @@
         </h1>
         {# AC #7: when there are no disclosures, hide the introductory text
            entirely and let the empty-state message below speak for itself.
-           Both the editable policy paragraph and the static "Below is..."
-           label are part of the intro block, so they share the same gate. #}
-        {% if disclosures %}
-            {# Intro: policy paragraph from CMS richtext field #}
+           The intro is a single editable RichTextField on JudgeIndex
+           (seminar_intro_text) — both the policy paragraph and the
+           "Below is..." line live in that one field so editors can change
+           the wording in Wagtail admin without touching the template. #}
+        {% if disclosures and page.seminar_intro_text %}
             <div class="seminar-intro" data-testid="seminar-intro">
-                {% if page.seminar_intro_text %}
-                    {{ page.seminar_intro_text|richtext }}
-                {% endif %}
+                {{ page.seminar_intro_text|richtext }}
             </div>
-            {# Second intro line — static label per Figma Frame 624 #}
-            <p class="seminar-list-label" data-testid="seminar-list-label">
-                Below is the Running list of Tax Court Disclosures:
-            </p>
         {% endif %}
         {# Year filter — right-aligned, 234px wide, dark border (#1b1b1b) per Figma #}
         {% if years %}
