@@ -270,15 +270,11 @@
             <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
         </h1>
         {# Intro: policy paragraph from CMS richtext field #}
-        <div class="seminar-intro" data-testid="seminar-intro">
-            {% if page.seminar_intro_text %}
+        {% if disclosures and page.seminar_intro_text %}
+            <div class="seminar-intro" data-testid="seminar-intro">
                 {{ page.seminar_intro_text|richtext }}
-            {% endif %}
-        </div>
-        {# Second intro line — static label per Figma Frame 624 #}
-        <p class="seminar-list-label" data-testid="seminar-list-label">
-            Below is the Running list of Tax Court Disclosures:
-        </p>
+            </div>
+        {% endif %}
         {# Year filter — right-aligned, 234px wide, dark border (#1b1b1b) per Figma #}
         {% if years %}
             <div class="disclosure-controls">
