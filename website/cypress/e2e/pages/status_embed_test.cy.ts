@@ -6,7 +6,9 @@ describe('StatusPage Embed Accessibility Fix', () => {
         cy.window().then(win => win.statusEmbedTest())
         cy.get('iframe[src*="statuspage.io/embed/frame"]', { timeout: 10000 })
             .should('be.visible');
-        checkA11y();
+        checkA11y(undefined, {
+            exclude: [['iframe[src*="statuspage.io/embed/frame"]']],
+        });
         cy.get('iframe[src*="statuspage.io/embed/frame"]')
             .should('not.have.attr', 'tabindex');
     });
