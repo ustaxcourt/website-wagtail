@@ -441,13 +441,16 @@ class JudgesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description=title,
                 intro_text="See the Judge's biography by clicking on the cards.",
-                # Includes the "Below is the Running list..." sentence as a
-                # second <p> so editors can change either paragraph from
-                # admin (per Jenna/Som — no hardcoded copy beneath the H1).
-                # Mirrors JudgeIndex.seminar_intro_text default and
-                # migration 0127's NEW_CORRECT_INTRO; data migration 0127
-                # bumps pre-existing rows so this only matters for fresh
-                # environments that hit createpages after migrate.
+                # Long policy paragraph + the editor-controlled "Below is
+                # the Running list..." sentence (per Jenna — no hardcoded
+                # copy beneath the H1). This is the canonical value that
+                # also lives in migration 0127's NEW_CORRECT_INTRO; data
+                # migration 0127 bumps pre-existing rows to match. NOTE:
+                # not identical to JudgeIndex.seminar_intro_text's
+                # `default=` (that's a shorter placeholder used only when
+                # callers construct a JudgeIndex without supplying this
+                # field — e.g. tests). createpages always supplies the
+                # canonical value here.
                 seminar_intro_text="<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all Federal US Courts which requires educational program providers and judges to disclose certain information relevant to judges' attendance at privately-funded educational programs. Any organization covered by the policy that issues an invitation to a federal judge to attend an educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that judge, in excess of $480, must disclose financial and programmatic information and publish it on the Court's website for three years time.</p><p>Below is the Running list of Tax Court Disclosures:</p>",
             )
         )
@@ -551,14 +554,15 @@ class JudgesPageInitializer(PageInitializer):
                 specific.seo_title = "Judge Information"
                 changed = True
                 logger.info("Updated page title to 'Judge Information'.")
-            # Ensure seminar intro text matches the Figma policy paragraph
-            # plus the editor-controlled "Below is..." sentence. Also
-            # correct the short legacy placeholder if it is still in the
-            # DB. Matches NEW_CORRECT_INTRO in migration 0127 so that data
-            # migration and this code stay in sync (any value that matches
-            # one of the known canonical states gets bumped to the
-            # combined text; admin edits are preserved by the inequality
-            # check below).
+            # Ensure seminar intro text is the Figma policy paragraph plus
+            # the editor-controlled "Below is..." sentence. _correct_intro
+            # is the same string as NEW_CORRECT_INTRO in migration 0127.
+            # The condition below only overwrites two states: empty, and
+            # the short legacy OLD_PLACEHOLDER. Rows that already contain
+            # the long policy paragraph (the previous canonical from
+            # migration 0124) are handled by migration 0127's data
+            # migration, not by this code path. Admin-customized values
+            # are preserved either way.
             _correct_intro = (
                 "<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/"
                 "privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-"

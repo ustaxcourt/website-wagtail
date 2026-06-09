@@ -7,8 +7,12 @@ Previously the "Below is the Running list of Tax Court Disclosures:" sentence
 was hardcoded in `private_seminar_disclosures.html`. Per Jenna / Som's
 feedback we don't want any hardcoded copy beneath the page header, so the
 sentence moved into the editable `seminar_intro_text` RichTextField. This
-data migration brings existing rows in line with the new field default
-without clobbering any admin-customized intro copy.
+data migration brings existing rows in line with the canonical value that
+JudgesPageInitializer.create() now writes for new pages (the long policy
+paragraph + the running-list <p>) — without clobbering any admin-customized
+intro copy. Note that this differs from `JudgeIndex.seminar_intro_text`'s
+`default=`, which is a shorter placeholder used only when callers
+construct a JudgeIndex without supplying this field (e.g. tests).
 
 Idempotent + edit-preserving: only updates rows whose current value matches
 one of the three previously-known canonical states (empty, the original
@@ -16,7 +20,11 @@ OLD_PLACEHOLDER short text, or the old long policy paragraph). Anything
 else means an editor has customized the field and we leave it alone.
 """
 
+import logging
+
 from django.db import migrations
+
+logger = logging.getLogger(__name__)
 
 
 # Previously-canonical values written by migrations 0123 (field default)
@@ -52,7 +60,9 @@ def set_combined_seminar_intro_text(apps, schema_editor):
         .update(seminar_intro_text=NEW_CORRECT_INTRO)
     )
     if updated:
-        print(f"  Updated seminar_intro_text on {updated} JudgeIndex page(s).")
+        logger.info(
+            "0127: updated seminar_intro_text on %d JudgeIndex page(s).", updated
+        )
 
 
 def revert_combined_seminar_intro_text(apps, schema_editor):
