@@ -267,16 +267,22 @@
             <a href="/judges/" class="page-title-back-link">Judge Information</a>
             <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
         </h1>
-        {# Intro: policy paragraph from CMS richtext field #}
-        <div class="seminar-intro" data-testid="seminar-intro">
-            {% if page.seminar_intro_text %}
-                {{ page.seminar_intro_text|richtext }}
-            {% endif %}
-        </div>
-        {# Second intro line — static label per Figma Frame 624 #}
-        <p class="seminar-list-label" data-testid="seminar-list-label">
-            Below is the Running list of Tax Court Disclosures:
-        </p>
+        {# AC #7: when there are no disclosures, hide the introductory text
+           entirely and let the empty-state message below speak for itself.
+           Both the editable policy paragraph and the static "Below is..."
+           label are part of the intro block, so they share the same gate. #}
+        {% if disclosures %}
+            {# Intro: policy paragraph from CMS richtext field #}
+            <div class="seminar-intro" data-testid="seminar-intro">
+                {% if page.seminar_intro_text %}
+                    {{ page.seminar_intro_text|richtext }}
+                {% endif %}
+            </div>
+            {# Second intro line — static label per Figma Frame 624 #}
+            <p class="seminar-list-label" data-testid="seminar-list-label">
+                Below is the Running list of Tax Court Disclosures:
+            </p>
+        {% endif %}
         {# Year filter — right-aligned, 234px wide, dark border (#1b1b1b) per Figma #}
         {% if years %}
             <div class="disclosure-controls">

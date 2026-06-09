@@ -559,11 +559,34 @@ class DisclosureWindowTest(JudgeIndexSetUpMixin):
         response = self.judge_index.private_seminar_disclosures(self._get())
         self.assertIn("Custom empty message for testing.", response.content.decode())
 
-    def test_intro_text_rendered(self):
-        """seminar_intro_text should appear on the page."""
+    def test_intro_text_rendered_when_disclosures_exist(self):
+        """seminar_intro_text should appear on the page when there are
+        disclosures to display.
+        """
         response = self.judge_index.private_seminar_disclosures(self._get())
         # Default intro text contains "private seminar disclosures"
         self.assertIn("private seminar disclosures", response.content.decode().lower())
+        # The "Below is..." label is part of the intro block — also visible.
+        self.assertIn(
+            "Running list of Tax Court Disclosures", response.content.decode()
+        )
+
+    def test_intro_text_hidden_when_no_disclosures(self):
+        """AC #7: when there are no disclosures, the introductory text
+        (both the editable seminar_intro_text paragraph and the static
+        "Below is the Running list..." label) is hidden so the page
+        doesn't promise a list it can't deliver. The empty-state message
+        speaks for itself.
+        """
+        PrivateSeminarDisclosure.objects.all().delete()
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        body = response.content.decode()
+        # The seminar-intro container wraps the editable policy paragraph;
+        # both it and the static "Below is..." label disappear together.
+        self.assertNotIn('data-testid="seminar-intro"', body)
+        self.assertNotIn("Running list of Tax Court Disclosures", body)
+        # The editable empty-state message takes its place.
+        self.assertIn("There are no disclosures to report at this time.", body)
 
 
 @override_settings(**OVERRIDE)
