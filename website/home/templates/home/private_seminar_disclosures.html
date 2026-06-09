@@ -258,20 +258,24 @@
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        {# H1: page title with an inline back-link to Judge Information, so
-           keyboard / AT users get an in-heading way back to the parent
-           page (and to satisfy the [data-testid="page-title"] a Cypress +
-           VoiceOver expectations). #}
+        {% comment %}
+            H1 with an inline back-link to Judge Information so keyboard /
+            AT users get an in-heading way back to the parent page (and
+            to satisfy the [data-testid="page-title"] a Cypress +
+            VoiceOver expectations).
+        {% endcomment %}
         <h1 class="page-title" data-testid="page-title" tabindex="0">
             <a href="/judges/" class="page-title-back-link">Judge Information</a>
             <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
         </h1>
-        {# AC #7: when there are no disclosures, hide the introductory text
-           entirely and let the empty-state message below speak for itself.
-           The intro is a single editable RichTextField on JudgeIndex
-           (seminar_intro_text) — both the policy paragraph and the
-           "Below is..." line live in that one field so editors can change
-           the wording in Wagtail admin without touching the template. #}
+        {% comment %}
+            AC #7: when there are no disclosures, hide the introductory text
+            entirely and let the empty-state message below speak for itself.
+            The intro is a single editable RichTextField on JudgeIndex
+            (seminar_intro_text) — both the policy paragraph and the
+            "Below is..." line live in that one field so editors can change
+            the wording in Wagtail admin without touching the template.
+        {% endcomment %}
         {% if disclosures and page.seminar_intro_text %}
             <div class="seminar-intro" data-testid="seminar-intro">
                 {{ page.seminar_intro_text|richtext }}
@@ -299,14 +303,17 @@
         {% if disclosures %}
             <ul class="disclosure-grid" role="list" data-testid="disclosure-grid">
                 {% for disclosure in disclosures %}
-                    {# Cards are tab-focusable (tabindex=0) so keyboard users
-                       can pause on each card, but the inner content is left
-                       visible to assistive tech so VoiceOver users in browse
-                       mode and the Headings/Links rotors can navigate to
-                       specific fields. An aria-label + aria-hidden wrapper
-                       would have forced a one-shot announcement and hidden
-                       the h2 from the rotor, which is a real 508 regression
-                       for non-Tab navigation patterns. #}
+                    {% comment %}
+                        Cards are tab-focusable (tabindex=0) so keyboard
+                        users can pause on each card, but the inner
+                        content is left visible to assistive tech so
+                        VoiceOver users in browse mode and the Headings /
+                        Links rotors can navigate to specific fields. An
+                        aria-label + aria-hidden wrapper would have forced
+                        a one-shot announcement and hidden the h2 from
+                        the rotor, which is a real 508 regression for
+                        non-Tab navigation patterns.
+                    {% endcomment %}
                     <li class="disclosure-card"
                         data-testid="disclosure-card"
                         tabindex="0">
