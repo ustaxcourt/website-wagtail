@@ -568,8 +568,13 @@ class PrivateSeminarDisclosureReportView(ReportView):
         return self.export_headings.get(field, field.replace("_", " ").title())
 
     def get_filename(self):
-        # Filename specified by ticket; Wagtail appends the extension (.csv / .xlsx).
-        return "Private Seminar Disclosure 3 year"
+        from home.models.settings import PrivateSeminarDisclosureSettings
+
+        settings_obj = PrivateSeminarDisclosureSettings.load(
+            request_or_site=self.request
+        )
+        years = settings_obj.disclosure_years
+        return f"Private_Seminar_Disclosure_{years}_year"
 
 
 # ------------------- SVG --------------------
