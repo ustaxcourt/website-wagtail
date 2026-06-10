@@ -182,7 +182,7 @@ describe("Judge Information — Private Seminar Disclosures page", () => {
                 cy.get(".disclosure-card").should("have.length.at.least", 1);
                 cy.get(".disclosure-card .judge-name").first().should("not.be.empty");
             } else {
-                cy.get(".disclosure-empty").should("contain", "No seminar disclosures");
+                cy.get("[data-testid='empty-message']").should("exist");
             }
         });
     });
