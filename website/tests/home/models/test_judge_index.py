@@ -1,6 +1,7 @@
 """
 Unit tests for JudgeIndex page and related models.
-Covers _build_judge_groups(), page rendering, routes, and PrivateSeminarDisclosure.
+Covers _build_judge_groups(), page rendering, routes, PrivateSeminarDisclosure,
+the 3-year disclosure window, and the admin report view.
 """
 
 import datetime
@@ -22,6 +23,7 @@ from home.models.snippets.judges import (
     JudgeRole,
     PrivateSeminarDisclosure,
 )
+from home.models.settings import PrivateSeminarDisclosureSettings
 
 
 OVERRIDE = dict(
@@ -92,12 +94,20 @@ class JudgeIndexSetUpMixin(TestCase):
         self.chief_role = JudgeRole(role_name="Chief Judge", judge=self.judge_smith)
         self.chief_role.save()
 
-        # Create a disclosure for smith
+        # Create a disclosure for smith.
+        # The date is calculated relative to today so the fixture stays
+        # within a fresh 3-year window (default disclosure_years) but
+        # outside a 1-year window — keeping the disclosure-window tests
+        # stable as calendar time moves forward. A literal date here
+        # would silently start failing once it crossed a cutoff.
+        self.disclosure_date = datetime.date.today() - datetime.timedelta(
+            days=int(365 * 2)
+        )
         self.disclosure = PrivateSeminarDisclosure.objects.create(
             judge=self.judge_smith,
             program_provider="ACME Legal",
             program_title="Tax Law Seminar",
-            date=datetime.date(2024, 6, 15),
+            date=self.disclosure_date,
             location="Washington, DC",
         )
 
@@ -297,7 +307,8 @@ class PrivateSeminarDisclosuresRouteTest(JudgeIndexSetUpMixin):
         )
         response = self.judge_index.private_seminar_disclosures(request)
         content = response.content.decode()
-        self.assertIn("No seminar disclosures have been filed", content)
+        # Default seminar_empty_text value from the model field
+        self.assertIn("There are no disclosures to report at this time.", content)
 
     def test_year_filter_returns_matching_disclosures(self):
         request = self._get_request(
@@ -331,7 +342,7 @@ class PrivateSeminarDisclosureModelTest(JudgeIndexSetUpMixin):
     """Tests for PrivateSeminarDisclosure model."""
 
     def test_str_format(self):
-        expected = "Jane Smith — Tax Law Seminar (2024-06-15)"
+        expected = f"Jane Smith — Tax Law Seminar ({self.disclosure_date})"
         self.assertEqual(str(self.disclosure), expected)
 
     def test_meta_ordering(self):
@@ -340,3 +351,343 @@ class PrivateSeminarDisclosureModelTest(JudgeIndexSetUpMixin):
             PrivateSeminarDisclosure._meta.ordering,
             ["-date", "judge__last_name"],
         )
+
+
+@override_settings(**OVERRIDE)
+class SeedBottomTilesRevisionTest(JudgeIndexSetUpMixin):
+    """Regression tests for the dev-web bug where _seed_bottom_tiles wrote
+    to the model via .save() but never created a Wagtail revision. The
+    public page rendered the tiles correctly (reads model fields directly)
+    but the admin editor read the last revision (which pre-dated the
+    seeding) and showed the bottom_tiles StreamField empty. Fix is to call
+    save_revision().publish() after the model save so the admin and the
+    public page stay in sync.
+    """
+
+    # A minimal, valid bottom_tiles StreamField payload. We bypass
+    # _build_bottom_tiles_data() because in production it loads SVG icons via
+    # Wagtail Documents (requires the Documents collection + media files),
+    # neither of which are set up in this lightweight unit-test environment.
+    # The behavior under test is the revision lifecycle, not tile content.
+    _FAKE_TILES = [
+        {
+            "type": "quick_access_tiles",
+            "value": {
+                "tiles_hover_enabled": True,
+                "icon_position": "desktop_top_mobile_left",
+                "tiles": [],
+            },
+        }
+    ]
+
+    def _seed(self):
+        from unittest.mock import patch
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        # The seeder looks up the page by slug, so make this instance's slug
+        # match what the initializer expects.
+        self.judge_index.slug = "judges"
+        self.judge_index.save()
+
+        page = Page.objects.get(pk=self.judge_index.pk)
+        initializer = JudgesPageInitializer()
+        with patch.object(
+            initializer, "_build_bottom_tiles_data", return_value=self._FAKE_TILES
+        ):
+            initializer._seed_bottom_tiles(page)
+
+    def test_seed_creates_a_published_revision_with_bottom_tiles(self):
+        # Sanity-check the starting state — no bottom_tiles on the model
+        # and no revisions in history (treebeard add_child does not create one).
+        self.judge_index.refresh_from_db()
+        self.assertFalse(bool(self.judge_index.bottom_tiles))
+        self.assertIsNone(self.judge_index.latest_revision)
+
+        self._seed()
+
+        # Model fields are populated.
+        self.judge_index.refresh_from_db()
+        self.assertTrue(bool(self.judge_index.bottom_tiles))
+        # A revision was created and published so the admin editor sees
+        # the same content as the public page.
+        self.assertIsNotNone(self.judge_index.latest_revision)
+        revision_obj = self.judge_index.latest_revision.as_object()
+        self.assertTrue(bool(revision_obj.bottom_tiles))
+
+    def test_seed_with_stale_existing_revision_updates_admin_state(self):
+        # Reproduce the dev-web shape: page already has a revision capturing
+        # an empty bottom_tiles state (the "before 1246 deploy" snapshot).
+        # The seeder must overwrite that revision so the admin reflects the
+        # seeded tiles.
+        self.judge_index.slug = "judges"
+        self.judge_index.save()
+        stale = self.judge_index.save_revision()
+        stale.publish()
+        self.judge_index.refresh_from_db()
+        self.assertFalse(
+            bool(self.judge_index.latest_revision.as_object().bottom_tiles)
+        )
+
+        self._seed()
+
+        self.judge_index.refresh_from_db()
+        latest = self.judge_index.latest_revision.as_object()
+        self.assertTrue(bool(latest.bottom_tiles))
+        self.assertNotEqual(self.judge_index.latest_revision_id, stale.id)
+
+    def test_seed_skips_when_bottom_tiles_already_populated(self):
+        # Belt-and-suspenders: confirm that admin-customized bottom_tiles are
+        # preserved across deploys. If bottom_tiles is non-empty, the seed
+        # short-circuits and does NOT create a new revision.
+        self.judge_index.slug = "judges"
+        self.judge_index.bottom_tiles = [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": [],
+                },
+            }
+        ]
+        self.judge_index.save()
+        marker_rev = self.judge_index.save_revision()
+        marker_rev.publish()
+        self.judge_index.refresh_from_db()
+        existing_rev_id = self.judge_index.latest_revision_id
+
+        self._seed()
+
+        self.judge_index.refresh_from_db()
+        # No new revision should have been created.
+        self.assertEqual(self.judge_index.latest_revision_id, existing_rev_id)
+
+    def test_seed_bottom_tiles_skips_when_page_is_not_a_judge_index(self):
+        # Pass a plain Page (not backed by a JudgeIndex row) to _seed_bottom_tiles.
+        # The JudgeIndex.DoesNotExist branch should fire and return without error.
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        # The home_page from setUp is a plain Page — it has no JudgeIndex row.
+        plain_page = Page.objects.get(slug="home-judge-index-test")
+        initializer = JudgesPageInitializer()
+        # Should return silently without creating any revision on judge_index.
+        initializer._seed_bottom_tiles(plain_page)
+
+        self.judge_index.refresh_from_db()
+        self.assertIsNone(self.judge_index.latest_revision)
+
+
+@override_settings(**OVERRIDE)
+class DisclosureWindowTest(JudgeIndexSetUpMixin):
+    """
+    Tests that the private_seminar_disclosures route honours the
+    PrivateSeminarDisclosureSettings.disclosure_years window.
+    """
+
+    def setUp(self):
+        super().setUp()
+        # Ensure a fresh settings object with the default 3-year window.
+        PrivateSeminarDisclosureSettings.objects.all().delete()
+        self.settings_obj = PrivateSeminarDisclosureSettings.objects.create(
+            disclosure_years=3
+        )
+
+    def _get(self, path="/"):
+        request = self.factory.get(path)
+        request.site = Site.objects.get(is_default_site=True)
+        return request
+
+    def test_disclosure_within_window_is_shown(self):
+        """A disclosure dated less than 3 years ago should appear."""
+        recent = datetime.date.today() - datetime.timedelta(days=365)
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Provider A",
+            program_title="Recent Seminar",
+            date=recent,
+            location="DC",
+        )
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertIn("Recent Seminar", response.content.decode())
+
+    def test_disclosure_outside_window_is_hidden(self):
+        """A disclosure dated more than 3 years ago should NOT appear."""
+        old_date = datetime.date.today() - datetime.timedelta(days=4 * 365)
+        PrivateSeminarDisclosure.objects.all().delete()
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Old Provider",
+            program_title="Old Seminar",
+            date=old_date,
+            location="DC",
+        )
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertNotIn("Old Seminar", response.content.decode())
+
+    def test_configurable_window_respected(self):
+        """Setting disclosure_years=1 should hide disclosures older than 1 year."""
+        self.settings_obj.disclosure_years = 1
+        self.settings_obj.save()
+
+        # Fixture date is today − 2 years (set in setUp) — outside a 1-year window.
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertNotIn("Tax Law Seminar", response.content.decode())
+
+    def test_year_dropdown_only_contains_window_years(self):
+        """Year filter options must not include years outside the disclosure window."""
+        old_date = datetime.date.today() - datetime.timedelta(days=4 * 365)
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Old Provider",
+            program_title="Old Seminar",
+            date=old_date,
+            location="DC",
+        )
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        content = response.content.decode()
+        self.assertNotIn(str(old_date.year), content)
+
+    def test_empty_text_is_customisable(self):
+        """seminar_empty_text field should appear in the rendered empty state."""
+        PrivateSeminarDisclosure.objects.all().delete()
+        self.judge_index.seminar_empty_text = "Custom empty message for testing."
+        self.judge_index.save_revision().publish()
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        self.assertIn("Custom empty message for testing.", response.content.decode())
+
+    def test_intro_text_rendered(self):
+        """seminar_intro_text should appear on the page."""
+        response = self.judge_index.private_seminar_disclosures(self._get())
+        # Default intro text contains "private seminar disclosures"
+        self.assertIn("private seminar disclosures", response.content.decode().lower())
+
+
+@override_settings(**OVERRIDE)
+class PrivateSeminarDisclosureReportViewTest(JudgeIndexSetUpMixin):
+    """
+    Tests for PrivateSeminarDisclosureReportView.
+    Uses Django test client to exercise the full view stack.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        self.admin = User.objects.create_superuser(
+            username="report_admin", password="pw", email="admin@example.com"
+        )
+        PrivateSeminarDisclosureSettings.objects.all().delete()
+        PrivateSeminarDisclosureSettings.objects.create(disclosure_years=3)
+
+    def test_report_requires_login(self):
+        from django.test import Client
+
+        client = Client()
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        self.assertNotEqual(response.status_code, 200)
+
+    def test_report_accessible_to_admin(self):
+        from django.test import Client
+
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_report_shows_disclosure_within_window(self):
+        from django.test import Client
+
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        # The fixture date is today − 2 years (set in setUp) — within a 3-year window.
+        self.assertIn(b"Tax Law Seminar", response.content)
+
+    def test_report_excludes_disclosure_outside_window(self):
+        """Disclosures older than disclosure_years should not appear in the report."""
+        from django.test import Client
+
+        old_date = datetime.date.today() - datetime.timedelta(days=4 * 365)
+        PrivateSeminarDisclosure.objects.create(
+            judge=self.judge_smith,
+            program_provider="Old Provider",
+            program_title="Very Old Seminar",
+            date=old_date,
+            location="DC",
+        )
+        client = Client()
+        client.force_login(self.admin)
+        response = client.get("/admin/reports/private-seminar-disclosures/")
+        self.assertNotIn(b"Very Old Seminar", response.content)
+
+
+@override_settings(**OVERRIDE)
+class JudgesPageInitializerUpdateTest(JudgeIndexSetUpMixin):
+    """Tests for JudgesPageInitializer.update() — specifically the title-correction
+    branch (WAG-1246) that uses save_revision().publish() instead of a plain save()
+    so the Wagtail admin editor stays in sync with the live page model.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.judge_index.slug = "judges"
+        self.judge_index.save()
+
+    def _run_update(self):
+        from unittest.mock import patch
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        initializer = JudgesPageInitializer()
+        with (
+            patch.object(initializer, "update_judge_roles_and_profiles"),
+            patch.object(initializer, "_seed_seminar_disclosures"),
+            patch.object(initializer, "_seed_bottom_tiles"),
+        ):
+            initializer.update()
+
+    def test_update_corrects_stale_title_and_publishes_revision(self):
+        # Reproduce the pre-1246 dev-web state: page exists but has the old title.
+        self.judge_index.title = "Judges"
+        self.judge_index.seo_title = "Judges"
+        self.judge_index.save()
+        self.assertIsNone(self.judge_index.latest_revision)
+
+        self._run_update()
+
+        self.judge_index.refresh_from_db()
+        self.assertEqual(self.judge_index.title, "Judge Information")
+        self.assertEqual(self.judge_index.seo_title, "Judge Information")
+        # save_revision().publish() must have been called so the admin shows
+        # the corrected title, not the stale pre-fix revision.
+        self.assertIsNotNone(self.judge_index.latest_revision)
+        rev_obj = self.judge_index.latest_revision.as_object()
+        self.assertEqual(rev_obj.title, "Judge Information")
+
+    def test_update_skips_title_correction_when_already_correct(self):
+        # Title is already "Judge Information" — no revision should be created.
+        self.assertIsNone(self.judge_index.latest_revision)
+
+        self._run_update()
+
+        self.judge_index.refresh_from_db()
+        self.assertEqual(self.judge_index.title, "Judge Information")
+        self.assertIsNone(self.judge_index.latest_revision)
+
+    def test_update_is_noop_when_page_slug_not_found(self):
+        # The initializer slug "judges" doesn't match any page.
+        self.judge_index.slug = "not-judges"
+        self.judge_index.save()
+
+        from home.management.commands.pages.about_the_court.judges_page import (
+            JudgesPageInitializer,
+        )
+
+        # Should return silently without raising.
+        JudgesPageInitializer().update()

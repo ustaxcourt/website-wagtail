@@ -14,6 +14,12 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+const coverageEnabled = Cypress.env("COVERAGE") !== "false" && Cypress.env("COVERAGE") !== false;
+
+if (coverageEnabled) {
+  require('@cypress/code-coverage/support');
+}
+
 import 'cypress-axe'
 import "cypress-real-events/support";
 

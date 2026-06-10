@@ -441,6 +441,7 @@ class JudgesPageInitializer(PageInitializer):
                 seo_title=title,
                 search_description=title,
                 intro_text="See the Judge's biography by clicking on the cards.",
+                seminar_intro_text="<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all Federal US Courts which requires educational program providers and judges to disclose certain information relevant to judges' attendance at privately-funded educational programs. Any organization covered by the policy that issues an invitation to a federal judge to attend an educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that judge, in excess of $480, must disclose financial and programmatic information and publish it on the Court's website for three years time.</p>",
             )
         )
 
@@ -535,12 +536,46 @@ class JudgesPageInitializer(PageInitializer):
         try:
             page = Page.objects.get(slug=self.slug)
             logger.info(f"Updating existing page '{self.slug}'.")
+            specific = page.specific
+            changed = False
             # Ensure the page title is up to date
             if page.title != "Judge Information":
-                page.title = "Judge Information"
-                page.seo_title = "Judge Information"
-                page.save()
+                specific.title = "Judge Information"
+                specific.seo_title = "Judge Information"
+                changed = True
                 logger.info("Updated page title to 'Judge Information'.")
+            # Ensure seminar intro text matches the Figma policy paragraph.
+            # Also correct the old short placeholder if it is still in the DB.
+            _correct_intro = (
+                "<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/"
+                "privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-"
+                "privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all "
+                "Federal US Courts which requires educational program providers and judges to disclose certain "
+                "information relevant to judges' attendance at privately-funded educational programs. Any "
+                "organization covered by the policy that issues an invitation to a federal judge to attend an "
+                "educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that "
+                "judge, in excess of $480, must disclose financial and programmatic information and publish it on "
+                "the Court's website for three years time.</p>"
+            )
+            _old_placeholder = (
+                "<p>The following are private seminar disclosures submitted by "
+                "judges of the United States Tax Court.</p>"
+            )
+            if (
+                not specific.seminar_intro_text
+                or specific.seminar_intro_text == _old_placeholder
+            ):
+                specific.seminar_intro_text = _correct_intro
+                changed = True
+                logger.info("Set seminar_intro_text on JudgeIndex page.")
+            if changed:
+                # save_revision().publish() writes a fresh Wagtail revision
+                # AND propagates fields to the live page model. A plain
+                # specific.save() would leave the latest revision stale so
+                # the admin editor would still show the old title /
+                # seminar_intro_text until the page was edited by hand —
+                # the same dev-web symptom main fixed for _seed_bottom_tiles.
+                specific.save_revision().publish()
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
             # Same env gate as in create() — sample disclosures are dev-only.
@@ -709,5 +744,12 @@ class JudgesPageInitializer(PageInitializer):
             return
 
         judge_index.bottom_tiles = self._build_bottom_tiles_data()
-        judge_index.save()
+        # save_revision().publish() snapshots the seeded bottom_tiles into a
+        # new Wagtail revision and then writes that revision through to the
+        # live page model. A plain judge_index.save() updates the live model
+        # but leaves the latest revision stale, so the admin editor opens
+        # the previous revision (which pre-dates bottom_tiles) and renders
+        # the StreamField empty even though the public page shows the tiles.
+        # Seen on dev-web after the 1246 deploy.
+        judge_index.save_revision().publish()
         logger.info("Seeded bottom_tiles on JudgeIndex page.")
