@@ -784,12 +784,16 @@
                                     {% if sub_link.external_url %}
                                         <a target="_blank"
                                         href="{{ sub_link.external_url }}"
-                                        data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                        data-testid="nav-link-{{ sub_link.title|slugify }}"
+                                        data-gtm-element="nav-menu-item"
+                                        data-gtm-label="{{ sub_link.title }}">
                                             {{ sub_link.title }}
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
-                                        data-testid="nav-link-{{ sub_link.title|slugify }}">
+                                        data-testid="nav-link-{{ sub_link.title|slugify }}"
+                                        data-gtm-element="nav-menu-item"
+                                        data-gtm-label="{{ sub_link.title }}">
                                             {{ sub_link.title }}
                                         </a>
                                     {% endif %}

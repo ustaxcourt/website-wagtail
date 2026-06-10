@@ -4,12 +4,14 @@ from home.models.snippets.judges import (
     JudgeCollection,
     JudgeProfile,
     JudgeRole,
+    PrivateSeminarDisclosure,
 )
 from home.models.settings import (
     Header,
     Footer,
     GoogleAnalyticsSettings,
     GoogleTagManagerSettings,
+    PrivateSeminarDisclosureSettings,
 )
 from home.models.config import IconCategories
 from home.models.snippets.news_item import NewsItem

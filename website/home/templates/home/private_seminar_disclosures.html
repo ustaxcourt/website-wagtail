@@ -1,0 +1,408 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags static %}
+{% load filters %}
+{% block extra_css %}
+    <style>
+        /* ── Page container ─────────────────────────────────────────────── */
+        #private-seminar-page {
+            padding-top: 45px;
+            padding-bottom: 45px;
+        }
+
+        /* ── H1 ─────────────────────────────────────────────────────────── */
+        #private-seminar-page .page-title {
+            font-size: 2rem;        /* 32px — Figma fs=32 */
+            font-weight: 400;       /* Figma fw=400 */
+            line-height: 1.1875;    /* 38px — Figma lh=38 */
+            color: #1b1b1b;
+            margin-bottom: 15px;
+        }
+
+        /* ── Intro text block (policy paragraph + "Below is…" label) ───── */
+        .seminar-intro {
+            font-size: 1.0625rem;   /* 17px */
+            font-weight: 400;
+            line-height: 1.25;      /* 20px */
+            color: #000;
+            margin-bottom: 0;
+        }
+
+        .seminar-intro p {
+            margin-bottom: 0;
+        }
+
+        .seminar-list-label {
+            font-size: 1.0625rem;
+            font-weight: 400;
+            line-height: 1.25;
+            color: #000;
+            margin-top: 15px;       /* Figma Frame 624 gap=15 between its 3 children */
+            margin-bottom: 0;
+        }
+
+        /* ── Controls row (year filter) ─────────────────────────────────── */
+        .disclosure-controls {
+            display: flex;
+            justify-content: flex-end;      /* Figma: right-aligned */
+            margin-top: 34px;               /* 34px content block gap */
+            margin-bottom: 0;
+        }
+
+        .disclosure-year-select {
+            width: 234px;                   /* Figma: 234px fixed at all breakpoints */
+            height: 39px;                   /* Figma: input container h=39 */
+            padding: 0 2rem 0 2.25rem;      /* left=36px (space for filter icon), right=32px (space for chevron) */
+            border: 1px solid #1b1b1b;      /* Figma: dark border stroke=#1b1b1b */
+            background-color: #fff;
+            font-size: 1rem;                /* 16px — Figma fs=16 */
+            font-weight: 400;
+            color: #1b1b1b;
+            cursor: pointer;
+            /* Remove OS-native appearance so our border/bg/padding apply in all browsers */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* Filter funnel icon (left) — Figma node 13711-3544 filter_list, #162E51
+               Chevron (right) — Figma node 13920:16383 unfold_more (double-arrow), #1B1B1B */
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10 18H14V16H10V18ZM3 6V8H21V6H3ZM6 13H18V11H6V13Z' fill='%23162E51'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.9998 4.85833L12.6415 7.5L13.8165 6.325L9.9998 2.5L6.1748 6.325L7.35814 7.5L9.9998 4.85833ZM9.9998 15.1417L7.35814 12.5L6.18314 13.675L9.9998 17.5L13.8248 13.675L12.6415 12.5L9.9998 15.1417Z' fill='%231b1b1b'/%3E%3C/svg%3E");
+            background-repeat: no-repeat, no-repeat;
+            background-position: left 8px center, right 10px center;
+            background-size: 20px 20px, 20px 20px;
+        }
+
+        /* ── 2-column card grid ─────────────────────────────────────────── */
+        .disclosure-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            column-gap: 15px;   /* Figma: 1152 - (568.5 × 2) = 15px */
+            row-gap: 18px;      /* Figma: outer frame gap=18 between rows */
+            margin-top: 18px;
+            /* Reset <ul> browser defaults */
+            list-style: none;
+            padding: 0;
+        }
+
+        /* Tablet adjustments (≤834px) — Figma: "Tablet: Private Seminar Disclosures" 834px frame */
+        @media (max-width: 834px) {
+            #private-seminar-page {
+                padding-top: 25px;   /* global spacing spec: 25px mobile/tablet */
+                padding-bottom: 25px;
+            }
+        }
+
+        /* Mobile adjustments (≤640px) — single column, centered 234px filter */
+        @media (max-width: 640px) {
+            .disclosure-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Figma mobile: filter is 234px centered (27px margin each side in 288px content) */
+            .disclosure-controls {
+                justify-content: center;
+            }
+
+            .disclosure-year-select {
+                width: 234px;   /* Same fixed width as desktop/tablet — NOT full-width */
+            }
+        }
+
+        /* ── Disclosure card ─────────────────────────────────────────────── */
+        .disclosure-card {
+            border: 1px solid #dfe1e2;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        /* 508: cards are tab-focusable. Show a clear focus ring so keyboard
+           users can see which card is currently active. */
+        .disclosure-card:focus-visible {
+            outline: 3px solid #005ea2;
+            outline-offset: 2px;
+        }
+
+        /* Zone 1 — Judge name header (Figma Frame 14: #f1f9fc) */
+        /* <h2> used so screen readers can navigate by heading; reset browser h2 margin */
+        .disclosure-card .judge-name {
+            display: block;
+            font-size: 1.25rem;         /* 20px */
+            font-weight: 600;
+            line-height: 1.25;          /* 25px — Figma lh=25 on fs=20 → 25/20=1.25 */
+            color: #1b1b1b;
+            background-color: #f1f9fc;
+            padding: 13px 20px;         /* Figma: paddingTop/Bottom=13, Left/Right=20 */
+            border-bottom: 1px solid #dfe1e2;
+            margin: 0;                  /* reset browser h2 default margin */
+        }
+
+        /* Zone 2 — Field body (Figma Frame 15: white) */
+        .disclosure-card .disclosure-body {
+            padding: 13px 20px;         /* Figma: paddingTop/Bottom=13, Left/Right=20 */
+        }
+
+        /* Field group — stacked label + value pairs */
+        .disclosure-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;  /* Figma Frame 15 gap=10 between all children incl. label→value */
+        }
+
+        .field-label {
+            font-size: 1.0625rem;   /* 17px */
+            font-weight: 600;       /* Figma: bold labels */
+            line-height: 1.25;      /* 20px */
+            color: #1b1b1b;
+            margin: 0 0 0 0;
+        }
+
+        .field-value {
+            font-size: 1.0625rem;
+            font-weight: 400;
+            line-height: 1.25;
+            color: #1b1b1b;
+            margin: 0;
+        }
+
+        /* "Program: [title]" and "Location: [value]" are fully bold per Figma */
+        .field-value--bold {
+            font-weight: 600;
+        }
+
+        /* "Date: [date]" is fully regular per Figma */
+        .field-value--light {
+            font-weight: 400;
+        }
+
+        /* Inline gap between field groups within a card body — Figma gap=10 */
+        .disclosure-field-group + .disclosure-field-group {
+            margin-top: 10px;
+        }
+
+        /* Thin divider between field sections (Figma Vector 11/12/13: #d9d9d9) */
+        .field-divider {
+            border: none;
+            border-top: 1px solid #d9d9d9;
+            margin: 10px 0;
+        }
+
+        /* Richtext topics list */
+        .disclosure-body .field-value ul,
+        .disclosure-body .field-value ol {
+            margin: 0 0 0 1.25rem;
+            padding: 0;
+        }
+
+        /* ── Pagination ──────────────────────────────────────────────────── */
+        .disclosure-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;  /* Figma: right-aligned (right edge of container) */
+            gap: 7px;
+            margin-top: 34px;
+        }
+
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;        /* 16px */
+            font-weight: 700;
+            text-decoration: none;
+            border: 1px solid #dfe1e2;
+        }
+
+        .pagination-btn--selected {
+            background-color: #162e51;
+            color: #fff;
+            border-color: #969696;
+        }
+
+        .pagination-btn--unselected {
+            background-color: #e6e6e6;
+            color: #005ea2;
+            border-color: #dfe1e2;
+        }
+
+        .pagination-btn--ellipsis {
+            background-color: #e6e6e6;
+            color: #1b1b1b;
+            border-color: #969696;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .pagination-btn--next {
+            width: auto;
+            padding: 11px 10px;
+            background-color: #fff;
+            color: #005ea2;
+            border: 1px solid #dfe1e2;
+            gap: 4px;
+        }
+
+        /* Figma navigate_next icon for pagination Next button (18x18, color matches button text) */
+        .pagination-next-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .disclosure-empty {
+            color: #555;
+            margin-top: 1rem;
+        }
+    </style>
+{% endblock %}
+{% block body_class %}template-private-seminar-disclosures{% endblock %}
+{% block content %}
+    <div id="private-seminar-page" class="grid-container">
+        {% comment %}
+           H1: page title with an inline back-link to Judge Information, so
+           keyboard / AT users get an in-heading way back to the parent
+           page (and to satisfy the [data-testid="page-title"] a Cypress +
+           VoiceOver expectations).
+        {% endcomment %}
+        <h1 class="page-title" data-testid="page-title" tabindex="0">
+            <a href="/judges/" class="page-title-back-link">Judge Information</a>
+            <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
+        </h1>
+        {# Intro: policy paragraph from CMS richtext field #}
+        {% if disclosures and page.seminar_intro_text %}
+            <div class="seminar-intro" data-testid="seminar-intro">
+                {{ page.seminar_intro_text|richtext }}
+            </div>
+        {% endif %}
+        {# Year filter — right-aligned, 234px wide, dark border (#1b1b1b) per Figma #}
+        {% if years %}
+            <div class="disclosure-controls">
+                <form method="get" id="year-filter-form">
+                    <label for="year-select" class="usa-sr-only">Filter by year</label>
+                    <select id="year-select"
+                            name="year"
+                            class="disclosure-year-select"
+                            aria-label="Filter disclosures by year"
+                            onchange="document.getElementById('year-filter-form').submit()">
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                            <option value="{{ year }}" {% if selected_year == year|slugify %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        {% endif %}
+        {# Disclosure card grid — <ul role="list"> for 508: screen readers announce item count #}
+        {% if disclosures %}
+            <ul class="disclosure-grid" role="list" data-testid="disclosure-grid">
+                {% for disclosure in disclosures %}
+                    {% comment %}
+                       Cards are tab-focusable (tabindex=0) so keyboard users
+                       can pause on each card, but the inner content is left
+                       visible to assistive tech so VoiceOver users in browse
+                       mode and the Headings/Links rotors can navigate to
+                       specific fields. An aria-label + aria-hidden wrapper
+                       would have forced a one-shot announcement and hidden
+                       the h2 from the rotor, which is a real 508 regression
+                       for non-Tab navigation patterns.
+                    {% endcomment %}
+                    <li class="disclosure-card"
+                        data-testid="disclosure-card"
+                        tabindex="0">
+                        <h2 class="judge-name" data-testid="judge-name">{{ disclosure.judge.display_name }}</h2>
+                        {# Body: stacked field groups with thin dividers per Figma #}
+                        <div class="disclosure-body">
+                                {# Group 1: Program Provider(s) — label then value #}
+                                <div class="disclosure-field-group">
+                                    <p class="field-label">Program Provider(s):</p>
+                                    <p class="field-value">{{ disclosure.program_provider }}</p>
+                                </div>
+                                <hr class="field-divider">
+                                {# Group 2: Program / Date / Location — Figma combines label+value inline #}
+                                <div class="disclosure-field-group">
+                                    <p class="field-value field-value--bold">Program: {{ disclosure.program_title }}</p>
+                                    <p class="field-value field-value--light">Date: {{ disclosure.date|date:"m/d/Y" }}</p>
+                                    <p class="field-value field-value--bold">Location: {{ disclosure.location }}</p>
+                                </div>
+                                {% if disclosure.program_topics %}
+                                    <hr class="field-divider">
+                                    {# Group 3: Program Topics #}
+                                    <div class="disclosure-field-group">
+                                        <p class="field-label">Program Topics:</p>
+                                        <div class="field-value">{{ disclosure.program_topics|richtext }}</div>
+                                    </div>
+                                {% endif %}
+                                {% if disclosure.supporter %}
+                                    <hr class="field-divider">
+                                    {# Group 4: Supporter(s) #}
+                                    <div class="disclosure-field-group">
+                                        <p class="field-label">Supporter(s):</p>
+                                        <p class="field-value">{{ disclosure.supporter }}</p>
+                                    </div>
+                                {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            {# Pagination — Figma: numbered buttons + Next, USWDS palette #}
+            {% if paginator.num_pages > 1 %}
+                <nav class="disclosure-pagination" aria-label="Disclosure pages">
+                    {% with page_obj.number as current %}
+                        {% for page_num in paginator.page_range %}
+                            {% if page_num == current %}
+                                <span class="pagination-btn pagination-btn--selected"
+                                      aria-current="page"
+                                      aria-label="Page {{ page_num }}">{{ page_num }}</span>
+                            {% elif page_num == 1 or page_num == paginator.num_pages or page_num >= current|add:"-2" and page_num <= current|add:"2" %}
+                                <a class="pagination-btn pagination-btn--unselected"
+                                   href="?{% if selected_year %}year={{ selected_year }}&{% endif %}page={{ page_num }}"
+                                   aria-label="Page {{ page_num }}">{{ page_num }}</a>
+                            {% elif page_num == current|add:"-3" or page_num == current|add:"3" %}
+                                <span class="pagination-btn pagination-btn--ellipsis" aria-hidden="true">...</span>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <a class="pagination-btn pagination-btn--next"
+                               href="?{% if selected_year %}year={{ selected_year }}&{% endif %}page={{ page_obj.next_page_number }}"
+                               aria-label="Next page">
+                                Next
+                                <svg class="pagination-next-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.49988 4.5L6.44238 5.5575L9.87738 9L6.44238 12.4425L7.49988 13.5L11.9999 9L7.49988 4.5Z" fill="currentColor"/>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    {% endwith %}
+                </nav>
+            {% endif %}
+        {% else %}
+            <p class="disclosure-empty" data-testid="empty-message">
+                {% if page.seminar_empty_text %}
+                    {{ page.seminar_empty_text }}
+                {% else %}
+                    There are no disclosures to report at this time.
+                {% endif %}
+            </p>
+        {% endif %}
+    </div>
+    <script>
+        // The year filter is a native <select> with onchange="form.submit()".
+        // Arrow keys on a focused select change the value (firing onchange and
+        // submitting the form), but Enter on a closed select does not change
+        // the value, so the form never submits and Enter appears to do nothing.
+        // Open the dropdown on Enter so users can navigate options with arrow
+        // keys and confirm with Enter (which fires onchange natively).
+        (function () {
+            var select = document.getElementById('year-select');
+            if (!select) return;
+            select.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (typeof select.showPicker === 'function') {
+                        try { select.showPicker(); } catch (err) { /* not allowed in some contexts */ }
+                    }
+                }
+            });
+        })();
+    </script>
+{% endblock content %}

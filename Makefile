@@ -210,6 +210,12 @@ role: check-env-is-aws
 test-e2e:
 	@$(MAKE) -C website test-e2e args="$(args)"
 
+test-voiceover:
+	@$(MAKE) -C website test-voiceover baseUrl="$(baseUrl)"
+
+setup-voiceover:
+	@$(MAKE) -C website setup-voiceover
+
 cypress-open:
 	@$(MAKE) -C website cypress-open args="$(args)"
 

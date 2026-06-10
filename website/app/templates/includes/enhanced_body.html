@@ -114,7 +114,7 @@
                                     {% elif sub_block.block_type == 'judgeCollection' %}
                                         {% with judge_collection=sub_block.value %}
                                             {% for ordered_judge in judge_collection.ordered_judges.all %}
-                                                <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}"
+                                                {% comment %} <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}"
                                                    class="usa-button">
                                                     {% with judge=ordered_judge.judge %}
                                                         {% if judge.roles.exists %}
@@ -123,7 +123,23 @@
                                                             {{ judge.display_name }}
                                                         {% endif %}
                                                     {% endwith %}
-                                                </a>
+                                                </a> {% endcomment %}
+                                                <div class="judge-list">
+                                                    <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}/" class="judge-button">
+                                                    <span class="judge-name">
+                                                        {% with judge=ordered_judge.judge %}
+                                                            {{ judge.display_name }}
+                                                        {% endwith %}
+                                                    </span>
+                                                    <span class="judge-role">
+                                                        {% with judge=ordered_judge.judge %}
+                                                            {% if judge.roles.exists %}
+                                                                {% with role=judge.roles.first %}{{ role.role_name }}{% endwith %}
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </span>
+                                                    </a>
+                                                </div>
                                             {% endfor %}
                                         {% endwith %}
                                     {% else %}
