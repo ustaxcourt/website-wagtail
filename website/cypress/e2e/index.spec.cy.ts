@@ -84,6 +84,7 @@ describe('index page', () => {
 
   it('has DAWSON login link visible on mobile viewport', () => {
     cy.viewport('iphone-x')
+    cy.visit('/')
     cy.get('[data-testid="header-dawson-login-link"]')
       .should('exist')
       .and('be.visible')
