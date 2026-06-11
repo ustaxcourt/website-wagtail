@@ -225,6 +225,27 @@ test-e2e-aws:
 cypress-open-aws:
 	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
 
+run:
+	@$(MAKE) -C website run
+
+reset:
+	@$(MAKE) -C website reset
+
+resetdb:
+	@$(MAKE) -C website resetdb
+
+makemigrations:
+	@$(MAKE) -C website makemigrations
+
+migrate:
+	@$(MAKE) -C website migrate
+
+check:
+	@$(MAKE) -C website check
+
+pytest:
+	@$(MAKE) -C website pytest
+
 aws-cypress-set-credentials:
 	@ADMIN_USERNAME_VALUE="$(or $(ADMIN_USERNAME),$(admin_username))"; \
 	ADMIN_PASSWORD_VALUE="$(ADMIN_PASSWORD)"; \
