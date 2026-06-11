@@ -1,4 +1,4 @@
-"""Tests for home/models/snippets/banners.py"""
+"""Tests for home/models/snippets/navigation.py"""
 
 import pytest
 
