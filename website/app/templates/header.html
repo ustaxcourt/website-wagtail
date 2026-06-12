@@ -11,7 +11,9 @@
     }
 
     header#top-navigation .blue-banner .dawson {
-        width: 60px;
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
         flex-shrink: 0;
         flex-grow: 0;
     }
@@ -50,7 +52,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 16px;
+        gap: 8px;
         padding: 10px;
         flex: 1;
     }
@@ -100,9 +102,13 @@
         display: none;
     }
 
+    header#top-navigation #desktop-search-container {
+        margin-right: 24px;
+    }
+
     header#top-navigation #desktop-search-form {
         display: flex;
-        margin: 0 20px;
+        margin: 0;
         position: relative;
         bottom: 0px;
         align-self: flex-end;
@@ -110,7 +116,7 @@
 
     header#top-navigation #tablet-search-form {
         display: flex;
-        margin: 0 20px;
+        margin: 0;
         position: relative;
         bottom: 0px;
         align-self: flex-end;
@@ -125,16 +131,27 @@
         display: flex;
         align-items: center;
         border-left: 1px solid rgba(255, 255, 255, 0.5);
-        padding-left: 16px;
-        margin-left: 8px;
+        padding-left: 24px;
+        margin-left: 0;
         align-self: center;
+    }
+
+    header#top-navigation #desktop-search-form input {
+        width: 270px;
+        min-width: unset;
+    }
+
+    header#top-navigation #desktop-search-form button {
+        width: 60px;
+        padding: 8px;
+        justify-content: center;
     }
 
     header#top-navigation .search-form input {
         padding: 11px 10px;
         border: 1px solid #565C65;
         min-width: 200px;
-        height: 34px;
+        height: 40px;
     }
 
     header#top-navigation .search-form button {
@@ -149,7 +166,7 @@
         gap: 4px;
         font-weight: 700;
         width: 89px;
-        height: 34px;
+        height: 40px;
     }
 
     header#top-navigation .search-form button:hover {
@@ -343,6 +360,13 @@
         font-size: 24px;
         position: absolute;
         top: 10px;
+        width: 32px;
+        height: 32px;
+    }
+
+    header#top-navigation.view-mobile .nav-hamburger img {
+        width: 32px;
+        height: 32px;
     }
 
     header#top-navigation.view-mobile .mobile-header-logo-section {
@@ -355,16 +379,17 @@
 
     header#top-navigation.view-mobile .mobile-menu-close {
         position: absolute;
-        top: 15px;
-        left: 20px;
+        top: 18px;
+        right: 16px;
+        left: auto;
         background: none;
         border: none;
         color: white;
-        font-size: 32px;
+        font-size: 20px;
         cursor: pointer;
         padding: 0;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -393,7 +418,9 @@
     }
 
     header#top-navigation.view-mobile .dawson-link .dawson {
-        width: 50px;
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
     }
 
     header#top-navigation.view-mobile #navigation-search-form {
@@ -458,8 +485,8 @@
         position: fixed;
         top: 0;
         left: -100%;
-        width: 80%;
-        max-width: 400px;
+        width: 100%;
+        max-width: 100%;
         height: 100vh;
         background-color: #005EA2;
      }
@@ -467,6 +494,7 @@
      header#top-navigation.view-mobile #mobile-search-form {
         display: flex;
         margin: 13px 16px 18px 16px;
+        width: calc(100% - 32px);
      }
 
      header#top-navigation.view-mobile #mobile-search-form button {
@@ -485,7 +513,8 @@
 
      header#top-navigation.view-mobile #mobile-search-form input {
         height: 44px;
-        width: 250px;
+        flex: 1;
+        min-width: 0;
         border-radius: 3px 0px 0px 3px;
         padding: 11px 10px;
         font-size: 20px;
@@ -570,7 +599,7 @@
      }
 
      header#top-navigation.view-mobile .navigation-header:first-of-type {
-        margin-top: 60px;
+        margin-top: 74px;
      }
 
      header#top-navigation.view-mobile .navigation-header .link,
@@ -670,6 +699,14 @@
     header#top-navigation.view-tablet .desktop-header-logo-section .logo-subheadings {
         display: flex;
         flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    header#top-navigation.view-tablet .dawson-link .dawson {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
     }
 
     /* Desktop view: larger gap in nav links */
@@ -701,8 +738,7 @@
                     </a>
 
                     <a class="logo-heading" href="/">United States Tax Court</a>
-                    <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
-                    <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
+                    <p class="logo-subheading">{{ settings.home.Header.chief_judge }} | {{ settings.home.Header.clerk_of_court }}</p>
                 </div>
 
                 <!-- desktop -->
@@ -715,26 +751,20 @@
                     <div class="logo-content">
                         <a href="/" class="logo-heading">United States Tax Court</a>
                         <div class="logo-subheadings">
-                            <div>
-                                <p class="logo-subheading">{{ settings.home.Header.chief_judge }}</p>
-                                <p class="logo-subheading">{{ settings.home.Header.clerk_of_court }}</p>
-                            </div>
-                            <div>
-                                <form id="tablet-search-form"
-                                    class="search-form tablet-search-form"
-                                    action="/search/"
-                                    method="get">
+                            <p class="logo-subheading">{{ settings.home.Header.chief_judge }} | {{ settings.home.Header.clerk_of_court }}</p>
+                            <form id="tablet-search-form"
+                                class="search-form tablet-search-form"
+                                action="/search/"
+                                method="get">
                                 <input type="text"
                                         name="query"
                                         placeholder="Enter search text"
                                         aria-label="Search"
                                         data-testid="search-input">
                                 <button type="submit" data-testid="search-button">
-                                    {% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
                                     Search
                                 </button>
                             </form>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -749,9 +779,9 @@
                                 placeholder="Enter search text"
                                 aria-label="Search"
                                 data-testid="search-input">
-                        <button type="submit" data-testid="search-button">
-                            Search
-                        </button>
+                        <button type="submit" data-testid="search-button" aria-label="Search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
                     </form>
                 </div>
 
