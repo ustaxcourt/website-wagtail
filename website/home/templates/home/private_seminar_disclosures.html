@@ -18,6 +18,18 @@
             margin-bottom: 15px;
         }
 
+        /* Breadcrumb-style page title — matches the prod Guidance for
+           Practitioners pattern (page-title-start as an underlined link,
+           page-title-breadcrumb as plain text after a separator). */
+        #private-seminar-page .page-title .page-title-start {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #private-seminar-page .page-title .page-title-breadcrumb {
+            color: #1b1b1b;
+            text-decoration: none;
+        }
+
         /* ── Intro text block (policy paragraph + "Below is…" label) ───── */
         .seminar-intro {
             font-size: 1.0625rem;   /* 17px */
@@ -260,14 +272,16 @@
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
         {% comment %}
-           H1: page title with an inline back-link to Judge Information, so
-           keyboard / AT users get an in-heading way back to the parent
-           page (and to satisfy the [data-testid="page-title"] a Cypress +
-           VoiceOver expectations).
+           H1 breadcrumb pattern matches the prod Guidance for Practitioners
+           page: a page-title-start <a> linking back to the parent page,
+           followed by a page-title-breadcrumb <span> for the current page
+           name. Using an actual <a> (not a JS-handled span) so browser
+           back/forward, right-click menus, and the existing Cypress +
+           VoiceOver expectations on [data-testid="page-title"] a all keep
+           working.
         {% endcomment %}
         <h1 class="page-title" data-testid="page-title" tabindex="0">
-            <a href="/judges/" class="page-title-back-link">Judge Information</a>
-            <span class="page-title-sep" aria-hidden="true"> / </span>Private Seminar Disclosures
+            <a href="/judges/" class="page-title-start" id="page-title-start">Judge Information</a><span class="page-title-breadcrumb" id="page-title-breadcrumb"> / Private Seminar Disclosures</span>
         </h1>
         {# Intro: policy paragraph from CMS richtext field #}
         {% if disclosures and page.seminar_intro_text %}
