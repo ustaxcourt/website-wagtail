@@ -19,7 +19,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  # QA DEPLOY — Runs when pushing to the `qa` branch
+  # QA DEPLOY — Runs when pushing to the `qa` branch (1)
   qa_deploy:
     environment: qa
     name: Deploy QA (Basic Checks)
