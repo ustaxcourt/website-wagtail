@@ -18,15 +18,22 @@
             margin-bottom: 15px;
         }
 
-        /* Breadcrumb-style page title — matches the prod Guidance for
-           Practitioners pattern (page-title-start as an underlined link,
-           page-title-breadcrumb as plain text after a separator). */
+        /* Pin color + font-weight to inherit so the global `a { color:
+           var(--color-link); font-weight: bold }` rule doesn't render
+           this link blue + bold. Matches prod's <span>-based pattern. */
         #private-seminar-page .page-title .page-title-start {
+            color: inherit;
+            font-weight: inherit;
             text-decoration: underline;
             cursor: pointer;
         }
+        #private-seminar-page .page-title .page-title-start:hover,
+        #private-seminar-page .page-title .page-title-start:focus,
+        #private-seminar-page .page-title .page-title-start:visited {
+            color: inherit;
+        }
         #private-seminar-page .page-title .page-title-breadcrumb {
-            color: #1b1b1b;
+            color: inherit;
             text-decoration: none;
         }
 
@@ -271,15 +278,7 @@
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        {% comment %}
-           H1 breadcrumb pattern matches the prod Guidance for Practitioners
-           page: a page-title-start <a> linking back to the parent page,
-           followed by a page-title-breadcrumb <span> for the current page
-           name. Using an actual <a> (not a JS-handled span) so browser
-           back/forward, right-click menus, and the existing Cypress +
-           VoiceOver expectations on [data-testid="page-title"] a all keep
-           working.
-        {% endcomment %}
+        {# H1 breadcrumb matches the prod Guidance for Practitioners pattern. Real <a> (not JS-handled span) so browser back/forward + the existing [data-testid="page-title"] a Cypress/VoiceOver assertions still work. #}
         <h1 class="page-title" data-testid="page-title" tabindex="0">
             <a href="/judges/" class="page-title-start" id="page-title-start">Judge Information</a><span class="page-title-breadcrumb" id="page-title-breadcrumb"> / Private Seminar Disclosures</span>
         </h1>
