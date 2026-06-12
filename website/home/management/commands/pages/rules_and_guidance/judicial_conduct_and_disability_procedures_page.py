@@ -22,7 +22,7 @@ class JudicialConductAndDisabilityProceduresPageInitializer(PageInitializer):
 
     def create_page_info(self, home_page):
         slug = "jcdp"
-        title = "Judicial Conduct and Disability Procedures"
+        title = "Judicial Conduct and Disability Complaint Procedures"
 
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -48,7 +48,7 @@ class JudicialConductAndDisabilityProceduresPageInitializer(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
-                search_description="Judicial Conduct And Disability Procedures",
+                search_description="Judicial Conduct And Disability Complaint Procedures",
                 body=[
                     {"type": "paragraph", "value": body_text},
                 ],

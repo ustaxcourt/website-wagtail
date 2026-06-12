@@ -5,8 +5,10 @@ from home.models import (
     JudgeProfile,
     JudgeCollection,
     JudgeRole,
+    PrivateSeminarDisclosure,
 )
 import logging
+import datetime
 
 
 logger = logging.getLogger(__name__)
@@ -329,9 +331,9 @@ all_judges = [
         "last_name": "Carluzzo",
         "suffix": "",
         "display_name": "Lewis R. Carluzzo",
-        "title": "Special Trial Judge",
+        "title": "Senior Special Trial Judge",
         "chambers_telephone": "(202) 521-3339",
-        "bio": "Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025.",
+        "bio": "Senior Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025. Assumed senior status as Senior Special Trial Judge on May 2, 2025.",
     },
     {
         "first_name": "Diana",
@@ -381,7 +383,7 @@ class JudgesPageInitializer(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        title = "Judges"
+        title = "Judge Information"
 
         if Page.objects.filter(slug=self.slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -389,13 +391,10 @@ class JudgesPageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        judge_collection = JudgeCollection.objects.update_or_create(name="Judges")[0]
-        senior_judge_collection = JudgeCollection.objects.update_or_create(
-            name="Senior Judges"
-        )[0]
-        special_trial_judge_collection = JudgeCollection.objects.update_or_create(
-            name="Special Trial Judges"
-        )[0]
+        JudgeCollection.objects.update_or_create(name="Judges")
+        JudgeCollection.objects.update_or_create(name="Senior Judges")
+        JudgeCollection.objects.update_or_create(name="Special Trial Judges")
+        JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
 
         for judge in all_judges:
             JudgeProfile.objects.update_or_create(
@@ -411,7 +410,7 @@ class JudgesPageInitializer(PageInitializer):
                 },
             )
 
-        # Create judge role
+        # Create judge roles
         JudgeRole.objects.update_or_create(
             role_name="Chief Judge",
             defaults={
@@ -428,76 +427,189 @@ class JudgesPageInitializer(PageInitializer):
             },
         )
 
-        # Create the page first
+        # Create the page. bottom_tiles is intentionally left empty here —
+        # _build_bottom_tiles_data() needs both this JudgeIndex page (for the
+        # PSD sub-route URL) and the JCDP page to exist in the tree, and at
+        # create() time neither is guaranteed yet (this page is about to be
+        # added; JCDP is initialized by a sibling Initializer). update() runs
+        # after the full create() pass and calls _seed_bottom_tiles(), which
+        # populates tiles with correct links once both pages exist.
         _ = home_page.add_child(
             instance=JudgeIndex(
                 title=title,
                 slug=self.slug,
                 seo_title=title,
                 search_description=title,
-                body=[
-                    {
-                        "type": "columns",
-                        "value": {
-                            "column": [
-                                [  # First column
-                                    {
-                                        "type": "h2WithAnchorTag",
-                                        "value": {
-                                            "text": "Judges",
-                                            "anchortag": "JUDGES",
-                                        },
-                                    },
-                                    {
-                                        "type": "judgeCollection",
-                                        "value": judge_collection.id,
-                                    },
-                                ],
-                                [  # Second column
-                                    {
-                                        "type": "h2WithAnchorTag",
-                                        "value": {
-                                            "text": "Senior Judges",
-                                            "anchortag": "SENIOR",
-                                        },
-                                    },
-                                    {
-                                        "type": "judgeCollection",
-                                        "value": senior_judge_collection.id,
-                                    },
-                                ],
-                                [  # Third column
-                                    {
-                                        "type": "h2WithAnchorTag",
-                                        "value": {
-                                            "text": "Special Trial Judges",
-                                            "anchortag": "SPECIAL",
-                                        },
-                                    },
-                                    {
-                                        "type": "judgeCollection",
-                                        "value": special_trial_judge_collection.id,
-                                    },
-                                ],
-                            ]
-                        },
-                    }
-                ],
+                intro_text="See the Judge's biography by clicking on the cards.",
+                seminar_intro_text="<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all Federal US Courts which requires educational program providers and judges to disclose certain information relevant to judges' attendance at privately-funded educational programs. Any organization covered by the policy that issues an invitation to a federal judge to attend an educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that judge, in excess of $480, must disclose financial and programmatic information and publish it on the Court's website for three years time.</p>",
             )
         )
 
         logger.info(f"Created the '{title}' page with judge collections.")
 
+        # Sample seminar disclosures are dev-fixture data only — they name real
+        # judges with fabricated programs and dates and would be misleading on
+        # any non-local environment. Gated on ENVIRONMENT="local" (matches the
+        # pattern used by other env-specific seeders in this codebase).
+        from django.conf import settings as _django_settings
+
+        if getattr(_django_settings, "ENVIRONMENT", "") == "local":
+            self._seed_seminar_disclosures()
+        else:
+            logger.info(
+                "Skipping _seed_seminar_disclosures: ENVIRONMENT is "
+                f"{getattr(_django_settings, 'ENVIRONMENT', '<unset>')!r}, "
+                "sample disclosures only seed on local."
+            )
+
+    def _seed_seminar_disclosures(self):
+        sample_disclosures = [
+            {
+                "judge_last_name": "Kerrigan",
+                "program_provider": "American Bar Association",
+                "program_title": "Tax Law and Practice Symposium",
+                "date": datetime.date(2025, 3, 14),
+                "location": "Washington, DC",
+                "program_topics": "<ul><li>Federal Tax Procedure</li><li>Tax Court Practice</li><li>Recent Developments in Tax Law</li></ul>",
+                "supporter": "American Bar Association Tax Section",
+            },
+            {
+                "judge_last_name": "Arbeit",
+                "program_provider": "Georgetown University Law Center",
+                "program_title": "Advanced Federal Tax Institute",
+                "date": datetime.date(2025, 5, 2),
+                "location": "Washington, DC",
+                "program_topics": "<ul><li>Corporate Taxation</li><li>Partnership Taxation</li><li>International Tax</li></ul>",
+                "supporter": "",
+            },
+            {
+                "judge_last_name": "Ashford",
+                "program_provider": "New York University School of Law",
+                "program_title": "NYU Annual Institute on Federal Taxation",
+                "date": datetime.date(2025, 10, 20),
+                "location": "New York, NY",
+                "program_topics": "<ul><li>Estate and Gift Tax</li><li>Tax Controversies</li><li>Tax Planning Strategies</li></ul>",
+                "supporter": "NYU School of Law",
+            },
+            {
+                "judge_last_name": "Cohen",
+                "program_provider": "Federal Bar Association",
+                "program_title": "Tax Law Conference",
+                "date": datetime.date(2024, 9, 12),
+                "location": "Chicago, IL",
+                "program_topics": "<ul><li>Tax Litigation Updates</li><li>IRS Enforcement Trends</li></ul>",
+                "supporter": "",
+            },
+            {
+                "judge_last_name": "Fried",
+                "program_provider": "Tax Court Bar Association",
+                "program_title": "Special Trial Judge Practice Seminar",
+                "date": datetime.date(2025, 1, 22),
+                "location": "Washington, DC",
+                "program_topics": "<ul><li>Small Tax Case Procedures</li><li>Evidence in Tax Cases</li><li>Bench Trials</li></ul>",
+                "supporter": "Tax Court Bar Association",
+            },
+        ]
+
+        for item in sample_disclosures:
+            judge = JudgeProfile.objects.filter(
+                last_name__iexact=item["judge_last_name"]
+            ).first()
+            if not judge:
+                continue
+            PrivateSeminarDisclosure.objects.get_or_create(
+                judge=judge,
+                program_title=item["program_title"],
+                date=item["date"],
+                defaults={
+                    "program_provider": item["program_provider"],
+                    "location": item["location"],
+                    "program_topics": item["program_topics"],
+                    "supporter": item["supporter"],
+                },
+            )
+
+    def run(self):
+        self.update()
+
     def update(self):
         try:
-            _ = Page.objects.get(slug=self.slug)
+            page = Page.objects.get(slug=self.slug)
             logger.info(f"Updating existing page '{self.slug}'.")
+            specific = page.specific
+            changed = False
+            # Ensure the page title is up to date
+            if page.title != "Judge Information":
+                specific.title = "Judge Information"
+                specific.seo_title = "Judge Information"
+                changed = True
+                logger.info("Updated page title to 'Judge Information'.")
+            # Ensure seminar intro text matches the Figma policy paragraph.
+            # Also correct the old short placeholder if it is still in the DB.
+            _correct_intro = (
+                "<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/"
+                "privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-"
+                "privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all "
+                "Federal US Courts which requires educational program providers and judges to disclose certain "
+                "information relevant to judges' attendance at privately-funded educational programs. Any "
+                "organization covered by the policy that issues an invitation to a federal judge to attend an "
+                "educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that "
+                "judge, in excess of $480, must disclose financial and programmatic information and publish it on "
+                "the Court's website for three years time.</p>"
+            )
+            _old_placeholder = (
+                "<p>The following are private seminar disclosures submitted by "
+                "judges of the United States Tax Court.</p>"
+            )
+            if (
+                not specific.seminar_intro_text
+                or specific.seminar_intro_text == _old_placeholder
+            ):
+                specific.seminar_intro_text = _correct_intro
+                changed = True
+                logger.info("Set seminar_intro_text on JudgeIndex page.")
+            if changed:
+                # save_revision().publish() writes a fresh Wagtail revision
+                # AND propagates fields to the live page model. A plain
+                # specific.save() would leave the latest revision stale so
+                # the admin editor would still show the old title /
+                # seminar_intro_text until the page was edited by hand —
+                # the same dev-web symptom main fixed for _seed_bottom_tiles.
+                specific.save_revision().publish()
+            JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
+            # Same env gate as in create() — sample disclosures are dev-only.
+            from django.conf import settings as _django_settings
+
+            if getattr(_django_settings, "ENVIRONMENT", "") == "local":
+                self._seed_seminar_disclosures()
+            else:
+                logger.info(
+                    "Skipping _seed_seminar_disclosures during update: "
+                    f"ENVIRONMENT is {getattr(_django_settings, 'ENVIRONMENT', '<unset>')!r}."
+                )
+            self._seed_bottom_tiles(page)
         except Page.DoesNotExist:
             logger.info(f"Page '{self.slug}' does not exist.")
             return
 
     def update_judge_roles_and_profiles(self):
+        # Ensure Carluzzo (Senior Special Trial Judge) exists — he may be missing on
+        # sandboxes seeded before he was added to all_judges.
+        JudgeProfile.objects.update_or_create(
+            first_name="Lewis",
+            middle_initial="R.",
+            last_name="Carluzzo",
+            suffix="",
+            defaults={
+                "display_name": "Lewis R. Carluzzo",
+                "title": "Senior Special Trial Judge",
+                "chambers_telephone": "(202) 521-3339",
+                "bio": "Senior Special Trial Judge. Born in New Jersey. Received undergraduate and law degrees, Villanova University, 1971 and 1974. Admitted to New Jersey Bar, 1974. Served as law clerk, New Jersey Superior Court Judge. Associated with law firm in Bridgeton, NJ, 1975, also serving as city prosecutor. From 1977 until appointment as Special Trial Judge, employed by the Office of Chief Counsel, Internal Revenue Service, as attorney, Washington, DC, District Counsel's Office. In 1983, appointed Special Trial Attorney on staff of the Associate Chief Counsel, Litigation. From 1992 to 1994, assigned to the Office of Special Counsel, Large Case. Appointed Special Trial Judge of the United States Tax Court, on August 7, 1994. Served as Chief Special Trial Judge from September 1, 2017 to May 2, 2025. Assumed senior status as Senior Special Trial Judge on May 2, 2025.",
+            },
+        )
+        logger.info("Ensured Lewis R. Carluzzo (Senior Special Trial Judge) exists.")
+
         # Find the current judge with chief judge role
         chief_judge_role = JudgeRole.objects.filter(role_name="Chief Judge").first()
         if chief_judge_role:
@@ -546,3 +658,98 @@ class JudgesPageInitializer(PageInitializer):
         _ = live_chief_judge_role.save()
 
         logger.info(f"Judge roles and profiles updated in page: '{self.slug}'.")
+
+    def _build_bottom_tiles_data(self):
+        """Return StreamField JSON for the two bottom quick-access tiles."""
+        article_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="icon-article.svg",
+            title="Icon: Article (Private Seminar Disclosures)",
+        )
+        balance_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="icon-account-balance.svg",
+            title="Icon: Account Balance (Judicial Conduct)",
+        )
+        judges_page = Page.objects.filter(slug=self.slug).first()
+        # JCDP page has slug "jcdp" in this repo; fall back to the older slug
+        # if it ever changes.
+        judicial_conduct_page = (
+            Page.objects.filter(slug="jcdp").first()
+            or Page.objects.filter(
+                slug="judicial-conduct-and-disability-procedures"
+            ).first()
+        )
+
+        # Use the page's relative URL (`/judges/`) rather than full_url so the
+        # tile link works across environments (dev/sandbox/prod) and across
+        # different ports on local dev. PSD is a RoutablePageMixin sub-path on
+        # JudgeIndex, not a separate Page in the tree, so it can't be linked
+        # via related_page — external_url with a relative path is the safe option.
+        seminar_link = (
+            [
+                {
+                    "type": "external_url",
+                    "value": f"{judges_page.url}private-seminar-disclosures/",
+                }
+            ]
+            if judges_page
+            else []
+        )
+        conduct_link = (
+            [{"type": "related_page", "value": judicial_conduct_page.pk}]
+            if judicial_conduct_page
+            else []
+        )
+
+        return [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    # tiles is a ListBlock — items are plain dicts (no type/value wrapper)
+                    "tiles": [
+                        {
+                            "title": "Private Seminar Disclosures",
+                            "description": "",
+                            "icon": {"svg_file": article_doc.pk},
+                            "content_alignment": "center",
+                            "link": seminar_link,
+                        },
+                        {
+                            "title": "Judicial Conduct and Disability Complaint Procedures",
+                            "description": "",
+                            "icon": {"svg_file": balance_doc.pk},
+                            "content_alignment": "center",
+                            "link": conduct_link,
+                        },
+                    ],
+                },
+            }
+        ]
+
+    def _seed_bottom_tiles(self, page):
+        """Seed bottom_tiles on an existing JudgeIndex page if not yet set."""
+        from home.models.pages.judge_index import JudgeIndex
+
+        try:
+            judge_index = JudgeIndex.objects.get(pk=page.pk)
+        except JudgeIndex.DoesNotExist:
+            logger.warning("JudgeIndex page not found — skipping bottom_tiles seed.")
+            return
+
+        if judge_index.bottom_tiles:
+            logger.info("bottom_tiles already set — skipping seed.")
+            return
+
+        judge_index.bottom_tiles = self._build_bottom_tiles_data()
+        # save_revision().publish() snapshots the seeded bottom_tiles into a
+        # new Wagtail revision and then writes that revision through to the
+        # live page model. A plain judge_index.save() updates the live model
+        # but leaves the latest revision stale, so the admin editor opens
+        # the previous revision (which pre-dates bottom_tiles) and renders
+        # the StreamField empty even though the public page shows the tiles.
+        # Seen on dev-web after the 1246 deploy.
+        judge_index.save_revision().publish()
+        logger.info("Seeded bottom_tiles on JudgeIndex page.")

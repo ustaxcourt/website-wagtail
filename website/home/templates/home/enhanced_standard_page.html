@@ -5,6 +5,37 @@
 {% load static %}
 {% block extra_css %}
     <style>
+        /* Styling for judge button will be moved somewhere else */
+        .judge-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .judge-button {
+            background-color: #DFE1E2;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+
+            margin-bottom: 10px;
+        }
+
+        .judge-button:hover {
+            background-color: #004a87;
+        }
+        .judge-role {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        /* Styling for judge button will be moved somewhere else*/
+
         .enhanced-page {
             width: 100%;
             overflow-x: auto;

@@ -67,14 +67,28 @@ export function terminalLog(violations: Result[]): void {
 }
 
 
-export function checkA11y() {
+export function checkA11y(context?: any, options: Record<string, unknown> = {}) {
   cy.injectAxe();
   // hack: tweak any statuspage.io message so it doesn't cause A11y test to fail
+  fixStatusPageIframe();
+    cy.checkA11y(
+        context,
+        {
+            includedImpacts: ['serious', 'critical'],
+            retries: 3,
+            ...options,
+        },
+        terminalLog,
+    );
+}
+
+export function checkA11yWithModerate() {
+  cy.injectAxe();
   fixStatusPageIframe();
   cy.checkA11y(
     undefined,
     {
-      includedImpacts: ['serious', 'critical'],
+      includedImpacts: ['moderate', 'serious', 'critical'],
       retries: 3,
     },
     terminalLog,
