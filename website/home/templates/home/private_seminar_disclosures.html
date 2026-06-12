@@ -25,16 +25,11 @@
             color: inherit;
             font-weight: inherit;
             text-decoration: underline;
-            cursor: pointer;
         }
         #private-seminar-page .page-title .page-title-start:hover,
         #private-seminar-page .page-title .page-title-start:focus,
         #private-seminar-page .page-title .page-title-start:visited {
             color: inherit;
-        }
-        #private-seminar-page .page-title .page-title-breadcrumb {
-            color: inherit;
-            text-decoration: none;
         }
 
         /* ── Intro text block (policy paragraph + "Below is…" label) ───── */
@@ -278,7 +273,7 @@
 {% block body_class %}template-private-seminar-disclosures{% endblock %}
 {% block content %}
     <div id="private-seminar-page" class="grid-container">
-        {# H1 breadcrumb matches the prod Guidance for Practitioners pattern. Real <a> (not JS-handled span) so browser back/forward + the existing [data-testid="page-title"] a Cypress/VoiceOver assertions still work. #}
+        {# H1 breadcrumb matches the prod Guidance for Practitioners pattern. Real <a> (not JS-handled span) so browser back/forward + the existing `[data-testid="page-title"] a` Cypress/VoiceOver assertions still work. #}
         <h1 class="page-title" data-testid="page-title" tabindex="0">
             <a href="/judges/" class="page-title-start" id="page-title-start">Judge Information</a><span class="page-title-breadcrumb" id="page-title-breadcrumb"> / Private Seminar Disclosures</span>
         </h1>
