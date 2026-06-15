@@ -257,6 +257,19 @@ resource "aws_cloudfront_distribution" "app" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+  # Cache behavior for /wagtail-transfer path - no caching
+  ordered_cache_behavior {
+    path_pattern     = "/wagtail-transfer*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "app-origin"
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.dynamic_content.id
+
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
   restrictions {
     geo_restriction {
       restriction_type = "none"
