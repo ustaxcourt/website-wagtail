@@ -27,31 +27,37 @@ class NavigationRibbonInitializer:
                 "title": "Introduction",
                 "icon": IconCategories.INFO,
                 "url": "/petitioners",
+                "sort_order": 0,
             },
             {
                 "title": "About the Court",
                 "icon": IconCategories.BUILDING_BANK,
                 "url": "/petitioners-about",
+                "sort_order": 1,
             },
             {
                 "title": "Starting A Case",
                 "icon": IconCategories.FILE,
                 "url": "/petitioners-start",
+                "sort_order": 2,
             },
             {
                 "title": "Things That Occur Before Trial",
                 "icon": IconCategories.CALENDAR_MONTH,
                 "url": "/petitioners-before",
+                "sort_order": 3,
             },
             {
                 "title": "Things That Occur During Trial",
                 "icon": IconCategories.HAMMER,
                 "url": "/petitioners-during",
+                "sort_order": 4,
             },
             {
                 "title": "Things That Occur After Trial",
                 "icon": IconCategories.SCALE,
                 "url": "/petitioners-after",
+                "sort_order": 5,
             },
         ]
 
@@ -61,6 +67,7 @@ class NavigationRibbonInitializer:
                 title=link["title"],
                 icon=link["icon"],
                 url=link["url"],
+                sort_order=link["sort_order"],
             )
             link.save()
 
