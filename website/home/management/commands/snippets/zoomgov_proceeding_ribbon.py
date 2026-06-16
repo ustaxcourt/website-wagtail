@@ -29,16 +29,19 @@ class ZoomgovProceedingRibbonInitializer:
                 "title": "The Basics FAQs",
                 "icon": IconCategories.INFO,
                 "url": "/zoomgov-the-basics",
+                "sort_order": 0,
             },
             {
                 "title": "Getting Ready FAQs",
                 "icon": IconCategories.USER,
                 "url": "/zoomgov-getting-ready",
+                "sort_order": 1,
             },
             {
                 "title": "Zoomgov Proceedings FAQs",
                 "icon": IconCategories.VIDEO,
                 "url": "/zoomgov-zoomgov-proceedings",
+                "sort_order": 2,
             },
         ]
 
@@ -48,6 +51,7 @@ class ZoomgovProceedingRibbonInitializer:
                 title=link["title"],
                 icon=link["icon"],
                 url=link["url"],
+                sort_order=link["sort_order"],
             )
             link.save()
 
