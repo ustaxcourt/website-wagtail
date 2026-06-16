@@ -25,7 +25,7 @@ repos:
     - id: no-direct-model-imports-in-migrations
       name: No direct model imports in migrations (use apps.get_model())
       language: pygrep
-      entry: '^from (home|search|wagtailcalendar)[. ]'
+      entry: '^(from|import) (home|search|wagtailcalendar)[. ]'
       files: migrations/.*\.py$
       types: [python]
     - id: django-migrations-check
