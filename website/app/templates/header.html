@@ -425,6 +425,10 @@
 
     header#top-navigation.view-mobile #navigation-search-form {
         display: flex;
+        padding: 74px 0 0 0;
+        margin: 0;
+        border-bottom: none;
+        background-color: var(--color-secondary);
     }
 
     /* Tablet view: hide mobile elements, show desktop elements */
@@ -493,8 +497,10 @@
 
      header#top-navigation.view-mobile #mobile-search-form {
         display: flex;
-        margin: 13px 16px 18px 16px;
-        width: calc(100% - 32px);
+        margin: 0;
+        padding: 13px 0 8px 0;
+        width: 100%;
+        box-sizing: border-box;
      }
 
      header#top-navigation.view-mobile #mobile-search-form button {
@@ -503,8 +509,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: var(--color-white) 1px solid;
+        background-color: #162E51;
+        border: 1px solid #162E51;
         border-radius: 0px 3px 3px 0px;
+        padding-right: 16px;
      }
 
      header#top-navigation.view-mobile #mobile-search-form button i {
@@ -515,10 +523,12 @@
         height: 44px;
         flex: 1;
         min-width: 0;
+        background-color: #162E51;
+        color: var(--color-white);
+        border: 1px solid #162E51;
         border-radius: 3px 0px 0px 3px;
-        padding: 11px 10px;
+        padding: 11px 10px 11px 16px;
         font-size: 20px;
-        color: #71767A;
      }
 
      header#top-navigation.view-mobile .navigation-bar .navigation {
@@ -599,7 +609,7 @@
      }
 
      header#top-navigation.view-mobile .navigation-header:first-of-type {
-        margin-top: 74px;
+        margin-top: 0;
      }
 
      header#top-navigation.view-mobile .navigation-header .link,
@@ -812,7 +822,7 @@
                     method="get">
                     <input type="text"
                         name="query"
-                        placeholder="Enter search text"
+                        placeholder="Search USTC and DAWSON"
                         aria-label="Search"
                         data-testid="search-input">
                     <button type="submit" data-testid="search-button" title="Search">
