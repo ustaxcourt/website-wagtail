@@ -27,26 +27,31 @@ class DawsonFAQsRibbonInitializer:
                 "title": "The Basics",
                 "icon": IconCategories.INFO,
                 "url": "/dawson-faqs-basics",
+                "sort_order": 0,
             },
             {
                 "title": "Account Management",
                 "icon": IconCategories.SETTINGS,
                 "url": "/dawson-faqs-account-management",
+                "sort_order": 1,
             },
             {
                 "title": "Case Management",
                 "icon": IconCategories.BRIEFCASE,
                 "url": "/dawson-faqs-case-management",
+                "sort_order": 2,
             },
             {
                 "title": "Training and Support",
                 "icon": IconCategories.USER,
                 "url": "/dawson-faqs-training-and-support",
+                "sort_order": 3,
             },
             {
                 "title": "Searches and Public Access",
                 "icon": IconCategories.SEARCH,
                 "url": "/dawson-faqs-searches-public-access",
+                "sort_order": 4,
             },
         ]
 
@@ -56,6 +61,7 @@ class DawsonFAQsRibbonInitializer:
                 title=link["title"],
                 icon=link["icon"],
                 url=link["url"],
+                sort_order=link["sort_order"],
             )
             link.save()
 
