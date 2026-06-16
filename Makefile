@@ -225,6 +225,8 @@ test-e2e-aws:
 cypress-open-aws:
 	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
 
+.PHONY: run reset resetdb makemigrations migrate check pytest
+
 run:
 	@$(MAKE) -C website run
 
