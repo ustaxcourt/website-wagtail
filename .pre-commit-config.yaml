@@ -22,6 +22,12 @@ repos:
 
 - repo: local
   hooks:
+    - id: no-direct-model-imports-in-migrations
+      name: No direct model imports in migrations (use apps.get_model())
+      language: pygrep
+      entry: '^from (home|search|wagtailcalendar)[. ]'
+      files: migrations/.*\.py$
+      types: [python]
     - id: django-migrations-check
       name: Check for missing Django migrations
       entry: bash -c 'source .venv/bin/activate && cd website && python manage.py makemigrations --check --dry-run --noinput || { echo "Missing migrations detected. Run '\''make makemigrations'\'' and stage the generated file." >&2; exit 1; }'
