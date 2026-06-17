@@ -37,14 +37,17 @@ class TestGetModerationEditHandlerSimple:
         field_names = [p.field_name for p in result if isinstance(p, FieldPanel)]
         assert "review_by" in field_names
 
-    def test_fallback_when_model_has_no_panels(self):
+    def test_fallback_when_model_has_no_panels_starts_with_empty_content(self):
+        """With no panels to copy, the result should contain only review_by and PublishingPanel."""
         from home.admin.moderation import get_moderation_edit_handler_simple
 
         result = get_moderation_edit_handler_simple(FakeModelNoPanels)
-        assert isinstance(result, list)
+        field_names = [p.field_name for p in result if isinstance(p, FieldPanel)]
+        assert field_names == ["review_by"]
         assert any(isinstance(p, PublishingPanel) for p in result)
 
     def test_with_explicit_content_panels(self):
+        """if content_panels are explicitly provided, they should appear and review_by should be added."""
         from home.admin.moderation import get_moderation_edit_handler_simple
 
         panels = [FieldPanel("title")]
@@ -56,24 +59,28 @@ class TestGetModerationEditHandlerSimple:
         assert "review_by" in field_names
 
     def test_model_with_note_attr_adds_note_panel(self):
+        """if the model has a note attribute, a note panel should be added."""
         from home.admin.moderation import get_moderation_edit_handler_simple
 
         result = get_moderation_edit_handler_simple(FakeSnippetModelWithNote)
         field_names = [p.field_name for p in result if isinstance(p, FieldPanel)]
         assert "note" in field_names
 
-    def test_publishing_panel_always_present(self):
+    def test_publishing_panel_is_last(self):
+        """PublishingPanel should always be the final panel in the list."""
         from home.admin.moderation import get_moderation_edit_handler_simple
 
         result = get_moderation_edit_handler_simple(FakeSnippetModel)
-        assert any(isinstance(p, PublishingPanel) for p in result)
+        assert isinstance(result[-1], PublishingPanel)
 
-    def test_page_model_fallback_includes_title(self):
+    def test_with_wagtail_page_model_adds_review_by(self):
+        """Page has its own content_panels, so review_by should be appended to them."""
         from home.admin.moderation import get_moderation_edit_handler_simple
         from wagtail.models import Page
 
         result = get_moderation_edit_handler_simple(Page)
-        assert isinstance(result, list)
+        field_names = [p.field_name for p in result if isinstance(p, FieldPanel)]
+        assert "review_by" in field_names
 
 
 class TestModerationTabbedInterfaceCreateForModel:
@@ -124,11 +131,14 @@ class TestModerationTabbedInterfaceCreateForModel:
         )
         assert isinstance(result, TabbedInterface)
 
-    def test_snippet_model_without_content_panels_attr_uses_empty(self):
+    def test_snippet_model_without_content_panels_still_gets_moderation_tab(self):
+        """Even with no content panels, the moderation tab (with review_by) should be built."""
         from home.admin.moderation import ModerationTabbedInterface
 
         result = ModerationTabbedInterface.create_for_model(FakeModelNoPanels)
         assert isinstance(result, TabbedInterface)
+        tab_headings = [tab.heading for tab in result.children]
+        assert "Moderation" in tab_headings
 
     def test_page_model_with_empty_promote_panels_skips_tab(self):
         from home.admin.moderation import ModerationTabbedInterface
