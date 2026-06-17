@@ -147,6 +147,10 @@
         min-width: unset;
     }
 
+    header#top-navigation #desktop-search-form input::placeholder {
+        font-size: 16px;
+    }
+
     header#top-navigation #desktop-search-form button {
         width: 60px;
         padding: 8px;
@@ -427,15 +431,15 @@
     header#top-navigation.view-mobile .dawson-link {
         position: absolute;
         top: 10px;
-        right: 12px;
+        right: 16px;
         border-left: none;
         padding-left: 0;
         margin-left: 0;
     }
 
     header#top-navigation.view-mobile .dawson-link .dawson {
-        width: 45px;
-        height: 45px;
+        width: 40px;
+        height: 40px;
         object-fit: contain;
     }
 
@@ -727,9 +731,13 @@
     }
 
     header#top-navigation.view-tablet .dawson-link .dawson {
-        width: 56px;
-        height: 56px;
+        width: 40px;
+        height: 40px;
         object-fit: contain;
+    }
+
+    header#top-navigation.view-tablet .dawson-link {
+        margin-right: 8px;
     }
 
     /* Desktop view: larger gap in nav links */
@@ -784,11 +792,11 @@
                         method="get">
                         <input type="text"
                                 name="query"
-                                placeholder="Search USTC and DAWSON"
+                                placeholder="Search"
                                 aria-label="Search"
                                 data-testid="search-input">
-                        <button type="submit" data-testid="search-button">
-                            Search
+                        <button type="submit" data-testid="search-button" aria-label="Search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </form>
                 </div>
@@ -800,7 +808,7 @@
                             method="get">
                         <input type="text"
                                 name="query"
-                                placeholder="Search USTC and DAWSON"
+                                placeholder="Search"
                                 aria-label="Search"
                                 data-testid="search-input">
                         <button type="submit" data-testid="search-button" aria-label="Search">
@@ -838,7 +846,7 @@
                     method="get">
                     <input type="text"
                         name="query"
-                        placeholder="Search USTC and DAWSON"
+                        placeholder="Search"
                         aria-label="Search"
                         data-testid="search-input">
                     <button type="submit" data-testid="search-button" title="Search">
