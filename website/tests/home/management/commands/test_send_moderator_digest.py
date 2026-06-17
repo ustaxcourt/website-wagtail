@@ -408,11 +408,13 @@ def test_command_skips_revision_when_object_not_found():
 def test_command_skips_root_page():
     """Covers line 154: Page with depth=1 → continue."""
     from wagtail.models import Page
+    from wagtail.models import Locale
 
     fake_group = _make_fake_group_with_email()
     root_page = Page.objects.filter(depth=1).first()
-    if not root_page:
-        return
+    if root_page is None:
+        Locale.objects.get_or_create(language_code="en")
+        root_page = Page.add_root(title="Root", slug="root")
 
     fake_model = SimpleNamespace(
         objects=SimpleNamespace(get=lambda **kwargs: root_page),
