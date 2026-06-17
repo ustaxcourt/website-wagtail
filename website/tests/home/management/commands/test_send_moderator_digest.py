@@ -359,6 +359,7 @@ def test_command_skips_revision_when_model_class_returns_none():
         call_command("send_moderator_digest", stdout=stdout)
 
     output = stdout.getvalue()
+    assert "Found 1 recipient email(s)" in output
     assert "No items are currently awaiting moderation" in output
 
 
@@ -401,6 +402,7 @@ def test_command_skips_revision_when_object_not_found():
         call_command("send_moderator_digest", stdout=stdout)
 
     output = stdout.getvalue()
+    assert "Found 1 recipient email(s)" in output
     assert "No items are currently awaiting moderation" in output
 
 
@@ -445,6 +447,7 @@ def test_command_skips_root_page():
         call_command("send_moderator_digest", stdout=stdout)
 
     output = stdout.getvalue()
+    assert "Found 1 recipient email(s)" in output
     assert "No items are currently awaiting moderation" in output
 
 
@@ -522,6 +525,7 @@ def test_command_falls_back_to_current_rev_when_revisions_raises():
 
     output = stdout.getvalue()
     assert "Test Item" in output
+    assert "Email backend reported 1 message(s) sent to 1 recipient(s)." in output
 
 
 def test_command_handles_send_email_exception():

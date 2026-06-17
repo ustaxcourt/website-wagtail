@@ -1,5 +1,6 @@
 """Tests for home/models/pages/press_release.py"""
 
+import pytest
 from unittest.mock import patch, MagicMock
 from django.utils import timezone
 
@@ -24,6 +25,7 @@ class TestGroupPressReleasesByYear:
                 assert result == {}
 
     def test_groups_news_items_with_document_by_year(self):
+        """NewsItem with a document is grouped by year with details.file set."""
         page = self._make_page()
 
         now = timezone.now()
@@ -43,9 +45,13 @@ class TestGroupPressReleasesByYear:
                 year = now.year
                 assert year in result
                 assert len(result[year]) == 1
-                assert result[year][0]["is_news_item"] is True
+                entry = result[year][0]
+                assert entry["is_news_item"] is True
+                assert entry["details"]["description"] == "Test Release"
+                assert entry["details"]["file"] is news_item.document
 
     def test_groups_news_items_without_document_by_year(self):
+        """NewsItem without a document is grouped as a homepage entry with title and body."""
         page = self._make_page()
 
         now = timezone.now()
@@ -66,15 +72,29 @@ class TestGroupPressReleasesByYear:
                 year = now.year
                 assert year in result
                 entry = result[year][0]
-                assert entry.get("is_homepage_entry") is True
+                assert entry["is_homepage_entry"] is True
+                assert entry["title"] == "No Doc Release"
+                assert entry["body"] == "Some body"
+                assert entry["id"] == 2
+                assert entry["file"] is None
 
-    def test_groups_banners_by_year(self):
+    @pytest.mark.parametrize(
+        "priority_level, expected_label",
+        [
+            ("high", "High Priority"),
+            ("critical", "Critical"),
+        ],
+    )
+    def test_groups_banners_by_year_with_correct_label(
+        self, priority_level, expected_label
+    ):
+        """Banners are grouped by year and labelled according to their priority level."""
         page = self._make_page()
 
         now = timezone.now()
         banner = MagicMock()
         banner.banner_start_date = now
-        banner.priority_level = "high"
+        banner.priority_level = priority_level
         banner.banner_title = "Important Banner"
         banner.description = "Details"
         banner.document = None
@@ -90,35 +110,14 @@ class TestGroupPressReleasesByYear:
                 assert year in result
                 entry = result[year][0]
                 assert entry["is_banner"] is True
-                assert entry["banner_label"] == "High Priority"
-
-    def test_banner_critical_priority_label(self):
-        page = self._make_page()
-
-        now = timezone.now()
-        banner = MagicMock()
-        banner.banner_start_date = now
-        banner.priority_level = "critical"
-        banner.banner_title = "Critical"
-        banner.description = "Details"
-        banner.document = None
-
-        with patch("home.models.pages.press_release.NewsItem") as mock_ni:
-            mock_ni.objects.live.return_value.filter.return_value.order_by.return_value = []
-            with patch("home.models.pages.press_release.Banner") as mock_banner:
-                mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = [
-                    banner
-                ]
-                result = page.group_press_releases_by_year
-                year = now.year
-                entry = result[year][0]
-                assert entry["banner_label"] == "Critical"
+                assert entry["banner_label"] == expected_label
+                assert entry["banner_type"] == priority_level
 
     def test_news_item_with_none_publish_date_is_skipped(self):
         page = self._make_page()
 
         news_item = MagicMock()
-        news_item.publish_date = None  # no date
+        news_item.publish_date = None
         news_item.document = None
         news_item.title = "No Date"
 
@@ -156,7 +155,8 @@ class TestArchiveView:
         obj.template = "home/news_announcements_page.html"
         return obj
 
-    def test_archive_view_returns_template_response(self):
+    def test_archive_view_shows_years_beyond_first_four(self):
+        """archive_view exposes years 5+ and excludes the four most recent years."""
         from django.test import RequestFactory
 
         page = self._make_page()
@@ -180,12 +180,12 @@ class TestArchiveView:
             with patch.object(page, "get_context", return_value=mock_context):
                 response = page.archive_view(request)
 
-        assert response is not None
-        assert response.template_name == page.template
         ctx = response.context_data
-        for year in list(grouped.keys())[4:]:
-            assert year in ctx["press_releases_by_year"]
         assert ctx["is_archive"] is True
+        assert response.template_name == page.template
+        assert 2020 in ctx["press_releases_by_year"]
+        for recent_year in [2024, 2023, 2022, 2021]:
+            assert recent_year not in ctx["press_releases_by_year"]
 
 
 class TestGetContext:
@@ -195,7 +195,8 @@ class TestGetContext:
         obj = PressReleasePage.__new__(PressReleasePage)
         return obj
 
-    def test_get_context_includes_first_four_years(self):
+    def test_get_context_includes_only_first_four_years(self):
+        """get_context limits press_releases_by_year to the four most recent years."""
         from django.test import RequestFactory
 
         page = self._make_page()
@@ -220,6 +221,7 @@ class TestGetContext:
             ):
                 context = page.get_context(request)
 
-        assert "press_releases_by_year" in context
         assert context["is_archive"] is False
-        assert len(context["press_releases_by_year"]) <= 4
+        for recent_year in [2024, 2023, 2022, 2021]:
+            assert recent_year in context["press_releases_by_year"]
+        assert 2020 not in context["press_releases_by_year"]
