@@ -77,6 +77,7 @@ class TestSwitchRoleViewAssumeRole:
 @pytest.mark.django_db
 class TestSwitchRoleViewRevertRole:
     def test_post_revert_role_when_not_assuming_redirects(self):
+        """if user isn't assuming a role, no revert action needed and user should be redirected."""
         from app.role_switcher.views import switch_role_view
 
         user = User.objects.create_superuser(
@@ -91,6 +92,7 @@ class TestSwitchRoleViewRevertRole:
         assert response.status_code == 302
 
     def test_post_revert_role_restores_superuser(self):
+        """if the superuser is currently assuming a role, revert should restore superuser status."""
         from app.role_switcher.views import switch_role_view
 
         user = User.objects.create_user(username="admin5", password="pass")
@@ -114,7 +116,7 @@ class TestSwitchRoleViewRevertRole:
         assert user.is_superuser
 
     def test_post_revert_role_restores_original_groups(self):
-        """Covers lines 92-93: restoring non-empty original_groups_pks."""
+        """base test: reverting role should restore old role"""
         from app.role_switcher.views import switch_role_view
 
         user = User.objects.create_user(username="admin6", password="pass")
@@ -140,7 +142,8 @@ class TestSwitchRoleViewRevertRole:
 
 @pytest.mark.django_db
 class TestSwitchRoleViewGET:
-    def test_get_request_non_superuser_shows_no_form(self):
+    def test_get_request_unauthorized_user_shows_no_form(self):
+        """you can't switch roles if you aren't superuser, so the form shouldn't be shown."""
         from app.role_switcher.views import switch_role_view
 
         user = User.objects.create_user(username="nonadmin_get", password="pass")
@@ -159,6 +162,7 @@ class TestSwitchRoleViewGET:
             assert ctx["role_switch_form"] is None
 
     def test_get_request_superuser_shows_form(self):
+        """superusers should see the role switch form."""
         from app.role_switcher.views import switch_role_view
         from unittest.mock import MagicMock, patch
 
@@ -179,7 +183,7 @@ class TestSwitchRoleViewGET:
             assert ctx["role_switch_form"] is not None
 
     def test_post_assume_role_with_invalid_form_passes_form_to_context(self):
-        """Covers line 64: form_to_pass_in_context = form (invalid form case)."""
+        """if the form is invalid, it should be passed back to the context for rendering."""
         from app.role_switcher.views import switch_role_view
         from unittest.mock import MagicMock, patch
 
