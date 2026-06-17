@@ -40,7 +40,7 @@
     header#top-navigation .logo-subheading {
         text-align: center;
         font-family: var(--noto-serif-jp), serif;
-        font-size: 12px;
+        font-size: 8px;
         font-weight: 400;
         line-height: 80%;
         margin: 4px;
@@ -122,6 +122,12 @@
         align-self: flex-end;
     }
 
+    header#top-navigation #tablet-search-container {
+        display: none;
+        margin-right: 24px;
+        align-items: center;
+    }
+
     header#top-navigation #mobile-search-form {
         display: none;
     }
@@ -155,7 +161,7 @@
     }
 
     header#top-navigation .search-form button {
-        background-color: var(--color-primary-legacy);
+        background-color: #162E51;
         color: white;
         border: none;
         border-radius: 0px 4px 4px 0px;
@@ -360,13 +366,13 @@
         font-size: 24px;
         position: absolute;
         top: 10px;
-        width: 32px;
-        height: 32px;
+        width: 45px;
+        height: 45px;
     }
 
     header#top-navigation.view-mobile .nav-hamburger img {
-        width: 32px;
-        height: 32px;
+        width: 45px;
+        height: 45px;
     }
 
     header#top-navigation.view-mobile .mobile-header-logo-section {
@@ -393,6 +399,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 1001;
+    }
+
+    header#top-navigation.view-mobile .mobile-close-container {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        height: 0;
+        overflow: visible;
     }
 
     header#top-navigation.view-mobile #desktop-search-form {
@@ -418,8 +434,8 @@
     }
 
     header#top-navigation.view-mobile .dawson-link .dawson {
-        width: 32px;
-        height: 32px;
+        width: 45px;
+        height: 45px;
         object-fit: contain;
     }
 
@@ -439,6 +455,10 @@
     }
 
     header#top-navigation.view-tablet #tablet-search-form {
+        display: flex;
+    }
+
+    header#top-navigation.view-tablet #tablet-search-container {
         display: flex;
     }
 
@@ -697,20 +717,13 @@
         - .desktop-header-logo-section display:none
      */
 
-    /* Tablet view: smaller logo text */
+    /* Tablet view: smaller logo text, names under heading */
     header#top-navigation.view-tablet .desktop-header-logo-section .logo-heading {
         font-size: 24px;
     }
 
     header#top-navigation.view-tablet .desktop-header-logo-section .logo-subheading {
         font-size: 12px;
-    }
-
-    header#top-navigation.view-tablet .desktop-header-logo-section .logo-subheadings {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
     }
 
     header#top-navigation.view-tablet .dawson-link .dawson {
@@ -760,23 +773,24 @@
                     </a>
                     <div class="logo-content">
                         <a href="/" class="logo-heading">United States Tax Court</a>
-                        <div class="logo-subheadings">
-                            <p class="logo-subheading">{{ settings.home.Header.chief_judge }} | {{ settings.home.Header.clerk_of_court }}</p>
-                            <form id="tablet-search-form"
-                                class="search-form tablet-search-form"
-                                action="/search/"
-                                method="get">
-                                <input type="text"
-                                        name="query"
-                                        placeholder="Enter search text"
-                                        aria-label="Search"
-                                        data-testid="search-input">
-                                <button type="submit" data-testid="search-button">
-                                    Search
-                                </button>
-                            </form>
-                        </div>
+                        <p class="logo-subheading">{{ settings.home.Header.chief_judge }} | {{ settings.home.Header.clerk_of_court }}</p>
                     </div>
+                </div>
+
+                <div id="tablet-search-container" class="display-flex flex-align-center">
+                    <form id="tablet-search-form"
+                        class="search-form tablet-search-form"
+                        action="/search/"
+                        method="get">
+                        <input type="text"
+                                name="query"
+                                placeholder="Search USTC and DAWSON"
+                                aria-label="Search"
+                                data-testid="search-input">
+                        <button type="submit" data-testid="search-button">
+                            Search
+                        </button>
+                    </form>
                 </div>
 
                 <div id="desktop-search-container" class="display-flex flex-justify flex-align-end">
@@ -786,7 +800,7 @@
                             method="get">
                         <input type="text"
                                 name="query"
-                                placeholder="Enter search text"
+                                placeholder="Search USTC and DAWSON"
                                 aria-label="Search"
                                 data-testid="search-input">
                         <button type="submit" data-testid="search-button" aria-label="Search">
@@ -811,9 +825,11 @@
     <div class="navigation-bar" data-testid="navigation-bar">
         <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
         <ul class="navigation">
-            <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
-                <i class="fa-solid fa-times"></i>
-            </button>
+            <li class="mobile-close-container">
+                <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </li>
             {% get_navigation_menu as nav %}
             <li id="navigation-search-form" class="navigation-header">
                 <form id="mobile-search-form"
