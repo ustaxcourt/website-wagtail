@@ -233,7 +233,7 @@ def test_send_digest_email_with_no_recipients():
 
 
 def test_build_edit_url_fallback_to_kwargs_on_no_reverse_match():
-    """Test NoReverseMatch fallback in build_edit_url for snippet."""
+    """When the positional-args snippet URL pattern raises NoReverseMatch, falls back to kwargs form."""
     from home.management.commands.send_moderator_digest import build_edit_url
 
     mock_obj = SimpleNamespace(pk=5)
@@ -257,7 +257,7 @@ def test_build_edit_url_fallback_to_kwargs_on_no_reverse_match():
 
 
 def test_command_exits_when_no_recipient_emails():
-    """Test command exits early when all users lack email addresses."""
+    """Command aborts before sending if all moderator users have no email address."""
     fake_group = SimpleNamespace(
         user_set=SimpleNamespace(
             all=lambda: [
@@ -282,7 +282,7 @@ def test_command_exits_when_no_recipient_emails():
 
 
 def test_command_returns_when_no_items_in_moderation():
-    """Test command exits early when no items are awaiting moderation."""
+    """Command exits cleanly with a success message when no revisions are in moderation."""
     fake_group = SimpleNamespace(
         user_set=SimpleNamespace(
             all=lambda: [
@@ -332,7 +332,7 @@ def _make_fake_group_with_email():
 
 
 def test_command_skips_revision_when_model_class_returns_none():
-    """Covers line 144: model is None → continue."""
+    """Revisions whose content type no longer resolves to a model class are silently skipped."""
     fake_group = _make_fake_group_with_email()
 
     fake_revision = SimpleNamespace(
@@ -363,7 +363,7 @@ def test_command_skips_revision_when_model_class_returns_none():
 
 
 def test_command_skips_revision_when_object_not_found():
-    """Covers lines 149-150: model.DoesNotExist → continue."""
+    """Revisions pointing to a deleted object (DoesNotExist) are silently skipped."""
     fake_group = _make_fake_group_with_email()
 
     _DoesNotExist = type("DoesNotExist", (Exception,), {})
@@ -406,7 +406,7 @@ def test_command_skips_revision_when_object_not_found():
 
 @pytest.mark.django_db
 def test_command_skips_root_page():
-    """Covers line 154: Page with depth=1 → continue."""
+    """The Wagtail root page (depth=1) is not real content and should be excluded from the digest."""
     from wagtail.models import Page
     from wagtail.models import Locale
 
@@ -449,7 +449,7 @@ def test_command_skips_root_page():
 
 
 def test_command_falls_back_to_current_rev_when_revisions_raises():
-    """Covers lines 161-162 and 164: exception getting revisions → fall back to rev."""
+    """If fetching an object's revision history raises, the command uses the current revision rather than crashing."""
     fake_group = _make_fake_group_with_email()
 
     class ObjWithBrokenRevisions:
@@ -525,7 +525,7 @@ def test_command_falls_back_to_current_rev_when_revisions_raises():
 
 
 def test_command_handles_send_email_exception():
-    """Covers lines 292-293: exception during send_digest_email."""
+    """An exception raised by the email backend is caught and reported to stdout rather than propagating."""
     fake_group = _make_fake_group_with_email()
 
     revision_qs = SimpleNamespace()
