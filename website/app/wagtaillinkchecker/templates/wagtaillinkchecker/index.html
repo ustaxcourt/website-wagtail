@@ -1,0 +1,25 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+{% block titletag %}{% trans "Link Checker" %}{% endblock %}
+{% block content %}
+
+<header class="nice-padding">
+    <div class="row">
+        <div class="left">
+            <div class='col'>
+                <h1 class="icon icon-link">{% blocktrans %}Link Checker{% endblocktrans %} </h1>
+            </div>
+        </div>
+        <div class='right'>
+			<a href="{% url 'wagtaillinkchecker_runscan' %}" class="button">{% blocktrans %}Conduct Scan{% endblocktrans %}</a>
+			<a href="{% url 'wagtaillinkchecker_settings' %}" class="button bicolor icon icon-cogs ">{% blocktrans %}Settings{% endblocktrans %}</a>
+        </div>
+    </div>
+</header>
+
+{% if scans.exists %}
+{% include 'wagtaillinkchecker/scan_list.html' %}
+{% else %}
+	<div class="nice-padding">{% blocktrans %}No scans yet!{% endblocktrans %}</div>
+{% endif %}
+{% endblock %}
