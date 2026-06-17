@@ -329,33 +329,35 @@ class TestGetSearchSnippet:
     def test_falls_back_to_body_str(self):
         """Branch: isinstance(body, str) - line 91."""
         from search.views import get_search_snippet
+        from types import SimpleNamespace
 
         page = MagicMock()
-        page.specific.search_description = None
-        page.specific.body = "Plain text body content here."
-        del page.specific.release_entries
-        # body is a str, not StreamValue
+        page.specific = SimpleNamespace(
+            search_description=None,
+            body="Plain text body content here.",
+        )
         result = get_search_snippet(page)
         assert "Plain text body" in result
 
     def test_falls_back_to_intro_when_no_body(self):
         """Branch: hasattr(specific_page, 'intro') fallback - lines 94-95."""
         from search.views import get_search_snippet
+        from types import SimpleNamespace
 
         page = MagicMock()
-        page.specific.search_description = None
-        del page.specific.body
-        page.specific.intro = "Intro text here."
+        page.specific = SimpleNamespace(
+            search_description=None,
+            intro="Intro text here.",
+        )
         result = get_search_snippet(page)
         assert "Intro text here" in result
 
     def test_returns_empty_string_when_no_content(self):
         from search.views import get_search_snippet
+        from types import SimpleNamespace
 
         page = MagicMock()
-        page.specific.search_description = None
-        del page.specific.body
-        del page.specific.intro
+        page.specific = SimpleNamespace(search_description=None)
         result = get_search_snippet(page)
         assert result == ""
 
