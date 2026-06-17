@@ -33,7 +33,11 @@ def seed_bottom_tiles(apps, schema_editor):
             logger.info("0120: judges page not found — skipping bottom_tiles seed.")
             return
 
-        from home.models.pages.judge_index import JudgeIndex
+        # Use the historical model so this migration only SELECTs columns that
+        # exist at migration time. Importing the live JudgeIndex would pull in
+        # fields added by later migrations (e.g. seminar_intro_text from 0123),
+        # causing a "column does not exist" error on a fresh production deploy.
+        JudgeIndex = apps.get_model("home", "JudgeIndex")
 
         try:
             judge_index = JudgeIndex.objects.get(pk=page.pk)
@@ -49,9 +53,13 @@ def seed_bottom_tiles(apps, schema_editor):
             JudgesPageInitializer,
         )
 
-        # Delegates to the page initializer's data-builder so the migration
-        # and the seed command share a single source of truth for tile content.
-        JudgesPageInitializer()._seed_bottom_tiles(page)
+        # _build_bottom_tiles_data only queries Page/Document — it never touches
+        # JudgeIndex — so it is safe to call here against the historical model.
+        # We use plain .save() rather than save_revision().publish() because the
+        # historical model has no Wagtail revision methods; the live Wagtail
+        # revision will be created when update_pages runs after all migrations.
+        judge_index.bottom_tiles = JudgesPageInitializer()._build_bottom_tiles_data()
+        judge_index.save()
         logger.info("0120: bottom_tiles seeded.")
     except Exception as e:
         logger.warning(f"0120: could not seed bottom_tiles: {e}")
