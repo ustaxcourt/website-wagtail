@@ -18,6 +18,6 @@ def register_menu_settings():
     return MenuItem(
         _("Link Checker"),
         reverse("wagtaillinkchecker"),
-        classnames="icon icon-link",
+        icon_name="icon-link",
         order=300,
     )

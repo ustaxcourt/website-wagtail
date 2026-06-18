@@ -4,8 +4,8 @@ from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 
-from wagtaillinkchecker.scanner import broken_link_scan
-from wagtaillinkchecker.models import ScanLink
+from app.wagtaillinkchecker.scanner import broken_link_scan
+from app.wagtaillinkchecker.models import ScanLink
 
 from wagtail.models import Revision, Site
 

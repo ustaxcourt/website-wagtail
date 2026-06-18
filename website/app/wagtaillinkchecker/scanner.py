@@ -8,9 +8,14 @@ from . import HTTP_STATUS_CODES
 def get_celery_worker_status():
     ERROR_KEY = "ERROR"
     try:
-        from celery.app.control import Inspect
+        from celery import current_app
 
-        insp = Inspect()
+        broker_url = current_app.conf.broker_url
+        if broker_url.startswith("sqlalchemy"):
+            # Can't get stats with sqlalchemy broker
+            return {}
+
+        insp = current_app.control.inspect()
         d = insp.stats()
         if not d:
             d = {ERROR_KEY: "No running Celery workers were found."}
@@ -128,7 +133,7 @@ def clean_url(url, site):
 
 
 def broken_link_scan(site, run_sync=False, verbosity=1):
-    from wagtaillinkchecker.models import Scan, ScanLink
+    from app.wagtaillinkchecker.models import Scan, ScanLink
 
     pages = site.root_page.get_descendants(inclusive=True).live().public()
     scan = Scan.objects.create(site=site)
