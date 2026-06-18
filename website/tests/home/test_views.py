@@ -69,10 +69,10 @@ class TestNewsItemReportViewCreatedAtFilter:
             queryset=[item],
             filters={"created_at": dt.strftime("%Y-%m-%d")},
         )
-        assert item not in result
+        assert result == []
 
-    def test_publish_date_without_date_method_excluded(self):
-        """Covers branch where pub_date has no .date() method (e.g. raw date object)."""
+    def test_publish_date_as_date_object_passes_from_filter(self):
+        """A raw date (no .date() method) is compared directly and passes when on or after the from date."""
         view = self._make_view()
         now = timezone.now()
         item_no_date_method = make_news_item(publish_date=now.date())
@@ -82,8 +82,8 @@ class TestNewsItemReportViewCreatedAtFilter:
         )
         assert item_no_date_method in result
 
-    def test_homepage_date_without_date_method_excluded(self):
-        """Covers branch where exp_date has no .date() method (e.g. raw date object)."""
+    def test_homepage_expiration_as_date_object_passes_from_filter(self):
+        """A raw date (no .date() method) is compared directly and passes when on or after the from date."""
         view = self._make_view()
         now = timezone.now()
         item = make_news_item(homepage_display_expiration_date=now.date())
@@ -117,7 +117,7 @@ class TestSearchDefinitionsFilterInList:
             return_value=["petitioner", "respondent"],
         ):
             fs.filter_in_list(qs, "in_list", "yes")
-        qs.filter.assert_called_once()
+        qs.filter.assert_called_once_with(query_list__in=["petitioner", "respondent"])
 
     def test_filter_in_list_no_excludes_word_list(self):
         fs = self._make_filterset()
@@ -129,7 +129,7 @@ class TestSearchDefinitionsFilterInList:
             "home.views.DefinitionsPage.getWordList", return_value=["petitioner"]
         ):
             fs.filter_in_list(qs, "in_list", "no")
-        qs.exclude.assert_called_once()
+        qs.exclude.assert_called_once_with(query_list__in=["petitioner"])
 
     def test_filter_in_list_other_value_returns_original_queryset(self):
         fs = self._make_filterset()
@@ -150,11 +150,12 @@ class TestSearchDefinitionsFilterInList:
 @pytest.mark.django_db
 class TestSearchDefinitionsReportView:
     def test_get_queryset_returns_queryset(self):
+        from django.db.models.query import QuerySet
         from home.views import SearchDefinitionsReportView
 
         view = SearchDefinitionsReportView()
         qs = view.get_queryset()
-        assert qs is not None
+        assert isinstance(qs, QuerySet)
 
     def test_get_filename_contains_date(self):
         from home.views import SearchDefinitionsReportView
@@ -193,8 +194,10 @@ class TestPrivateSeminarDisclosureReportView:
         row = view.to_row_dict(item)
         assert row["judge_name"] == "Judge Smith"
         assert row["program_provider"] == "ACME Corp"
+        assert row["program_title"] == "Tax Law 101"
         assert row["date"] == date(2024, 6, 1)
-        assert "Tax procedures" in row["program_topics"]
+        assert row["location"] == "Washington, DC"
+        assert row["program_topics"] == "Tax procedures"
         assert row["supporter"] == "Tax Foundation"
 
     def test_to_row_dict_empty_program_topics(self):
@@ -233,8 +236,7 @@ class TestPrivateSeminarDisclosureReportView:
             return_value=mock_settings,
         ):
             filename = view.get_filename()
-        assert "3" in filename
-        assert "Private_Seminar_Disclosure" in filename
+        assert filename == "Private_Seminar_Disclosure_3_year"
 
     def test_get_cutoff_handles_leap_year_edge_case(self):
         """Covers the except ValueError branch in _get_cutoff (Feb 29 edge case)."""
@@ -295,8 +297,9 @@ class TestCustomExternalLinksReportView:
             with patch.object(view, "get_extractor", return_value=mock_extractor):
                 view.get_context_data()
 
-        assert hasattr(mock_page, "external_links")
-        assert len(mock_page.external_links) == 1
+        assert mock_page.external_links == [
+            {"text": "Example", "url": "https://example.com"}
+        ]
 
     def test_get_context_data_export_mode(self):
         view = self._make_view()
@@ -319,7 +322,14 @@ class TestCustomExternalLinksReportView:
             with patch.object(view, "get_extractor", return_value=mock_extractor):
                 context = view.get_context_data()
 
-        assert isinstance(context["object_list"], list)
+        assert context["object_list"] == [
+            {
+                "title": "Tax Page",
+                "slug": "tax-page",
+                "link_text": "IRS",
+                "link_url": "https://irs.gov",
+            }
+        ]
 
     def test_export_rows_returns_flat_list(self):
         view = self._make_view()
