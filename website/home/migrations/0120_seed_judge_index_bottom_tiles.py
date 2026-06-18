@@ -49,7 +49,7 @@ def seed_bottom_tiles(apps, schema_editor):
             logger.info("0120: bottom_tiles already set — skipping seed.")
             return
 
-        from home.management.commands.pages.about_the_court.judges_page import (
+        from home.management.commands.pages.about_the_court.judges_page import (  # noqa: no-direct-model-imports-in-migrations — delegates to initializer to share tile data source of truth
             JudgesPageInitializer,
         )
 
