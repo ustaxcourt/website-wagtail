@@ -1,4 +1,4 @@
-from celery import shared_task
+from background_task import background
 from .scanner import get_url, clean_url
 from .models import ScanLink
 from bs4 import BeautifulSoup
@@ -8,10 +8,9 @@ from django.db.utils import IntegrityError
 from django.utils import timezone
 
 
-@shared_task
+@background(schedule=5)
 def check_link(
     link_pk,
-    run_sync=False,
     verbosity=1,
 ):
     link = ScanLink.objects.get(pk=link_pk)
@@ -40,7 +39,7 @@ def check_link(
             if link_href:
                 try:
                     new_link = link.scan.add_link(page=link.page, url=link_href)
-                    new_link.check_link(run_sync, verbosity)
+                    new_link.check_link(verbosity)
                 except IntegrityError:
                     pass
 
@@ -52,7 +51,7 @@ def check_link(
             if image_src:
                 try:
                     new_link = link.scan.add_link(page=link.page, url=image_src)
-                    new_link.check_link(run_sync, verbosity)
+                    new_link.check_link(verbosity)
                 except IntegrityError:
                     pass
     link.crawled = True

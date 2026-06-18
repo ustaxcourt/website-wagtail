@@ -5,32 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from . import HTTP_STATUS_CODES
 
 
-def get_celery_worker_status():
-    ERROR_KEY = "ERROR"
-    try:
-        from celery import current_app
-
-        broker_url = current_app.conf.broker_url
-        if broker_url.startswith("sqlalchemy"):
-            # Can't get stats with sqlalchemy broker
-            return {}
-
-        insp = current_app.control.inspect()
-        d = insp.stats()
-        if not d:
-            d = {ERROR_KEY: "No running Celery workers were found."}
-    except IOError as e:
-        from errno import errorcode
-
-        msg = "Error connecting to the backend: " + str(e)
-        if len(e.args) > 0 and errorcode.get(e.args[0]) == "ECONNREFUSED":
-            msg += " Check that the RabbitMQ server is running."
-        d = {ERROR_KEY: msg}
-    except ImportError as e:
-        d = {ERROR_KEY: str(e)}
-    return d
-
-
 class Link(Exception):
     def __init__(self, url, page, status_code=None, error=None, site=None):
         self.url = url
@@ -132,7 +106,7 @@ def clean_url(url, site):
     return url
 
 
-def broken_link_scan(site, run_sync=False, verbosity=1):
+def broken_link_scan(site, verbosity=1):
     from app.wagtaillinkchecker.models import Scan, ScanLink
 
     pages = site.root_page.get_descendants(inclusive=True).live().public()
@@ -146,6 +120,6 @@ def broken_link_scan(site, run_sync=False, verbosity=1):
             ScanLink.objects.get(url=url, scan=scan)
         except ScanLink.DoesNotExist:
             link = ScanLink.objects.create(url=page.full_url, page=page, scan=scan)
-            link.check_link(run_sync, verbosity=verbosity)
+            link.check_link(verbosity=verbosity)
 
     return scan
