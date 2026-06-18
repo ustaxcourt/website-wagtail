@@ -81,6 +81,6 @@ def settings(request):
 
 def run_scan(request):
     site = Site.find_for_request(request)
-    broken_link_scan(site)
+    broken_link_scan(site, sync=True)
 
     return redirect("wagtaillinkchecker")
