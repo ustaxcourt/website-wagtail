@@ -1,6 +1,7 @@
 """Tests for home/wagtail_hooks.py signal handlers and hook functions."""
 
 import pytest
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 from django.test import RequestFactory, override_settings
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -106,26 +107,19 @@ class TestProtectSpecialJudgeRoles:
 
 class TestPurgeCacheForSnippetRelatedPages:
     def test_navigation_menu_triggers_root_purge(self):
+        """NavigationMenu snippets trigger a full-wildcard cache purge instead of page-level purge."""
         from home.wagtail_hooks import purge_cache_for_snippet_related_pages
 
         request = MagicMock()
 
-        class FakeNavigationMenu:
+        class NavigationMenu:
             pass
 
-        FakeNavigationMenu.__name__ = "NavigationMenu"
-        instance = FakeNavigationMenu()
-        type(instance).__name__ = "NavigationMenu"
+        instance = NavigationMenu()
 
         with patch("home.wagtail_hooks.purge_cloudflare_root") as mock_purge:
-            with patch(
-                "home.wagtail_hooks.type",
-                return_value=type("NavigationMenu", (), {"__name__": "navigationmenu"}),
-            ):
-                instance_with_name = MagicMock()
-                instance_with_name.__class__.__name__ = "NavigationMenu"
-                purge_cache_for_snippet_related_pages(request, instance_with_name)
-            mock_purge.assert_called_once()
+            purge_cache_for_snippet_related_pages(request, instance)
+        mock_purge.assert_called_once()
 
     def test_unknown_snippet_type_uses_root_prefix(self):
         from home.wagtail_hooks import purge_cache_for_snippet_related_pages
@@ -300,10 +294,10 @@ class TestPurgeCacheAfterDocumentSave:
             mock_purge.assert_not_called()
 
     def test_document_updated_with_no_url_logs_warning(self):
+        """Updated document with no url attribute does not trigger a cache purge."""
         from home.wagtail_hooks import purge_cache_after_document_save
 
-        instance = MagicMock()
-        del instance.url
+        instance = SimpleNamespace(title="Test Doc", id=1)
 
         with patch("home.wagtail_hooks.purge_cloudfront_cache_for_file") as mock_purge:
             purge_cache_after_document_save(
@@ -324,10 +318,10 @@ class TestPurgeCacheAfterDocumentDelete:
             mock_purge.assert_called_once_with(instance.url)
 
     def test_document_without_url_logs_warning(self):
+        """Deleted document with no url attribute does not trigger a cache purge."""
         from home.wagtail_hooks import purge_cache_after_document_delete
 
-        instance = MagicMock()
-        del instance.url
+        instance = SimpleNamespace(title="Test Doc", id=1)
 
         with patch("home.wagtail_hooks.purge_cloudfront_cache_for_file") as mock_purge:
             purge_cache_after_document_delete(sender=None, instance=instance)
@@ -358,7 +352,7 @@ class TestPurgeCacheAfterImageSave:
 
         with patch("home.wagtail_hooks.purge_cloudfront_cache_for_file") as mock_purge:
             purge_cache_after_image_save(sender=None, instance=instance, created=False)
-            mock_purge.assert_called_once()
+            mock_purge.assert_called_once_with("https://example.com/images/photo.jpg")
 
     def test_image_file_url_exception_is_handled(self):
         from home.wagtail_hooks import purge_cache_after_image_save
@@ -392,7 +386,7 @@ class TestPurgeCacheAfterImageDelete:
 
         with patch("home.wagtail_hooks.purge_cloudfront_cache_for_file") as mock_purge:
             purge_cache_after_image_delete(sender=None, instance=instance)
-            mock_purge.assert_called_once()
+            mock_purge.assert_called_once_with("https://example.com/images/photo.jpg")
 
     def test_image_without_file_logs_warning(self):
         from home.wagtail_hooks import purge_cache_after_image_delete
@@ -454,7 +448,9 @@ class TestPurgeNewsItemAffectedPages:
 
 
 class TestPurgeCacheAfterNewsItemSave:
-    def test_purge_called_on_save(self):
+    @pytest.mark.parametrize("created", [True, False], ids=["created", "updated"])
+    def test_purge_called_on_save_or_update(self, created):
+        """Purge is triggered whether the NewsItem is newly created or updated."""
         from home.wagtail_hooks import purge_cache_after_newsitem_save
 
         instance = MagicMock()
@@ -463,20 +459,7 @@ class TestPurgeCacheAfterNewsItemSave:
 
         with patch("home.wagtail_hooks._purge_newsitem_affected_pages") as mock_purge:
             purge_cache_after_newsitem_save(
-                sender=None, instance=instance, created=True
-            )
-            mock_purge.assert_called_once()
-
-    def test_purge_called_on_update(self):
-        from home.wagtail_hooks import purge_cache_after_newsitem_save
-
-        instance = MagicMock()
-        instance.title = "Test"
-        instance.id = 1
-
-        with patch("home.wagtail_hooks._purge_newsitem_affected_pages") as mock_purge:
-            purge_cache_after_newsitem_save(
-                sender=None, instance=instance, created=False
+                sender=None, instance=instance, created=created
             )
             mock_purge.assert_called_once()
 
@@ -532,21 +515,28 @@ class TestNotifySubmitterOnSupersedingEdit:
         return request
 
     def test_returns_early_when_no_workflow_in_progress(self):
+        """No email is sent when the page has no active workflow."""
         hook = self._hook_fn()
         page = MagicMock()
         page.workflow_in_progress = False
         request = self._make_request(MagicMock())
-        hook(request, page)
+        with patch("home.wagtail_hooks.send_mail") as mock_send:
+            hook(request, page)
+            mock_send.assert_not_called()
 
     def test_returns_early_when_no_in_moderation_revision(self):
+        """No email is sent when no revision is currently in moderation."""
         hook = self._hook_fn()
         page = MagicMock()
         page.workflow_in_progress = True
         page.current_workflow_state.revisions.return_value.latest.return_value = None
         request = self._make_request(MagicMock())
-        hook(request, page)
+        with patch("home.wagtail_hooks.send_mail") as mock_send:
+            hook(request, page)
+            mock_send.assert_not_called()
 
     def test_returns_early_when_revision_has_no_user(self):
+        """No email is sent when the in-moderation revision has no associated user."""
         hook = self._hook_fn()
         page = MagicMock()
         page.workflow_in_progress = True
@@ -556,9 +546,12 @@ class TestNotifySubmitterOnSupersedingEdit:
             revision
         )
         request = self._make_request(MagicMock())
-        hook(request, page)
+        with patch("home.wagtail_hooks.send_mail") as mock_send:
+            hook(request, page)
+            mock_send.assert_not_called()
 
     def test_returns_early_when_submitter_is_same_as_editor(self):
+        """No email is sent when the editor is the same person who submitted for review."""
         hook = self._hook_fn()
         user = MagicMock()
         page = MagicMock()
@@ -569,7 +562,9 @@ class TestNotifySubmitterOnSupersedingEdit:
             revision
         )
         request = self._make_request(user)
-        hook(request, page)
+        with patch("home.wagtail_hooks.send_mail") as mock_send:
+            hook(request, page)
+            mock_send.assert_not_called()
 
     def test_sends_email_when_different_editor(self):
         hook = self._hook_fn()
