@@ -43,7 +43,7 @@ def check_link_sync(link_pk, verbosity=1):
             if link_href:
                 try:
                     new_link = link.scan.add_link(page=link.page, url=link_href)
-                    new_link.check_link(verbosity)
+                    check_link_sync(new_link.pk, verbosity=verbosity)
                 except IntegrityError:
                     pass
 
@@ -55,7 +55,7 @@ def check_link_sync(link_pk, verbosity=1):
             if image_src:
                 try:
                     new_link = link.scan.add_link(page=link.page, url=image_src)
-                    new_link.check_link(verbosity)
+                    check_link_sync(new_link.pk, verbosity=verbosity)
                 except IntegrityError:
                     pass
     link.crawled = True
