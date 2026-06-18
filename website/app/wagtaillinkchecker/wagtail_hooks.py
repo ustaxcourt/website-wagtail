@@ -13,7 +13,7 @@ def register_admin_urls():
     return urls.urlpatterns
 
 
-@hooks.register("register_settings_menu_item")
+@hooks.register("register_reports_menu_item")
 def register_menu_settings():
     return MenuItem(
         _("Link Checker"),
