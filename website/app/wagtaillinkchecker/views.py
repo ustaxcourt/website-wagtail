@@ -84,8 +84,13 @@ def settings(request):
 
 
 def run_scan(request):
-    from .scanner import broken_link_scan
+    import os
+    import subprocess
+    import sys
 
-    site = Site.find_for_request(request)
-    broken_link_scan(site, sync=True)
+    from django.conf import settings as django_settings
+
+    manage_py = os.path.join(str(django_settings.BASE_DIR), "manage.py")
+    env = {**os.environ, "DJANGO_SETTINGS_MODULE": django_settings.SETTINGS_MODULE}
+    subprocess.Popen([sys.executable, manage_py, "linkcheck"], env=env)
     return redirect("wagtaillinkchecker")
