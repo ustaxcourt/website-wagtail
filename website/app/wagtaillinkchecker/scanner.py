@@ -126,6 +126,12 @@ def broken_link_scan(site, verbosity=1, sync=False):
             )
             if created:
                 link.check_link(verbosity=verbosity, sync=sync)
+            elif link.page_id != page.pk:
+                # URL was already discovered as a link from another page, so its
+                # HTML was never crawled. Fix the page reference and crawl it now.
+                link.page = page
+                link.save(update_fields=["page"])
+                link.check_link(verbosity=verbosity, sync=sync)
     except Exception:
         scan.status = Scan.Status.FAILED
         scan.save()
