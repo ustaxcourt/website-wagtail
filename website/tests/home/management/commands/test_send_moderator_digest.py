@@ -233,7 +233,7 @@ def test_send_digest_email_with_no_recipients():
 
 
 def test_build_edit_url_fallback_to_kwargs_on_no_reverse_match():
-    """Test NoReverseMatch fallback in build_edit_url for snippet."""
+    """When the positional-args snippet URL pattern raises NoReverseMatch, falls back to kwargs form."""
     from home.management.commands.send_moderator_digest import build_edit_url
 
     mock_obj = SimpleNamespace(pk=5)
@@ -257,7 +257,7 @@ def test_build_edit_url_fallback_to_kwargs_on_no_reverse_match():
 
 
 def test_command_exits_when_no_recipient_emails():
-    """Test command exits early when all users lack email addresses."""
+    """Command aborts before sending if all moderator users have no email address."""
     fake_group = SimpleNamespace(
         user_set=SimpleNamespace(
             all=lambda: [
@@ -282,7 +282,7 @@ def test_command_exits_when_no_recipient_emails():
 
 
 def test_command_returns_when_no_items_in_moderation():
-    """Test command exits early when no items are awaiting moderation."""
+    """Command exits cleanly with a success message when no revisions are in moderation."""
     fake_group = SimpleNamespace(
         user_set=SimpleNamespace(
             all=lambda: [
@@ -314,3 +314,296 @@ def test_command_returns_when_no_items_in_moderation():
 
     output = stdout.getvalue()
     assert "No items are currently awaiting moderation" in output
+
+
+def _make_fake_group_with_email():
+    return SimpleNamespace(
+        user_set=SimpleNamespace(
+            all=lambda: [
+                SimpleNamespace(
+                    username="mod1",
+                    first_name="Mod",
+                    last_name="One",
+                    email="mod1@example.com",
+                )
+            ]
+        )
+    )
+
+
+def test_command_skips_revision_when_model_class_returns_none():
+    """Revisions whose content type no longer resolves to a model class are silently skipped."""
+    fake_group = _make_fake_group_with_email()
+
+    fake_revision = SimpleNamespace(
+        content_type=SimpleNamespace(model_class=lambda: None),
+        object_id="1",
+        content={},
+        user=None,
+    )
+
+    revision_qs = SimpleNamespace()
+    revision_qs.select_related = lambda *args, **kwargs: revision_qs
+    revision_qs.distinct = lambda: [fake_revision]
+
+    stdout = StringIO()
+
+    with (
+        patch.object(
+            send_moderator_digest.Group.objects, "get", return_value=fake_group
+        ),
+        patch.object(
+            send_moderator_digest.Revision.objects, "filter", return_value=revision_qs
+        ),
+    ):
+        call_command("send_moderator_digest", stdout=stdout)
+
+    output = stdout.getvalue()
+    assert "Found 1 recipient email(s)" in output
+    assert "No items are currently awaiting moderation" in output
+
+
+def test_command_skips_revision_when_object_not_found():
+    """Revisions pointing to a deleted object (DoesNotExist) are silently skipped."""
+    fake_group = _make_fake_group_with_email()
+
+    _DoesNotExist = type("DoesNotExist", (Exception,), {})
+
+    class FakeModelObjects:
+        @staticmethod
+        def get(**kwargs):
+            raise _DoesNotExist("not found")
+
+    class FakeModel:
+        DoesNotExist = _DoesNotExist
+        objects = FakeModelObjects
+
+    fake_revision = SimpleNamespace(
+        content_type=SimpleNamespace(model_class=lambda: FakeModel),
+        object_id="99",
+        content={},
+        user=None,
+    )
+
+    revision_qs = SimpleNamespace()
+    revision_qs.select_related = lambda *args, **kwargs: revision_qs
+    revision_qs.distinct = lambda: [fake_revision]
+
+    stdout = StringIO()
+
+    with (
+        patch.object(
+            send_moderator_digest.Group.objects, "get", return_value=fake_group
+        ),
+        patch.object(
+            send_moderator_digest.Revision.objects, "filter", return_value=revision_qs
+        ),
+    ):
+        call_command("send_moderator_digest", stdout=stdout)
+
+    output = stdout.getvalue()
+    assert "Found 1 recipient email(s)" in output
+    assert "No items are currently awaiting moderation" in output
+
+
+@pytest.mark.django_db
+def test_command_skips_root_page():
+    """The Wagtail root page (depth=1) is not real content and should be excluded from the digest."""
+    from wagtail.models import Page
+    from wagtail.models import Locale
+
+    fake_group = _make_fake_group_with_email()
+    root_page = Page.objects.filter(depth=1).first()
+    if root_page is None:
+        Locale.objects.get_or_create(language_code="en")
+        root_page = Page.add_root(title="Root", slug="root")
+
+    fake_model = SimpleNamespace(
+        objects=SimpleNamespace(get=lambda **kwargs: root_page),
+        DoesNotExist=Exception,
+    )
+
+    fake_revision = SimpleNamespace(
+        content_type=SimpleNamespace(model_class=lambda: fake_model),
+        object_id=str(root_page.pk),
+        content={},
+        user=None,
+    )
+
+    revision_qs = SimpleNamespace()
+    revision_qs.select_related = lambda *args, **kwargs: revision_qs
+    revision_qs.distinct = lambda: [fake_revision]
+
+    stdout = StringIO()
+
+    with (
+        patch.object(
+            send_moderator_digest.Group.objects, "get", return_value=fake_group
+        ),
+        patch.object(
+            send_moderator_digest.Revision.objects, "filter", return_value=revision_qs
+        ),
+    ):
+        call_command("send_moderator_digest", stdout=stdout)
+
+    output = stdout.getvalue()
+    assert "Found 1 recipient email(s)" in output
+    assert "No items are currently awaiting moderation" in output
+
+
+def test_command_falls_back_to_current_rev_when_revisions_raises():
+    """If fetching an object's revision history raises, the command uses the current revision rather than crashing."""
+    fake_group = _make_fake_group_with_email()
+
+    class ObjWithBrokenRevisions:
+        pk = 1
+        title = "Test Item"
+        note = None
+        review_by = None
+
+        @property
+        def revisions(self):
+            raise Exception("DB error")
+
+    obj = ObjWithBrokenRevisions()
+
+    fake_model = SimpleNamespace(
+        objects=SimpleNamespace(get=lambda **kwargs: obj),
+        DoesNotExist=Exception,
+    )
+
+    fake_revision = SimpleNamespace(
+        content_type=SimpleNamespace(
+            model_class=lambda: fake_model,
+            app_label="home",
+            model="testitem",
+        ),
+        object_id="1",
+        content={"title": "Test Item", "note": None, "review_by": None},
+        user=None,
+    )
+
+    comments_qs = SimpleNamespace(
+        exclude=lambda *args, **kwargs: comments_qs,
+        order_by=lambda *args, **kwargs: comments_qs,
+        values_list=lambda *args, **kwargs: comments_qs,
+        distinct=lambda: [],
+    )
+    recent_qs = SimpleNamespace(
+        select_related=lambda *args, **kwargs: recent_qs,
+        order_by=lambda *args, **kwargs: recent_qs,
+        first=lambda: None,
+    )
+
+    revision_qs = SimpleNamespace()
+    revision_qs.select_related = lambda *args, **kwargs: revision_qs
+    revision_qs.distinct = lambda: [fake_revision]
+
+    stdout = StringIO()
+
+    with (
+        patch.object(
+            send_moderator_digest.Group.objects, "get", return_value=fake_group
+        ),
+        patch.object(
+            send_moderator_digest.Revision.objects, "filter", return_value=revision_qs
+        ),
+        patch.object(
+            send_moderator_digest.TaskState.objects,
+            "filter",
+            side_effect=[comments_qs, recent_qs],
+        ),
+        patch.object(send_moderator_digest, "build_edit_url", return_value=None),
+        patch.object(
+            send_moderator_digest.loader,
+            "get_template",
+            return_value=SimpleNamespace(render=lambda context: "<p>Digest</p>"),
+        ),
+        patch.object(send_moderator_digest, "send_digest_email", return_value=1),
+    ):
+        call_command("send_moderator_digest", stdout=stdout)
+
+    output = stdout.getvalue()
+    assert "Test Item" in output
+    assert "Email backend reported 1 message(s) sent to 1 recipient(s)." in output
+
+
+def test_command_handles_send_email_exception():
+    """An exception raised by the email backend is caught and reported to stdout rather than propagating."""
+    fake_group = _make_fake_group_with_email()
+
+    revision_qs = SimpleNamespace()
+    revision_qs.select_related = lambda *args, **kwargs: revision_qs
+    revision_qs.distinct = lambda: []
+
+    fake_model = SimpleNamespace(objects=Mock())
+    fake_revision = SimpleNamespace(
+        content_type=SimpleNamespace(model_class=lambda: fake_model),
+        object_id="1",
+        content={},
+        user=None,
+    )
+    fake_object = SimpleNamespace(
+        pk=1,
+        title="Test item",
+        revisions=SimpleNamespace(
+            order_by=lambda *args, **kwargs: SimpleNamespace(
+                first=lambda: fake_revision
+            )
+        ),
+        note=None,
+        review_by=None,
+    )
+    fake_model.objects.get.return_value = fake_object
+    fake_model.DoesNotExist = Exception
+
+    revision_qs_with_item = SimpleNamespace()
+    revision_qs_with_item.select_related = lambda *args, **kwargs: revision_qs_with_item
+    revision_qs_with_item.distinct = lambda: [fake_revision]
+
+    comments_qs = SimpleNamespace(
+        exclude=lambda *args, **kwargs: comments_qs,
+        order_by=lambda *args, **kwargs: comments_qs,
+        values_list=lambda *args, **kwargs: comments_qs,
+        distinct=lambda: [],
+    )
+    recent_qs = SimpleNamespace(
+        select_related=lambda *args, **kwargs: recent_qs,
+        order_by=lambda *args, **kwargs: recent_qs,
+        first=lambda: None,
+    )
+
+    stdout = StringIO()
+
+    with (
+        patch.object(
+            send_moderator_digest.Group.objects, "get", return_value=fake_group
+        ),
+        patch.object(
+            send_moderator_digest.Revision.objects,
+            "filter",
+            return_value=revision_qs_with_item,
+        ),
+        patch.object(
+            send_moderator_digest.TaskState.objects,
+            "filter",
+            side_effect=[comments_qs, recent_qs],
+        ),
+        patch.object(
+            send_moderator_digest, "build_edit_url", return_value="/admin/edit/1"
+        ),
+        patch.object(
+            send_moderator_digest.loader,
+            "get_template",
+            return_value=SimpleNamespace(render=lambda context: "<p>Digest</p>"),
+        ),
+        patch.object(
+            send_moderator_digest,
+            "send_digest_email",
+            side_effect=Exception("SMTP error"),
+        ),
+    ):
+        call_command("send_moderator_digest", stdout=stdout)
+
+    output = stdout.getvalue()
+    assert "Error sending email" in output
