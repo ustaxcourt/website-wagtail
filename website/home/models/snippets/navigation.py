@@ -16,12 +16,13 @@ from wagtail.models import (
     RevisionMixin,
     PreviewableMixin,
     WorkflowMixin,
+    Orderable,
 )
 from wagtail.fields import StreamField
 from django.core.exceptions import ValidationError
 
 
-class NavigationRibbonLink(models.Model):
+class NavigationRibbonLink(Orderable):
     title = models.CharField(max_length=255)
     icon = models.CharField(max_length=200, choices=IconCategories.choices)
     url = models.CharField(max_length=1000)
