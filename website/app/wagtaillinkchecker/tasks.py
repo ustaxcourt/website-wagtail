@@ -9,17 +9,16 @@ from django.utils import timezone
 
 
 @background(schedule=5)
-def check_link(
-    link_pk,
-    verbosity=1,
-):
-    return check_link_sync(link_pk, verbosity=verbosity)
+def check_link(link_pk, verbosity=1, get_full_result=True):
+    return check_link_sync(
+        link_pk, verbosity=verbosity, get_full_result=get_full_result
+    )
 
 
-def check_link_sync(link_pk, verbosity=1):
+def check_link_sync(link_pk, verbosity=1, get_full_result=True):
     link = ScanLink.objects.get(pk=link_pk)
     site = link.scan.site
-    url = get_url(link.url, link.page, site)
+    url = get_url(link.url, link.page, site, get_full_result)
     link.status_code = url.get("status_code")
 
     if url["error"]:
@@ -43,7 +42,9 @@ def check_link_sync(link_pk, verbosity=1):
             if link_href:
                 try:
                     new_link = link.scan.add_link(page=link.page, url=link_href)
-                    check_link_sync(new_link.pk, verbosity=verbosity)
+                    check_link_sync(
+                        new_link.pk, verbosity=verbosity, get_full_result=False
+                    )
                 except IntegrityError:
                     pass
 
@@ -55,7 +56,9 @@ def check_link_sync(link_pk, verbosity=1):
             if image_src:
                 try:
                     new_link = link.scan.add_link(page=link.page, url=image_src)
-                    check_link_sync(new_link.pk, verbosity=verbosity)
+                    check_link_sync(
+                        new_link.pk, verbosity=verbosity, get_full_result=False
+                    )
                 except IntegrityError:
                     pass
     link.crawled = True

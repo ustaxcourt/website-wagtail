@@ -51,7 +51,7 @@ class Link(Exception):
         return hash(self.url)
 
 
-def get_url(url, page, site):
+def get_url(url, page, site, get_full_result):
     data = {
         "url": url,
         "page": page,
@@ -61,7 +61,10 @@ def get_url(url, page, site):
     }
     response = None
     try:
-        response = requests.get(url, verify=True)
+        if get_full_result:
+            response = requests.get(url, verify=True)
+        else:
+            response = requests.head(url, verify=True, allow_redirects=True)
         data["response"] = response
     except (requests.exceptions.InvalidSchema, requests.exceptions.MissingSchema):
         data["invalid_schema"] = True
