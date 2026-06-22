@@ -22,11 +22,14 @@
                     <td class='amount'>{{scan.links.valid.count}}</td>
 					<td class='amount'>{% blocktrans with broken_links=scan.links.broken_links.count links=scan.links.count %}{{broken_links}} broken links out of {{links}} links{% endblocktrans %}</td>
                     <td
-						style='color:{% if scan.is_finished %}green{% else %}orange{% endif %};font-weight:bold;'
+						style='color:{% if scan.status == "completed" %}green{% elif scan.status == "failed" %}red{% else %}orange{% endif %};font-weight:bold;'
 						class='avaliablity'>
-					{% if scan.is_finished %}
+					{% if scan.status == "completed" %}
 					{% blocktrans %}Completed{% endblocktrans %}
+					{% elif scan.status == "failed" %}
+					{% blocktrans %}Failed{% endblocktrans %}
 					{% else %}
+					{% blocktrans %}Running{% endblocktrans %}<br />
 					{% blocktrans with links=scan.links.count %}{{links}} links found{% endblocktrans %} <br />
 					{% blocktrans with crawled_links=scan.links.crawled_links.count %}{{crawled_links}} links crawled{% endblocktrans %}<br />
 					{% blocktrans with broken_links=scan.links.broken_links.count %}{{broken_links}} broken links found{% endblocktrans %} <br />

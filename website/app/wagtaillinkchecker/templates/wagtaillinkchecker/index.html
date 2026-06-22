@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block titletag %}{% trans "Link Checker" %}{% endblock %}
 {% block content %}
+{% if scan_running %}<script>setTimeout(function(){ location.reload(); }, 5000);</script>{% endif %}
 
 <header class="nice-padding">
     <div class="row">

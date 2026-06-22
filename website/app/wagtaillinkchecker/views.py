@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
 
@@ -8,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from .forms import SitePreferencesForm
 from .models import SitePreferences, Scan
 from .pagination import paginate
-from .scanner import broken_link_scan
 
 from wagtail.admin import messages
 from wagtail.models import Site
@@ -26,10 +23,17 @@ def index(request):
 
     paginator, page = paginate(request, scans)
 
+    scan_running = scans.filter(status=Scan.Status.RUNNING).exists()
+
     return render(
         request,
         "wagtaillinkchecker/index.html",
-        {"page": page, "paginator": paginator, "scans": scans},
+        {
+            "page": page,
+            "paginator": paginator,
+            "scans": scans,
+            "scan_running": scan_running,
+        },
     )
 
 
@@ -80,7 +84,8 @@ def settings(request):
 
 
 def run_scan(request):
+    from .scanner import broken_link_scan
+
     site = Site.find_for_request(request)
     broken_link_scan(site, sync=True)
-
     return redirect("wagtaillinkchecker")

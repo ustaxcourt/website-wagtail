@@ -115,14 +115,19 @@ def broken_link_scan(site, verbosity=1, sync=False):
     pages = site.root_page.get_descendants(inclusive=True).live().public()
     scan = Scan.objects.create(site=site)
 
-    for page in pages:
-        try:
+    try:
+        for page in pages:
             url = page.full_url
             if verbosity > 1:
                 print(f"Checking {url}")
-            ScanLink.objects.get(url=url, scan=scan)
-        except ScanLink.DoesNotExist:
-            link = ScanLink.objects.create(url=page.full_url, page=page, scan=scan)
-            link.check_link(verbosity=verbosity, sync=sync)
+            link, created = ScanLink.objects.get_or_create(
+                url=url, scan=scan, defaults={"page": page}
+            )
+            if created:
+                link.check_link(verbosity=verbosity, sync=sync)
+    except Exception:
+        scan.status = Scan.Status.FAILED
+        scan.save()
+        raise
 
     return scan

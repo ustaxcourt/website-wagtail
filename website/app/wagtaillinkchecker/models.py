@@ -20,18 +20,25 @@ class SitePreferences(models.Model):
 
 
 class Scan(models.Model):
+    class Status(models.TextChoices):
+        RUNNING = "running", _("Running")
+        COMPLETED = "completed", _("Completed")
+        FAILED = "failed", _("Failed")
+
     scan_finished = models.DateTimeField(blank=True, null=True)
     scan_started = models.DateTimeField(auto_now_add=True)
     site = models.ForeignKey(
         Site, db_index=True, editable=False, on_delete=models.CASCADE
     )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.RUNNING,
+    )
 
     @property
     def is_finished(self):
-        return self.scan_finished is not None
-
-    def add_link(self, url=None, page=None):
-        return ScanLink.objects.create(scan=self, url=url, page=page)
+        return self.status == self.Status.COMPLETED
 
     def result(self):
         return _(

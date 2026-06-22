@@ -1,10 +1,9 @@
 from background_task import background
 from .scanner import get_url, clean_url
-from .models import ScanLink
+from .models import Scan, ScanLink
 from bs4 import BeautifulSoup
 from django.utils.translation import gettext_lazy as _
 
-from django.db.utils import IntegrityError
 from django.utils import timezone
 
 
@@ -40,13 +39,13 @@ def check_link_sync(link_pk, verbosity=1, get_full_result=True):
             if verbosity > 1:
                 print(f"cleaned link_href: {link_href}")
             if link_href:
-                try:
-                    new_link = link.scan.add_link(page=link.page, url=link_href)
+                new_link, created = ScanLink.objects.get_or_create(
+                    scan=link.scan, url=link_href, defaults={"page": link.page}
+                )
+                if created:
                     check_link_sync(
                         new_link.pk, verbosity=verbosity, get_full_result=False
                     )
-                except IntegrityError:
-                    pass
 
         for image in images:
             image_src = image.get("src")
@@ -54,19 +53,18 @@ def check_link_sync(link_pk, verbosity=1, get_full_result=True):
             if verbosity > 1:
                 print(f"cleaned image_src: {image_src}")
             if image_src:
-                try:
-                    new_link = link.scan.add_link(page=link.page, url=image_src)
+                new_link, created = ScanLink.objects.get_or_create(
+                    scan=link.scan, url=image_src, defaults={"page": link.page}
+                )
+                if created:
                     check_link_sync(
                         new_link.pk, verbosity=verbosity, get_full_result=False
                     )
-                except IntegrityError:
-                    pass
     link.crawled = True
     link.save()
 
-    if link.scan.links.non_scanned_links():
-        pass
-    else:
+    if not link.scan.links.non_scanned_links().exists():
         scan = link.scan
         scan.scan_finished = timezone.now()
+        scan.status = Scan.Status.COMPLETED
         scan.save()
