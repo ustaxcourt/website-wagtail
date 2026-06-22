@@ -10,11 +10,16 @@ from django.utils import timezone
 @background(schedule=5)
 def check_link(link_pk, verbosity=1, get_full_result=True):
     return check_link_sync(
-        link_pk, verbosity=verbosity, get_full_result=get_full_result
+        link_pk,
+        verbosity=verbosity,
+        get_full_result=get_full_result,
+        mark_scan_complete=True,
     )
 
 
-def check_link_sync(link_pk, verbosity=1, get_full_result=True):
+def check_link_sync(
+    link_pk, verbosity=1, get_full_result=True, mark_scan_complete=False
+):
     link = ScanLink.objects.get(pk=link_pk)
     site = link.scan.site
     url = get_url(link.url, link.page, site, get_full_result)
@@ -44,7 +49,10 @@ def check_link_sync(link_pk, verbosity=1, get_full_result=True):
                 )
                 if created:
                     check_link_sync(
-                        new_link.pk, verbosity=verbosity, get_full_result=False
+                        new_link.pk,
+                        verbosity=verbosity,
+                        get_full_result=False,
+                        mark_scan_complete=mark_scan_complete,
                     )
 
         for image in images:
@@ -58,12 +66,15 @@ def check_link_sync(link_pk, verbosity=1, get_full_result=True):
                 )
                 if created:
                     check_link_sync(
-                        new_link.pk, verbosity=verbosity, get_full_result=False
+                        new_link.pk,
+                        verbosity=verbosity,
+                        get_full_result=False,
+                        mark_scan_complete=mark_scan_complete,
                     )
     link.crawled = True
     link.save()
 
-    if not link.scan.links.non_scanned_links().exists():
+    if mark_scan_complete and not link.scan.links.non_scanned_links().exists():
         scan = link.scan
         scan.scan_finished = timezone.now()
         scan.status = Scan.Status.COMPLETED

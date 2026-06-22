@@ -1,6 +1,7 @@
 from http import client
 
 import requests
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from . import HTTP_STATUS_CODES
 
@@ -129,5 +130,10 @@ def broken_link_scan(site, verbosity=1, sync=False):
         scan.status = Scan.Status.FAILED
         scan.save()
         raise
+
+    if sync:
+        scan.scan_finished = timezone.now()
+        scan.status = Scan.Status.COMPLETED
+        scan.save()
 
     return scan
