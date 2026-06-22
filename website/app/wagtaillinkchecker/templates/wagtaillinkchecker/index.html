@@ -4,6 +4,17 @@
 {% block content %}
 {% if scan_running %}<script>setTimeout(function(){ location.reload(); }, 5000);</script>{% endif %}
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const link = document.getElementById("linkConductScan");
+
+    link.addEventListener("click", function (event) {
+        // Disable the link
+        link.classList.add("disabled");
+    });
+});
+</script>
+
 <header class="nice-padding">
     <div class="row">
         <div class="left">
@@ -12,7 +23,7 @@
             </div>
         </div>
         <div class='right'>
-			<a href="{% url 'wagtaillinkchecker_runscan' %}" class="button">{% blocktrans %}Conduct Scan{% endblocktrans %}</a>
+			<a id="linkConductScan" href="{% url 'wagtaillinkchecker_runscan' %}" class="button">{% blocktrans %}Conduct Scan{% endblocktrans %}</a>
         </div>
     </div>
 </header>

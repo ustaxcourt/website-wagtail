@@ -1,3 +1,4 @@
+import time
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
 
@@ -93,4 +94,7 @@ def run_scan(request):
     manage_py = os.path.join(str(django_settings.BASE_DIR), "manage.py")
     env = {**os.environ, "DJANGO_SETTINGS_MODULE": django_settings.SETTINGS_MODULE}
     subprocess.Popen([sys.executable, manage_py, "linkcheck"], env=env)
+    time.sleep(
+        1.5
+    )  # Added to give time for linkcheck command to start and Scan object to be added to database
     return redirect("wagtaillinkchecker")
