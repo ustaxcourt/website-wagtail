@@ -19,14 +19,10 @@ class Command(BaseCommand):
         pages = site.root_page.get_descendants(inclusive=True).live().public()
         verbosity = 2
 
-        print(f"Scanning {len(pages)} pages...")
         logger.info(f"Scanning {len(pages)} pages...")
         scan = broken_link_scan(site, verbosity, sync=True)
         total_links = ScanLink.objects.filter(scan=scan, crawled=True)
         broken_links = ScanLink.objects.filter(scan=scan, broken=True)
-        print(
-            f"Found {len(total_links)} total links, with {len(broken_links)} broken links."
-        )
         logger.info(
             f"Found {len(total_links)} total links, with {len(broken_links)} broken links."
         )
