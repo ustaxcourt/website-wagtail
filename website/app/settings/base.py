@@ -440,6 +440,12 @@ LOGGING = {
             "level": "INFO",
             "handlers": ["simple"],
         },
+        "app": {"propagate": False, "level": "INFO", "handlers": ["aws"]},
+        "app.management.commands": {
+            "propagate": False,
+            "level": "INFO",
+            "handlers": ["simple"],
+        },
     },
 }
 

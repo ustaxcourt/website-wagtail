@@ -5,6 +5,10 @@ from app.wagtaillinkchecker.models import ScanLink
 
 from wagtail.models import Site
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -16,9 +20,13 @@ class Command(BaseCommand):
         verbosity = 2
 
         print(f"Scanning {len(pages)} pages...")
+        logger.info(f"Scanning {len(pages)} pages...")
         scan = broken_link_scan(site, verbosity, sync=True)
         total_links = ScanLink.objects.filter(scan=scan, crawled=True)
         broken_links = ScanLink.objects.filter(scan=scan, broken=True)
         print(
+            f"Found {len(total_links)} total links, with {len(broken_links)} broken links."
+        )
+        logger.info(
             f"Found {len(total_links)} total links, with {len(broken_links)} broken links."
         )

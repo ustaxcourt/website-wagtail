@@ -6,6 +6,10 @@ from django.utils.translation import gettext_lazy as _
 
 from django.utils import timezone
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @background(schedule=5)
 def check_link(link_pk, verbosity=1, get_full_result=True):
@@ -24,6 +28,8 @@ def check_link_sync(
     site = link.scan.site
     url = get_url(link.url, link.page, site, get_full_result)
     link.status_code = url.get("status_code")
+
+    logger.info(f"Checking link: {link.url} (status code: {link.status_code})")
 
     if url["error"]:
         link.broken = True
