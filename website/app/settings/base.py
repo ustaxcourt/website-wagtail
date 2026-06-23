@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     "django_filters",
     "wagtail_transfer",
     "wagtail_external_links_report",
-    "background_task",
     "app.wagtaillinkchecker",
 ]
 

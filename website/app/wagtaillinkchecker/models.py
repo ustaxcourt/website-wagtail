@@ -102,14 +102,14 @@ class ScanLink(models.Model):
         return self.page_deleted and self.page_slug
 
     def check_link(self, verbosity=1, sync=False, get_full_result=True):
-        from app.wagtaillinkchecker.tasks import check_link, check_link_sync
+        from app.wagtaillinkchecker.tasks import check_link_sync
 
         if sync:
             return check_link_sync(
                 self.pk, verbosity=verbosity, get_full_result=get_full_result
             )
 
-        check_link(self.pk, verbosity=verbosity, get_full_result=get_full_result)
+        raise NotImplementedError
 
 
 @receiver(pre_delete, sender=Page)

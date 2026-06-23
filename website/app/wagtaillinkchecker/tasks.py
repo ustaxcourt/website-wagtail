@@ -1,4 +1,3 @@
-from background_task import background
 from .scanner import get_url, clean_url
 from .models import Scan, ScanLink
 from bs4 import BeautifulSoup
@@ -9,16 +8,6 @@ from django.utils import timezone
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-@background(schedule=5)
-def check_link(link_pk, verbosity=1, get_full_result=True):
-    return check_link_sync(
-        link_pk,
-        verbosity=verbosity,
-        get_full_result=get_full_result,
-        mark_scan_complete=True,
-    )
 
 
 def check_link_sync(
