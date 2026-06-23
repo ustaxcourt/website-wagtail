@@ -69,13 +69,19 @@ def get_url(url, page, site, get_full_result):
             response = requests.head(url, verify=True, allow_redirects=True)
         data["response"] = response
     except (requests.exceptions.InvalidSchema, requests.exceptions.MissingSchema):
+        if not get_full_result:
+            return get_url(url, page, site, True)
         data["invalid_schema"] = True
         return data
     except requests.exceptions.ConnectionError:
+        if not get_full_result:
+            return get_url(url, page, site, True)
         data["error"] = True
         data["error_message"] = _("There was an error connecting to this site")
         return data
     except requests.exceptions.RequestException as e:
+        if not get_full_result:
+            return get_url(url, page, site, True)
         data["error"] = True
         data["status_code"] = response.status_code
         data["error_message"] = type(e).__name__ + ": " + str(e)
@@ -83,6 +89,8 @@ def get_url(url, page, site, get_full_result):
 
     else:
         if response.status_code not in range(100, 400):
+            if not get_full_result:
+                return get_url(url, page, site, True)
             error_message_for_status_code = HTTP_STATUS_CODES.get(response.status_code)
             data["error"] = True
             data["status_code"] = response.status_code
