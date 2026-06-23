@@ -49,7 +49,7 @@ def check_link_sync(
             link_href = anchor.get("href")
             link_href = clean_url(link_href, site)
             if verbosity > 1:
-                print(f"cleaned link_href: {link_href}")
+                logger.info(f"cleaned link_href: {link_href}")
             if link_href:
                 link_href = link_href.replace(site.root_url, domain_name)
                 new_link, created = ScanLink.objects.get_or_create(
@@ -67,7 +67,7 @@ def check_link_sync(
             image_src = image.get("src")
             image_src = clean_url(image_src, site)
             if verbosity > 1:
-                print(f"cleaned image_src: {image_src}")
+                logger.info(f"cleaned image_src: {image_src}")
             if image_src:
                 image_src = image_src.replace(site.root_url, domain_name)
                 new_link, created = ScanLink.objects.get_or_create(
