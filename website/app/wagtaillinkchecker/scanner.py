@@ -5,6 +5,9 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from . import HTTP_STATUS_CODES
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Link(Exception):
@@ -135,15 +138,12 @@ def broken_link_scan(site, verbosity=1, sync=False):
     scan = Scan.objects.create(site=site)
 
     domain_name = getattr(settings, "BASE_URL", site.root_url)
-    print(f"broken_link_scan - site.root_url: {site.root_url}")
-    print(f"broken_link_scan - domain_name: {domain_name}")
 
     try:
         for page in pages:
-            print(f"broken_link_scan - page.full_url: {page.full_url}")
             url = page.full_url.replace(site.root_url, domain_name)
             if verbosity > 1:
-                print(f"Checking {url}")
+                logger.info(f"Checking {url}")
             link, created = ScanLink.objects.get_or_create(
                 url=url, scan=scan, defaults={"page": page}
             )
