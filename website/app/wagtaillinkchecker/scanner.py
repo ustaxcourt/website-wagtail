@@ -74,7 +74,9 @@ def get_url(url, page, site, get_full_result):
     response = None
     try:
         if get_full_result:
-            response = requests.get(url, verify=True, headers=HEADERS, timeout=10)
+            response = requests.get(
+                url, verify=True, allow_redirects=True, headers=HEADERS, timeout=10
+            )
         else:
             response = requests.head(
                 url, verify=True, allow_redirects=True, headers=HEADERS, timeout=10
