@@ -3,6 +3,7 @@ from http import client
 import requests
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from . import HTTP_STATUS_CODES
 
 
@@ -116,9 +117,11 @@ def broken_link_scan(site, verbosity=1, sync=False):
     pages = site.root_page.get_descendants(inclusive=True).live().public()
     scan = Scan.objects.create(site=site)
 
+    domain_name = getattr(settings, "BASE_URL", site.root_url)
+
     try:
         for page in pages:
-            url = page.full_url
+            url = page.full_url.replace(site.root_url, domain_name)
             if verbosity > 1:
                 print(f"Checking {url}")
             link, created = ScanLink.objects.get_or_create(

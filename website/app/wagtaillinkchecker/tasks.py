@@ -3,7 +3,7 @@ from .scanner import get_url, clean_url
 from .models import Scan, ScanLink
 from bs4 import BeautifulSoup
 from django.utils.translation import gettext_lazy as _
-
+from django.conf import settings
 from django.utils import timezone
 
 
@@ -22,6 +22,7 @@ def check_link_sync(
 ):
     link = ScanLink.objects.get(pk=link_pk)
     site = link.scan.site
+    domain_name = getattr(settings, "BASE_URL", site.root_url)
     url = get_url(link.url, link.page, site, get_full_result)
     link.status_code = url.get("status_code")
 
@@ -33,7 +34,7 @@ def check_link_sync(
         link.invalid = True
         link.error_text = _("Link was invalid")
 
-    elif link.page.full_url == link.url:
+    elif link.page.full_url.replace(site.root_url, domain_name) == link.url:
         soup = BeautifulSoup(url["response"].content, "html5lib")
         anchors = soup.find_all("a")
         images = soup.find_all("img")
