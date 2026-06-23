@@ -45,6 +45,7 @@ def check_link_sync(
             if verbosity > 1:
                 print(f"cleaned link_href: {link_href}")
             if link_href:
+                link_href = link_href.replace(site.root_url, domain_name)
                 new_link, created = ScanLink.objects.get_or_create(
                     scan=link.scan, url=link_href, defaults={"page": link.page}
                 )
@@ -62,6 +63,7 @@ def check_link_sync(
             if verbosity > 1:
                 print(f"cleaned image_src: {image_src}")
             if image_src:
+                image_src = image_src.replace(site.root_url, domain_name)
                 new_link, created = ScanLink.objects.get_or_create(
                     scan=link.scan, url=image_src, defaults={"page": link.page}
                 )
