@@ -40,13 +40,6 @@ class Scan(models.Model):
     def is_finished(self):
         return self.status == self.Status.COMPLETED
 
-    def result(self):
-        return _(
-            "{0} broken links found out of {1} links".format(
-                self.broken_link_count(), self.links.count()
-            )
-        )
-
     def __str__(self):
         return "Scan - {0}".format(self.scan_started.strftime("%d/%m/%Y"))
 
@@ -65,7 +58,7 @@ class ScanLinkQuerySet(models.QuerySet):
         return self.valid().filter(crawled=True)
 
     def invalid_links(self):
-        return self.valid().filter(invalid=True)
+        return self.filter(invalid=True)
 
     def working_links(self):
         return self.valid().filter(broken=False, crawled=True)

@@ -74,10 +74,10 @@ def get_url(url, page, site, get_full_result):
     response = None
     try:
         if get_full_result:
-            response = requests.get(url, verify=True, headers=HEADERS)
+            response = requests.get(url, verify=True, headers=HEADERS, timeout=10)
         else:
             response = requests.head(
-                url, verify=True, allow_redirects=True, headers=HEADERS
+                url, verify=True, allow_redirects=True, headers=HEADERS, timeout=10
             )
         data["response"] = response
     except (requests.exceptions.InvalidSchema, requests.exceptions.MissingSchema):
@@ -95,7 +95,7 @@ def get_url(url, page, site, get_full_result):
         if not get_full_result:
             return get_url(url, page, site, True)
         data["error"] = True
-        data["status_code"] = response.status_code
+        data["status_code"] = getattr(response, "status_code", None)
         data["error_message"] = type(e).__name__ + ": " + str(e)
         return data
 

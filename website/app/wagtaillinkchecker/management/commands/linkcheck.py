@@ -16,10 +16,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         site = Site.objects.filter(is_default_site=True).first()
+        if not site:
+            logger.error("No default Wagtail Site found; aborting linkcheck.")
+            return
         pages = site.root_page.get_descendants(inclusive=True).live().public()
         verbosity = 2
 
-        logger.info(f"Scanning {len(pages)} pages...")
+        logger.info(f"Scanning {pages.count()} pages...")
         scan = broken_link_scan(site, verbosity, sync=True)
         total_links = ScanLink.objects.filter(scan=scan, crawled=True)
         broken_links = ScanLink.objects.filter(scan=scan, broken=True)

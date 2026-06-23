@@ -1,7 +1,5 @@
 __version__ = "0.1.0"
 
-default_app_config = "apps.WagtailLinkchekerAppConfig"
-
 HTTP_STATUS_CODES = {
     100: ("Continue", "Request received, please continue"),
     101: ("Switching Protocols", "Switching to new protocol; obey Upgrade header"),

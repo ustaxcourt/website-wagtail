@@ -40,7 +40,9 @@ def check_link_sync(
         link.invalid = True
         link.error_text = _("Link was invalid")
 
-    elif link.page.full_url.replace(site.root_url, domain_name) == link.url:
+    elif (
+        link.page and link.page.full_url.replace(site.root_url, domain_name) == link.url
+    ):
         soup = BeautifulSoup(url["response"].content, "html5lib")
         anchors = soup.find_all("a")
         images = soup.find_all("img")
