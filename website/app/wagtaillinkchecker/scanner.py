@@ -53,6 +53,13 @@ class Link(Exception):
         return hash(self.url)
 
 
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (compatible; USTaxCourtLinkChecker/1.0; +https://ustaxcourt.gov)"
+    )
+}
+
+
 def get_url(url, page, site, get_full_result):
     data = {
         "url": url,
@@ -64,9 +71,11 @@ def get_url(url, page, site, get_full_result):
     response = None
     try:
         if get_full_result:
-            response = requests.get(url, verify=True)
+            response = requests.get(url, verify=True, headers=HEADERS)
         else:
-            response = requests.head(url, verify=True, allow_redirects=True)
+            response = requests.head(
+                url, verify=True, allow_redirects=True, headers=HEADERS
+            )
         data["response"] = response
     except (requests.exceptions.InvalidSchema, requests.exceptions.MissingSchema):
         if not get_full_result:
