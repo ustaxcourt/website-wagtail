@@ -1,6 +1,7 @@
 """Tests for app/role_switcher/views.py"""
 
 import pytest
+from unittest.mock import MagicMock
 from django.test import RequestFactory
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -76,6 +77,7 @@ class TestSwitchRoleViewAssumeRole:
 @pytest.mark.django_db
 class TestSwitchRoleViewRevertRole:
     def test_post_revert_role_when_not_assuming_redirects(self):
+        """if user isn't assuming a role, no revert action needed and user should be redirected."""
         from app.role_switcher.views import switch_role_view
 
         user = User.objects.create_superuser(
@@ -90,6 +92,7 @@ class TestSwitchRoleViewRevertRole:
         assert response.status_code == 302
 
     def test_post_revert_role_restores_superuser(self):
+        """if the superuser is currently assuming a role, revert should restore superuser status."""
         from app.role_switcher.views import switch_role_view
 
         user = User.objects.create_user(username="admin5", password="pass")
@@ -111,3 +114,90 @@ class TestSwitchRoleViewRevertRole:
         # User restored to superuser
         user.refresh_from_db()
         assert user.is_superuser
+
+    def test_post_revert_role_restores_original_groups(self):
+        """base test: reverting role should restore old role"""
+        from app.role_switcher.views import switch_role_view
+
+        user = User.objects.create_user(username="admin6", password="pass")
+        user.is_staff = True
+        user.save()
+        group = Group.objects.create(name="OriginalGroup")
+        factory = RequestFactory()
+        request = factory.post("/switch-role/", {"revert_role": "1"})
+        request.user = user
+        request.session = {
+            "is_assuming_role": True,
+            "original_is_superuser": True,
+            "original_is_staff": True,
+            "original_groups_pks": [group.pk],
+            "assumed_role_name": "Editors",
+        }
+        _add_messages(request)
+        response = switch_role_view(request)
+        assert response.status_code == 302
+        user.refresh_from_db()
+        assert group in user.groups.all()
+
+
+@pytest.mark.django_db
+class TestSwitchRoleViewGET:
+    def test_get_request_unauthorized_user_shows_no_form(self):
+        """you can't switch roles if you aren't superuser, so the form shouldn't be shown."""
+        from app.role_switcher.views import switch_role_view
+
+        user = User.objects.create_user(username="nonadmin_get", password="pass")
+        factory = RequestFactory()
+        request = factory.get("/switch-role/")
+        request.user = user
+        request.session = {}
+        _add_messages(request)
+        from unittest.mock import patch
+
+        with patch("app.role_switcher.views.render") as mock_render:
+            mock_render.return_value = MagicMock(status_code=200)
+            switch_role_view(request)
+            ctx = mock_render.call_args[0][2]
+            assert ctx["can_initiate_new_switch"] is False
+            assert ctx["role_switch_form"] is None
+
+    def test_get_request_superuser_shows_form(self):
+        """superusers should see the role switch form."""
+        from app.role_switcher.views import switch_role_view
+        from unittest.mock import MagicMock, patch
+
+        user = User.objects.create_superuser(
+            username="admin_get2", password="pass", email="x@x.com"
+        )
+        factory = RequestFactory()
+        request = factory.get("/switch-role/")
+        request.user = user
+        request.session = {}
+        _add_messages(request)
+
+        with patch("app.role_switcher.views.render") as mock_render:
+            mock_render.return_value = MagicMock(status_code=200)
+            switch_role_view(request)
+            ctx = mock_render.call_args[0][2]
+            assert ctx["can_initiate_new_switch"] is True
+            assert ctx["role_switch_form"] is not None
+
+    def test_post_assume_role_with_invalid_form_passes_form_to_context(self):
+        """if the form is invalid, it should be passed back to the context for rendering."""
+        from app.role_switcher.views import switch_role_view
+        from unittest.mock import MagicMock, patch
+
+        user = User.objects.create_superuser(
+            username="admin_invalid", password="pass", email="inv@inv.com"
+        )
+        factory = RequestFactory()
+        request = factory.post("/switch-role/", {"assume_role": "1", "role": "99999"})
+        request.user = user
+        request.session = {}
+        _add_messages(request)
+
+        with patch("app.role_switcher.views.render") as mock_render:
+            mock_render.return_value = MagicMock(status_code=200)
+            switch_role_view(request)
+            ctx = mock_render.call_args[0][2]
+            assert ctx["role_switch_form"] is not None
