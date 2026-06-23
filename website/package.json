@@ -9,7 +9,7 @@
   "description": "",
   "dependencies": {
     "@uswds/uswds": "3.10.0",
-    "cypress-real-events": "^1.14.0"
+    "cypress-real-events": "^1.15.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.14.7",
@@ -18,7 +18,7 @@
     "@types/node": "^24.0.14",
     "@uswds/compile": "^1.2.0",
     "axe-core": "4.10.2",
-    "cypress": "^13.17.0",
+    "cypress": "^15.16.0",
     "cypress-axe": "^1.5.0",
     "typescript": "^5.7.3",
     "xlsx": "^0.18.5"
