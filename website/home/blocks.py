@@ -89,6 +89,29 @@ class QuickAccessTileBlock(blocks.StructBlock):
         template = "quick_access_tile_block.html"
 
 
+class RootRelativeURLBlock(blocks.URLBlock):
+    def clean(self, value):
+        try:
+            return super().clean(value)
+        except ValidationError:
+            if isinstance(value, str) and value.startswith("/"):
+                return value
+            raise
+
+
+class JudgeIndexQuickAccessTileBlock(QuickAccessTileBlock):
+    link = blocks.StreamBlock(
+        [
+            ("related_page", blocks.PageChooserBlock()),
+            ("external_url", RootRelativeURLBlock()),
+        ],
+        min_num=1,
+        max_num=1,
+        required=False,
+        help_text="Choose where this tile should link.",
+    )
+
+
 class QuickAccessTilesBlock(blocks.StructBlock):
     tiles_hover_enabled = blocks.BooleanBlock(
         required=False,
@@ -116,6 +139,14 @@ class QuickAccessTilesBlock(blocks.StructBlock):
         label = "Quick Access Tiles"
         icon = "grip"
         template = "quick_access_tiles_block.html"
+
+
+class JudgeIndexQuickAccessTilesBlock(QuickAccessTilesBlock):
+    tiles = blocks.ListBlock(
+        JudgeIndexQuickAccessTileBlock(),
+        required=False,
+        help_text="Add, reorder, duplicate, or remove tiles. Responsive grid: 3 desktop / 2 tablet / 1 mobile.",
+    )
 
 
 class NoCaptionTypedTableBlock(TypedTableBlock):

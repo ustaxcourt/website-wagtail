@@ -19,7 +19,7 @@ from home.models.snippets.judges import (
     RESTRICTED_ROLES,
 )
 from home.models.custom_blocks.common import custom_promote_panels
-from home.blocks import QuickAccessTilesBlock
+from home.blocks import JudgeIndexQuickAccessTilesBlock
 
 # Keep these exported for backward compatibility with __init__.py imports
 # (they are no longer used by JudgeIndex itself)
@@ -114,7 +114,7 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
     )
 
     bottom_tiles = StreamField(
-        [("quick_access_tiles", QuickAccessTilesBlock())],
+        [("quick_access_tiles", JudgeIndexQuickAccessTilesBlock())],
         blank=True,
         use_json_field=True,
         help_text="Quick-access tiles rendered below the judge card grid.",

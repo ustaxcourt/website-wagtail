@@ -17,6 +17,7 @@ from home.models.pages.judge_index import (
     SECTION_LABELS_SINGULAR,
     SECTION_LABELS_PLURAL,
 )
+from home.blocks import JudgeIndexQuickAccessTileBlock
 from home.models.snippets.judges import (
     JudgeProfile,
     JudgeCollection,
@@ -479,6 +480,20 @@ class SeedBottomTilesRevisionTest(JudgeIndexSetUpMixin):
 
         self.judge_index.refresh_from_db()
         self.assertIsNone(self.judge_index.latest_revision)
+
+
+@override_settings(**OVERRIDE)
+class JudgeIndexBottomTileValidationTest(TestCase):
+    def test_root_relative_external_url_is_valid_for_judge_index_tile(self):
+        external_url_block = (
+            JudgeIndexQuickAccessTileBlock()
+            .child_blocks["link"]
+            .child_blocks["external_url"]
+        )
+
+        cleaned_value = external_url_block.clean("/judges/private-seminar-disclosures/")
+
+        self.assertEqual(cleaned_value, "/judges/private-seminar-disclosures/")
 
 
 @override_settings(**OVERRIDE)
