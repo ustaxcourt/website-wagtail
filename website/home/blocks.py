@@ -93,6 +93,12 @@ class RootRelativeURLBlock(blocks.URLBlock):
     def clean(self, value):
         if isinstance(value, str):
             value = value.strip()
+
+        # Protocol-relative URLs (e.g. //example.com) should never be allowed
+        # for Judge Index quick-access tiles.
+        if isinstance(value, str) and value.startswith("//"):
+            raise ValidationError("Enter a valid URL.")
+
         try:
             return super().clean(value)
         except ValidationError:
