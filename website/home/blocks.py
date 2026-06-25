@@ -91,10 +91,16 @@ class QuickAccessTileBlock(blocks.StructBlock):
 
 class RootRelativeURLBlock(blocks.URLBlock):
     def clean(self, value):
+        if isinstance(value, str):
+            value = value.strip()
         try:
             return super().clean(value)
         except ValidationError:
-            if isinstance(value, str) and value.startswith("/"):
+            if (
+                isinstance(value, str)
+                and value.startswith("/")
+                and not value.startswith("//")
+            ):
                 return value
             raise
 

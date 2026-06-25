@@ -495,6 +495,17 @@ class JudgeIndexBottomTileValidationTest(TestCase):
 
         self.assertEqual(cleaned_value, "/judges/private-seminar-disclosures/")
 
+    def test_protocol_relative_external_url_is_rejected_for_judge_index_tile(self):
+        from django.core.exceptions import ValidationError
+
+        external_url_block = (
+            JudgeIndexQuickAccessTileBlock()
+            .child_blocks["link"]
+            .child_blocks["external_url"]
+        )
+        with self.assertRaises(ValidationError):
+            external_url_block.clean("//example.com/phish")
+
 
 @override_settings(**OVERRIDE)
 class DisclosureWindowTest(JudgeIndexSetUpMixin):
