@@ -10,47 +10,81 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name="PrivateSeminarDisclosureSettings",
-            fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                # CREATE TABLE IF NOT EXISTS so this is safe to run on sandboxes
+                # where the table was already created by a prior deployment.
+                migrations.RunSQL(
+                    sql="""
+                        CREATE TABLE IF NOT EXISTS "home_privateseminardisclosuresettings" (
+                            "id" serial NOT NULL PRIMARY KEY,
+                            "disclosure_years" integer NOT NULL
+                        );
+                    """,
+                    reverse_sql='DROP TABLE IF EXISTS "home_privateseminardisclosuresettings";',
+                ),
+                # ADD COLUMN IF NOT EXISTS for the same reason.
+                migrations.RunSQL(
+                    sql="""
+                        ALTER TABLE "home_judgeindex"
+                        ADD COLUMN IF NOT EXISTS "seminar_empty_text" varchar(500)
+                        NOT NULL DEFAULT 'There are no disclosures to report at this time.';
+                    """,
+                    reverse_sql='ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_empty_text";',
+                ),
+                migrations.RunSQL(
+                    sql="""
+                        ALTER TABLE "home_judgeindex"
+                        ADD COLUMN IF NOT EXISTS "seminar_intro_text" text
+                        NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.';
+                    """,
+                    reverse_sql='ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_intro_text";',
+                ),
+            ],
+            state_operations=[
+                migrations.CreateModel(
+                    name="PrivateSeminarDisclosureSettings",
+                    fields=[
+                        (
+                            "id",
+                            models.AutoField(
+                                auto_created=True,
+                                primary_key=True,
+                                serialize=False,
+                                verbose_name="ID",
+                            ),
+                        ),
+                        (
+                            "disclosure_years",
+                            models.PositiveIntegerField(
+                                default=3,
+                                help_text="Number of years a seminar disclosure remains visible on the public website. Disclosures older than this are automatically hidden. Default: 3.",
+                            ),
+                        ),
+                    ],
+                    options={
+                        "verbose_name": "Private Seminar Disclosure Settings",
+                    },
+                ),
+                migrations.AddField(
+                    model_name="judgeindex",
+                    name="seminar_empty_text",
+                    field=models.CharField(
+                        blank=True,
+                        default="There are no disclosures to report at this time.",
+                        help_text="Text displayed on the Private Seminar Disclosures page when there are no current disclosures within the configured time window.",
+                        max_length=500,
                     ),
                 ),
-                (
-                    "disclosure_years",
-                    models.PositiveIntegerField(
-                        default=3,
-                        help_text="Number of years a seminar disclosure remains visible on the public website. Disclosures older than this are automatically hidden. Default: 3.",
+                migrations.AddField(
+                    model_name="judgeindex",
+                    name="seminar_intro_text",
+                    field=wagtail.fields.RichTextField(
+                        blank=True,
+                        default="The following are private seminar disclosures submitted by judges of the United States Tax Court.",
+                        help_text="Introductory text shown at the top of the Private Seminar Disclosures page.",
                     ),
                 ),
             ],
-            options={
-                "verbose_name": "Private Seminar Disclosure Settings",
-            },
-        ),
-        migrations.AddField(
-            model_name="judgeindex",
-            name="seminar_empty_text",
-            field=models.CharField(
-                blank=True,
-                default="There are no disclosures to report at this time.",
-                help_text="Text displayed on the Private Seminar Disclosures page when there are no current disclosures within the configured time window.",
-                max_length=500,
-            ),
-        ),
-        migrations.AddField(
-            model_name="judgeindex",
-            name="seminar_intro_text",
-            field=wagtail.fields.RichTextField(
-                blank=True,
-                default="The following are private seminar disclosures submitted by judges of the United States Tax Court.",
-                help_text="Introductory text shown at the top of the Private Seminar Disclosures page.",
-            ),
         ),
     ]

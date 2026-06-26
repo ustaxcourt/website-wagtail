@@ -13,10 +13,22 @@ class Migration(migrations.Migration):
             name="navigationribbonlink",
             options={"ordering": ["sort_order"]},
         ),
-        migrations.AddField(
-            model_name="navigationribbonlink",
-            name="sort_order",
-            field=models.IntegerField(blank=True, editable=False, null=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                # ADD COLUMN IF NOT EXISTS so this is safe on sandboxes where
+                # the column was already added by a prior deployment.
+                migrations.RunSQL(
+                    sql='ALTER TABLE "home_navigationribbonlink" ADD COLUMN IF NOT EXISTS "sort_order" integer NULL;',
+                    reverse_sql='ALTER TABLE "home_navigationribbonlink" DROP COLUMN IF EXISTS "sort_order";',
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name="navigationribbonlink",
+                    name="sort_order",
+                    field=models.IntegerField(blank=True, editable=False, null=True),
+                ),
+            ],
         ),
         migrations.RunSQL(
             sql="""WITH new_values as (SELECT id, RANK() over (PARTITION BY navigation_ribbon_id ORDER BY id) as new_sort_order FROM home_navigationribbonlink) UPDATE home_navigationribbonlink SET sort_order = (SELECT new_sort_order-1 FROM new_values WHERE new_values.id = home_navigationribbonlink.id);""",
