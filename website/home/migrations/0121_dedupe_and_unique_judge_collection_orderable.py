@@ -57,8 +57,33 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(dedupe_orderables, noop),
-        migrations.AlterUniqueTogether(
-            name="judgecollectionorderable",
-            unique_together={("collection", "judge")},
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                        DO $$
+                        BEGIN
+                            IF NOT EXISTS (
+                                SELECT 1 FROM pg_constraint
+                                WHERE conname = 'home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq'
+                            ) THEN
+                                ALTER TABLE home_judgecollectionorderable
+                                ADD CONSTRAINT home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq
+                                UNIQUE (collection_id, judge_id);
+                            END IF;
+                        END $$;
+                    """,
+                    reverse_sql="""
+                        ALTER TABLE home_judgecollectionorderable
+                        DROP CONSTRAINT IF EXISTS home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AlterUniqueTogether(
+                    name="judgecollectionorderable",
+                    unique_together={("collection", "judge")},
+                ),
+            ],
         ),
     ]
