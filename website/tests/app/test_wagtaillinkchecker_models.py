@@ -3,7 +3,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from wagtail.models import Locale, Page, Site
-
+from app.wagtaillinkchecker.models import Scan, ScanLink
+from app.wagtaillinkchecker.tasks import check_link_sync
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -29,16 +30,12 @@ def _make_site():
 
 
 def _make_scan(site):
-    from app.wagtaillinkchecker.models import Scan
-
     return Scan.objects.create(site=site)
 
 
 def _make_scan_link(
     scan, url, *, broken=False, crawled=False, invalid=False, page=None
 ):
-    from app.wagtaillinkchecker.models import ScanLink
-
     return ScanLink.objects.create(
         scan=scan,
         url=url,
@@ -57,19 +54,16 @@ def _make_scan_link(
 @pytest.mark.django_db
 class TestScanIsFinished:
     def test_is_finished_returns_true_when_status_is_completed(self):
-        from app.wagtaillinkchecker.models import Scan
-
         scan = _make_scan(_make_site())
         scan.status = Scan.Status.COMPLETED
         assert scan.is_finished is True
 
     def test_is_finished_returns_false_when_status_is_running(self):
         scan = _make_scan(_make_site())
+        scan.status = Scan.Status.RUNNING
         assert scan.is_finished is False
 
     def test_is_finished_returns_false_when_status_is_failed(self):
-        from app.wagtaillinkchecker.models import Scan
-
         scan = _make_scan(_make_site())
         scan.status = Scan.Status.FAILED
         assert scan.is_finished is False
@@ -101,10 +95,31 @@ class TestScanLinkQuerySet:
             broken=True,
             crawled=True,
         )
-        return scan, working, broken, uncrawled, invalid, invalid_and_broken
+
+        broken_uncrawled = _make_scan_link(
+            scan, "https://example.com/broken-uncrawled", broken=True
+        )
+
+        return (
+            scan,
+            working,
+            broken,
+            uncrawled,
+            invalid,
+            invalid_and_broken,
+            broken_uncrawled,
+        )
 
     def test_valid_excludes_links_marked_invalid(self):
-        scan, working, broken, uncrawled, invalid, invalid_and_broken = self._setup()
+        (
+            scan,
+            working,
+            broken,
+            uncrawled,
+            invalid,
+            invalid_and_broken,
+            broken_uncrawled,
+        ) = self._setup()
         qs = scan.links.valid()
         assert invalid not in qs
         assert invalid_and_broken not in qs
@@ -117,19 +132,28 @@ class TestScanLinkQuerySet:
         assert uncrawled in qs
 
     def test_broken_links_returns_only_valid_broken_links(self):
-        scan, working, broken, uncrawled, invalid, invalid_and_broken = self._setup()
+        (
+            scan,
+            working,
+            broken,
+            uncrawled,
+            invalid,
+            invalid_and_broken,
+            broken_uncrawled,
+        ) = self._setup()
         qs = scan.links.broken_links()
         assert broken in qs
         assert working not in qs
+        assert broken_uncrawled in qs
 
     def test_broken_links_excludes_links_marked_as_invalid(self):
         """broken_links() chains through valid(), so a link with invalid=True is excluded even if broken=True."""
-        scan, *_, invalid_and_broken = self._setup()
+        scan, *_, invalid_and_broken, broken_uncrawled = self._setup()
         qs = scan.links.broken_links()
         assert invalid_and_broken not in qs
 
     def test_crawled_links_returns_valid_crawled_links(self):
-        scan, working, broken, uncrawled, invalid, _ = self._setup()
+        scan, working, broken, uncrawled, invalid, invalid_and_broken, _ = self._setup()
         qs = scan.links.crawled_links()
         assert working in qs
         assert broken in qs
@@ -137,7 +161,15 @@ class TestScanLinkQuerySet:
         assert invalid not in qs
 
     def test_invalid_links_returns_only_invalid_links(self):
-        scan, working, broken, uncrawled, invalid, invalid_and_broken = self._setup()
+        (
+            scan,
+            working,
+            broken,
+            uncrawled,
+            invalid,
+            invalid_and_broken,
+            broken_uncrawled,
+        ) = self._setup()
         qs = scan.links.invalid_links()
         assert invalid in qs
         assert invalid_and_broken in qs
@@ -145,7 +177,7 @@ class TestScanLinkQuerySet:
         assert broken not in qs
 
     def test_working_links_returns_valid_crawled_not_broken(self):
-        scan, working, broken, uncrawled, invalid, _ = self._setup()
+        scan, working, broken, uncrawled, invalid, invalid_and_broken, _ = self._setup()
         qs = scan.links.working_links()
         assert working in qs
         assert broken not in qs
@@ -166,20 +198,16 @@ class TestScanLinkQuerySet:
 
 
 class TestScanLinkPageIsDeleted:
-    def test_page_is_deleted_when_both_page_deleted_and_slug_are_set(self):
+    def test_page_is_deleted_returns_truthy_slug_when_both_are_set(self):
         # NOTE: page_is_deleted returns `self.page_deleted and self.page_slug`, so when
         # truthy the return value is the slug string, not the boolean True. Tests use
         # truthiness rather than identity to reflect actual behavior.
-        from app.wagtaillinkchecker.models import ScanLink
-
         link = ScanLink()
         link.page_deleted = True
         link.page_slug = "some-slug"
         assert link.page_is_deleted
 
     def test_page_is_not_deleted_when_page_deleted_is_false(self):
-        from app.wagtaillinkchecker.models import ScanLink
-
         link = ScanLink()
         link.page_deleted = False
         link.page_slug = "some-slug"
@@ -187,8 +215,6 @@ class TestScanLinkPageIsDeleted:
 
     def test_page_is_not_deleted_when_slug_is_none(self):
         # NOTE: returns None (not False) when slug is absent — see comment above.
-        from app.wagtaillinkchecker.models import ScanLink
-
         link = ScanLink()
         link.page_deleted = True
         link.page_slug = None
@@ -267,8 +293,6 @@ class TestCheckLinkSync:
                 "status_code": None,
             },
         ):
-            from app.wagtaillinkchecker.tasks import check_link_sync
-
             check_link_sync(link.pk)
 
         link.refresh_from_db()
@@ -284,8 +308,6 @@ class TestCheckLinkSync:
             "app.wagtaillinkchecker.tasks.get_url",
             return_value={"error": False, "invalid_schema": True},
         ):
-            from app.wagtaillinkchecker.tasks import check_link_sync
-
             check_link_sync(link.pk)
 
         link.refresh_from_db()
@@ -307,8 +329,6 @@ class TestCheckLinkSync:
                 "response": mock_resp,
             },
         ):
-            from app.wagtaillinkchecker.tasks import check_link_sync
-
             check_link_sync(link.pk)
 
         link.refresh_from_db()
@@ -316,30 +336,7 @@ class TestCheckLinkSync:
         assert link.broken is False
         assert link.invalid is False
 
-    def test_null_page_on_scan_link_does_not_raise_attribute_error(self):
-        """ScanLink with page=None must not raise AttributeError during the page-URL match check."""
-        scan = _make_scan(_make_site())
-        link = _make_scan_link(scan, "https://example.com/no-page", page=None)
-
-        mock_resp = MagicMock()
-        with patch(
-            "app.wagtaillinkchecker.tasks.get_url",
-            return_value={
-                "error": False,
-                "invalid_schema": False,
-                "response": mock_resp,
-            },
-        ):
-            from app.wagtaillinkchecker.tasks import check_link_sync
-
-            check_link_sync(link.pk)  # must not raise
-
-        link.refresh_from_db()
-        assert link.crawled is True
-
     def test_mark_scan_complete_sets_scan_status_when_all_links_crawled(self):
-        from app.wagtaillinkchecker.models import Scan
-
         scan = _make_scan(_make_site())
         link = _make_scan_link(scan, "https://example.com/only-link", page=None)
 
@@ -352,8 +349,6 @@ class TestCheckLinkSync:
                 "response": mock_resp,
             },
         ):
-            from app.wagtaillinkchecker.tasks import check_link_sync
-
             check_link_sync(link.pk, mark_scan_complete=True)
 
         scan.refresh_from_db()
