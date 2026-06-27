@@ -2,7 +2,7 @@ resource "aws_db_instance" "default" {
   identifier_prefix = "${var.environment}-"
   allocated_storage   = 10
   engine              = "postgres"
-  engine_version      = "16.8"
+  engine_version      = "16"
   instance_class      = "db.t3.micro"
   username            = "master"
   password            = var.database_password
