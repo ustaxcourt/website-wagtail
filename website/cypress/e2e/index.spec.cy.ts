@@ -73,12 +73,30 @@ describe('index page', () => {
     })
   })
 
+  it('has DAWSON login link in the header pointing to the DAWSON login page', () => {
+    cy.get('[data-testid="header-dawson-login-link"]')
+      .should('exist')
+      .and('be.visible')
+      .and('have.attr', 'href', 'https://app.dawson.ustaxcourt.gov/login')
+      .and('have.attr', 'target', '_blank')
+      .and('have.attr', 'rel', 'noopener noreferrer')
+  })
+
+  it('has DAWSON login link visible on mobile viewport', () => {
+    cy.viewport('iphone-x')
+    cy.visit('/')
+    cy.get('[data-testid="header-dawson-login-link"]')
+      .should('exist')
+      .and('be.visible')
+      .and('have.attr', 'href', 'https://app.dawson.ustaxcourt.gov/login')
+  })
+
   it('search buttons contain text or title attribute for accessibility', () => {
     cy.get('[data-testid="search-button"]').should(($button) => {
 
       expect($button).to.have.length(3) //checking that home page has three search buttons
-      expect($button.eq(0)).to.contain('Search') //test tablet search box
-      expect($button.eq(1)).to.contain('Search') //test desktop search box
+      expect($button.eq(0).attr('aria-label')).to.contain('Search') //test tablet search box (icon-only, uses aria-label)
+      expect($button.eq(1).attr('aria-label')).to.contain('Search') //test desktop search box (icon-only, uses aria-label)
       expect($button.eq(2).attr('title')).to.contain('Search') //test mobile search box
     });
   })
