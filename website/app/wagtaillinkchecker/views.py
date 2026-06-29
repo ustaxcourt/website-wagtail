@@ -95,13 +95,17 @@ def run_scan(request):
     env = {**os.environ, "DJANGO_SETTINGS_MODULE": django_settings.SETTINGS_MODULE}
 
     site = Site.find_for_request(request)
+    if Scan.objects.filter(site=site, status=Scan.Status.RUNNING).exists():
+        return redirect("wagtaillinkchecker")
     starting_scan_pk = None
     latest_scan_pk = None
     starting_scan = Scan.objects.filter(site=site).order_by("-scan_started").first()
     if starting_scan:
         starting_scan_pk = starting_scan.pk
 
-    subprocess.Popen([sys.executable, manage_py, "linkcheck"], env=env)
+    subprocess.Popen(
+        [sys.executable, manage_py, "linkcheck", "--override_setting"], env=env
+    )
     for i in range(5):
         time.sleep(
             1.0

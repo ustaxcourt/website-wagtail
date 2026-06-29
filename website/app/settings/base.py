@@ -487,3 +487,5 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
 }
 
 EXTERNAL_LINKS_REPORT_CLASS = "home.views.CustomExternalLinksReportView"
+
+LINK_CHECK_ENABLED = False

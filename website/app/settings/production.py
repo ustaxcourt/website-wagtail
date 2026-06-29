@@ -27,3 +27,5 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "search.backends.custompostgres",
     }
 }
+
+LINK_CHECK_ENABLED = True
