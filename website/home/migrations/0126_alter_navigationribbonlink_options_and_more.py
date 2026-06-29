@@ -3,6 +3,30 @@
 from django.db import migrations, models
 
 
+def add_sort_order_column(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        # Use IF NOT EXISTS so this is safe on sandboxes where the column
+        # was already added by a prior deployment.
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink"'
+            ' ADD COLUMN IF NOT EXISTS "sort_order" integer NULL'
+        )
+    else:
+        # SQLite (CI) always starts from a clean database, so plain DDL is fine.
+        # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink"'
+            ' ADD COLUMN "sort_order" integer NULL'
+        )
+
+
+def remove_sort_order_column(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink" DROP COLUMN IF EXISTS "sort_order"'
+        )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0125_fix_jcdp_page_title"),
@@ -15,11 +39,9 @@ class Migration(migrations.Migration):
         ),
         migrations.SeparateDatabaseAndState(
             database_operations=[
-                # ADD COLUMN IF NOT EXISTS so this is safe on sandboxes where
-                # the column was already added by a prior deployment.
-                migrations.RunSQL(
-                    sql='ALTER TABLE "home_navigationribbonlink" ADD COLUMN IF NOT EXISTS "sort_order" integer NULL;',
-                    reverse_sql='ALTER TABLE "home_navigationribbonlink" DROP COLUMN IF EXISTS "sort_order";',
+                migrations.RunPython(
+                    add_sort_order_column,
+                    remove_sort_order_column,
                 ),
             ],
             state_operations=[

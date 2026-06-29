@@ -4,6 +4,62 @@ import wagtail.fields
 from django.db import migrations, models
 
 
+def add_settings_table_and_columns(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        # Use IF NOT EXISTS so this is safe on sandboxes where these objects
+        # were already created by a prior deployment.
+        schema_editor.execute("""
+            CREATE TABLE IF NOT EXISTS "home_privateseminardisclosuresettings" (
+                "id" serial NOT NULL PRIMARY KEY,
+                "disclosure_years" integer NOT NULL
+            )
+        """)
+        schema_editor.execute("""
+            ALTER TABLE "home_judgeindex"
+            ADD COLUMN IF NOT EXISTS "seminar_empty_text" varchar(500)
+            NOT NULL DEFAULT 'There are no disclosures to report at this time.'
+        """)
+        schema_editor.execute("""
+            ALTER TABLE "home_judgeindex"
+            ADD COLUMN IF NOT EXISTS "seminar_intro_text" text
+            NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'
+        """)
+    else:
+        # SQLite (CI) always starts from a clean database, so plain DDL is fine.
+        # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
+        schema_editor.execute("""
+            CREATE TABLE "home_privateseminardisclosuresettings" (
+                "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+                "disclosure_years" integer unsigned NOT NULL
+            )
+        """)
+        schema_editor.execute(
+            'ALTER TABLE "home_judgeindex" ADD COLUMN "seminar_empty_text" varchar(500)'
+            " NOT NULL DEFAULT 'There are no disclosures to report at this time.'"
+        )
+        schema_editor.execute(
+            'ALTER TABLE "home_judgeindex" ADD COLUMN "seminar_intro_text" text'
+            " NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'"
+        )
+
+
+def remove_settings_table_and_columns(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        schema_editor.execute(
+            'ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_intro_text"'
+        )
+        schema_editor.execute(
+            'ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_empty_text"'
+        )
+        schema_editor.execute(
+            'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
+        )
+    else:
+        schema_editor.execute(
+            'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
+        )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0122_alter_privateseminardisclosure_id"),
@@ -12,33 +68,9 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             database_operations=[
-                # CREATE TABLE IF NOT EXISTS so this is safe to run on sandboxes
-                # where the table was already created by a prior deployment.
-                migrations.RunSQL(
-                    sql="""
-                        CREATE TABLE IF NOT EXISTS "home_privateseminardisclosuresettings" (
-                            "id" serial NOT NULL PRIMARY KEY,
-                            "disclosure_years" integer NOT NULL
-                        );
-                    """,
-                    reverse_sql='DROP TABLE IF EXISTS "home_privateseminardisclosuresettings";',
-                ),
-                # ADD COLUMN IF NOT EXISTS for the same reason.
-                migrations.RunSQL(
-                    sql="""
-                        ALTER TABLE "home_judgeindex"
-                        ADD COLUMN IF NOT EXISTS "seminar_empty_text" varchar(500)
-                        NOT NULL DEFAULT 'There are no disclosures to report at this time.';
-                    """,
-                    reverse_sql='ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_empty_text";',
-                ),
-                migrations.RunSQL(
-                    sql="""
-                        ALTER TABLE "home_judgeindex"
-                        ADD COLUMN IF NOT EXISTS "seminar_intro_text" text
-                        NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.';
-                    """,
-                    reverse_sql='ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_intro_text";',
+                migrations.RunPython(
+                    add_settings_table_and_columns,
+                    remove_settings_table_and_columns,
                 ),
             ],
             state_operations=[
