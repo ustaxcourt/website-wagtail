@@ -10,13 +10,6 @@ class SitePreferences(models.Model):
     site = models.OneToOneField(
         Site, unique=True, db_index=True, editable=False, on_delete=models.CASCADE
     )
-    automated_scanning = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Conduct automated sitewide scans for broken links, and send emails if a problem is found."
-        ),
-        verbose_name=_("Automated Scanning"),
-    )
 
 
 class Scan(models.Model):
