@@ -64,8 +64,17 @@ class Migration(migrations.Migration):
                         DO $$
                         BEGIN
                             IF NOT EXISTS (
-                                SELECT 1 FROM pg_constraint
-                                WHERE conname = 'home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq'
+                                SELECT 1
+                                FROM pg_index i
+                                JOIN pg_class t ON t.oid = i.indrelid
+                                WHERE t.relname = 'home_judgecollectionorderable'
+                                  AND i.indisunique
+                                  AND (
+                                      SELECT array_agg(a.attname ORDER BY a.attname)
+                                      FROM pg_attribute a
+                                      WHERE a.attrelid = i.indrelid
+                                        AND a.attnum = ANY(i.indkey)
+                                  ) = ARRAY['collection_id', 'judge_id']
                             ) THEN
                                 ALTER TABLE home_judgecollectionorderable
                                 ADD CONSTRAINT home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq

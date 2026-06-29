@@ -9,7 +9,7 @@ class WagtailTransferSecretKeyDetector(BasePlugin):
 
     secret_type = "Wagtail Transfer Secret Key"  # pragma: allowlist secret
 
-    # Matches: WAGTAILTRANSFER_SECRET_KEY = "some-value" or 'some-value'
+    # Matches: WAGTAILTRANSFER_SECRET_KEY = "some-value" or 'some-value'  # pragma: allowlist secret
     WAGTAIL_TRANSFER_KEY_PATTERN = re.compile(  # pragma: allowlist secret
         r"""WAGTAILTRANSFER_SECRET_KEY\s*=\s*["']([^"']{8,})["']""",
         re.IGNORECASE,
