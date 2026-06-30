@@ -96,4 +96,19 @@
             Last updated: {{ judge.last_updated_date|date:"F j, Y" }}.
         </p>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            const filters = params.get('filters');
+
+            if (filters) {
+                const backBtn = document.querySelector('.back-to-judges');
+                if (backBtn) {
+                    const backUrl = new URL(backBtn.href, window.location.origin);
+                    backUrl.searchParams.set('filters', filters);
+                    backBtn.href = backUrl.toString();
+                }
+            }
+        });
+    </script>
 {% endblock %}
