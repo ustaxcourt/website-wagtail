@@ -81,7 +81,7 @@
     }
 </style>
     <div class="grid-container padding-bottom-2 padding-top-2 judge-detail">
-        <a href="/judges" class="back-to-judges" aria-label="Back to judges"><span class="icon-chevron-left"></span> Back</a>
+        <a href="{{ back_url|default:page.url }}" class="back-to-judges" aria-label="Back to judges"><span class="icon-chevron-left"></span> Back</a>
         <h1 class="judge-name" tabindex="0">{{ judge|judge_display_name }}</h1>
         {% if judge.chambers_telephone %}
             <div class="contact-info margin-bottom-2" tabindex="0">

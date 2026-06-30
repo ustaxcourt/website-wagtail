@@ -68,9 +68,12 @@ class TestJudgeIndexJudgeDetail:
 
         page = MagicMock(spec=JudgeIndex)
         page.get_context.return_value = {}
+        page.url = "/judges/"
 
         mock_judge = MagicMock()
         mock_judge.last_name = "Smith"
+        request = MagicMock()
+        request.GET.get.return_value = ""
 
         with (
             patch(
@@ -82,17 +85,47 @@ class TestJudgeIndexJudgeDetail:
                 return_value=MagicMock(),
             ) as mock_render,
         ):
-            JudgeIndex.judge_detail(page, MagicMock(), id="1", last_name="smith")
+            JudgeIndex.judge_detail(page, request, id="1", last_name="smith")
             mock_render.assert_called_once()
+
+    def test_judge_detail_sets_back_url_with_valid_filters_only(self):
+        from home.models.pages.judge_index import JudgeIndex
+
+        page = MagicMock(spec=JudgeIndex)
+        page.get_context.return_value = {}
+        page.url = "/judges/"
+
+        mock_judge = MagicMock()
+        mock_judge.last_name = "Smith"
+        request = MagicMock()
+        request.GET.get.return_value = "senior-judges,invalid,judges"
+
+        with (
+            patch(
+                "home.models.pages.judge_index.JudgeProfile.objects.get",
+                return_value=mock_judge,
+            ),
+            patch(
+                "home.models.pages.judge_index.render",
+                return_value=MagicMock(),
+            ) as mock_render,
+        ):
+            JudgeIndex.judge_detail(page, request, id="1", last_name="smith")
+
+            _, _, context = mock_render.call_args.args
+            assert context["back_url"] == "/judges/?filters=senior-judges,judges"
 
     def test_judge_detail_raises_404_when_last_name_mismatch(self):
         from home.models.pages.judge_index import JudgeIndex
 
         page = MagicMock(spec=JudgeIndex)
         page.get_context.return_value = {}
+        page.url = "/judges/"
 
         mock_judge = MagicMock()
         mock_judge.last_name = "Smith"
+        request = MagicMock()
+        request.GET.get.return_value = ""
 
         with (
             patch(
@@ -101,7 +134,7 @@ class TestJudgeIndexJudgeDetail:
             ),
         ):
             with pytest.raises(Http404):
-                JudgeIndex.judge_detail(page, MagicMock(), id="1", last_name="jones")
+                JudgeIndex.judge_detail(page, request, id="1", last_name="jones")
 
     def test_judge_detail_raises_404_when_not_found(self):
         from home.models.pages.judge_index import JudgeIndex
