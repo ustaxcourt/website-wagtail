@@ -22,7 +22,7 @@
 .news-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 24px;
 }
 
 .news-card {
@@ -70,6 +70,10 @@
   color: var(--text-subtle);
   line-height: 20px;
   flex: 1;
+}
+
+.news-card-description p {
+  margin: 0;
 }
 
 .news-card-link {
