@@ -41,4 +41,4 @@ repos:
   rev: v1.5.0
   hooks:
     - id: detect-secrets
-      args: ['--baseline', '.secrets.baseline', '--plugin', 'website/detect_secrets_plugins/wagtail_transfer.py']
+      args: ['--baseline', '.secrets.baseline', '--plugin', 'website/detect_secrets_plugins/wagtail_transfer.py', '--plugin', 'website/detect_secrets_plugins/keywords.py']
