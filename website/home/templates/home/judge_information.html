@@ -790,17 +790,6 @@
                     titleStart.classList.add('has-breadcrumb');
                     if (announcement && userInteracted) { announcement.textContent = 'Showing ' + labels.join(' and ') + '.'; }
                 }
-
-                const filterString = Array.from(activeFilters).join(',');
-                document.querySelectorAll('.judge-card').forEach(function (card) {
-                    const cardUrl = new URL(card.href);
-                    if (activeFilters.size === 0) {
-                        cardUrl.searchParams.delete('filters');
-                    } else {
-                        cardUrl.searchParams.set('filters', filterString);
-                    }
-                    card.href = cardUrl.toString();
-                });
             }
 
             function onTitleStartClick(e) {
