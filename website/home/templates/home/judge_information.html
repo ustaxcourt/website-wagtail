@@ -671,6 +671,7 @@
                     {% for item in group.judges %}
                         <a class="judge-card"
                            href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|lower }}/"
+                                    data-base-href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|lower }}/"
                            data-testid="judge-card-{{ item.judge.id }}">
                             <span class="judge-name">{{ item.judge.display_name }}</span>
                             <span class="judge-role">{{ item.role_label }}</span>
@@ -735,6 +736,19 @@
                 window.history.pushState({filters: Array.from(filters)}, '', url.toString());
             }
 
+            function syncJudgeCardLinks() {
+                const params = new URLSearchParams();
+                if (activeFilters.size > 0) {
+                    params.set('filters', Array.from(activeFilters).join(','));
+                }
+                const query = params.toString();
+                document.querySelectorAll('.judge-card').forEach(function (card) {
+                    const baseHref = card.dataset.baseHref || card.getAttribute('href') || '';
+                    if (!baseHref) return;
+                    card.setAttribute('href', query ? baseHref + '?' + query : baseHref);
+                });
+            }
+
             function applyFilters() {
                 const sections = document.querySelectorAll('.judge-section');
                 const breadcrumb = document.getElementById('page-title-breadcrumb');
@@ -790,6 +804,8 @@
                     titleStart.classList.add('has-breadcrumb');
                     if (announcement && userInteracted) { announcement.textContent = 'Showing ' + labels.join(' and ') + '.'; }
                 }
+
+                syncJudgeCardLinks();
             }
 
             function onTitleStartClick(e) {
