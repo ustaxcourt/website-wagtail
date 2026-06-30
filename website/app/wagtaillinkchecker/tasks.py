@@ -35,6 +35,7 @@ def check_link_sync(
         soup = BeautifulSoup(url["response"].content, "html5lib")
         anchors = soup.find_all("a")
         images = soup.find_all("img")
+        divs_with_data_href = soup.find_all("div", attrs={"data-href": True})
 
         for anchor in anchors:
             link_href = anchor.get("href")
@@ -71,6 +72,25 @@ def check_link_sync(
                         get_full_result=False,
                         mark_scan_complete=mark_scan_complete,
                     )
+
+        for div_with_data_href in divs_with_data_href:
+            data_href = div_with_data_href.get("data-href")
+            data_href = clean_url(data_href, site)
+            if verbosity > 1:
+                logger.info(f"cleaned data_href: {data_href}")
+            if data_href:
+                data_href = data_href.replace(site.root_url, domain_name)
+                new_link, created = ScanLink.objects.get_or_create(
+                    scan=link.scan, url=data_href, defaults={"page": link.page}
+                )
+                if created:
+                    check_link_sync(
+                        new_link.pk,
+                        verbosity=verbosity,
+                        get_full_result=False,
+                        mark_scan_complete=mark_scan_complete,
+                    )
+
     link.crawled = True
     link.save()
 
