@@ -9,6 +9,7 @@ from home.models import (
 )
 import logging
 import datetime
+from django.conf import settings as _django_settings
 
 
 logger = logging.getLogger(__name__)
@@ -451,8 +452,6 @@ class JudgesPageInitializer(PageInitializer):
         # judges with fabricated programs and dates and would be misleading on
         # any non-local environment. Gated on ENVIRONMENT="local" (matches the
         # pattern used by other env-specific seeders in this codebase).
-        from django.conf import settings as _django_settings
-
         if getattr(_django_settings, "ENVIRONMENT", "") == "local":
             self._seed_seminar_disclosures()
         else:
@@ -579,8 +578,6 @@ class JudgesPageInitializer(PageInitializer):
             JudgeCollection.objects.update_or_create(name="Senior Special Trial Judges")
             self.update_judge_roles_and_profiles()
             # Same env gate as in create() — sample disclosures are dev-only.
-            from django.conf import settings as _django_settings
-
             if getattr(_django_settings, "ENVIRONMENT", "") == "local":
                 self._seed_seminar_disclosures()
             else:
@@ -690,7 +687,7 @@ class JudgesPageInitializer(PageInitializer):
             [
                 {
                     "type": "external_url",
-                    "value": f"{judges_page.url}private-seminar-disclosures/",
+                    "value": f"{getattr(_django_settings, 'WAGTAILADMIN_BASE_URL', '')}{judges_page.url}private-seminar-disclosures/",
                 }
             ]
             if judges_page
