@@ -4,119 +4,53 @@ import wagtail.fields
 from django.db import migrations, models
 
 
-def add_settings_table_and_columns(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
-        # Use IF NOT EXISTS so this is safe on sandboxes where these objects
-        # were already created by a prior deployment.
-        schema_editor.execute("""
-            CREATE TABLE IF NOT EXISTS "home_privateseminardisclosuresettings" (
-                "id" serial NOT NULL PRIMARY KEY,
-                "disclosure_years" integer NOT NULL
-            )
-        """)
-        schema_editor.execute("""
-            ALTER TABLE "home_judgeindex"
-            ADD COLUMN IF NOT EXISTS "seminar_empty_text" varchar(500)
-            NOT NULL DEFAULT 'There are no disclosures to report at this time.'
-        """)
-        schema_editor.execute("""
-            ALTER TABLE "home_judgeindex"
-            ADD COLUMN IF NOT EXISTS "seminar_intro_text" text
-            NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'
-        """)
-    else:
-        # SQLite (CI) always starts from a clean database, so plain DDL is fine.
-        # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
-        schema_editor.execute("""
-            CREATE TABLE "home_privateseminardisclosuresettings" (
-                "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-                "disclosure_years" integer unsigned NOT NULL
-            )
-        """)
-        schema_editor.execute(
-            'ALTER TABLE "home_judgeindex" ADD COLUMN "seminar_empty_text" varchar(500)'
-            " NOT NULL DEFAULT 'There are no disclosures to report at this time.'"
-        )
-        schema_editor.execute(
-            'ALTER TABLE "home_judgeindex" ADD COLUMN "seminar_intro_text" text'
-            " NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'"
-        )
-
-
-def remove_settings_table_and_columns(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
-        schema_editor.execute(
-            'ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_intro_text"'
-        )
-        schema_editor.execute(
-            'ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_empty_text"'
-        )
-        schema_editor.execute(
-            'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
-        )
-    else:
-        schema_editor.execute(
-            'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
-        )
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0122_alter_privateseminardisclosure_id"),
     ]
 
     operations = [
-        migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunPython(
-                    add_settings_table_and_columns,
-                    remove_settings_table_and_columns,
-                ),
-            ],
-            state_operations=[
-                migrations.CreateModel(
-                    name="PrivateSeminarDisclosureSettings",
-                    fields=[
-                        (
-                            "id",
-                            models.AutoField(
-                                auto_created=True,
-                                primary_key=True,
-                                serialize=False,
-                                verbose_name="ID",
-                            ),
-                        ),
-                        (
-                            "disclosure_years",
-                            models.PositiveIntegerField(
-                                default=3,
-                                help_text="Number of years a seminar disclosure remains visible on the public website. Disclosures older than this are automatically hidden. Default: 3.",
-                            ),
-                        ),
-                    ],
-                    options={
-                        "verbose_name": "Private Seminar Disclosure Settings",
-                    },
-                ),
-                migrations.AddField(
-                    model_name="judgeindex",
-                    name="seminar_empty_text",
-                    field=models.CharField(
-                        blank=True,
-                        default="There are no disclosures to report at this time.",
-                        help_text="Text displayed on the Private Seminar Disclosures page when there are no current disclosures within the configured time window.",
-                        max_length=500,
+        migrations.CreateModel(
+            name="PrivateSeminarDisclosureSettings",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
-                migrations.AddField(
-                    model_name="judgeindex",
-                    name="seminar_intro_text",
-                    field=wagtail.fields.RichTextField(
-                        blank=True,
-                        default="The following are private seminar disclosures submitted by judges of the United States Tax Court.",
-                        help_text="Introductory text shown at the top of the Private Seminar Disclosures page.",
+                (
+                    "disclosure_years",
+                    models.PositiveIntegerField(
+                        default=3,
+                        help_text="Number of years a seminar disclosure remains visible on the public website. Disclosures older than this are automatically hidden. Default: 3.",
                     ),
                 ),
             ],
+            options={
+                "verbose_name": "Private Seminar Disclosure Settings",
+            },
+        ),
+        migrations.AddField(
+            model_name="judgeindex",
+            name="seminar_empty_text",
+            field=models.CharField(
+                blank=True,
+                default="There are no disclosures to report at this time.",
+                help_text="Text displayed on the Private Seminar Disclosures page when there are no current disclosures within the configured time window.",
+                max_length=500,
+            ),
+        ),
+        migrations.AddField(
+            model_name="judgeindex",
+            name="seminar_intro_text",
+            field=wagtail.fields.RichTextField(
+                blank=True,
+                default="The following are private seminar disclosures submitted by judges of the United States Tax Court.",
+                help_text="Introductory text shown at the top of the Private Seminar Disclosures page.",
+            ),
         ),
     ]
