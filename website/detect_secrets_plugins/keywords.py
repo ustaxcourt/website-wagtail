@@ -35,8 +35,7 @@ class BroadKeywordDetector(BasePlugin):
     )
 
     def analyze_string(self, line: str, **kwargs: Any) -> Generator[str, None, None]:
-        match = self.PATTERN.search(line)
-        if match:
+        for match in self.PATTERN.finditer(line):
             yield match.group(1)
 
     def json(self) -> dict[str, Any]:

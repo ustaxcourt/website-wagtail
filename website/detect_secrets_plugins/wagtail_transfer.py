@@ -16,8 +16,7 @@ class WagtailTransferSecretKeyDetector(BasePlugin):
     )
 
     def analyze_string(self, line: str, **kwargs: Any) -> Generator[str, None, None]:
-        match = self.WAGTAIL_TRANSFER_KEY_PATTERN.search(line)
-        if match:
+        for match in self.WAGTAIL_TRANSFER_KEY_PATTERN.finditer(line):
             yield match.group(1)
 
     def json(self) -> dict[str, Any]:
