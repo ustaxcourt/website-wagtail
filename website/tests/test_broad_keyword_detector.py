@@ -1,9 +1,17 @@
+import io
+
 import pytest
 
 from detect_secrets_plugins.keywords import BroadKeywordDetector
 
 FAKE_SECRET = "hardcoded-secret-value"  # pragma: allowlist secret
 FAKE_SECRET_2 = "another-hardcoded-secret"  # pragma: allowlist secret
+
+
+class _NamedIO(io.StringIO):
+    """StringIO with a name attribute so analyze_file can reference the filename."""
+
+    name = "<test>"
 
 
 @pytest.fixture
@@ -13,6 +21,10 @@ def detector():
 
 def _caught(detector, line):
     return list(detector.analyze_string(line))
+
+
+def _caught_in_file(detector, content):
+    return list(detector.analyze_file(_NamedIO(content)))
 
 
 # --- Patterns that must be caught ---
@@ -106,3 +118,27 @@ def test_ignores_lowercase_auth_token(detector):
 
 def test_secret_type(detector):
     assert detector.secret_type == "Broad Secret Keyword"  # pragma: allowlist secret
+
+
+# --- Multi-line detection ---
+
+
+def test_detects_triple_quoted_multiline(detector):
+    content = f'KEY = """\n{FAKE_SECRET}\n"""'  # pragma: allowlist secret
+    results = _caught_in_file(detector, content)
+    assert len(results) == 1
+    assert results[0].secret_value == FAKE_SECRET  # pragma: allowlist secret
+    assert results[0].type == detector.secret_type  # pragma: allowlist secret
+
+
+def test_detects_parenthesized_multiline(detector):
+    content = f'TOKEN = (\n    "{FAKE_SECRET}"\n)'  # pragma: allowlist secret
+    results = _caught_in_file(detector, content)
+    assert len(results) == 1
+    assert results[0].secret_value == FAKE_SECRET  # pragma: allowlist secret
+
+
+def test_no_duplicate_for_single_line(detector):
+    content = f'KEY = "{FAKE_SECRET}"'  # pragma: allowlist secret
+    results = _caught_in_file(detector, content)
+    assert len(results) == 1

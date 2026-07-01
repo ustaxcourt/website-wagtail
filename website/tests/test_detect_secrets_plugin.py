@@ -1,6 +1,14 @@
+import io
+
 import pytest
 
 from detect_secrets_plugins.wagtail_transfer import WagtailTransferSecretKeyDetector
+
+
+class _NamedIO(io.StringIO):
+    """StringIO with a name attribute so analyze_file can reference the filename."""
+
+    name = "<test>"
 
 
 @pytest.fixture
@@ -10,6 +18,10 @@ def detector():
 
 def _secrets(detector, line):
     return list(detector.analyze_string(line))
+
+
+def _secrets_in_file(detector, content):
+    return list(detector.analyze_file(_NamedIO(content)))
 
 
 def test_detects_double_quoted_secret(detector):
@@ -68,3 +80,22 @@ def test_secret_type(detector):
         detector.secret_type
         == "Wagtail Transfer Secret Key"  # pragma: allowlist secret
     )
+
+
+# --- Multi-line detection ---
+
+
+def test_detects_triple_quoted_multiline(detector):
+    content = 'WAGTAILTRANSFER_SECRET_KEY = """\nmy-super-secret-key\n"""'  # pragma: allowlist secret
+    results = _secrets_in_file(detector, content)
+    assert len(results) == 1
+    assert results[0].secret_value == "my-super-secret-key"  # pragma: allowlist secret
+    assert results[0].type == detector.secret_type  # pragma: allowlist secret
+
+
+def test_no_duplicate_for_single_line(detector):
+    content = (
+        'WAGTAILTRANSFER_SECRET_KEY = "my-super-secret-key"'  # pragma: allowlist secret
+    )
+    results = _secrets_in_file(detector, content)
+    assert len(results) == 1
