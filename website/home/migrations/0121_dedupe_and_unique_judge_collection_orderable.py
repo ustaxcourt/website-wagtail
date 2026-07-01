@@ -50,6 +50,55 @@ def noop(apps, schema_editor):
     pass
 
 
+def add_unique_constraint_if_not_exists(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        # Check by columns rather than constraint name so this is safe even if
+        # the constraint was created manually under a different name.
+        schema_editor.execute("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM pg_index i
+                    JOIN pg_class t ON t.oid = i.indrelid
+                    WHERE t.relname = 'home_judgecollectionorderable'
+                      AND i.indisunique
+                      AND (
+                          SELECT array_agg(a.attname ORDER BY a.attname)
+                          FROM pg_attribute a
+                          WHERE a.attrelid = i.indrelid
+                            AND a.attnum = ANY(i.indkey)
+                      ) = ARRAY['collection_id', 'judge_id']
+                ) THEN
+                    ALTER TABLE home_judgecollectionorderable
+                    ADD CONSTRAINT home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq
+                    UNIQUE (collection_id, judge_id);
+                END IF;
+            END $$;
+        """)
+    else:
+        # SQLite: CREATE UNIQUE INDEX IF NOT EXISTS is cross-version safe.
+        schema_editor.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS"
+            ' "home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"'
+            ' ON "home_judgecollectionorderable" ("collection_id", "judge_id")'
+        )
+
+
+def drop_unique_constraint(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE home_judgecollectionorderable"
+            " DROP CONSTRAINT IF EXISTS"
+            " home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"
+        )
+    else:
+        schema_editor.execute(
+            "DROP INDEX IF EXISTS"
+            ' "home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"'
+        )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0120_seed_judge_index_bottom_tiles"),
@@ -57,8 +106,18 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(dedupe_orderables, noop),
-        migrations.AlterUniqueTogether(
-            name="judgecollectionorderable",
-            unique_together={("collection", "judge")},
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunPython(
+                    add_unique_constraint_if_not_exists,
+                    drop_unique_constraint,
+                ),
+            ],
+            state_operations=[
+                migrations.AlterUniqueTogether(
+                    name="judgecollectionorderable",
+                    unique_together={("collection", "judge")},
+                ),
+            ],
         ),
     ]

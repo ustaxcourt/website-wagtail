@@ -3,6 +3,30 @@
 from django.db import migrations, models
 
 
+def add_sort_order_column(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        # Use IF NOT EXISTS so this is safe on sandboxes where the column
+        # was already added by a prior deployment.
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink"'
+            ' ADD COLUMN IF NOT EXISTS "sort_order" integer NULL'
+        )
+    else:
+        # SQLite (CI) always starts from a clean database, so plain DDL is fine.
+        # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink"'
+            ' ADD COLUMN "sort_order" integer NULL'
+        )
+
+
+def remove_sort_order_column(apps, schema_editor):
+    if schema_editor.connection.vendor == "postgresql":
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink" DROP COLUMN IF EXISTS "sort_order"'
+        )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0125_fix_jcdp_page_title"),
@@ -13,10 +37,20 @@ class Migration(migrations.Migration):
             name="navigationribbonlink",
             options={"ordering": ["sort_order"]},
         ),
-        migrations.AddField(
-            model_name="navigationribbonlink",
-            name="sort_order",
-            field=models.IntegerField(blank=True, editable=False, null=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunPython(
+                    add_sort_order_column,
+                    remove_sort_order_column,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name="navigationribbonlink",
+                    name="sort_order",
+                    field=models.IntegerField(blank=True, editable=False, null=True),
+                ),
+            ],
         ),
         migrations.RunSQL(
             sql="""WITH new_values as (SELECT id, RANK() over (PARTITION BY navigation_ribbon_id ORDER BY id) as new_sort_order FROM home_navigationribbonlink) UPDATE home_navigationribbonlink SET sort_order = (SELECT new_sort_order-1 FROM new_values WHERE new_values.id = home_navigationribbonlink.id);""",
