@@ -77,7 +77,7 @@ def add_unique_constraint_if_not_exists(apps, schema_editor):
                 END IF;
             END $$;
         """)
-    elif vendor == "sqlite3":
+    elif vendor == "sqlite":
         # CREATE UNIQUE INDEX IF NOT EXISTS is cross-version safe on SQLite.
         schema_editor.execute(
             "CREATE UNIQUE INDEX IF NOT EXISTS"
@@ -96,7 +96,7 @@ def drop_unique_constraint(apps, schema_editor):
             " DROP CONSTRAINT IF EXISTS"
             " home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"
         )
-    elif vendor == "sqlite3":
+    elif vendor == "sqlite":
         schema_editor.execute(
             "DROP INDEX IF EXISTS"
             ' "home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"'

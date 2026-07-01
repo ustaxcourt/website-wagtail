@@ -12,7 +12,7 @@ def add_sort_order_column(apps, schema_editor):
             'ALTER TABLE "home_navigationribbonlink"'
             ' ADD COLUMN IF NOT EXISTS "sort_order" integer NULL'
         )
-    elif vendor == "sqlite3":
+    elif vendor == "sqlite":
         # SQLite (CI) always starts from a clean database, so plain DDL is fine.
         # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
         schema_editor.execute(
@@ -29,7 +29,7 @@ def remove_sort_order_column(apps, schema_editor):
         schema_editor.execute(
             'ALTER TABLE "home_navigationribbonlink" DROP COLUMN IF EXISTS "sort_order"'
         )
-    elif vendor == "sqlite3":
+    elif vendor == "sqlite":
         schema_editor.execute(
             'ALTER TABLE "home_navigationribbonlink" DROP COLUMN "sort_order"'
         )

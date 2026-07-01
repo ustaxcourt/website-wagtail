@@ -26,7 +26,7 @@ def add_settings_table_and_columns(apps, schema_editor):
             ADD COLUMN IF NOT EXISTS "seminar_intro_text" text
             NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'
         """)
-    elif vendor == "sqlite3":
+    elif vendor == "sqlite":
         # SQLite (CI) always starts from a clean database, so plain DDL is fine.
         # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
         schema_editor.execute("""
@@ -59,7 +59,7 @@ def remove_settings_table_and_columns(apps, schema_editor):
         schema_editor.execute(
             'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
         )
-    elif vendor == "sqlite3":
+    elif vendor == "sqlite":
         schema_editor.execute(
             'ALTER TABLE "home_judgeindex" DROP COLUMN "seminar_intro_text"'
         )
