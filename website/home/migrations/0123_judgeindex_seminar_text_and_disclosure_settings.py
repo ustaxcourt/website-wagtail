@@ -5,13 +5,15 @@ from django.db import migrations, models
 
 
 def add_settings_table_and_columns(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
         # Use IF NOT EXISTS so this is safe on sandboxes where these objects
         # were already created by a prior deployment.
+        # CHECK constraint mirrors PositiveIntegerField's non-negative invariant.
         schema_editor.execute("""
             CREATE TABLE IF NOT EXISTS "home_privateseminardisclosuresettings" (
                 "id" serial NOT NULL PRIMARY KEY,
-                "disclosure_years" integer NOT NULL
+                "disclosure_years" integer NOT NULL CHECK (disclosure_years >= 0)
             )
         """)
         schema_editor.execute("""
@@ -24,13 +26,13 @@ def add_settings_table_and_columns(apps, schema_editor):
             ADD COLUMN IF NOT EXISTS "seminar_intro_text" text
             NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'
         """)
-    else:
+    elif vendor == "sqlite3":
         # SQLite (CI) always starts from a clean database, so plain DDL is fine.
         # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
         schema_editor.execute("""
             CREATE TABLE "home_privateseminardisclosuresettings" (
                 "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-                "disclosure_years" integer unsigned NOT NULL
+                "disclosure_years" integer NOT NULL CHECK (disclosure_years >= 0)
             )
         """)
         schema_editor.execute(
@@ -41,10 +43,13 @@ def add_settings_table_and_columns(apps, schema_editor):
             'ALTER TABLE "home_judgeindex" ADD COLUMN "seminar_intro_text" text'
             " NOT NULL DEFAULT 'The following are private seminar disclosures submitted by judges of the United States Tax Court.'"
         )
+    else:
+        raise NotImplementedError(f"Unsupported database vendor: {vendor}")
 
 
 def remove_settings_table_and_columns(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
         schema_editor.execute(
             'ALTER TABLE "home_judgeindex" DROP COLUMN IF EXISTS "seminar_intro_text"'
         )
@@ -54,10 +59,18 @@ def remove_settings_table_and_columns(apps, schema_editor):
         schema_editor.execute(
             'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
         )
-    else:
+    elif vendor == "sqlite3":
+        schema_editor.execute(
+            'ALTER TABLE "home_judgeindex" DROP COLUMN "seminar_intro_text"'
+        )
+        schema_editor.execute(
+            'ALTER TABLE "home_judgeindex" DROP COLUMN "seminar_empty_text"'
+        )
         schema_editor.execute(
             'DROP TABLE IF EXISTS "home_privateseminardisclosuresettings"'
         )
+    else:
+        raise NotImplementedError(f"Unsupported database vendor: {vendor}")
 
 
 class Migration(migrations.Migration):

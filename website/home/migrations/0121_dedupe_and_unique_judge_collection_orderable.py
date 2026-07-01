@@ -51,7 +51,8 @@ def noop(apps, schema_editor):
 
 
 def add_unique_constraint_if_not_exists(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
         # Check by columns rather than constraint name so this is safe even if
         # the constraint was created manually under a different name.
         schema_editor.execute("""
@@ -76,27 +77,32 @@ def add_unique_constraint_if_not_exists(apps, schema_editor):
                 END IF;
             END $$;
         """)
-    else:
-        # SQLite: CREATE UNIQUE INDEX IF NOT EXISTS is cross-version safe.
+    elif vendor == "sqlite3":
+        # CREATE UNIQUE INDEX IF NOT EXISTS is cross-version safe on SQLite.
         schema_editor.execute(
             "CREATE UNIQUE INDEX IF NOT EXISTS"
             ' "home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"'
             ' ON "home_judgecollectionorderable" ("collection_id", "judge_id")'
         )
+    else:
+        raise NotImplementedError(f"Unsupported database vendor: {vendor}")
 
 
 def drop_unique_constraint(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
         schema_editor.execute(
             "ALTER TABLE home_judgecollectionorderable"
             " DROP CONSTRAINT IF EXISTS"
             " home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"
         )
-    else:
+    elif vendor == "sqlite3":
         schema_editor.execute(
             "DROP INDEX IF EXISTS"
             ' "home_judgecollectionorde_collection_id_judge_id_c8fb48d9_uniq"'
         )
+    else:
+        raise NotImplementedError(f"Unsupported database vendor: {vendor}")
 
 
 class Migration(migrations.Migration):

@@ -4,27 +4,37 @@ from django.db import migrations, models
 
 
 def add_sort_order_column(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
         # Use IF NOT EXISTS so this is safe on sandboxes where the column
         # was already added by a prior deployment.
         schema_editor.execute(
             'ALTER TABLE "home_navigationribbonlink"'
             ' ADD COLUMN IF NOT EXISTS "sort_order" integer NULL'
         )
-    else:
+    elif vendor == "sqlite3":
         # SQLite (CI) always starts from a clean database, so plain DDL is fine.
         # ADD COLUMN IF NOT EXISTS is not supported in the SQLite version on CI runners.
         schema_editor.execute(
             'ALTER TABLE "home_navigationribbonlink"'
             ' ADD COLUMN "sort_order" integer NULL'
         )
+    else:
+        raise NotImplementedError(f"Unsupported database vendor: {vendor}")
 
 
 def remove_sort_order_column(apps, schema_editor):
-    if schema_editor.connection.vendor == "postgresql":
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
         schema_editor.execute(
             'ALTER TABLE "home_navigationribbonlink" DROP COLUMN IF EXISTS "sort_order"'
         )
+    elif vendor == "sqlite3":
+        schema_editor.execute(
+            'ALTER TABLE "home_navigationribbonlink" DROP COLUMN "sort_order"'
+        )
+    else:
+        raise NotImplementedError(f"Unsupported database vendor: {vendor}")
 
 
 class Migration(migrations.Migration):
