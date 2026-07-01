@@ -28,6 +28,17 @@ def test_detects_single_quoted_secret(detector):
     ]  # pragma: allowlist secret
 
 
+def test_detects_multiple_secrets_on_same_line(detector):
+    line = (
+        'WAGTAILTRANSFER_SECRET_KEY = "my-super-secret-key"; '  # pragma: allowlist secret
+        'WAGTAILTRANSFER_SECRET_KEY = "another-secret-value"'  # pragma: allowlist secret
+    )
+    assert _secrets(detector, line) == [
+        "my-super-secret-key",
+        "another-secret-value",
+    ]  # pragma: allowlist secret
+
+
 def test_no_match_on_env_var_lookup(detector):
     line = 'WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSFER_SECRET_KEY")'
     assert _secrets(detector, line) == []

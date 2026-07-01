@@ -3,6 +3,7 @@ import pytest
 from detect_secrets_plugins.keywords import BroadKeywordDetector
 
 FAKE_SECRET = "hardcoded-secret-value"  # pragma: allowlist secret
+FAKE_SECRET_2 = "another-hardcoded-secret"  # pragma: allowlist secret
 
 
 @pytest.fixture
@@ -56,6 +57,17 @@ def test_detects_compound_access_token(detector):
 def test_detects_compound_oauth_token(detector):
     assert _caught(detector, f'OAUTH_TOKEN = "{FAKE_SECRET}"') == [
         FAKE_SECRET
+    ]  # pragma: allowlist secret
+
+
+def test_detects_multiple_secrets_on_same_line(detector):
+    line = (
+        f'ACCESS_TOKEN = "{FAKE_SECRET}"; '  # pragma: allowlist secret
+        f'REFRESH_TOKEN = "{FAKE_SECRET_2}"'  # pragma: allowlist secret
+    )
+    assert _caught(detector, line) == [
+        FAKE_SECRET,
+        FAKE_SECRET_2,
     ]  # pragma: allowlist secret
 
 
