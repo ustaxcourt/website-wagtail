@@ -1,11 +1,18 @@
 import io
+from pathlib import Path
 
 import pytest
+from detect_secrets.core.scan import scan_file
+from detect_secrets.settings import transient_settings
 
 from detect_secrets_plugins.keywords import BroadKeywordDetector
 
 FAKE_SECRET = "hardcoded-secret-value"  # pragma: allowlist secret
 FAKE_SECRET_2 = "another-hardcoded-secret"  # pragma: allowlist secret
+
+_PLUGIN_FILE = (
+    Path(__file__).resolve().parent.parent / "detect_secrets_plugins" / "keywords.py"
+)
 
 
 class _NamedIO(io.StringIO):
@@ -142,3 +149,57 @@ def test_no_duplicate_for_single_line(detector):
     content = f'KEY = "{FAKE_SECRET}"'  # pragma: allowlist secret
     results = _caught_in_file(detector, content)
     assert len(results) == 1
+
+
+# --- Real pipeline (what pre-commit / CI actually invoke) ---
+#
+# detect-secrets' scan pipeline (`scan_file`/`scan_diff`) only ever calls a
+# plugin's `analyze_line`/`analyze_string`; it never calls `analyze_file`.
+# `_caught_in_file` above calls `analyze_file` directly, so it doesn't prove
+# the multi-line detection actually runs during a real scan. These tests
+# go through `detect_secrets.core.scan.scan_file`, the same entry point
+# `detect-secrets-hook` uses, to check that.
+
+
+def test_triple_quoted_multiline_secret_caught_by_real_scan(tmp_path):
+    target = tmp_path / "settings.py"
+    target.write_text(f'KEY = """\n{FAKE_SECRET}\n"""\n')  # pragma: allowlist secret
+
+    with transient_settings(
+        {
+            "plugins_used": [
+                {"name": "BroadKeywordDetector", "path": f"file://{_PLUGIN_FILE}"}
+            ]
+        }
+    ):
+        results = list(scan_file(str(target)))
+
+    assert results, (
+        "BroadKeywordDetector.analyze_file() detects triple-quoted multi-line secrets, "
+        "but detect-secrets never calls analyze_file() during a real scan — only "
+        "analyze_line()/analyze_string(). This secret is silently missed by "
+        "`detect-secrets-hook` (the command pre-commit/CI actually run)."
+    )
+
+
+def test_parenthesized_multiline_secret_caught_by_real_scan(tmp_path):
+    target = tmp_path / "settings.py"
+    target.write_text(
+        f'TOKEN = (\n    "{FAKE_SECRET}"\n)\n'
+    )  # pragma: allowlist secret
+
+    with transient_settings(
+        {
+            "plugins_used": [
+                {"name": "BroadKeywordDetector", "path": f"file://{_PLUGIN_FILE}"}
+            ]
+        }
+    ):
+        results = list(scan_file(str(target)))
+
+    assert results, (
+        "BroadKeywordDetector.analyze_file() detects parenthesized multi-line secrets, "
+        "but detect-secrets never calls analyze_file() during a real scan — only "
+        "analyze_line()/analyze_string(). This secret is silently missed by "
+        "`detect-secrets-hook` (the command pre-commit/CI actually run)."
+    )
