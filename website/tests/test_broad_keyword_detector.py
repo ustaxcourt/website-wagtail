@@ -1,7 +1,7 @@
-import io
 from pathlib import Path
 
 import pytest
+from detect_secrets.core.plugins.util import get_mapping_from_secret_type_to_class
 from detect_secrets.core.scan import scan_file
 from detect_secrets.settings import transient_settings
 
@@ -15,12 +15,6 @@ _PLUGIN_FILE = (
 )
 
 
-class _NamedIO(io.StringIO):
-    """StringIO with a name attribute so analyze_file can reference the filename."""
-
-    name = "<test>"
-
-
 @pytest.fixture
 def detector():
     return BroadKeywordDetector()
@@ -30,8 +24,28 @@ def _caught(detector, line):
     return list(detector.analyze_string(line))
 
 
-def _caught_in_file(detector, content):
-    return list(detector.analyze_file(_NamedIO(content)))
+def _scan(tmp_path, content):
+    """Scan `content` through the real detect-secrets pipeline (scan_file),
+    the same entry point `detect-secrets-hook` uses - not just the plugin's
+    own analyze_string/analyze_line in isolation."""
+    target = tmp_path / "settings.py"
+    target.write_text(content)
+
+    # detect-secrets caches the custom-plugin class mapping (keyed by
+    # module contents, not by config) across `transient_settings` calls, so
+    # a different test file configuring a different custom plugin earlier
+    # in the run can leave a stale mapping. Not an issue for the real
+    # pre-commit hook (single process, all plugins loaded together once).
+    get_mapping_from_secret_type_to_class.cache_clear()
+
+    with transient_settings(
+        {
+            "plugins_used": [
+                {"name": "BroadKeywordDetector", "path": f"file://{_PLUGIN_FILE}"}
+            ]
+        }
+    ):
+        return list(scan_file(str(target)))
 
 
 # --- Patterns that must be caught ---
@@ -127,79 +141,50 @@ def test_secret_type(detector):
     assert detector.secret_type == "Broad Secret Keyword"  # pragma: allowlist secret
 
 
-# --- Multi-line detection ---
-
-
-def test_detects_triple_quoted_multiline(detector):
-    content = f'KEY = """\n{FAKE_SECRET}\n"""'  # pragma: allowlist secret
-    results = _caught_in_file(detector, content)
-    assert len(results) == 1
-    assert results[0].secret_value == FAKE_SECRET  # pragma: allowlist secret
-    assert results[0].type == detector.secret_type  # pragma: allowlist secret
-
-
-def test_detects_parenthesized_multiline(detector):
-    content = f'TOKEN = (\n    "{FAKE_SECRET}"\n)'  # pragma: allowlist secret
-    results = _caught_in_file(detector, content)
-    assert len(results) == 1
-    assert results[0].secret_value == FAKE_SECRET  # pragma: allowlist secret
-
-
-def test_no_duplicate_for_single_line(detector):
-    content = f'KEY = "{FAKE_SECRET}"'  # pragma: allowlist secret
-    results = _caught_in_file(detector, content)
-    assert len(results) == 1
-
-
-# --- Real pipeline (what pre-commit / CI actually invoke) ---
+# --- Multi-line detection, via the real detect-secrets pipeline ---
 #
 # detect-secrets' scan pipeline (`scan_file`/`scan_diff`) only ever calls a
-# plugin's `analyze_line`/`analyze_string`; it never calls `analyze_file`.
-# `_caught_in_file` above calls `analyze_file` directly, so it doesn't prove
-# the multi-line detection actually runs during a real scan. These tests
-# go through `detect_secrets.core.scan.scan_file`, the same entry point
-# `detect-secrets-hook` uses, to check that.
+# plugin's `analyze_line`, one physical line at a time. There is no "whole
+# file" hook a plugin can implement, so multi-line detection has to work
+# through the `context` (CodeSnippet) that `analyze_line` optionally
+# receives - see BroadKeywordDetector.analyze_line. These tests go through
+# `detect_secrets.core.scan.scan_file`, the same entry point
+# `detect-secrets-hook` uses, rather than calling plugin internals directly,
+# so they actually prove secrets are caught in a real scan/commit.
 
 
-def test_triple_quoted_multiline_secret_caught_by_real_scan(tmp_path):
-    target = tmp_path / "settings.py"
-    target.write_text(f'KEY = """\n{FAKE_SECRET}\n"""\n')  # pragma: allowlist secret
-
-    with transient_settings(
-        {
-            "plugins_used": [
-                {"name": "BroadKeywordDetector", "path": f"file://{_PLUGIN_FILE}"}
-            ]
-        }
-    ):
-        results = list(scan_file(str(target)))
-
-    assert results, (
-        "BroadKeywordDetector.analyze_file() detects triple-quoted multi-line secrets, "
-        "but detect-secrets never calls analyze_file() during a real scan — only "
-        "analyze_line()/analyze_string(). This secret is silently missed by "
-        "`detect-secrets-hook` (the command pre-commit/CI actually run)."
-    )
-
-
-def test_parenthesized_multiline_secret_caught_by_real_scan(tmp_path):
-    target = tmp_path / "settings.py"
-    target.write_text(
-        f'TOKEN = (\n    "{FAKE_SECRET}"\n)\n'
+def test_detects_triple_quoted_multiline(tmp_path):
+    content = f'KEY = """\n{FAKE_SECRET}\n"""\n'  # pragma: allowlist secret
+    results = _scan(tmp_path, content)
+    assert len(results) == 1
+    assert results[0].secret_value == FAKE_SECRET  # pragma: allowlist secret
+    assert (
+        results[0].type == BroadKeywordDetector.secret_type
     )  # pragma: allowlist secret
 
-    with transient_settings(
-        {
-            "plugins_used": [
-                {"name": "BroadKeywordDetector", "path": f"file://{_PLUGIN_FILE}"}
-            ]
-        }
-    ):
-        results = list(scan_file(str(target)))
 
-    assert results, (
-        "BroadKeywordDetector.analyze_file() detects parenthesized multi-line secrets, "
-        "but detect-secrets never calls analyze_file() during a real scan — only "
-        "analyze_line()/analyze_string(). This secret is silently missed by "
-        "`detect-secrets-hook` (the command pre-commit/CI actually run)."
+def test_detects_parenthesized_multiline(tmp_path):
+    content = f'TOKEN = (\n    "{FAKE_SECRET}"\n)\n'  # pragma: allowlist secret
+    results = _scan(tmp_path, content)
+    assert len(results) == 1
+    assert results[0].secret_value == FAKE_SECRET  # pragma: allowlist secret
+
+
+def test_no_duplicate_for_single_line(tmp_path):
+    content = f'KEY = "{FAKE_SECRET}"\n'  # pragma: allowlist secret
+    results = _scan(tmp_path, content)
+    assert len(results) == 1
+
+
+def test_no_duplicate_across_overlapping_context_windows(tmp_path):
+    # Two multi-line secrets close enough together to fall in each other's
+    # context window - each must be reported exactly once, not once per
+    # line it overlaps with.
+    content = (
+        f'KEY = """\n{FAKE_SECRET}\n"""\n'  # pragma: allowlist secret
+        f'TOKEN = (\n    "{FAKE_SECRET_2}"\n)\n'  # pragma: allowlist secret
     )
+    results = _scan(tmp_path, content)
+    secret_values = {r.secret_value for r in results}
+    assert secret_values == {FAKE_SECRET, FAKE_SECRET_2}  # pragma: allowlist secret
+    assert len(results) == 2
