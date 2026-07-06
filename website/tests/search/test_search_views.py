@@ -265,3 +265,277 @@ class TestExtractTextFromStreamfieldSearch:
         block = SimpleNamespace(block_type="questionanswers", value=[qa_entry])
         result = extract_text_from_streamfield([block])
         assert "Source answer text" in result
+
+    def test_questionanswers_answer_dict_with_rich_text(self):
+        """Branch: isinstance(qa['answer'], dict) and 'rich_text' in qa['answer']."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        rich_text_obj = SimpleNamespace(source="Rich text content")
+        qa_entry = {"question": "Q?", "answer": {"rich_text": rich_text_obj}}
+        block = SimpleNamespace(block_type="questionanswers", value=[qa_entry])
+        result = extract_text_from_streamfield([block])
+        assert "Rich text content" in result
+
+    def test_value_is_list_recurses(self):
+        """Branch: isinstance(value, list) - lines 63-64."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        inner_block = SimpleNamespace(block_type="text", value="nested text")
+        block = SimpleNamespace(block_type="container", value=[inner_block])
+        result = extract_text_from_streamfield([block])
+        assert "nested text" in result
+
+    def test_empty_stream_value_returns_empty_string(self):
+        """Branch: not stream_value - line 25-26."""
+        from search.views import extract_text_from_streamfield
+
+        assert extract_text_from_streamfield([]) == ""
+        assert extract_text_from_streamfield(None) == ""
+
+    def test_value_is_dict_with_string_values(self):
+        """Branch: isinstance(value, dict) with str values - lines 53-62."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        block = SimpleNamespace(block_type="data", value={"key": "string value"})
+        result = extract_text_from_streamfield([block])
+        assert "string value" in result
+
+    def test_value_is_dict_with_list_value_recurses(self):
+        """Branch: isinstance(v, list) in dict loop - line 58-60."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        inner_block = SimpleNamespace(block_type="text", value="list in dict")
+        block = SimpleNamespace(block_type="data", value={"items": [inner_block]})
+        result = extract_text_from_streamfield([block])
+        assert "list in dict" in result
+
+
+@pytest.mark.django_db
+class TestGetSearchSnippet:
+    """Test missing branches in get_search_snippet."""
+
+    def test_uses_search_description_when_present(self):
+        from search.views import get_search_snippet
+
+        page = MagicMock()
+        page.specific.search_description = "My meta description"
+        result = get_search_snippet(page)
+        assert result == "My meta description"
+
+    def test_falls_back_to_body_str(self):
+        """Branch: isinstance(body, str) - line 91."""
+        from search.views import get_search_snippet
+        from types import SimpleNamespace
+
+        page = MagicMock()
+        page.specific = SimpleNamespace(
+            search_description=None,
+            body="Plain text body content here.",
+        )
+        result = get_search_snippet(page)
+        assert "Plain text body" in result
+
+    def test_falls_back_to_intro_when_no_body(self):
+        """Branch: hasattr(specific_page, 'intro') fallback - lines 94-95."""
+        from search.views import get_search_snippet
+        from types import SimpleNamespace
+
+        page = MagicMock()
+        page.specific = SimpleNamespace(
+            search_description=None,
+            intro="Intro text here.",
+        )
+        result = get_search_snippet(page)
+        assert "Intro text here" in result
+
+    def test_returns_empty_string_when_no_content(self):
+        from search.views import get_search_snippet
+        from types import SimpleNamespace
+
+        page = MagicMock()
+        page.specific = SimpleNamespace(search_description=None)
+        result = get_search_snippet(page)
+        assert result == ""
+
+    def test_falls_back_to_release_entries_when_present(self):
+        """Branch: hasattr(specific_page, 'release_entries') - line 85-86."""
+        from search.views import get_search_snippet
+        from types import SimpleNamespace
+
+        specific = SimpleNamespace(
+            search_description=None,
+            body="some body",
+            release_entries="<p>Release entry text</p>",
+        )
+        page = MagicMock()
+        page.specific = specific
+        result = get_search_snippet(page)
+        assert "Release entry text" in result
+
+    def test_body_with_stream_data_attr(self):
+        """Branch: hasattr(body, 'stream_data') or hasattr(body, 'blocks') - line 89-90."""
+        from search.views import get_search_snippet
+        from types import SimpleNamespace
+
+        class IterableWithStreamData:
+            stream_data = []
+
+            def __iter__(self):
+                return iter([])
+
+            def __bool__(self):
+                return True
+
+        specific = SimpleNamespace(
+            search_description=None,
+            body=IterableWithStreamData(),
+        )
+        page = MagicMock()
+        page.specific = specific
+        result = get_search_snippet(page)
+        assert isinstance(result, str)
+
+    def test_body_not_a_recognized_type_falls_through(self):
+        """Branch: body is not str/StreamValue/stream_data → line 91->94 (falls to intro check)."""
+        from search.views import get_search_snippet
+        from types import SimpleNamespace
+
+        specific = SimpleNamespace(
+            search_description=None,
+            body=42,
+            intro="Intro from fallback",
+        )
+        page = MagicMock()
+        page.specific = specific
+        result = get_search_snippet(page)
+        assert "Intro from fallback" in result
+
+
+@pytest.mark.django_db
+class TestExtractTextFromStreamfieldBranches:
+    """Additional branch coverage for extract_text_from_streamfield."""
+
+    def test_qa_not_a_dict_is_skipped(self):
+        """Branch: isinstance(qa, dict) is False - 32->31."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        block = SimpleNamespace(block_type="questionanswers", value=["not a dict"])
+        result = extract_text_from_streamfield([block])
+        assert result == ""
+
+    def test_qa_dict_without_question_key(self):
+        """Branch: 'question' not in qa - 33->35."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        qa_entry = {"answer": "Some answer"}
+        block = SimpleNamespace(block_type="questionanswers", value=[qa_entry])
+        result = extract_text_from_streamfield([block])
+        assert "Some answer" in result
+
+    def test_qa_dict_without_answer_key(self):
+        """Branch: 'answer' not in qa - 35->31."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        qa_entry = {"question": "Some question?"}
+        block = SimpleNamespace(block_type="questionanswers", value=[qa_entry])
+        result = extract_text_from_streamfield([block])
+        assert "Some question?" in result
+
+    def test_qa_answer_none_of_known_types(self):
+        """Branch: answer is not str, not rich_text dict, not has source - 43->31."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        qa_entry = {"question": "Q?", "answer": 42}
+        block = SimpleNamespace(block_type="questionanswers", value=[qa_entry])
+        result = extract_text_from_streamfield([block])
+        assert "Q?" in result
+
+    def test_value_with_stream_data_recurses(self):
+        """Branch: hasattr(value, 'stream_data') - line 45-48."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        inner = SimpleNamespace(block_type="text", value="nested content")
+
+        class IterableStreamData(list):
+            stream_data = True
+
+        nested_stream = IterableStreamData([inner])
+        block = SimpleNamespace(block_type="nested", value=nested_stream)
+        result = extract_text_from_streamfield([block])
+        assert "nested content" in result
+
+    def test_dict_value_with_multiple_items(self):
+        """Branch: multiple dict items to cover 61->54 arc."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        block = SimpleNamespace(
+            block_type="data",
+            value={"key1": "value one", "key2": "value two"},
+        )
+        result = extract_text_from_streamfield([block])
+        assert "value one" in result
+        assert "value two" in result
+
+    def test_multiple_blocks_with_list_values(self):
+        """Multiple blocks to cover 63->28 arc (list value then next block)."""
+        from search.views import extract_text_from_streamfield
+        from types import SimpleNamespace
+
+        inner = SimpleNamespace(block_type="text", value="in list")
+        block1 = SimpleNamespace(block_type="list_block", value=[inner])
+        block2 = SimpleNamespace(block_type="text", value="after list")
+        result = extract_text_from_streamfield([block1, block2])
+        assert "in list" in result
+        assert "after list" in result
+
+
+@pytest.mark.django_db
+class TestSearchViewPromotionNoSnippet:
+    """Cover line 142->147: promotion with no organic snippet."""
+
+    def _make_request(self, query="tax"):
+        from django.test import RequestFactory
+
+        factory = RequestFactory()
+        return factory.get("/search/", {"query": query})
+
+    def test_promotion_without_organic_snippet_does_not_update(self):
+        """Organic result has no search_snippet → doesn't update promotion description."""
+        from search.views import search
+
+        organic = MagicMock()
+        organic.title = "Tax Info"
+        organic.pk = 10
+        del organic.search_snippet
+
+        promotion = MagicMock()
+        promotion.page = MagicMock()
+        promotion.page.id = 10
+        promotion.page.pk = 10
+
+        request = self._make_request()
+        with patch("search.views.Page") as mock_page_cls:
+            mock_page_cls.objects.live.return_value.search.return_value = [organic]
+            with patch("search.views.JudgeProfile") as mock_judge:
+                mock_judge.objects.filter.return_value.filter.return_value = []
+                with patch("search.views.Query") as mock_query_cls:
+                    mock_query_cls.get.return_value = MagicMock()
+                    with patch("search.views.SearchPromotion") as mock_promo:
+                        mock_promo.objects.filter.return_value.select_related.return_value = [
+                            promotion
+                        ]
+                        with patch("search.views.get_search_snippet", return_value=""):
+                            with patch("search.views.TemplateResponse") as mock_tr:
+                                mock_tr.return_value = MagicMock(status_code=200)
+                                search(request)
+                                mock_tr.assert_called_once()

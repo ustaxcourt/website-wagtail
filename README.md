@@ -76,6 +76,15 @@ brew install pre-commit
 pre-commit install # do this at project root.
 ```
 
+##### Updating `.secrets.baseline`
+
+If `detect-secrets` flags a value that's a legitimate false positive (e.g. a local
+dev fixture or test key), allowlist it by updating the baseline in place:
+
+```shell
+detect-secrets scan --baseline .secrets.baseline
+```
+
 ### Setup development environment.
 
 ```shell
