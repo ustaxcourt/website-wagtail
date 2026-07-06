@@ -1,1 +1,1 @@
-kEy = "some-hardcoded-value"
+RANDOM_SETTING = "some-hardcoded-value"
