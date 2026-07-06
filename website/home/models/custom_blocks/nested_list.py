@@ -4,6 +4,7 @@ from wagtail.images.blocks import ImageBlock
 LIST_TYPE_CHOICES = [
     ("ordered", "Ordered List"),
     ("unordered", "Unordered List"),
+    ("checkbox", "Checkbox List"),
 ]
 
 LIST_TYPE_BLOCK = blocks.ChoiceBlock(

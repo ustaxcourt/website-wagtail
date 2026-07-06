@@ -3,11 +3,16 @@
 {% load wagtailimages_tags %}
 {% if list_type == 'ordered' %}
     <ol class="nested-list">
+    {% elif list_type == 'checkbox' %}
+        <ul class="nested-list checkbox-list">
     {% else %}
         <ul class="nested-list">
         {% endif %}
         {% for item in items %}
             <li>
+                {% if list_type == 'checkbox' %}
+                    <input type="checkbox" {% if item.checked %}checked{% endif %} disabled>
+                {% endif %}
                 {% if item.text %}{{ item.text|richtext }}{% endif %}
                 {% if item.image %}
                     {% picture item.image format-jpeg width-1000 loading="lazy" %}
