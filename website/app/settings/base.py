@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "django_filters",
     "wagtail_transfer",
     "wagtail_external_links_report",
+    "app.wagtaillinkchecker",
 ]
 
 MIDDLEWARE = [
@@ -438,6 +439,12 @@ LOGGING = {
             "level": "INFO",
             "handlers": ["simple"],
         },
+        "app": {"propagate": False, "level": "INFO", "handlers": ["aws"]},
+        "app.management.commands": {
+            "propagate": False,
+            "level": "INFO",
+            "handlers": ["simple"],
+        },
     },
 }
 
@@ -480,3 +487,5 @@ WAGTAILTRANSFER_LOOKUP_FIELDS = {
 }
 
 EXTERNAL_LINKS_REPORT_CLASS = "home.views.CustomExternalLinksReportView"
+
+LINK_CHECK_ENABLED = False
