@@ -193,7 +193,10 @@ def purge_cache_for_snippet_related_pages(request, instance):
     affected_prefixes = path_map.get(snippet_type, ["/"])
     affected_pages = []
     for prefix in affected_prefixes:
-        pages = Page.objects.live().filter(url_path__startswith=prefix)
+        if len(affected_pages) > FULL_SITE_PURGE_PAGE_THRESHOLD:
+            break
+        remaining = FULL_SITE_PURGE_PAGE_THRESHOLD + 1 - len(affected_pages)
+        pages = Page.objects.live().filter(url_path__startswith=prefix)[:remaining]
         affected_pages.extend(pages)
 
     if not affected_pages:
@@ -203,8 +206,9 @@ def purge_cache_for_snippet_related_pages(request, instance):
     if len(affected_pages) > FULL_SITE_PURGE_PAGE_THRESHOLD:
         purge_cloudflare_root()
         logger.info(
-            f"Snippet type '{snippet_type}' affected {len(affected_pages)} pages; "
-            "purged CloudFront cache for all pages using wildcard /* instead"
+            f"Snippet type '{snippet_type}' affected more than "
+            f"{FULL_SITE_PURGE_PAGE_THRESHOLD} pages; purged CloudFront cache "
+            "for all pages using wildcard /* instead"
         )
         return
 

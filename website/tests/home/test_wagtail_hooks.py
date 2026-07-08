@@ -120,8 +120,8 @@ class TestPurgeCacheForSnippetRelatedPages:
 
         with patch("home.wagtail_hooks.Page") as mock_page:
             mock_page.objects.live.return_value.filter.return_value = [
-                MagicMock()
-            ] * 250
+                MagicMock() for _ in range(250)
+            ]
             with patch("home.wagtail_hooks.purge_cloudflare_root") as mock_purge_root:
                 with patch(
                     "home.wagtail_hooks.purge_pages_from_cache"
@@ -159,9 +159,9 @@ class TestPurgeCacheForSnippetRelatedPages:
         instance.__class__.__name__ = "Banner"
 
         with patch("home.wagtail_hooks.Page") as mock_page:
-            mock_page.objects.live.return_value.filter.return_value = [MagicMock()] * (
-                FULL_SITE_PURGE_PAGE_THRESHOLD + 1
-            )
+            mock_page.objects.live.return_value.filter.return_value = [
+                MagicMock() for _ in range(FULL_SITE_PURGE_PAGE_THRESHOLD + 1)
+            ]
             with patch("home.wagtail_hooks.purge_cloudflare_root") as mock_purge_root:
                 with patch(
                     "home.wagtail_hooks.purge_pages_from_cache"
