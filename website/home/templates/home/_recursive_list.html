@@ -11,7 +11,7 @@
         {% for item in items %}
             <li>
                 {% if list_type == 'checkbox' %}
-                    <input type="checkbox" {% if item.checked %}checked{% endif %} disabled>
+                    <input type="checkbox">
                 {% endif %}
                 {% if item.text %}{{ item.text|richtext }}{% endif %}
                 {% if item.image %}

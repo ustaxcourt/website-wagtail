@@ -26,6 +26,7 @@ def create_nested_list_block(max_depth=5, current_depth=1):
     # Base structure that's common at all levels
     list_item_blocks = [
         ("text", blocks.RichTextBlock(required=False)),
+        ("subtext", blocks.RichTextBlock(required=False)),
         ("image", ImageBlock(required=False)),
     ]
 
