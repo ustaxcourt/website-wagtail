@@ -107,7 +107,8 @@ class TestProtectSpecialJudgeRoles:
 
 class TestPurgeCacheForSnippetRelatedPages:
     def test_navigation_menu_triggers_root_purge(self):
-        """NavigationMenu snippets trigger a full-wildcard cache purge instead of page-level purge."""
+        """NavigationMenu snippets map to '/' which matches every page, so a
+        full-wildcard cache purge is used instead of enumerating every page."""
         from home.wagtail_hooks import purge_cache_for_snippet_related_pages
 
         request = MagicMock()
@@ -117,11 +118,21 @@ class TestPurgeCacheForSnippetRelatedPages:
 
         instance = NavigationMenu()
 
-        with patch("home.wagtail_hooks.purge_cloudflare_root") as mock_purge:
-            purge_cache_for_snippet_related_pages(request, instance)
-        mock_purge.assert_called_once()
+        with patch("home.wagtail_hooks.Page") as mock_page:
+            mock_page.objects.live.return_value.filter.return_value = [
+                MagicMock()
+            ] * 250
+            with patch("home.wagtail_hooks.purge_cloudflare_root") as mock_purge_root:
+                with patch(
+                    "home.wagtail_hooks.purge_pages_from_cache"
+                ) as mock_purge_pages:
+                    purge_cache_for_snippet_related_pages(request, instance)
+        mock_purge_root.assert_called_once()
+        mock_purge_pages.assert_not_called()
 
     def test_unknown_snippet_type_uses_root_prefix(self):
+        """Unmapped snippet types fall back to '/', but with a small affected
+        page count the cheaper scoped purge is still used."""
         from home.wagtail_hooks import purge_cache_for_snippet_related_pages
 
         request = MagicMock()
@@ -133,6 +144,49 @@ class TestPurgeCacheForSnippetRelatedPages:
             with patch("home.wagtail_hooks.purge_pages_from_cache") as mock_purge:
                 purge_cache_for_snippet_related_pages(request, instance)
                 mock_purge.assert_called_once()
+
+    def test_large_affected_page_set_uses_wildcard_purge(self):
+        """Regardless of snippet type, once the affected page count exceeds the
+        threshold, a single wildcard purge is used instead of purging pages
+        individually (CloudFront bills per invalidation path)."""
+        from home.wagtail_hooks import (
+            purge_cache_for_snippet_related_pages,
+            FULL_SITE_PURGE_PAGE_THRESHOLD,
+        )
+
+        request = MagicMock()
+        instance = MagicMock()
+        instance.__class__.__name__ = "Banner"
+
+        with patch("home.wagtail_hooks.Page") as mock_page:
+            mock_page.objects.live.return_value.filter.return_value = [MagicMock()] * (
+                FULL_SITE_PURGE_PAGE_THRESHOLD + 1
+            )
+            with patch("home.wagtail_hooks.purge_cloudflare_root") as mock_purge_root:
+                with patch(
+                    "home.wagtail_hooks.purge_pages_from_cache"
+                ) as mock_purge_pages:
+                    purge_cache_for_snippet_related_pages(request, instance)
+        mock_purge_root.assert_called_once()
+        mock_purge_pages.assert_not_called()
+
+    def test_private_seminar_disclosure_scoped_to_judges_prefix(self):
+        """PrivateSeminarDisclosure only affects judge pages, so it should be
+        scoped rather than falling back to a full-site purge."""
+        from home.wagtail_hooks import purge_cache_for_snippet_related_pages
+
+        request = MagicMock()
+        instance = MagicMock()
+        instance.__class__.__name__ = "PrivateSeminarDisclosure"
+
+        with patch("home.wagtail_hooks.Page") as mock_page:
+            mock_page.objects.live.return_value.filter.return_value = [MagicMock()]
+            with patch("home.wagtail_hooks.purge_pages_from_cache") as mock_purge:
+                purge_cache_for_snippet_related_pages(request, instance)
+        mock_page.objects.live.return_value.filter.assert_called_once_with(
+            url_path__startswith="/home/judges/"
+        )
+        mock_purge.assert_called_once()
 
     def test_no_affected_pages_does_not_purge(self):
         from home.wagtail_hooks import purge_cache_for_snippet_related_pages
