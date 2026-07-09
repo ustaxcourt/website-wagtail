@@ -129,6 +129,12 @@
             margin-top: 1rem;
         }
 
+        .nested-list.checkbox-list .list-item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .checkbox-list {
             display: flex;
             flex-direction: column;
@@ -137,7 +143,7 @@
         }
         .checkbox-list li {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
 
             background-color: #FAFAFA;
@@ -150,6 +156,12 @@
         .checkbox-list li p{
             margin: 0;
         }
+        .checkbox-list li p:first-child {
+            color: #1B1B1B;
+        }
+        .checkbox-list li p:nth-child(2) {
+            color: #565C65;
+        }
         .checkbox-list input[type="checkbox"] {
             /* The code below is necessary in order to change the color of the checkbox border */
             appearance: none;
@@ -160,7 +172,7 @@
             height: 20px;
             border: 2px solid #CCCCCC;
             border-radius: 3px;
-            {% comment %} cursor: pointer; /* Recommended for better UX */ {% endcomment %}
+            cursor: pointer;
         }
         input[type="checkbox"]:checked {
             background-color: #2684ff;

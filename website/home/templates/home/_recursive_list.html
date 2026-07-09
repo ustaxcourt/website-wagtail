@@ -4,6 +4,7 @@
 {% if list_type == 'ordered' %}
     <ol class="nested-list">
     {% elif list_type == 'checkbox' %}
+
         <ul class="nested-list checkbox-list">
     {% else %}
         <ul class="nested-list">
@@ -13,7 +14,10 @@
                 {% if list_type == 'checkbox' %}
                     <input type="checkbox">
                 {% endif %}
-                {% if item.text %}{{ item.text|richtext }}{% endif %}
+                <div class="list-item-content">
+                    {% if item.text %}{{ item.text|richtext }}{% endif %}
+                    {% if item.subtext %}{{ item.subtext|richtext }}{% endif %}
+                </div>
                 {% if item.image %}
                     {% picture item.image format-jpeg width-1000 loading="lazy" %}
                 {% endif %}
