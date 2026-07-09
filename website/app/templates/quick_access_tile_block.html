@@ -55,7 +55,14 @@
 
   .quick-access-tile.icon-desktop_top_mobile_left h2 {
     order: 2;
+  }
+
+  .quick-access-tile.icon-desktop_top_mobile_left .link-with-description {
     margin: 0 0 12px 0;
+  }
+
+  .quick-access-tile.icon-desktop_top_mobile_left .link-without-description {
+    margin: 0 0 0 0;
   }
 
   .quick-access-tile.icon-desktop_top_mobile_left .tile-description {
@@ -198,14 +205,29 @@
     }
 
     .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
-      margin: 0 0 12px 0;
       grid-column: 1;
       order: unset;
+    }
+
+    .quick-access-tile.icon-desktop_top_mobile_left .tile-icon.icon-with-description {
+      margin: 0 0 12px 0;
+    }
+
+    .quick-access-tile.icon-desktop_top_mobile_left .tile-icon.icon-without-description {
+      margin: 0 0 0 0;
     }
 
     .quick-access-tile.icon-desktop_top_mobile_left h2 {
       grid-column: 2;
       order: unset;
+      margin: 8px 0 0 0;
+    }
+
+    .quick-access-tile.icon-desktop_top_mobile_left .link-with-description {
+      margin: 8px 0 0 0;
+    }
+
+    .quick-access-tile.icon-desktop_top_mobile_left .link-without-description {
       margin: 8px 0 0 0;
     }
 
@@ -304,11 +326,11 @@
               <div style="pointer-events: none;" class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
                 <div class="tile-content">
                   {% if value.icon %}
-                    <div class="tile-icon" aria-hidden="true">
+                    <div class="tile-icon {% if value.description %}icon-with-description{% else %}icon-without-description{% endif %}" aria-hidden="true">
                       {% include_svg value.icon.svg_file %}
                     </div>
                   {% endif %}
-                  <h2 aria-hidden="true">{{ value.title }}</h2>
+                  <h2 aria-hidden="true" class="{% if value.description %}link-with-description{% else %}link-without-description{% endif %}">{{ value.title }}</h2>
                   <div class="tile-description" aria-hidden="true">
                     {{ value.description|richtext }}
                   </div>
@@ -328,11 +350,11 @@
               <div style="pointer-events: none;" class="quick-access-tile {% if tiles_hover_enabled %}hover-enabled{% endif %} icon-{{ icon_position }} align-{{ value.content_alignment }}">
                 <div class="tile-content">
                   {% if value.icon %}
-                    <div class="tile-icon" aria-hidden="true">
+                    <div class="tile-icon {% if value.description %}icon-with-description{% else %}icon-without-description{% endif %}" aria-hidden="true">
                       {% include_svg value.icon.svg_file %}
                     </div>
                   {% endif %}
-                  <h2 aria-hidden="true">{{ value.title }}</h2>
+                  <h2 aria-hidden="true" class="{% if value.description %}link-with-description{% else %}link-without-description{% endif %}">{{ value.title }}</h2>
                   <div class="tile-description" aria-hidden="true">
                     {{ value.description|richtext }}
                   </div>
@@ -349,11 +371,11 @@
     <div class="quick-access-tile icon-{{ icon_position }} align-{{ value.content_alignment }}">
       <div class="tile-content">
         {% if value.icon %}
-          <div class="tile-icon" aria-hidden="true">
+          <div class="tile-icon {% if value.description %}icon-with-description{% else %}icon-without-description{% endif %}" aria-hidden="true">
             {% include_svg value.icon.svg_file %}
           </div>
         {% endif %}
-        <h2 aria-hidden="true">{{ value.title }}</h2>
+        <h2 aria-hidden="true" class="{% if value.description %}link-with-description{% else %}link-without-description{% endif %}">{{ value.title }}</h2>
         <div class="tile-description" aria-hidden="true">
           {{ value.description|richtext }}
         </div>
