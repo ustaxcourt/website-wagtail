@@ -451,7 +451,13 @@ _BASE_BLOCK_TYPES = [
 
 class AnchorPageBlock(blocks.StructBlock):
     breadcrumb_title = blocks.CharBlock(required=True, help_text="Button text")
-    body = blocks.StreamBlock(_BASE_BLOCK_TYPES, required=False)
+    body = blocks.StreamBlock(
+        _BASE_BLOCK_TYPES
+        + [
+            ("quick_access_tiles", QuickAccessTilesBlock()),
+        ],
+        required=False,
+    )
 
 
 class CardTileBlock(blocks.StructBlock):
