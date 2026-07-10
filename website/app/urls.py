@@ -107,6 +107,7 @@ urlpatterns = [
         name="definitions_search",
     ),
     path("wagtail-transfer/", include(wagtailtransfer_urls)),
+    path("wagtaillinkchecker/", include("app.wagtaillinkchecker.urls")),
 ]
 
 # Redirects localhost:8000/admin to local-login

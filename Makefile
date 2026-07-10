@@ -225,7 +225,7 @@ test-e2e-aws:
 cypress-open-aws:
 	@$(MAKE) -C website cypress-open-aws aws_env="$(aws_env)" sandbox_name="$(sandbox_name)" base_url="$(base_url)" secret_id="$(secret_id)" region="$(region)" spec="$(spec)" browser="$(browser)" args="$(args)" admin_username="$(admin_username)" admin_password="$(admin_password)"
 
-.PHONY: run reset resetdb makemigrations migrate check pytest
+.PHONY: run reset resetdb makemigrations migrate check pytest update-baseline
 
 run:
 	@$(MAKE) -C website run
@@ -247,6 +247,20 @@ check:
 
 pytest:
 	@$(MAKE) -C website pytest
+
+update-baseline:
+	@echo "Regenerating .secrets.baseline with repo-relative plugin paths..."
+	@source .venv/bin/activate && detect-secrets scan \
+		--plugin website/detect_secrets_plugins/wagtail_transfer.py \
+		--plugin website/detect_secrets_plugins/keywords.py \
+		> .secrets.baseline
+	@source .venv/bin/activate && python3 -c "\
+import json, re; \
+d = json.load(open('.secrets.baseline')); \
+[p.update({'path': re.sub(r'^file://.*website-wagtail/', 'file://', p['path'])}) for p in d['plugins_used'] if 'path' in p]; \
+json.dump(d, open('.secrets.baseline', 'w'), indent=2); \
+open('.secrets.baseline', 'a').write('\n')"
+	@echo "Done. Stage and commit .secrets.baseline if it changed."
 
 aws-cypress-set-credentials:
 	@ADMIN_USERNAME_VALUE="$(or $(ADMIN_USERNAME),$(admin_username))"; \

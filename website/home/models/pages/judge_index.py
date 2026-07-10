@@ -222,6 +222,18 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
             judge = JudgeProfile.objects.get(id=id)
             context = self.get_context(request)
             context["judge"] = judge
+            # Preserve only valid judge-type filters when returning to the
+            # Judge Information page from a biography.
+            raw_filters = request.GET.get("filters", "")
+            valid_filters = set(FILTER_KEYS.values())
+            selected_filters = [
+                token
+                for token in raw_filters.split(",")
+                if token and token in valid_filters
+            ]
+            context["back_url"] = self.url
+            if selected_filters:
+                context["back_url"] = f"{self.url}?filters={','.join(selected_filters)}"
             if judge.last_name.lower() != last_name:
                 raise Http404("Judge not found")
             return render(request, "home/judge_detail.html", context)

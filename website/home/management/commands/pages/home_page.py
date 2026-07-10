@@ -79,6 +79,10 @@ class HomePageInitializer(PageInitializer):
         site = Site.objects.filter(is_default_site=True).first()
         if site:
             site.root_page = homepage
+            base_url = getattr(settings, "BASE_URL", "")
+            if "127.0.0.1:8000" in base_url or "localhost:8000" in base_url:
+                site.hostname = "localhost"
+                site.port = 8000
             site.save()
             logger.info("Updated default site root to the new Home page.")
 
