@@ -153,6 +153,12 @@
             border-left: 3px solid #E0E0E0;
             border-radius: 6px;
         }
+        .checkbox-list li.has-subtext {
+            {% comment %} flex-direction: column; {% endcomment %}
+            align-items: flex-start;
+            background-color: inherit;
+            border: none;
+        }
         .checkbox-list li p{
             margin: 0;
         }
@@ -173,6 +179,9 @@
             border: 2px solid #CCCCCC;
             border-radius: 3px;
             cursor: pointer;
+        }
+        .checkbox-list li.has-subtext input[type="checkbox"] {
+            border: 2px solid #71767A;
         }
         input[type="checkbox"]:checked {
             background-color: #2684ff;
