@@ -3,20 +3,19 @@
 {% load wagtailimages_tags %}
 {% if list_type == 'ordered' %}
     <ol class="nested-list">
-    {% elif list_type == 'checkbox' %}
-
-        <ul class="nested-list checkbox-list">
+    {% elif list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
+        <ul class="nested-list checkbox-list{% if list_type == 'checkbox_with_subtext' %} checkbox-list-with-subtext{% endif %}">
     {% else %}
         <ul class="nested-list">
         {% endif %}
         {% for item in items %}
-            <li {%if item.subtext%}class="has-subtext"{% endif %}>
-                {% if list_type == 'checkbox' %}
+            <li {% if list_type == 'checkbox_with_subtext' and item.subtext %}class="has-subtext"{% endif %}>
+                {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
                     <input type="checkbox">
                 {% endif %}
                 <div class="list-item-content">
                     {% if item.text %}{{ item.text|richtext }}{% endif %}
-                    {% if item.subtext %}{{ item.subtext|richtext }}{% endif %}
+                    {% if list_type == 'checkbox_with_subtext' and item.subtext %}{{ item.subtext|richtext }}{% endif %}
                 </div>
                 {% if item.image %}
                     {% picture item.image format-jpeg width-1000 loading="lazy" %}

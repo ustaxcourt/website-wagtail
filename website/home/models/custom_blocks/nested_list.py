@@ -5,11 +5,38 @@ LIST_TYPE_CHOICES = [
     ("ordered", "Ordered List"),
     ("unordered", "Unordered List"),
     ("checkbox", "Checkbox List"),
+    ("checkbox_with_subtext", "Checkbox with Subtext"),
 ]
 
 LIST_TYPE_BLOCK = blocks.ChoiceBlock(
     choices=LIST_TYPE_CHOICES, required=False, default="ordered"
 )
+
+
+class NestedListBlock(blocks.StructBlock):
+    def __init__(self, item_block, *args, **kwargs):
+        super().__init__(
+            [
+                ("list_type", LIST_TYPE_BLOCK),
+                ("items", blocks.ListBlock(item_block, default=[])),
+            ],
+            *args,
+            **kwargs,
+        )
+
+    def clean(self, value):
+        cleaned_data = super().clean(value)
+
+        if cleaned_data.get("list_type") != "checkbox_with_subtext":
+            subtext_block = self.child_blocks["items"].child_block.child_blocks[
+                "subtext"
+            ]
+            empty_subtext = subtext_block.to_python("")
+            for item in cleaned_data.get("items", []):
+                if "subtext" in item:
+                    item["subtext"] = empty_subtext
+
+        return cleaned_data
 
 
 def create_nested_list_block(max_depth=5, current_depth=1):
@@ -42,16 +69,7 @@ def create_nested_list_block(max_depth=5, current_depth=1):
             )
         )
 
-    return blocks.StructBlock(
-        [
-            ("list_type", LIST_TYPE_BLOCK),
-            (
-                "items",
-                blocks.ListBlock(
-                    blocks.StructBlock(list_item_blocks, required=False),
-                    default=[],
-                ),
-            ),
-        ],
+    return NestedListBlock(
+        blocks.StructBlock(list_item_blocks, required=False),
         required=False,
     )

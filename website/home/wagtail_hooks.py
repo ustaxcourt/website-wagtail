@@ -146,7 +146,9 @@ def protect_special_judge_roles(request, snippets):
 @hooks.register("insert_global_admin_js")
 def global_admin_js():
     return format_html(
-        '<script src="{}"></script>', static("home/js/news_item_admin.js")
+        '<script src="{}"></script><script src="{}"></script>',
+        static("home/js/news_item_admin.js"),
+        static("home/js/list_type_admin.js"),
     )
 
 
