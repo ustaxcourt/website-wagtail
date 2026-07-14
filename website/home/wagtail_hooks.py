@@ -162,6 +162,13 @@ def hide_typed_table_caption():
     )
 
 
+# CloudFront bills per invalidation path. Purging a large set of pages one-by-one
+# via purge_pages_from_cache() can cost orders of magnitude more than a single
+# wildcard "/*" purge, so once the affected set gets this large we switch to the
+# wildcard instead of enumerating every page (see WAG-1330).
+FULL_SITE_PURGE_PAGE_THRESHOLD = 20
+
+
 @hooks.register("after_edit_snippet")
 def purge_cache_for_snippet_related_pages(request, instance):
     """
@@ -180,21 +187,29 @@ def purge_cache_for_snippet_related_pages(request, instance):
         "navigationribbon": ["/"],
         "simplecard": ["/"],
         "newsitem": ["/", "/home/news-and-announcements/"],
+        "privateseminardisclosure": ["/home/judges/"],
     }
-
-    # Purge CloudFront cache for all pages using wildcard when navigation menu changes
-    if snippet_type == "navigationmenu":
-        purge_cloudflare_root()
-        return
 
     affected_prefixes = path_map.get(snippet_type, ["/"])
     affected_pages = []
     for prefix in affected_prefixes:
-        pages = Page.objects.live().filter(url_path__startswith=prefix)
+        if len(affected_pages) > FULL_SITE_PURGE_PAGE_THRESHOLD:
+            break
+        remaining = FULL_SITE_PURGE_PAGE_THRESHOLD + 1 - len(affected_pages)
+        pages = Page.objects.live().filter(url_path__startswith=prefix)[:remaining]
         affected_pages.extend(pages)
 
     if not affected_pages:
         logger.info(f"No affected pages found for snippet type '{snippet_type}'")
+        return
+
+    if len(affected_pages) > FULL_SITE_PURGE_PAGE_THRESHOLD:
+        purge_cloudflare_root()
+        logger.info(
+            f"Snippet type '{snippet_type}' affected more than "
+            f"{FULL_SITE_PURGE_PAGE_THRESHOLD} pages; purged CloudFront cache "
+            "for all pages using wildcard /* instead"
+        )
         return
 
     try:
