@@ -146,27 +146,27 @@
             align-items: center;
             gap: 12px;
 
-            background-color: #FAFAFA;
+            {% comment %} background-color: #FAFAFA; {% endcomment %}
             padding: 12px 14px;
 
-            border: 1px solid #E0E0E0;
-            border-left: 3px solid #E0E0E0;
-            border-radius: 6px;
+            {% comment %} border: 1px solid #E0E0E0;
+            border-left: 3px solid #E0E0E0; {% endcomment %}
+            {% comment %} border-radius: 6px; {% endcomment %}
         }
         .checkbox-list-with-subtext li.has-subtext {
             {% comment %} flex-direction: column; {% endcomment %}
             align-items: flex-start;
             background-color: inherit;
-            border: none;
+            border-left: 4px solid var(--color-secondary);
         }
         .checkbox-list li p{
             margin: 0;
         }
         .checkbox-list li p:first-child {
-            color: #1B1B1B;
+            color: #000000;
         }
         .checkbox-list-with-subtext li p:nth-child(2) {
-            color: #565C65;
+            color: var(--theme-color-base-medium);
         }
         .checkbox-list input[type="checkbox"] {
             /* The code below is necessary in order to change the color of the checkbox border */
@@ -176,12 +176,9 @@
 
             width: 20px;
             height: 20px;
-            border: 2px solid #CCCCCC;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .checkbox-list-with-subtext li.has-subtext input[type="checkbox"] {
             border: 2px solid #71767A;
+            {% comment %} border-radius: 3px; {% endcomment %}
+            cursor: pointer;
         }
         input[type="checkbox"]:checked {
             background-color: #2684ff;
