@@ -146,15 +146,9 @@
             align-items: center;
             gap: 12px;
 
-            {% comment %} background-color: #FAFAFA; {% endcomment %}
             padding: 12px 14px;
-
-            {% comment %} border: 1px solid #E0E0E0;
-            border-left: 3px solid #E0E0E0; {% endcomment %}
-            {% comment %} border-radius: 6px; {% endcomment %}
         }
         .checkbox-list-with-subtext li.has-subtext {
-            {% comment %} flex-direction: column; {% endcomment %}
             align-items: flex-start;
             background-color: inherit;
             border-left: 4px solid var(--color-secondary);
@@ -162,7 +156,7 @@
         .checkbox-label-container {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 8px;
             cursor: pointer;
             width: 100%;
         }
@@ -176,25 +170,23 @@
             color: var(--theme-color-base-medium);
         }
         .checkbox-list input[type="checkbox"] {
-            /* The code below is necessary in order to change the color of the checkbox border */
+            {% comment %} /* The code below is necessary in order to change the color of the checkbox border */
             appearance: none;
             -webkit-appearance: none;
-            /* The code above is necessary in order to change the color of the checkbox border */
+            /* The code above is necessary in order to change the color of the checkbox border */ {% endcomment %}
 
             width: 20px;
             height: 20px;
-            border: 2px solid #71767A;
-            {% comment %} border-radius: 3px; {% endcomment %}
             cursor: pointer;
         }
         input[type="checkbox"]:checked {
-            background-color: #2684ff;
+            {% comment %} background-color: #2684ff;
             border-color: #2684ff;
 
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
             background-size: 80%;
             background-position: center;
-            background-repeat: no-repeat;
+            background-repeat: no-repeat; {% endcomment %}
         }
 
         @media (max-width: 768px) {

@@ -9,7 +9,7 @@
         <ul class="nested-list">
         {% endif %}
         {% for item in items %}
-            <li {% if list_type == 'checkbox_with_subtext' and item.subtext %}class="has-subtext"{% endif %}>
+            <li {% if list_type == 'checkbox_with_subtext' %}class="has-subtext"{% endif %}>
                 {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
                     <label class="checkbox-label-container">
                         <input type="checkbox">
