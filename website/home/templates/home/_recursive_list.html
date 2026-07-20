@@ -11,12 +11,20 @@
         {% for item in items %}
             <li {% if list_type == 'checkbox_with_subtext' and item.subtext %}class="has-subtext"{% endif %}>
                 {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
-                    <input type="checkbox">
-                {% endif %}
+                    <label class="checkbox-label-container">
+                        <input type="checkbox">
+                        <div class="list-item-content">
+                            {% if item.text %}{{ item.text|richtext }}{% endif %}
+                            {% if list_type == 'checkbox_with_subtext' and item.subtext %}{{ item.subtext|richtext }}{% endif %}
+                        </div>
+                    </label>
+                {% else %}
+
                 <div class="list-item-content">
                     {% if item.text %}{{ item.text|richtext }}{% endif %}
-                    {% if list_type == 'checkbox_with_subtext' and item.subtext %}{{ item.subtext|richtext }}{% endif %}
                 </div>
+                {% endif %}
+
                 {% if item.image %}
                     {% picture item.image format-jpeg width-1000 loading="lazy" %}
                 {% endif %}
