@@ -1099,15 +1099,18 @@ class PressReleasesPageInitializer(PageInitializer):
                     document=document,
                     publish_date=publish_datetime,
                     homepage_display_expiration_date=expiration_datetime,
-                    created_by=current_user,
-                    updated_by=current_user,
                     live=True,
                 )
 
-                # Match created_at to publish_date so historical ordering
-                # (NewsItem.Meta.ordering = ["-created_at"]) reflects release date.
+                # NewsItem.save() unconditionally overwrites created_by/updated_by
+                # with the first user, so set them (and created_at, to match
+                # publish_date for historical ordering via
+                # NewsItem.Meta.ordering = ["-created_at"]) through update()
+                # to bypass save().
                 NewsItem.objects.filter(pk=news_item.pk).update(
-                    created_at=publish_datetime
+                    created_at=publish_datetime,
+                    created_by=current_user,
+                    updated_by=current_user,
                 )
 
                 created_count += 1
