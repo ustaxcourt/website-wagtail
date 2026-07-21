@@ -133,6 +133,8 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            flex: 1 1 0%;
+            min-width: 0;
         }
 
         .checkbox-list {
@@ -150,7 +152,7 @@
         }
         .checkbox-list-with-subtext li.has-subtext {
             align-items: flex-start;
-            background-color: inherit;
+            background-color: var(--theme-color-base-lightest);
             border-left: 4px solid var(--color-secondary);
         }
         .checkbox-label-container {
@@ -178,6 +180,7 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
+            flex-shrink: 0;
         }
         input[type="checkbox"]:checked {
             {% comment %} background-color: #2684ff;
