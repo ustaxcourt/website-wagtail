@@ -1,15 +1,10 @@
 from collections import defaultdict
 from operator import itemgetter
 
-from wagtail import blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.fields import StreamField
-from wagtail.search import index
 from django.utils import timezone
 from django.template.response import TemplateResponse
 
-from home.models.custom_blocks.button import ButtonBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.banners import Banner
@@ -19,42 +14,6 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
     """
     A specialized page for managing press releases with grouping and archive routing.
     """
-
-    press_release_body = StreamField(
-        [
-            ("button", ButtonBlock()),
-            (
-                "press_releases",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("release_date", blocks.DateBlock(required=False)),
-                            (
-                                "details",
-                                blocks.StructBlock(
-                                    [
-                                        (
-                                            "description",
-                                            blocks.TextBlock(required=False),
-                                        ),
-                                        ("file", DocumentChooserBlock(required=False)),
-                                    ],
-                                    required=False,
-                                ),
-                            ),
-                        ]
-                    )
-                ),
-            ),
-        ],
-        blank=True,
-        use_json_field=True,
-        null=True,
-    )
-
-    search_fields = EnhancedStandardPage.search_fields + [
-        index.SearchField("press_release_body"),
-    ]
 
     @route("archives/")
     def archive_view(self, request):
