@@ -47,3 +47,27 @@ class RecursiveListTemplateTests(TestCase):
         self.assertIn("subtext should render", html)
         self.assertIn("checkbox-list-with-subtext", html)
         self.assertIn('class="has-subtext"', html)
+
+    def test_disabled_checkbox_item_renders_disabled_attribute(self):
+        html = render_to_string(
+            "home/_recursive_list.html",
+            {
+                "list_type": "checkbox",
+                "items": [
+                    {
+                        "text": "<p>disabled item</p>",
+                        "disabled": True,
+                    },
+                    {
+                        "text": "<p>enabled item</p>",
+                        "disabled": False,
+                    },
+                ],
+            },
+        )
+
+        self.assertIn("disabled item", html)
+        self.assertIn("enabled item", html)
+        self.assertIn('<input type="checkbox" disabled aria-disabled="true">', html)
+        self.assertIn('class="checkbox-label-container is-disabled"', html)
+        self.assertIn('<input type="checkbox">', html)

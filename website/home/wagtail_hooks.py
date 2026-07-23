@@ -188,6 +188,31 @@ def hide_nested_list_subtext_unless_checkbox_with_subtext():
     )
 
 
+@hooks.register("insert_global_admin_css")
+def hide_nested_list_disabled_unless_checkbox():
+    """
+    In the nested list block admin editor, the per-item "Disabled" field only
+    applies when the list's "List type" is "Checkbox List" or "Checkbox with
+    Subtext". Uses the same pure CSS :has() approach as the subtext field so
+    it also works for nested lists and dynamically added items.
+    """
+    items_chain = (
+        " > [data-contentpath='items'] > div > "
+        "div[data-streamfield-list-container] > div[data-streamfield-child] > "
+        "section.w-panel > div.w-panel__content > div.struct-block > "
+        "[data-contentpath='disabled']"
+    )
+    return mark_safe(
+        "<style>"
+        f".struct-block{items_chain} {{ display: none; }}"
+        ".struct-block:has(> [data-contentpath='list_type'] "
+        f"option[value='checkbox']:checked){items_chain}, "
+        ".struct-block:has(> [data-contentpath='list_type'] "
+        f"option[value='checkbox_with_subtext']:checked){items_chain} {{ display: block; }}"
+        "</style>"
+    )
+
+
 @hooks.register("after_edit_snippet")
 def purge_cache_for_snippet_related_pages(request, instance):
     """

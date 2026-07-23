@@ -39,3 +39,60 @@ class NestedListBlockCleanTests(SimpleTestCase):
         )
 
         self.assertNotEqual(cleaned["items"][0]["subtext"].source, "")
+
+    def test_checkbox_list_keeps_disabled(self):
+        block = create_nested_list_block(max_depth=1)
+
+        cleaned = block.clean(
+            {
+                "list_type": "checkbox",
+                "items": [
+                    {
+                        "text": "<p>first item</p>",
+                        "subtext": "",
+                        "disabled": True,
+                        "image": None,
+                    }
+                ],
+            }
+        )
+
+        self.assertTrue(cleaned["items"][0]["disabled"])
+
+    def test_checkbox_with_subtext_keeps_disabled(self):
+        block = create_nested_list_block(max_depth=1)
+
+        cleaned = block.clean(
+            {
+                "list_type": "checkbox_with_subtext",
+                "items": [
+                    {
+                        "text": "<p>first item</p>",
+                        "subtext": "<p>should stay</p>",
+                        "disabled": True,
+                        "image": None,
+                    }
+                ],
+            }
+        )
+
+        self.assertTrue(cleaned["items"][0]["disabled"])
+
+    def test_non_checkbox_list_strips_disabled(self):
+        block = create_nested_list_block(max_depth=1)
+
+        cleaned = block.clean(
+            {
+                "list_type": "unordered",
+                "items": [
+                    {
+                        "text": "<p>first item</p>",
+                        "subtext": "",
+                        "disabled": True,
+                        "image": None,
+                    }
+                ],
+            }
+        )
+
+        self.assertFalse(cleaned["items"][0]["disabled"])

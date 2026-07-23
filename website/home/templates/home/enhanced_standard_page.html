@@ -192,6 +192,20 @@
             background-repeat: no-repeat; {% endcomment %}
         }
 
+        .checkbox-list input[type="checkbox"]:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .checkbox-label-container.is-disabled {
+            cursor: not-allowed;
+        }
+        .checkbox-list li:has(input:disabled) {
+            opacity: 0.5;
+        }
+        .checkbox-list li:has(input:disabled) p {
+            color: #71767A;
+        }
+
         @media (max-width: 768px) {
             .enhanced-page .nested-list img {
                 width: 90%;

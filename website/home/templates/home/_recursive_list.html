@@ -11,8 +11,8 @@
         {% for item in items %}
             <li {% if list_type == 'checkbox_with_subtext' %}class="has-subtext"{% endif %}>
                 {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
-                    <label class="checkbox-label-container">
-                        <input type="checkbox">
+                    <label class="checkbox-label-container{% if item.disabled %} is-disabled{% endif %}">
+                        <input type="checkbox"{% if item.disabled %} disabled aria-disabled="true"{% endif %}>
                         <div class="list-item-content">
                             {% if item.text %}{{ item.text|richtext }}{% endif %}
                             {% if list_type == 'checkbox_with_subtext' and item.subtext %}{{ item.subtext|richtext }}{% endif %}

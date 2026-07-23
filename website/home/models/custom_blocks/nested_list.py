@@ -36,6 +36,11 @@ class NestedListBlock(blocks.StructBlock):
                 if "subtext" in item:
                     item["subtext"] = empty_subtext
 
+        if cleaned_data.get("list_type") not in ("checkbox", "checkbox_with_subtext"):
+            for item in cleaned_data.get("items", []):
+                if "disabled" in item:
+                    item["disabled"] = False
+
         return cleaned_data
 
 
@@ -54,6 +59,10 @@ def create_nested_list_block(max_depth=5, current_depth=1):
     list_item_blocks = [
         ("text", blocks.RichTextBlock(required=False)),
         ("subtext", blocks.RichTextBlock(required=False)),
+        (
+            "disabled",
+            blocks.BooleanBlock(required=False, default=False),
+        ),
         ("image", ImageBlock(required=False)),
     ]
 
