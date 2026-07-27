@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                     ("columns", 67),
                     ("embedded_video", 69),
                     ("card", 74),
-                    ("accordian", 81),
+                    ("accordion", 81),
                     ("callout", 79),
                     ("card_tiles", 95),
                 ],
@@ -593,7 +593,7 @@ class Migration(migrations.Migration):
                                 ("columns", 67),
                                 ("embedded_video", 69),
                                 ("card", 74),
-                                ("accordian", 81),
+                                ("accordion", 81),
                                 ("callout", 79),
                             ]
                         ],
@@ -673,7 +673,7 @@ class Migration(migrations.Migration):
                                 ("columns", 67),
                                 ("embedded_video", 69),
                                 ("card", 74),
-                                ("accordian", 81),
+                                ("accordion", 81),
                                 ("callout", 79),
                             ]
                         ],

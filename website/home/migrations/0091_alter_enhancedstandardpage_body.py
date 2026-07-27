@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                     ("columns", 66),
                     ("embedded_video", 68),
                     ("card", 73),
-                    ("accordian", 80),
+                    ("accordion", 80),
                     ("callout", 78),
                     ("grid", 90),
                 ],

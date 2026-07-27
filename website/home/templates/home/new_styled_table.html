@@ -179,8 +179,8 @@
                       <td tabindex="0">
                         {% if cell.block.name == "components" %}
                           {% for content in cell.value %}
-                            {% if content.block_type == "accordian" %}
-                              {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                            {% if content.block_type == "accordion" %}
+                              {% include "accordion_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                             {% elif content.block_type == "callout" %}
                               {% include "callout_block.html" with block=content %}
                             {% elif content.block_type == "button" %}
@@ -215,8 +215,8 @@
                             {% with cell=row|first %}
                                 {% if cell.block.name == "components" %}
                                     {% for content in cell.value %}
-                                        {% if content.block_type == "accordian" %}
-                                            {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                        {% if content.block_type == "accordion" %}
+                                            {% include "accordion_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                                         {% elif content.block_type == "callout" %}
                                             {% include "callout_block.html" with block=content %}
                                         {% elif content.block_type == "button" %}
@@ -242,8 +242,8 @@
                                                 <div class="mobile-cell-item">
                                                     {% if col.heading %}<strong>{{ col.heading }}:</strong>{% endif %}
                                                     {% for content in cell.value %}
-                                                        {% if content.block_type == "accordian" %}
-                                                            {% include "accordian_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
+                                                        {% if content.block_type == "accordion" %}
+                                                            {% include "accordion_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                                                         {% elif content.block_type == "callout" %}
                                                             {% include "callout_block.html" with block=content %}
                                                         {% elif content.block_type == "button" %}

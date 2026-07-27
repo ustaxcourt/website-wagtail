@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                     ("columns", 61),
                     ("embedded_video", 63),
                     ("card", 68),
-                    ("accordian", 74),
+                    ("accordion", 74),
                 ],
                 blank=True,
                 block_lookup={
