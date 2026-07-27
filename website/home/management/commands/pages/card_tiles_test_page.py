@@ -147,7 +147,7 @@ class CardTilesTestPageInitializer(PageInitializer):
                     },
                 ],
             },
-            # accordion - accordionBlock
+            # accordion - AccordionBlock
             {
                 "type": "accordion",
                 "value": {
