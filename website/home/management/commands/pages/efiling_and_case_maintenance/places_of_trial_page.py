@@ -1,7 +1,8 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import PlacesOfTrialPage
-from datetime import datetime
+from datetime import date
+from django.utils import timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -401,7 +402,7 @@ all_dpt_cities = [
         "state": "North Dakota",
         "cities": [
             {
-                "name": "Bismark",
+                "name": "Bismarck",
                 "note": "Trials of small tax cases only. No permanent courtroom. See notice of trial for address.",
                 "address": "",
             },
@@ -1034,7 +1035,7 @@ all_dpt_cities_wag_1327 = [
         "state": "North Dakota",
         "cities": [
             {
-                "name": "Bismark",
+                "name": "Bismarck",
                 "note": "No permanent courtroom. See notice of trial for address.",
                 "address": "",
             },
@@ -1272,7 +1273,7 @@ class PlacesOfTrialPageInitializer(PageInitializer):
         logger.info(f"Creating the '{title}' page.")
 
         dpt_cities_to_use = all_dpt_cities
-        if datetime.now() >= datetime(2026, 9, 8):
+        if timezone.now().date() >= date(2026, 9, 8):
             dpt_cities_to_use = all_dpt_cities_wag_1327
 
         places_of_trial_data = [
