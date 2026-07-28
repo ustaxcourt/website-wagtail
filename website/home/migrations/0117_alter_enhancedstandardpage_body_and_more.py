@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                     ("columns", 86),
                     ("embedded_video", 89),
                     ("card", 94),
-                    ("accordion", 48),
+                    ("accordian", 48),
                     ("callout", 44),
                     ("grid", 105),
                     ("card_tiles", 119),
@@ -381,7 +381,7 @@ class Migration(migrations.Migration):
                         (),
                         {
                             "default": False,
-                            "help_text": "Check to have the accordion open by default when the page loads.",
+                            "help_text": "Check to have the accordian open by default when the page loads.",
                             "required": False,
                         },
                     ),
@@ -396,7 +396,7 @@ class Migration(migrations.Migration):
                             [
                                 ("text", 7),
                                 ("callout", 44),
-                                ("accordion", 48),
+                                ("accordian", 48),
                                 ("button", 18),
                             ]
                         ],
@@ -832,7 +832,7 @@ class Migration(migrations.Migration):
                                 ("columns", 86),
                                 ("embedded_video", 89),
                                 ("card", 94),
-                                ("accordion", 48),
+                                ("accordian", 48),
                                 ("callout", 44),
                                 ("grid", 105),
                             ]
@@ -914,7 +914,7 @@ class Migration(migrations.Migration):
                                 ("columns", 86),
                                 ("embedded_video", 89),
                                 ("card", 94),
-                                ("accordion", 48),
+                                ("accordian", 48),
                                 ("callout", 44),
                                 ("grid", 105),
                             ]
