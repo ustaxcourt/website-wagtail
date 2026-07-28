@@ -381,7 +381,7 @@ class Migration(migrations.Migration):
                         (),
                         {
                             "default": False,
-                            "help_text": "Check to have the accordian open by default when the page loads.",
+                            "help_text": "Check to have the accordion open by default when the page loads.",
                             "required": False,
                         },
                     ),
