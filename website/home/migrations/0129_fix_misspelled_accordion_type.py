@@ -11,6 +11,5 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             sql="""UPDATE home_enhancedstandardpage set body = replace(body, 'accordian', 'accordion');""",
-            reverse_sql="""UPDATE home_enhancedstandardpage set body = replace(body, 'accordion', 'accordian');""",
         ),
     ]
