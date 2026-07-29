@@ -59,7 +59,7 @@ class StyledCalloutBlock(blocks.StructBlock):
         template = "callout_block.html"
 
 
-class AccordianBlock(blocks.StructBlock):
+class AccordionBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         max_length=255, required=True, help_text="Title user will see before opening"
     )
@@ -105,7 +105,7 @@ class AccordianBlock(blocks.StructBlock):
 
     class Meta:
         label = "Accordion Block"
-        template = "accordian_block.html"
+        template = "accordion_block.html"
 
 
 new_table_value_types = [
@@ -115,7 +115,7 @@ new_table_value_types = [
             [
                 ("text", blocks.RichTextBlock()),
                 ("callout", StyledCalloutBlock()),
-                ("accordian", AccordianBlock()),
+                ("accordion", AccordionBlock()),
                 ("button", ButtonBlock()),
             ],
             required=False,
@@ -435,8 +435,8 @@ _BASE_BLOCK_TYPES = [
         ),
     ),
     (
-        "accordian",
-        AccordianBlock(),
+        "accordion",
+        AccordionBlock(),
     ),
     (
         "callout",
