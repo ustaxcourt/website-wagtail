@@ -24,5 +24,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(run_custom_sql_by_backend),
+        migrations.RunPython(run_custom_sql_by_backend, migrations.RunPython.noop),
     ]
