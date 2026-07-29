@@ -197,6 +197,24 @@ describe("Judge Information — Judge detail page", () => {
         checkA11y();
         checkHeaderOrder();
     });
+
+    it("back button returns to the previously selected category", () => {
+        cy.visit("/judges/");
+
+        cy.get('.judge-filter-btn[data-filter="senior-judges"]').click();
+        cy.get('.judge-section[data-section="senior-judges"] .judge-card')
+            .first()
+            .click();
+
+        cy.url().should("include", "filters=senior-judges");
+
+        cy.contains("a.back-to-judges", "Back").click();
+        cy.url().should("include", "/judges/");
+        cy.url().should("include", "filters=senior-judges");
+
+        cy.get('.judge-filter-btn[data-filter="senior-judges"]').should("have.class", "active");
+        cy.get('.judge-section[data-section="senior-judges"]').should("be.visible");
+    });
 });
 
 // ─── Figma design spec — desktop ────────────────────────────────────────────

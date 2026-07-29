@@ -1,6 +1,7 @@
 anyascii==0.3.2
 asgiref==3.8.1
 beautifulsoup4==4.12.3
+html5lib==1.1
 boto3==1.35.90
 botocore==1.35.90
 certifi==2024.8.30
@@ -16,7 +17,7 @@ django-ses==4.0.0
 django-storages==1.14.4
 django-taggit==6.1.0
 django-treebeard==4.7.1
-Django==5.2.13
+Django==5.2.15
 djangorestframework==3.15.2
 draftjs-exporter==5.0.0
 et_xmlfile==2.0.0
@@ -32,7 +33,7 @@ laces==0.1.1
 nodeenv==1.9.1
 openpyxl==3.1.5
 packaging==24.2
-pillow_heif==0.20.0
+pillow_heif==1.3.0
 pillow==12.2.0
 platformdirs==4.3.6
 pluggy==1.5.0
@@ -45,7 +46,7 @@ requests==2.33.0
 s3transfer==0.10.4
 setuptools==78.1.1
 six==1.16.0
-soupsieve==2.6
+soupsieve==2.8.4
 sqlparse==0.5.4
 telepath==0.3.1
 typing_extensions==4.12.2
@@ -54,7 +55,7 @@ virtualenv==20.36.1
 wagtail>=7.3,<7.4
 # Forked to fix base model lookup bug (upstream PR #173)
 # Revert to official package once https://github.com/wagtail/wagtail-transfer/pull/173 is merged
-wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@bd5199c
+wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@c181ae8
 whitenoise==6.8.2
 Willow
 social-auth-app-django==5.6.0
