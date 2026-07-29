@@ -179,7 +179,9 @@ def search(request):
             # If DAWSON API returns a record, then create search result and add to top of returned search results.
 
         # Check if query string is a combination of any number of digits and dashes except XXX-XX-XXXX
-        elif True:
+        elif len(search_query) == 11 and not re.search(
+            "^(?!\d{3}-\d{2}-\d{4})[0-9-]+$", search_query
+        ):
             # Display a warning at the top of the search results
             pass
 
