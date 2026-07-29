@@ -142,6 +142,8 @@
             flex-direction: column;
             gap: 12px;
             padding: 0;
+            margin: 0;
+            list-style: none;
         }
         .checkbox-list li {
             display: flex;
@@ -218,10 +220,10 @@
         .checkbox-label-container.is-disabled {
             cursor: not-allowed;
         }
-        .checkbox-list li:has(input:disabled) {
+        .checkbox-list > li:has(> label > input:disabled) {
             opacity: 0.5;
         }
-        .checkbox-list li:has(input:disabled) p {
+        .checkbox-list > li:has(> label > input:disabled) p {
             color: #71767A;
         }
 
@@ -648,14 +650,14 @@
         // static "Disabled" flag (data-static-disabled) are left alone.
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.checkbox-list').forEach(function(list) {
-                const dependents = list.querySelectorAll('[data-requires-checked]');
+                const dependents = list.querySelectorAll(':scope > li > label[data-requires-checked]');
                 if (!dependents.length) {
                     return;
                 }
 
                 function updateConditionalCheckboxes() {
                     const checkedKeys = new Set();
-                    list.querySelectorAll('[data-condition-key]').forEach(function(li) {
+                    list.querySelectorAll(':scope > li[data-condition-key]').forEach(function(li) {
                         const input = li.querySelector('input[type="checkbox"]');
                         if (input && input.checked) {
                             checkedKeys.add(li.getAttribute('data-condition-key'));
