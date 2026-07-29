@@ -1,10 +1,10 @@
 from django.template.loader import render_to_string
-from django.test import TestCase
+from django.test import SimpleTestCase
 
 from home.models.custom_blocks.nested_list import LIST_TYPE_CHOICES
 
 
-class RecursiveListTemplateTests(TestCase):
+class RecursiveListTemplateTests(SimpleTestCase):
     def test_checkbox_with_subtext_is_available_as_list_type_choice(self):
         self.assertIn(
             ("checkbox_with_subtext", "Checkbox with Subtext"), LIST_TYPE_CHOICES
