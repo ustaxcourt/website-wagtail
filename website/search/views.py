@@ -8,6 +8,7 @@ from django.utils.html import strip_tags
 from wagtail.models import Page
 from wagtail.blocks import StreamValue
 from wagtail.contrib.search_promotions.models import Query, SearchPromotion
+from wagtail.rich_text import RichText
 
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
@@ -100,6 +101,7 @@ def get_search_snippet(page):
 def search(request):
     search_query = request.GET.get("query", None)
     page = request.GET.get("page", 1)
+    display_docket_callout = False
 
     # Search
     if search_query:
@@ -172,18 +174,19 @@ def search(request):
         #   nnn is a sequence of 3-6 digits
         #   yy is a two-year date
         #   a is a sequence of 0-2 alpha characters
-        regex_match_results = re.search("(\d{3,6}-\d{2}[a-zA-Z]{0,2})", search_query)
+        regex_match_results = re.search("^(\d{3,6}-\d{2}[a-zA-Z]{0,2})$", search_query)
         if regex_match_results:
             # Query DAWSON API for the regex_match_results
             pass
             # If DAWSON API returns a record, then create search result and add to top of returned search results.
 
         # Check if query string is a combination of any number of digits and dashes except XXX-XX-XXXX
-        elif len(search_query) == 11 and not re.search(
-            "^(?!\d{3}-\d{2}-\d{4})[0-9-]+$", search_query
+        elif re.search("^[0-9-]+$", search_query) and not (
+            len(search_query) == 11
+            and not re.search("^(?!\d{3}-\d{2}-\d{4})[0-9-]+$", search_query)
         ):
             # Display a warning at the top of the search results
-            pass
+            display_docket_callout = True
 
     else:
         search_results = Page.objects.none()
@@ -207,6 +210,17 @@ def search(request):
             "search_query": search_query,
             "search_results": search_results,
             "search_promotions": search_promotions,  # Pass promotions to the template
+            "display_docket_callout": display_docket_callout,
+            "callout_block": {
+                "type": "callout",
+                "value": {
+                    "heading": "Looking for a Docket Number?",
+                    "text": RichText(
+                        '<p data-block-key="5ybz3">Docket numbers must be entered in the format <b>123-19</b>.</p><p data-block-key="7negh"><b>Example</b>: "Docket Number 123-19", "Docket No. 123-19", or "123-19"</p><p data-block-key="fjj0k"><a href="https://dawson.ustaxcourt.gov/">Search DAWSON\'s Docket Records</a></p>'
+                    ),
+                    "callout_type": "warning",
+                },
+            },
         },
     )
 
