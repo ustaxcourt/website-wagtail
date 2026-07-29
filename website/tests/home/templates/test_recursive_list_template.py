@@ -75,6 +75,39 @@ class RecursiveListTemplateTests(TestCase):
 
         self.assertIn("disabled item", html)
         self.assertIn("enabled item", html)
-        self.assertIn('<input type="checkbox" disabled aria-disabled="true">', html)
+        self.assertIn(
+            '<input type="checkbox" disabled data-static-disabled="true" aria-disabled="true">',
+            html,
+        )
         self.assertIn('class="checkbox-label-container is-disabled"', html)
         self.assertIn('<input type="checkbox">', html)
+
+    def test_conditional_checkbox_renders_condition_key_and_requires_checked(self):
+        """A checkbox item can require another item's Condition Key to be
+        checked before it becomes enabled. It should render as disabled by
+        default (nothing is checked on page load) with the data attributes
+        the client-side script needs to wire up the dependency."""
+        html = render_to_string(
+            "home/_recursive_list.html",
+            {
+                "list_type": "checkbox",
+                "items": [
+                    {
+                        "text": "<p>I agree to the terms</p>",
+                        "condition_key": "agree",
+                    },
+                    {
+                        "text": "<p>Proceed to next step</p>",
+                        "requires_checked": "agree",
+                    },
+                ],
+            },
+        )
+
+        self.assertIn('data-condition-key="agree"', html)
+        self.assertIn('data-requires-checked="agree"', html)
+        self.assertIn(
+            'class="checkbox-label-container is-disabled" data-requires-checked="agree"',
+            html,
+        )
+        self.assertIn('<input type="checkbox" disabled aria-disabled="true">', html)

@@ -164,32 +164,42 @@ def hide_typed_table_caption():
     )
 
 
-@hooks.register("insert_global_admin_css")
-def hide_nested_list_subtext_unless_checkbox():
+def _nested_list_field_visible_unless_checkbox_css(field_name):
     """
-    In the nested list block admin editor, the per-item "Subtext" field only
-    applies to checkbox-style lists ("Checkbox List" or the legacy "Checkbox
-    with Subtext" type). Subtext is optional per-item, so it's shown for both
-    so an editor can add a sub-label to some checkboxes and not others within
-    the same list. Rather than a JS toggle, this is done with a pure CSS
-    :has() rule scoped to each list's own struct-block, so it also works for
-    nested lists and for items added dynamically without needing to watch for
-    DOM mutations.
+    Build a CSS rule that hides a per-item nested-list field unless the
+    list's "List type" is "Checkbox List" or "Checkbox with Subtext". Uses a
+    pure CSS :has() rule scoped to each list's own struct-block, so it also
+    works for nested lists and for items added dynamically without needing
+    to watch for DOM mutations.
     """
     items_chain = (
         " > [data-contentpath='items'] > div > "
         "div[data-streamfield-list-container] > div[data-streamfield-child] > "
         "section.w-panel > div.w-panel__content > div.struct-block > "
-        "[data-contentpath='subtext']"
+        f"[data-contentpath='{field_name}']"
     )
-    return mark_safe(
-        "<style>"
+    return (
         f".struct-block{items_chain} {{ display: none; }}"
         ".struct-block:has(> [data-contentpath='list_type'] "
         f"option[value='checkbox']:checked){items_chain}, "
         ".struct-block:has(> [data-contentpath='list_type'] "
         f"option[value='checkbox_with_subtext']:checked){items_chain} {{ display: block; }}"
-        "</style>"
+    )
+
+
+@hooks.register("insert_global_admin_css")
+def hide_nested_list_subtext_unless_checkbox():
+    """
+    In the nested list block admin editor, the per-item "Subtext" field only
+    applies to checkbox-style lists. Subtext is optional per-item, so it's
+    shown for both "Checkbox List" and the legacy "Checkbox with Subtext"
+    type, so an editor can add a sub-label to some checkboxes and not others
+    within the same list.
+    """
+    return mark_safe(
+        "<style>"
+        + _nested_list_field_visible_unless_checkbox_css("subtext")
+        + "</style>"
     )
 
 
@@ -198,24 +208,28 @@ def hide_nested_list_disabled_unless_checkbox():
     """
     In the nested list block admin editor, the per-item "Disabled" field only
     applies when the list's "List type" is "Checkbox List" or "Checkbox with
-    Subtext". Uses the same pure CSS :has() approach as the subtext field so
-    it also works for nested lists and dynamically added items.
+    Subtext".
     """
-    items_chain = (
-        " > [data-contentpath='items'] > div > "
-        "div[data-streamfield-list-container] > div[data-streamfield-child] > "
-        "section.w-panel > div.w-panel__content > div.struct-block > "
-        "[data-contentpath='disabled']"
-    )
     return mark_safe(
         "<style>"
-        f".struct-block{items_chain} {{ display: none; }}"
-        ".struct-block:has(> [data-contentpath='list_type'] "
-        f"option[value='checkbox']:checked){items_chain}, "
-        ".struct-block:has(> [data-contentpath='list_type'] "
-        f"option[value='checkbox_with_subtext']:checked){items_chain} {{ display: block; }}"
-        "</style>"
+        + _nested_list_field_visible_unless_checkbox_css("disabled")
+        + "</style>"
     )
+
+
+@hooks.register("insert_global_admin_css")
+def hide_nested_list_conditional_fields_unless_checkbox():
+    """
+    In the nested list block admin editor, the per-item "Condition Key" and
+    "Requires checkbox checked" fields (used to make one checkbox's enabled
+    state depend on another checkbox being checked) only apply to
+    checkbox-style lists.
+    """
+    css = "".join(
+        _nested_list_field_visible_unless_checkbox_css(field_name)
+        for field_name in ("condition_key", "requires_checked")
+    )
+    return mark_safe(f"<style>{css}</style>")
 
 
 @hooks.register("after_edit_snippet")

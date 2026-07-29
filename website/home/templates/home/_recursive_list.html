@@ -9,10 +9,10 @@
         <ul class="nested-list">
         {% endif %}
         {% for item in items %}
-            <li {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}{% if item.subtext %}class="has-subtext"{% endif %}{% endif %}>
+            <li {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}class="{% if item.subtext %}has-subtext{% endif %}"{% if item.condition_key %} data-condition-key="{{ item.condition_key }}"{% endif %}{% endif %}>
                 {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
-                    <label class="checkbox-label-container{% if item.disabled %} is-disabled{% endif %}">
-                        <input type="checkbox"{% if item.disabled %} disabled aria-disabled="true"{% endif %}>
+                    <label class="checkbox-label-container{% if item.disabled or item.requires_checked %} is-disabled{% endif %}"{% if item.requires_checked %} data-requires-checked="{{ item.requires_checked }}"{% endif %}>
+                        <input type="checkbox"{% if item.disabled %} disabled data-static-disabled="true" aria-disabled="true"{% elif item.requires_checked %} disabled aria-disabled="true"{% endif %}>
                         <div class="list-item-content">
                             {% if item.text %}{{ item.text|richtext }}{% endif %}
                             {% if item.subtext %}{{ item.subtext|richtext }}{% endif %}

@@ -641,5 +641,53 @@
                 }
             }
         });
+
+        // Conditional checkbox list items: a checkbox can require another
+        // checkbox in the same list (referenced by its Condition Key) to be
+        // checked before it becomes enabled. Checkboxes marked with the
+        // static "Disabled" flag (data-static-disabled) are left alone.
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.checkbox-list').forEach(function(list) {
+                const dependents = list.querySelectorAll('[data-requires-checked]');
+                if (!dependents.length) {
+                    return;
+                }
+
+                function updateConditionalCheckboxes() {
+                    const checkedKeys = new Set();
+                    list.querySelectorAll('[data-condition-key]').forEach(function(li) {
+                        const input = li.querySelector('input[type="checkbox"]');
+                        if (input && input.checked) {
+                            checkedKeys.add(li.getAttribute('data-condition-key'));
+                        }
+                    });
+
+                    dependents.forEach(function(label) {
+                        const input = label.querySelector('input[type="checkbox"]');
+                        if (!input || input.dataset.staticDisabled === 'true') {
+                            return;
+                        }
+
+                        const requiredKey = label.getAttribute('data-requires-checked');
+                        const isMet = checkedKeys.has(requiredKey);
+
+                        input.disabled = !isMet;
+                        input.setAttribute('aria-disabled', String(!isMet));
+                        label.classList.toggle('is-disabled', !isMet);
+                        if (!isMet) {
+                            input.checked = false;
+                        }
+                    });
+                }
+
+                list.addEventListener('change', function(event) {
+                    if (event.target.matches('input[type="checkbox"]')) {
+                        updateConditionalCheckboxes();
+                    }
+                });
+
+                updateConditionalCheckboxes();
+            });
+        });
     </script>
 {% endblock content %}

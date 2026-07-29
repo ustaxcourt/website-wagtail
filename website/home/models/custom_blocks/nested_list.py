@@ -27,11 +27,12 @@ class NestedListBlock(blocks.StructBlock):
     def clean(self, value):
         cleaned_data = super().clean(value)
 
-        # Subtext (the optional checkbox sub-label) and the disabled flag only
-        # apply to checkbox-style lists. "checkbox_with_subtext" is kept as a
-        # choice for backwards compatibility with existing content, but
-        # subtext is now optional per-item on the plain "checkbox" list type
-        # too, so it no longer needs its own dedicated list type going forward.
+        # Subtext (the optional checkbox sub-label), the static disabled flag,
+        # and the conditional-enabling fields only apply to checkbox-style
+        # lists. "checkbox_with_subtext" is kept as a choice for backwards
+        # compatibility with existing content, but subtext is now optional
+        # per-item on the plain "checkbox" list type too, so it no longer
+        # needs its own dedicated list type going forward.
         if cleaned_data.get("list_type") not in ("checkbox", "checkbox_with_subtext"):
             subtext_block = self.child_blocks["items"].child_block.child_blocks[
                 "subtext"
@@ -44,6 +45,10 @@ class NestedListBlock(blocks.StructBlock):
             for item in cleaned_data.get("items", []):
                 if "disabled" in item:
                     item["disabled"] = False
+                if "condition_key" in item:
+                    item["condition_key"] = ""
+                if "requires_checked" in item:
+                    item["requires_checked"] = ""
 
         return cleaned_data
 
@@ -65,7 +70,36 @@ def create_nested_list_block(max_depth=5, current_depth=1):
         ("subtext", blocks.RichTextBlock(required=False)),
         (
             "disabled",
-            blocks.BooleanBlock(required=False, default=False),
+            blocks.BooleanBlock(
+                required=False,
+                default=False,
+                help_text="Always render this checkbox as disabled, regardless of other checkboxes.",
+            ),
+        ),
+        (
+            "condition_key",
+            blocks.CharBlock(
+                required=False,
+                max_length=64,
+                help_text=(
+                    "Optional: a short id for this checkbox (e.g. 'agree'). "
+                    "Other checkboxes in this list can require it via their "
+                    "'Requires checkbox checked' field."
+                ),
+            ),
+        ),
+        (
+            "requires_checked",
+            blocks.CharBlock(
+                required=False,
+                max_length=64,
+                label="Requires checkbox checked",
+                help_text=(
+                    "Optional: enter another checkbox's Condition Key from "
+                    "this list. This checkbox stays disabled until that one "
+                    "is checked by the visitor."
+                ),
+            ),
         ),
         ("image", ImageBlock(required=False)),
     ]
