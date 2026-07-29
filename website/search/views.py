@@ -12,11 +12,17 @@ from wagtail.contrib.search_promotions.models import Query, SearchPromotion
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
 
+from search.dawson import is_docket_number
+from search.dawson_client import get_case_record
 from search.models.definitionsQuery import DefinitionsQuery
 
 # from search.models import DefinitionsQuery
 
 SEARCH_EXCLUSION_PAGES = ["Press Releases & News"]
+
+# All docket-number-shaped searches roll up into a single line item on the
+# Wagtail search-terms report, rather than one row per unique docket number.
+DOCKET_NUMBER_SEARCH_REPORT_LABEL = "Docket Number Search"
 
 
 def extract_text_from_streamfield(stream_value, max_length=300):
@@ -101,6 +107,9 @@ def search(request):
     search_query = request.GET.get("query", None)
     page = request.GET.get("page", 1)
 
+    docket_match = None
+    docket_case_record = None
+
     # Search
     if search_query:
         search_results = Page.objects.live().search(search_query)
@@ -113,6 +122,18 @@ def search(request):
         )
         query = Query.get(search_query)
         query.add_hit()
+
+        # DAWSON docket number detection: search terms that conform to (or
+        # look like an attempt at) a USTC docket number get DAWSON case
+        # results layered on top of the Wagtail search results above.
+        docket_match = is_docket_number(search_query)
+        if docket_match is not None:
+            Query.get(DOCKET_NUMBER_SEARCH_REPORT_LABEL).add_hit()
+            if docket_match.is_valid:
+                # An API error or not-found result degrades to
+                # docket_case_record staying None, i.e. "no results found"
+                # for the DAWSON portion of the page per the AC.
+                docket_case_record = get_case_record(docket_match.docket_number)
 
         # Get search promotions
         search_promotions = SearchPromotion.objects.filter(query=query).select_related(
@@ -207,6 +228,8 @@ def search(request):
             "search_query": search_query,
             "search_results": search_results,
             "search_promotions": search_promotions,  # Pass promotions to the template
+            "docket_match": docket_match,
+            "docket_case_record": docket_case_record,
         },
     )
 
