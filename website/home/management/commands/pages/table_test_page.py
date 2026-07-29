@@ -81,7 +81,7 @@ class TableTestPageInitializer(PageInitializer):
                                 # Accordion block
                                 [
                                     {
-                                        "type": "accordian",
+                                        "type": "accordion",
                                         "value": {
                                             "title": "Implementation Details",
                                             "description": [
@@ -132,7 +132,7 @@ class TableTestPageInitializer(PageInitializer):
                                 ],
                                 [
                                     {
-                                        "type": "accordian",
+                                        "type": "accordion",
                                         "value": {
                                             "title": "Metrics Included",
                                             "description": [
@@ -182,7 +182,7 @@ class TableTestPageInitializer(PageInitializer):
                                 ],
                                 [
                                     {
-                                        "type": "accordian",
+                                        "type": "accordion",
                                         "value": {
                                             "title": "Supported Methods",
                                             "description": [
@@ -232,7 +232,7 @@ class TableTestPageInitializer(PageInitializer):
                                 ],
                                 [
                                     {
-                                        "type": "accordian",
+                                        "type": "accordion",
                                         "value": {
                                             "title": "What to Expect",
                                             "description": [
@@ -282,7 +282,7 @@ class TableTestPageInitializer(PageInitializer):
                                 ],
                                 [
                                     {
-                                        "type": "accordian",
+                                        "type": "accordion",
                                         "value": {
                                             "title": "Export Limits",
                                             "description": [
@@ -332,7 +332,7 @@ class TableTestPageInitializer(PageInitializer):
                                 ],
                                 [
                                     {
-                                        "type": "accordian",
+                                        "type": "accordion",
                                         "value": {
                                             "title": "Common Errors",
                                             "description": [
@@ -374,7 +374,7 @@ class TableTestPageInitializer(PageInitializer):
 
         # Content after Table
         accordion_block = {
-            "type": "accordian",
+            "type": "accordion",
             "value": {
                 "title": "Additional Information (Accordion)",
                 "description": [

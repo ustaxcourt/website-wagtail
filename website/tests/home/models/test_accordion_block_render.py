@@ -3,9 +3,9 @@ Regression test for WAG-1259: VariableDoesNotExist when an Accordion Block is
 rendered inside a Card Tiles default content (or any page that uses enhanced_body.html
 called with the `only` keyword).
 
-The bug was caused by `accordian_block.html` using `block.value|default:self`,
+The bug was caused by `accordion_block.html` using `block.value|default:self`,
 where `self` is not in the template context when the template is rendered via
-`{% include "accordian_block.html" with block=block ... %}`.
+`{% include "accordion_block.html" with block=block ... %}`.
 """
 
 from django.test import TestCase, RequestFactory, override_settings
@@ -24,7 +24,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
         },
     },
 )
-class AccordianBlockRenderTest(TestCase):
+class AccordionBlockRenderTest(TestCase):
     """Verify that an EnhancedStandardPage with an accordion block renders without error."""
 
     def setUp(self):
@@ -36,7 +36,7 @@ class AccordianBlockRenderTest(TestCase):
         if root_page is None:
             root_page = Page.add_root(title="Root", slug="root")
 
-        home_page = Page(title="Home", slug="home-accordian-test")
+        home_page = Page(title="Home", slug="home-accordion-test")
         root_page.add_child(instance=home_page)
 
         Site.objects.get_or_create(
@@ -49,7 +49,7 @@ class AccordianBlockRenderTest(TestCase):
             slug="accordion-test-page",
             body=[
                 {
-                    "type": "accordian",
+                    "type": "accordion",
                     "value": {
                         "title": "Test Accordion",
                         "description": [
@@ -65,7 +65,7 @@ class AccordianBlockRenderTest(TestCase):
         )
         home_page.add_child(instance=self.page)
 
-    def test_accordian_block_renders_without_variable_does_not_exist(self):
+    def test_accordion_block_renders_without_variable_does_not_exist(self):
         """Page with an accordion block in body must return HTTP 200."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
@@ -73,7 +73,7 @@ class AccordianBlockRenderTest(TestCase):
         rendered = response.render()
         self.assertEqual(rendered.status_code, 200)
 
-    def test_accordian_block_content_appears_in_response(self):
+    def test_accordion_block_content_appears_in_response(self):
         """Accordion title must appear in the rendered HTML."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
@@ -81,7 +81,7 @@ class AccordianBlockRenderTest(TestCase):
         rendered = response.render()
         content = rendered.content.decode()
         self.assertIn("Test Accordion", content)
-        self.assertIn("accordian-block", content)
+        self.assertIn("accordion-block", content)
 
 
 @override_settings(
@@ -94,7 +94,7 @@ class AccordianBlockRenderTest(TestCase):
         },
     },
 )
-class AccordianBlockInCardTilesDefaultContentRenderTest(TestCase):
+class AccordionBlockInCardTilesDefaultContentRenderTest(TestCase):
     """
     Verify that an accordion block inside a Card Tiles default_content renders
     without VariableDoesNotExist. This is the exact scenario reported in WAG-1259.
@@ -109,7 +109,7 @@ class AccordianBlockInCardTilesDefaultContentRenderTest(TestCase):
         if root_page is None:
             root_page = Page.add_root(title="Root", slug="root")
 
-        home_page = Page(title="Home", slug="home-ct-accordian-test")
+        home_page = Page(title="Home", slug="home-ct-accordion-test")
         root_page.add_child(instance=home_page)
 
         Site.objects.get_or_create(
@@ -140,7 +140,7 @@ class AccordianBlockInCardTilesDefaultContentRenderTest(TestCase):
                         ],
                         "default_content": [
                             {
-                                "type": "accordian",
+                                "type": "accordion",
                                 "value": {
                                     "title": "Default Content Accordion",
                                     "description": [
@@ -159,7 +159,7 @@ class AccordianBlockInCardTilesDefaultContentRenderTest(TestCase):
         )
         home_page.add_child(instance=self.page)
 
-    def test_accordian_in_card_tiles_default_content_renders_without_error(self):
+    def test_accordion_in_card_tiles_default_content_renders_without_error(self):
         """Page with an accordion in card tiles default_content must return HTTP 200."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
@@ -167,7 +167,7 @@ class AccordianBlockInCardTilesDefaultContentRenderTest(TestCase):
         rendered = response.render()
         self.assertEqual(rendered.status_code, 200)
 
-    def test_accordian_in_card_tiles_content_appears_in_response(self):
+    def test_accordion_in_card_tiles_content_appears_in_response(self):
         """Accordion title must appear in the rendered HTML."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
