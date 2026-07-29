@@ -92,7 +92,9 @@
                 <div class="notice">
                     <div class="notice-content">
                         <i class="fa-solid fa-circle-info"></i>
-                        {{ block.value.message|richtext }}
+                        <div display="block">
+                            {{ block.value.message|richtext }}
+                        </div>
                     </div>
                 </div>
             {% elif block.block_type == "text" %}
