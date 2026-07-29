@@ -1,5 +1,4 @@
 import json
-import re
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
@@ -187,24 +186,6 @@ def search(request):
                 },
             )
             search_results.append(judge_page)
-
-        # Check if docket number is a substring of the query string
-        # Docket number follows the format: nnn-yya where
-        #   nnn is a sequence of 3-6 digits
-        #   yy is a two-year date
-        #   a is a sequence of 0-2 alpha characters
-        regex_match_results = re.search("(\d{3,6}-\d{2}[a-zA-Z]{0,2})", search_query)
-        if regex_match_results:
-            # Query DAWSON API for the regex_match_results
-            pass
-            # If DAWSON API returns a record, then create search result and add to top of returned search results.
-
-        # Check if query string is a combination of any number of digits and dashes except XXX-XX-XXXX
-        elif len(search_query) == 11 and not re.search(
-            "^(?!\d{3}-\d{2}-\d{4})[0-9-]+$", search_query
-        ):
-            # Display a warning at the top of the search results
-            pass
 
     else:
         search_results = Page.objects.none()
