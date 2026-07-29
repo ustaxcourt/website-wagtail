@@ -1,5 +1,4 @@
 import json
-import re
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
@@ -13,11 +12,17 @@ from wagtail.rich_text import RichText
 from home.models.snippets.judges import JudgeProfile
 from django.db.models import Q
 
+from search.dawson import is_docket_number
+from search.dawson_client import get_case_record
 from search.models.definitionsQuery import DefinitionsQuery
 
 # from search.models import DefinitionsQuery
 
 SEARCH_EXCLUSION_PAGES = ["Press Releases & News"]
+
+# All docket-number-shaped searches roll up into a single line item on the
+# Wagtail search-terms report, rather than one row per unique docket number.
+DOCKET_NUMBER_SEARCH_REPORT_LABEL = "Docket Number Search"
 
 
 def extract_text_from_streamfield(stream_value, max_length=300):
@@ -101,6 +106,9 @@ def get_search_snippet(page):
 def search(request):
     search_query = request.GET.get("query", None)
     page = request.GET.get("page", 1)
+
+    docket_match = None
+    docket_case_record = None
     display_docket_callout = False
 
     # Search
@@ -115,6 +123,19 @@ def search(request):
         )
         query = Query.get(search_query)
         query.add_hit()
+
+        # DAWSON docket number detection: search terms that conform to (or
+        # look like an attempt at) a USTC docket number get DAWSON case
+        # results layered on top of the Wagtail search results above.
+        docket_match = is_docket_number(search_query)
+        display_docket_callout = docket_match and not docket_match.is_valid
+        if docket_match is not None:
+            Query.get(DOCKET_NUMBER_SEARCH_REPORT_LABEL).add_hit()
+            if docket_match.is_valid:
+                # An API error or not-found result degrades to
+                # docket_case_record staying None, i.e. "no results found"
+                # for the DAWSON portion of the page per the AC.
+                docket_case_record = get_case_record(docket_match.docket_number)
 
         # Get search promotions
         search_promotions = SearchPromotion.objects.filter(query=query).select_related(
@@ -168,26 +189,6 @@ def search(request):
                 },
             )
             search_results.append(judge_page)
-
-        # Check if docket number is a substring of the query string
-        # Docket number follows the format: nnn-yya where
-        #   nnn is a sequence of 3-6 digits
-        #   yy is a two-year date
-        #   a is a sequence of 0-2 alpha characters
-        regex_match_results = re.search("^(\d{3,6}-\d{2}[a-zA-Z]{0,2})$", search_query)
-        if regex_match_results:
-            # Query DAWSON API for the regex_match_results
-            pass
-            # If DAWSON API returns a record, then create search result and add to top of returned search results.
-
-        # Check if query string is a combination of any number of digits and dashes except XXX-XX-XXXX
-        elif re.search("^[0-9-]+$", search_query) and not (
-            len(search_query) == 11
-            and not re.search("^(?!\d{3}-\d{2}-\d{4})[0-9-]+$", search_query)
-        ):
-            # Display a warning at the top of the search results
-            display_docket_callout = True
-
     else:
         search_results = Page.objects.none()
         search_promotions = (
@@ -210,6 +211,8 @@ def search(request):
             "search_query": search_query,
             "search_results": search_results,
             "search_promotions": search_promotions,  # Pass promotions to the template
+            "docket_match": docket_match,
+            "docket_case_record": docket_case_record,
             "display_docket_callout": display_docket_callout,
             "callout_block": {
                 "type": "callout",

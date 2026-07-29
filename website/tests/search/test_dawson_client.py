@@ -1,0 +1,68 @@
+"""Tests for search/dawson_client.py — the DAWSON public API client."""
+
+import requests
+from unittest.mock import MagicMock, patch
+
+from search.dawson_client import get_case_record
+
+
+CASE_RESPONSE = {
+    "entityName": "PublicCaseDTO",
+    "docketNumber": "5695-23",
+    "docketNumberWithSuffix": "5695-23",
+    "caseCaption": "Beyonce Knowles-Carter, Petitioner",
+    "receivedAt": "2023-04-17T23:33:48.094Z",
+}
+
+
+class TestGetCaseRecord:
+    def test_successful_lookup_returns_case_record(self):
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = CASE_RESPONSE
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            record = get_case_record("5695-23")
+
+        assert record is not None
+        assert record.docket_number == "5695-23"
+        assert record.case_caption == "Beyonce Knowles-Carter, Petitioner"
+        assert record.filing_date == "2023-04-17T23:33:48.094Z"
+        assert record.dawson_url.endswith("/case-detail/5695-23")
+
+    def test_not_found_returns_none(self):
+        mock_response = MagicMock(status_code=404, ok=False)
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            assert get_case_record("99999-99") is None
+
+    def test_server_error_returns_none(self):
+        mock_response = MagicMock(status_code=500, ok=False)
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            assert get_case_record("5695-23") is None
+
+    def test_request_exception_returns_none(self):
+        with patch(
+            "search.dawson_client.requests.get",
+            side_effect=requests.Timeout("timed out"),
+        ):
+            assert get_case_record("5695-23") is None
+
+    def test_non_json_response_returns_none(self):
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.side_effect = ValueError("not json")
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            assert get_case_record("5695-23") is None
+
+    def test_response_missing_expected_fields_returns_none(self):
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = {"entityName": "PublicCaseDTO"}
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            assert get_case_record("5695-23") is None
+
+    def test_requests_get_called_with_docket_number_in_url(self):
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = CASE_RESPONSE
+        with patch(
+            "search.dawson_client.requests.get", return_value=mock_response
+        ) as mock_get:
+            get_case_record("5695-23")
+            called_url = mock_get.call_args[0][0]
+            assert called_url.endswith("/cases/5695-23")

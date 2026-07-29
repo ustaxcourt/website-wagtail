@@ -141,6 +141,93 @@ class TestSearchView:
 
 
 @pytest.mark.django_db
+class TestSearchViewDocketDetection:
+    """Tests for DAWSON docket-number detection wired into the search view."""
+
+    def _make_request(self, query="tax"):
+        factory = RequestFactory()
+        return factory.get("/search/", {"query": query})
+
+    def _run_search(self, docket_match, docket_case_record=None):
+        from search.views import search
+
+        request = self._make_request(query="123-19")
+        with patch("search.views.Page") as mock_page_cls:
+            mock_page_cls.objects.live.return_value.search.return_value = []
+            with patch("search.views.JudgeProfile") as mock_judge:
+                mock_judge.objects.filter.return_value.filter.return_value = []
+                with patch("search.views.Query") as mock_query_cls:
+                    mock_query_cls.get.return_value = MagicMock()
+                    with patch("search.views.SearchPromotion") as mock_promo:
+                        mock_promo.objects.filter.return_value.select_related.return_value = []
+                        with patch(
+                            "search.views.is_docket_number",
+                            return_value=docket_match,
+                        ):
+                            with patch(
+                                "search.views.get_case_record",
+                                return_value=docket_case_record,
+                            ) as mock_get_case_record:
+                                with patch("search.views.TemplateResponse") as mock_tr:
+                                    mock_tr.return_value = MagicMock(status_code=200)
+                                    search(request)
+                                    ctx = mock_tr.call_args[0][2]
+                                    return ctx, mock_query_cls, mock_get_case_record
+
+    def test_non_docket_query_leaves_docket_context_empty(self):
+        ctx, mock_query_cls, mock_get_case_record = self._run_search(docket_match=None)
+        assert ctx["docket_match"] is None
+        assert ctx["docket_case_record"] is None
+        mock_get_case_record.assert_not_called()
+        # Only the literal query hit was recorded, no docket report roll-up.
+        mock_query_cls.get.assert_called_once_with("123-19")
+
+    def test_valid_docket_number_fetches_case_record(self):
+        from search.dawson import DocketMatch
+        from search.dawson_client import DawsonCaseRecord
+
+        match = DocketMatch(term="123-19", docket_number="123-19", is_valid=True)
+        record = DawsonCaseRecord(
+            docket_number="123-19",
+            case_caption="Some Petitioner",
+            filing_date="2019-01-01T00:00:00.000Z",
+            dawson_url="https://dawson.ustaxcourt.gov/case-detail/123-19",
+        )
+        ctx, mock_query_cls, mock_get_case_record = self._run_search(
+            docket_match=match, docket_case_record=record
+        )
+        assert ctx["docket_match"] == match
+        assert ctx["docket_case_record"] == record
+        mock_get_case_record.assert_called_once_with("123-19")
+        # Literal query hit + docket report roll-up hit.
+        mock_query_cls.get.assert_any_call("123-19")
+        mock_query_cls.get.assert_any_call("Docket Number Search")
+
+    def test_invalid_docket_format_does_not_fetch_case_record(self):
+        from search.dawson import DocketMatch
+
+        match = DocketMatch(term="123-19", docket_number=None, is_valid=False)
+        ctx, mock_query_cls, mock_get_case_record = self._run_search(
+            docket_match=match, docket_case_record=None
+        )
+        assert ctx["docket_match"] == match
+        assert ctx["docket_case_record"] is None
+        mock_get_case_record.assert_not_called()
+        # Still rolled up into the docket report line item.
+        mock_query_cls.get.assert_any_call("Docket Number Search")
+
+    def test_dawson_api_error_degrades_to_no_docket_result(self):
+        from search.dawson import DocketMatch
+
+        match = DocketMatch(term="123-19", docket_number="123-19", is_valid=True)
+        ctx, _, mock_get_case_record = self._run_search(
+            docket_match=match, docket_case_record=None
+        )
+        mock_get_case_record.assert_called_once_with("123-19")
+        assert ctx["docket_case_record"] is None
+
+
+@pytest.mark.django_db
 class TestDefinitionsSearchView:
     def test_definitions_search_returns_200(self):
         from search.views import definitions_search
