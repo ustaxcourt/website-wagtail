@@ -4,12 +4,32 @@ from home.models.custom_blocks.nested_list import create_nested_list_block
 
 
 class NestedListBlockCleanTests(SimpleTestCase):
-    def test_checkbox_list_strips_subtext(self):
+    def test_checkbox_list_keeps_subtext(self):
+        """Subtext is an optional per-item sub-label on the plain 'checkbox'
+        list type, not just the legacy 'checkbox_with_subtext' type."""
         block = create_nested_list_block(max_depth=1)
 
         cleaned = block.clean(
             {
                 "list_type": "checkbox",
+                "items": [
+                    {
+                        "text": "<p>first item</p>",
+                        "subtext": "<p>should stay</p>",
+                        "image": None,
+                    }
+                ],
+            }
+        )
+
+        self.assertNotEqual(cleaned["items"][0]["subtext"].source, "")
+
+    def test_ordered_list_strips_subtext(self):
+        block = create_nested_list_block(max_depth=1)
+
+        cleaned = block.clean(
+            {
+                "list_type": "ordered",
                 "items": [
                     {
                         "text": "<p>first item</p>",

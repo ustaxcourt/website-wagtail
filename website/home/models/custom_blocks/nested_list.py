@@ -27,7 +27,12 @@ class NestedListBlock(blocks.StructBlock):
     def clean(self, value):
         cleaned_data = super().clean(value)
 
-        if cleaned_data.get("list_type") != "checkbox_with_subtext":
+        # Subtext (the optional checkbox sub-label) and the disabled flag only
+        # apply to checkbox-style lists. "checkbox_with_subtext" is kept as a
+        # choice for backwards compatibility with existing content, but
+        # subtext is now optional per-item on the plain "checkbox" list type
+        # too, so it no longer needs its own dedicated list type going forward.
+        if cleaned_data.get("list_type") not in ("checkbox", "checkbox_with_subtext"):
             subtext_block = self.child_blocks["items"].child_block.child_blocks[
                 "subtext"
             ]
@@ -36,7 +41,6 @@ class NestedListBlock(blocks.StructBlock):
                 if "subtext" in item:
                     item["subtext"] = empty_subtext
 
-        if cleaned_data.get("list_type") not in ("checkbox", "checkbox_with_subtext"):
             for item in cleaned_data.get("items", []):
                 if "disabled" in item:
                     item["disabled"] = False

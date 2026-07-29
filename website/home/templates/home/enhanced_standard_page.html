@@ -150,7 +150,7 @@
 
             padding: 12px 14px;
         }
-        .checkbox-list-with-subtext li.has-subtext {
+        .checkbox-list li.has-subtext {
             align-items: flex-start;
             background-color: var(--theme-color-base-lightest);
             border-left: 4px solid var(--color-secondary);
@@ -168,33 +168,52 @@
         .checkbox-list li p:first-child {
             color: #000000;
         }
-        .checkbox-list-with-subtext li p:nth-child(2) {
+        .checkbox-list li.has-subtext p:nth-child(2) {
             color: #3D4551;
         }
+
+        /* Inactive (unchecked) checkbox: outlined square, USWDS base-dark border */
         .checkbox-list input[type="checkbox"] {
-            {% comment %} /* The code below is necessary in order to change the color of the checkbox border */
             appearance: none;
             -webkit-appearance: none;
-            /* The code above is necessary in order to change the color of the checkbox border */ {% endcomment %}
 
             width: 20px;
             height: 20px;
             cursor: pointer;
             flex-shrink: 0;
+            border: 2px solid #565C65;
+            border-radius: 2px;
+            background-color: #FFFFFF;
         }
-        input[type="checkbox"]:checked {
-            {% comment %} background-color: #2684ff;
-            border-color: #2684ff;
+        .checkbox-list input[type="checkbox"]:hover {
+            border-color: #1B1B1B;
+        }
+        .checkbox-list input[type="checkbox"]:focus-visible {
+            outline: .25rem solid #2491ff;
+            outline-offset: 2px;
+        }
+
+        /* Active (checked) checkbox: filled primary blue with a white checkmark */
+        .checkbox-list input[type="checkbox"]:checked {
+            background-color: #005EA2;
+            border-color: #005EA2;
 
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-            background-size: 80%;
+            background-size: 70%;
             background-position: center;
-            background-repeat: no-repeat; {% endcomment %}
+            background-repeat: no-repeat;
         }
 
+        /* Disabled checkbox (for conditional cases) */
         .checkbox-list input[type="checkbox"]:disabled {
             cursor: not-allowed;
             opacity: 0.5;
+            border-color: #A9AEB1;
+            background-color: #F0F0F0;
+        }
+        .checkbox-list input[type="checkbox"]:checked:disabled {
+            background-color: #A9AEB1;
+            border-color: #A9AEB1;
         }
         .checkbox-label-container.is-disabled {
             cursor: not-allowed;

@@ -10,7 +10,9 @@ class RecursiveListTemplateTests(TestCase):
             ("checkbox_with_subtext", "Checkbox with Subtext"), LIST_TYPE_CHOICES
         )
 
-    def test_regular_checkbox_list_does_not_render_subtext(self):
+    def test_checkbox_list_renders_subtext_only_for_items_that_have_it(self):
+        """Subtext is an optional per-item sub-label: a plain 'checkbox' list
+        can mix items with and without a sub-label."""
         html = render_to_string(
             "home/_recursive_list.html",
             {
@@ -18,16 +20,21 @@ class RecursiveListTemplateTests(TestCase):
                 "items": [
                     {
                         "text": "<p>first item on the list</p>",
-                        "subtext": "<p>subtext should not render</p>",
-                    }
+                        "subtext": "<p>subtext should render</p>",
+                    },
+                    {
+                        "text": "<p>second item on the list</p>",
+                        "subtext": "",
+                    },
                 ],
             },
         )
 
         self.assertIn("first item on the list", html)
-        self.assertNotIn("subtext should not render", html)
+        self.assertIn("subtext should render", html)
+        self.assertIn("second item on the list", html)
         self.assertIn('class="nested-list checkbox-list"', html)
-        self.assertNotIn("checkbox-list-with-subtext", html)
+        self.assertIn('class="has-subtext"', html)
 
     def test_checkbox_with_subtext_list_renders_subtext(self):
         html = render_to_string(
@@ -45,7 +52,7 @@ class RecursiveListTemplateTests(TestCase):
 
         self.assertIn("first item on the list", html)
         self.assertIn("subtext should render", html)
-        self.assertIn("checkbox-list-with-subtext", html)
+        self.assertIn('class="nested-list checkbox-list"', html)
         self.assertIn('class="has-subtext"', html)
 
     def test_disabled_checkbox_item_renders_disabled_attribute(self):

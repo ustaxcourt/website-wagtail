@@ -165,13 +165,16 @@ def hide_typed_table_caption():
 
 
 @hooks.register("insert_global_admin_css")
-def hide_nested_list_subtext_unless_checkbox_with_subtext():
+def hide_nested_list_subtext_unless_checkbox():
     """
     In the nested list block admin editor, the per-item "Subtext" field only
-    applies when the list's "List type" is "Checkbox with Subtext". Rather
-    than a JS toggle, this is done with a pure CSS :has() rule scoped to each
-    list's own struct-block, so it also works for nested lists and for items
-    added dynamically without needing to watch for DOM mutations.
+    applies to checkbox-style lists ("Checkbox List" or the legacy "Checkbox
+    with Subtext" type). Subtext is optional per-item, so it's shown for both
+    so an editor can add a sub-label to some checkboxes and not others within
+    the same list. Rather than a JS toggle, this is done with a pure CSS
+    :has() rule scoped to each list's own struct-block, so it also works for
+    nested lists and for items added dynamically without needing to watch for
+    DOM mutations.
     """
     items_chain = (
         " > [data-contentpath='items'] > div > "
@@ -182,6 +185,8 @@ def hide_nested_list_subtext_unless_checkbox_with_subtext():
     return mark_safe(
         "<style>"
         f".struct-block{items_chain} {{ display: none; }}"
+        ".struct-block:has(> [data-contentpath='list_type'] "
+        f"option[value='checkbox']:checked){items_chain}, "
         ".struct-block:has(> [data-contentpath='list_type'] "
         f"option[value='checkbox_with_subtext']:checked){items_chain} {{ display: block; }}"
         "</style>"
