@@ -177,12 +177,13 @@ class TestSearchViewDocketDetection:
     def test_non_docket_query_leaves_docket_context_empty(self):
         ctx, mock_query_cls, mock_get_case_record = self._run_search(docket_match=None)
         assert ctx["docket_match"] is None
-        assert ctx["docket_case_record"] is None
+        assert "docket_case_record" not in ctx
+        assert ctx["search_results"].object_list == []
         mock_get_case_record.assert_not_called()
         # Only the literal query hit was recorded, no docket report roll-up.
         mock_query_cls.get.assert_called_once_with("123-19")
 
-    def test_valid_docket_number_fetches_case_record(self):
+    def test_valid_docket_number_is_added_to_search_results(self):
         from search.dawson import DocketMatch
         from search.dawson_client import DawsonCaseRecord
 
@@ -197,11 +198,19 @@ class TestSearchViewDocketDetection:
             docket_match=match, docket_case_record=record
         )
         assert ctx["docket_match"] == match
-        assert ctx["docket_case_record"] == record
         mock_get_case_record.assert_called_once_with("123-19")
-        # Literal query hit + docket report roll-up hit.
-        mock_query_cls.get.assert_any_call("123-19")
-        mock_query_cls.get.assert_any_call("Docket Number Search")
+
+        # Folded into search_results (not a separate context value) so the
+        # "Found X results" count in the template stays accurate.
+        assert "docket_case_record" not in ctx
+        results = ctx["search_results"].object_list
+        assert len(results) == 1
+        docket_result = results[0]
+        assert docket_result.docket_number == "123-19"
+        assert docket_result.case_caption == "Some Petitioner"
+        assert docket_result.url == "https://dawson.ustaxcourt.gov/case-detail/123-19"
+        assert "123-19" in docket_result.title
+        assert "DAWSON" in docket_result.search_snippet
 
     def test_invalid_docket_format_does_not_fetch_case_record(self):
         from search.dawson import DocketMatch
@@ -211,7 +220,7 @@ class TestSearchViewDocketDetection:
             docket_match=match, docket_case_record=None
         )
         assert ctx["docket_match"] == match
-        assert ctx["docket_case_record"] is None
+        assert ctx["search_results"].object_list == []
         mock_get_case_record.assert_not_called()
         # Still rolled up into the docket report line item.
         mock_query_cls.get.assert_any_call("Docket Number Search")
@@ -224,7 +233,7 @@ class TestSearchViewDocketDetection:
             docket_match=match, docket_case_record=None
         )
         mock_get_case_record.assert_called_once_with("123-19")
-        assert ctx["docket_case_record"] is None
+        assert ctx["search_results"].object_list == []
 
 
 @pytest.mark.django_db

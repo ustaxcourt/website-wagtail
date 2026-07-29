@@ -108,7 +108,6 @@ def search(request):
     page = request.GET.get("page", 1)
 
     docket_match = None
-    docket_case_record = None
     display_docket_callout = False
 
     # Search
@@ -127,6 +126,7 @@ def search(request):
         # DAWSON docket number detection: search terms that conform to (or
         # look like an attempt at) a USTC docket number get DAWSON case
         # results layered on top of the Wagtail search results above.
+        docket_case_record = None
         docket_match = is_docket_number(search_query)
         display_docket_callout = docket_match and not docket_match.is_valid
         if docket_match is not None:
@@ -189,6 +189,28 @@ def search(request):
                 },
             )
             search_results.append(judge_page)
+
+        # Surface the DAWSON case record as a search result (rather than a
+        # separate context value) so it's included in pagination and the
+        # "Found X results" count instead of that count needing separate
+        # adjustment.
+        if docket_case_record is not None:
+            docket_result = type(
+                "DawsonDocketResult",
+                (),
+                {
+                    "title": f"Docket No. {docket_case_record.docket_number} — {docket_case_record.case_caption}",
+                    "search_snippet": (
+                        "This case record is available in DAWSON, the "
+                        "Court's docket and case management system."
+                    ),
+                    "url": docket_case_record.dawson_url,
+                    "docket_number": docket_case_record.docket_number,
+                    "case_caption": docket_case_record.case_caption,
+                    "filing_date": docket_case_record.filing_date,
+                },
+            )
+            search_results.insert(0, docket_result)
     else:
         search_results = Page.objects.none()
         search_promotions = (
@@ -212,7 +234,6 @@ def search(request):
             "search_results": search_results,
             "search_promotions": search_promotions,  # Pass promotions to the template
             "docket_match": docket_match,
-            "docket_case_record": docket_case_record,
             "display_docket_callout": display_docket_callout,
             "callout_block": {
                 "type": "callout",
