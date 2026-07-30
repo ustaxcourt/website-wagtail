@@ -87,6 +87,18 @@ def get_case_record(docket_number: str) -> DawsonCaseRecord | None:
     return _parse_case_record(data)
 
 
+def _find_petition_filing_date(data: dict) -> str | None:
+    """
+    The case's filing date is the filingDate of its Petition docket entry —
+    the document that actually opens the case — rather than the case-level
+    receivedAt field, whose semantics aren't documented by the API.
+    """
+    for entry in data.get("docketEntries") or []:
+        if entry.get("documentType") == "Petition":
+            return entry.get("filingDate")
+    return None
+
+
 def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
     docket_number = data.get("docketNumberWithSuffix") or data.get("docketNumber")
     case_caption = data.get("caseCaption")
@@ -94,9 +106,11 @@ def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
         logger.warning("DAWSON API response missing expected fields: %s", data)
         return None
 
+    filing_date_raw = _find_petition_filing_date(data) or data.get("receivedAt")
+
     return DawsonCaseRecord(
         docket_number=docket_number,
         case_caption=case_caption,
-        filing_date=_parse_filing_date(data.get("receivedAt")),
+        filing_date=_parse_filing_date(filing_date_raw),
         dawson_url=f"{_dawson_public_site_url()}/case-detail/{docket_number}",
     )

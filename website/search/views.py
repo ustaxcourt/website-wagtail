@@ -202,7 +202,7 @@ def search(request):
                     "title": f"Docket No. {docket_case_record.docket_number} — {docket_case_record.case_caption}",
                     "search_snippet": (
                         "This case record is available in DAWSON, the "
-                        "Court's docket and case management system."
+                        "Court’s docket and case management system."
                     ),
                     "url": docket_case_record.dawson_url,
                     "docket_number": docket_case_record.docket_number,
@@ -238,9 +238,9 @@ def search(request):
             "callout_block": {
                 "type": "callout",
                 "value": {
-                    "heading": "Looking for a Docket Number?",
+                    "heading": "Looking for a docket number?",
                     "text": RichText(
-                        '<p data-block-key="5ybz3">Docket numbers must be entered in the format <b>123-19</b>.</p><p data-block-key="7negh"><b>Example</b>: "Docket Number 123-19", "Docket No. 123-19", or "123-19"</p><p data-block-key="fjj0k"><a href="https://dawson.ustaxcourt.gov/">Search DAWSON\'s Docket Records</a></p>'
+                        '<p data-block-key="5ybz3">Docket numbers must be entered in the format <b>123-19</b>.</p><p data-block-key="7negh"><b>Example</b>: “Docket Number 123-19”, “Docket No. 123-19”, or “123-19”</p><p data-block-key="fjj0k"><a href="https://dawson.ustaxcourt.gov/">Search DAWSON’s Docket Records</a></p>'
                     ),
                     "callout_type": "warning",
                 },

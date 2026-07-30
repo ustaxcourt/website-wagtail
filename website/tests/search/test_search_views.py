@@ -313,7 +313,7 @@ class TestSearchViewTemplateRendering:
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert "Looking for a Docket Number" in content
+        assert "Looking for a docket number" in content
         assert "Search DAWSON" in content
         # "Website Results" heading only shows alongside actual results,
         # distinguishing them from the DAWSON warning above.
