@@ -128,7 +128,7 @@ def search(request):
         # results layered on top of the Wagtail search results above.
         docket_case_record = None
         docket_match = is_docket_number(search_query)
-        display_docket_callout = docket_match and not docket_match.is_valid
+        display_docket_callout = bool(docket_match and not docket_match.is_valid)
         if docket_match is not None:
             Query.get(DOCKET_NUMBER_SEARCH_REPORT_LABEL).add_hit()
             if docket_match.is_valid:
