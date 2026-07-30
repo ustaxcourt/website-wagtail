@@ -77,13 +77,17 @@
             transition: box-shadow 0.2s, background 0.2s;
         }
 
+        #search-page .result-card h2 {
+            margin-top: 0px;
+        }
+
         #search-page .result-card:hover {
             background: #e6f0fa;
             box-shadow: 0 4px 16px 0 rgba(0, 113, 188, 0.10);
         }
 
         #search-page .result-card .desc {
-            color: #333;
+            color: #1b1b1b;
             font-size: 1rem;
         }
 
@@ -178,7 +182,7 @@
         }
 
         #search-page .promoted-results .promoted-card .desc {
-            color: #333;
+            color: #1b1b1b;
             font-size: 1rem;
         }
 
@@ -189,7 +193,7 @@
         }
 
         #search-page .docket-record-card h2 {
-            font-weight: 600;
+            font-weight: bold;
             font-size: 1.5rem;
             color: var(--color-link);
             margin: 0;
@@ -202,14 +206,10 @@
         }
 
         #search-page .docket-record-card .filing-date {
-            font-weight: 600;
-            font-size: 1.0625rem;
             color: #1b1b1b;
         }
 
         #search-page .docket-record-card .desc {
-            font-weight: 600;
-            font-size: 1.0625rem;
             color: #1b1b1b;
         }
 
@@ -218,8 +218,6 @@
             justify-content: flex-end;
             align-items: center;
             gap: 8px;
-            font-weight: 400;
-            font-size: 1.0625rem;
             color: var(--color-link);
         }
 
@@ -301,7 +299,7 @@
                         <li class="result-card docket-record-card">
                             <h2>Docket Record</h2>
                             <div class="docket-number">Docket No. {{ result.docket_number }}</div>
-                            {% if result.filing_date %}<div class="filing-date">Filed: {{ result.filing_date|utc|date:"m/d/y" }}</div>{% endif %}
+                            {% if result.filing_date %}<div class="filing-date"><b>Filed: </b>{{ result.filing_date|utc|date:"m/d/y" }}</div>{% endif %}
                             <div class="desc">{{ result.search_snippet }}</div>
                             <a class="view-in-dawson"
                                href="{{ result.url }}"
