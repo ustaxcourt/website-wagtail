@@ -6,7 +6,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0129_fix_misspelled_accordion_type"),
         ("home", "0129_alter_enhancedstandardpage_body"),
     ]
 
