@@ -1,5 +1,6 @@
 """Tests for search/dawson_client.py — the DAWSON public API client."""
 
+from datetime import datetime, timezone
 import requests
 from unittest.mock import MagicMock, patch
 
@@ -25,7 +26,9 @@ class TestGetCaseRecord:
         assert record is not None
         assert record.docket_number == "5695-23"
         assert record.case_caption == "Beyonce Knowles-Carter, Petitioner"
-        assert record.filing_date == "2023-04-17T23:33:48.094Z"
+        assert record.filing_date == datetime(
+            2023, 4, 17, 23, 33, 48, 94000, tzinfo=timezone.utc
+        )
         assert record.dawson_url.endswith("/case-detail/5695-23")
 
     def test_not_found_returns_none(self):
@@ -56,6 +59,14 @@ class TestGetCaseRecord:
         mock_response.json.return_value = {"entityName": "PublicCaseDTO"}
         with patch("search.dawson_client.requests.get", return_value=mock_response):
             assert get_case_record("5695-23") is None
+
+    def test_unparseable_filing_date_falls_back_to_none(self):
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = {**CASE_RESPONSE, "receivedAt": "not-a-date"}
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            record = get_case_record("5695-23")
+        assert record is not None
+        assert record.filing_date is None
 
     def test_requests_get_called_with_docket_number_in_url(self):
         mock_response = MagicMock(status_code=200, ok=True)

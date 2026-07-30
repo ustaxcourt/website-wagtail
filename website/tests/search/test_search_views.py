@@ -184,6 +184,8 @@ class TestSearchViewDocketDetection:
         mock_query_cls.get.assert_called_once_with("123-19")
 
     def test_valid_docket_number_is_added_to_search_results(self):
+        from datetime import datetime, timezone
+
         from search.dawson import DocketMatch
         from search.dawson_client import DawsonCaseRecord
 
@@ -191,7 +193,7 @@ class TestSearchViewDocketDetection:
         record = DawsonCaseRecord(
             docket_number="123-19",
             case_caption="Some Petitioner",
-            filing_date="2019-01-01T00:00:00.000Z",
+            filing_date=datetime(2019, 1, 1, tzinfo=timezone.utc),
             dawson_url="https://dawson.ustaxcourt.gov/case-detail/123-19",
         )
         ctx, mock_query_cls, mock_get_case_record = self._run_search(
@@ -234,6 +236,87 @@ class TestSearchViewDocketDetection:
         )
         mock_get_case_record.assert_called_once_with("123-19")
         assert ctx["search_results"].object_list == []
+
+
+@pytest.mark.django_db
+class TestSearchViewTemplateRendering:
+    """Renders the real search.html template end-to-end (rather than mocking
+    TemplateResponse) so a template syntax error in the docket-record card
+    or warning callout would actually fail a test. Page/JudgeProfile are
+    still mocked, matching the rest of this file — the real Wagtail search
+    backend needs an FTS table pytest-django's sqlite test DB doesn't set up."""
+
+    def _get(self, query):
+        from django.test import Client, override_settings
+
+        # Two pre-existing gaps in app.settings.test, unrelated to this
+        # feature: (1) it extends base.py directly (not local.py), so it
+        # never gets local.py's GITHUB_SHA fallback, and base.html's
+        # build_info context processor crashes on GITHUB_SHA being None;
+        # (2) it overrides the legacy STATICFILES_STORAGE setting, but
+        # Django 5's STORAGES dict (set in base.py to whitenoise's
+        # manifest storage, which requires a collectstatic manifest that
+        # doesn't exist here) takes precedence over that legacy setting.
+        with override_settings(
+            GITHUB_SHA="test-sha",
+            STORAGES={
+                "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+                "staticfiles": {
+                    "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+                },
+            },
+        ):
+            with patch("search.views.Page") as mock_page_cls:
+                mock_page_cls.objects.live.return_value.search.return_value = []
+                with patch("search.views.JudgeProfile") as mock_judge:
+                    mock_judge.objects.filter.return_value.filter.return_value = []
+                    with patch("search.views.SearchPromotion") as mock_promo:
+                        mock_promo.objects.filter.return_value.select_related.return_value = []
+                        client = Client()
+                        return client.get("/search/", {"query": query})
+
+    def test_valid_docket_number_renders_docket_record_card(self):
+        from datetime import datetime, timezone
+
+        from search.dawson import DocketMatch
+        from search.dawson_client import DawsonCaseRecord
+
+        match = DocketMatch(term="123-19", docket_number="123-19", is_valid=True)
+        record = DawsonCaseRecord(
+            docket_number="123-19",
+            case_caption="Some Petitioner",
+            filing_date=datetime(2019, 1, 4, tzinfo=timezone.utc),
+            dawson_url="https://dawson.ustaxcourt.gov/case-detail/123-19",
+        )
+        with patch("search.views.is_docket_number", return_value=match):
+            with patch("search.views.get_case_record", return_value=record):
+                response = self._get("123-19")
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Docket Record" in content
+        assert "Docket No. 123-19" in content
+        assert "Filed: 01/04/19" in content
+        assert "View Docket Record in DAWSON" in content
+        assert "https://dawson.ustaxcourt.gov/case-detail/123-19" in content
+
+    def test_invalid_docket_format_renders_warning_callout(self):
+        from search.dawson import DocketMatch
+
+        match = DocketMatch(term="1234567890", docket_number=None, is_valid=False)
+        with patch("search.views.is_docket_number", return_value=match):
+            response = self._get("1234567890")
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Looking for a Docket Number" in content
+        assert "Search DAWSON" in content
+
+    def test_plain_query_with_no_results_shows_no_results_found(self):
+        response = self._get("this matches absolutely nothing at all")
+
+        assert response.status_code == 200
+        assert "No results found" in response.content.decode()
 
 
 @pytest.mark.django_db

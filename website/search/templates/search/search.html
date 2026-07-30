@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailsearchpromotions_tags %}
+{% load static tz wagtailcore_tags wagtailsearchpromotions_tags %}
 {% block body_class %}template-searchresults{% endblock %}
 {% block title %}Search{% endblock %}
 {% block content %}
@@ -181,6 +181,51 @@
             color: #333;
             font-size: 1rem;
         }
+
+        #search-page .docket-record-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #search-page .docket-record-card h2 {
+            font-family: "Source Sans Pro", sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--color-link);
+            margin: 0;
+        }
+
+        #search-page .docket-record-card .docket-number {
+            font-size: 1.25rem;
+            color: #1b1b1b;
+        }
+
+        #search-page .docket-record-card .filing-date {
+            font-weight: 600;
+            font-size: 1.0625rem;
+            color: #1b1b1b;
+        }
+
+        #search-page .docket-record-card .desc {
+            font-weight: 600;
+            font-size: 1.0625rem;
+            color: #1b1b1b;
+        }
+
+        #search-page .docket-record-card .view-in-dawson {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.0625rem;
+            color: var(--color-link);
+        }
+
+        #search-page .docket-record-card .view-in-dawson img {
+            width: 16px;
+            height: 16px;
+        }
     </style>
     <div id="search-page">
         <h1>Search</h1>
@@ -190,9 +235,12 @@
                    {% if search_query %}value="{{ search_query }}"{% endif %}
                    placeholder="Search..."
                    aria-label="Search box">
-            <input type="submit" value="Search" class="button" aria-label="Search button" data-testid="search-inpage-input">
+            <input type="submit"
+                   value="Search"
+                   class="button"
+                   aria-label="Search button"
+                   data-testid="search-inpage-input">
         </form>
-
         {% if display_docket_callout %}
             {% include "callout_block.html" with block=callout_block %}
         {% endif %}
@@ -223,20 +271,38 @@
                     {% endfor %}
                 {% endif %}
                 {% for result in search_results %}
-                    <li class="result-card">
-                        {% if result.url %}
-                            <h2>
-                                <a href="{{ result.url }}">{{ result.title }}</a>
-                            </h2>
-                        {% else %}
-                            <h2>
-                                <a href="{% pageurl result %}">{{ result }}</a>
-                            </h2>
-                        {% endif %}
-                        {% if result.search_snippet %}
-                            <div class="desc">{{ result.search_snippet|striptags|truncatechars:200 }}</div>
-                        {% endif %}
-                    </li>
+                    {% if result.docket_number %}
+                        <li class="result-card docket-record-card">
+                            <h2>Docket Record</h2>
+                            <div class="docket-number">Docket No. {{ result.docket_number }}</div>
+                            {% if result.filing_date %}<div class="filing-date">Filed: {{ result.filing_date|utc|date:"m/d/y" }}</div>{% endif %}
+                            <div class="desc">{{ result.search_snippet }}</div>
+                            <a class="view-in-dawson"
+                               href="{{ result.url }}"
+                               target="_blank"
+                               rel="noopener">
+                                View Docket Record in DAWSON
+                                <img src="{% static 'uswds/img/usa-icons/launch.svg' %}"
+                                     alt=""
+                                     aria-hidden="true">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="result-card">
+                            {% if result.url %}
+                                <h2>
+                                    <a href="{{ result.url }}">{{ result.title }}</a>
+                                </h2>
+                            {% else %}
+                                <h2>
+                                    <a href="{% pageurl result %}">{{ result }}</a>
+                                </h2>
+                            {% endif %}
+                            {% if result.search_snippet %}
+                                <div class="desc">{{ result.search_snippet|striptags|truncatechars:200 }}</div>
+                            {% endif %}
+                        </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             <div class="pagination">

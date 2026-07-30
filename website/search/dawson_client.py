@@ -1,5 +1,6 @@
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 
 import requests
 from django.conf import settings
@@ -17,8 +18,17 @@ class DawsonCaseRecord:
 
     docket_number: str
     case_caption: str
-    filing_date: str | None
+    filing_date: datetime | None
     dawson_url: str
+
+
+def _parse_filing_date(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
 
 
 def _dawson_public_site_url() -> str:
@@ -87,6 +97,6 @@ def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
     return DawsonCaseRecord(
         docket_number=docket_number,
         case_caption=case_caption,
-        filing_date=data.get("receivedAt"),
+        filing_date=_parse_filing_date(data.get("receivedAt")),
         dawson_url=f"{_dawson_public_site_url()}/case-detail/{docket_number}",
     )
