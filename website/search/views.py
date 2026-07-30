@@ -240,7 +240,7 @@ def search(request):
                 "value": {
                     "heading": "Looking for a docket number?",
                     "text": RichText(
-                        '<p data-block-key="5ybz3">Docket numbers must be entered in the format <b>123-19</b>.</p><p data-block-key="7negh"><b>Example</b>: “Docket Number 123-19”, “Docket No. 123-19”, or “123-19”</p><p data-block-key="fjj0k"><a class="dawson-search-link" href="https://dawson.ustaxcourt.gov/" target="_blank" rel="noopener">Search DAWSON’s Docket Records<span class="launch-icon" aria-hidden="true"></span></a></p>'
+                        '<p data-block-key="5ybz3">Docket numbers must be entered in the format <b>123-19</b>.</p><p data-block-key="7negh"><b>Example</b>: “Docket Number 123-19”, “Docket No. 123-19”, or “123-19”</p><p data-block-key="fjj0k" class="right-aligned"><a class="dawson-search-link" href="https://dawson.ustaxcourt.gov/" target="_blank" rel="noopener">Search DAWSON’s Docket Records<span class="launch-icon" aria-hidden="true"></span></a></p>'
                     ),
                     "callout_type": "warning",
                 },
