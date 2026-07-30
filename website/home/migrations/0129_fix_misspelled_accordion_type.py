@@ -3,13 +3,26 @@
 from django.db import migrations
 
 
+def run_custom_sql_by_backend(apps, schema_editor):
+    # Obtain the current database vendor string
+    vendor = schema_editor.connection.vendor
+
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            cursor.execute(
+                """UPDATE home_enhancedstandardpage set body = replace(body::text, 'accordian', 'accordion')::jsonb;"""
+            )
+        else:
+            cursor.execute(
+                """UPDATE home_enhancedstandardpage set body = replace(body, 'accordian', 'accordion');"""
+            )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0128_remove_pressreleasepage_press_release_body"),
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql="""UPDATE home_enhancedstandardpage set body = replace(body, 'accordian', 'accordion');""",
-        ),
+        migrations.RunPython(run_custom_sql_by_backend, migrations.RunPython.noop),
     ]
