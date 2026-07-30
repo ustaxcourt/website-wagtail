@@ -217,21 +217,6 @@ def hide_nested_list_disabled_unless_checkbox():
     )
 
 
-@hooks.register("insert_global_admin_css")
-def hide_nested_list_conditional_fields_unless_checkbox():
-    """
-    In the nested list block admin editor, the per-item "Condition Key" and
-    "Requires checkbox checked" fields (used to make one checkbox's enabled
-    state depend on another checkbox being checked) only apply to
-    checkbox-style lists.
-    """
-    css = "".join(
-        _nested_list_field_visible_unless_checkbox_css(field_name)
-        for field_name in ("condition_key", "requires_checked")
-    )
-    return mark_safe(f"<style>{css}</style>")
-
-
 # CloudFront bills per invalidation path. Purging a large set of pages one-by-one
 # via purge_pages_from_cache() can cost orders of magnitude more than a single
 # wildcard "/*" purge, so once the affected set gets this large we switch to the

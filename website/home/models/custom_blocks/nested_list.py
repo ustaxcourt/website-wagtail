@@ -45,10 +45,6 @@ class NestedListBlock(blocks.StructBlock):
             for item in cleaned_data.get("items", []):
                 if "disabled" in item:
                     item["disabled"] = False
-                if "condition_key" in item:
-                    item["condition_key"] = ""
-                if "requires_checked" in item:
-                    item["requires_checked"] = ""
 
         return cleaned_data
 
@@ -74,31 +70,6 @@ def create_nested_list_block(max_depth=5, current_depth=1):
                 required=False,
                 default=False,
                 help_text="Always render this checkbox as disabled, regardless of other checkboxes.",
-            ),
-        ),
-        (
-            "condition_key",
-            blocks.CharBlock(
-                required=False,
-                max_length=64,
-                help_text=(
-                    "Optional: a short id for this checkbox (e.g. 'agree'). "
-                    "Other checkboxes in this list can require it via their "
-                    "'Requires checkbox checked' field."
-                ),
-            ),
-        ),
-        (
-            "requires_checked",
-            blocks.CharBlock(
-                required=False,
-                max_length=64,
-                label="Requires checkbox checked",
-                help_text=(
-                    "Optional: enter another checkbox's Condition Key from "
-                    "this list. This checkbox stays disabled until that one "
-                    "is checked by the visitor."
-                ),
             ),
         ),
         ("image", ImageBlock(required=False)),
