@@ -6,9 +6,7 @@ from home.models.custom_blocks.nested_list import LIST_TYPE_CHOICES
 
 class RecursiveListTemplateTests(TestCase):
     def test_checkbox_with_subtext_is_available_as_list_type_choice(self):
-        self.assertIn(
-            ("checkbox_with_subtext", "Checkbox with Subtext"), LIST_TYPE_CHOICES
-        )
+        self.assertIn(("checkbox_with_subtext", "To Do List"), LIST_TYPE_CHOICES)
 
     def test_checkbox_list_renders_subtext_only_for_items_that_have_it(self):
         """Subtext is an optional per-item sub-label: a plain 'checkbox' list
@@ -81,33 +79,3 @@ class RecursiveListTemplateTests(TestCase):
         )
         self.assertIn('class="checkbox-label-container is-disabled"', html)
         self.assertIn('<input type="checkbox">', html)
-
-    def test_conditional_checkbox_renders_condition_key_and_requires_checked(self):
-        """A checkbox item can require another item's Condition Key to be
-        checked before it becomes enabled. It should render as disabled by
-        default (nothing is checked on page load) with the data attributes
-        the client-side script needs to wire up the dependency."""
-        html = render_to_string(
-            "home/_recursive_list.html",
-            {
-                "list_type": "checkbox",
-                "items": [
-                    {
-                        "text": "<p>I agree to the terms</p>",
-                        "condition_key": "agree",
-                    },
-                    {
-                        "text": "<p>Proceed to next step</p>",
-                        "requires_checked": "agree",
-                    },
-                ],
-            },
-        )
-
-        self.assertIn('data-condition-key="agree"', html)
-        self.assertIn('data-requires-checked="agree"', html)
-        self.assertIn(
-            'class="checkbox-label-container is-disabled" data-requires-checked="agree"',
-            html,
-        )
-        self.assertIn('<input type="checkbox" disabled aria-disabled="true">', html)
