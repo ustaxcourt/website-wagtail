@@ -31,17 +31,16 @@ def _parse_filing_date(value: str | None) -> datetime | None:
         return None
 
 
-def dawson_public_site_url() -> str:
-    """
-    The public-facing DAWSON site URL for the current environment. Mirrors
-    get_environment_specific_dawson_url() in
-    home/management/commands/pages/efiling_and_case_maintenance/dawson_page.py.
-    """
+def get_environment_specific_dawson_url(prefix=None):
     if settings.ENVIRONMENT == "production":
-        return "https://dawson.ustaxcourt.gov"
-    if settings.ENVIRONMENT == "train":
-        return "https://test.ef-cms.ustaxcourt.gov"
-    return "https://dev.ef-cms.ustaxcourt.gov"
+        url = "dawson.ustaxcourt.gov"
+    elif settings.ENVIRONMENT == "train":
+        url = "test.ef-cms.ustaxcourt.gov"
+    else:  # Default to development [local, dev, sandbox, all others]
+        url = "dev.ef-cms.ustaxcourt.gov"
+    if prefix:
+        return f"https://{prefix}.{url}"
+    return f"https://{url}"
 
 
 def get_case_record(docket_number: str) -> DawsonCaseRecord | None:
@@ -53,7 +52,7 @@ def get_case_record(docket_number: str) -> DawsonCaseRecord | None:
     not-found results) should degrade to a "no results found" state for the
     caller rather than raising.
     """
-    url = f"{settings.DAWSON_PUBLIC_API_BASE_URL}/cases/{docket_number}"
+    url = f"{get_environment_specific_dawson_url('public-api')}/public-api/cases/{docket_number}"
     try:
         response = requests.get(url, timeout=DAWSON_API_TIMEOUT_SECONDS)
     except requests.RequestException:
@@ -112,5 +111,5 @@ def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
         docket_number=docket_number,
         case_caption=case_caption,
         filing_date=_parse_filing_date(filing_date_raw),
-        dawson_url=f"{dawson_public_site_url()}/case-detail/{docket_number}",
+        dawson_url=f"{get_environment_specific_dawson_url()}/case-detail/{docket_number}",
     )
