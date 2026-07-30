@@ -138,7 +138,7 @@ class ExternalLinksReportTestPageInitializer(PageInitializer):
             },
             {
                 "type": "paragraph",
-                "value": '<p data-block-key="1wv5f">This is to test the <a href="#btn-6-accordian">Anchor Link in Paragraph</a> on page</p><p data-block-key="d4osk">This is to test the <a href="https://ustaxcourt.gov/court-fees/#btn-4-accordian">Anchor Link in Paragraph on different page</a></p><p data-block-key="2i48b">Checking <a linktype="page" id="6">Internal Link</a></p><p data-block-key="cljnb">Checking <a href="https://www.youtube.com/?themeRefresh=1">External Link in Paragraph</a></p>',
+                "value": '<p data-block-key="1wv5f">This is to test the <a href="#btn-6-accordion">Anchor Link in Paragraph</a> on page</p><p data-block-key="d4osk">This is to test the <a href="https://ustaxcourt.gov/court-fees/#btn-4-accordion">Anchor Link in Paragraph on different page</a></p><p data-block-key="2i48b">Checking <a linktype="page" id="6">Internal Link</a></p><p data-block-key="cljnb">Checking <a href="https://www.youtube.com/?themeRefresh=1">External Link in Paragraph</a></p>',
                 "id": "9112521b-26b2-4177-b95f-cf49cb4dffe7",
             },
             {
@@ -154,13 +154,13 @@ class ExternalLinksReportTestPageInitializer(PageInitializer):
                 "id": "eb7ef844-0e52-45a2-923f-430a4e87dffe",
             },
             {
-                "type": "accordian",
+                "type": "accordion",
                 "value": {
                     "title": "This is an accordion",
                     "description": [
                         {
                             "type": "prose",
-                            "value": '<p data-block-key="byr0k">Text that goes into accordian <a href="https://webaim.org/resources/contrastchecker/">External Link in Prose of Accordian Block</a></p>',
+                            "value": '<p data-block-key="byr0k">Text that goes into accordion <a href="https://webaim.org/resources/contrastchecker/">External Link in Prose of Accordion Block</a></p>',
                             "id": "aab4950a-e9f0-45d4-9890-fe1a78e9df77",
                         }
                     ],

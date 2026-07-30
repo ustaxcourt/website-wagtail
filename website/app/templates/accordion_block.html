@@ -1,10 +1,10 @@
 {% load static %} {% load wagtailcore_tags %}
 <style>
-  .accordian-block {
+  .accordion-block {
     border-radius: 4px;
     word-wrap: break-word;
   }
-  .accordian-title {
+  .accordion-title {
     width: 100%;
     color: var(--color-primary);
     cursor: pointer;
@@ -12,14 +12,14 @@
     padding: 15px 15px;
     font-size: 1.2rem;
   }
-  .accordian-title:focus:not(:focus-visible),
-  .accordian-title:focus-within:not(:focus-visible) {
+  .accordion-title:focus:not(:focus-visible),
+  .accordion-title:focus-within:not(:focus-visible) {
     outline: none;
   }
-  .accordian-title.active {
+  .accordion-title.active {
     color: #ffffff;
   }
-  .accordian-icon {
+  .accordion-icon {
     width: 15px;
     height: 9px;
     cursor: pointer;
@@ -40,11 +40,11 @@
 
     transition: transform 0.3s ease;
   }
-  .accordian-icon.active {
+  .accordion-icon.active {
     background-color: var(--color-white);
   }
 
-  .accordian-header {
+  .accordion-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -53,25 +53,25 @@
     background-color: var(--color-white);
     border-bottom: 1px solid var(--theme-color-base-lighter);
   }
-  .accordian-header:focus:not(:focus-visible),
-  .accordian-header:focus-within:not(:focus-visible) {
+  .accordion-header:focus:not(:focus-visible),
+  .accordion-header:focus-within:not(:focus-visible) {
     outline: none;
   }
-  .accordian-header.active {
+  .accordion-header.active {
     background-color: var(--color-primary);
     border-bottom: none;
   }
 
-  .accordian-header:hover {
+  .accordion-header:hover {
     cursor: pointer;
   }
-  .accordian-header p {
+  .accordion-header p {
     color: var(--color-primary);
   }
   .hidden {
     display: none;
   }
-  .accordian-content {
+  .accordion-content {
     padding: 20px 45px;
     width: 100%;
     border-bottom: 1px solid var(--theme-color-base-lighter);
@@ -81,7 +81,7 @@
     transition: transform 0.3s ease;
   }
 
-  .accordian-header-button {
+  .accordion-header-button {
     background: none;
     color: #1b1b1b;
     border: none;
@@ -95,13 +95,13 @@
     align-items: center;
     padding: 0;
   }
-  .accordian-header-button:focus:not(:focus-visible) {
+  .accordion-header-button:focus:not(:focus-visible) {
     outline: none;
   }
-  .accordian-header-button.active {
+  .accordion-header-button.active {
     color: #ffffff;
   }
-  .accordian-content .rich-text ol {
+  .accordion-content .rich-text ol {
     list-style-type: decimal;
   }
   .rich-text img {
@@ -109,48 +109,48 @@
     height: auto;
     display: block;
   }
-  .accordian-content .rich-text:last-child p:last-child {
+  .accordion-content .rich-text:last-child p:last-child {
     margin-bottom: 0;
   }
   @media (max-width: 768px) {
-    .accordian-title {
+    .accordion-title {
       padding: 15px 10px;
     }
-    .accordian-header {
+    .accordion-header {
       width: 100%;
       height: auto;
     }
-    .accordian-header h3 {
+    .accordion-header h3 {
       font-size: 18px;
     }
-    .accordian-content {
+    .accordion-content {
       width: 100%;
       padding: 20px 20px;
     }
-    .accordian-header-button {
+    .accordion-header-button {
       font-size: 18px;
     }
   }
 </style>
 {% with data=block.value %}
-<div id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordian-block" data-accordion-id="accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
-<div class="accordian-header {% if data.default_to_open %}active{% endif %}">
-    <h3 class="accordian-title {% if data.default_to_open %}active{% endif %}">
+<div id="accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="accordion-block" data-accordion-id="accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
+<div class="accordion-header {% if data.default_to_open %}active{% endif %}">
+    <h3 class="accordion-title {% if data.default_to_open %}active{% endif %}">
       <button
           type="button"
-          class="accordian-header-button {% if data.default_to_open %}active{% endif %}"
+          class="accordion-header-button {% if data.default_to_open %}active{% endif %}"
           aria-expanded="{% if data.default_to_open %}true{% else %}false{% endif %}"
           aria-controls="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
           id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
         >
           {{ data.title }}
-          <span class="accordian-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true"></span>
+          <span class="accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true"></span>
         </button>
     </h3>
   </div>
   <div
     id="content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
-    class="accordian-content {% if not data.default_to_open %}hidden{% endif %}"
+    class="accordion-content {% if not data.default_to_open %}hidden{% endif %}"
     role="region"
     aria-labelledby="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
   >
@@ -179,21 +179,21 @@
 
 <script>
   (function() {
-    const accordianId = "accordian-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
+    const accordionId = "accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
 
     function initializeAccordion() {
-      const accordianBlock = document.getElementById(accordianId);
-      if (!accordianBlock) return;
+      const accordionBlock = document.getElementById(accordionId);
+      if (!accordionBlock) return;
 
-      const header = accordianBlock.querySelector(".accordian-header");
+      const header = accordionBlock.querySelector(".accordion-header");
       if (!header) return;
 
       if (header.dataset.initialized === "true") return;
 
-      const title = accordianBlock.querySelector(".accordian-title");
-      const content = accordianBlock.querySelector(".accordian-content");
-      const icon = accordianBlock.querySelector(".accordian-icon");
-      const button = accordianBlock.querySelector(".accordian-header-button");
+      const title = accordionBlock.querySelector(".accordion-title");
+      const content = accordionBlock.querySelector(".accordion-content");
+      const icon = accordionBlock.querySelector(".accordion-icon");
+      const button = accordionBlock.querySelector(".accordion-header-button");
 
       if (!content || !icon || !title || !button) return;
 
@@ -221,7 +221,7 @@
     }
 
     document.addEventListener("initAccordion", function(event) {
-      if (event.detail && event.detail.accordionId === accordianId) {
+      if (event.detail && event.detail.accordionId === accordionId) {
         initializeAccordion();
       }
     });

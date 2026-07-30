@@ -163,11 +163,11 @@
                         </div>
                     {% endfor %}
                 </div>
-            {% elif block.block_type == 'accordian' %}
+            {% elif block.block_type == 'accordion' %}
                 {% if tile_index is not None %}
-                    {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
+                    {% include "accordion_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
                 {% else %}
-                    {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix="-accordian" %}
+                    {% include "accordion_block.html" with block=block block_index=forloop.counter0 suffix="-accordion" %}
                 {% endif %}
             {% elif block.block_type == 'button' %}
                 {% include "includes/styled_button.html" with block=block %}
