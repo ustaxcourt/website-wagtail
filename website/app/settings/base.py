@@ -339,11 +339,6 @@ ENVIRONMENT = "dev"
 
 BASE_URL = "http://127.0.0.1:8000"
 
-DAWSON_PUBLIC_API_BASE_URL = os.getenv(
-    "DAWSON_PUBLIC_API_BASE_URL",
-    "https://public-api.dawson.ustaxcourt.gov/public-api",
-)
-
 # GitHub SHA for build version
 GITHUB_SHA = os.getenv("GITHUB_SHA")
 
