@@ -31,7 +31,7 @@ def _parse_filing_date(value: str | None) -> datetime | None:
         return None
 
 
-def _dawson_public_site_url() -> str:
+def dawson_public_site_url() -> str:
     """
     The public-facing DAWSON site URL for the current environment. Mirrors
     get_environment_specific_dawson_url() in
@@ -112,5 +112,5 @@ def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
         docket_number=docket_number,
         case_caption=case_caption,
         filing_date=_parse_filing_date(filing_date_raw),
-        dawson_url=f"{_dawson_public_site_url()}/case-detail/{docket_number}",
+        dawson_url=f"{dawson_public_site_url()}/case-detail/{docket_number}",
     )
