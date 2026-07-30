@@ -400,7 +400,7 @@
                     selectedBody.style.display = 'block';
 
                     // Trigger initialization for any accordions in this card body
-                    const accordions = selectedBody.querySelectorAll('.accordian-block');
+                    const accordions = selectedBody.querySelectorAll('.accordion-block');
                     accordions.forEach(function(accordion) {
                         document.dispatchEvent(new CustomEvent('initAccordion', {
                             detail: { accordionId: accordion.id }
