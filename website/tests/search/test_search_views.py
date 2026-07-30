@@ -298,7 +298,7 @@ class TestSearchViewTemplateRendering:
         content = response.content.decode()
         assert "Docket Record" in content
         assert "Docket No. 123-19" in content
-        assert "Filed: 01/04/19" in content
+        assert "<b>Filed: </b>01/04/19" in content
         assert "View Docket Record in DAWSON" in content
         assert "https://dawson.ustaxcourt.gov/case-detail/123-19" in content
 
