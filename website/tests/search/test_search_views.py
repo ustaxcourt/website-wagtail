@@ -246,7 +246,7 @@ class TestSearchViewTemplateRendering:
     still mocked, matching the rest of this file — the real Wagtail search
     backend needs an FTS table pytest-django's sqlite test DB doesn't set up."""
 
-    def _get(self, query):
+    def _get(self, query, page_results=None):
         from django.test import Client, override_settings
 
         # Two pre-existing gaps in app.settings.test, unrelated to this
@@ -267,7 +267,9 @@ class TestSearchViewTemplateRendering:
             },
         ):
             with patch("search.views.Page") as mock_page_cls:
-                mock_page_cls.objects.live.return_value.search.return_value = []
+                mock_page_cls.objects.live.return_value.search.return_value = (
+                    page_results or []
+                )
                 with patch("search.views.JudgeProfile") as mock_judge:
                     mock_judge.objects.filter.return_value.filter.return_value = []
                     with patch("search.views.SearchPromotion") as mock_promo:
@@ -303,14 +305,31 @@ class TestSearchViewTemplateRendering:
     def test_invalid_docket_format_renders_warning_callout(self):
         from search.dawson import DocketMatch
 
+        page_result = MagicMock(title="Tax Court Rules", pk=1, url="/rules/")
+        match = DocketMatch(term="1234567890", docket_number=None, is_valid=False)
+        with patch("search.views.is_docket_number", return_value=match):
+            with patch("search.views.get_search_snippet", return_value=""):
+                response = self._get("1234567890", page_results=[page_result])
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Looking for a Docket Number" in content
+        assert "Search DAWSON" in content
+        # "Website Results" heading only shows alongside actual results,
+        # distinguishing them from the DAWSON warning above.
+        assert "Website Results" in content
+
+    def test_invalid_docket_format_with_no_results_omits_website_results_heading(self):
+        from search.dawson import DocketMatch
+
         match = DocketMatch(term="1234567890", docket_number=None, is_valid=False)
         with patch("search.views.is_docket_number", return_value=match):
             response = self._get("1234567890")
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert "Looking for a Docket Number" in content
-        assert "Search DAWSON" in content
+        assert "No results found" in content
+        assert "Website Results" not in content
 
     def test_plain_query_with_no_results_shows_no_results_found(self):
         response = self._get("this matches absolutely nothing at all")
