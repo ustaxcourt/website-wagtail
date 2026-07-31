@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import path, reverse
 from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from django.utils.html import format_html
@@ -146,7 +147,8 @@ def protect_special_judge_roles(request, snippets):
 @hooks.register("insert_global_admin_js")
 def global_admin_js():
     return format_html(
-        '<script src="{}"></script>', static("home/js/news_item_admin.js")
+        '<script src="{}"></script>',
+        static("home/js/news_item_admin.js"),
     )
 
 
@@ -159,6 +161,30 @@ def hide_typed_table_caption():
     """
     return format_html(
         "<style>.typed-table-block > [data-field-wrapper] {{ display: none !important; }}</style>"
+    )
+
+
+@hooks.register("insert_global_admin_css")
+def hide_nested_list_subtext_unless_checkbox_with_subtext():
+    """
+    In the nested list block admin editor, the per-item "Subtext" field only
+    applies when the list's "List type" is "Checkbox with Subtext". Rather
+    than a JS toggle, this is done with a pure CSS :has() rule scoped to each
+    list's own struct-block, so it also works for nested lists and for items
+    added dynamically without needing to watch for DOM mutations.
+    """
+    items_chain = (
+        " > [data-contentpath='items'] > div > "
+        "div[data-streamfield-list-container] > div[data-streamfield-child] > "
+        "section.w-panel > div.w-panel__content > div.struct-block > "
+        "[data-contentpath='subtext']"
+    )
+    return mark_safe(
+        "<style>"
+        f".struct-block{items_chain} {{ display: none; }}"
+        ".struct-block:has(> [data-contentpath='list_type'] "
+        f"option[value='checkbox_with_subtext']:checked){items_chain} {{ display: block; }}"
+        "</style>"
     )
 
 
