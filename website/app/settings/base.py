@@ -471,7 +471,7 @@ WAGTAILTRANSFER_NO_FOLLOW_MODELS = [
 
 WAGTAILTRANSFER_LOOKUP_FIELDS = {
     "wagtailcore.collection": ["name"],
-    "wagtailcore.page": ["slug"],
+    "wagtailcore.page": ["url_path"],
     "home.pamphletentry": ["title", "code"],
     "home.commontext": ["name"],
     "home.executescript": ["command_name", "execution_type"],
