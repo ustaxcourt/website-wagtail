@@ -16,7 +16,16 @@ terraform apply -target=module.app.aws_instance.bastion -target=module.app.aws_s
 echo "Bastion Security Group update applied."
 
 BASTION_HOST_IP=$(terraform output -raw bastion_public_ip)
+if [ -z "${BASTION_HOST_IP}" ]; then
+  echo "ERROR: terraform output 'bastion_public_ip' is empty. Check that terraform state is initialized."
+  exit 1
+fi
+
 DATABASE_HOSTNAME=$(terraform output -raw database_endpoint)
+if [ -z "${DATABASE_HOSTNAME}" ]; then
+  echo "ERROR: terraform output 'database_endpoint' is empty. Check that terraform state is initialized."
+  exit 1
+fi
 
 mkdir -p .ssh
 echo "${BASTION_PRIVATE_KEY}" | base64 --decode > .ssh/id_rsa
@@ -25,7 +34,7 @@ echo "Bastion private key configured."
 
 echo "Waiting for bastion host to accept SSH connections..."
 for i in $(seq 1 20); do
-  if ssh-keyscan -H ${BASTION_HOST_IP} > .ssh/known_hosts 2>/dev/null && [ -s .ssh/known_hosts ]; then
+  if ssh-keyscan -H "${BASTION_HOST_IP}" > .ssh/known_hosts 2>/dev/null && [ -s .ssh/known_hosts ]; then
     echo "Host key scanned and added."
     break
   fi
@@ -37,11 +46,11 @@ if [ ! -s .ssh/known_hosts ]; then
   exit 1
 fi
 
-echo "SSH tunnel opened in background. Connect in localhost:5432 ..."
+echo "Opening SSH tunnel. Connect in localhost:5432 ..."
 
 ssh -o StrictHostKeyChecking=yes -o UserKnownHostsFile=.ssh/known_hosts \
-    -L 5432:${DATABASE_HOSTNAME} \
-    -N -q -i .ssh/id_rsa ubuntu@${BASTION_HOST_IP} || {
+    -L "5432:${DATABASE_HOSTNAME}" \
+    -N -q -i .ssh/id_rsa "ubuntu@${BASTION_HOST_IP}" || {
       echo "ERROR: SSH tunnel command failed or was interrupted."
       exit 1;
     }
