@@ -4,11 +4,15 @@ source ./setup.sh
 
 terraform init \
     -upgrade \
+    -reconfigure \
     -backend=true \
     -backend-config=bucket="${STATE_BUCKET}" \
     -backend-config=key="${KEY}" \
     -backend-config=dynamodb_table="${LOCK_TABLE}" \
-    -backend-config=region="${REGION}"
+    -backend-config=region="${REGION}" || {
+      echo "ERROR: terraform init failed. Aborting before touching bastion state."
+      exit 1
+    }
 
 echo "Applying targeted update to Bastion Security Group..."
 terraform apply -target=module.app.aws_instance.bastion -target=module.app.aws_security_group.bastion_sg -auto-approve
