@@ -3,15 +3,9 @@ Management command to check for dangling references in the Home page
 and its children pages.
 """
 
-import logging
 from django.core.management.base import BaseCommand
 from wagtail.models import Page
 from wagtail_transfer.serializers import serializer_registry
-import django
-
-django.setup()
-
-logger = logging.getLogger(__name__)
 
 
 def find_dangling_refs(root_page_id):
@@ -83,7 +77,7 @@ def find_pages_holding_reference(broken_model_label, broken_pk, root_page_id):
 
 
 class Command(BaseCommand):
-    help = "Check for dangling references in the Home page and its children pages"
+    help = "Check for dangling references starting from a given page (--page-id) and all of its descendants"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -96,9 +90,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        # self.dry_run = options.get("dry_run", False)
-        # self.verbose = options.get("verbose", False)
-
         # Page to start the traversal from.
         PAGE_ID_TO_TRAVERSE_FROM = options.get("page_id")
         if PAGE_ID_TO_TRAVERSE_FROM is None:
@@ -107,14 +98,14 @@ class Command(BaseCommand):
                 PAGE_ID_TO_TRAVERSE_FROM = rootPageFirstChild.id
 
         result = find_dangling_refs(PAGE_ID_TO_TRAVERSE_FROM)
-        logger.info(f"Starting Page ID: {PAGE_ID_TO_TRAVERSE_FROM}")
-        logger.info(f"Objects walked: {result['objects_walked']}")
-        logger.info(f"References checked: {result['references_checked']}")
-        logger.info(f"Broken references: {len(result['broken_references'])}")
+        self.stdout.write(f"Starting Page ID: {PAGE_ID_TO_TRAVERSE_FROM}")
+        self.stdout.write(f"Objects walked: {result['objects_walked']}")
+        self.stdout.write(f"References checked: {result['references_checked']}")
+        self.stdout.write(f"Broken references: {len(result['broken_references'])}")
         for label, pk in result["broken_references"]:
             holders = find_pages_holding_reference(label, pk, PAGE_ID_TO_TRAVERSE_FROM)
-            logger.info(f"  {label} pk={pk} referenced by: {holders}")
+            self.stdout.write(f"  {label} pk={pk} referenced by: {holders}")
         if result["serialize_errors"]:
-            logger.info("Serialize errors (object couldn't even be walked):")
+            self.stdout.write("Serialize errors (object couldn't even be walked):")
             for e in result["serialize_errors"]:
-                logger.info(" ", e)
+                self.stdout.write(" ", e)
