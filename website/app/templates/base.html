@@ -214,16 +214,16 @@
             document.addEventListener("DOMContentLoaded", function() {
                   document.addEventListener("click", function(event) {
 
-                  const header = event.target.closest(".accordian-header");
+                  const header = event.target.closest(".accordion-header");
 
                   if (!header) return;
 
-                  const accordianBlock = header.closest(".accordian-block");
+                  const accordionBlock = header.closest(".accordion-block");
 
-                  const title = accordianBlock.querySelector(".accordian-title");
-                  const content = accordianBlock.querySelector(".accordian-content");
-                  const icon = accordianBlock.querySelector(".accordian-icon");
-                  const button = accordianBlock.querySelector(".accordian-header-button");
+                  const title = accordionBlock.querySelector(".accordion-title");
+                  const content = accordionBlock.querySelector(".accordion-content");
+                  const icon = accordionBlock.querySelector(".accordion-icon");
+                  const button = accordionBlock.querySelector(".accordion-header-button");
 
 
                   content.classList.toggle("hidden");
