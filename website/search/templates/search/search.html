@@ -299,7 +299,11 @@
                         <li class="result-card docket-record-card">
                             <h2>Docket Record</h2>
                             <div class="docket-number">Docket No. {{ result.docket_number }}</div>
-                            {% if result.filing_date %}<div class="filing-date"><b>Filed: </b>{{ result.filing_date|utc|date:"m/d/y" }}</div>{% endif %}
+                            {% if result.filing_date %}
+                                <div class="filing-date">
+                                    <b>Filed: </b>{{ result.filing_date|utc|date:"m/d/y" }}
+                                </div>
+                            {% endif %}
                             <div class="desc">{{ result.search_snippet }}</div>
                             <a class="view-in-dawson"
                                href="{{ result.url }}"
