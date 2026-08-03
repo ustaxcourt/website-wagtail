@@ -93,6 +93,31 @@ class TestGetCaseRecord:
         with patch("search.dawson_client.requests.get", return_value=mock_response):
             assert get_case_record("5695-23") is None
 
+    def test_sealed_case_returns_none(self):
+        # Real DAWSON response shape for a sealed docket: entityName
+        # "RestrictedCaseDTO", isSealed True, no caseCaption.
+        sealed_response = {
+            "entityName": "RestrictedCaseDTO",
+            "docketNumber": "175-26",
+            "docketNumberWithSuffix": "175-26",
+            "isPaper": False,
+            "isSealed": True,
+            "docketEntries": [],
+        }
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = sealed_response
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            assert get_case_record("175-26") is None
+
+    def test_sealed_case_with_caption_present_still_returns_none(self):
+        # Even if a sealed response somehow included a caption, isSealed
+        # must take priority — a sealed case is never shown.
+        data = {**CASE_RESPONSE, "isSealed": True}
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = data
+        with patch("search.dawson_client.requests.get", return_value=mock_response):
+            assert get_case_record("5695-23") is None
+
     def test_unparseable_filing_date_falls_back_to_none(self):
         data = {**CASE_RESPONSE, "receivedAt": "not-a-date", "docketEntries": []}
         mock_response = MagicMock(status_code=200, ok=True)

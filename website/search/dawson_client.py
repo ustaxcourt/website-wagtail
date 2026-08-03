@@ -100,6 +100,16 @@ def _find_petition_filing_date(data: dict) -> str | None:
 
 def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
     docket_number = data.get("docketNumberWithSuffix") or data.get("docketNumber")
+
+    if data.get("isSealed"):
+        # A sealed case is treated as though the docket number doesn't
+        # exist — no case details are shown. DAWSON's response for a sealed
+        # case (entityName "RestrictedCaseDTO") also omits caseCaption, so
+        # this would degrade to None below regardless, but checking
+        # isSealed directly makes the intent explicit rather than relying
+        # on that as an incidental side effect.
+        return None
+
     case_caption = data.get("caseCaption")
     if not docket_number or not case_caption:
         logger.warning("DAWSON API response missing expected fields: %s", data)
