@@ -46,3 +46,24 @@ class TestIsDocketNumber:
 
     def test_term_with_letters_and_digits_but_no_dash_is_not_a_docket_attempt(self):
         assert is_docket_number("case123") is None
+
+    def test_term_starting_with_digit_containing_letters_is_invalid_format(self):
+        # Relaxed per 2026-08-03 update: the warning no longer requires the
+        # whole term to be digits/dashes — starting with a digit is enough.
+        result = is_docket_number("123 tax rules")
+        assert result == DocketMatch(
+            term="123 tax rules", docket_number=None, is_valid=False
+        )
+
+    def test_term_with_digit_not_at_start_is_not_a_docket_attempt(self):
+        # A digit appearing later in the term (not at the start) still
+        # doesn't trigger the warning — it must start with a digit.
+        assert is_docket_number("tax 123 rules") is None
+
+    def test_relaxed_warning_does_not_affect_valid_docket_detection(self):
+        # The substring-match path (is_valid=True, passed to DAWSON) is
+        # unchanged by the relaxed warning condition.
+        result = is_docket_number("123-19 tax rules")
+        assert result == DocketMatch(
+            term="123-19 tax rules", docket_number="123-19", is_valid=True
+        )

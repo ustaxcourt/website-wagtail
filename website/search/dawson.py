@@ -4,8 +4,8 @@ from dataclasses import dataclass
 # nnn-yya: nnn is 3-6 digits, yy is a two-digit year, a is 0-2 letters.
 DOCKET_NUMBER_PATTERN = re.compile(r"\d{3,6}-\d{2}[a-zA-Z]{0,2}")
 
-# A search term made up of nothing but digits and dashes.
-DIGITS_AND_DASHES_PATTERN = re.compile(r"^[0-9-]+$")
+# A search term that starts with a digit.
+STARTS_WITH_DIGIT_PATTERN = re.compile(r"^\d")
 
 # SSNs (XXX-XX-XXXX) are explicitly excepted from the invalid-docket warning.
 SSN_LIKE_PATTERN = re.compile(r"^\d{3}-\d{2}-\d{4}$")
@@ -30,10 +30,15 @@ def is_docket_number(term: str) -> DocketMatch | None:
         None: `term` doesn't look like a docket-number attempt at all.
         DocketMatch(is_valid=True, docket_number=...): `term` contains a
             substring matching the docket number format.
-        DocketMatch(is_valid=False, docket_number=None): `term` is entirely
-            digits/dashes but doesn't contain a valid docket number, and
-            isn't an SSN-shaped exception (XXX-XX-XXXX) — this should
-            trigger the "invalid docket number" warning.
+        DocketMatch(is_valid=False, docket_number=None): `term` starts with
+            a digit but doesn't contain a valid docket number, and isn't an
+            SSN-shaped exception (XXX-XX-XXXX) — this should trigger the
+            "invalid docket number" warning. (Relaxed per 2026-08-03
+            update: previously required the whole term to be digits/dashes;
+            now any term starting with a digit qualifies. This only affects
+            when the warning shows — it does not change when a term is
+            treated as a valid docket number and passed to the DAWSON
+            lookup, which is still decided by the substring match above.)
 
     SSN-shaped terms (XXX-XX-XXXX) are excepted entirely per the AC: an SSN's
     first 6 characters happen to fit the nnn-yy shape (e.g. "111-11" out of
@@ -47,7 +52,7 @@ def is_docket_number(term: str) -> DocketMatch | None:
     if match:
         return DocketMatch(term=term, docket_number=match.group(0), is_valid=True)
 
-    if DIGITS_AND_DASHES_PATTERN.match(term):
+    if STARTS_WITH_DIGIT_PATTERN.match(term):
         return DocketMatch(term=term, docket_number=None, is_valid=False)
 
     return None
