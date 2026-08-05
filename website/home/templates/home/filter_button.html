@@ -1,13 +1,121 @@
 {% load wagtailcore_tags %}
 {% load filters %}
+{% comment %} {% load static %} {% endcomment %}
+<style>
+.filter-link {
+    padding: 0.5rem 1rem;
+    border: 1px solid #dcdee0;
+    background-color: #fff;
+    color: #000;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+    font-weight: 400;
+}
+.filter-link:hover {
+    border-color: #007BFF;
+}
 
-<div class="filter-button-container">
-    <button class="filter-button" aria-expanded="false" aria-controls="filter-panel">
-        <span class="filter-button-text">Filter</span>
-        <span class="filter-button-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                <path d="M3 6h18v2H3V6zm4 5h10v2H7v-2zm-4 5h18v2H3v-2z"/>
-            </svg>
+.filter-menu-desktop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.9rem;
+}
+
+.filter-mobile {
+    display: none;
+}
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #162E51;
+    background-color: #fff;
+    color: #162E51;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.filter-toggle:hover {
+    background-color: #1A4480;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+}
+.filter-toggle.active {
+    background-color: #162E51;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+}
+.filter-toggle.active > .toggle-icon > img {
+    filter: brightness(0) invert(1);
+}
+.filter-menu-mobile {
+    display: none;
+    gap: 0.75rem;
+    padding-top: 12px;
+}
+.filter-menu-mobile.open {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.filter-menu-mobile.open > .filter-link {
+    color: var(--color-secondary);
+}
+.filter-mobile .filter-link {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .filter-mobile {
+        display: block;
+    }
+}
+</style>
+{% load static %}
+
+<div class="filter-mobile">
+    <button class="filter-toggle" aria-expanded="false" aria-controls="filter-nav-mobile">
+        <span>Filter Items</span>
+        <span class="toggle-icon" aria-hidden="true">
+            <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20">
         </span>
     </button>
+    <div class="filter-menu-mobile" id="filter-nav-mobile">
+        {% for item in letters %}
+            <a href="#{{ item }}" class="filter-link">{{ item }}</a>
+        {% endfor %}
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterToggle = document.querySelector('.filter-toggle');
+        const filterMenuMobile = document.getElementById('filter-nav-mobile');
+
+        if (filterToggle && filterMenuMobile) {
+            // Toggle menu open/close
+            filterToggle.addEventListener('click', function () {
+                const isOpen = filterMenuMobile.classList.toggle('open');
+                filterToggle.classList.toggle('active', isOpen);
+                filterToggle.setAttribute('aria-expanded', isOpen);
+            });
+
+            // Close the dropdown after clicking a filter link
+            filterMenuMobile.querySelectorAll('.filter-link').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    filterMenuMobile.classList.remove('open');
+                    filterToggle.classList.remove('active');
+                    filterToggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
+    });
+</script>

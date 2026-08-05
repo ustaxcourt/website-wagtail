@@ -287,7 +287,7 @@
             }
 
             #definitions-page .alphabet-nav-mobile.show-nav {
-                display: flex;
+                display: none;
                 border: 1px solid var(--theme-color-base-light, #A9AEB1);
                 padding: 28px;
                 position: absolute;
@@ -300,7 +300,7 @@
             }
 
             #definitions-page .alphabet-nav-mobile a {
-                display: inline-flex;
+                display: none;
                 align-items: center;
                 justify-content: center;
                 min-width: 45px;
@@ -322,14 +322,14 @@
             }
 
             #filter-toggle-btn {
-                display: block;
+                display: none;
                 background: white;
                 color: black;
             }
 
             #filter-toggle-btn.show-nav,
             #filter-toggle-btn:hover {
-                display: block;
+                display: none;
                 background: var(--theme-color-primary-dark, #1A4480);
                 color: white;
             }
@@ -384,6 +384,7 @@
                         <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
                     {% endfor %}
                 </div>
+                {% include "home/filter_button.html" with letters=available_letters %}
             {% endif %}
 
             <div class="search-form-container">

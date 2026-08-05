@@ -175,7 +175,7 @@
 
         @media (max-width: 768px) {
             .alphabet-toggle {
-                display: flex;
+                display: none;
             }
 
             .alphabet {
@@ -241,6 +241,8 @@
                 {% endfor %}
             </div>
         </div>
+        {% comment %} Change name to mobile filter button later{% endcomment %}
+        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPRSTUVW" %}
         {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
             <div class="notice">
                 {% for block in page.city_asterisk_notice %}
