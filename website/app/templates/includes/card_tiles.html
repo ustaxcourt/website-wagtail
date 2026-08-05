@@ -370,6 +370,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
+        const backButton = document.getElementById('card-tiles-back-button');
 
         const urlParams = new URLSearchParams(window.location.search);
         const selectedCard = urlParams.get('card');
@@ -391,7 +392,6 @@
             });
         });
 
-        const backButton = document.getElementById('card-tiles-back-button');
         if (backButton) {
             backButton.addEventListener('click', function(event) {
                 event.preventDefault();
