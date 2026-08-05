@@ -147,9 +147,9 @@ class CardTilesTestPageInitializer(PageInitializer):
                     },
                 ],
             },
-            # accordian - AccordianBlock
+            # accordion - AccordionBlock
             {
-                "type": "accordian",
+                "type": "accordion",
                 "value": {
                     "title": "Sample Accordion",
                     "description": [
@@ -325,7 +325,7 @@ class CardTilesTestPageInitializer(PageInitializer):
 
         # Content after CardTiles
         accordion_block = {
-            "type": "accordian",
+            "type": "accordion",
             "value": {
                 "title": "Additional Information (Accordion)",
                 "description": [
