@@ -7,6 +7,17 @@
     margin-top: 34px;
     margin-bottom: 0;
 }
+.card-tiles-back-button {
+    display: none;
+    margin-top: 0;
+    margin-bottom: 20px;
+    width: auto;
+    min-width: 0;
+    max-width: max-content;
+    padding: 0.75rem 1.25rem;
+    justify-content: center;
+    align-items: center;
+}
 .card-tiles__title {
     color: var(--theme-color-base-darkest, #1B1B1B);
     /* Header H1 */
@@ -263,6 +274,12 @@
 }
 </style>
 
+{% if page.slug == 'practitioners' %}
+<button type="button" class="usa-button card-tiles-back-button" id="card-tiles-back-button" aria-label="Back to practitioners">
+    Back to practitioners
+</button>
+{% endif %}
+
 <div class="card-tiles-container" role="group" aria-label="Navigation cards">
     {% for tile in block.value.tiles %}
       {% with link=tile.link.0 %}
@@ -331,6 +348,29 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
+        const backButton = document.getElementById('card-tiles-back-button');
+
+        function setBackButtonVisibility(isVisible) {
+            if (!backButton) {
+                return;
+            }
+            backButton.style.display = isVisible ? 'inline-block' : 'none';
+        }
+
+        function clearSelectedCard(event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete('card');
+            window.history.pushState({}, '', url.toString());
+            window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+
+        if (backButton) {
+            backButton.addEventListener('click', clearSelectedCard);
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const selectedCard = urlParams.get('card');
@@ -398,6 +438,7 @@
                 const selectedBody = document.getElementById('card-tile-body-' + tileSlug);
                 if (selectedBody) {
                     selectedBody.style.display = 'block';
+                    setBackButtonVisibility(true);
 
                     // Trigger initialization for any accordions in this card body
                     const accordions = selectedBody.querySelectorAll('.accordion-block');
@@ -450,6 +491,9 @@
                             }
                             cardBody.addEventListener('keydown', handleTrap);
                         }
+                }
+                else {
+                    setBackButtonVisibility(false);
                 }
 
                 const linkType = selectedTile.getAttribute('data-link-type');
@@ -533,6 +577,8 @@
                 if (defaultContent) {
                     defaultContent.style.display = 'block';
                 }
+
+                setBackButtonVisibility(false);
 
                 const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
                 const titleStart = document.querySelector('.page-title-start');
