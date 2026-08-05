@@ -379,6 +379,8 @@ class GuidenceForPractitionersPageInitializer(PageInitializer):
                                 dawson_registration_card,
                                 disciplinary_matters_card,
                             ],
+                            "show_back_button": True,
+                            "back_button_text": "Back to Guidance",
                             "default_content": [
                                 {"type": "h2", "value": "Tax Court Bar"},
                                 {

@@ -7,17 +7,6 @@
     margin-top: 34px;
     margin-bottom: 0;
 }
-.card-tiles-back-button {
-    display: none;
-    margin-top: 0;
-    margin-bottom: 20px;
-    width: auto;
-    min-width: 0;
-    max-width: max-content;
-    padding: 0.75rem 1.25rem;
-    justify-content: center;
-    align-items: center;
-}
 .card-tiles__title {
     color: var(--theme-color-base-darkest, #1B1B1B);
     /* Header H1 */
@@ -142,6 +131,36 @@
 
 /* Body content styling */
 .card-tile__body {
+}
+
+.card-tile__back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+    padding: 8px 16px;
+    border: 1px solid #005EA2;
+    border-radius: 5px;
+    background: #005EA2;
+    color: #FFF;
+    font-family: "Source Sans 3";
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.card-tile__back-button + .card-tiles-container {
+    margin-top: 8px;
+}
+
+.card-tile__back-button:hover,
+.card-tile__back-button:focus {
+    background: #0050b3;
+}
+
+.card-tile__back-button:focus {
+    outline: 2px solid #005EA2;
+    outline-offset: 2px;
 }
 
 .card-tile__body:focus:not(:focus-visible) {
@@ -274,9 +293,12 @@
 }
 </style>
 
-{% if page.slug == 'practitioners' %}
-<button type="button" class="usa-button card-tiles-back-button" id="card-tiles-back-button" aria-label="Back to practitioners">
-    Back to practitioners
+{% if block.value.show_back_button and block.value.back_button_text %}
+<button type="button"
+        class="card-tile__back-button"
+        id="card-tiles-back-button"
+        style="display: none;">
+    {{ block.value.back_button_text }}
 </button>
 {% endif %}
 
@@ -348,29 +370,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cardTiles = document.querySelectorAll('.card-tile');
-        const backButton = document.getElementById('card-tiles-back-button');
-
-        function setBackButtonVisibility(isVisible) {
-            if (!backButton) {
-                return;
-            }
-            backButton.style.display = isVisible ? 'inline-block' : 'none';
-        }
-
-        function clearSelectedCard(event) {
-            if (event) {
-                event.preventDefault();
-            }
-
-            const url = new URL(window.location.href);
-            url.searchParams.delete('card');
-            window.history.pushState({}, '', url.toString());
-            window.dispatchEvent(new PopStateEvent('popstate'));
-        }
-
-        if (backButton) {
-            backButton.addEventListener('click', clearSelectedCard);
-        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const selectedCard = urlParams.get('card');
@@ -391,6 +390,14 @@
                 }
             });
         });
+
+        const backButton = document.getElementById('card-tiles-back-button');
+        if (backButton) {
+            backButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                handle_back_button_press();
+            });
+        }
 
         function selectCardByIdentifier(identifier) {
             let selectedTile = document.getElementById('card-tile-' + identifier);
@@ -438,7 +445,6 @@
                 const selectedBody = document.getElementById('card-tile-body-' + tileSlug);
                 if (selectedBody) {
                     selectedBody.style.display = 'block';
-                    setBackButtonVisibility(true);
 
                     // Trigger initialization for any accordions in this card body
                     const accordions = selectedBody.querySelectorAll('.accordion-block');
@@ -492,9 +498,6 @@
                             cardBody.addEventListener('keydown', handleTrap);
                         }
                 }
-                else {
-                    setBackButtonVisibility(false);
-                }
 
                 const linkType = selectedTile.getAttribute('data-link-type');
                 let breadcrumbText = selected_header ? selected_header.textContent : '';
@@ -518,6 +521,10 @@
                 window.dispatchEvent(new CustomEvent('cardTilesBreadcrumbReady', {
                     detail: { breadcrumb: breadcrumbText }
                 }));
+
+                if (backButton) {
+                    backButton.style.display = 'inline-flex';
+                }
             }
         }
 
@@ -555,43 +562,64 @@
             }
         }
 
+        function handle_back_button_press() {
+            const originatingTile = document.querySelector('.card-tile.selected');
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete('card');
+            window.history.pushState({}, '', url.toString());
+
+            resetToDefaultContent();
+
+            if (originatingTile) {
+                originatingTile.focus();
+            }
+        }
+
+        function resetToDefaultContent() {
+            const defaultContent = document.getElementById('card-tiles-default-content');
+
+            cardTiles.forEach(function(tile) {
+                const slug = tile.id.replace('card-tile-', '');
+                tile.classList.remove('selected');
+                const icon = document.getElementById('card-tile-icon-' + slug);
+                const header = document.getElementById('card-tile-header-' + slug);
+                const body = document.getElementById('card-tile-body-' + slug);
+                if (icon) icon.classList.remove('selected');
+                if (header) header.classList.remove('selected');
+                if (body) body.style.display = 'none';
+            });
+
+            if (defaultContent) {
+                defaultContent.style.display = 'block';
+            }
+
+            if (backButton) {
+                backButton.style.display = 'none';
+            }
+
+            const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
+            const titleStart = document.querySelector('.page-title-start');
+            if (breadcrumbSpan) {
+                breadcrumbSpan.textContent = '';
+                breadcrumbSpan.style.display = 'none';
+            }
+            if (titleStart) {
+                titleStart.removeAttribute('tabindex');
+                titleStart.removeAttribute('role');
+                titleStart.style.textDecoration = 'none';
+                titleStart.style.cursor = 'default';
+            }
+        }
+
         window.addEventListener('popstate', function(event) {
             const urlParams = new URLSearchParams(window.location.search);
             const cardParam = urlParams.get('card');
-            const defaultContent = document.getElementById('card-tiles-default-content');
 
             if (cardParam !== null) {
                 selectCardByIdentifier(cardParam);
             } else {
-                cardTiles.forEach(function(tile) {
-                    const slug = tile.id.replace('card-tile-', '');
-                    tile.classList.remove('selected');
-                    const icon = document.getElementById('card-tile-icon-' + slug);
-                    const header = document.getElementById('card-tile-header-' + slug);
-                    const body = document.getElementById('card-tile-body-' + slug);
-                    if (icon) icon.classList.remove('selected');
-                    if (header) header.classList.remove('selected');
-                    if (body) body.style.display = 'none';
-                });
-
-                if (defaultContent) {
-                    defaultContent.style.display = 'block';
-                }
-
-                setBackButtonVisibility(false);
-
-                const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
-                const titleStart = document.querySelector('.page-title-start');
-                if (breadcrumbSpan) {
-                    breadcrumbSpan.textContent = '';
-                    breadcrumbSpan.style.display = 'none';
-                }
-                if (titleStart) {
-                    titleStart.removeAttribute('tabindex');
-                    titleStart.removeAttribute('role');
-                    titleStart.style.textDecoration = 'none';
-                    titleStart.style.cursor = 'default';
-                }
+                resetToDefaultContent();
             }
         });
     });
