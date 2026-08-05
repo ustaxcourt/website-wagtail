@@ -239,8 +239,17 @@ def search(request):
                 "type": "callout",
                 "value": {
                     "heading": "Looking for a docket number?",
+                    # callout_block.html already wraps this value in its own
+                    # <p>, so this must not contain block-level <p> tags of
+                    # its own (that would produce invalid nested <p>
+                    # elements). <br> separates the informational lines
+                    # instead, and the DAWSON link is right-aligned via a
+                    # block-level span (see .right-aligned in
+                    # callout_block.html) rather than a nested <p>.
                     "text": RichText(
-                        f'<p data-block-key="5ybz3">Docket numbers must be entered in the format <b>123-19</b>.</p><p data-block-key="7negh"><b>Example</b>: “Docket Number 123-19”, “Docket No. 123-19”, or “123-19”</p><p data-block-key="fjj0k" class="right-aligned"><a class="dawson-search-link" href="{get_environment_specific_dawson_url()}" target="_blank" rel="noopener">Search DAWSON’s Docket Records<span class="launch-icon" aria-hidden="true"></span></a></p>'
+                        f"Docket numbers must be entered in the format <b>123-19</b>.<br><br>"
+                        f"<b>Example</b>: “Docket Number 123-19”, “Docket No. 123-19”, or “123-19”<br><br>"
+                        f'<span class="right-aligned"><a class="dawson-search-link" href="{get_environment_specific_dawson_url()}" target="_blank" rel="noopener">Search DAWSON’s Docket Records<span class="launch-icon" aria-hidden="true"></span></a></span>'
                     ),
                     "callout_type": "warning",
                 },
