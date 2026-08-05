@@ -136,3 +136,17 @@ class TestGetCaseRecord:
             get_case_record("5695-23")
             called_url = mock_get.call_args[0][0]
             assert called_url.endswith("/cases/5695-23")
+
+    def test_docket_number_is_url_encoded_in_request(self):
+        # get_case_record() is a public helper; is_docket_number()'s regex
+        # constrains real callers' input, but the URL is still built
+        # defensively in case of less-trusted future callers.
+        mock_response = MagicMock(status_code=200, ok=True)
+        mock_response.json.return_value = CASE_RESPONSE
+        with patch(
+            "search.dawson_client.requests.get", return_value=mock_response
+        ) as mock_get:
+            get_case_record("../../etc/passwd")
+            called_url = mock_get.call_args[0][0]
+            assert "../../etc/passwd" not in called_url
+            assert called_url.endswith("/cases/..%2F..%2Fetc%2Fpasswd")

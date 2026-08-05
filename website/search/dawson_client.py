@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from datetime import datetime
+from urllib.parse import quote
 
 import requests
 from django.conf import settings
@@ -52,7 +53,11 @@ def get_case_record(docket_number: str) -> DawsonCaseRecord | None:
     not-found results) should degrade to a "no results found" state for the
     caller rather than raising.
     """
-    url = f"{get_environment_specific_dawson_url('public-api')}/public-api/cases/{docket_number}"
+    # docket_number is already constrained to digits/dashes/letters by
+    # is_docket_number()'s regex before reaching this public helper, but
+    # quote() guards this URL construction against path/query injection
+    # if get_case_record() is ever called with less-trusted input.
+    url = f"{get_environment_specific_dawson_url('public-api')}/public-api/cases/{quote(docket_number, safe='')}"
     try:
         response = requests.get(url, timeout=DAWSON_API_TIMEOUT_SECONDS)
     except requests.RequestException:
