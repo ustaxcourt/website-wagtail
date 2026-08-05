@@ -117,7 +117,16 @@ def _parse_case_record(data: dict) -> DawsonCaseRecord | None:
 
     case_caption = data.get("caseCaption")
     if not docket_number or not case_caption:
-        logger.warning("DAWSON API response missing expected fields: %s", data)
+        # Log field presence, not the payload itself — it can contain
+        # litigant PII (petitioner/practitioner names) that shouldn't be
+        # written into application logs.
+        logger.warning(
+            "DAWSON API response missing expected fields "
+            "(has_docket_number=%s, has_case_caption=%s), keys=%s",
+            bool(docket_number),
+            bool(case_caption),
+            sorted(data.keys()),
+        )
         return None
 
     filing_date_raw = _find_petition_filing_date(data) or data.get("receivedAt")

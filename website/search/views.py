@@ -249,7 +249,7 @@ def search(request):
                     "text": RichText(
                         f"Docket numbers must be entered in the format <b>123-19</b>.<br><br>"
                         f"<b>Example</b>: “Docket Number 123-19”, “Docket No. 123-19”, or “123-19”<br><br>"
-                        f'<span class="right-aligned"><a class="dawson-search-link" href="{get_environment_specific_dawson_url()}" target="_blank" rel="noopener">Search DAWSON’s Docket Records<span class="launch-icon" aria-hidden="true"></span></a></span>'
+                        f'<span class="right-aligned"><a class="dawson-search-link" href="{get_environment_specific_dawson_url()}" target="_blank" rel="noopener noreferrer">Search DAWSON’s Docket Records<span class="launch-icon" aria-hidden="true"></span></a></span>'
                     ),
                     "callout_type": "warning",
                 },

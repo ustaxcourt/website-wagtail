@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load tz wagtailcore_tags wagtailsearchpromotions_tags %}
+{% load static tz wagtailcore_tags wagtailsearchpromotions_tags %}
 {% block body_class %}template-searchresults{% endblock %}
 {% block title %}Search{% endblock %}
 {% block content %}
@@ -232,8 +232,8 @@
             width: 16px;
             height: 16px;
             background-color: var(--color-link);
-            -webkit-mask-image: url("/static/uswds/img/usa-icons/launch.svg");
-            mask-image: url("/static/uswds/img/usa-icons/launch.svg");
+            -webkit-mask-image: url("{% static 'uswds/img/usa-icons/launch.svg' %}");
+            mask-image: url("{% static 'uswds/img/usa-icons/launch.svg' %}");
             -webkit-mask-repeat: no-repeat;
             mask-repeat: no-repeat;
             -webkit-mask-position: center;
@@ -308,7 +308,7 @@
                             <a class="view-in-dawson"
                                href="{{ result.url }}"
                                target="_blank"
-                               rel="noopener">
+                               rel="noopener noreferrer">
                                 View Docket Record in DAWSON
                                 <span class="launch-icon" aria-hidden="true"></span>
                             </a>
