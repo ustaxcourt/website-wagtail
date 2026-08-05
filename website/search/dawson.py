@@ -2,7 +2,10 @@ import re
 from dataclasses import dataclass
 
 # nnn-yya: nnn is 3-6 digits, yy is a two-digit year, a is 0-2 letters.
-DOCKET_NUMBER_PATTERN = re.compile(r"\d{3,6}-\d{2}[a-zA-Z]{0,2}")
+# Bounded on both sides so it can't match a fragment of a longer digit run
+# (e.g. "566-555" shouldn't match "566-55" as if 55 were a real two-digit
+# year — the next character being another digit means it isn't).
+DOCKET_NUMBER_PATTERN = re.compile(r"(?<!\d)\d{3,6}-\d{2}[a-zA-Z]{0,2}(?!\d)")
 
 # A search term that starts with a digit.
 STARTS_WITH_DIGIT_PATTERN = re.compile(r"^\d")

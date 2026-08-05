@@ -67,3 +67,18 @@ class TestIsDocketNumber:
         assert result == DocketMatch(
             term="123-19 tax rules", docket_number="123-19", is_valid=True
         )
+
+    def test_trailing_extra_digit_after_year_is_invalid_format(self):
+        # "566-55" isn't a real two-digit year here — it's a fragment of
+        # "555". The whole "566-555" should trigger the warning, not get
+        # matched as if "566-55" were a valid docket number.
+        result = is_docket_number("566-555")
+        assert result == DocketMatch(term="566-555", docket_number=None, is_valid=False)
+
+    def test_leading_extra_digits_before_docket_number_is_invalid_format(self):
+        # Symmetric case: an 8-digit run before the dash means no clean
+        # 3-6 digit nnn boundary exists anywhere in it.
+        result = is_docket_number("12345678-19")
+        assert result == DocketMatch(
+            term="12345678-19", docket_number=None, is_valid=False
+        )
