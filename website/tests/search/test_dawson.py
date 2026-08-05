@@ -82,3 +82,35 @@ class TestIsDocketNumber:
         assert result == DocketMatch(
             term="12345678-19", docket_number=None, is_valid=False
         )
+
+    def test_pasted_leading_whitespace_still_shows_invalid_format_warning(self):
+        # Pasted search terms often carry leading whitespace (e.g. copied
+        # from a PDF or table cell). A leading space previously defeated
+        # the "starts with a digit" check (anchored to literal string
+        # start), silently suppressing the warning for pasted input.
+        result = is_docket_number(" 444-444")
+        assert result == DocketMatch(term="444-444", docket_number=None, is_valid=False)
+
+    def test_pasted_trailing_whitespace_still_shows_invalid_format_warning(self):
+        result = is_docket_number("444-444 ")
+        assert result == DocketMatch(term="444-444", docket_number=None, is_valid=False)
+
+    def test_pasted_tab_and_newline_whitespace_still_shows_invalid_format_warning(
+        self,
+    ):
+        result = is_docket_number("\t444-444\n")
+        assert result == DocketMatch(term="444-444", docket_number=None, is_valid=False)
+
+    def test_pasted_non_breaking_space_still_shows_invalid_format_warning(self):
+        # \xa0 is a common artifact of pasting from web pages/PDFs.
+        result = is_docket_number("\xa0444-444")
+        assert result == DocketMatch(term="444-444", docket_number=None, is_valid=False)
+
+    def test_pasted_leading_whitespace_around_valid_docket_still_matches(self):
+        result = is_docket_number("  124-26  ")
+        assert result == DocketMatch(
+            term="124-26", docket_number="124-26", is_valid=True
+        )
+
+    def test_pasted_leading_whitespace_around_ssn_still_excepted(self):
+        assert is_docket_number("  111-11-1111  ") is None

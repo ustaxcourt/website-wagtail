@@ -47,7 +47,16 @@ def is_docket_number(term: str) -> DocketMatch | None:
     first 6 characters happen to fit the nnn-yy shape (e.g. "111-11" out of
     "111-11-1111"), so the SSN check must run before the substring match
     below, not just before the invalid-format warning.
+
+    Leading/trailing whitespace (including tabs, newlines, and non-breaking
+    spaces) is stripped before any of the above checks. Pasted search terms
+    routinely carry this — e.g. copied from a PDF or a table cell — and
+    without stripping, a leading space defeats the SSN check and the
+    "starts with a digit" check (both anchored to the literal start of the
+    string), silently skipping the warning for pasted input.
     """
+    term = term.strip()
+
     if SSN_LIKE_PATTERN.match(term):
         return None
 
