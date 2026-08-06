@@ -61,3 +61,8 @@ variable "wagtailtransfer_sources" {
   type = string
   sensitive = true
 }
+
+variable "error_notification_emails" {
+  description = "Recipients for human-readable website error notification emails."
+  type        = list(string)
+}

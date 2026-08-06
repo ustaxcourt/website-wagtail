@@ -185,6 +185,7 @@ key.pem
 infra/execution-plan
 infra/terraform.tfvars
 infra/destructive-plan
+infra/modules/app/lambda/error_notification_formatter.zip
 infra/iam/*generated-deployer-access-key.json
 
 website/node_modules

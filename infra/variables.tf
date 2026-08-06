@@ -52,3 +52,9 @@ variable "wagtailtransfer_sources" {
   type = string
   sensitive = true
 }
+
+variable "error_notification_emails" {
+  description = "Recipients for human-readable website error notification emails. Edit this list (via a PR) to add or remove recipients."
+  type        = list(string)
+  default     = []
+}
