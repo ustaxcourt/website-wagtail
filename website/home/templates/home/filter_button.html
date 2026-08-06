@@ -26,6 +26,7 @@
 
 .filter-mobile {
     display: none;
+    position: relative;
 }
 .filter-toggle {
     display: flex;
@@ -68,6 +69,12 @@
 }
 .filter-menu-mobile.open {
     display: flex;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 288px;
+    max-width: calc(100vw - 32px);
+    z-index: 100;
 }
 .filter-menu-mobile-heading {
     font-size: 1rem;
