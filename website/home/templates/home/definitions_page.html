@@ -20,11 +20,15 @@
         }
 
         /* Filter button next to the search bar: icon-only, matching the
-           search bar's height so the two stay level with each other. */
+           search bar's height so the two stay level with each other.
+           Per Figma "Search + Filter" combo (node 344:2430, State=Inactive):
+           height 40px fixed, width hug (padding 10px 15px around a 24x24
+           icon), border-radius 4px. */
         #definitions-page .filter-mobile .filter-toggle {
-            width: 40px;
+            width: auto;
             height: 40px;
             padding: 10px 15px;
+            box-sizing: border-box;
             justify-content: center;
         }
 
@@ -37,11 +41,15 @@
             height: 24px;
         }
 
+        /* Search bar per the same Figma component: outer box height 40px
+           fixed, padding 10px, border #DFE1E2, border-radius 4px. */
         #definitions-page .search-form-container{
             width: fit-content;
-            border: 1px solid var(--Base-base-dark, #565C65);
-            border-radius: 3px;
-            height: fit-content;
+            height: 40px;
+            padding: 10px;
+            border: 1px solid #DFE1E2;
+            border-radius: 4px;
+            box-sizing: border-box;
             align-self: center;
         }
 
@@ -49,20 +57,17 @@
             font-style: italic;
             color: var(--theme-color-base-medium);
             width: 269px;
-            height: 31px;
+            height: 20px;
             border: none;
-            padding-left: 13px;
-            padding-top: 1px;
-            padding-bottom: 1px;
+            padding: 0;
         }
 
         #definitions-page .search-form button{
             border: none;
             background-color: white;
-            width: 24px;
-            height: 24px;
-            padding: 3px;
-            margin-right: 13px;
+            width: 20px;
+            height: 20px;
+            padding: 0;
             color: var(--theme-color-base-medium);
         }
 
