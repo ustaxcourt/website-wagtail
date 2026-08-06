@@ -14,8 +14,27 @@
 
         #definitions-page .definitions-navigation-container {
             display: flex;
+            align-items: center;
             justify-content: center;
             gap: 22px;
+        }
+
+        /* Filter button next to the search bar: icon-only, matching the
+           search bar's height so the two stay level with each other. */
+        #definitions-page .filter-mobile .filter-toggle {
+            width: 40px;
+            height: 40px;
+            padding: 10px 15px;
+            justify-content: center;
+        }
+
+        #definitions-page .filter-mobile .filter-toggle > span:not(.toggle-icon) {
+            display: none;
+        }
+
+        #definitions-page .filter-mobile .filter-toggle .toggle-icon img {
+            width: 24px;
+            height: 24px;
         }
 
         #definitions-page .search-form-container{
