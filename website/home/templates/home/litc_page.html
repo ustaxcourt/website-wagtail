@@ -194,7 +194,7 @@
                 <a href="#{{ letter }}" class="alphabet-link"> {{ letter }} </a>
             {% endfor %}
         </div>
-        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPRSTUVW" %}
+        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPRSTUVW" type="jumpTo" %}
         {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
             <div class="notice">
                 {% for block in page.city_asterisk_notice %}

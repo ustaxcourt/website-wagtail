@@ -19,7 +19,7 @@
             gap: 22px;
         }
 
-        /* Filter button next to the search bar: icon-only, matching the
+        {% comment %} /* Filter button next to the search bar: icon-only, matching the
            search bar's height so the two stay level with each other. */
         #definitions-page .filter-mobile .filter-toggle {
             width: 40px;
@@ -35,7 +35,7 @@
         #definitions-page .filter-mobile .filter-toggle .toggle-icon img {
             width: 24px;
             height: 24px;
-        }
+        } {% endcomment %}
 
         #definitions-page .search-form-container{
             width: fit-content;
@@ -308,7 +308,6 @@
                         <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
                     {% endfor %}
                 </div>
-                {% include "home/filter_button.html" with letters=available_letters %}
             {% endif %}
 
             <div class="search-form-container">
@@ -334,6 +333,10 @@
                 </form>
                 <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true" role="listbox"></div>
             </div>
+
+            {% if available_letters%}
+                {% include "home/filter_button.html" with letters=available_letters type="jumpTo" %}
+            {% endif %}
 
         </div>
 
