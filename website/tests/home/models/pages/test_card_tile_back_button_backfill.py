@@ -16,6 +16,7 @@ shows the same content as the public page.
 
 import importlib
 
+from django.apps import apps
 from django.test import TestCase, override_settings
 from wagtail.models import Locale, Page, Site
 
@@ -115,7 +116,7 @@ class BackfillCardTileBackButtonTest(TestCase):
         self.page_with_anchor_tile.refresh_from_db()
         self.assertIsNone(self.page_with_anchor_tile.latest_revision)
 
-        backfill_module.backfill_back_button(apps=None, schema_editor=None)
+        backfill_module.backfill_back_button(apps=apps, schema_editor=None)
 
         self.page_with_anchor_tile.refresh_from_db()
         card_tiles_value = self.page_with_anchor_tile.body[0].value
@@ -133,7 +134,7 @@ class BackfillCardTileBackButtonTest(TestCase):
         self.assertEqual(revision_value["back_button_text"], "Back")
 
     def test_backfill_skips_card_tiles_without_an_anchor_page_tile(self):
-        backfill_module.backfill_back_button(apps=None, schema_editor=None)
+        backfill_module.backfill_back_button(apps=apps, schema_editor=None)
 
         self.page_without_anchor_tile.refresh_from_db()
         self.assertIsNone(self.page_without_anchor_tile.latest_revision)
@@ -142,11 +143,11 @@ class BackfillCardTileBackButtonTest(TestCase):
         self.assertFalse(card_tiles_value["back_button_text"])
 
     def test_backfill_is_idempotent(self):
-        backfill_module.backfill_back_button(apps=None, schema_editor=None)
+        backfill_module.backfill_back_button(apps=apps, schema_editor=None)
         self.page_with_anchor_tile.refresh_from_db()
         first_revision_id = self.page_with_anchor_tile.latest_revision_id
 
-        backfill_module.backfill_back_button(apps=None, schema_editor=None)
+        backfill_module.backfill_back_button(apps=apps, schema_editor=None)
         self.page_with_anchor_tile.refresh_from_db()
 
         # No changes left to make, so no new revision should be created.
@@ -162,7 +163,7 @@ class BackfillCardTileBackButtonTest(TestCase):
         self.page_with_anchor_tile.slug = "practitioners"
         self.page_with_anchor_tile.save()
 
-        backfill_module.backfill_back_button(apps=None, schema_editor=None)
+        backfill_module.backfill_back_button(apps=apps, schema_editor=None)
 
         self.page_with_anchor_tile.refresh_from_db()
         card_tiles_value = self.page_with_anchor_tile.body[0].value
