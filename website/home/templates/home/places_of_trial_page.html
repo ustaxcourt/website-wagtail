@@ -26,11 +26,17 @@
             margin-bottom: 1.5rem;
         }
 
+        @media (max-width: 768px) {
+            .alphabet {
+                display: none;
+            }
+        }
+
         .alphabet .alphabet-link {
             padding: 0.5rem 1rem;
             border: 1px solid #dcdee0;
             background-color: #fff;
-            color: #000;
+            color: var(--color-secondary);
             font-size: 1rem;
             cursor: pointer;
             border-radius: 4px;
@@ -110,6 +116,7 @@
                 </a>
             {% endfor %}
         </div>
+        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPSTUVW" %}
         <div class="grid">
             {% for state in sorted_places %}
                 {% with state_letter=state.state|slice:":1" %}
