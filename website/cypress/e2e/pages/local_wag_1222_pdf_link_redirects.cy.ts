@@ -1,3 +1,7 @@
+// Named local_* so it's excluded from the default e2e-coverage/test-e2e run: the
+// redirect destinations are real production documents that a freshly migrated/seeded
+// test database doesn't have, so run this manually (e.g. via test-e2e-aws) against an
+// environment with real document media.
 const XLSX_PATH = 'home/migrations/0116_create_redirects_for_broken_pdf_links.xlsx';
 
 describe('WAG-1222 broken PDF link redirects', () => {

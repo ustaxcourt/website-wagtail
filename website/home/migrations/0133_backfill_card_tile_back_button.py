@@ -38,7 +38,7 @@ BACK_BUTTON_TEXT_BY_SLUG = {
 
 
 def backfill_back_button(apps, schema_editor):
-    EnhancedStandardPage = apps.get_model("home", "EnhancedStandardPage")
+    from home.models.pages.enhanced_standard import EnhancedStandardPage  # noqa: no-direct-model-imports-in-migrations — needs the live model to call save_revision().publish()
 
     for page in EnhancedStandardPage.objects.all():
         changed = False
