@@ -145,6 +145,11 @@
       "Effect": "Allow",
       "Action": ["ses:*"],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["lambda:*"],
+      "Resource": "*"
     }
   ]
 }
