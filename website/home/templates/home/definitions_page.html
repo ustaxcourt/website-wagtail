@@ -19,7 +19,7 @@
             gap: 22px;
         }
 
-        {% comment %} /* Filter button next to the search bar: icon-only, matching the
+        /* Filter button next to the search bar: icon-only, matching the
            search bar's height so the two stay level with each other. */
         #definitions-page .filter-mobile .filter-toggle {
             width: auto;
@@ -36,7 +36,7 @@
         #definitions-page .filter-mobile .filter-toggle .toggle-icon img {
             width: 24px;
             height: 24px;
-        } {% endcomment %}
+        }
 
         /* Search bar per the same Figma component: outer box height 40px
            fixed, padding 10px, border #DFE1E2, border-radius 4px. */
@@ -336,7 +336,7 @@
                 <div class="suggestions hidden" id="suggestions" aria-live="polite" aria-atomic="true" role="listbox"></div>
             </div>
 
-            {% if available_letters%}
+            {% if available_letters %}
                 {% include "home/filter_button.html" with letters=available_letters type="jumpTo" %}
             {% endif %}
 

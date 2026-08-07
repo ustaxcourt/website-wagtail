@@ -116,7 +116,7 @@
                 </a>
             {% endfor %}
         </div>
-        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPSTUVW" %}
+        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPSTUVW" type="jumpTo" %}
         <div class="grid">
             {% for state in sorted_places %}
                 {% with state_letter=state.state|slice:":1" %}
