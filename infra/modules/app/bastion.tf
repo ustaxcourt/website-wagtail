@@ -4,7 +4,7 @@ data "http" "my_ip" {
 }
 
 locals {
-  my_ip = chomp(data.http.my_ip.body)
+  my_ip = chomp(data.http.my_ip.response_body)
 }
 
 resource "aws_instance" "bastion" {
