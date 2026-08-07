@@ -18,13 +18,17 @@ Recipients are **not** managed by subscribing individually in the AWS Console. I
 source-controlled place: the `error_notification_emails` Terraform variable
 (declared in [infra/variables.tf](/infra/variables.tf) and [infra/modules/app/variables.tf](/infra/modules/app/variables.tf)).
 
-To add or remove a recipient:
+Per-environment values come from the `ERROR_NOTIFICATION_EMAILS` entry in that environment's `website_secrets` AWS
+Secrets Manager secret — a comma-separated list of email addresses (e.g. `dev@example.com,manager@example.com`).
+[infra/setup.sh](/infra/setup.sh) converts it into the `error_notification_emails` Terraform variable at deploy time.
+If that secret key is unset for an environment, the variable falls back to its (empty) default in `infra/variables.tf`.
 
-1. Open a PR that updates the `default` value of the `error_notification_emails` variable in `infra/variables.tf`
-   (or set the `TF_VAR_error_notification_emails` environment variable, as a JSON array, if overriding per environment).
-2. Get the PR reviewed and merged like any other change.
-3. The next `terraform apply` updates the Lambda's environment variables so the new list takes effect — no manual
-   AWS Console steps or per-recipient email confirmation are required.
+To add or remove a recipient for an environment:
+
+1. Update the `ERROR_NOTIFICATION_EMAILS` key in that environment's `website_secrets` secret (AWS Secrets Manager).
+2. Re-run the deploy (or the next scheduled deploy will pick it up).
+
+No manual AWS Console SNS subscription or per-recipient email confirmation is required.
 
 ### What the Notification Email Looks Like
 

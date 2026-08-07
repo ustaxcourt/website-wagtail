@@ -54,7 +54,7 @@ variable "wagtailtransfer_sources" {
 }
 
 variable "error_notification_emails" {
-  description = "Recipients for human-readable website error notification emails. Edit this list (via a PR) to add or remove recipients."
+  description = "Recipients for human-readable website error notification emails. Normally supplied per-environment via the ERROR_NOTIFICATION_EMAILS secret (see infra/setup.sh); this default is the fallback when that's unset."
   type        = list(string)
   default     = []
 }
