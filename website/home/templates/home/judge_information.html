@@ -22,7 +22,10 @@
         }
 
         #judge-information-page .judge-intro {
-            margin-bottom: 34px;
+            /* space-5 token (32px) on mobile, per the design system doc.
+               Desktop's gap is still floored at 34px by .judge-filter-bar's
+               own margin-top below, so this only changes mobile rendering. */
+            margin-bottom: 32px;
         }
 
         /* Focus ring for the (now tab-focusable) intro paragraph so keyboard
@@ -376,8 +379,10 @@
         .mobile-filter-bar {
             display: none;
             position: relative;
-            margin-top: 34px;
-            margin-bottom: 34px;
+            /* space-5 token (32px, "major separation between cards/large
+               components") per the design system doc, not the old 34px. */
+            margin-top: 32px;
+            margin-bottom: 32px;
         }
 
         .mobile-filter-toggle {
