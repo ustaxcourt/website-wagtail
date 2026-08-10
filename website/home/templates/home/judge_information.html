@@ -467,6 +467,16 @@
             font-size: 20px;
         }
 
+        /* fa-regular isn't part of this project's Font Awesome Free build, so
+           the unchecked glyph silently falls back to the solid (filled)
+           weight. Suppress the glyph and draw the hollow box per Figma. */
+        .mobile-filter-option .filter-checkbox.fa-square {
+            font-size: 0;
+            border: 1px solid #a9aeb1;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
         .mobile-filter-option.selected .filter-checkbox {
             color: #005ea2;
         }
@@ -486,16 +496,15 @@
 
         .mobile-filter-clear {
             padding: 8px 16px;
-            background-color: #ffffff;
+            background-color: transparent;
             color: #005ea2;
-            border: 1px solid #005ea2;
+            border: none;
             border-radius: 4px;
             font-family: inherit;
             font-size: 16px;
             font-weight: 600;
             line-height: 20px;
             cursor: pointer;
-            flex: 1;
         }
 
         .mobile-filter-apply {
@@ -509,7 +518,6 @@
             font-weight: 600;
             line-height: 20px;
             cursor: pointer;
-            flex: 1;
         }
 
         .mobile-filter-clear:hover { background-color: #f0f4f9; }
