@@ -57,6 +57,10 @@
 .filter-toggle:hover > .toggle-icon > img {
     filter: brightness(0) invert(1);
 }
+.filter-toggle:focus-visible {
+    outline: 3px solid #005ea2;
+    outline-offset: 2px;
+}
 .filter-menu-mobile {
     display: none;
     flex-direction: column;
@@ -101,6 +105,10 @@
 }
 .filter-mobile .filter-link:hover {
     border-color: #005EA2;
+}
+.filter-mobile .filter-link:focus-visible {
+    outline: 3px solid #005ea2;
+    outline-offset: 2px;
 }
 
 @media (max-width: 768px) {
