@@ -319,7 +319,7 @@
             {% if available_letters %}
                 <div class="alphabet-nav">
                     {% for letter in available_letters %}
-                        <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
+                        <a href="#{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -359,7 +359,7 @@
         </div>
 
         {% for letter, definitions in grouped_definitions %}
-            <div class="letter-section" id="letter-{{ letter }}">
+            <div class="letter-section" id="{{ letter }}">
                 <h2 class="letter-heading">{{ letter }}</h2>
                 <div class="definitions-grid">
                     {% for definition in definitions %}

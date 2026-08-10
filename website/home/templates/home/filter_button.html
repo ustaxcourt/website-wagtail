@@ -73,6 +73,7 @@
 }
 .filter-menu-mobile.open {
     display: flex;
+    justify-content: flex-start;
     position: absolute;
     top: calc(100% + 4px);
     right: 0;
@@ -89,6 +90,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
+    justify-content: space-evenly;
 }
 .filter-mobile .filter-link {
     display: inline-flex;
@@ -113,7 +115,8 @@
 
 @media (max-width: 768px) {
     .filter-mobile {
-        display: block;
+        display: flex;
+        justify-content: flex-end;
     }
 }
 </style>
