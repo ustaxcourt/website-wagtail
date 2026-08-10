@@ -41,6 +41,4 @@ export TF_VAR_wagtailtransfer_sources=$WAGTAILTRANSFER_SOURCES
 # Optional: comma-separated list of error notification recipients, sourced from
 # the "website_secrets" secret for this environment. Falls back to the
 # error_notification_emails variable default (infra/variables.tf) when unset.
-if [ -n "$ERROR_NOTIFICATION_EMAILS" ]; then
-  export TF_VAR_error_notification_emails=$(jq -Rc 'split(",")' <<< "$ERROR_NOTIFICATION_EMAILS")
-fi
+export TF_VAR_error_notification_emails=$(jq -Rc 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))' <<< "$ERROR_NOTIFICATION_EMAILS")

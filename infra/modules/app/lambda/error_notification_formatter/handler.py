@@ -6,7 +6,7 @@ from datetime import datetime
 
 import boto3
 
-ses_client = boto3.client("ses")
+ses_client = boto3.client("ses", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 
 # Maps the alarm name suffix (set in alerts.tf) to a plain-English description
 # and the env var holding the log group the alarm's logs live in.
@@ -39,11 +39,17 @@ def _environment_from_alarm(alarm_name: str) -> str:
 
 
 def _format_timestamp(iso_timestamp: str) -> str:
+    if not iso_timestamp:
+        return "unknown time"
+    normalized = iso_timestamp.replace("Z", "+00:00")
+    # Handle offsets like "+0000" / "-0700" by converting to "+00:00" / "-07:00".
+    if len(normalized) >= 5 and normalized[-5] in "+-" and normalized[-3] != ":":
+        normalized = normalized[:-2] + ":" + normalized[-2:]
     try:
-        parsed = datetime.fromisoformat(iso_timestamp.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(normalized)
         return parsed.strftime("%B %d, %Y at %I:%M %p UTC")
     except (ValueError, AttributeError):
-        return iso_timestamp or "unknown time"
+        return iso_timestamp
 
 
 def _log_group_url(region: str, log_group_name: str) -> str:
@@ -62,7 +68,10 @@ def build_email(alarm_message: dict, region: str) -> tuple[str, str]:
     when = _format_timestamp(alarm_message.get("StateChangeTime", ""))
     description = alarm_message.get("AlarmDescription") or "No description provided."
 
-    subject = f"{environment.title()} website error detected: {alarm_type['label'].capitalize()}"
+    env_display = environment.upper() if environment in {"qa"} else environment.title()
+    subject = (
+        f"{env_display} website error detected: {alarm_type['label'].capitalize()}"
+    )
 
     lines = [
         f"What happened: {description}",

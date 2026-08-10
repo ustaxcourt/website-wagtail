@@ -148,8 +148,17 @@
     },
     {
       "Effect": "Allow",
-      "Action": ["lambda:*"],
-      "Resource": "*"
+      "Action": [
+         "lambda:CreateFunction",
+         "lambda:DeleteFunction",
+         "lambda:UpdateFunctionCode",
+         "lambda:UpdateFunctionConfiguration",
+         "lambda:AddPermission",
+         "lambda:RemovePermission",
+         "lambda:Get*",
+         "lambda:List*"
+       ],
+       "Resource": "arn:aws:lambda:*:*:function:*"
     }
   ]
 }
