@@ -1,7 +1,7 @@
 const XLSX_PATH = 'home/migrations/0116_create_redirects_for_broken_pdf_links.xlsx';
 
 describe('WAG-1222 broken PDF link redirects', () => {
-    let fromUrls: string[];
+    let fromUrls: string[] = [];
 
     before(() => {
         cy.task('getRedirectsFromXlsx', XLSX_PATH).then((data) => {
@@ -16,7 +16,7 @@ describe('WAG-1222 broken PDF link redirects', () => {
                     expect(response.status, `${from} should return 301`).to.eq(301);
 
                     const location = response.headers['location'] as string;
-                    if (!location.startsWith('http')) {
+                    if (location && !location.startsWith('http')) {
                         cy.request({ url: location, failOnStatusCode: false }).then((destResponse) => {
                             expect(destResponse.status, `${location} should not be 404`).to.not.eq(404);
                         });
