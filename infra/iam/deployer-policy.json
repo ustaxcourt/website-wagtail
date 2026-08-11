@@ -138,11 +138,6 @@
     },
     {
       "Effect": "Allow",
-      "Action": ["lambda:*"],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
       "Action": ["scheduler:*"],
       "Resource": "*"
     },
