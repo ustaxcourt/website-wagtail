@@ -36,7 +36,7 @@ describe('Enhanced Standard Page Edit Validation', () => {
         "Horizontal Rule", "Iframe", "Alert", "Image", "Photo + Text", "Table", "Unstyled table", "Enhanced Table", "List", "List of Links",
         "Question and Answer", "Columns", "Embedded video", "Card Set", "Accordion Block", "Callout Block", "Grid", "Card Tiles", "Quick Access Tiles"
     ];
-    //Find the element that represents the menu that appears when the "+" button is clicked
+    //Find an element that represents the menu that appears when the "+" button is clicked
     cy.get('div#downshift-0-menu').within(() => {
         //Get each item in that menu. These represent a component that could be added to the Enhanced Standard Page.
         cy.get('div.w-combobox__option-text').each(($el, index, $list) => {
