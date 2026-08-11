@@ -11,6 +11,7 @@ from django.views.generic import TemplateView, RedirectView
 
 from search import views as search_views
 from app.admin_local.views import LocalLoginView
+from app import alarm_test_views
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
@@ -147,6 +148,18 @@ if settings.DEBUG:
         ]
 
 urlpatterns = urlpatterns + [
+    path("alarm-test/", alarm_test_views.alarm_test_index, name="alarm_test_index"),
+    path(
+        "alarm-test/trigger-5xx/", alarm_test_views.trigger_5xx, name="alarm_test_5xx"
+    ),
+    path(
+        "alarm-test/trigger-404/", alarm_test_views.trigger_404, name="alarm_test_404"
+    ),
+    path(
+        "alarm-test/trigger-rds-error/",
+        alarm_test_views.trigger_rds_error,
+        name="alarm_test_rds",
+    ),
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
     # the list:

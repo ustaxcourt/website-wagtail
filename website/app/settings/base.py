@@ -127,6 +127,11 @@ TEMPLATES = [
 # If True, allow non-SSO users to login. Otherwise prevent login w/ wagtail credentials.
 ENABLE_LOCAL_LOGIN = True
 
+# If True, exposes /alarm-test routes that intentionally generate 5xx/404/RDS errors.
+ENABLE_ERROR_TEST_PAGES = (
+    os.getenv("ENABLE_ERROR_TEST_PAGES", "False").lower() == "true"
+)
+
 # Disable/enables password when new users are being created in admin console.
 # Default : False
 WAGTAILUSERS_PASSWORD_REQUIRED = False
