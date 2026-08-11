@@ -29,7 +29,7 @@ describe('Enhanced Standard Page Edit Validation', () => {
     cy.visit('/admin/pages/add/home/enhancedstandardpage/3/');
     cy.url({ timeout: 10000 }).should('include', '/admin/pages/add/home/enhancedstandardpage/3');
 
-    //Click the "+" button under Body
+    //Click "+" button under Body
     cy.get('button.c-sf-add-button').click();
 
     let componentsExpectedToFind: string[] = ["Heading", "Heading 2", "Heading 3", "Heading 4", "Paragraph", "Indented Paragraph", "Snippet", "Button",
