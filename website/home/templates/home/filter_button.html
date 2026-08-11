@@ -42,6 +42,7 @@
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.2s ease, color 0.2s ease;
+    width: 200px;
 }
 .filter-toggle:hover {
     background-color: var(--color-secondary);
@@ -90,7 +91,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 .filter-mobile .filter-link {
     display: inline-flex;
@@ -126,7 +127,7 @@
   <div class="filter-mobile">
       <button class="filter-toggle" aria-expanded="false" aria-controls="filter-nav-mobile" aria-label="Filter Items">
           <span class="toggle-icon" aria-hidden="true">
-              <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="24" height="24">
+              <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20">
           </span>
           <span>Filter</span>
       </button>
@@ -146,7 +147,7 @@
                     aria-expanded="false"
                     aria-controls="mobile-filter-panel"
                     aria-haspopup="true">
-                <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="24" height="24" aria-hidden="true" class="mobile-filter-icon">
+                <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20" aria-hidden="true" class="mobile-filter-icon">
                 <span>Filter</span>
                 <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
             </button>
