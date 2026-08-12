@@ -38,6 +38,13 @@ def trigger_5xx(request):
     if not _is_enabled():
         return HttpResponse("Not found", status=404)
 
+    # Emit two 500-shaped log records so a single hit can cross the >1 threshold.
+    for _ in range(2):
+        logger.error(
+            "Intentional 5xx alarm test metric log.",
+            extra={"status_code": 500, "path": request.path},
+        )
+
     logger.error("Intentional 5xx alarm test endpoint hit.")
     raise RuntimeError("Intentional 5xx alarm test exception")
 
@@ -45,6 +52,13 @@ def trigger_5xx(request):
 def trigger_404(request):
     if not _is_enabled():
         return HttpResponse("Not found", status=404)
+
+    # Emit 51 entries so one hit can cross the >50 404 threshold.
+    for _ in range(51):
+        logger.warning(
+            "Intentional 404 alarm test metric log.",
+            extra={"status_code": 404, "path": request.path},
+        )
 
     logger.warning("Intentional 404 alarm test endpoint hit.")
     return HttpResponse("Intentional 404 alarm test", status=404)
