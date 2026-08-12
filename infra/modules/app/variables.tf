@@ -31,6 +31,12 @@ variable "prevent_db_deletion" {
   type        = bool
 }
 
+variable "enable_error_test_pages" {
+  description = "Exposes /alarm-test endpoints for manual alarm testing. Never enable in production."
+  type        = string
+  default     = "false"
+}
+
 variable "social_auth_azuread_tenant_oauth2_key" {
   description = "The Azure AD tenant OAuth2 key"
   type = string

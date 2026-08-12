@@ -26,6 +26,10 @@ if [ "$ENVIRONMENT" = "sandbox" ] || [ "$ENVIRONMENT" = "qa" ]; then
   export TF_VAR_prevent_db_deletion="false"
 fi
 
+if [ "$ENVIRONMENT" = "sandbox" ]; then
+  export TF_VAR_enable_error_test_pages="true"
+fi
+
 export TF_VAR_database_password=$DATABASE_PASSWORD
 export TF_VAR_bastion_public_key=$BASTION_PUBLIC_KEY
 export TF_VAR_environment=$ENVIRONMENT

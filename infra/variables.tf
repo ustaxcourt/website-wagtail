@@ -53,6 +53,12 @@ variable "wagtailtransfer_sources" {
   sensitive = true
 }
 
+variable "enable_error_test_pages" {
+  description = "Exposes /alarm-test endpoints for manual alarm testing. Never enable in production."
+  type        = string
+  default     = "false"
+}
+
 variable "error_notification_emails" {
   description = "Recipients for human-readable website error notification emails. Normally supplied per-environment via the ERROR_NOTIFICATION_EMAILS secret (see infra/setup.sh); this default is the fallback when that's unset."
   type        = list(string)

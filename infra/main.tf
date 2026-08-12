@@ -18,6 +18,7 @@ module "app" {
   wagtailtransfer_sources = var.wagtailtransfer_sources
   prevent_db_deletion = var.prevent_db_deletion
   error_notification_emails = var.error_notification_emails
+  enable_error_test_pages = var.enable_error_test_pages
   providers = {
     docker = docker
   }

@@ -142,6 +142,10 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "CLOUDFRONT_DISTRIBUTION_ID",
         value = aws_cloudfront_distribution.app.id
+      },
+      {
+        name  = "ENABLE_ERROR_TEST_PAGES",
+        value = var.enable_error_test_pages
       }
     ],
     secrets: [
