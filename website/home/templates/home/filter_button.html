@@ -1,10 +1,9 @@
 {% load wagtailcore_tags %}
 {% load filters %}
-{% comment %} {% load static %} {% endcomment %}
+{% load static %}
 <style>
 /* ============================================================
-   type="jumpTo" — LITC, Places of Trial, Definitions.
-   Compact letter-jump filter button + "Jump to letter" dropdown.
+   Shared & JumpTo Menu Styles
    ============================================================ */
 .filter-link {
     padding: 0.5rem 1rem;
@@ -22,50 +21,6 @@
     border-color: #007BFF;
 }
 
-{% comment %} .filter-menu-desktop {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.9rem;
-} {% endcomment %}
-
-.filter-mobile {
-    display: none;
-    position: relative;
-}
-.filter-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    gap: 5px;
-    border: 1px solid var(--color-navy);
-    background-color: #fff;
-    color: var(--color-navy);
-    font-size: 1rem;
-    font-weight: 400;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    width: 200px;
-}
-.filter-toggle:hover {
-    background-color: var(--color-secondary);
-    color: #FFFFFF;
-    border-color: #FFFFFF;
-}
-.filter-toggle.active {
-    background-color: var(--color-navy);
-    color: #FFFFFF;
-    border-color: #FFFFFF;
-}
-.filter-toggle.active > .toggle-icon > img,
-.filter-toggle:hover > .toggle-icon > img {
-    filter: brightness(0) invert(1);
-}
-.filter-toggle:focus-visible {
-    outline: 3px solid #005ea2;
-    outline-offset: 2px;
-}
 .filter-menu-mobile {
     display: none;
     flex-direction: column;
@@ -97,7 +52,7 @@
     gap: 16px;
     justify-content: space-between;
 }
-.filter-mobile .filter-link {
+.filter-menu-mobile .filter-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -110,30 +65,17 @@
     color: #005EA2;
     font-size: 1rem;
 }
-.filter-mobile .filter-link:hover {
+.filter-menu-mobile .filter-link:hover {
     border-color: #005EA2;
 }
-.filter-mobile .filter-link:focus-visible {
+.filter-menu-mobile .filter-link:focus-visible {
     outline: 3px solid #005ea2;
     outline-offset: 2px;
 }
 
-@media (max-width: 768px) {
-    .filter-mobile {
-        display: flex;
-        justify-content: flex-end;
-    }
-}
-
 /* ============================================================
-   type="filter" — Judge Information only.
-   Standalone "Filter" toggle button + checkbox dropdown panel.
-   Moved here from judge_information.html so the CSS for markup
-   this partial emits lives in one place. The JS stays in
-   judge_information.html — it's tightly coupled to that page's
-   activeFilters/applyFilters/setFiltersInUrl closure, which also
-   drives the desktop .judge-filter-bar and judge card visibility,
-   so it isn't a self-contained widget the way jumpTo's toggle is.
+   Shared Mobile Filter Toggle Button & Bar
+   Used for both "jumpTo" and "filter" variants.
    ============================================================ */
 .mobile-filter-toggle:hover .mobile-filter-icon,
 .mobile-filter-toggle.panel-open .mobile-filter-icon,
@@ -144,8 +86,7 @@
 .mobile-filter-bar {
     display: none;
     position: relative;
-    /* space-5 token (32px, "major separation between cards/large
-       components") per the design system doc. */
+    /* space-5 token (32px, "major separation between cards/large components") */
     margin-top: 32px;
     margin-bottom: 32px;
 }
@@ -201,6 +142,9 @@
     display: none;
 }
 
+/* ============================================================
+   type="filter" — Judge Information only menu specific CSS
+   ============================================================ */
 .mobile-filter-panel {
     position: absolute;
     top: calc(100% + 4px);
@@ -237,9 +181,6 @@
     font-size: 20px;
 }
 
-/* fa-regular isn't part of this project's Font Awesome Free build, so
-   the unchecked glyph silently falls back to the solid (filled)
-   weight. Suppress the glyph and draw the hollow box per Figma. */
 .mobile-filter-option .filter-checkbox.fa-square {
     font-size: 0;
     border: 1px solid #a9aeb1;
@@ -264,10 +205,8 @@
     gap: 10px;
 }
 
-.mobile-filter-clear {
-    padding: 8px 16px;
-    background-color: transparent;
-    color: #005ea2;
+.mobile-filter-clear,
+.mobile-filter-apply {
     border: none;
     border-radius: 4px;
     font-family: inherit;
@@ -277,17 +216,16 @@
     cursor: pointer;
 }
 
+.mobile-filter-clear {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #005ea2;
+}
+
 .mobile-filter-apply {
     padding: 10px 16px;
     background-color: #005ea2;
     color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 20px;
-    cursor: pointer;
 }
 
 .mobile-filter-clear:hover { background-color: #f0f4f9; }
@@ -305,12 +243,6 @@
     outline-offset: -2px;
 }
 
-/* iPad portrait and below (≤992px): the inline 5-button filter bar in
-   judge_information.html wraps to two lines (~830px total), so swap in
-   this compact toggle instead. Per Figma node 14914:3023, fixed 200px
-   wide on iPad and right-aligned. The matching .judge-filter-bar
-   { display: none } stays in judge_information.html since that
-   markup lives there, not in this partial. */
 @media (max-width: 992px) {
     .mobile-filter-bar {
         display: flex;
@@ -319,102 +251,89 @@
 
     .mobile-filter-toggle {
         width: 200px;
-    }
-}
-
-/* Phone: full-width Filter toggle (easier to tap than a 200px pill). */
-@media (max-width: 640px) {
-    .mobile-filter-toggle {
-        width: 100%;
+        height: 44px;
     }
 }
 </style>
-{% load static %}
 
-{% if type == "jumpTo" %}
-  <div class="filter-mobile">
-      <button class="filter-toggle" aria-expanded="false" aria-controls="filter-nav-mobile" aria-label="Filter Items">
-          <span class="toggle-icon" aria-hidden="true">
-              <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20">
-          </span>
-          <span>Filter</span>
-      </button>
-      <div class="filter-menu-mobile" id="filter-nav-mobile">
-          <div class="filter-menu-mobile-heading">Jump to letter</div>
-          <div class="filter-menu-mobile-letters">
-              {% for item in letters %}
-                  <a href="#{{ item }}" class="filter-link">{{ item }}</a>
-              {% endfor %}
-          </div>
-      </div>
-  </div>
-  {% elif type == "filter" %}
-          <div class="mobile-filter-bar" id="mobile-filter-bar">
-            <button class="mobile-filter-toggle"
-                    id="mobile-filter-toggle"
-                    aria-expanded="false"
-                    aria-controls="mobile-filter-panel"
-                    aria-haspopup="true">
-                <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20" aria-hidden="true" class="mobile-filter-icon">
-                <span>Filter</span>
-                <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
-            </button>
-            <div class="mobile-filter-panel"
-                 id="mobile-filter-panel"
-                 role="dialog"
-                 aria-label="Filter judges by type"
-                 hidden>
+<div class="mobile-filter-bar" id="mobile-filter-bar">
+    <button class="mobile-filter-toggle"
+            id="mobile-filter-toggle"
+            aria-expanded="false"
+            aria-controls="{% if type == 'jumpTo' %}filter-nav-mobile{% else %}mobile-filter-panel{% endif %}"
+            {% if type == 'filter' %}aria-haspopup="true"{% endif %}>
+        <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20" aria-hidden="true" class="mobile-filter-icon">
+        <span>Filter</span>
+        {% if type == 'filter' %}
+            <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
+        {% endif %}
+    </button>
+
+    {% if type == "jumpTo" %}
+        <div class="filter-menu-mobile" id="filter-nav-mobile">
+            <div class="filter-menu-mobile-heading">Jump to letter</div>
+            <div class="filter-menu-mobile-letters">
+                {% for item in letters %}
+                    <a href="#{{ item }}" class="filter-link">{{ item }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% elif type == "filter" %}
+        <div class="mobile-filter-panel"
+             id="mobile-filter-panel"
+             role="dialog"
+             aria-label="Filter judges by type"
+             hidden>
+            <div class="mobile-filter-option"
+                 role="checkbox"
+                 tabindex="0"
+                 data-filter="all"
+                 aria-checked="true">
+                <i class="fa-solid fa-square-check filter-checkbox" aria-hidden="true"></i>
+                <span>All Judges</span>
+            </div>
+            {% for group in judge_groups %}
                 <div class="mobile-filter-option"
                      role="checkbox"
                      tabindex="0"
-                     data-filter="all"
-                     aria-checked="true">
-                    <i class="fa-solid fa-square-check filter-checkbox" aria-hidden="true"></i>
-                    <span>All Judges</span>
+                     data-filter="{{ group.filter_key }}"
+                     aria-checked="false">
+                    <i class="fa-regular fa-square filter-checkbox" aria-hidden="true"></i>
+                    <span>{{ group.filter_label }}</span>
                 </div>
-                {% for group in judge_groups %}
-                    <div class="mobile-filter-option"
-                         role="checkbox"
-                         tabindex="0"
-                         data-filter="{{ group.filter_key }}"
-                         aria-checked="false">
-                        <i class="fa-regular fa-square filter-checkbox" aria-hidden="true"></i>
-                        <span>{{ group.filter_label }}</span>
-                    </div>
-                {% endfor %}
-                <div class="mobile-filter-actions">
-                    <button class="mobile-filter-clear" id="mobile-filter-clear">Clear filters</button>
-                    <button class="mobile-filter-apply" id="mobile-filter-apply">Apply</button>
-                </div>
+            {% endfor %}
+            <div class="mobile-filter-actions">
+                <button class="mobile-filter-clear" id="mobile-filter-clear">Clear filters</button>
+                <button class="mobile-filter-apply" id="mobile-filter-apply">Apply</button>
             </div>
         </div>
-      {% endif %}
+    {% endif %}
+</div>
 
 <script>
-    // This only wires up the type="jumpTo" toggle (LITC, Places of Trial,
-    // Definitions). type="filter"'s open/close/apply/clear behavior is
-    // wired up separately in judge_information.html — see the CSS comment
-    // above for why it isn't self-contained enough to live here too.
     document.addEventListener('DOMContentLoaded', function () {
-        const filterToggle = document.querySelector('.filter-toggle');
         const filterMenuMobile = document.getElementById('filter-nav-mobile');
 
-        if (filterToggle && filterMenuMobile) {
-            // Toggle menu open/close
-            filterToggle.addEventListener('click', function () {
-                const isOpen = filterMenuMobile.classList.toggle('open');
-                filterToggle.classList.toggle('active', isOpen);
-                filterToggle.setAttribute('aria-expanded', isOpen);
-            });
+        if (filterMenuMobile) {
+            const filterToggle = document.getElementById('mobile-filter-toggle');
 
-            // Close the dropdown after clicking a filter link
-            filterMenuMobile.querySelectorAll('.filter-link').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    filterMenuMobile.classList.remove('open');
-                    filterToggle.classList.remove('active');
-                    filterToggle.setAttribute('aria-expanded', 'false');
+            if (filterToggle) {
+                filterToggle.addEventListener('click', function () {
+                    const isOpen = filterMenuMobile.classList.toggle('open');
+
+                    filterToggle.classList.toggle('panel-open', isOpen);
+                    filterToggle.setAttribute('aria-expanded', isOpen);
                 });
-            });
+
+                filterMenuMobile.querySelectorAll('.filter-link').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        filterMenuMobile.classList.remove('open');
+                        filterToggle.classList.remove('panel-open');
+                        filterToggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
         }
     });
 </script>
