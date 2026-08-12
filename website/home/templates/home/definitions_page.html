@@ -20,8 +20,24 @@
         }
 
         /* Filter button next to the search bar: icon-only, matching the
-           search bar's height so the two stay level with each other. */
-        #definitions-page .filter-mobile .filter-toggle {
+           search bar's height so the two stay level with each other.
+           filter_button.html now shares .mobile-filter-bar/.mobile-filter-
+           -toggle between type="jumpTo" and type="filter" (previously
+           .filter-mobile/.filter-toggle, jumpTo-only). */
+        /* Cancel the shared partial's own 32px margin-top/bottom on
+           .mobile-filter-bar (meant for pages where it's a standalone
+           block). Here it's one flex item inside
+           .definitions-navigation-container, which already owns the
+           32px spacing itself, and flex containers don't collapse
+           margins with their children -- so left as-is it stacks an
+           extra 64px inside the row and throws off vertical alignment
+           with the search box. */
+        #definitions-page .mobile-filter-bar {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        #definitions-page .mobile-filter-toggle {
             width: auto;
             height: 40px;
             padding: 10px 15px;
@@ -29,13 +45,8 @@
             justify-content: center;
         }
 
-        #definitions-page .filter-mobile .filter-toggle > span:not(.toggle-icon) {
+        #definitions-page .mobile-filter-toggle > span {
             display: none;
-        }
-
-        #definitions-page .filter-mobile .filter-toggle .toggle-icon img {
-            width: 20px;
-            height: 20px;
         }
 
         /* Search bar per the same Figma component: outer box height 40px

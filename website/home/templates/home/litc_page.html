@@ -11,19 +11,21 @@
             margin-bottom: 15px;
         }
 
-        /* .filter-mobile is display:none above 768px. .grid-container > *
-           above is more specific than a plain class selector, so these
-           overrides match that specificity to actually win (adjacent-
-           sibling margins collapse to the larger value otherwise, so both
-           .description's bottom margin and .filter-mobile's top margin
-           need to move together). Sets the design system's space-5 token
-           (32px, "major separation between cards/large components")
-           instead of the page's general 34px. */
+        /* .mobile-filter-bar (filter_button.html's shared toggle wrapper,
+           formerly .filter-mobile before jumpTo/filter were unified) is
+           display:none above 992px. .grid-container > * above is more
+           specific than a plain class selector, so these overrides match
+           that specificity to actually win (adjacent-sibling margins
+           collapse to the larger value otherwise, so both .description's
+           bottom margin and .mobile-filter-bar's top margin need to move
+           together). Sets the design system's space-5 token (32px, "major
+           separation between cards/large components") instead of the
+           page's general 34px. */
         .grid-container > .description {
             margin-bottom: 32px;
         }
 
-        .grid-container > .filter-mobile {
+        .grid-container > .mobile-filter-bar {
             margin-top: 32px;
             margin-bottom: 32px;
         }

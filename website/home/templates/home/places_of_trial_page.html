@@ -56,10 +56,12 @@
             align-items: start;
         }
 
-        /* .filter-mobile is display:none above 768px, so this only affects
-           the mobile filter toggle. Matches the design system's space-5
-           token (32px, "major separation between cards/large components"). */
-        .filter-mobile {
+        /* .mobile-filter-bar (filter_button.html's shared toggle wrapper,
+           formerly .filter-mobile before jumpTo/filter were unified) is
+           display:none above 992px, so this only affects the mobile
+           filter toggle. Matches the design system's space-5 token (32px,
+           "major separation between cards/large components"). */
+        .mobile-filter-bar {
             margin-top: 32px;
             margin-bottom: 32px;
         }
