@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_log_metric_filter" "error_500_filter" {
+  resource "aws_cloudwatch_log_metric_filter" "error_500_filter" {
   name           = "${var.environment}-5xx-error-filter"
   pattern        = "{ $.status_code >= 500 && $.status_code < 600 }"
   log_group_name = aws_cloudwatch_log_group.ecs_log_group.name

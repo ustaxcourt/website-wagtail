@@ -42,11 +42,8 @@ class BuildEmailTests(unittest.TestCase):
             text_body,
         )
         self.assertIn("/log-events", text_body)
-        self.assertIn(
-            "Suggested filter pattern: { $.status_code >= 500 && $.status_code < 600 }",
-            text_body,
-        )
-        self.assertIn("Suggested time window:", text_body)
+        self.assertNotIn("Suggested filter pattern:", text_body)
+        self.assertNotIn("Suggested time window:", text_body)
         self.assertIn("Technical details (for developers)", text_body)
         self.assertIn("<h2>Error Summary</h2>", html_body)
         self.assertIn("<strong>What happened:</strong>", html_body)
@@ -58,7 +55,7 @@ class BuildEmailTests(unittest.TestCase):
             text_body.index("What happened"), text_body.index("Technical details")
         )
 
-    def test_404_alarm_uses_state_reason_and_filter_guidance(self):
+    def test_404_alarm_uses_state_reason(self):
         alarm_message = {
             "AlarmName": "sandbox-404-error-alarm",
             "AlarmDescription": "This metric monitors for 404 errors in the website logs",
@@ -70,7 +67,8 @@ class BuildEmailTests(unittest.TestCase):
         _, text_body, html_body = handler.build_email(alarm_message, "us-east-1")
 
         self.assertIn("What happened: Threshold Crossed: 1 datapoint [102.0", text_body)
-        self.assertIn("Suggested filter pattern: { $.status_code = 404 }", text_body)
+        self.assertNotIn("Suggested filter pattern:", text_body)
+        self.assertNotIn("Suggested time window:", text_body)
         self.assertIn("Log group: /ecs/production-website-logs", text_body)
         self.assertIn("<strong>Environment:</strong> sandbox", html_body)
 

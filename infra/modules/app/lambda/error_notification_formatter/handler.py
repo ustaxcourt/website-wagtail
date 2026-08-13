@@ -15,23 +15,19 @@ ALARM_TYPES = {
     "5xx-error-alarm": {
         "label": "server errors (5xx)",
         "log_group_env": "APP_LOG_GROUP_NAME",
-        "filter_pattern": "{ $.status_code >= 500 && $.status_code < 600 }",
     },
     "404-error-alarm": {
         "label": "a high volume of page-not-found errors (404)",
         "log_group_env": "APP_LOG_GROUP_NAME",
-        "filter_pattern": "{ $.status_code = 404 }",
     },
     "rds-error-alarm": {
         "label": "database errors",
         "log_group_env": "RDS_LOG_GROUP_NAME",
-        "filter_pattern": "ERROR OR FATAL OR PANIC",
     },
 }
 DEFAULT_ALARM_TYPE = {
     "label": "an error",
     "log_group_env": "APP_LOG_GROUP_NAME",
-    "filter_pattern": "",
 }
 
 
@@ -86,36 +82,6 @@ def _alarm_reason(alarm_message: dict) -> str:
     )
 
 
-def _alarm_window(alarm_message: dict) -> tuple[str, str] | None:
-    trigger = alarm_message.get("Trigger") or {}
-    try:
-        period_seconds = int(trigger.get("Period", 0))
-        evaluation_periods = int(trigger.get("EvaluationPeriods", 1))
-    except (TypeError, ValueError):
-        return None
-
-    state_change_time = alarm_message.get("StateChangeTime", "")
-    if not state_change_time or period_seconds <= 0 or evaluation_periods <= 0:
-        return None
-
-    normalized = state_change_time.replace("Z", "+00:00")
-    if len(normalized) >= 5 and normalized[-5] in "+-" and normalized[-3] != ":":
-        normalized = normalized[:-2] + ":" + normalized[-2:]
-
-    try:
-        end = datetime.fromisoformat(normalized)
-    except ValueError:
-        return None
-
-    total_seconds = period_seconds * evaluation_periods
-    start = end.timestamp() - total_seconds
-    start_display = datetime.fromtimestamp(start, tz=end.tzinfo).strftime(
-        "%B %d, %Y at %I:%M %p UTC"
-    )
-    end_display = end.strftime("%B %d, %Y at %I:%M %p UTC")
-    return start_display, end_display
-
-
 def build_email(alarm_message: dict, region: str) -> tuple[str, str, str]:
     alarm_name = alarm_message.get("AlarmName", "unknown-alarm")
     environment = _environment_from_alarm(alarm_name)
@@ -151,23 +117,6 @@ def build_email(alarm_message: dict, region: str) -> tuple[str, str, str]:
         html_lines.append(
             f'<p><strong>Open matching log events:</strong> <a href="{html.escape(log_events_url)}">{html.escape(log_events_url)}</a></p>'
         )
-        if alarm_type["filter_pattern"]:
-            text_lines.append(
-                f"Suggested filter pattern: {alarm_type['filter_pattern']}"
-            )
-            html_lines.append(
-                f"<p><strong>Suggested filter pattern:</strong> {html.escape(alarm_type['filter_pattern'])}</p>"
-            )
-
-        alarm_window = _alarm_window(alarm_message)
-        if alarm_window:
-            start_display, end_display = alarm_window
-            text_lines.append(
-                f"Suggested time window: {start_display} to {end_display}"
-            )
-            html_lines.append(
-                f"<p><strong>Suggested time window:</strong> {html.escape(start_display)} to {html.escape(end_display)}</p>"
-            )
 
         text_lines.append(f"Log group: {log_group_name}")
         text_lines.append("")
