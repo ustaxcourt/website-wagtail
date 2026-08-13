@@ -670,8 +670,8 @@
                 <div class="judge-card-grid">
                     {% for item in group.judges %}
                         <a class="judge-card"
-                           href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|lower }}/"
-                                    data-base-href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|lower }}/"
+                           href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|slugify }}/"
+                                    data-base-href="{{ page.url }}{{ item.judge.id }}/{{ item.judge.last_name|slugify }}/"
                            data-testid="judge-card-{{ item.judge.id }}">
                             <span class="judge-name">{{ item.judge.display_name }}</span>
                             <span class="judge-role">{{ item.role_label }}</span>
