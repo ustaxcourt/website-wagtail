@@ -279,26 +279,35 @@ class JudgeDetailRouteTest(JudgeIndexSetUpMixin):
                 request, id=str(self.judge_smith.id), last_name="wrongname"
             )
 
-    def test_last_name_with_space_returns_200(self):
-        """Last names such as "De Luca" must slugify to "de-luca" instead
-        of 404ing on the raw lowercased (space-containing) value."""
+    def test_last_name_with_space_slugifies_in_index_links_and_detail_route(self):
+        """Last names such as "De Luca" should produce /de-luca/ URLs and resolve."""
         judge = _make_judge("Troy", "De Luca", "Judge")
-        path = f"{self.judge_index.url}{judge.id}/de-luca/"
-        request = self._get_request(path)
-        response = self.judge_index.judge_detail(
-            request, id=str(judge.id), last_name="de-luca"
-        )
-        self.assertEqual(response.status_code, 200)
+        slug = "de-luca"
 
-    def test_last_name_with_apostrophe_returns_200(self):
-        """Last names such as "D'Arcy" must slugify to "darcy"."""
-        judge = _make_judge("Jane", "D'Arcy", "Judge")
-        path = f"{self.judge_index.url}{judge.id}/darcy/"
-        request = self._get_request(path)
-        response = self.judge_index.judge_detail(
-            request, id=str(judge.id), last_name="darcy"
+        index_request = self._get_request(self.judge_index.url)
+        index_html = self.judge_index.serve(index_request).render().content.decode()
+        self.assertIn(f'href="{self.judge_index.url}{judge.id}/{slug}/"', index_html)
+
+        detail_request = self._get_request(f"{self.judge_index.url}{judge.id}/{slug}/")
+        detail_response = self.judge_index.judge_detail(
+            detail_request, id=str(judge.id), last_name=slug
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(detail_response.status_code, 200)
+
+    def test_last_name_with_apostrophe_slugifies_in_index_links_and_detail_route(self):
+        """Last names such as "D'Arcy" should produce /darcy/ URLs and resolve."""
+        judge = _make_judge("Jane", "D'Arcy", "Judge")
+        slug = "darcy"
+
+        index_request = self._get_request(self.judge_index.url)
+        index_html = self.judge_index.serve(index_request).render().content.decode()
+        self.assertIn(f'href="{self.judge_index.url}{judge.id}/{slug}/"', index_html)
+
+        detail_request = self._get_request(f"{self.judge_index.url}{judge.id}/{slug}/")
+        detail_response = self.judge_index.judge_detail(
+            detail_request, id=str(judge.id), last_name=slug
+        )
+        self.assertEqual(detail_response.status_code, 200)
 
 
 @override_settings(**OVERRIDE)
