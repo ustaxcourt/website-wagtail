@@ -26,7 +26,11 @@
             margin-bottom: 1.5rem;
         }
 
-        @media (max-width: 768px) {
+        /* The shared mobile filter toggle (filter_button.html) becomes
+           visible at <=992px, so the alphabet row needs to hide at that
+           same breakpoint -- otherwise both are visible together at
+           769-992px (tablet-mini widths). */
+        @media (max-width: 992px) {
             .alphabet {
                 display: none;
             }

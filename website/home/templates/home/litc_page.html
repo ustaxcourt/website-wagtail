@@ -169,11 +169,19 @@
             }
         }
 
-        @media (max-width: 768px) {
+        /* The shared mobile filter toggle (filter_button.html) becomes
+           visible at <=992px, so the alphabet row needs to hide at that
+           same breakpoint -- otherwise both are visible together at
+           769-992px (tablet-mini widths). Kept as its own query so the
+           rest of the <=768px block below (phone-only grid layout) isn't
+           affected. */
+        @media (max-width: 992px) {
             .alphabet {
                 display: none;
             }
+        }
 
+        @media (max-width: 768px) {
             .clinic-list.grid {
                 grid-template-columns: 1fr;
             }

@@ -254,6 +254,15 @@
         height: 44px;
     }
 }
+
+/* Phone: full-width Filter toggle (easier to tap than a 200px pill).
+   Pages that want a compact icon-only button instead (Definitions) win
+   here via their own #id-scoped selector, which out-specifies this. */
+@media (max-width: 640px) {
+    .mobile-filter-toggle {
+        width: 100%;
+    }
+}
 </style>
 
 <div class="mobile-filter-bar" id="mobile-filter-bar">
@@ -319,6 +328,12 @@
             const filterToggle = document.getElementById('mobile-filter-toggle');
 
             if (filterToggle) {
+                function closeMenu() {
+                    filterMenuMobile.classList.remove('open');
+                    filterToggle.classList.remove('panel-open');
+                    filterToggle.setAttribute('aria-expanded', 'false');
+                }
+
                 filterToggle.addEventListener('click', function () {
                     const isOpen = filterMenuMobile.classList.toggle('open');
 
@@ -327,11 +342,21 @@
                 });
 
                 filterMenuMobile.querySelectorAll('.filter-link').forEach(function (link) {
-                    link.addEventListener('click', function () {
-                        filterMenuMobile.classList.remove('open');
-                        filterToggle.classList.remove('panel-open');
-                        filterToggle.setAttribute('aria-expanded', 'false');
-                    });
+                    link.addEventListener('click', closeMenu);
+                });
+
+                document.addEventListener('click', function (e) {
+                    const bar = document.getElementById('mobile-filter-bar');
+                    if (bar && !bar.contains(e.target) && filterMenuMobile.classList.contains('open')) {
+                        closeMenu();
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && filterMenuMobile.classList.contains('open')) {
+                        closeMenu();
+                        filterToggle.focus();
+                    }
                 });
             }
         }
