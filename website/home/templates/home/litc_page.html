@@ -222,21 +222,8 @@
             {% endfor %}
         </div>
         {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPRSTUVW" type="jumpTo" %}
-        {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
+        {% if page.clinic_asterisk_notice %}
             <div class="notice">
-                {% for block in page.city_asterisk_notice %}
-                    {% if block.block_type == "asterisk_notice" %}
-                        <div class="notice-item">
-                            {% if block.value.asterisks_count != "" %}
-                                <span class="small-case-indicator">{{ block.value.asterisks_count }}</span>
-                            {% endif %}
-                            <div class="simple-text">{{ block.value.text|richtext }}</div>
-                        </div>
-                    {% elif block.block_type == "callout" %}
-                        <div class="callout">{% include "callout_block.html" with block=block %}</div>
-                    {% endif %}
-                {% endfor %}
-
                 {% for block in page.clinic_asterisk_notice %}
                     {% if block.block_type == "asterisk_notice" %}
                         <div class="notice-item">
@@ -266,7 +253,7 @@
                             {% for city in state.cities %}
                                 {% for clinic in city.clinics %}
                                     <div class="clinic-card" tabindex="0">
-                                        <div class="city">{{ city.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
+                                        <div class="city">{{ city.name }}</div>
                                         <div class="clinic" style="margin-bottom: 10px;">
                                             <div class="clinic-name">{{ clinic.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
                                             <div class="clinic-info">
