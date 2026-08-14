@@ -64,7 +64,9 @@ def is_docket_number(term: str) -> DocketMatch | None:
     if match:
         return DocketMatch(term=term, docket_number=match.group(0), is_valid=True)
 
-    if STARTS_WITH_DIGIT_PATTERN.match(term) or "docket" in term.lower():
+    if STARTS_WITH_DIGIT_PATTERN.match(term) or re.search(
+        r"\bdocket\b", term, flags=re.IGNORECASE
+    ):
         return DocketMatch(term=term, docket_number=None, is_valid=False)
 
     return None
