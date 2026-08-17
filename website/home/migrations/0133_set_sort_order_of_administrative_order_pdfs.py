@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            sql="""WITH new_values as (SELECT p.pdf_id, RANK() over (ORDER BY docs.title desc, docs.id) as new_sort_order FROM home_pdfs p inner join wagtaildocs_document docs on p.pdf_id = docs.id WHERE p.page_id in (SELECT id FROM wagtailcore_page WHERE title = 'Administrative Orders')) UPDATE home_pdfs SET sort_order = (SELECT new_sort_order-1 FROM new_values WHERE new_values.pdf_id = home_pdfs.pdf_id);""",
+            sql="""WITH new_values as (SELECT p.pdf_id, RANK() over (ORDER BY docs.title desc, docs.id) as new_sort_order FROM home_pdfs p inner join wagtaildocs_document docs on p.pdf_id = docs.id WHERE p.page_id in (SELECT id FROM wagtailcore_page WHERE slug = 'administrative-orders')) UPDATE home_pdfs SET sort_order = (SELECT new_sort_order-1 FROM new_values WHERE new_values.pdf_id = home_pdfs.pdf_id);""",
             reverse_sql="""WITH target_pages AS (SELECT id FROM wagtailcore_page WHERE slug = 'administrative-orders') UPDATE home_pdfs SET sort_order = NULL WHERE page_id IN (SELECT id FROM target_pages);""",
         ),
     ]
