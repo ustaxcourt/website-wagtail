@@ -14,15 +14,61 @@
 
         #definitions-page .definitions-navigation-container {
             display: flex;
+            align-items: center;
             justify-content: center;
             gap: 22px;
         }
 
+        /* Filter button next to the search bar: icon-only, matching the
+           search bar's height so the two stay level with each other.
+           filter_button.html now shares .mobile-filter-bar/.mobile-filter-
+           -toggle between type="jumpTo" and type="filter" (previously
+           .filter-mobile/.filter-toggle, jumpTo-only). */
+        /* Cancel the shared partial's own 32px margin-top/bottom on
+           .mobile-filter-bar (meant for pages where it's a standalone
+           block). Here it's one flex item inside
+           .definitions-navigation-container, which already owns the
+           32px spacing itself, and flex containers don't collapse
+           margins with their children -- so left as-is it stacks an
+           extra 64px inside the row and throws off vertical alignment
+           with the search box. */
+        #definitions-page .mobile-filter-bar {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        #definitions-page .mobile-filter-toggle {
+            width: auto;
+            height: 40px;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            justify-content: center;
+        }
+
+        /* Visually hide the "Filter" label rather than display:none --
+           the icon is aria-hidden, so display:none here would leave the
+           button with no accessible name at all for screen readers. */
+        #definitions-page .mobile-filter-toggle > span {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Search bar per the same Figma component: outer box height 40px
+           fixed, padding 10px, border #DFE1E2, border-radius 4px. */
         #definitions-page .search-form-container{
             width: fit-content;
-            border: 1px solid var(--Base-base-dark, #565C65);
-            border-radius: 3px;
-            height: fit-content;
+            height: 40px;
+            padding: 10px;
+            border: 1px solid #DFE1E2;
+            border-radius: 4px;
+            box-sizing: border-box;
             align-self: center;
         }
 
@@ -30,20 +76,17 @@
             font-style: italic;
             color: var(--theme-color-base-medium);
             width: 269px;
-            height: 31px;
+            height: 20px;
             border: none;
-            padding-left: 13px;
-            padding-top: 1px;
-            padding-bottom: 1px;
+            padding: 0;
         }
 
         #definitions-page .search-form button{
             border: none;
             background-color: white;
-            width: 24px;
-            height: 24px;
-            padding: 3px;
-            margin-right: 13px;
+            width: 20px;
+            height: 20px;
+            padding: 0;
             color: var(--theme-color-base-medium);
         }
 
@@ -65,6 +108,16 @@
             color: var(--theme-color-primary-dark, #1A4480);
         }
 
+        /* The shared mobile filter toggle (filter_button.html) becomes
+           visible at <=992px, so the alphabet nav needs to hide at that
+           same breakpoint -- otherwise both are visible together at
+           769-992px (tablet-mini widths). */
+        @media (max-width: 992px) {
+            #definitions-page .alphabet-nav {
+                display: none;
+            }
+        }
+
         #definitions-page .alphabet-nav a {
             display: inline-flex;
             align-items: center;
@@ -73,7 +126,7 @@
             height: 45px;
             padding: 0 8px;
             background-color: white;
-            color: var(--light-blue);
+            color: var(--theme-color-primary-dark, #1A4480);
             text-decoration: none;
             font-weight: normal;
             font-size: 17px;
@@ -146,39 +199,6 @@
 
         #definitions-page .definition-description strong {
             font-weight: 700;
-        }
-
-        #definitions-page .alphabet-nav-mobile{
-            display: none;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            margin: 33px 0;
-            color: var(--theme-color-primary-dark, #1A4480);
-        }
-
-        #filter-toggle-btn {
-            display: none;
-            background-color: var(--color-link, #007bff);
-            color: white;
-            border: none;
-            border-radius: 4px 4px 0px 0px;
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 20px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        #filter-toggle-btn:focus-visible {
-            border: .25rem solid #2491ff;
-        }
-
-        #filter-toggle-btn img {
-            height: 15px;
-        }
-
-        #filter-toggle-btn:hover {
-            background-color: var(--link-hover-blue, #0056b3);
         }
 
         .suggestionEntry {
@@ -263,11 +283,23 @@
                 gap: 12px;
                 padding-right: 5px;
                 flex-direction: row;
+                /* Matches the design system's space-5 token (32px, "major
+                   separation between cards/large components"). */
+                margin-top: 32px;
+                margin-bottom: 32px;
+            }
+
+            #definitions-page .search-form-container {
+                flex: 1 1 auto;
+                min-width: 0;
+                width: auto;
             }
 
             #definitions-page .search-form input{
-                width: 180px;
-                height: 31px;
+                flex: 1 1 auto;
+                width: auto;
+                min-width: 0;
+                {% comment %} height: 31px; {% endcomment %}
             }
 
             #definitions-page .page-intro {
@@ -280,72 +312,6 @@
 
             #definitions-page .definition-description p {
                 line-height: 20px;
-            }
-
-            #definitions-page .alphabet-nav{
-                display: none;
-            }
-
-            #definitions-page .alphabet-nav-mobile.show-nav {
-                display: flex;
-                border: 1px solid var(--theme-color-base-light, #A9AEB1);
-                padding: 28px;
-                position: absolute;
-                z-index: 50;
-                background: white;
-                width: 237px;
-                right: 21px;
-                justify-content: flex-start;
-                gap: 22px;
-            }
-
-            #definitions-page .alphabet-nav-mobile a {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                min-width: 45px;
-                height: 45px;
-                padding: 0 8px;
-                background-color: white;
-                color: var(--light-blue);
-                text-decoration: none;
-                font-weight: normal;
-                font-size: 16px;
-                border: 1px solid var(--theme-color-base-lighter, #DCDEE0);
-                border-radius: 4px;
-                transition: background-color 0.2s ease, border-color 0.2s ease;
-            }
-
-            #definitions-page .alphabet-nav-mobile a:hover {
-                background-color: var(--medium-gray);
-                border-color: #bbb;
-            }
-
-            #filter-toggle-btn {
-                display: block;
-                background: white;
-                color: black;
-            }
-
-            #filter-toggle-btn.show-nav,
-            #filter-toggle-btn:hover {
-                display: block;
-                background: var(--theme-color-primary-dark, #1A4480);
-                color: white;
-            }
-
-            #filter-toggle-btn .filter-icon {
-                margin-right: 5px;
-            }
-
-            #filter-toggle-btn.show-nav .filter-icon,
-            #filter-toggle-btn:hover .filter-icon {
-                /* This filter combo turns a dark icon white */
-                filter: brightness(0) invert(1);
-            }
-
-            #filter-toggle-btn:focus {
-                outline: none;
             }
 
             #suggestions {
@@ -381,7 +347,7 @@
             {% if available_letters %}
                 <div class="alphabet-nav">
                     {% for letter in available_letters %}
-                        <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
+                        <a href="#{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -411,20 +377,9 @@
             </div>
 
             {% if available_letters %}
-                <button id="filter-toggle-btn" aria-expanded="false" aria-controls="alphabet-nav-mobile">
-                    <img class="filter-icon" src="{% static 'images/icons/filter_icon.svg' %}" alt="Filter"></img>
-                    Filter
-                </button>
+                {% include "home/filter_button.html" with letters=available_letters type="jumpTo" %}
             {% endif %}
 
-            {% if available_letters %}
-                <div class="alphabet-nav-mobile" id="alphabet-nav-mobile">
-                    {% for letter in available_letters %}
-                        <a href="#letter-{{ letter }}" aria-label="Jump to {{ letter }}">{{ letter }}</a>
-                    {% endfor %}
-                </div>
-
-            {% endif %}
         </div>
 
         <div class="search-toast-container">
@@ -432,7 +387,7 @@
         </div>
 
         {% for letter, definitions in grouped_definitions %}
-            <div class="letter-section" id="letter-{{ letter }}">
+            <div class="letter-section" id="{{ letter }}">
                 <h2 class="letter-heading">{{ letter }}</h2>
                 <div class="definitions-grid">
                     {% for definition in definitions %}
@@ -466,8 +421,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const filterButton = document.getElementById('filter-toggle-btn');
-        const mobileNav = document.getElementById('alphabet-nav-mobile');
         const searchInput = document.getElementById('search-input');
         const suggestionsDiv = document.getElementById('suggestions');
         const toastElement = document.getElementById('search-toast');
@@ -528,30 +481,6 @@
     });
 
 
-
-        if (filterButton && mobileNav) {
-            filterButton.addEventListener('click', function() {
-                mobileNav.classList.toggle('show-nav');
-                filterButton.classList.toggle('show-nav');
-                const isExpanded = mobileNav.classList.contains('show-nav');
-                filterButton.setAttribute('aria-expanded', isExpanded);
-            });
-
-            document.addEventListener('click', function(event) {
-                if (mobileNav.classList.contains('show-nav')) {
-
-                    const clickedOnNav = event.target.closest('#alphabet-nav-mobile');
-                    const clickedOnButton = event.target.closest('#filter-toggle-btn');
-                    const clickedOnNavLink = event.target.closest('#alphabet-nav-mobile a');
-
-                    if ((!clickedOnNav && !clickedOnButton) || clickedOnNavLink) {
-                        mobileNav.classList.remove('show-nav');
-                        filterButton.classList.remove('show-nav');
-                        filterButton.setAttribute('aria-expanded', 'false');
-                    }
-                }
-            });
-        }
 
         const available_words = Array.from(termElements).map(element => element.textContent.trim());
 
