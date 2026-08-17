@@ -64,6 +64,7 @@
     --border-base: #dee2e6;
     --border-accent: #97D4EA;
     --border-medium: #A9AEB1;
+    --border-input: #565C65;
 
     /* Alert/Status Colors */
     --color-danger: #B50909;
@@ -75,6 +76,11 @@
     --shadow-medium: rgba(0, 0, 0, 0.17);
     --shadow-dark: rgba(0, 0, 0, 0.33);
     --shadow-card: rgba(86, 92, 101, 0.10);
+
+    /* Overlay Colors */
+    --overlay-dark: rgba(0, 0, 0, 0.5);
+    --overlay-light: rgba(255, 255, 255, 0.5);
+    --overlay-light-subtle: rgba(255, 255, 255, 0.1);
 
     /* Legacy/Deprecated (for compatibility) */
     --bg-neutral: rgb(240, 240, 240);

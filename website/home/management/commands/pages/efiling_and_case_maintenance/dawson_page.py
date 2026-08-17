@@ -10,22 +10,10 @@ from home.models import (
     EnhancedStandardPage,
 )
 from home.management.commands.pages.page_initializer import PageInitializer
-from django.conf import settings
+from search.dawson_client import get_environment_specific_dawson_url
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-def get_environment_specific_dawson_url(prefix=None):
-    if settings.ENVIRONMENT == "production":
-        url = "dawson.ustaxcourt.gov"
-    elif settings.ENVIRONMENT == "train":
-        url = "test.ef-cms.ustaxcourt.gov"
-    else:  # Default to development [local, dev, sandbox, all others]
-        url = "dev.ef-cms.ustaxcourt.gov"
-    if prefix:
-        return f"https://{prefix}.{url}"
-    return f"https://{url}"
 
 
 class DawsonPageInitializer(PageInitializer):
