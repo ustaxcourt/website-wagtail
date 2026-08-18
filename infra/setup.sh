@@ -37,8 +37,3 @@ export TF_VAR_social_auth_azuread_tenant_oauth2_secret=$SOCIAL_AUTH_AZUREAD_TENA
 export TF_VAR_social_auth_azuread_tenant_oauth2_tenant_id=$SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID
 export TF_VAR_wagtailtransfer_secret_key=$WAGTAILTRANSFER_SECRET_KEY
 export TF_VAR_wagtailtransfer_sources=$WAGTAILTRANSFER_SOURCES
-
-# Optional: comma-separated list of error notification recipients, sourced from
-# the "website_secrets" secret for this environment. Falls back to the
-# error_notification_emails variable default (infra/variables.tf) when unset.
-export TF_VAR_error_notification_emails=$(jq -Rc 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))' <<< "$ERROR_NOTIFICATION_EMAILS")
