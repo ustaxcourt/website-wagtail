@@ -1,6 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from wagtail import blocks
-from wagtail.blocks import PageChooserBlock
+from wagtail.blocks import PageChooserBlock, StructBlockValidationError
 from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail.snippets.blocks import SnippetChooserBlock
@@ -517,6 +518,33 @@ class CardTilesBlock(blocks.StructBlock):
         required=False,
         help_text="Default content to display when no card is selected",
     )
+
+    show_back_button = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Display a back button when a card tile is selected (e.g. "
+        "p/a, p/b). Hidden on the default view showing all card tiles. If "
+        "checked, Back Button Text is required.",
+    )
+    back_button_text = blocks.CharBlock(
+        required=False,
+        max_length=64,
+        help_text="Text shown on the back button. Required if 'Show back "
+        "button' is checked.",
+    )
+
+    def clean(self, value):
+        result = super().clean(value)
+        if result["show_back_button"] and not result["back_button_text"]:
+            raise StructBlockValidationError(
+                block_errors={
+                    "back_button_text": ValidationError(
+                        "Back Button Text is required when 'Show back button' "
+                        "is checked."
+                    )
+                }
+            )
+        return result
 
     class Meta:
         label = "Card Tiles"

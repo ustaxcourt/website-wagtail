@@ -132,14 +132,19 @@
         display: none;
     }
 
-    header#top-navigation .dawson-link {
+    header#top-navigation .dawson-section {
         flex-shrink: 0;
         display: flex;
         align-items: center;
-        border-left: 1px solid rgba(255, 255, 255, 0.5);
+        border-left: 1px solid var(--overlay-light);
         padding-left: 24px;
         margin-left: 0;
         align-self: center;
+    }
+
+    header#top-navigation .dawson-link {
+        display: flex;
+        align-items: center;
     }
 
     header#top-navigation #desktop-search-form input {
@@ -159,13 +164,13 @@
 
     header#top-navigation .search-form input {
         padding: 11px 10px;
-        border: 1px solid #565C65;
+        border: 1px solid var(--border-input);
         min-width: 200px;
         height: 40px;
     }
 
     header#top-navigation .search-form button {
-        background-color: #162E51;
+        background-color: var(--color-navy);
         color: white;
         border: none;
         border-radius: 0px 4px 4px 0px;
@@ -185,11 +190,11 @@
 
     /* Desktop Navigation Styles */
     header#top-navigation .navigation-bar {
-        background-color: #005EA2;
+        background-color: var(--color-primary);
     }
 
     header#top-navigation .navigation {
-        background-color: #005EA2;
+        background-color: var(--color-primary);
         padding: 0 1rem;
         margin: 0 auto;
         display: flex;
@@ -249,7 +254,7 @@
     header#top-navigation .navigation-list {
         display: none;
         list-style-type: none;
-        background-color: #005EA2;
+        background-color: var(--color-primary);
         position: absolute;
         top: 50px;
         left: 0;
@@ -258,7 +263,7 @@
         margin: 0;
         min-width: 100%;
         width: max-content;
-        border-top: 6px solid #1A4480;
+        border-top: 6px solid var(--color-secondary);
     }
 
     /* Align the last navigation dropdown to the right to prevent overflow */
@@ -428,7 +433,7 @@
         flex: 1;
     }
 
-    header#top-navigation.view-mobile .dawson-link {
+    header#top-navigation.view-mobile .dawson-section {
         position: absolute;
         top: 10px;
         right: 16px;
@@ -439,6 +444,12 @@
         height: 45px;
         display: flex;
         align-items: center;
+        justify-content: center;
+    }
+
+    header#top-navigation.view-mobile .dawson-link {
+        width: 100%;
+        height: 100%;
         justify-content: center;
     }
 
@@ -504,7 +515,7 @@
      }
 
      header#top-navigation.view-mobile .navigation-bar {
-        background-color: #005EA2;
+        background-color: var(--color-primary);
         position: relative;
      }
 
@@ -532,7 +543,7 @@
         width: 100%;
         max-width: 100%;
         height: 100vh;
-        background-color: #005EA2;
+        background-color: var(--color-primary);
      }
 
      header#top-navigation.view-mobile #mobile-search-form {
@@ -549,8 +560,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #162E51;
-        border: 1px solid #162E51;
+        background-color: var(--color-navy);
+        border: 1px solid var(--color-navy);
         border-radius: 0px 3px 3px 0px;
         padding-right: 16px;
      }
@@ -563,9 +574,9 @@
         height: 44px;
         flex: 1;
         min-width: 0;
-        background-color: #162E51;
+        background-color: var(--color-navy);
         color: var(--color-white);
-        border: 1px solid #162E51;
+        border: 1px solid var(--color-navy);
         border-radius: 3px 0px 0px 3px;
         padding: 11px 10px 11px 16px;
         font-size: 20px;
@@ -632,7 +643,7 @@
         flex-direction: column;
         width: 100%;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: var(--overlay-dark);
         z-index: 999;
      }
 
@@ -644,7 +655,7 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        border-bottom: 2px solid #162E51;
+        border-bottom: 2px solid var(--color-navy);
         height: auto;
      }
 
@@ -662,7 +673,7 @@
      }
 
      header#top-navigation.view-mobile .navigation-header.active .link {
-        background-color: #1A4480;
+        background-color: var(--color-secondary);
      }
 
      header#top-navigation.view-mobile .navigation-header .link .chevron-down,
@@ -699,7 +710,7 @@
         position: static;
         display: none;
         width: 100%;
-        background-color: #1A4480;
+        background-color: var(--color-secondary);
         border-top: none;
         padding-left: 20px;
      }
@@ -720,7 +731,7 @@
      }
 
      header#top-navigation.view-mobile .navigation-list .nav-link a:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: var(--overlay-light-subtle);
      }
 
      /* Remove hover effects on mobile */
@@ -752,7 +763,7 @@
         object-fit: contain;
     }
 
-    header#top-navigation.view-tablet .dawson-link {
+    header#top-navigation.view-tablet .dawson-section {
         margin-right: 8px;
     }
 
@@ -812,7 +823,7 @@
                                 aria-label="Search"
                                 data-testid="search-input">
                         <button type="submit" data-testid="search-button" aria-label="Search">
-                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                         </button>
                     </form>
                 </div>
@@ -828,21 +839,23 @@
                                 aria-label="Search"
                                 data-testid="search-input">
                         <button type="submit" data-testid="search-button" aria-label="Search">
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                             </button>
                     </form>
                 </div>
 
-                <a class="dawson-link"
-                   href="https://app.dawson.ustaxcourt.gov/login"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="Login to DAWSON (opens in new tab)"
-                   data-testid="header-dawson-login-link">
-                    <img class="dawson"
-                         src="{% static 'images/header/dawson.webp' %}"
-                         alt="DAWSON" />
-                </a>
+                <div class="dawson-section">
+                    <a class="dawson-link"
+                       href="https://app.dawson.ustaxcourt.gov/login"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="Login to DAWSON (opens in new tab)"
+                       data-testid="header-dawson-login-link">
+                        <img class="dawson"
+                             src="{% static 'images/header/dawson.webp' %}"
+                             alt="DAWSON" />
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -851,7 +864,7 @@
         <ul class="navigation">
             <li class="mobile-close-container">
                 <button class="mobile-menu-close" aria-label="Close mobile menu" onclick="closeMobileMenu()">
-                    <i class="fa-solid fa-times"></i>
+                    <i class="fa-solid fa-times" aria-hidden="true"></i>
                 </button>
             </li>
             {% get_navigation_menu as nav %}
@@ -865,8 +878,8 @@
                         placeholder="Search"
                         aria-label="Search"
                         data-testid="search-input">
-                    <button type="submit" data-testid="search-button" title="Search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                    <button type="submit" data-testid="search-button" title="Search" aria-label="Search">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                     </button>
                 </form>
             </li>
