@@ -1,0 +1,364 @@
+{% load wagtailcore_tags %}
+{% load filters %}
+{% load static %}
+<style>
+/* ============================================================
+   Shared & JumpTo Menu Styles
+   ============================================================ */
+.filter-link {
+    padding: 0.5rem 1rem;
+    border: 1px solid #dcdee0;
+    background-color: #fff;
+    color: #000;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+    font-weight: 400;
+}
+.filter-link:hover {
+    border-color: #007BFF;
+}
+
+.filter-menu-mobile {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 4px;
+    padding: 24px 16px 16px;
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+.filter-menu-mobile.open {
+    display: flex;
+    justify-content: flex-start;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 288px;
+    max-width: calc(100vw - 32px);
+    z-index: 100;
+}
+.filter-menu-mobile-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+}
+.filter-menu-mobile-letters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 40px);
+    gap: 16px;
+    justify-content: space-between;
+}
+.filter-menu-mobile .filter-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #A9AEB1;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #005EA2;
+    font-size: 1rem;
+}
+.filter-menu-mobile .filter-link:hover {
+    border-color: #005EA2;
+}
+.filter-menu-mobile .filter-link:focus-visible {
+    outline: 3px solid #005ea2;
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   Shared Mobile Filter Toggle Button & Bar
+   Used for both "jumpTo" and "filter" variants.
+   ============================================================ */
+.mobile-filter-toggle:hover .mobile-filter-icon,
+.mobile-filter-toggle.panel-open .mobile-filter-icon,
+.mobile-filter-toggle.has-filters .mobile-filter-icon {
+    filter: invert(1);
+}
+
+.mobile-filter-bar {
+    display: none;
+    position: relative;
+    /* space-5 token (32px, "major separation between cards/large components") */
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.mobile-filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+    color: #162e51;
+    border: 1px solid #162e51;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.mobile-filter-toggle:hover {
+    background-color: #1a4480;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.mobile-filter-toggle.panel-open,
+.mobile-filter-toggle.has-filters {
+    background-color: #162e51;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.mobile-filter-toggle.has-filters .mobile-filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    color: #162e51;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    margin-left: 4px;
+}
+
+.mobile-filter-count {
+    display: none;
+}
+
+/* ============================================================
+   type="filter" — Judge Information only menu specific CSS
+   ============================================================ */
+.mobile-filter-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.mobile-filter-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #1a4480;
+}
+
+.mobile-filter-option + .mobile-filter-option {
+    border-top: 1px solid #dfe1e2;
+}
+
+.mobile-filter-option .filter-checkbox {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #a9aeb1;
+    font-size: 20px;
+}
+
+.mobile-filter-option .filter-checkbox.fa-square {
+    font-size: 0;
+    border: 1px solid #a9aeb1;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.mobile-filter-option.selected .filter-checkbox {
+    color: #005ea2;
+}
+
+.mobile-filter-option:hover {
+    background-color: #f0f4f9;
+}
+
+.mobile-filter-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-top: 1px solid #dfe1e2;
+    gap: 10px;
+}
+
+.mobile-filter-clear,
+.mobile-filter-apply {
+    border: none;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.mobile-filter-clear {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #005ea2;
+}
+
+.mobile-filter-apply {
+    padding: 10px 16px;
+    background-color: #005ea2;
+    color: #ffffff;
+}
+
+.mobile-filter-clear:hover { background-color: #f0f4f9; }
+.mobile-filter-apply:hover { background-color: #004785; }
+
+.mobile-filter-toggle:focus-visible,
+.mobile-filter-clear:focus-visible,
+.mobile-filter-apply:focus-visible {
+    outline: 3px solid #005ea2;
+    outline-offset: 2px;
+}
+
+.mobile-filter-option:focus-visible {
+    outline: 3px solid #005ea2;
+    outline-offset: -2px;
+}
+
+@media (max-width: 992px) {
+    .mobile-filter-bar {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .mobile-filter-toggle {
+        width: 200px;
+        height: 44px;
+    }
+}
+
+/* Phone: full-width Filter toggle (easier to tap than a 200px pill).
+   Pages that want a compact icon-only button instead (Definitions) win
+   here via their own #id-scoped selector, which out-specifies this. */
+@media (max-width: 640px) {
+    .mobile-filter-toggle {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="mobile-filter-bar" id="mobile-filter-bar">
+    <button class="mobile-filter-toggle"
+            id="mobile-filter-toggle"
+            aria-expanded="false"
+            aria-controls="{% if type == 'jumpTo' %}filter-nav-mobile{% else %}mobile-filter-panel{% endif %}"
+            {% if type == 'filter' %}aria-haspopup="true"{% endif %}>
+        <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20" aria-hidden="true" class="mobile-filter-icon">
+        <span>Filter</span>
+        {% if type == 'filter' %}
+            <span class="mobile-filter-count" aria-hidden="true" id="mobile-filter-count"></span>
+        {% endif %}
+    </button>
+
+    {% if type == "jumpTo" %}
+        <div class="filter-menu-mobile" id="filter-nav-mobile">
+            <div class="filter-menu-mobile-heading">Jump to letter</div>
+            <div class="filter-menu-mobile-letters">
+                {% for item in letters %}
+                    <a href="#{{ item }}" class="filter-link">{{ item }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% elif type == "filter" %}
+        <div class="mobile-filter-panel"
+             id="mobile-filter-panel"
+             role="dialog"
+             aria-label="Filter judges by type"
+             hidden>
+            <div class="mobile-filter-option"
+                 role="checkbox"
+                 tabindex="0"
+                 data-filter="all"
+                 aria-checked="true">
+                <i class="fa-solid fa-square-check filter-checkbox" aria-hidden="true"></i>
+                <span>All Judges</span>
+            </div>
+            {% for group in judge_groups %}
+                <div class="mobile-filter-option"
+                     role="checkbox"
+                     tabindex="0"
+                     data-filter="{{ group.filter_key }}"
+                     aria-checked="false">
+                    <i class="fa-regular fa-square filter-checkbox" aria-hidden="true"></i>
+                    <span>{{ group.filter_label }}</span>
+                </div>
+            {% endfor %}
+            <div class="mobile-filter-actions">
+                <button class="mobile-filter-clear" id="mobile-filter-clear">Clear filters</button>
+                <button class="mobile-filter-apply" id="mobile-filter-apply">Apply</button>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterMenuMobile = document.getElementById('filter-nav-mobile');
+
+        if (filterMenuMobile) {
+            const filterToggle = document.getElementById('mobile-filter-toggle');
+
+            if (filterToggle) {
+                function closeMenu() {
+                    filterMenuMobile.classList.remove('open');
+                    filterToggle.classList.remove('panel-open');
+                    filterToggle.setAttribute('aria-expanded', 'false');
+                }
+
+                filterToggle.addEventListener('click', function () {
+                    const isOpen = filterMenuMobile.classList.toggle('open');
+
+                    filterToggle.classList.toggle('panel-open', isOpen);
+                    filterToggle.setAttribute('aria-expanded', isOpen);
+                });
+
+                filterMenuMobile.querySelectorAll('.filter-link').forEach(function (link) {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                document.addEventListener('click', function (e) {
+                    const bar = document.getElementById('mobile-filter-bar');
+                    if (bar && !bar.contains(e.target) && filterMenuMobile.classList.contains('open')) {
+                        closeMenu();
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && filterMenuMobile.classList.contains('open')) {
+                        closeMenu();
+                        filterToggle.focus();
+                    }
+                });
+            }
+        }
+    });
+</script>

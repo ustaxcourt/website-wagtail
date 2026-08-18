@@ -114,3 +114,36 @@ class TestIsDocketNumber:
 
     def test_pasted_leading_whitespace_around_ssn_still_excepted(self):
         assert is_docket_number("  111-11-1111  ") is None
+
+    def test_search_for_docket_at_beginning_of_term_shows_invalid_format_warning(self):
+        result = is_docket_number("Docket 1")
+        assert result == DocketMatch(
+            term="Docket 1", docket_number=None, is_valid=False
+        )
+
+    def test_search_for_mixed_case_docket_at_beginning_of_term_shows_invalid_format_warning(
+        self,
+    ):
+        result = is_docket_number("DoCkeT 1")
+        assert result == DocketMatch(
+            term="DoCkeT 1", docket_number=None, is_valid=False
+        )
+
+    def test_search_for_docket_in_middle_of_term_shows_invalid_format_warning(self):
+        result = is_docket_number("Judge Urda docket 1")
+        assert result == DocketMatch(
+            term="Judge Urda docket 1", docket_number=None, is_valid=False
+        )
+
+    def test_search_for_mixed_case_docket_in_middle_of_term_shows_invalid_format_warning(
+        self,
+    ):
+        result = is_docket_number("Judge Urda dOCkEt 1")
+        assert result == DocketMatch(
+            term="Judge Urda dOCkEt 1", docket_number=None, is_valid=False
+        )
+
+    def test_search_for_docket_in_middle_of_a_word_in_term_is_not_a_docket_attempt(
+        self,
+    ):
+        assert is_docket_number("docketing 1") is None
