@@ -534,14 +534,14 @@ describe("Judge Information — Figma design spec (mobile)", () => {
             .should("have.css", "padding-bottom", "25px");
     });
 
-    it("mobile filter bar margin-top is 34px (PDF global spacing spec)", () => {
+    it("mobile filter bar margin-top is 32px (design system space-5 spec)", () => {
         cy.get(".mobile-filter-bar")
-            .should("have.css", "margin-top", "34px");
+            .should("have.css", "margin-top", "32px");
     });
 
-    it("mobile filter bar margin-bottom is 34px (PDF global spacing spec)", () => {
+    it("mobile filter bar margin-bottom is 32px (design system space-5 spec)", () => {
         cy.get(".mobile-filter-bar")
-            .should("have.css", "margin-bottom", "34px");
+            .should("have.css", "margin-bottom", "32px");
     });
 
     it("passes accessibility checks at mobile viewport", () => {
