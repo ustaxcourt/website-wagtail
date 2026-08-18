@@ -7,6 +7,7 @@ from django.db import models
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
 from django.http import Http404
+from django.utils.text import slugify
 from wagtail.search import index
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
@@ -234,7 +235,7 @@ class JudgeIndex(ModerationMixin, RoutablePageMixin, Page):
             context["back_url"] = self.url
             if selected_filters:
                 context["back_url"] = f"{self.url}?filters={','.join(selected_filters)}"
-            if judge.last_name.lower() != last_name:
+            if slugify(judge.last_name) != last_name:
                 raise Http404("Judge not found")
             return render(request, "home/judge_detail.html", context)
         except JudgeProfile.DoesNotExist:
