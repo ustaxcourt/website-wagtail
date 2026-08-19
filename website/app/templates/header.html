@@ -261,7 +261,7 @@
         z-index: 500;
         padding: 0;
         margin: 0;
-        min-width: 100%;
+        min-width: max-content;
         width: max-content;
         border-top: 6px solid var(--color-secondary);
     }
@@ -292,12 +292,47 @@
         font-weight: 400;
         line-height: 30px;
         text-decoration: none;
+        white-space: nowrap;
         padding: 5px 0;
     }
 
-    header#top-navigation .navigation-list .nav-link a:hover,
-    header#top-navigation .navigation-list .nav-link a:focus-visible {
-        text-decoration: underline;
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a {
+        display: grid;
+        font-size: 0;
+        line-height: 0;
+        text-decoration: none;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::before,
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::after {
+        grid-area: 1 / 1;
+        content: attr(data-gtm-label);
+        white-space: nowrap;
+        line-height: 30px;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::before {
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::after {
+        visibility: hidden;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover::before {
+        visibility: hidden;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover::after {
+        visibility: visible;
     }
 
     header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
@@ -709,6 +744,7 @@
      header#top-navigation.view-mobile .navigation-list {
         position: static;
         display: none;
+        min-width: 0;
         width: 100%;
         background-color: var(--color-secondary);
         border-top: none;
