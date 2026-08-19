@@ -125,7 +125,7 @@
                                                     {% endwith %}
                                                 </a> {% endcomment %}
                                                 <div class="judge-list">
-                                                    <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|lower }}/" class="judge-button">
+                                                    <a href="{{ page.url }}{{ ordered_judge.judge.id }}/{{ ordered_judge.judge.last_name|slugify }}/" class="judge-button">
                                                     <span class="judge-name">
                                                         {% with judge=ordered_judge.judge %}
                                                             {{ judge.display_name }}
@@ -163,11 +163,11 @@
                         </div>
                     {% endfor %}
                 </div>
-            {% elif block.block_type == 'accordian' %}
+            {% elif block.block_type == 'accordion' %}
                 {% if tile_index is not None %}
-                    {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
+                    {% include "accordion_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
                 {% else %}
-                    {% include "accordian_block.html" with block=block block_index=forloop.counter0 suffix="-accordian" %}
+                    {% include "accordion_block.html" with block=block block_index=forloop.counter0 suffix="-accordion" %}
                 {% endif %}
             {% elif block.block_type == 'button' %}
                 {% include "includes/styled_button.html" with block=block %}

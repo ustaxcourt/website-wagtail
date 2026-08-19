@@ -26,11 +26,21 @@
             margin-bottom: 1.5rem;
         }
 
+        /* The shared mobile filter toggle (filter_button.html) becomes
+           visible at <=992px, so the alphabet row needs to hide at that
+           same breakpoint -- otherwise both are visible together at
+           769-992px (tablet-mini widths). */
+        @media (max-width: 992px) {
+            .alphabet {
+                display: none;
+            }
+        }
+
         .alphabet .alphabet-link {
             padding: 0.5rem 1rem;
             border: 1px solid #dcdee0;
             background-color: #fff;
-            color: #000;
+            color: var(--color-secondary);
             font-size: 1rem;
             cursor: pointer;
             border-radius: 4px;
@@ -48,6 +58,16 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1rem;
             align-items: start;
+        }
+
+        /* .mobile-filter-bar (filter_button.html's shared toggle wrapper,
+           formerly .filter-mobile before jumpTo/filter were unified) is
+           display:none above 992px, so this only affects the mobile
+           filter toggle. Matches the design system's space-5 token (32px,
+           "major separation between cards/large components"). */
+        .mobile-filter-bar {
+            margin-top: 32px;
+            margin-bottom: 32px;
         }
 
         .state-card {
@@ -92,7 +112,9 @@
                 <div class="notice">
                     <div class="notice-content">
                         <i class="fa-solid fa-circle-info"></i>
-                        {{ block.value.message|richtext }}
+                        <div display="block">
+                            {{ block.value.message|richtext }}
+                        </div>
                     </div>
                 </div>
             {% elif block.block_type == "text" %}
@@ -108,6 +130,7 @@
                 </a>
             {% endfor %}
         </div>
+        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPSTUVW" type="jumpTo" %}
         <div class="grid">
             {% for state in sorted_places %}
                 {% with state_letter=state.state|slice:":1" %}

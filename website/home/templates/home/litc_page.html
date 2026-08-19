@@ -11,6 +11,25 @@
             margin-bottom: 15px;
         }
 
+        /* .mobile-filter-bar (filter_button.html's shared toggle wrapper,
+           formerly .filter-mobile before jumpTo/filter were unified) is
+           display:none above 992px. .grid-container > * above is more
+           specific than a plain class selector, so these overrides match
+           that specificity to actually win (adjacent-sibling margins
+           collapse to the larger value otherwise, so both .description's
+           bottom margin and .mobile-filter-bar's top margin need to move
+           together). Sets the design system's space-5 token (32px, "major
+           separation between cards/large components") instead of the
+           page's general 34px. */
+        .grid-container > .description {
+            margin-bottom: 32px;
+        }
+
+        .grid-container > .mobile-filter-bar {
+            margin-top: 32px;
+            margin-bottom: 32px;
+        }
+
         .notice-item .simple-text p, .notice .simple-text {
             display: inline;
             font-size: 17px;
@@ -49,26 +68,11 @@
             gap: 1.9rem;
         }
 
-        .alphabet-toggle {
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #dcdee0;
-            background-color: #fff;
-            color: #000;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
        .alphabet .alphabet-link {
             padding: 0.5rem 1rem;
             border: 1px solid #dcdee0;
             background-color: #fff;
-            color: #000;
+            color: var(--color-secondary);
             font-size: 1rem;
             cursor: pointer;
             border-radius: 4px;
@@ -153,14 +157,6 @@
             margin: 0;
         }
 
-        .active{
-            background-color: var(--color-secondary);
-            color: white;
-        }
-        .active>span>img{
-            filter: brightness(0) invert(1);
-        }
-
         @media (max-width: 1024px) {
             .clinic-list.grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -173,29 +169,19 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .alphabet-toggle {
-                display: flex;
-            }
-
+        /* The shared mobile filter toggle (filter_button.html) becomes
+           visible at <=992px, so the alphabet row needs to hide at that
+           same breakpoint -- otherwise both are visible together at
+           769-992px (tablet-mini widths). Kept as its own query so the
+           rest of the <=768px block below (phone-only grid layout) isn't
+           affected. */
+        @media (max-width: 992px) {
             .alphabet {
                 display: none;
-                gap: 0.75rem;
-                padding-top: 12px;
             }
+        }
 
-            .alphabet.open {
-                display: flex;
-                justify-content: space-evenly;
-            }
-
-            .alphabet.open > a{
-                color: var(--color-secondary);
-            }
-            .alphabet button {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.9rem;
-            }
+        @media (max-width: 768px) {
             .clinic-list.grid {
                 grid-template-columns: 1fr;
             }
@@ -230,32 +216,14 @@
                 {% include "callout_block.html" with block=block %}
             {% endif %}
         {% endfor %}
-        <div class="alphabet-wrapper">
-            <button class="alphabet-toggle" aria-expanded="false" aria-controls="alphabet-nav">
-                <span>Filter by Letter</span>
-                <span class="toggle-icon" aria-hidden="true"> <img src="{% static 'images/icons/filter_icon.svg' %}" alt="" width="20" height="20"></span>
-            </button>
-            <div class="alphabet" id="alphabet-nav">
-                {% for letter in "ACDFGHIKLMNOPRSTUVW" %}
-                    <a href="#{{ letter }}" class="alphabet-link"> {{ letter }} </a>
-                {% endfor %}
-            </div>
+        <div class="alphabet" id="alphabet-nav">
+            {% for letter in "ACDFGHIKLMNOPRSTUVW" %}
+                <a href="#{{ letter }}" class="alphabet-link"> {{ letter }} </a>
+            {% endfor %}
         </div>
-        {% if page.city_asterisk_notice or page.clinic_asterisk_notice %}
+        {% include "home/filter_button.html" with letters="ACDFGHIKLMNOPRSTUVW" type="jumpTo" %}
+        {% if page.clinic_asterisk_notice %}
             <div class="notice">
-                {% for block in page.city_asterisk_notice %}
-                    {% if block.block_type == "asterisk_notice" %}
-                        <div class="notice-item">
-                            {% if block.value.asterisks_count != "" %}
-                                <span class="small-case-indicator">{{ block.value.asterisks_count }}</span>
-                            {% endif %}
-                            <div class="simple-text">{{ block.value.text|richtext }}</div>
-                        </div>
-                    {% elif block.block_type == "callout" %}
-                        <div class="callout">{% include "callout_block.html" with block=block %}</div>
-                    {% endif %}
-                {% endfor %}
-
                 {% for block in page.clinic_asterisk_notice %}
                     {% if block.block_type == "asterisk_notice" %}
                         <div class="notice-item">
@@ -285,7 +253,7 @@
                             {% for city in state.cities %}
                                 {% for clinic in city.clinics %}
                                     <div class="clinic-card" tabindex="0">
-                                        <div class="city">{{ city.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if city.small_cases_only %}*{% endif %}</span></div>
+                                        <div class="city">{{ city.name }}</div>
                                         <div class="clinic" style="margin-bottom: 10px;">
                                             <div class="clinic-name">{{ clinic.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
                                             <div class="clinic-info">
@@ -327,27 +295,6 @@
                 var span = Math.min(clinicCount, 3);
                 card.classList.add('span-' + span);
             });
-            var toggle = document.querySelector('.alphabet-toggle');
-            var alphabet = document.getElementById('alphabet-nav');
-
-            if (toggle && alphabet) {
-                toggle.addEventListener('click', function () {
-                    var isOpen = alphabet.classList.toggle('open');
-                    toggle.classList.toggle('active', isOpen);
-                    toggle.setAttribute('aria-expanded', isOpen);
-                });
-
-                //Close the dropdown after clicking a letter on mobile.
-                alphabet.querySelectorAll('.alphabet-link').forEach(function (link) {
-                    link.addEventListener('click', function () {
-                        if (window.innerWidth <= 768) {
-                            alphabet.classList.remove('open');
-                            toggle.classList.remove('active');
-                            toggle.setAttribute('aria-expanded', 'false');
-                        }
-                    });
-                });
-            }
         });
     </script>
 {% endblock %}
