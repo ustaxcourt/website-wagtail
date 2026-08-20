@@ -413,6 +413,7 @@
             border-radius: 4px;
             padding: 16px 24px;
             margin: 5px;
+            cursor: pointer;
         }
         .enhanced-page .active.filter-tag-choices {
             background-color: #162E51;
@@ -610,6 +611,21 @@
                     });
                 }
             }
+        });
+
+        const filterButtons = document.querySelectorAll('.filter-tag-choices');
+
+        filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+
+            const currentActive = document.querySelector('.filter-tag-choices.active');
+
+            if (currentActive) {
+            currentActive.classList.remove('active');
+            }
+
+            this.classList.add('active');
+        });
         });
     </script>
 {% endblock content %}
