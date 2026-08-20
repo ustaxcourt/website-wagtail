@@ -403,6 +403,23 @@
             text-align: left;
         }
 
+        {% comment %} CSS for WAG-1371 {% endcomment %}
+
+        .enhanced-page .filter-tag-choices {
+            background-color: #E0F0FE;
+            color: #364153;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            padding: 16px 24px;
+            margin: 5px;
+        }
+        .enhanced-page .active.filter-tag-choices {
+            background-color: #162E51;
+            color: #FFFFFF;
+        }
+
+        {% comment %} End {% endcomment %}
 
         @media (max-width: 1024px) {
 
