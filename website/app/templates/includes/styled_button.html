@@ -2,7 +2,7 @@
 {% load wagtailcore_tags navigation_tags custom_tags %}
 
 <style>
-  .usa-button.styled-button{
+  .usa-button.styled-primary-button{
     display: flex;
     align-items: center;
     color: var(--color-white);
@@ -16,21 +16,56 @@
     line-height: 1.025em;
   }
 
-  .usa-button.styled-button .button-icon {
+  .usa-button.styled-primary-button .button-icon {
     background-color: var(--color-white);
     width: 24px;
     height: 24px;
   }
 
-  .usa-button.styled-button.no-hover:hover {
+  .usa-button.styled-primary-button.no-hover:hover {
     background-color: var(--color-primary);
     color: var(--color-white);
+  }
+
+
+  .usa-button.styled-inverted-primary-button{
+    display: flex;
+    align-items: center;
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    padding: 10px 20px;
+    border: 1px solid var(--color-primary);
+    min-height: 44px;
+    width: fit-content;
+    word-break: break-word;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.025em;
+  }
+
+  .usa-button.styled-inverted-primary-button:hover{
+    /* color: #1A4480;
+    border-color: #1A4480; */
+    color: #162E51;
+    border-color: #162E51;
+    background-color: #E8F0FE;
+  }
+
+  .usa-button.styled-inverted-primary-button .button-icon {
+    background-color: var(--color-primary);
+    width: 24px;
+    height: 24px;
+  }
+
+  .usa-button.styled-inverted-primary-button.no-hover:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
   }
 
 </style>
 
 {% for link_item in block.value.url %}
-<a class="usa-button styled-button {% if not block.value.button_hover %}no-hover{% endif %}"
+<a class="usa-button {% if block.value.style == "inverted-primary" %}usa-button--outline{% endif %} styled-{{ block.value.style }}-button {% if not block.value.button_hover %}no-hover{% endif %}"
    data-is-link="true"
    {% if link_item.block_type == 'external_url' %}
       href="{{ link_item.value }}"
@@ -40,9 +75,12 @@
       href="{{ link_item.value.url }}"
    {% endif %}>
 
-  {% if block.value.icon and block.value.icon.url %}
+  {% if block.value.icon and block.value.icon.url and block.value.icon_location == "before" %}
     <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
   {% endif %}
   {{ block.value.text }}
+  {% if block.value.icon and block.value.icon.url and block.value.icon_location == "after" %}
+    <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+  {% endif %}
 </a>
 {% endfor %}

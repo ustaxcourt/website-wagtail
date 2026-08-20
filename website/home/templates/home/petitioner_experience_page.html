@@ -8,13 +8,80 @@
     <style>
         /* Rounded rectangle */
         .rounded-rectangle {
+            padding: 0 0 48px 0;
             width: 100%;                 /* Scales with screen width */
-            /*max-width: 500px;*/           /* Prevents it from getting too large */
-            aspect-ratio: 5 / 1;        /* Keeps width:height ratio */
             background-color: #162E51;  /* Fill color */
             border-radius: 20px;        /* Rounded corners */
-            margin: 32px 0 0 0;
+            margin: 32px 0 32px 0;
         }
+
+        .rounded-rectangle h1 {
+            padding: 48px 48px 0 48px;
+            color: var(--text-white);
+            font-size: 42px;
+        }
+
+        .rounded-rectangle h2 {
+            padding: 24px 48px 0 48px;
+            color: var(--text-white);
+            font-weight: 400;
+        }
+
+        .rounded-rectangle-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: start;
+            padding: 32px 48px 0 48px;
+            gap: 24px;
+        }
+
+        .rounded-rectangle-buttons a {
+            display: inline-flex;       /* Make each control inline-flex */
+            margin-right: 0px;          /* Space between controls */
+        }
+
+        @media (max-width: 840px) {
+            .rounded-rectangle {
+                padding: 0 0 32px 0;
+            }
+
+            .rounded-rectangle h1 {
+                padding: 32px 48px 0 48px;
+                font-size: 42px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .rounded-rectangle {
+                padding: 0 0 32px 0;
+            }
+
+            .rounded-rectangle h1 {
+                padding: 32px 48px 0 48px;
+                font-size: 32px;
+            }
+        }
+
+        /* .icon-arrow-right {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+
+            background-color: currentColor;
+
+            -webkit-mask-position: center;
+            mask-position: center;
+
+            -webkit-mask-image: url({% static "uswds/img/usa-icons/arrow_forward.svg" %});
+            mask-image: url({% static "uswds/img/usa-icons/arrow_forward.svg" %});
+
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+
+            -webkit-mask-size: contain;
+            mask-size: contain;
+        } */
     </style>
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
@@ -41,7 +108,17 @@
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
-        <div class="rounded-rectangle"></div>
+        {% if page.call_to_action %}
+            <div class="rounded-rectangle">
+                <h1>{{ page.call_to_action.header }}</h1>
+                {{ page.call_to_action.body|richtext }}
+                <div class="rounded-rectangle-buttons">
+                    {% for button in page.call_to_action.buttons %}
+                        {% include "includes/styled_button.html" with block=button %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <script>

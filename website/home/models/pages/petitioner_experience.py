@@ -1,3 +1,4 @@
+from django.db import models
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 from home.models.pages.enhanced_standard import EnhancedStandardPage
@@ -6,6 +7,7 @@ from wagtail.search import index
 from home.models.custom_blocks.common import custom_promote_panels
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
+from home.models.snippets.call_to_action import CallToActionBox
 
 
 class PetitionerExperienceReviewByRequiredOnSubmitForm(ReviewByRequiredOnSubmitForm):
@@ -25,11 +27,20 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         blank=False,
     )
 
+    call_to_action = models.ForeignKey(
+        CallToActionBox,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
     content_panels = Page.content_panels + [
         FieldPanel("show_floating_definitions_button"),
         FieldPanel("navigation_ribbon"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
+        FieldPanel("call_to_action"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(

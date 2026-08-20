@@ -5,6 +5,11 @@ from wagtail.blocks import PageChooserBlock
 
 class ButtonBlock(blocks.StructBlock):
     icon = SVGDocumentChooserBlock(required=False, help_text="Optional: Button icon")
+    icon_location = blocks.ChoiceBlock(
+        choices=[("before", "Before Text"), ("after", "After Text")],
+        default="before",
+        help_text="Choose the location of the icon relative to the text, if icon is selected.",
+    )
     text = blocks.CharBlock(required=True, help_text="Button text", max_length=64)
     url = blocks.StreamBlock(
         [
@@ -22,9 +27,7 @@ class ButtonBlock(blocks.StructBlock):
     )
 
     style = blocks.ChoiceBlock(
-        choices=[
-            ("primary", "Primary"),
-        ],
+        choices=[("primary", "Primary"), ("inverted-primary", "Inverted Primary")],
         default="primary",
         help_text="Choose the button style",
     )
