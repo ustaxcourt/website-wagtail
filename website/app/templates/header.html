@@ -296,43 +296,17 @@
     }
 
     header#top-navigation:not(.view-mobile) .navigation-list .nav-link a {
-        display: grid;
-        font-size: 0;
-        line-height: 0;
-        text-decoration: none;
         white-space: nowrap;
-    }
-
-    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::before,
-    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::after {
-        grid-area: 1 / 1;
-        content: attr(data-gtm-label);
-        white-space: nowrap;
-        line-height: 30px;
-    }
-
-    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::before {
-        font-size: 18px;
-        font-weight: 400;
-    }
-
-    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a::after {
-        visibility: hidden;
-        font-size: 17px;
-        font-weight: 600;
-    }
-
-    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover::before {
-        visibility: hidden;
     }
 
     header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover {
         color: white;
         text-decoration: none;
+        text-shadow: 2px 3px 2px #0000008a;
     }
 
-    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover::after {
-        visibility: visible;
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.15);
     }
 
     header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
