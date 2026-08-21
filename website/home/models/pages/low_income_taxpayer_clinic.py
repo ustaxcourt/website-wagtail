@@ -27,6 +27,9 @@ class LITCClinicBlock(blocks.StructBlock):
 
 class LITCCityBlock(blocks.StructBlock):
     name = blocks.CharBlock()
+    small_cases_only = blocks.BooleanBlock(
+        required=False, help_text="Indicates the city only holds small case trials."
+    )
     clinics = blocks.ListBlock(LITCClinicBlock())
 
     class Meta:
@@ -65,6 +68,50 @@ class LITCPage(ModerationMixin, Page):
         [("state", LITCStateBlock())],
         use_json_field=True,
         blank=True,
+    )
+
+    city_asterisk_notice = StreamField(
+        blocks.StreamBlock(
+            [
+                (
+                    "asterisk_notice",
+                    blocks.StructBlock(
+                        [
+                            (
+                                "asterisks_count",
+                                blocks.ChoiceBlock(
+                                    choices=[("", "None"), ("*", "*")],
+                                    default="",
+                                    required=False,
+                                    help_text="Set the number of asterisks to display (0 or 1).",
+                                ),
+                            ),
+                            (
+                                "text",
+                                blocks.RichTextBlock(
+                                    help_text="Standard text explanation."
+                                ),
+                            ),
+                        ],
+                        icon="info-circle",
+                        label="City Asterisk Notice",
+                    ),
+                ),
+                ("callout", StyledCalloutBlock()),
+            ],
+        ),
+        use_json_field=True,
+        blank=True,
+        default=[
+            (
+                "asterisk_notice",
+                {
+                    "asterisks_count": "*",
+                    "text": "Indicates the city only holds trials for small tax cases.",
+                },
+            ),
+        ],
+        help_text="This notice will be used to explain the meaning of a single asterisk next to city names in the clinic listings.",
     )
 
     clinic_asterisk_notice = StreamField(
@@ -115,6 +162,7 @@ class LITCPage(ModerationMixin, Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("introductory_paragraph"),
+        FieldPanel("city_asterisk_notice"),
         FieldPanel("clinic_asterisk_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
     ]
@@ -147,6 +195,7 @@ class LITCPage(ModerationMixin, Page):
 
                     city_data = {
                         "name": city.get("name"),
+                        "small_cases_only": city.get("small_cases_only"),
                         "note": city.get("note"),
                         "clinics": sorted_clinics,
                     }
