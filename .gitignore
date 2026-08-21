@@ -261,6 +261,7 @@ website_secrets
 .cursorrules
 CLAUDE.md
 GEMINI.md
+copilot-instructions.md
 tmp/
 website/documents_object_list.txt
 website/s3_search_results.txt
