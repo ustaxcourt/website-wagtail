@@ -17,6 +17,7 @@ class PetitionerExperienceReviewByRequiredOnSubmitForm(ReviewByRequiredOnSubmitF
 
 
 class PetitionerExperiencePage(EnhancedStandardPage):
+    template = "home/petitioner_experience_page.html"
     base_form_class = PetitionerExperienceReviewByRequiredOnSubmitForm
 
     class Meta:

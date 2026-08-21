@@ -9,7 +9,7 @@ snippet_name = "Ready to begin your petition?"
 arrow_forward_name = "Arrow Forward"
 
 
-# This initializes the Call To Action Box snippet named "Ready to begin your petiton?".
+# This initializes the Call To Action Box snippet named "Ready to begin your petition?".
 # It extends PageInitializer to give it access to the load_document_from_documents_dir method.
 class CallToActionBoxInitializer(PageInitializer):
     def __init__(self):
@@ -22,7 +22,8 @@ class CallToActionBoxInitializer(PageInitializer):
 
         logger.info("Creating the 'Ready to begin your petition?' Call to Action Box.")
 
-        if (Document.objects.filter(title=arrow_forward_name)).exists():
+        arrow_forward_doc = Document.objects.filter(title=arrow_forward_name).first()
+        if arrow_forward_doc:
             logger.info("'Arrow Forward' icon already exists.")
         else:
             logger.info("Creating the 'Arrow Forward' icon.")

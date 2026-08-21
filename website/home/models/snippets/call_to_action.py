@@ -30,14 +30,14 @@ class CallToActionBox(
     buttons = StreamField(
         [("button", ButtonBlock())],
         use_json_field=True,
-        blank=True,
+        blank=False,
         min_num=1,
         max_num=3,
         help_text="Buttons to display at the bottom of the Call to Action Box",
     )
 
     _revisions = GenericRelation(
-        "wagtailcore.Revision", related_query_name="navigation_ribbon"
+        "wagtailcore.Revision", related_query_name="call_to_action_box"
     )
 
     content_panels = [
