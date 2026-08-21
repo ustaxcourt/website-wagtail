@@ -17,7 +17,7 @@ django-ses==4.0.0
 django-storages==1.14.4
 django-taggit==6.1.0
 django-treebeard==4.7.1
-Django==5.2.16
+Django==6.1
 djangorestframework==3.15.2
 draftjs-exporter==5.0.0
 et_xmlfile==2.0.0
@@ -47,7 +47,7 @@ s3transfer==0.10.4
 setuptools==84.0.0
 six==1.16.0
 soupsieve==2.8.4
-sqlparse==0.5.4
+sqlparse==0.6.0
 telepath==0.3.1
 typing_extensions==4.12.2
 urllib3==2.7.0
