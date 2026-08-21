@@ -10,7 +10,7 @@
         .rounded-rectangle {
             padding: 0 0 48px 0;
             width: 100%;                 /* Scales with screen width */
-            background-color: #162E51;  /* Fill color */
+            background-color: var(--color-navy);  /* Fill color */
             border-radius: 20px;        /* Rounded corners */
             margin: 32px 0 32px 0;
         }
@@ -86,27 +86,6 @@
                 gap: 0px;
             }
         }
-
-        /* .icon-arrow-right {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-
-            background-color: currentColor;
-
-            -webkit-mask-position: center;
-            mask-position: center;
-
-            -webkit-mask-image: url({% static "uswds/img/usa-icons/arrow_forward.svg" %});
-            mask-image: url({% static "uswds/img/usa-icons/arrow_forward.svg" %});
-
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-
-            -webkit-mask-size: contain;
-            mask-size: contain;
-        } */
     </style>
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
