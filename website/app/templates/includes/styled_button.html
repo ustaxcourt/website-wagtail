@@ -18,8 +18,8 @@
 
   .usa-button.styled-primary-button .button-icon {
     background-color: var(--color-white);
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
   .usa-button.styled-primary-button.no-hover:hover {
@@ -53,13 +53,45 @@
 
   .usa-button.styled-inverted-primary-button .button-icon {
     background-color: var(--color-primary);
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
   .usa-button.styled-inverted-primary-button.no-hover:hover {
     background-color: var(--color-white);
     color: var(--color-primary);
+  }
+
+  .svg-primary-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-white);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .usa-button.styled-primary-button:hover .svg-primary-icon {
+    background-color: var(--color-white);
+  }
+
+  .svg-inverted-primary-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-primary);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .usa-button.styled-inverted-primary-button:hover .svg-inverted-primary-icon {
+    background-color: #162E51;
   }
 
 </style>
@@ -76,11 +108,19 @@
    {% endif %}>
 
   {% if block.value.icon and block.value.icon.url and block.value.icon_location == "before" %}
-    <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+    {% if block.value.icon.url|slice:"-4:"|lower == ".svg" %}
+      <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+    {% else %}
+      <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+    {% endif %}
   {% endif %}
   {{ block.value.text }}
   {% if block.value.icon and block.value.icon.url and block.value.icon_location == "after" %}
-    <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+    {% if block.value.icon.url|slice:"-4:"|lower == ".svg" %}
+      <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+    {% else %}
+      <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+    {% endif %}
   {% endif %}
 </a>
 {% endfor %}
