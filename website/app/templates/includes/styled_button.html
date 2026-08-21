@@ -105,7 +105,7 @@
       href="{{ link_item.value.url }}"
    {% endif %}>
 
-  {% if block.value.icon and block.value.icon.url and block.value.icon_location == "before" %}
+  {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "before" %}
     {% if block.value.icon.url|slice:"-4:"|lower == ".svg" %}
       <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
     {% else %}
@@ -113,7 +113,7 @@
     {% endif %}
   {% endif %}
   {{ block.value.text }}
-  {% if block.value.icon and block.value.icon.url and block.value.icon_location == "after" %}
+  {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "after" %}
     {% if block.value.icon.url|slice:"-4:"|lower == ".svg" %}
       <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
     {% else %}
