@@ -64,16 +64,6 @@
             {% elif block.block_type == 'links' %}
                 {% include "home/links_block.html" with block=block %}
             {% elif block.block_type == 'questionanswers' %}
-            {% comment %} WAG-1317 {% endcomment %}
-                <button class="active filter-tag-choices"> All </button>
-                <button class="filter-tag-choices"> Filing </button>
-                <button class="filter-tag-choices"> Deadlines </button>
-                <button class="filter-tag-choices"> Representation </button>
-                <button class="filter-tag-choices"> Forms & Documents </button>
-                <button class="filter-tag-choices"> Trial Process </button>
-                <button class="filter-tag-choices"> Fees & Costs </button>
-                <button class="filter-tag-choices"> After Decision </button>
-            {% comment %} End {% endcomment %}
                 <ul class="links indented">
                     {% for q in block.value %}
                         <li>
