@@ -114,7 +114,7 @@
         {% if page.call_to_action %}
             <div class="rounded-rectangle">
                 <h1>{{ page.call_to_action.header }}</h1>
-                {{ page.call_to_action.body|richtext }}
+                <h2>{{ page.call_to_action.body }}</h2>
                 <div class="rounded-rectangle-buttons">
                     {% for button in page.call_to_action.buttons %}
                         {% include "includes/styled_button.html" with block=button %}

@@ -1,6 +1,8 @@
+from django.conf import settings
 from home.models import CallToActionBox
 from home.management.commands.pages.page_initializer import PageInitializer
 from wagtail.documents.models import Document
+from home.models.utils.execute_script import ExecuteScript
 import logging
 
 logger = logging.getLogger(__name__)
@@ -16,6 +18,16 @@ class CallToActionBoxInitializer(PageInitializer):
         self.logger = logger
 
     def create(self):
+        # Delete existing navigation menu if it exists
+        if settings.SITE_IS_LIVE:
+            logger.info(
+                "Skipping Call to Action Box creation. Call to Action Box creation/recreation suppressed past site LIVE DATE."
+            )
+            return
+        else:
+            logger.info("Creating Call to Action Box...")
+            CallToActionBox.objects.all().delete()
+
         if CallToActionBox.objects.filter(header=snippet_name).exists():
             logger.info("'Ready to begin your petition?' already exists.")
             return
@@ -35,8 +47,7 @@ class CallToActionBoxInitializer(PageInitializer):
 
         call_to_action_box = CallToActionBox(
             header=snippet_name,
-            body='<h2 data-block-key="kyfpj">Once you have your documents ready, start your petition through DAWSON, the Court'
-            "s electronic filing system.</h2>",
+            body="Once you have your documents ready, start your petition through DAWSON, the Court's electronic filing system.",
             buttons=[
                 {
                     "type": "button",
@@ -77,3 +88,35 @@ class CallToActionBoxInitializer(PageInitializer):
             ],
         )
         call_to_action_box.save()
+        logger.info("Successfully created Navigation menu.")
+
+    def update(self):
+        logger.info("Updating Call to Action Box...")
+        CallToActionBox.objects.all().delete()
+        self.create()
+
+    def run(self):
+        """Update the Call to Action Box as an execution script"""
+        command_name = "Call to Action Box update for Petition Experience redesign"
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.update()
+            execution_log_text = (
+                "Call to Action Box updated for Petition Experience redesign"
+            )
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+
+        except Exception as e:
+            logger.error(e)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {e}"
+            script_entry.save()
+            raise
