@@ -39,6 +39,46 @@ class LITCStateBlock(blocks.StructBlock):
     cities = blocks.ListBlock(LITCCityBlock())
 
 
+class LITCRemoteClinicBlock(blocks.StructBlock):
+    clinic_type = blocks.CharBlock(
+        default="Low Income Taxpayer Clinic",
+        help_text='The category label shown above the clinic name on the card (e.g. "Low Income Taxpayer Clinic" or "Pro Bono Program").',
+    )
+    name = blocks.CharBlock()
+    address = blocks.CharBlock(required=False)
+    phone = blocks.CharBlock(required=False)
+    website = blocks.URLBlock(required=False)
+    email = blocks.EmailBlock(required=False)
+    small_case_procedures_only = blocks.BooleanBlock(
+        required=False,
+        help_text="Indicates the clinic only represents taxpayers who have elected the small tax case procedures.",
+    )
+
+    class Meta:
+        icon = "user"
+        label = "Remote Clinic"
+
+
+class LITCRemoteBlock(blocks.StructBlock):
+    position = blocks.ChoiceBlock(
+        choices=[
+            ("bottom", "Bottom (after all states)"),
+            ("top", "Top (before all states)"),
+        ],
+        default="bottom",
+        help_text="Where the Remote banner appears relative to the state list.",
+    )
+    text = blocks.CharBlock(
+        default="Don’t see a clinic in your area? This clinic operates across all geographic boundaries",
+        help_text="The text shown in the blue Remote banner.",
+    )
+    clinics = blocks.ListBlock(LITCRemoteClinicBlock())
+
+    class Meta:
+        icon = "site"
+        label = "Remote Clinics and Programs"
+
+
 class LITCPage(ModerationMixin, Page):
     introductory_paragraph = StreamField(
         [
@@ -65,6 +105,14 @@ class LITCPage(ModerationMixin, Page):
         [("state", LITCStateBlock())],
         use_json_field=True,
         blank=True,
+    )
+
+    remote_clinics = StreamField(
+        [("remote", LITCRemoteBlock())],
+        use_json_field=True,
+        blank=True,
+        max_num=1,
+        help_text="Clinics that operate across geographic boundaries rather than in a specific state/city. Renders as its own banner above or below all states on the front end, based on the Position field below. If no clinics are added here, the Remote banner will not be shown.",
     )
 
     clinic_asterisk_notice = StreamField(
@@ -117,6 +165,7 @@ class LITCPage(ModerationMixin, Page):
         FieldPanel("introductory_paragraph"),
         FieldPanel("clinic_asterisk_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
+        FieldPanel("remote_clinics"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
@@ -163,5 +212,18 @@ class LITCPage(ModerationMixin, Page):
         sorted_data = sorted(data_list, key=lambda x: x["state"].lower())
 
         context["sorted_clinics"] = sorted_data
+
+        context["remote"] = None
+        for block in self.remote_clinics:
+            if block.block_type == "remote":
+                remote_val = block.value
+                raw_clinics = remote_val.get("clinics", [])
+                if raw_clinics:
+                    context["remote"] = {
+                        "text": remote_val.get("text"),
+                        "position": remote_val.get("position", "bottom"),
+                        "clinics": sorted(raw_clinics, key=lambda x: x["name"].lower()),
+                    }
+                break
 
         return context
