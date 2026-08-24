@@ -9,11 +9,16 @@
     padding: 10px 20px;
 
     min-height: 44px;
-    width: fit-content;
     word-break: break-word;
     font-size: 16px;
     font-weight: bold;
     line-height: 1.025em;
+  }
+
+  @media (min-width: 601px) {
+    .usa-button.styled-primary-button{
+      width:fit-content;
+    }
   }
 
   .usa-button.styled-primary-button .button-icon {
@@ -36,11 +41,16 @@
     padding: 10px 20px;
     border: 1px solid var(--color-primary);
     min-height: 44px;
-    width: fit-content;
     word-break: break-word;
     font-size: 16px;
     font-weight: bold;
     line-height: 1.025em;
+  }
+
+  @media (min-width: 601px) {
+    .usa-button.styled-inverted-primary-button{
+      width:fit-content;
+    }
   }
 
   .usa-button.styled-inverted-primary-button:not(.no-hover):hover{
@@ -106,7 +116,7 @@
    {% endif %}>
 
   {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "before" %}
-    {% if block.value.icon.url|slice:"-4:"|lower == ".svg" %}
+    {% if not block.value.is_icon_svg_with_white_fill %}
       <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
     {% else %}
       <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
@@ -114,7 +124,7 @@
   {% endif %}
   {{ block.value.text }}
   {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "after" %}
-    {% if block.value.icon.url|slice:"-4:"|lower == ".svg" %}
+    {% if not block.value.is_icon_svg_with_white_fill %}
       <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
     {% else %}
       <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
