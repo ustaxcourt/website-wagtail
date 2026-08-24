@@ -78,6 +78,12 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                     "document": None,
                                     "url": "/petitioners-after",
                                 },
+                                {
+                                    "title": "Process and Timeline",
+                                    "icon": IconCategories.INFO,
+                                    "document": None,
+                                    "url": "/petitioners-timeline",
+                                },
                             ],
                         },
                     },
