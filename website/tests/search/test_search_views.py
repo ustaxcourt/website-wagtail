@@ -141,6 +141,204 @@ class TestSearchView:
 
 
 @pytest.mark.django_db
+class TestSearchViewDocketDetection:
+    """Tests for DAWSON docket-number detection wired into the search view."""
+
+    def _make_request(self, query="tax"):
+        factory = RequestFactory()
+        return factory.get("/search/", {"query": query})
+
+    def _run_search(self, docket_match, docket_case_record=None):
+        from search.views import search
+
+        request = self._make_request(query="123-19")
+        with patch("search.views.Page") as mock_page_cls:
+            mock_page_cls.objects.live.return_value.search.return_value = []
+            with patch("search.views.JudgeProfile") as mock_judge:
+                mock_judge.objects.filter.return_value.filter.return_value = []
+                with patch("search.views.Query") as mock_query_cls:
+                    mock_query_cls.get.return_value = MagicMock()
+                    with patch("search.views.SearchPromotion") as mock_promo:
+                        mock_promo.objects.filter.return_value.select_related.return_value = []
+                        with patch(
+                            "search.views.is_docket_number",
+                            return_value=docket_match,
+                        ):
+                            with patch(
+                                "search.views.get_case_record",
+                                return_value=docket_case_record,
+                            ) as mock_get_case_record:
+                                with patch("search.views.TemplateResponse") as mock_tr:
+                                    mock_tr.return_value = MagicMock(status_code=200)
+                                    search(request)
+                                    ctx = mock_tr.call_args[0][2]
+                                    return ctx, mock_query_cls, mock_get_case_record
+
+    def test_non_docket_query_leaves_docket_context_empty(self):
+        ctx, mock_query_cls, mock_get_case_record = self._run_search(docket_match=None)
+        assert ctx["docket_match"] is None
+        assert "docket_case_record" not in ctx
+        assert ctx["search_results"].object_list == []
+        mock_get_case_record.assert_not_called()
+        # Only the literal query hit was recorded, no docket report roll-up.
+        mock_query_cls.get.assert_called_once_with("123-19")
+
+    def test_valid_docket_number_is_added_to_search_results(self):
+        from datetime import datetime, timezone
+
+        from search.dawson import DocketMatch
+        from search.dawson_client import DawsonCaseRecord
+
+        match = DocketMatch(term="123-19", docket_number="123-19", is_valid=True)
+        record = DawsonCaseRecord(
+            docket_number="123-19",
+            case_caption="Some Petitioner",
+            filing_date=datetime(2019, 1, 1, tzinfo=timezone.utc),
+            dawson_url="https://dawson.ustaxcourt.gov/case-detail/123-19",
+        )
+        ctx, mock_query_cls, mock_get_case_record = self._run_search(
+            docket_match=match, docket_case_record=record
+        )
+        assert ctx["docket_match"] == match
+        mock_get_case_record.assert_called_once_with("123-19")
+
+        # Folded into search_results (not a separate context value) so the
+        # "Found X results" count in the template stays accurate.
+        assert "docket_case_record" not in ctx
+        results = ctx["search_results"].object_list
+        assert len(results) == 1
+        docket_result = results[0]
+        assert docket_result.docket_number == "123-19"
+        assert docket_result.case_caption == "Some Petitioner"
+        assert docket_result.url == "https://dawson.ustaxcourt.gov/case-detail/123-19"
+        assert "123-19" in docket_result.title
+        assert "DAWSON" in docket_result.search_snippet
+
+    def test_invalid_docket_format_does_not_fetch_case_record(self):
+        from search.dawson import DocketMatch
+
+        match = DocketMatch(term="123-19", docket_number=None, is_valid=False)
+        ctx, mock_query_cls, mock_get_case_record = self._run_search(
+            docket_match=match, docket_case_record=None
+        )
+        assert ctx["docket_match"] == match
+        assert ctx["search_results"].object_list == []
+        mock_get_case_record.assert_not_called()
+        # Still rolled up into the docket report line item.
+        mock_query_cls.get.assert_any_call("Docket Number Search")
+
+    def test_dawson_api_error_degrades_to_no_docket_result(self):
+        from search.dawson import DocketMatch
+
+        match = DocketMatch(term="123-19", docket_number="123-19", is_valid=True)
+        ctx, _, mock_get_case_record = self._run_search(
+            docket_match=match, docket_case_record=None
+        )
+        mock_get_case_record.assert_called_once_with("123-19")
+        assert ctx["search_results"].object_list == []
+
+
+@pytest.mark.django_db
+class TestSearchViewTemplateRendering:
+    """Renders the real search.html template end-to-end (rather than mocking
+    TemplateResponse) so a template syntax error in the docket-record card
+    or warning callout would actually fail a test. Page/JudgeProfile are
+    still mocked, matching the rest of this file — the real Wagtail search
+    backend needs an FTS table pytest-django's sqlite test DB doesn't set up."""
+
+    def _get(self, query, page_results=None):
+        from django.test import Client, override_settings
+
+        # Two pre-existing gaps in app.settings.test, unrelated to this
+        # feature: (1) it extends base.py directly (not local.py), so it
+        # never gets local.py's GITHUB_SHA fallback, and base.html's
+        # build_info context processor crashes on GITHUB_SHA being None;
+        # (2) it overrides the legacy STATICFILES_STORAGE setting, but
+        # Django 5's STORAGES dict (set in base.py to whitenoise's
+        # manifest storage, which requires a collectstatic manifest that
+        # doesn't exist here) takes precedence over that legacy setting.
+        with override_settings(
+            GITHUB_SHA="test-sha",
+            STORAGES={
+                "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+                "staticfiles": {
+                    "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+                },
+            },
+        ):
+            with patch("search.views.Page") as mock_page_cls:
+                mock_page_cls.objects.live.return_value.search.return_value = (
+                    page_results or []
+                )
+                with patch("search.views.JudgeProfile") as mock_judge:
+                    mock_judge.objects.filter.return_value.filter.return_value = []
+                    with patch("search.views.SearchPromotion") as mock_promo:
+                        mock_promo.objects.filter.return_value.select_related.return_value = []
+                        client = Client()
+                        return client.get("/search/", {"query": query})
+
+    def test_valid_docket_number_renders_docket_record_card(self):
+        from datetime import datetime, timezone
+
+        from search.dawson import DocketMatch
+        from search.dawson_client import DawsonCaseRecord
+
+        match = DocketMatch(term="123-19", docket_number="123-19", is_valid=True)
+        record = DawsonCaseRecord(
+            docket_number="123-19",
+            case_caption="Some Petitioner",
+            filing_date=datetime(2019, 1, 4, tzinfo=timezone.utc),
+            dawson_url="https://dawson.ustaxcourt.gov/case-detail/123-19",
+        )
+        with patch("search.views.is_docket_number", return_value=match):
+            with patch("search.views.get_case_record", return_value=record):
+                response = self._get("123-19")
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Docket Record" in content
+        assert "Docket No. 123-19" in content
+        assert "<b>Filed: </b>01/04/19" in content
+        assert "View Docket Record in DAWSON" in content
+        assert "https://dawson.ustaxcourt.gov/case-detail/123-19" in content
+
+    def test_invalid_docket_format_renders_warning_callout(self):
+        from search.dawson import DocketMatch
+
+        page_result = MagicMock(title="Tax Court Rules", pk=1, url="/rules/")
+        match = DocketMatch(term="1234567890", docket_number=None, is_valid=False)
+        with patch("search.views.is_docket_number", return_value=match):
+            with patch("search.views.get_search_snippet", return_value=""):
+                response = self._get("1234567890", page_results=[page_result])
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Looking for a docket number" in content
+        assert "Search DAWSON" in content
+        # "Website Results" heading only shows alongside actual results,
+        # distinguishing them from the DAWSON warning above.
+        assert "Website Results" in content
+
+    def test_invalid_docket_format_with_no_results_omits_website_results_heading(self):
+        from search.dawson import DocketMatch
+
+        match = DocketMatch(term="1234567890", docket_number=None, is_valid=False)
+        with patch("search.views.is_docket_number", return_value=match):
+            response = self._get("1234567890")
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "No results found" in content
+        assert "Website Results" not in content
+
+    def test_plain_query_with_no_results_shows_no_results_found(self):
+        response = self._get("this matches absolutely nothing at all")
+
+        assert response.status_code == 200
+        assert "No results found" in response.content.decode()
+
+
+@pytest.mark.django_db
 class TestDefinitionsSearchView:
     def test_definitions_search_returns_200(self):
         from search.views import definitions_search
