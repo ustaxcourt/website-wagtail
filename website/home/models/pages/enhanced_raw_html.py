@@ -49,7 +49,7 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
                                 "filtertag",
                                 blocks.ChoiceBlock(
                                     choices=FAQ_FILTER_TAG_CHOICES,
-                                    required=True,
+                                    required=False,
                                     label="FilterTag",
                                 ),
                             ),
