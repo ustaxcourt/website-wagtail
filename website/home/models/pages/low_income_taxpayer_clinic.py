@@ -174,6 +174,7 @@ class LITCPage(ModerationMixin, Page):
 
     search_fields = Page.search_fields + [
         index.SearchField("low_income_taxpayer_clinics"),
+        index.SearchField("remote_clinics"),
     ]
 
     def get_context(self, request):

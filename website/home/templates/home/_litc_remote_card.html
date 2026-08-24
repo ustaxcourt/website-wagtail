@@ -9,7 +9,7 @@
                     <div class="clinic-info">
                         {% if clinic.address %}
                             <div class="address">
-                                <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank">
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank" rel="noopener noreferrer">
                                     {{ clinic.address }}
                                 </a>
                             </div>
@@ -17,7 +17,7 @@
                         <div class="phone">{{ clinic.phone }}</div>
                         {% if clinic.website %}
                             <div class="website">
-                                <a href="{{ clinic.website }}" target="_blank">{{ clinic.website }}</a>
+                                <a href="{{ clinic.website }}" target="_blank" rel="noopener noreferrer">{{ clinic.website }}</a>
                             </div>
                         {% endif %}
                         {% if clinic.email %}
