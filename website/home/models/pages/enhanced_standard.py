@@ -38,6 +38,17 @@ class IndentStyle(models.TextChoices):
     UNINDENTED = "unindented"
 
 
+FAQ_FILTER_TAG_CHOICES = [
+    ("filing", "Filing"),
+    ("deadlines", "Deadlines"),
+    ("representation", "Representation"),
+    ("forms-documents", "Forms & Documents"),
+    ("trial-process", "Trial Process"),
+    ("fees-costs", "Fees & Costs"),
+    ("after-decision", "After Decision"),
+]
+
+
 class StyledCalloutBlock(blocks.StructBlock):
     heading = blocks.CharBlock(
         required=True, help_text="The title of this special element"
@@ -370,10 +381,18 @@ _BASE_BLOCK_TYPES = [
                     ("question", blocks.CharBlock(required=False)),
                     ("answer", blocks.RichTextBlock()),
                     ("anchortag", blocks.CharBlock()),
+                    (
+                        "filtertag",
+                        blocks.ChoiceBlock(
+                            choices=FAQ_FILTER_TAG_CHOICES,
+                            required=False,
+                            label="FilterTag",
+                        ),
+                    ),
                 ]
             ),
             label="Question and Answer",
-            help_text="Add a question and answer with anchor tag for linking",
+            help_text="Add a question and answer. Link the anchor tag number. Select the FAQ FilterTag type in the dropdown.",
         ),
     ),
     ("columns", ColumnBlock()),
