@@ -79,6 +79,12 @@ class GuidenceForPetitionersPageInitializer(PageInitializer):
                                     "url": "/petitioners-after",
                                 },
                                 {
+                                    "title": "Guidance for Self-Represented Petitioners",
+                                    "icon": IconCategories.INFO,
+                                    "document": None,
+                                    "url": "/petitioners-guidance",
+                                },
+                                {
                                     "title": "Process and Timeline",
                                     "icon": IconCategories.INFO,
                                     "document": None,
