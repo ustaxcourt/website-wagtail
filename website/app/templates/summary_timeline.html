@@ -1,0 +1,123 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
+    <style>
+        /* Rounded rectangle */
+        .summary-timeline-rectangle {
+            width: 100%;                 /* Scales with screen width */
+            background-color: #E8F0FE;  /* Fill color */
+            border-radius: 20px;        /* Rounded corners */
+            margin: 32px 0 32px 0;
+
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            justify-content: start;
+            align-items: center;
+            vertical-align: center;
+            gap: 8px;
+        }
+
+        .summary-timeline-title-block {
+            color: var(--color-navy);
+            font-size: 16px;
+            font-weight: bold;
+            margin: 16px 16px 16px 24px;
+        }
+
+        .summary-timeline-rectangle h1 {
+            padding: 48px 48px 0 48px;
+            color: var(--text-white);
+            font-size: 42px;
+            line-height: 42px;
+        }
+
+        .summary-timeline-rectangle h2 {
+            padding: 24px 48px 0 48px;
+            color: var(--text-white);
+            font-weight: 400;
+        }
+
+        .summary-timeline-phase-content {
+            border-radius: 8px;
+            background-color: var(--color-white);
+            margin: 8px 0px 8px 0px;
+            padding: 8px;
+        }
+
+        .svg-icon {
+            background-color: var(--color-navy);
+            width: 20px;
+            height: 20px;
+            vertical-align: center;
+        }
+
+        @media (max-width: 840px) {
+            .summary-timeline-rectangle {
+                padding: 0 0 32px 0;
+            }
+
+            .summary-timeline-rectangle h1 {
+                padding: 32px 48px 0 48px;
+                font-size: 42px;
+                line-height: 42px;
+            }
+
+            .summary-timeline-rectangle h2 {
+                font-size: 24px;
+                line-height: 24px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .summary-timeline-rectangle {
+                flex-direction: column;
+                padding: 0 0 32px 0;
+            }
+
+            .summary-timeline-rectangle h1 {
+                padding: 32px 24px 0 24px;
+                font-size: 32px;
+                line-height: 32px;
+            }
+
+            .summary-timeline-rectangle h2 {
+                padding: 24px 24px 0 24px;
+                font-size: 16px;
+                line-height: 16px;
+            }
+
+            .summary-timeline-rectangle-buttons {
+                padding: 32px 24px 0 24px;
+                gap: 0px;
+            }
+
+            .summary-timeline-rectangle-buttons a {
+                width: 100%
+            }
+        }
+    </style>
+{% endblock %}
+
+<div class="summary-timeline-rectangle">
+    <div class="summary-timeline-title-block">
+        {{ block.value.title }}:
+    </div>
+    <div class="summary-timeline-phases-block">
+        {% for phase in block.value.phases %}
+            {% if not forloop.first %}
+                <span class="svg-icon" aria-hidden="true" style="mask-image: url('/static/uswds/img/usa-icons/arrow_forward.svg'); -webkit-mask-image: url('/static/uswds/img/usa-icons/arrow_forward.svg');" ></span>
+            {% endif %}
+            <div class="summary-timeline-phase">
+                <div class="summary-timeline-phase-content">
+                    {{ phase.title }}: <b>{{ phase.date_range }}</b>
+                </div>
+                <!-- <div class="summary-timeline-phase-daterange">
+                    {{ phase.date_range }}
+                </div> -->
+            </div>
+        {% endfor %}
+    </div>
+</div>
