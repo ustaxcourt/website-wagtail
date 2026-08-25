@@ -30,6 +30,9 @@ from .clinics_calendar_call_page import ClinicsCalendarCallPageInitializer
 from .clinics_chief_counsel_page import ClinicsChiefCounselPageInitializer
 from .comments_and_suggestions_page import CommentsAndSuggestionsPageInitializer
 from .petitioners_timeline import PetitionersTimelinePageInitializer
+from .petitioners_prepare_to_file import PetitionersPrepareToFilePageInitializer
+from .petitioners_forms import PetitionersFormsPageInitializer
+from .petitioners_help import PetitionersHelpPageInitializer
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -61,4 +64,7 @@ rules_and_guidance_pages_to_initialize = [
     JCDPOrdersIssuedStartPageInitializer,
     CommentsAndSuggestionsPageInitializer,
     PetitionersTimelinePageInitializer,
+    PetitionersPrepareToFilePageInitializer,
+    PetitionersFormsPageInitializer,
+    PetitionersHelpPageInitializer,
 ]
