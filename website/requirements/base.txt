@@ -47,7 +47,7 @@ s3transfer==0.10.4
 setuptools==84.0.0
 six==1.16.0
 soupsieve==2.8.4
-sqlparse==0.5.4
+sqlparse==0.6.0
 telepath==0.3.1
 typing_extensions==4.12.2
 urllib3==2.7.0
