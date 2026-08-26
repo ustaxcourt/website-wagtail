@@ -11,13 +11,15 @@
             border-radius: 20px;        /* Rounded corners */
             margin: 32px 0 32px 0;
 
-            display: flex;
+            display: grid;
+            grid-template-columns: min-content auto;
+            /* display: flex;
             flex-wrap: wrap;
             flex-direction: row;
             justify-content: start;
             align-items: center;
             vertical-align: center;
-            gap: 8px;
+            gap: 8px; */
         }
 
         .summary-timeline-title-block {
@@ -25,6 +27,16 @@
             font-size: 16px;
             font-weight: bold;
             margin: 16px 16px 16px 24px;
+            white-space: nowrap;
+        }
+
+        .summary-timeline-phases-block {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            justify-content: start;
+            align-items: center;
+            gap: 8px;
         }
 
         .summary-timeline-rectangle h1 {
@@ -52,11 +64,22 @@
             width: 20px;
             height: 20px;
             vertical-align: center;
+            mask-image: url('/static/uswds/img/usa-icons/arrow_forward.svg');
+            -webkit-mask-image: url('/static/uswds/img/usa-icons/arrow_forward.svg');
         }
 
-        @media (max-width: 840px) {
+        @media (max-width: 1200px) {
             .summary-timeline-rectangle {
-                padding: 0 0 32px 0;
+                padding: 0 0 16px 0;
+                grid-template-columns: auto;
+            }
+
+            .summary-timeline-title-block {
+                margin: 16px 16px 12px 24px;
+            }
+
+            .summary-timeline-phases-block {
+                margin: 0px 0px 0px 24px;
             }
 
             .summary-timeline-rectangle h1 {
@@ -73,8 +96,23 @@
 
         @media (max-width: 600px) {
             .summary-timeline-rectangle {
+                padding: 0 0 16px 0;
+            }
+
+            .summary-timeline-phases-block {
                 flex-direction: column;
-                padding: 0 0 32px 0;
+                margin: 0px 24px 0px 24px;
+                gap: 0px;
+            }
+
+            .summary-timeline-phase {
+                width: 100%;
+                text-align: center;
+            }
+
+            .svg-icon {
+                mask-image: url('/static/uswds/img/usa-icons/arrow_downward.svg');
+                -webkit-mask-image: url('/static/uswds/img/usa-icons/arrow_downward.svg');
             }
 
             .summary-timeline-rectangle h1 {
@@ -108,7 +146,7 @@
     <div class="summary-timeline-phases-block">
         {% for phase in block.value.phases %}
             {% if not forloop.first %}
-                <span class="svg-icon" aria-hidden="true" style="mask-image: url('/static/uswds/img/usa-icons/arrow_forward.svg'); -webkit-mask-image: url('/static/uswds/img/usa-icons/arrow_forward.svg');" ></span>
+                <span class="svg-icon" aria-hidden="true" ></span>
             {% endif %}
             <div class="summary-timeline-phase">
                 <div class="summary-timeline-phase-content">
