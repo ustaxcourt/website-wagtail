@@ -1,0 +1,125 @@
+{% load static %}
+<style>
+  .printable-rich-text {
+    margin: 1.5rem 0;
+  }
+  .printable-rich-text__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .printable-rich-text__title {
+    margin: 0;
+  }
+  .printable-rich-text .printable-rich-text__button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    width: auto;
+    white-space: nowrap;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .printable-rich-text .printable-rich-text__button:hover {
+    text-decoration: underline;
+  }
+  .printable-rich-text__button-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    background-color: currentColor;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-image: url({% static "uswds/img/usa-icons/print.svg" %});
+    mask-image: url({% static "uswds/img/usa-icons/print.svg" %});
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .printable-rich-text__intro {
+    margin-top: 0.5rem;
+  }
+
+  @media print {
+    /* The print button never appears in a printout, regardless of which
+       block instance triggered the print. */
+    .printable-rich-text__button {
+      display: none !important;
+    }
+
+    body.printable-rich-text-print-mode
+      *:not(.printable-rich-text--printing):not(.printable-rich-text--printing *) {
+      visibility: hidden !important;
+    }
+    body.printable-rich-text-print-mode .printable-rich-text--printing {
+      visibility: visible !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
+</style>
+{% with data=block.value %}
+    <div id="printable-rich-text-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
+         class="printable-rich-text">
+        <div class="printable-rich-text__header">
+            <h2 class="printable-rich-text__title">{{ data.title }}</h2>
+            <button type="button"
+                    class="printable-rich-text__button"
+                    aria-label="Print {{ data.title }}">
+                <span class="printable-rich-text__button-icon" aria-hidden="true"></span>
+                Print
+            </button>
+        </div>
+        {% if data.intro %}<div class="printable-rich-text__intro rich-text">{{ data.intro }}</div>{% endif %}
+        <div class="printable-rich-text__content rich-text">{{ data.content }}</div>
+    </div>
+{% endwith %}
+<script>
+  (function() {
+    const blockId = "printable-rich-text-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
+
+    function initPrintableRichText() {
+      const block = document.getElementById(blockId);
+      if (!block) return;
+
+      const button = block.querySelector(".printable-rich-text__button");
+      if (!button || button.dataset.initialized === "true") return;
+
+      function stopPrinting() {
+        block.classList.remove("printable-rich-text--printing");
+        document.body.classList.remove("printable-rich-text-print-mode");
+      }
+
+      button.addEventListener("click", function() {
+        block.classList.add("printable-rich-text--printing");
+        document.body.classList.add("printable-rich-text-print-mode");
+        window.print();
+      });
+
+      window.addEventListener("afterprint", stopPrinting);
+      if (window.matchMedia) {
+        window.matchMedia("print").addEventListener("change", function(mql) {
+          if (!mql.matches) stopPrinting();
+        });
+      }
+
+      button.dataset.initialized = "true";
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initPrintableRichText);
+    } else {
+      initPrintableRichText();
+    }
+  })();
+</script>
