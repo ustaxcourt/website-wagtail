@@ -5,7 +5,7 @@ from wagtail.snippets.models import register_snippet
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.button import ButtonBlock
-from wagtail.fields import RichTextField, StreamField
+from wagtail.fields import StreamField
 
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.models import (
@@ -24,8 +24,11 @@ class CallToActionBox(
         help_text="Header to display in the Call to Action Box",
         blank=False,
     )
-    body = RichTextField(
-        help_text="Content to display in the Call to Action Box", blank=True, null=True
+    body = models.CharField(
+        max_length=500,
+        help_text="Content to display in the Call to Action Box",
+        blank=True,
+        null=True,
     )
     buttons = StreamField(
         [("button", ButtonBlock())],
