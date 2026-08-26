@@ -44,7 +44,6 @@ class PetitionersFormsPageInitializer(PageInitializer):
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
                 search_description=title,
-                body=[],
             )
         )
         new_page.save_revision().publish()
