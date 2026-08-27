@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                                 ("after-decision", "After Decision"),
                             ],
                             "label": "FilterTag",
-                            "required": False,
+                            "required": True,
                         },
                     ),
                     6: (
@@ -638,7 +638,7 @@ class Migration(migrations.Migration):
                                 ("after-decision", "After Decision"),
                             ],
                             "label": "FilterTag",
-                            "required": False,
+                            "required": True,
                         },
                     ),
                     77: (

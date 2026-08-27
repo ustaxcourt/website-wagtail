@@ -596,7 +596,7 @@ class Migration(migrations.Migration):
                                 ("after-decision", "After Decision"),
                             ],
                             "label": "FilterTag",
-                            "required": False,
+                            "required": True,
                         },
                     ),
                     78: (
