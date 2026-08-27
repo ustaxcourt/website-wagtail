@@ -385,7 +385,7 @@ _BASE_BLOCK_TYPES = [
                         "filtertag",
                         blocks.ChoiceBlock(
                             choices=FAQ_FILTER_TAG_CHOICES,
-                            required=False,
+                            required=True,
                             label="FilterTag",
                         ),
                     ),

@@ -14,6 +14,7 @@ from home.models.settings import (
     PrivateSeminarDisclosureSettings,
 )
 from home.models.config import IconCategories
+from home.models.snippets.call_to_action import CallToActionBox
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.navigation import (
     NavigationRibbon,

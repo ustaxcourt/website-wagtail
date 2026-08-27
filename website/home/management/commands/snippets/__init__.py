@@ -1,3 +1,6 @@
+from home.management.commands.snippets.call_to_action_box import (
+    CallToActionBoxInitializer,
+)
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
@@ -13,6 +16,7 @@ from home.management.commands.snippets.clinics_contact_details_snippet import (
 )
 
 snippets_to_initialize = [
+    CallToActionBoxInitializer,
     NavigationRibbonInitializer,
     ZoomgovProceedingRibbonInitializer,
     DawsonFAQsRibbonInitializer,
