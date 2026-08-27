@@ -13,13 +13,6 @@
 
             display: grid;
             grid-template-columns: min-content auto;
-            /* display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            justify-content: start;
-            align-items: center;
-            vertical-align: center;
-            gap: 8px; */
         }
 
         .summary-timeline-title-block {
@@ -39,21 +32,11 @@
             gap: 8px;
         }
 
-        .summary-timeline-rectangle h1 {
-            padding: 48px 48px 0 48px;
-            color: var(--text-white);
-            font-size: 42px;
-            line-height: 42px;
-        }
-
-        .summary-timeline-rectangle h2 {
-            padding: 24px 48px 0 48px;
-            color: var(--text-white);
-            font-weight: 400;
-        }
-
         .summary-timeline-phase-content {
             border-radius: 8px;
+            border-color: rgb(0, 94, 162, 0.3);
+            border-width: 1px;
+            border-style: solid;
             background-color: var(--color-white);
             margin: 8px 0px 8px 0px;
             padding: 8px;
@@ -81,17 +64,6 @@
             .summary-timeline-phases-block {
                 margin: 0px 0px 0px 24px;
             }
-
-            .summary-timeline-rectangle h1 {
-                padding: 32px 48px 0 48px;
-                font-size: 42px;
-                line-height: 42px;
-            }
-
-            .summary-timeline-rectangle h2 {
-                font-size: 24px;
-                line-height: 24px;
-            }
         }
 
         @media (max-width: 600px) {
@@ -114,27 +86,6 @@
                 mask-image: url('/static/uswds/img/usa-icons/arrow_downward.svg');
                 -webkit-mask-image: url('/static/uswds/img/usa-icons/arrow_downward.svg');
             }
-
-            .summary-timeline-rectangle h1 {
-                padding: 32px 24px 0 24px;
-                font-size: 32px;
-                line-height: 32px;
-            }
-
-            .summary-timeline-rectangle h2 {
-                padding: 24px 24px 0 24px;
-                font-size: 16px;
-                line-height: 16px;
-            }
-
-            .summary-timeline-rectangle-buttons {
-                padding: 32px 24px 0 24px;
-                gap: 0px;
-            }
-
-            .summary-timeline-rectangle-buttons a {
-                width: 100%
-            }
         }
     </style>
 {% endblock %}
@@ -152,9 +103,6 @@
                 <div class="summary-timeline-phase-content">
                     {{ phase.title }}: <b>{{ phase.date_range }}</b>
                 </div>
-                <!-- <div class="summary-timeline-phase-daterange">
-                    {{ phase.date_range }}
-                </div> -->
             </div>
         {% endfor %}
     </div>
