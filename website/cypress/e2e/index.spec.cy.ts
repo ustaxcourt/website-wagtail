@@ -40,6 +40,14 @@ describe('index page', () => {
     cy.url().should('include', '/case-related-forms/')
   })
 
+  it('header dropdown nav buttons expose exactly the section title as aria-label', () => {
+    cy.get('li.navigation-header > button.link').each(($button) => {
+      const sectionTitle = $button.find('span').first().text().trim()
+      expect(sectionTitle, 'section title text should be present').to.not.equal('')
+      expect($button.attr('aria-label')).to.equal(sectionTitle)
+    })
+  })
+
   it('quick access tile links point to destinations other than the home page', () => {
     cy.url().then((homeUrl) => {
       const homeResolved = new URL(homeUrl)
