@@ -36,9 +36,6 @@ from home.management.commands.pages.efiling_and_case_maintenance.dawson_page imp
 from home.management.commands.pages.card_tiles_test_page import (
     CardTilesTestPageInitializer,
 )
-from home.management.commands.snippets.call_to_action_box import (
-    CallToActionBoxInitializer,
-)
 
 # Initialize home and footer first
 home_page_initialize = [
@@ -49,8 +46,7 @@ home_page_initialize = [
 
 # Ensure Home Page is initialized first
 pages_to_initialize = home_page_initialize + (
-    [CallToActionBoxInitializer]
-    + about_the_court_pages_to_initialize
+    about_the_court_pages_to_initialize
     + rules_and_guidance_pages_to_initialize
     + orders_and_opinions_pages_to_initialize
     + efiling_and_case_maintenance_pages_to_initialize
