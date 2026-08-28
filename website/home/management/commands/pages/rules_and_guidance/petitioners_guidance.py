@@ -35,7 +35,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text='"Pro Se” (pronounced pro say) means representing yourself without an attorney or other authorized practitioner.',
+                introductory_text="“Pro Se” (pronounced pro say) means representing yourself without an attorney or other authorized practitioner.",
                 call_to_action=_cta_box,
                 slug=slug,
                 seo_title=title,
