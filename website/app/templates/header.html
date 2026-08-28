@@ -910,9 +910,10 @@
                         <button aria-expanded="false"
                                 class="link"
                                 data-testid="nav-button-{{ section.value.title|slugify }}"
+                                aria-label="{{ section.value.title }}"
                                 onclick="toggleMenuItems(this)">
-                            <span>{{ section.value.title }}</span>
-                            <span>
+                            <span aria-hidden="true">{{ section.value.title }}</span>
+                            <span aria-hidden="true">
                                 <i class="fa-solid fa-caret-down chevron-down"></i>
                                 <i class="fa-solid fa-caret-up chevron-up"></i>
                             </span>
