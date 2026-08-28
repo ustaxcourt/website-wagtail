@@ -19,7 +19,7 @@ django-taggit==6.1.0
 django-treebeard==5.3.1
 Django==5.2.17
 djangorestframework==3.18.0
-draftjs-exporter==5.2.0
+draftjs-exporter==7.1.0
 et_xmlfile==2.0.0
 fontawesomefree==6.6.0
 filelock==3.32.4
@@ -52,12 +52,11 @@ telepath==0.3.1
 typing_extensions==4.16.0
 urllib3==2.7.0
 virtualenv==21.7.4
-wagtail>=7.4.3,<7.5
+wagtail>=8.0,<8.1
 # Forked to fix base model lookup bug (upstream PR #173)
 # Revert to official package once https://github.com/wagtail/wagtail-transfer/pull/173 is merged
 wagtail-transfer @ git+https://github.com/ustaxcourt/wagtail-transfer@c181ae8
 whitenoise==6.12.0
 Willow
 social-auth-app-django==6.0.1
-wagtail-external-links-report==0.1.1
 wagtail-forms==0.1.0

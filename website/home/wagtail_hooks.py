@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.urls import path, reverse
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from django.utils.html import format_html
@@ -23,6 +24,7 @@ from home.models import NavigationMenu, JudgeRole, Header
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
+from home.vendor.wagtail_external_links_report.views import ExternalLinksReportView
 from .views import (
     SearchDefinitionsReportView,
     SVG_CHOOSER_VIEWSET,
@@ -586,3 +588,36 @@ def register_svg_viewset():
 @hooks.register("register_admin_viewset")
 def register_pdf_viewset():
     return PDF_CHOOSER_VIEWSET
+
+
+def _get_external_links_report_class():
+    """Resolve the report class from settings.EXTERNAL_LINKS_REPORT_CLASS."""
+    cls_setting = getattr(settings, "EXTERNAL_LINKS_REPORT_CLASS", None)
+    if isinstance(cls_setting, str):
+        return import_string(cls_setting)
+    if isinstance(cls_setting, type):
+        return cls_setting
+    return ExternalLinksReportView
+
+
+@hooks.register("register_reports_menu_item")
+def register_external_links_report():
+    report_class = _get_external_links_report_class()
+    return MenuItem(
+        report_class.page_title,
+        reverse("external_links_report"),
+        icon_name="link",
+        order=1400,
+    )
+
+
+@hooks.register("register_admin_urls")
+def register_external_links_report_url():
+    report_class = _get_external_links_report_class()
+    return [
+        path(
+            "reports/external-links/",
+            report_class.as_view(),
+            name="external_links_report",
+        )
+    ]

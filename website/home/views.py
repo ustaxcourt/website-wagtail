@@ -13,8 +13,9 @@ from wagtail.admin.ui.tables import Column
 from wagtail.admin.views.reports import ReportView
 from wagtail.admin.views.generic.base import BaseListingView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
+from wagtail.documents import get_document_model_string
 
-from wagtail_external_links_report.views import ExternalLinksReportView
+from home.vendor.wagtail_external_links_report.views import ExternalLinksReportView
 
 from search.models.definitionsQuery import DefinitionsQuery
 from home.models.pages.definitions import DefinitionsPage
@@ -591,7 +592,9 @@ class SVGChooserViewSet(DocumentChooserViewSet):
     choose_view_class = SVGChooseView
 
 
-SVG_CHOOSER_VIEWSET = SVGChooserViewSet("svg_chooser")
+SVG_CHOOSER_VIEWSET = SVGChooserViewSet(
+    "svg_chooser", model=get_document_model_string()
+)
 # ------------------- PDF --------------------
 
 
@@ -606,7 +609,9 @@ class PDFChooserViewSet(DocumentChooserViewSet):
     choose_view_class = PDFChooseView
 
 
-PDF_CHOOSER_VIEWSET = PDFChooserViewSet("pdf_chooser")
+PDF_CHOOSER_VIEWSET = PDFChooserViewSet(
+    "pdf_chooser", model=get_document_model_string()
+)
 
 
 class CustomExternalLinksReportView(ExternalLinksReportView):
