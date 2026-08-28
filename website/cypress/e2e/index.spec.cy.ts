@@ -45,6 +45,12 @@ describe('index page', () => {
       const sectionTitle = $button.find('span').first().text().trim()
       expect(sectionTitle, 'section title text should be present').to.not.equal('')
       expect($button.attr('aria-label')).to.equal(sectionTitle)
+
+      const spans = $button.children('span')
+      expect(spans.length, 'button should have inner spans').to.be.greaterThan(0)
+      spans.each((_, span) => {
+        expect(span.getAttribute('aria-hidden')).to.equal('true')
+      })
     })
   })
 
