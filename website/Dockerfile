@@ -39,6 +39,8 @@ RUN pip install "gunicorn==23.0.0"
 # Install the project requirements.
 COPY requirements/base.txt /requirements.txt
 RUN pip install -r /requirements.txt
+COPY requirements/no_deps.txt /requirements-no-deps.txt
+RUN pip install --no-deps -r /requirements-no-deps.txt
 
 RUN if [ "$ENVIRONMENT" = "sandbox" ]; then pip install django-debug-toolbar; fi
 

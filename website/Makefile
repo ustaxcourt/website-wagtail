@@ -117,6 +117,7 @@ cypress-env:
 setup-pip: init
 	. $(VENV) && pip install --upgrade pip
 	. $(VENV) && pip install -r requirements.txt
+	. $(VENV) && pip install --no-deps -r requirements/no_deps.txt
 
 setup-npm:
 	npm install

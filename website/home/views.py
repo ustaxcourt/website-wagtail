@@ -15,7 +15,7 @@ from wagtail.admin.views.generic.base import BaseListingView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
 from wagtail.documents import get_document_model_string
 
-from home.vendor.wagtail_external_links_report.views import ExternalLinksReportView
+from wagtail_external_links_report.views import ExternalLinksReportView
 
 from search.models.definitionsQuery import DefinitionsQuery
 from home.models.pages.definitions import DefinitionsPage

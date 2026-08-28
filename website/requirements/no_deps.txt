@@ -1,0 +1,10 @@
+# Packages installed with `pip install --no-deps` (see setup-pip in Makefile).
+#
+# wagtail-external-links-report's own install_requires pins `wagtail~=7.1`,
+# which makes it impossible for pip's resolver to install it alongside a
+# newer Wagtail release. Its actual code only uses stable Wagtail admin
+# report APIs (PageReportView, MenuItem, hooks.register) with nothing that
+# is actually incompatible with newer Wagtail versions, so we install it
+# without letting pip enforce that overly strict pin. If a future release
+# of the package relaxes/removes the pin, move it back into base.txt.
+wagtail-external-links-report==0.1.1

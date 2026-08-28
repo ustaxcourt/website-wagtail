@@ -1,6 +1,4 @@
-from home.vendor.wagtail_external_links_report.utils.link_extractor import (
-    LinkExtractor,
-)
+from wagtail_external_links_report.utils import LinkExtractor
 from bs4 import BeautifulSoup
 from wagtail.rich_text import RichText
 from wagtail.contrib.typed_table_block.blocks import TypedTable

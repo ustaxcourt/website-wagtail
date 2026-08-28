@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "app.role_switcher",
     "django_filters",
     "wagtail_transfer",
+    "wagtail_external_links_report",
     "app.wagtaillinkchecker",
 ]
 
