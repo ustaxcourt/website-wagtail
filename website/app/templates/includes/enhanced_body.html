@@ -76,8 +76,9 @@
                 <hr />
                 {% for q in block.value %}
                     <div class="question-answer-block">
-                        <a href="#{{ q.anchortag }}" title="{{ q.question }}">
-                            <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
+                        {% comment %} title="{{ q.question }}" {% endcomment %}
+                        <a href="#{{ q.anchortag }}" aria-label="{{ q.question }}">
+                            <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}" aria-hidden="true"></div>
                         </a>
                         <h3>{{ q.question }}</h3>
                     </div>
