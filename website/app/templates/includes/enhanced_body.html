@@ -172,13 +172,15 @@
             {% elif block.block_type == 'button' %}
                 {% include "includes/styled_button.html" with block=block %}
             {% elif block.block_type == 'callout' %}
-                {% include "callout_block.html" with block=block %}
+                {% include "callout_block.html" with block=block.value %}
             {% elif block.block_type == 'quick_access_tiles' %}
                 {% include "quick_access_tiles_block.html" with block=block %}
             {% elif block.block_type == 'card_tiles' %}
                 {% include "includes/card_tiles.html" with block=block %}
             {% elif block.block_type == 'grid' %}
                 {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
+            {% elif block.block_type == 'hero_section' %}
+                {% include "hero_section.html" with block=block %}
             {% else %}
                 <p>Block type not recognized: {{ block.block_type }}</p>
                 {{ block.value }}

@@ -1,0 +1,121 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        .hero-section-rectangle {
+            padding: 0 0 40px 0;
+            width: 100%;                 /* Scales with screen width */
+            border-radius: 20px;        /* Rounded corners */
+            margin: 32px 0 32px 0;
+            border-color: var(--border-lighter);
+            border-width: 1px;
+            border-style: solid;
+            filter: drop-shadow(0px 1px var(--border-lighter));
+        }
+
+        .hero-section-title-block {
+            padding: 48px 80px 0 80px;
+            color: var(--color-navy);
+            font-size: 42px;
+            line-height: 42px;
+        }
+
+        .hero-section-introductory-text-block {
+            padding: 20px 80px 0 80px;
+            font-size: 20px;
+        }
+
+        .hero-section-callout-block {
+            padding: 8px 80px 0 80px;
+        }
+
+        .hero-section-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: start;
+            padding: 8px 80px 0 80px;
+            gap: 24px;
+        }
+
+        .hero-section-buttons a {
+            display: inline-flex;       /* Make each control inline-flex */
+            margin-right: 0px;          /* Space between controls */
+        }
+
+        @media (max-width: 1200px) {
+            .hero-section-rectangle {
+                padding: 0 0 24px 0;
+            }
+
+            .hero-section-title-block {
+                padding: 32px 48px 0 48px;
+                font-size: 42px;
+                line-height: 42px;
+            }
+
+            .hero-section-introductory-text-block {
+                padding: 20px 48px 0 48px;
+                font-size: 20px;
+                line-height: 20px;
+            }
+
+            .hero-section-callout-block {
+                padding: 0px 48px 0 48px;
+            }
+
+            .hero-section-buttons {
+                padding: 0px 48px 0 48px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-section-rectangle {
+                padding: 0 0 16px 0;
+            }
+
+            .hero-section-title-block {
+                padding: 24px 16px 0 16px;
+                font-size: 24px;
+                line-height: 30px;
+            }
+
+            .hero-section-introductory-text-block {
+                padding: 20px 16px 0 16px;
+                font-size: 16px;
+                line-height: 16px;
+            }
+
+            .hero-section-buttons {
+                flex-direction: column;
+                padding: 0px 16px 0 16px;
+                gap: 0px;
+            }
+
+            .hero-section-callout-block {
+                padding: 0px 16px 0 16px;
+            }
+
+            .hero-section-buttons a {
+                width: 100%
+            }
+        }
+    </style>
+{% endblock %}
+
+<div class="hero-section-rectangle">
+    <div class="hero-section-title-block">
+        {{ block.value.title }}
+    </div>
+    <div class="hero-section-introductory-text-block">
+        {{ block.value.introductory_text }}
+    </div>
+    <div class="hero-section-callout-block">
+        {% include "callout_block.html" with block=block.value.callout_block %}
+    </div>
+    <div class="hero-section-buttons">
+        {% for button in block.value.buttons %}
+            {% include "includes/styled_button.html" with block=button %}
+        {% endfor %}
+    </div>
+</div>

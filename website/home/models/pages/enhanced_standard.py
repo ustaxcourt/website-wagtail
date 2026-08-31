@@ -250,6 +250,32 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
+class HeroSection(blocks.StructBlock):
+    title = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        help_text="Title displayed at the top of the hero section.",
+    )
+    introductory_text = blocks.CharBlock(
+        max_length=512,
+        required=True,
+        help_text="Introductory text displayed beneath the title in the hero section.",
+    )
+    callout_block = StyledCalloutBlock(
+        required=True,
+        help_text="Callout block displayed underneath the introductory text in the hero section.",
+    )
+    buttons = blocks.StreamBlock(
+        [("button", ButtonBlock())],
+        use_json_field=True,
+        blank=True,
+        required=False,
+        min_num=0,
+        max_num=3,
+        help_text="Buttons to display at the bottom of the hero section.",
+    )
+
+
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
     (
@@ -465,6 +491,10 @@ _BASE_BLOCK_TYPES = [
     (
         "grid",
         GridBlock(),
+    ),
+    (
+        "hero_section",
+        HeroSection(),
     ),
 ]
 
