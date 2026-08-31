@@ -113,9 +113,11 @@
     <div class="hero-section-callout-block">
         {% include "callout_block.html" with block=block.value.callout_block %}
     </div>
-    <div class="hero-section-buttons">
-        {% for button in block.value.buttons %}
-            {% include "includes/styled_button.html" with block=button %}
-        {% endfor %}
-    </div>
+    {% if block.value.buttons %}
+        <div class="hero-section-buttons">
+            {% for button in block.value.buttons %}
+                {% include "includes/styled_button.html" with block=button %}
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
