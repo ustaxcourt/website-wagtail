@@ -215,7 +215,7 @@
                         {% if body_block.block_type == 'prose' %}
                             {{ body_block.value|richtext }}
                         {% elif body_block.block_type == 'callout' %}
-                            {% include "callout_block.html" with block=body_block %}
+                            {% include "callout_block.html" with block=body_block.value %}
                         {% endif %}
                     {% endfor %}
                 </div>

@@ -4,7 +4,7 @@ rendered inside a Card Tiles page (or any page that uses enhanced_body.html).
 
 The bug was caused by `callout_block.html` using `block.value|default:self`,
 where `self` is not in the template context when the template is rendered via
-`{% include "callout_block.html" with block=block %}`.
+`{% include "callout_block.html" with block=block.value %}`.
 """
 
 from django.test import TestCase, RequestFactory, override_settings

@@ -182,7 +182,7 @@
                             {% if content.block_type == "accordion" %}
                               {% include "accordion_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                             {% elif content.block_type == "callout" %}
-                              {% include "callout_block.html" with block=content %}
+                              {% include "callout_block.html" with block=content.value %}
                             {% elif content.block_type == "button" %}
                               {% include "includes/styled_button.html" with block=content %}
                             {% else %}
@@ -218,7 +218,7 @@
                                         {% if content.block_type == "accordion" %}
                                             {% include "accordion_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                                         {% elif content.block_type == "callout" %}
-                                            {% include "callout_block.html" with block=content %}
+                                            {% include "callout_block.html" with block=content.value %}
                                         {% elif content.block_type == "button" %}
                                             {% include "includes/styled_button.html" with block=content %}
                                         {% else %}
@@ -245,7 +245,7 @@
                                                         {% if content.block_type == "accordion" %}
                                                             {% include "accordion_block.html" with block=content block_index=forloop.counter0 suffix=forloop.parentloop.parentloop.counter %}
                                                         {% elif content.block_type == "callout" %}
-                                                            {% include "callout_block.html" with block=content %}
+                                                            {% include "callout_block.html" with block=content.value %}
                                                         {% elif content.block_type == "button" %}
                                                             {% include "includes/styled_button.html" with block=content %}
                                                         {% else %}
