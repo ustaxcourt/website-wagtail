@@ -173,11 +173,11 @@
         {% include "includes/card_tiles.html" with block=block %}
     {% elif block.block_type == 'grid' %}
         {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
-    {% elif block.block_type == 'printable_rich_text' %}
+    {% elif block.block_type == 'printable_section' %}
         {% if tile_index is not None %}
-            {% include "printable_rich_text_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
+            {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
         {% else %}
-            {% include "printable_rich_text_block.html" with block=block block_index=forloop.counter0 suffix="-prt" %}
+            {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-prt" %}
         {% endif %}
     {% else %}
         <p>Block type not recognized: {{ block.block_type }}</p>
