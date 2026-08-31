@@ -44,7 +44,8 @@ describe('index page', () => {
     const menuButton = '[data-testid="nav-button-trials-case-management"]'
     const menuList = '[data-testid="nav-list-trials-case-management"]'
 
-    cy.get(menuButton).realHover().focus().realPress('ArrowDown')
+    cy.get(menuButton).focus().realPress('Enter')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'true')
     cy.get(menuList).should('be.visible')
     cy.get(`${menuList} a`).last().focus().realPress('Tab')
 

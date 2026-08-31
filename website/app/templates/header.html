@@ -1125,7 +1125,9 @@
             header.addEventListener('focusout', function(e) {
                 if (!header.contains(e.relatedTarget)) {
                     header.classList.remove('active');
-                    button?.setAttribute('aria-expanded', 'false');
+                    if (button?.hasAttribute('aria-expanded')) {
+                        button.setAttribute('aria-expanded', 'false');
+                    }
                 }
             });
 
