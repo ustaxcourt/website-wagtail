@@ -25,7 +25,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
 
     introductory_text = RichTextField(
         help_text="Text to be displayed at the top of the page under the page's title.",
-        blank=False,
+        blank=True,
     )
 
     call_to_action = models.ForeignKey(

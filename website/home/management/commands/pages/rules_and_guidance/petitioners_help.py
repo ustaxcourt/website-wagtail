@@ -35,7 +35,6 @@ class PetitionersHelpPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text=" ",
                 call_to_action=_cta_box,
                 slug=slug,
                 seo_title=title,
