@@ -40,6 +40,18 @@ describe('index page', () => {
     cy.url().should('include', '/case-related-forms/')
   })
 
+  it('collapses a submenu when keyboard focus leaves its navigation header', () => {
+    const menuButton = '[data-testid="nav-button-trials-case-management"]'
+    const menuList = '[data-testid="nav-list-trials-case-management"]'
+
+    cy.get(menuButton).realHover().focus().realPress('ArrowDown')
+    cy.get(menuList).should('be.visible')
+    cy.get(`${menuList} a`).last().focus().realPress('Tab')
+
+    cy.get(menuList).should('not.be.visible')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'false')
+  })
+
   it('header dropdown nav buttons expose exactly the section title as aria-label', () => {
     cy.get('li.navigation-header > button.link').each(($button) => {
       const sectionTitle = $button.find('span').first().text().trim()

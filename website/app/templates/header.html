@@ -1122,6 +1122,13 @@
             header.addEventListener('mouseenter', handleMouseEnter);
             header.addEventListener('mouseleave', handleMouseLeave);
 
+            header.addEventListener('focusout', function(e) {
+                if (!header.contains(e.relatedTarget)) {
+                    header.classList.remove('active');
+                    button?.setAttribute('aria-expanded', 'false');
+                }
+            });
+
             // Add keyboard navigation for dropdown items
             if (button) {
                 button.addEventListener('keydown', function(e) {
