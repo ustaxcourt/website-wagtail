@@ -22,7 +22,6 @@ from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
-from home.models.custom_blocks.printable_rich_text import PrintableRichTextBlock
 from home.models.custom_blocks.common import custom_promote_panels
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
@@ -447,10 +446,6 @@ _BASE_BLOCK_TYPES = [
     (
         "grid",
         GridBlock(),
-    ),
-    (
-        "printable_rich_text",
-        PrintableRichTextBlock(),
     ),
 ]
 
