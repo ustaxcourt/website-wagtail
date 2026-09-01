@@ -142,6 +142,19 @@
       const button = block.querySelector(".printable-section__button");
       if (!button || button.dataset.initialized === "true") return;
 
+      // Checkboxes natively toggle on Space when focused; add Enter as an
+      // equivalent so either key works, matching the other activatable
+      // controls on the page (buttons, links).
+      block.querySelectorAll(".checkbox-list input[type=\"checkbox\"]").forEach(function(checkbox) {
+        checkbox.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+        });
+      });
+
       const HIDDEN_CLASS = "printable-section-hidden-for-print";
 
       function stopPrinting() {
