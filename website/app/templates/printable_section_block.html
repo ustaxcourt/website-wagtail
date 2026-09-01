@@ -101,7 +101,7 @@
                 {% elif sub_block.block_type == 'list' %}
                     {% include "home/list_block.html" with block=sub_block %}
                 {% elif sub_block.block_type == 'paragraph' %}
-                    <p class="rich-text" data-testid="page-body-paragraph">{{ sub_block.value }}</p>
+                    <div class="rich-text" data-testid="page-body-paragraph">{{ sub_block.value }}</div>
                 {% endif %}
             {% endfor %}
         </div>

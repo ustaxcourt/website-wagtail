@@ -177,7 +177,7 @@
         {% if tile_index is not None %}
             {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
         {% else %}
-            {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-prt" %}
+            {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix=suffix|default:"-prt" %}
         {% endif %}
     {% else %}
         <p>Block type not recognized: {{ block.block_type }}</p>
