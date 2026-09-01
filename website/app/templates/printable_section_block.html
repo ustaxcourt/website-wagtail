@@ -47,6 +47,15 @@
   .printable-section__intro {
     margin-top: 0.5rem;
   }
+  /* Scoped overrides so the shared .checkbox-list spacing (12px / 14px,
+     off the 8pt grid) lines up with the design system's spacing tokens
+     inside this block, without changing checklists elsewhere on the site. */
+  .printable-section .checkbox-list {
+    gap: 8px; /* space-2: tight spacing between related controls */
+  }
+  .printable-section .checkbox-list > li {
+    padding: 16px; /* space-3: standard padding inside cards */
+  }
 
   @media print {
     /* The print button never appears in a printout, regardless of which
