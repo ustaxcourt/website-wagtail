@@ -192,6 +192,7 @@ website/app/static/uswds/css
 website/app/static/uswds/fonts
 website/app/static/uswds/img
 website/app/static/uswds/js
+website/assets/uswds/components
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
@@ -261,6 +262,7 @@ website_secrets
 .cursorrules
 CLAUDE.md
 GEMINI.md
+copilot-instructions.md
 tmp/
 website/documents_object_list.txt
 website/s3_search_results.txt
