@@ -58,11 +58,7 @@
   }
   /* Scoped overrides so the shared .checkbox-list spacing (12px / 14px,
      off the 8pt grid) lines up with the design system's spacing tokens
-     inside this block, without changing checklists elsewhere on the site.
-     Plain checkbox rows aren't cards, so they get no card padding — just
-     the space-2 gap between rows. Only "checkbox with subtext" rows are
-     rendered as cards (background + border), so only those get the
-     space-3 card padding. */
+     inside this block, without changing checklists elsewhere on the site. */
   .printable-section .checkbox-list {
     gap: 8px; /* space-2: tight spacing between related controls */
   }
@@ -70,10 +66,7 @@
     gap: 16px; /* space-3: standard spacing between card-style rows */
   }
   .printable-section .checkbox-list > li {
-    padding: 0;
-  }
-  .printable-section .checkbox-list > li.has-subtext {
-    padding: 16px; /* space-3: standard padding inside cards */
+    padding: 8px; /* space-2: per UX, both plain and card-style rows */
   }
 
   @media print {
