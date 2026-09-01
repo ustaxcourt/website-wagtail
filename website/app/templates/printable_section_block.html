@@ -2,6 +2,9 @@
 <style>
   .printable-section {
     margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* space-4: rhythm between title, intro, and body */
   }
   .printable-section__header {
     display: flex;
@@ -45,7 +48,13 @@
     mask-size: contain;
   }
   .printable-section__intro {
-    margin-top: 0.5rem;
+    margin: 0; /* spacing to header/body handled by the parent's flex gap */
+  }
+  .printable-section__intro > :first-child {
+    margin-top: 0;
+  }
+  .printable-section__intro > :last-child {
+    margin-bottom: 0;
   }
   /* Scoped overrides so the shared .checkbox-list spacing (12px / 14px,
      off the 8pt grid) lines up with the design system's spacing tokens
@@ -56,6 +65,9 @@
      space-3 card padding. */
   .printable-section .checkbox-list {
     gap: 8px; /* space-2: tight spacing between related controls */
+  }
+  .printable-section .checkbox-list.checkbox-list-with-subtext {
+    gap: 16px; /* space-3: standard spacing between card-style rows */
   }
   .printable-section .checkbox-list > li {
     padding: 0;
