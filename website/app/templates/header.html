@@ -261,7 +261,7 @@
         z-index: 500;
         padding: 0;
         margin: 0;
-        min-width: 100%;
+        min-width: max-content;
         width: max-content;
         border-top: 6px solid var(--color-secondary);
     }
@@ -295,9 +295,20 @@
         padding: 5px 0;
     }
 
-    header#top-navigation .navigation-list .nav-link a:hover {
-        font-weight: 600;
-        font-size: 17px;
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a {
+        white-space: nowrap;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link a:hover {
+        color: white;
+        text-decoration: none;
+        text-shadow: none;
+        font-weight: 400;
+        background-color: #1A4480;
+    }
+
+    header#top-navigation:not(.view-mobile) .navigation-list .nav-link:hover {
+        background-color: #1A4480;
     }
 
     header#top-navigation .navigation-bar .navigation .displayed-navigation-header {
@@ -709,6 +720,7 @@
      header#top-navigation.view-mobile .navigation-list {
         position: static;
         display: none;
+        min-width: 0;
         width: 100%;
         background-color: var(--color-secondary);
         border-top: none;
@@ -731,7 +743,10 @@
      }
 
      header#top-navigation.view-mobile .navigation-list .nav-link a:hover {
-        background-color: var(--overlay-light-subtle);
+          color: white;
+          text-shadow: none;
+          font-weight: 400;
+          background-color: #1A4480;
      }
 
      /* Remove hover effects on mobile */
@@ -895,9 +910,10 @@
                         <button aria-expanded="false"
                                 class="link"
                                 data-testid="nav-button-{{ section.value.title|slugify }}"
+                                aria-label="{{ section.value.title }}"
                                 onclick="toggleMenuItems(this)">
-                            <span>{{ section.value.title }}</span>
-                            <span>
+                            <span aria-hidden="true">{{ section.value.title }}</span>
+                            <span aria-hidden="true">
                                 <i class="fa-solid fa-caret-down chevron-down"></i>
                                 <i class="fa-solid fa-caret-up chevron-up"></i>
                             </span>

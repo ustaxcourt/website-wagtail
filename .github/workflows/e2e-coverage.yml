@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Set up Python
         uses: ./.github/actions/setup-python
@@ -120,7 +120,7 @@ jobs:
 
       - name: Upload E2E coverage artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-coverage-report
           path: |
@@ -136,7 +136,7 @@ jobs:
 
       - name: Post E2E coverage comment
         if: success() && github.event_name == 'pull_request' && hashFiles('website/e2e-coverage-report.txt') != ''
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         env:
           COVERAGE_PERCENT: ${{ steps.coverage_metrics.outputs.coverage_percent }}
         with:
