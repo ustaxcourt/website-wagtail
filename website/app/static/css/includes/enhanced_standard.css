@@ -162,6 +162,16 @@ p:empty {
     position: relative;
 }
 
+.enhanced-page .icon-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.enhanced-page .icon-header i {
+    flex-shrink: 0;
+}
+
 .enhanced-page .heading-wrapper .bookmark {
     position: absolute;
     left: -30px;

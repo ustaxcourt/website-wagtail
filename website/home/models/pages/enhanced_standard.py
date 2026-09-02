@@ -1,32 +1,37 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 from wagtail import blocks
-from wagtail.blocks import PageChooserBlock, StructBlockValidationError
-from wagtail.models import Page
-from wagtail.fields import StreamField
-from wagtail.snippets.blocks import SnippetChooserBlock
-from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
-
-# from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.admin.panels import FieldPanel
+from wagtail.blocks import PageChooserBlock, StructBlockValidationError
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
+from wagtail.fields import StreamField
+from wagtail.models import Page
 from wagtail.search import index
+from wagtail.snippets.blocks import SnippetChooserBlock
 
-from home.blocks import SVGDocumentChooserBlock
-from home.blocks import QuickAccessTilesBlock
-from home.blocks import NoCaptionTypedTableBlock
+from home.admin.moderation import ModerationTabbedInterface
+from home.blocks import (
+    NoCaptionTypedTableBlock,
+    QuickAccessTilesBlock,
+    SVGDocumentChooserBlock,
+)
+from home.forms import ReviewByRequiredOnSubmitForm
+from home.mixins.moderation import ModerationMixin
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
-from home.models.custom_blocks.common import link_obj
-from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
+from home.models.custom_blocks.common import (
+    ColumnBlock,
+    custom_promote_panels,
+    link_obj,
+)
+from home.models.custom_blocks.icon_header import IconHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
-from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
-from home.models.custom_blocks.common import ColumnBlock
-from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
-from home.models.custom_blocks.common import custom_promote_panels
-from home.mixins.moderation import ModerationMixin
-from home.admin.moderation import ModerationTabbedInterface
-from home.forms import ReviewByRequiredOnSubmitForm
+from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
+from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
+from home.models.snippets.navigation import NavigationRibbon
+
+# from wagtail.contrib.table_block.blocks import TableBlock
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -253,6 +258,10 @@ class GridBlock(blocks.StructBlock):
 
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
+    (
+        "icon_header",
+        IconHeaderBlock(),
+    ),
     (
         "heading",
         blocks.StructBlock(
