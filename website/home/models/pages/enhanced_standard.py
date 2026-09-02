@@ -275,6 +275,9 @@ class HeroSection(blocks.StructBlock):
         help_text="Buttons to display at the bottom of the hero section.",
     )
 
+    class Meta:
+        label = "Hero Section"
+
 
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
