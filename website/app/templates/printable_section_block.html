@@ -132,10 +132,19 @@
     </div>
 {% endwith %}
 <script>
-  (function() {
-    const blockId = "printable-section-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
+  // Defined once per page load no matter how many printable_section blocks
+  // are rendered — each instance below just calls window.initPrintableSection
+  // with its own element id, instead of every block re-declaring this logic.
+  if (!window.initPrintableSection) {
+    const HIDDEN_CLASS = "printable-section-hidden-for-print";
 
-    function initPrintableSection() {
+    const stopPrintableSectionPrinting = function() {
+      document.querySelectorAll("." + HIDDEN_CLASS).forEach(function(el) {
+        el.classList.remove(HIDDEN_CLASS);
+      });
+    };
+
+    window.initPrintableSection = function(blockId) {
       const block = document.getElementById(blockId);
       if (!block) return;
 
@@ -155,16 +164,8 @@
         });
       });
 
-      const HIDDEN_CLASS = "printable-section-hidden-for-print";
-
-      function stopPrinting() {
-        document.querySelectorAll("." + HIDDEN_CLASS).forEach(function(el) {
-          el.classList.remove(HIDDEN_CLASS);
-        });
-      }
-
-      function startPrinting() {
-        stopPrinting();
+      button.addEventListener("click", function() {
+        stopPrintableSectionPrinting();
         let node = block;
         while (node && node !== document.body) {
           const parent = node.parentElement;
@@ -176,27 +177,28 @@
           });
           node = parent;
         }
-      }
-
-      button.addEventListener("click", function() {
-        startPrinting();
         window.print();
       });
 
-      window.addEventListener("afterprint", stopPrinting);
-      if (window.matchMedia) {
-        window.matchMedia("print").addEventListener("change", function(mql) {
-          if (!mql.matches) stopPrinting();
-        });
-      }
-
       button.dataset.initialized = "true";
-    }
+    };
 
+    window.addEventListener("afterprint", stopPrintableSectionPrinting);
+    if (window.matchMedia) {
+      window.matchMedia("print").addEventListener("change", function(mql) {
+        if (!mql.matches) stopPrintableSectionPrinting();
+      });
+    }
+  }
+
+  (function() {
+    const blockId = "printable-section-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initPrintableSection);
+      document.addEventListener("DOMContentLoaded", function() {
+        window.initPrintableSection(blockId);
+      });
     } else {
-      initPrintableSection();
+      window.initPrintableSection(blockId);
     }
   })();
 </script>
