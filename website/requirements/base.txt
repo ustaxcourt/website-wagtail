@@ -2,8 +2,8 @@ anyascii==0.3.3
 asgiref==3.12.1
 beautifulsoup4==4.15.0
 html5lib==1.1
-boto3==1.43.78
-botocore==1.43.78
+boto3==1.43.83
+botocore==1.43.83
 certifi==2026.7.22
 cfgv==3.5.0
 charset-normalizer==3.5.1
@@ -35,7 +35,7 @@ openpyxl==3.1.5
 packaging==26.3
 pillow_heif==1.5.0
 pillow==12.3.0
-platformdirs==4.11.3
+platformdirs==4.11.5
 pluggy==1.6.0
 psycopg2-binary==2.9.12
 python-dateutil==2.9.0.post0
@@ -51,7 +51,7 @@ sqlparse==0.6.0
 telepath==0.3.1
 typing_extensions==4.16.0
 urllib3==2.7.0
-virtualenv==21.7.4
+virtualenv==21.7.7
 wagtail>=7.4.3,<7.5
 # Forked to fix base model lookup bug (upstream PR #173)
 # Revert to official package once https://github.com/wagtail/wagtail-transfer/pull/173 is merged
