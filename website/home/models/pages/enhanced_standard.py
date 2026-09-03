@@ -19,6 +19,7 @@ from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
+from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
@@ -494,6 +495,10 @@ _BASE_BLOCK_TYPES = [
     (
         "grid",
         GridBlock(),
+    ),
+    (
+        "summary_timeline",
+        SummaryTimelineBlock(),
     ),
     (
         "hero_section",
