@@ -1076,6 +1076,10 @@
         const navigationHeaders = document.querySelectorAll('.navigation-header');
         navigationHeaders.forEach(header => {
             header.classList.remove('active');
+            const control = header.querySelector('.link');
+            if (control?.hasAttribute('aria-expanded')) {
+                control.setAttribute('aria-expanded', 'false');
+            }
         });
     }
 
@@ -1100,6 +1104,13 @@
         navigationHeaders.forEach(header => {
             const button = header.querySelector('.link');
 
+            function closeHeaderMenu() {
+                header.classList.remove('active');
+                if (button?.hasAttribute('aria-expanded')) {
+                    button.setAttribute('aria-expanded', 'false');
+                }
+            }
+
             // Handle desktop hover (only for headers with sublinks)
             const handleMouseEnter = function() {
                 if (!isMobile()) {
@@ -1115,12 +1126,18 @@
 
             const handleMouseLeave = function() {
                 if (!isMobile()) {
-                    header.classList.remove('active');
+                    closeHeaderMenu();
                 }
             };
 
             header.addEventListener('mouseenter', handleMouseEnter);
             header.addEventListener('mouseleave', handleMouseLeave);
+
+            header.addEventListener('focusout', function(e) {
+                if (!header.contains(e.relatedTarget)) {
+                    closeHeaderMenu();
+                }
+            });
 
             // Add keyboard navigation for dropdown items
             if (button) {
@@ -1162,7 +1179,11 @@
             const isInsideNavigation = e.target.closest('.navigation-bar');
             if (!isInsideNavigation) {
                 navigationHeaders.forEach(header => {
+                    const control = header.querySelector('.link');
                     header.classList.remove('active');
+                    if (control?.hasAttribute('aria-expanded')) {
+                        control.setAttribute('aria-expanded', 'false');
+                    }
                 });
             }
         });
@@ -1172,7 +1193,11 @@
             if (e.key === 'Escape') {
                 // Close desktop dropdowns
                 navigationHeaders.forEach(header => {
+                    const control = header.querySelector('.link');
                     header.classList.remove('active');
+                    if (control?.hasAttribute('aria-expanded')) {
+                        control.setAttribute('aria-expanded', 'false');
+                    }
                 });
 
                 closeMobileMenu();

@@ -40,6 +40,52 @@ describe('index page', () => {
     cy.url().should('include', '/case-related-forms/')
   })
 
+  it('collapses a submenu when keyboard focus leaves its navigation header', () => {
+    const menuButton = '[data-testid="nav-button-trials-case-management"]'
+    const menuList = '[data-testid="nav-list-trials-case-management"]'
+
+    cy.get(menuButton).focus().realPress('Enter')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'true')
+    cy.get(menuList).should('be.visible')
+    cy.get(`${menuList} a`).last().focus().realPress('Tab')
+
+    cy.get(menuList).should('not.be.visible')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'false')
+  })
+
+  it('resets aria-expanded when a keyboard-opened submenu is closed with Escape', () => {
+    const menuButton = '[data-testid="nav-button-trials-case-management"]'
+    const menuList = '[data-testid="nav-list-trials-case-management"]'
+
+    // Open the submenu via keyboard so toggleMenuItems sets aria-expanded="true"
+    cy.get(menuButton).focus().realPress('Enter')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'true')
+    cy.get(menuList).should('be.visible')
+
+    // Close it with Escape
+    cy.get(menuButton).realPress('Escape')
+
+    // The submenu is visually collapsed...
+    cy.get(menuList).should('not.be.visible')
+    // ...but the button must not still advertise itself as expanded.
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'false')
+  })
+
+  it('resets aria-expanded when a keyboard-opened submenu is closed by clicking outside the nav', () => {
+    const menuButton = '[data-testid="nav-button-trials-case-management"]'
+    const menuList = '[data-testid="nav-list-trials-case-management"]'
+
+    cy.get(menuButton).focus().realPress('Enter')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'true')
+    cy.get(menuList).should('be.visible')
+
+    // Click somewhere outside .navigation-bar (the federal banner sits above the nav)
+    cy.get('[data-testid="usa-banner"]').click()
+
+    cy.get(menuList).should('not.be.visible')
+    cy.get(menuButton).should('have.attr', 'aria-expanded', 'false')
+  })
+
   it('header dropdown nav buttons expose exactly the section title as aria-label', () => {
     cy.get('li.navigation-header > button.link').each(($button) => {
       const sectionTitle = $button.find('span').first().text().trim()
