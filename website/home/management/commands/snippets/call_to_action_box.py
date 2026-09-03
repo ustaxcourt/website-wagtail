@@ -88,7 +88,7 @@ class CallToActionBoxInitializer(PageInitializer):
             ],
         )
         call_to_action_box.save()
-        logger.info("Successfully created Navigation menu.")
+        logger.info("Successfully created Call to Action Box.")
 
     def update(self):
         logger.info("Updating Call to Action Box...")

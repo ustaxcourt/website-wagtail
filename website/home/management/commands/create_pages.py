@@ -22,7 +22,10 @@ from home.management.commands.pages.redirect_page import RedirectPageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.navigation import NavigationInitializer
 
-from home.management.commands.snippets import snippets_to_initialize
+from home.management.commands.snippets import (
+    snippets_to_initialize,
+    snippets_to_initialize_via_executescript,
+)
 from home.management.commands.redirects.redirect_initializer import RedirectInitializer
 
 from home.management.commands.pages.documents import UnlistedFiles
@@ -76,6 +79,10 @@ class Command(BaseCommand):
             for snippet_class in snippets_to_initialize:
                 snippet_instance = snippet_class()
                 snippet_instance.create()
+
+        for snippet_class in snippets_to_initialize_via_executescript:
+            snippet_instance = snippet_class()
+            snippet_instance.run()
 
         for page_class in pages_to_initialize:
             page_instance = page_class()
