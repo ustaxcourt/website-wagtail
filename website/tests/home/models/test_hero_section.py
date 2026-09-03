@@ -102,7 +102,7 @@ class HeroSectionRenderTest(TestCase):
         self.assertEqual(rendered.status_code, 200)
 
     def test_hero_section_content_appears_in_response(self):
-        """Accordion title must appear in the rendered HTML."""
+        """Hero section content must appear in the rendered HTML."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
         response = self.page.serve(request)
