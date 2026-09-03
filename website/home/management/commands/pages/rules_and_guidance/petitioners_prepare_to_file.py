@@ -4,6 +4,7 @@ from home.models import NavigationRibbon
 from home.models import PetitionerExperiencePage
 from home.models.snippets.call_to_action import CallToActionBox
 import logging
+from home.models.utils.execute_script import ExecuteScript
 
 logger = logging.getLogger(__name__)
 
@@ -45,3 +46,29 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
         )
         new_page.save_revision().publish()
         logger.info(f"Created the '{title}' page.")
+
+    def run(self):
+        """Update the Petitioners Prepare to File page."""
+        command_name = "Initialize Petitioners Prepare to File page"
+        # Check if script already exists
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+
+        try:
+            self.create()
+            execution_log_text = (
+                "Petitioners Prepare to File page updated successfully."
+            )
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = execution_log_text
+            script_entry.save()
+
+        except Exception as e:
+            logger.error(e)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {e}"
+            script_entry.save()
+            raise
