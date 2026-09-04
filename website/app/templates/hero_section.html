@@ -114,7 +114,7 @@
     {% if block.value.callout_block %}
         <div class="hero-section-callout-block">
             {% for b in block.value.callout_block %}
-                {% include "callout_block.html" with block=b.value %}
+                {% include "callout_block.html" with block=b %}
             {% endfor %}
         </div>
     {% endif %}
