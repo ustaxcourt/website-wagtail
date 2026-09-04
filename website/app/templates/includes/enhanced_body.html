@@ -175,6 +175,8 @@
         {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
     {% elif block.block_type == 'summary_timeline' %}
         {% include "summary_timeline.html" with block=block %}
+            {% elif block.block_type == 'hero_section' %}
+                {% include "hero_section.html" with block=block %}
     {% elif block.block_type == 'printable_section' %}
         {% if tile_index is not None %}
             {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
