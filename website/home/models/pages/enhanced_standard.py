@@ -262,8 +262,13 @@ class HeroSection(blocks.StructBlock):
         required=True,
         help_text="Introductory text displayed beneath the title in the hero section.",
     )
-    callout_block = StyledCalloutBlock(
-        required=True,
+    callout_block = blocks.StreamBlock(
+        [("block", StyledCalloutBlock())],
+        use_json_field=True,
+        blank=True,
+        required=False,
+        min_num=0,
+        max_num=1,
         help_text="Callout block displayed underneath the introductory text in the hero section.",
     )
     buttons = blocks.StreamBlock(
@@ -275,6 +280,13 @@ class HeroSection(blocks.StructBlock):
         max_num=3,
         help_text="Buttons to display at the bottom of the hero section.",
     )
+
+    content_panels = [
+        FieldPanel("title"),
+        FieldPanel("introductory_text"),
+        FieldPanel("callout_block"),
+        FieldPanel("buttons"),
+    ]
 
     class Meta:
         label = "Hero Section"

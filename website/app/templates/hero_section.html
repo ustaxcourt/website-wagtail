@@ -111,9 +111,13 @@
     <div class="hero-section-introductory-text-block">
         {{ block.value.introductory_text }}
     </div>
-    <div class="hero-section-callout-block">
-        {% include "callout_block.html" with block=block.value.callout_block %}
-    </div>
+    {% if block.value.callout_block %}
+        <div class="hero-section-callout-block">
+            {% for b in block.value.callout_block %}
+                {% include "callout_block.html" with block=b.value %}
+            {% endfor %}
+        </div>
+    {% endif %}
     {% if block.value.buttons %}
         <div class="hero-section-buttons">
             {% for button in block.value.buttons %}

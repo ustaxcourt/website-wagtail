@@ -66,11 +66,17 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                         "value": {
                             "title": "File Your Petition with the United States Tax Court",
                             "introductory_text": "Challenge an IRS determination by filing a petition. This guide walks you through every step of the process, including what to expect after filing in the United States Tax Court.",
-                            "callout_block": {
-                                "heading": "Deadline for Filing",
-                                "text": '<p data-block-key="dj49o">A document filed through DAWSON is timely if it is electronically filed by 11:59 p.m., Eastern time, on the day it is due.</p>',
-                                "callout_type": "info",
-                            },
+                            "callout_block": [
+                                {
+                                    "type": "block",
+                                    "value": {
+                                        "heading": "Deadline for Filing",
+                                        "text": '<p data-block-key="mgzeg">A document filed through DAWSON is timely if it is electronically filed by 11:59 p.m., Eastern time, on the day it is due.</p>',
+                                        "callout_type": "info",
+                                    },
+                                    "id": "452cb185-bc8e-40e7-a422-ecb9a83925e6",
+                                }
+                            ],
                             "buttons": [
                                 {
                                     "type": "button",
@@ -113,7 +119,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 },
                             ],
                         },
-                        "id": "359b2e61-baf5-4473-9110-d5460ce9538a",
+                        "id": "5e5c3858-b562-4818-9b68-169833009415",
                     }
                 ],
             )
