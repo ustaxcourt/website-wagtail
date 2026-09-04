@@ -12,17 +12,6 @@ class IconHeaderBlock(blocks.StructBlock):
         label="Icon",
     )
     text = blocks.CharBlock(required=True, label="Header Text")
-    level = blocks.ChoiceBlock(
-        choices=[
-            ("h2", "Heading 2"),
-            ("h3", "Heading 3"),
-            ("h4", "Heading 4"),
-            ("h5", "Heading 5"),
-        ],
-        required=True,
-        label="Heading Level",
-        default="h2",
-    )
 
     class Meta:
         label = "Icon Header"

@@ -52,7 +52,6 @@ class IconHeaderBlockRenderTest(TestCase):
                     "value": {
                         "icon": "fa-solid fa-file",
                         "text": "How to File",
-                        "level": "h2",
                     },
                 }
             ],
@@ -78,7 +77,6 @@ class IconHeaderBlockRenderTest(TestCase):
                     "value": {
                         "icon": "fa-solid fa-check",
                         "text": "Pre-Filing Checklist",
-                        "level": "h3",
                     },
                 }
             ],
@@ -89,4 +87,4 @@ class IconHeaderBlockRenderTest(TestCase):
         self.assertIn('class="icon-header"', content)
         self.assertIn('class="fa-solid fa-check"', content)
         self.assertIn("Pre-Filing Checklist", content)
-        self.assertIn('<h3 class="icon-header">', content)
+        self.assertIn('<h2 class="icon-header">', content)
