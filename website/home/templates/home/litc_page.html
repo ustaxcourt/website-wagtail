@@ -213,7 +213,7 @@
                     {{ block.value|richtext }}
                 </div>
             {% elif block.block_type == "callout" %}
-                {% include "callout_block.html" with block=block.value %}
+                {% include "callout_block.html" with block=block %}
             {% endif %}
         {% endfor %}
         <div class="alphabet" id="alphabet-nav">
@@ -233,7 +233,7 @@
                             <div class="simple-text">{{ block.value.text|richtext }}</div>
                         </div>
                     {% elif block.block_type == "callout" %}
-                        <div class="callout">{% include "callout_block.html" with block=block.value %}</div>
+                        <div class="callout">{% include "callout_block.html" with block=block %}</div>
                     {% endif %}
                 {% endfor %}
 
@@ -246,7 +246,7 @@
                             <div class="simple-text">{{ block.value.text|richtext }}</div>
                         </div>
                     {% elif block.block_type == "callout" %}
-                        <div class="callout">{% include "callout_block.html" with block=block.value %}</div>
+                        <div class="callout">{% include "callout_block.html" with block=block %}</div>
                     {% endif %}
                 {% endfor %}
             </div>

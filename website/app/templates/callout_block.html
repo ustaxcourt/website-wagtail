@@ -131,7 +131,7 @@
 </style>
 
 <div>
-  {% with data=block %}
+  {% with data=block.value %}
   <div class="styled-callout {{ data.callout_type }}" role="region" aria-label="{{data.callout_type}} type banner title reads {{ data.heading }}" tabindex="0">
     <div class="callout-items" style="margin-right: 1rem;">
       <span class="callout-icon" aria-hidden="true"></span>

@@ -265,7 +265,7 @@
                    data-testid="search-inpage-input">
         </form>
         {% if display_docket_callout %}
-            {% include "callout_block.html" with block=callout_block.value %}
+            {% include "callout_block.html" with block=callout_block %}
         {% endif %}
         {% if search_query == "" %}
             <div class="empty-search">Please enter a search term to find content.</div>

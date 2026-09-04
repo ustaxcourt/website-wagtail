@@ -172,7 +172,7 @@
             {% elif block.block_type == 'button' %}
                 {% include "includes/styled_button.html" with block=block %}
             {% elif block.block_type == 'callout' %}
-                {% include "callout_block.html" with block=block.value %}
+                {% include "callout_block.html" with block=block %}
             {% elif block.block_type == 'quick_access_tiles' %}
                 {% include "quick_access_tiles_block.html" with block=block %}
             {% elif block.block_type == 'card_tiles' %}
