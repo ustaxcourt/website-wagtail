@@ -157,6 +157,13 @@
             margin: 0;
         }
 
+        .remote-card {
+            grid-column: 1 / -1;
+        }
+        .remote-card .state-content {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
         @media (max-width: 1024px) {
             .clinic-list.grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -165,6 +172,9 @@
                 grid-column: span 2;
             }
             .state-card.span-3 .state-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .remote-card .state-content {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -191,6 +201,9 @@
             }
             .state-card.span-2 .state-content,
             .state-card.span-3 .state-content {
+                grid-template-columns: 1fr;
+            }
+            .remote-card .state-content {
                 grid-template-columns: 1fr;
             }
 
@@ -253,6 +266,9 @@
         {% endif %}
 
         <div class="clinic-list grid">
+            {% if remote and remote.position == "top" %}
+                {% include "home/_litc_remote_card.html" %}
+            {% endif %}
             {% for state in sorted_clinics %}
                 {% with state_letter=state.state|slice:":1" %}
                     {% ifchanged state_letter %}
@@ -298,12 +314,15 @@
                     </div>
                 {% endwith %}
             {% endfor %}
+            {% if remote and remote.position == "bottom" %}
+                {% include "home/_litc_remote_card.html" %}
+            {% endif %}
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.state-card').forEach(function (card) {
+            document.querySelectorAll('.state-card:not(.remote-card)').forEach(function (card) {
                 var clinicCount = card.querySelectorAll('.clinic-card').length;
                 var span = Math.min(clinicCount, 3);
                 card.classList.add('span-' + span);
