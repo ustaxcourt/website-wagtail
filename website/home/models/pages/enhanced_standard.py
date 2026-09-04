@@ -23,6 +23,7 @@ from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
+from home.models.custom_blocks.printable_section import PrintableSectionBlock
 from home.models.custom_blocks.common import custom_promote_panels
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
@@ -470,6 +471,10 @@ _BASE_BLOCK_TYPES = [
     (
         "summary_timeline",
         SummaryTimelineBlock(),
+    ),
+    (
+        "printable_section",
+        PrintableSectionBlock(),
     ),
 ]
 
