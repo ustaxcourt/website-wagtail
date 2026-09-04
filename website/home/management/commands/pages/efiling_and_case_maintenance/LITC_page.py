@@ -13,7 +13,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Birmingham",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Services Alabama LITC",
@@ -26,7 +25,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Mobile",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Services Alabama LITC",
@@ -44,7 +42,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Anchorage",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Alaska Business Development Center, Inc.",
@@ -63,7 +60,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Phoenix",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Community Legal Services",
@@ -89,7 +85,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Little Rock",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid of Arkansas, Inc.",
@@ -114,7 +109,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Fresno",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Cal Poly Orfalea School of Business",
@@ -128,7 +122,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Los Angeles",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Bet Tzedek Legal Services Tax Clinic",
@@ -198,7 +191,6 @@ all_litc_clinics = [
             },
             {
                 "name": "San Diego",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of San Diego School of Law Tax Clinic",
@@ -225,7 +217,6 @@ all_litc_clinics = [
             },
             {
                 "name": "San Francisco",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Justice and Diversity Center",
@@ -258,7 +249,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Denver",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Denver Graduate Tax Program",
@@ -292,7 +282,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Hartford",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Connecticut School of Law",
@@ -324,7 +313,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Philadelphia",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Delaware Community Reinvestment Action Council, Inc.",
@@ -342,7 +330,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Washington",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "The American University-WCL Janet R. Spragens Federal Tax Clinic",
@@ -381,7 +368,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Jacksonville",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Florida Low-Income Taxpayer Clinic",
@@ -394,7 +380,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Tallahassee",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Legal Services of North Florida",
@@ -407,7 +392,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Tampa",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Bay Area Legal Services, Inc.",
@@ -427,7 +411,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Miami",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid Service of Broward County",
@@ -466,7 +449,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Atlanta",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Georgia State University College of Law Philip C. Cook Low Income Taxpayer Clinic",
@@ -492,7 +474,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Honolulu",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Hawaii Federal Tax Clinic",
@@ -517,7 +498,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Boise",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Idaho",
@@ -535,7 +515,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Chicago",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid Chicago",
@@ -569,7 +548,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Peoria",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Prairie State Legal Services",
@@ -587,7 +565,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Indianapolis",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Indiana Legal Services, Inc.",
@@ -612,7 +589,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Des Moines",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Iowa Legal Aid LITC",
@@ -630,7 +606,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Wichita",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Kansas City Tax Clinic, UMKC School of Law",
@@ -655,7 +630,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Louisville",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid Society, Inc.",
@@ -687,7 +661,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "New Orleans",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Southeast Louisiana Legal Services",
@@ -709,7 +682,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Shreveport",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Southeast Louisiana Legal Services",
@@ -736,7 +708,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Portland",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Pine Tree Legal Assistance, Inc.",
@@ -754,7 +725,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Baltimore",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Maryland Volunteer Lawyers Service",
@@ -786,7 +756,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Boston",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Greater Boston Legal Services",
@@ -845,7 +814,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Detroit",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Accounting Aid Society LITC",
@@ -891,7 +859,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "St. Paul",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Minnesota Tax Clinic",
@@ -916,7 +883,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Jackson",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "North Mississippi Rural Legal Services Mississippi Taxpayer Assistance Project",
@@ -934,7 +900,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Kansas City",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Kansas City Tax Clinic, UMKC School of Law",
@@ -954,7 +919,6 @@ all_litc_clinics = [
             },
             {
                 "name": "St. Louis",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Washington University School of Law",
@@ -972,7 +936,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Billings",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Wyoming",
@@ -986,7 +949,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Helena",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Gonzaga Law School",
@@ -1004,7 +966,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Omaha",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid of Nebraska",
@@ -1022,7 +983,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Las Vegas",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Texas A&M University School of Law Tax Dispute Resolution Clinic",
@@ -1043,7 +1003,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Reno",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Texas A&M University School of Law Tax Dispute Resolution Clinic",
@@ -1069,7 +1028,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Boston",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "603 Legal Aid",
@@ -1087,7 +1045,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "New York City",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Services of New Jersey",
@@ -1119,7 +1076,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Albuquerque",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "New Mexico Legal Aid",
@@ -1137,7 +1093,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Albany",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Legal Aid Society of Northeastern New York",
@@ -1157,7 +1112,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Buffalo",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Central Library of Rochester",
@@ -1184,7 +1138,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Syracuse",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Syracuse University College of Law LITC",
@@ -1204,7 +1157,6 @@ all_litc_clinics = [
             },
             {
                 "name": "New York City",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Brooklyn Legal Services Corporation A",
@@ -1264,7 +1216,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Winston-Salem",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Charlotte Center for Legal Advocacy North Carolina LITC",
@@ -1289,7 +1240,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Bismarck",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "No local clinic, remote assistance: Texas A&M University School of Law Tax Dispute Resolution Clinic",
@@ -1308,7 +1258,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Cincinnati",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid Society of Cincinnati",
@@ -1328,7 +1277,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Cleveland",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "The Legal Aid Society of Cleveland",
@@ -1355,7 +1303,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Columbus",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid of Southeast and Central Ohio",
@@ -1373,7 +1320,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Oklahoma City",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid Services of Oklahoma",
@@ -1391,7 +1337,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Portland",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Lewis & Clark Law School Tax Clinic",
@@ -1425,7 +1370,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Philadelphia",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Delaware Community Reinvestment Action Council, Inc.",
@@ -1482,7 +1426,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Pittsburgh",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Pittsburgh School of Law Tax Clinic",
@@ -1516,7 +1459,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Boston",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Rhode Island Legal Services, Inc.",
@@ -1534,7 +1476,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Columbia",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "South Carolina Legal Services",
@@ -1559,7 +1500,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Aberdeen",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "No local clinic, remote assistance: Texas A&M University School of Law Tax Dispute Resolution Clinic",
@@ -1578,7 +1518,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Knoxville",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "The Legal Aid Society of Middle Tennessee and the Cumberlands Tennessee Taxpayer Project",
@@ -1591,7 +1530,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Nashville",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "The Legal Aid Society of Middle Tennessee and the Cumberlands Tennessee Taxpayer Project",
@@ -1604,7 +1542,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Memphis",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Memphis Area Legal Services, Inc.",
@@ -1622,7 +1559,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Dallas",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Aid of North West Texas",
@@ -1657,7 +1593,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Houston",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Lone Star Legal Aid, Inc.",
@@ -1684,7 +1619,6 @@ all_litc_clinics = [
             },
             {
                 "name": "El Paso",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Texas A&M University School of Law",
@@ -1713,7 +1647,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Lubbock",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Texas Tech University School of Law",
@@ -1727,7 +1660,6 @@ all_litc_clinics = [
             },
             {
                 "name": "San Antonio",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Texas Taxpayer Assistance Project, Texas RioGrande Legal Aid, Inc.",
@@ -1745,7 +1677,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Salt Lake City",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Utah Tax Help Services",
@@ -1770,7 +1701,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Burlington",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "Vermont Legal Aid, Inc.",
@@ -1795,7 +1725,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Richmond",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "The Community Tax Law Project",
@@ -1817,7 +1746,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Roanoke",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "The Community Tax Law Project",
@@ -1844,7 +1772,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Seattle",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "University of Washington School of Law Federal Tax Clinic",
@@ -1857,7 +1784,6 @@ all_litc_clinics = [
             },
             {
                 "name": "Spokane",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Gonzaga University School of Law Tax Clinic",
@@ -1875,7 +1801,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Charleston",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "AppalRed Legal Aid",
@@ -1893,7 +1818,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Milwaukee",
-                "small_cases_only": False,
                 "clinics": [
                     {
                         "name": "Legal Action of Wisconsin, Inc.",
@@ -1911,7 +1835,6 @@ all_litc_clinics = [
         "cities": [
             {
                 "name": "Cheyenne",
-                "small_cases_only": True,
                 "clinics": [
                     {
                         "name": "University of Wyoming LITC",

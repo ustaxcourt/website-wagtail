@@ -1,0 +1,33 @@
+<div class="state-card remote-card">
+    <div class="state-header" tabindex="0">{{ remote.text }}</div>
+    <div class="state-content">
+        {% for clinic in remote.clinics %}
+            <div class="clinic-card" tabindex="0">
+                <div class="clinic" style="margin-bottom: 10px;">
+                    <div class="city">{{ clinic.clinic_type }}</div>
+                    <div class="clinic-name">{{ clinic.name }}<span style="color:#DB0000;" class="small-case-indicator">{% if clinic.small_case_procedures_only %}**{% endif %}</span></div>
+                    <div class="clinic-info">
+                        {% if clinic.address %}
+                            <div class="address">
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.name|urlencode }}+{{ clinic.address|urlencode }}" target="_blank" rel="noopener noreferrer">
+                                    {{ clinic.address }}
+                                </a>
+                            </div>
+                        {% endif %}
+                        <div class="phone">{{ clinic.phone }}</div>
+                        {% if clinic.website %}
+                            <div class="website">
+                                <a href="{{ clinic.website }}" target="_blank" rel="noopener noreferrer">{{ clinic.website }}</a>
+                            </div>
+                        {% endif %}
+                        {% if clinic.email %}
+                            <div class="email">
+                                <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

@@ -27,9 +27,6 @@ class LITCClinicBlock(blocks.StructBlock):
 
 class LITCCityBlock(blocks.StructBlock):
     name = blocks.CharBlock()
-    small_cases_only = blocks.BooleanBlock(
-        required=False, help_text="Indicates the city only holds small case trials."
-    )
     clinics = blocks.ListBlock(LITCClinicBlock())
 
     class Meta:
@@ -40,6 +37,46 @@ class LITCCityBlock(blocks.StructBlock):
 class LITCStateBlock(blocks.StructBlock):
     state = blocks.CharBlock()
     cities = blocks.ListBlock(LITCCityBlock())
+
+
+class LITCRemoteClinicBlock(blocks.StructBlock):
+    clinic_type = blocks.CharBlock(
+        default="Low Income Taxpayer Clinic",
+        help_text='The category label shown above the clinic name on the card (e.g. "Low Income Taxpayer Clinic" or "Pro Bono Program").',
+    )
+    name = blocks.CharBlock()
+    address = blocks.CharBlock(required=False)
+    phone = blocks.CharBlock(required=False)
+    website = blocks.URLBlock(required=False)
+    email = blocks.EmailBlock(required=False)
+    small_case_procedures_only = blocks.BooleanBlock(
+        required=False,
+        help_text="Indicates the clinic only represents taxpayers who have elected the small tax case procedures.",
+    )
+
+    class Meta:
+        icon = "user"
+        label = "Remote Clinic"
+
+
+class LITCRemoteBlock(blocks.StructBlock):
+    position = blocks.ChoiceBlock(
+        choices=[
+            ("bottom", "Bottom (after all states)"),
+            ("top", "Top (before all states)"),
+        ],
+        default="bottom",
+        help_text="Where the Remote banner appears relative to the state list.",
+    )
+    text = blocks.CharBlock(
+        default="Don’t see a clinic in your area? This clinic operates across all geographic boundaries",
+        help_text="The text shown in the blue Remote banner.",
+    )
+    clinics = blocks.ListBlock(LITCRemoteClinicBlock())
+
+    class Meta:
+        icon = "site"
+        label = "Remote Clinics and Programs"
 
 
 class LITCPage(ModerationMixin, Page):
@@ -70,48 +107,12 @@ class LITCPage(ModerationMixin, Page):
         blank=True,
     )
 
-    city_asterisk_notice = StreamField(
-        blocks.StreamBlock(
-            [
-                (
-                    "asterisk_notice",
-                    blocks.StructBlock(
-                        [
-                            (
-                                "asterisks_count",
-                                blocks.ChoiceBlock(
-                                    choices=[("", "None"), ("*", "*")],
-                                    default="",
-                                    required=False,
-                                    help_text="Set the number of asterisks to display (0 or 1).",
-                                ),
-                            ),
-                            (
-                                "text",
-                                blocks.RichTextBlock(
-                                    help_text="Standard text explanation."
-                                ),
-                            ),
-                        ],
-                        icon="info-circle",
-                        label="City Asterisk Notice",
-                    ),
-                ),
-                ("callout", StyledCalloutBlock()),
-            ],
-        ),
+    remote_clinics = StreamField(
+        [("remote", LITCRemoteBlock())],
         use_json_field=True,
         blank=True,
-        default=[
-            (
-                "asterisk_notice",
-                {
-                    "asterisks_count": "*",
-                    "text": "Indicates the city only holds trials for small tax cases.",
-                },
-            ),
-        ],
-        help_text="This notice will be used to explain the meaning of a single asterisk next to city names in the clinic listings.",
+        max_num=1,
+        help_text="Clinics that operate across geographic boundaries rather than in a specific state/city. Renders as its own banner above or below all states on the front end, based on the Position field below. If no clinics are added here, the Remote banner will not be shown.",
     )
 
     clinic_asterisk_notice = StreamField(
@@ -162,9 +163,9 @@ class LITCPage(ModerationMixin, Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("introductory_paragraph"),
-        FieldPanel("city_asterisk_notice"),
         FieldPanel("clinic_asterisk_notice"),
         FieldPanel("low_income_taxpayer_clinics"),
+        FieldPanel("remote_clinics"),
     ]
 
     edit_handler = ModerationTabbedInterface.create_for_page(
@@ -173,6 +174,7 @@ class LITCPage(ModerationMixin, Page):
 
     search_fields = Page.search_fields + [
         index.SearchField("low_income_taxpayer_clinics"),
+        index.SearchField("remote_clinics"),
     ]
 
     def get_context(self, request):
@@ -195,7 +197,6 @@ class LITCPage(ModerationMixin, Page):
 
                     city_data = {
                         "name": city.get("name"),
-                        "small_cases_only": city.get("small_cases_only"),
                         "note": city.get("note"),
                         "clinics": sorted_clinics,
                     }
@@ -212,5 +213,18 @@ class LITCPage(ModerationMixin, Page):
         sorted_data = sorted(data_list, key=lambda x: x["state"].lower())
 
         context["sorted_clinics"] = sorted_data
+
+        context["remote"] = None
+        for block in self.remote_clinics:
+            if block.block_type == "remote":
+                remote_val = block.value
+                raw_clinics = remote_val.get("clinics", [])
+                if raw_clinics:
+                    context["remote"] = {
+                        "text": remote_val.get("text"),
+                        "position": remote_val.get("position", "bottom"),
+                        "clinics": sorted(raw_clinics, key=lambda x: x["name"].lower()),
+                    }
+                break
 
         return context
