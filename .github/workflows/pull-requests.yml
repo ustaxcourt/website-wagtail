@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
 
     - name: Set up Python
       uses: ./.github/actions/setup-python
@@ -88,7 +88,7 @@ jobs:
 
     - name: Upload coverage artifacts
       if: always() && hashFiles('website/coverage-report.txt') != ''
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: coverage-report
         path: |
@@ -97,7 +97,7 @@ jobs:
 
     - name: Post Coverage Comment
       if: always() && github.event_name == 'pull_request' && hashFiles('website/coverage-report.txt') != ''
-      uses: MishaKav/pytest-coverage-comment@v1.7.2
+      uses: MishaKav/pytest-coverage-comment@v1.11.2
       with:
         pytest-coverage-path: ./website/coverage-report.txt
         title: "Test Coverage Report (min: ${{ env.COVERAGE_MINIMUM }}%)"

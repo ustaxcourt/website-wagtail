@@ -1,0 +1,56 @@
+# Ruff configuration
+#
+# This project historically had NO ruff config and relied on ruff's built-in
+# defaults. Ruff <= 0.8.x defaulted to a small rule set (pyflakes + a few
+# pycodestyle error groups). Ruff 0.16.x widened the *default* rule set
+# considerably (isort, bugbear, bandit, simplify, pyupgrade, datetimez, ...),
+# which surfaced ~960 findings on an unchanged codebase after a dependency bump.
+#
+# To keep the upgrade non-disruptive, we explicitly pin the historical rule set
+# below instead of inheriting whatever ruff decides to enable by default next.
+
+target-version = "py312"
+line-length = 88  # ruff's default; stated explicitly so it can't drift
+
+[lint]
+# The pre-0.16 ruff default: pyflakes (F) + pycodestyle logical/syntax errors.
+#   E4 - import formatting errors
+#   E7 - statement/whitespace errors (multiple statements, comparisons to None, etc.)
+#   E9 - syntax / IO errors
+#   F  - pyflakes (undefined names, unused imports, f-string issues, ...)
+select = ["E4", "E7", "E9", "F"]
+ignore = []
+
+# ---------------------------------------------------------------------------
+# Gentle path toward stricter linting
+# ---------------------------------------------------------------------------
+# Enable these ONE family at a time. For each: add it to `select`, run
+# `ruff check --fix` for the auto-fixable ones, hand-fix the rest (or park
+# them in `ignore` / `per-file-ignores` with a TODO), then commit that family
+# on its own so review stays small.
+#
+# Roughly easiest -> highest-value order for this codebase:
+#
+#   "I"    isort           - import sorting; almost entirely auto-fixable
+#                            (`ruff check --fix`). ~300 findings, zero risk.
+#   "UP"   pyupgrade       - modernize syntax for the pinned target-version;
+#                            mostly auto-fixable. ~25 findings.
+#   "W605"                 - invalid regex escape sequences; ~7 findings,
+#                            these are real latent bugs worth fixing now.
+#   "RUF100"               - unused `# noqa` comments; ~16, auto-fixable.
+#   "C4"   comprehensions  - small readability wins; mostly auto-fixable.
+#   "SIM"  flake8-simplify - nested `with`, redundant patterns; ~90 findings,
+#                            mostly hand-fixes but each is quick.
+#   "DTZ"  flake8-datetimez- timezone-aware datetimes; ~50 findings. Decide
+#                            project-wide whether naive datetimes are OK first.
+#   "B"    flake8-bugbear  - likely-bug patterns; review each, don't blanket-fix.
+#   "RUF012"               - mutable default class attrs. ~350 findings, almost
+#                            all Wagtail `panels = [...]` / `blocks = [...]`.
+#                            Prefer a `per-file-ignores` for models/blocks over
+#                            annotating every one with `ClassVar`.
+#   "BLE001"               - blind `except Exception`; ~47, each needs judgment.
+#
+# Example of parking a noisy family while you work through it:
+#
+#   [lint.per-file-ignores]
+#   "home/models/**" = ["RUF012"]
