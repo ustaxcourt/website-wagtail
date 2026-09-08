@@ -14,7 +14,7 @@ from wagtail.search import index
 from home.blocks import SVGDocumentChooserBlock
 from home.blocks import QuickAccessTilesBlock
 from home.blocks import NoCaptionTypedTableBlock
-from home.models.config import IconCategories
+from home.models.config import NumberedIconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
@@ -405,34 +405,110 @@ _BASE_BLOCK_TYPES = [
             blocks.StructBlock(
                 [
                     (
-                        "icon",
+                        "color",
+                        blocks.ChoiceBlock(
+                            choices=[
+                                ("white", "White"),
+                                ("gray", "Gray"),
+                                ("dark-primary", "Dark-Primary"),
+                                ("green", "Green"),
+                                ("yellow", "Yellow"),
+                            ],
+                            default="white",
+                            required=True,
+                            label="Card Color",
+                        ),
+                    ),
+                    (
+                        "numbered_icon",
                         blocks.ChoiceBlock(
                             choices=[
                                 (
                                     icon.value,
-                                    icon.name.replace("_", " ").title(),
+                                    "None"
+                                    if icon.name == "NONE"
+                                    else icon.name.replace("_", " ").title(),
                                 )
-                                for icon in IconCategories
+                                for icon in NumberedIconCategories
                             ],
-                            required=True,
+                            default=NumberedIconCategories.NONE,
+                            required=False,
+                            label="Numbered Icon",
+                            help_text="Optional numbered or status icon displayed on the card.",
                         ),
                     ),
-                    ("title", blocks.CharBlock(required=True)),
-                    ("description", blocks.RichTextBlock(required=True)),
                     (
-                        "color",
+                        "numbered_icon_alignment",
                         blocks.ChoiceBlock(
                             choices=[
-                                ("green", "Green"),
-                                ("yellow", "Yellow"),
+                                ("left", "Left"),
+                                ("center", "Center"),
+                                ("right", "Right"),
                             ],
+                            default="left",
                             required=True,
+                            label="Numbered Icon Alignment",
+                            help_text="Only applies when Numbered Icon is not 'None'.",
+                        ),
+                    ),
+                    (
+                        "title_icon",
+                        SVGDocumentChooserBlock(
+                            required=False,
+                            label="Title Icon",
+                            help_text="Optional: any SVG uploaded as a Wagtail Document.",
+                        ),
+                    ),
+                    (
+                        "title_icon_alt_text",
+                        blocks.CharBlock(
+                            required=False,
+                            label="Title Icon Alt Text",
+                            help_text="Leave blank if the Title Icon is purely decorative. "
+                            "Fill in if it conveys meaning not already in the Card Title (e.g. distinguishing icons for different options).",
+                        ),
+                    ),
+                    (
+                        "subtitle",
+                        blocks.CharBlock(
+                            required=False,
+                            label="Card Sub-title",
+                            help_text="Displays the card sub title",
+                        ),
+                    ),
+                    (
+                        "title",
+                        blocks.CharBlock(
+                            required=False,
+                            label="Card Title",
+                            help_text="Displays the card title",
+                        ),
+                    ),
+                    (
+                        "description",
+                        blocks.RichTextBlock(
+                            required=False,
+                            label="Body Text",
+                            help_text="Displays the text that goes under the header",
+                        ),
+                    ),
+                    (
+                        "buttons",
+                        blocks.ListBlock(
+                            ButtonBlock(),
+                            min_num=0,
+                            max_num=1,
+                            required=False,
+                            label="Buttons",
                         ),
                     ),
                 ],
                 label="Card",
+                label_format="Card: {title}",
             ),
+            max_num=3,
             label="Card Set",
+            help_text="Add up to 3 cards. They display in a single row on desktop/tablet and stack in a single column on mobile.",
         ),
     ),
     (
