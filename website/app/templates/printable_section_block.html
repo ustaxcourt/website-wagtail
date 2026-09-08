@@ -1,0 +1,204 @@
+{% load static %}
+<style>
+  .printable-section {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* space-4: rhythm between title, intro, and body */
+  }
+  .printable-section__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .printable-section__title {
+    margin: 0;
+  }
+  .printable-section .printable-section__button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    width: auto;
+    white-space: nowrap;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .printable-section .printable-section__button:hover {
+    text-decoration: underline;
+  }
+  .printable-section__button-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    background-color: currentColor;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-image: url({% static "uswds/img/usa-icons/print.svg" %});
+    mask-image: url({% static "uswds/img/usa-icons/print.svg" %});
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .printable-section__intro {
+    margin: 0; /* spacing to header/body handled by the parent's flex gap */
+  }
+  .printable-section__intro > :first-child {
+    margin-top: 0;
+  }
+  .printable-section__intro > :last-child {
+    margin-bottom: 0;
+  }
+  .printable-section .heading-wrapper {
+    margin-bottom: 16px; /* space-3: standard spacing to the content below a heading */
+  }
+  /* Scoped overrides so the shared .checkbox-list spacing (12px / 14px,
+     off the 8pt grid) lines up with the design system's spacing tokens
+     inside this block, without changing checklists elsewhere on the site. */
+  .printable-section .checkbox-list {
+    gap: 8px; /* space-2: tight spacing between related controls */
+  }
+  .printable-section .checkbox-list.checkbox-list-with-subtext {
+    gap: 16px; /* space-3: standard spacing between card-style rows */
+  }
+  .printable-section .checkbox-list > li {
+    padding: 8px; /* space-2: per UX, both plain and card-style rows */
+  }
+
+  @media print {
+    /* The print button never appears in a printout, regardless of which
+       block instance triggered the print. */
+    .printable-section__button {
+      display: none !important;
+    }
+
+    /* Applied by JS to every sibling branch outside the ancestor chain of
+       the block being printed. Uses display:none (not visibility:hidden)
+       so hidden content is actually removed from layout — otherwise the
+       print output pages through the full (blank) height of the rest of
+       the page instead of just the printed block. */
+    .printable-section-hidden-for-print {
+      display: none !important;
+    }
+
+    /* The "Checkbox with Subtext" list type highlights items that have
+       subtext with a background and left border — useful on screen, but
+       not wanted in the printout. Scoped to .printable-section so normal
+       page prints (not triggered via this block's Print button) are
+       unaffected. */
+    .printable-section .checkbox-list-with-subtext > li.has-subtext {
+      background-color: transparent !important;
+      border-left: none !important;
+    }
+  }
+</style>
+{% with data=block.value %}
+    <div id="printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
+         class="printable-section">
+        <div class="printable-section__header">
+            <h2 class="printable-section__title">{{ data.title }}</h2>
+            <button type="button"
+                    class="printable-section__button"
+                    aria-label="Print {{ data.title }}">
+                <span class="printable-section__button-icon" aria-hidden="true"></span>
+                Print
+            </button>
+        </div>
+        {% if data.intro %}<div class="printable-section__intro rich-text">{{ data.intro }}</div>{% endif %}
+        <div class="printable-section__body">
+            {% for sub_block in data.body %}
+                {% if sub_block.block_type == 'heading' %}
+                    <div class="heading-wrapper">
+                        <{{ sub_block.value.level }}
+                        {% if sub_block.value.id %}id="{{ sub_block.value.id }}"{% endif %}
+                        >
+                        {{ sub_block.value.text }}
+                        </{{ sub_block.value.level }}>
+                    </div>
+                {% elif sub_block.block_type == 'list' %}
+                    {% include "home/list_block.html" with block=sub_block %}
+                {% elif sub_block.block_type == 'paragraph' %}
+                    <div class="rich-text" data-testid="page-body-paragraph">{{ sub_block.value }}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endwith %}
+<script>
+  // Defined once per page load no matter how many printable_section blocks
+  // are rendered — each instance below just calls window.initPrintableSection
+  // with its own element id, instead of every block re-declaring this logic.
+  if (!window.initPrintableSection) {
+    const HIDDEN_CLASS = "printable-section-hidden-for-print";
+
+    const stopPrintableSectionPrinting = function() {
+      document.querySelectorAll("." + HIDDEN_CLASS).forEach(function(el) {
+        el.classList.remove(HIDDEN_CLASS);
+      });
+    };
+
+    window.initPrintableSection = function(blockId) {
+      const block = document.getElementById(blockId);
+      if (!block) return;
+
+      const button = block.querySelector(".printable-section__button");
+      if (!button || button.dataset.initialized === "true") return;
+
+      // Checkboxes natively toggle on Space when focused; add Enter as an
+      // equivalent so either key works, matching the other activatable
+      // controls on the page (buttons, links).
+      block.querySelectorAll(".checkbox-list input[type=\"checkbox\"]").forEach(function(checkbox) {
+        checkbox.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+        });
+      });
+
+      button.addEventListener("click", function() {
+        stopPrintableSectionPrinting();
+        let node = block;
+        while (node && node !== document.body) {
+          const parent = node.parentElement;
+          if (!parent) break;
+          Array.prototype.forEach.call(parent.children, function(sibling) {
+            if (sibling !== node) {
+              sibling.classList.add(HIDDEN_CLASS);
+            }
+          });
+          node = parent;
+        }
+        window.print();
+      });
+
+      button.dataset.initialized = "true";
+    };
+
+    window.addEventListener("afterprint", stopPrintableSectionPrinting);
+    if (window.matchMedia) {
+      window.matchMedia("print").addEventListener("change", function(mql) {
+        if (!mql.matches) stopPrintableSectionPrinting();
+      });
+    }
+  }
+
+  (function() {
+    const blockId = "printable-section-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function() {
+        window.initPrintableSection(blockId);
+      });
+    } else {
+      window.initPrintableSection(blockId);
+    }
+  })();
+</script>
