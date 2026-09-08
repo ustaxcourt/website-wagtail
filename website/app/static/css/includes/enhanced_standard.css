@@ -170,8 +170,18 @@ p:empty {
     font-weight: 600;
 }
 
-.enhanced-page .icon-header i {
+.enhanced-page .icon-header__icon {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+}
+
+.enhanced-page .icon-header__icon i,
+.enhanced-page .icon-header__text {
+    line-height: 1;
 }
 
 .enhanced-page .heading-wrapper .bookmark {
