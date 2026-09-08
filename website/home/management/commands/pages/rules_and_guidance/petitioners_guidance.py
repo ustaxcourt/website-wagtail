@@ -70,7 +70,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 {
                                     "type": "block",
                                     "value": {
-                                        "heading": "Deadline for Filing",
+                                        "heading": "Deadline for Filing:",
                                         "text": '<p data-block-key="mgzeg">A document filed through DAWSON is timely if it is electronically filed by 11:59 p.m., Eastern time, on the day it is due.</p>',
                                         "callout_type": "info",
                                     },
