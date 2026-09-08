@@ -164,7 +164,7 @@ p:empty {
 
 .enhanced-page .icon-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
     color: #1B1B1B;
     font-weight: 600;
@@ -182,6 +182,21 @@ p:empty {
 .enhanced-page .icon-header__icon i,
 .enhanced-page .icon-header__text {
     line-height: 1;
+}
+
+.enhanced-page .icon-header__icon i {
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 24px;
+}
+
+.enhanced-page .icon-header__icon i::before {
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
 }
 
 .enhanced-page .heading-wrapper .bookmark {
