@@ -43,16 +43,25 @@
             text-align: center;
         }
 
+        .azure-login-form {
+            margin: 0;
+        }
+
         .azure-login {
             display: block;
+            width: 100%;
             text-align: center;
             margin-top: 1rem;
             padding: 0.75rem 1.5rem;
             background-color: #0078d4;
             color: white;
             text-decoration: none;
+            border: none;
             border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
             font-weight: bold;
+            cursor: pointer;
             transition: background-color 0.2s;
         }
 
@@ -94,8 +103,15 @@
         </div>
         {% block above_login %}{% endblock %}
         {# SSO only on the main login page #}
-        <a href="{% url "social:begin" "azuread-tenant-oauth2" %}"
-           class="azure-login">{% trans "Login with Court SSO Credentials" %}</a>
+        <form class="azure-login-form"
+              method="post"
+              action="{% url "social:begin" "azuread-tenant-oauth2" %}">
+            {% csrf_token %}
+            {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
+            <button type="submit" class="azure-login">{% trans "Login with Court SSO Credentials" %}</button>
+        </form>
         {% block below_login %}{% endblock %}
     </main>
 {% endblock %}

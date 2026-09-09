@@ -19,6 +19,7 @@ from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
+from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
@@ -36,6 +37,17 @@ table_value_types = [
 class IndentStyle(models.TextChoices):
     INDENTED = "indented"
     UNINDENTED = "unindented"
+
+
+FAQ_FILTER_TAG_CHOICES = [
+    ("filing", "Filing"),
+    ("deadlines", "Deadlines"),
+    ("representation", "Representation"),
+    ("forms-documents", "Forms & Documents"),
+    ("trial-process", "Trial Process"),
+    ("fees-costs", "Fees & Costs"),
+    ("after-decision", "After Decision"),
+]
 
 
 class StyledCalloutBlock(blocks.StructBlock):
@@ -370,10 +382,18 @@ _BASE_BLOCK_TYPES = [
                     ("question", blocks.CharBlock(required=False)),
                     ("answer", blocks.RichTextBlock()),
                     ("anchortag", blocks.CharBlock()),
+                    (
+                        "filtertag",
+                        blocks.ChoiceBlock(
+                            choices=FAQ_FILTER_TAG_CHOICES,
+                            required=True,
+                            label="FilterTag",
+                        ),
+                    ),
                 ]
             ),
             label="Question and Answer",
-            help_text="Add a question and answer with anchor tag for linking",
+            help_text="Add a question and answer. Link the anchor tag number. Select the FAQ FilterTag type in the dropdown.",
         ),
     ),
     ("columns", ColumnBlock()),
@@ -447,6 +467,10 @@ _BASE_BLOCK_TYPES = [
     (
         "grid",
         GridBlock(),
+    ),
+    (
+        "summary_timeline",
+        SummaryTimelineBlock(),
     ),
     (
         "printable_section",

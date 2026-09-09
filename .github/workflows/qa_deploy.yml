@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - qa
+      - feature/petitioner-experience
     tags:
       - qa-deploy
   workflow_call:
@@ -16,7 +17,7 @@ on:
 
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
 
 jobs:
   # QA DEPLOY — Runs when pushing to the `qa` branch (1)
@@ -31,7 +32,7 @@ jobs:
         run: echo "ENVIRONMENT=qa" >> $GITHUB_ENV
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref || github.ref }}
 

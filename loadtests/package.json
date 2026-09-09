@@ -15,7 +15,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "artillery": "^2.0.27"
+    "artillery": "^2.0.34"
   },
   "overrides": {
     "fast-xml-parser": "^5.3.5"

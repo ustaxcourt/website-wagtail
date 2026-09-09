@@ -2,35 +2,110 @@
 {% load wagtailcore_tags navigation_tags custom_tags %}
 
 <style>
-  .usa-button.styled-button{
+  .usa-button.styled-primary-button{
     display: flex;
     align-items: center;
     color: var(--color-white);
     padding: 10px 20px;
 
     min-height: 44px;
-    width: fit-content;
     word-break: break-word;
     font-size: 16px;
     font-weight: bold;
     line-height: 1.025em;
   }
 
-  .usa-button.styled-button .button-icon {
-    background-color: var(--color-white);
-    width: 24px;
-    height: 24px;
+  @media (min-width: 601px) {
+    .usa-button.styled-primary-button{
+      width:fit-content;
+    }
   }
 
-  .usa-button.styled-button.no-hover:hover {
+  .usa-button.styled-primary-button .button-icon {
+    background-color: var(--color-white);
+    width: 20px;
+    height: 20px;
+  }
+
+  .usa-button.styled-primary-button.no-hover:hover {
     background-color: var(--color-primary);
     color: var(--color-white);
+  }
+
+
+  .usa-button.styled-inverted-primary-button{
+    display: flex;
+    align-items: center;
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    padding: 10px 20px;
+    border: 1px solid var(--color-primary);
+    min-height: 44px;
+    word-break: break-word;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.025em;
+  }
+
+  @media (min-width: 601px) {
+    .usa-button.styled-inverted-primary-button{
+      width:fit-content;
+    }
+  }
+
+  .usa-button.styled-inverted-primary-button:not(.no-hover):hover{
+    color: var(--color-navy);
+    border-color: var(--color-navy);
+    background-color: var(--bg-white-hover);
+  }
+
+  .usa-button.styled-inverted-primary-button .button-icon {
+    background-color: var(--color-primary);
+    width: 20px;
+    height: 20px;
+  }
+
+  .usa-button.styled-inverted-primary-button.no-hover:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+  }
+
+  .svg-primary-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-white);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .usa-button.styled-primary-button:hover .svg-primary-icon {
+    background-color: var(--color-white);
+  }
+
+  .svg-inverted-primary-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-primary);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .usa-button.styled-inverted-primary-button:not(.no-hover):hover .svg-inverted-primary-icon {
+    background-color: var(--color-navy);
   }
 
 </style>
 
 {% for link_item in block.value.url %}
-<a class="usa-button styled-button {% if not block.value.button_hover %}no-hover{% endif %}"
+<a class="usa-button {% if block.value.style == "inverted-primary" %}usa-button--outline{% endif %} styled-{{ block.value.style }}-button {% if not block.value.button_hover %}no-hover{% endif %}"
    data-is-link="true"
    {% if link_item.block_type == 'external_url' %}
       href="{{ link_item.value }}"
@@ -40,9 +115,20 @@
       href="{{ link_item.value.url }}"
    {% endif %}>
 
-  {% if block.value.icon and block.value.icon.url %}
-    <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+  {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "before" %}
+    {% if not block.value.is_icon_svg_with_white_fill %}
+      <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+    {% else %}
+      <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+    {% endif %}
   {% endif %}
   {{ block.value.text }}
+  {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "after" %}
+    {% if not block.value.is_icon_svg_with_white_fill %}
+      <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+    {% else %}
+      <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+    {% endif %}
+  {% endif %}
 </a>
 {% endfor %}
