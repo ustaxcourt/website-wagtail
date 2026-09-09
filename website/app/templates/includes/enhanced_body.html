@@ -15,8 +15,8 @@
             {% if block.value.id %}id="{{ block.value.id }}"{% endif %}
             >
             {% if block.value.id %}
-                <a href="#{{ block.value.id }}" title="{{ block.value.text }}">
-                    <div class="fa-solid fa-bookmark bookmark" id="{{ block.value.id }}"></div>
+                <a href="#{{ block.value.id }}" title="{{ block.value.text }}" aria-label="Jump to {{ block.value.text }}">
+                    <div class="fa-solid fa-bookmark bookmark" aria-hidden="true"></div>
                 </a>
             {% endif %}
             {{ block.value.text }}
@@ -72,10 +72,10 @@
         <hr />
         {% for q in block.value %}
             <div class="question-answer-block">
-                <a href="#{{ q.anchortag }}" title="{{ q.question }}">
-                    <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
+                <a href="#{{ q.anchortag }}" title="{{ q.question }}" aria-label="Jump to {{ q.question }}">
+                    <div class="fa-solid fa-bookmark bookmark" aria-hidden="true"></div>
                 </a>
-                <h3>{{ q.question }}</h3>
+                <h3 id="{{ q.anchortag }}">{{ q.question }}</h3>
             </div>
             <div>{{ q.answer|richtext }}</div>
             <hr />
