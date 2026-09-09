@@ -72,10 +72,12 @@
         <hr />
         {% for q in block.value %}
             <div class="question-answer-block">
-                <a href="#{{ q.anchortag }}">
-                    <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
-                </a>
-                <h3>{{ q.question }}</h3>
+                <h3>
+                    <a href="#{{ q.anchortag }}">
+                        <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}" aria-hidden="true"></div>
+                        {{ q.question }}
+                    </a>
+                </h3>
             </div>
             <div>{{ q.answer|richtext }}</div>
             <hr />
