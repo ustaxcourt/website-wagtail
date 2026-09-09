@@ -18,7 +18,7 @@ django-storages==1.14.6
 django-taggit==6.1.0
 django-treebeard==5.3.1
 Django==5.2.17
-djangorestframework==3.18.0
+djangorestframework==3.18.1
 draftjs-exporter==5.2.0
 et_xmlfile==2.0.0
 fontawesomefree==6.6.0
@@ -33,7 +33,7 @@ laces==0.1.2
 nodeenv==1.10.0
 openpyxl==3.1.5
 packaging==26.3
-pillow_heif==1.6.0
+pillow_heif==1.7.0
 pillow==12.3.0
 platformdirs==4.11.3
 pluggy==1.6.0
