@@ -198,6 +198,7 @@ p:empty {
     width: 24px;
     height: 24px;
     line-height: 24px;
+    text-align: center;
 }
 
 .enhanced-page .heading-wrapper .bookmark {
