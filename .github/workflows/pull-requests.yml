@@ -97,7 +97,7 @@ jobs:
 
     - name: Post Coverage Comment
       if: always() && github.event_name == 'pull_request' && hashFiles('website/coverage-report.txt') != ''
-      uses: MishaKav/pytest-coverage-comment@v1.11.0
+      uses: MishaKav/pytest-coverage-comment@v1.11.2
       with:
         pytest-coverage-path: ./website/coverage-report.txt
         title: "Test Coverage Report (min: ${{ env.COVERAGE_MINIMUM }}%)"
