@@ -533,7 +533,11 @@
             <div class="blue-page-links-bar">
                 {% for link in page.navigation_ribbon.links.all %}
                     <a href="{{ link.url }}" aria-label="{{ link.title }}">
-                        <i class="{{ link.icon }}" aria-hidden="true"></i>
+                        {% if link.icon != "DAWSON" %}
+                        <span class="material-symbols-outlined">
+                            {{ link.icon }}
+                        </span>
+                        {% endif %}
                         <div class="title" style="display: block;">{{ link.title }}</div>
                     </a>
                 {% endfor %}

@@ -106,6 +106,7 @@
         <link href="{% static 'fontawesomefree/css/solid.min.css' %}"
               rel="stylesheet"
               type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=book_3,account_balance,calendar_today,chevron_right,draft,gavel,info,check,link_2,exclamation,description,balance,person,videocam,settings,work,search,signpost,timeline,note_stack,article,help&display=block" rel="stylesheet" />
         {# Web Fonts #}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -142,29 +143,29 @@
       {% include 'header.html' %}
       {% include 'includes/give_feedback_button.html' %}
       {% if page and page.show_floating_definitions_button %}
-            {% include 'includes/definitions_button.html' %}
-        {% endif %}
+          {% include 'includes/definitions_button.html' %}
+      {% endif %}
 
-        {% if page and page.show_floating_definitions_button %}
-            {% include 'includes/mini_definitions_button.html' %}
-        {% endif %}
-        {% include 'yellow_news_banner.html' %}
-        <main id="main-content" >
-            {% block content %}{% endblock %}
-        </main>
-        {% include 'footer.html' %}
-        <button title="Scroll to top"
-                id="scroll-to-top"
-                type="button"
-                class="usa-button width-auto fade-in">
-            <img src="{% static 'uswds/img/usa-icons/arrow_drop_up.svg' %}"
-                 role="img"
-                 alt="scroll to top button"
-                 aria-hidden="true" />
-        </button>
-        {# Global javascript #}
-        {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
-        <script type="text/javascript">
+      {% if page and page.show_floating_definitions_button %}
+          {% include 'includes/mini_definitions_button.html' %}
+      {% endif %}
+      {% include 'yellow_news_banner.html' %}
+      <main id="main-content" >
+          {% block content %}{% endblock %}
+      </main>
+      {% include 'footer.html' %}
+      <button title="Scroll to top"
+            id="scroll-to-top"
+            type="button"
+            class="usa-button width-auto fade-in">
+      <img src="{% static 'uswds/img/usa-icons/arrow_drop_up.svg' %}"
+            role="img"
+            alt="scroll to top button"
+            aria-hidden="true" />
+      </button>
+      {# Global javascript #}
+      {% block extra_js %}{# Override this in templates to add extra javascript #}{% endblock %}
+      <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", () => {
                   const last_navbar_menu_id = "last-nav-list";
                   const hiddenMenu = document.getElementById(last_navbar_menu_id);
@@ -207,9 +208,9 @@
                       definitionsButtonToAdjust.style.marginTop = `calc(${default_definitions_margin_top}px + ${dropdown_height}px)`;
                   }
             });
-        </script>
-        <script type="text/javascript"
-                src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
+      </script>
+      <script type="text/javascript"
+            src="https://lynmjtcq5px1.statuspage.io/embed/script.js"></script>
       <script>
             document.addEventListener("DOMContentLoaded", function() {
                   document.addEventListener("click", function(event) {

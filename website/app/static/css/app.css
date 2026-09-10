@@ -230,7 +230,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 /* Scroll to Top Button */
 #scroll-to-top {
     position: fixed;
-    bottom: 70px;
+    bottom: 415px; /* will need to change once size of sticky nav ribbon is determined */
     right: 8px;
     padding: 8px 10px;
     height: 35px;
@@ -352,9 +352,8 @@ button.link:hover {
 
 .blue-page-links-bar {
     display: flex;
-    background-color: var(--color-primary-legacy);
+    background-color: var(--color-navy);
     border-radius: 5px;
-    gap: 10px;
 }
 
 .blue-page-links-bar a {
@@ -362,22 +361,46 @@ button.link:hover {
     text-decoration: none;
     color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 10px;
     font-weight: normal;
-    font-size: .9rem;
+    font-size: 16px;
     padding: 16px;
+}
+
+.blue-page-links-bar .current-page {
+    background-color: var(--color-primary);
+    border-radius: 5px;
+}
+
+.blue-page-links-bar a.current-page {
+    color: white;
 }
 
 .blue-page-links-bar a:hover {
     background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.blue-page-links-bar a.current-page:hover {
+    background: rgba(26,68,128, 0.5);
 }
 
 .blue-page-links-bar i {
     color: white;
     font-size: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .blue-page-links-bar a {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 16px;
+        padding: 16px;
+        text-align: center;
+    }
 }
 
 /* ==========================================================================
@@ -415,7 +438,7 @@ button.link:hover {
 
     .blue-page-links-bar {
         gap: 5px;
-        border-radius: 3px;
+        border-radius: 5px;
     }
 
     .blue-page-links-bar a .title {

@@ -79,3 +79,16 @@ def aria_text(value):
     text = re.sub(r"\s+", " ", text).strip()
     text = re.sub(r"(,\s*)+", ", ", text)
     return text.rstrip(", ")
+
+
+@register.filter
+def strip_trailing_slash(value):
+    """
+    Removes a single trailing slash from a URL/path, except if it's just "/".
+    Example: "/about/" -> "/about"
+    """
+    if not isinstance(value, str):
+        return value
+    if value != "/" and value.endswith("/"):
+        return value.rstrip("/")
+    return value

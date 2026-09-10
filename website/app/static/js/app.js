@@ -1,4 +1,4 @@
-const GAP_TO_BOTTOM_FOOTER = 70;
+const GAP_TO_BOTTOM_FOOTER = 415; //Needs to be updated based on size of bottom nav bar if displayed on page
 
 document.getElementById('scroll-to-top').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

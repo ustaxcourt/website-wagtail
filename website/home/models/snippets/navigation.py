@@ -43,12 +43,18 @@ class NavigationRibbon(
     ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel
 ):
     name = models.CharField(max_length=255)
+    mobile_sticky_footer = models.BooleanField(
+        default=False,
+        verbose_name="Display ribbon as footer in mobile view",
+        help_text="Check to display the ribbon as an always visible footer at the bottom of the page in mobile views.",
+    )
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="navigation_ribbon"
     )
 
     content_panels = [
         FieldPanel("name"),
+        FieldPanel("mobile_sticky_footer"),
         InlinePanel("links", label="Links"),
     ]
     panels = content_panels + [PublishingPanel()]

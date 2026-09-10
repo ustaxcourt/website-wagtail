@@ -21,6 +21,7 @@ class NewNavigationRibbonInitializer:
 
         navigation_ribbon = NavigationRibbon(
             name=ribbon_snippet_name,
+            mobile_sticky_footer=True,
         )
         navigation_ribbon.save()
 
