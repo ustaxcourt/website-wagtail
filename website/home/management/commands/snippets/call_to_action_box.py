@@ -3,6 +3,7 @@ from home.models import CallToActionBox
 from home.management.commands.pages.page_initializer import PageInitializer
 from wagtail.documents.models import Document
 from home.models.utils.execute_script import ExecuteScript
+from urllib.parse import urljoin
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,8 @@ class CallToActionBoxInitializer(PageInitializer):
 
         logger.info("Creating the 'Ready to begin your petition?' Call to Action Box.")
 
+        _base_url = getattr(settings, "BASE_URL", "")
+
         arrow_forward_doc = Document.objects.filter(title=arrow_forward_name).first()
         if arrow_forward_doc:
             logger.info("'Arrow Forward' icon already exists.")
@@ -58,7 +61,9 @@ class CallToActionBoxInitializer(PageInitializer):
                         "url": [
                             {
                                 "type": "external_url",
-                                "value": "/petitioners-prepare-to-file",
+                                "value": urljoin(
+                                    _base_url, "/petitioners-prepare-to-file"
+                                ),
                                 "id": "9258b09c-d243-415a-b250-7beca1295b41",
                             }
                         ],
