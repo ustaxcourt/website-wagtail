@@ -282,13 +282,6 @@ class HeroSection(blocks.StructBlock):
         help_text="Buttons to display at the bottom of the hero section.",
     )
 
-    content_panels = [
-        FieldPanel("title"),
-        FieldPanel("introductory_text"),
-        FieldPanel("callout_block"),
-        FieldPanel("buttons"),
-    ]
-
     class Meta:
         label = "Hero Section"
 
