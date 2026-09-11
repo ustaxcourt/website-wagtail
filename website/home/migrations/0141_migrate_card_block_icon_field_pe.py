@@ -24,9 +24,16 @@ def migrate_card_icon_field(apps, schema_editor):
     (e.g. inside Card Tiles default content or Anchor Page body).
     """
     connection = schema_editor.connection
+    # On Postgres, `body` is a jsonb column - LIKE has no jsonb operator, and an
+    # uncast SELECT would hand back already-parsed Python objects instead of the
+    # JSON string `json.loads` below expects. SQLite stores it as a plain TEXT
+    # column, where `body` and `body::text` behave the same, so this only needs
+    # a Postgres-specific cast rather than a per-backend branch.
+    body_column = "body::text" if connection.vendor == "postgresql" else "body"
     with connection.cursor() as cursor:
         cursor.execute(
-            "SELECT page_ptr_id, body FROM home_enhancedstandardpage WHERE body LIKE %s",
+            f"SELECT page_ptr_id, {body_column} FROM home_enhancedstandardpage "  # noqa: S608
+            f"WHERE {body_column} LIKE %s",
             ['%"card"%'],
         )
         rows = cursor.fetchall()
@@ -50,7 +57,7 @@ def migrate_card_icon_field(apps, schema_editor):
         return value
 
     for page_id, raw_body in rows:
-        data = json.loads(raw_body)
+        data = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
         migrated = walk(data)
         if migrated != data:
             with connection.cursor() as cursor:
