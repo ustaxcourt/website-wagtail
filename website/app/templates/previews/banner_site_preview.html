@@ -1,0 +1,102 @@
+{% extends "previews/base_preview.html" %}
+{% load static %}
+
+{% block title %}{{ banner.banner_title }} - Site Banner Preview{% endblock %}
+
+{% block extra_css %}
+    <style>
+        /* Mirrors the styling in app/templates/yellow_news_banner.html and
+           red_news_banner.html. Those banners are rendered client-side by
+           JavaScript from JSON embedded via context processors, so this
+           preview re-creates the same markup/styles server-side for a
+           single banner rather than reusing those templates directly. */
+        .preview-banner {
+            width: 100%;
+        }
+
+        .preview-banner.priority-high {
+            background-color: var(--bg-notice);
+            color: var(--text-black);
+        }
+
+        .preview-banner.priority-critical {
+            background-color: var(--color-danger);
+            color: var(--text-white);
+        }
+
+        .preview-banner .grid-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        .preview-banner .alert-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 0;
+        }
+
+        .preview-banner .alert-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .preview-banner .alert-text {
+            flex: 1;
+            font-size: 17px;
+        }
+
+        .preview-banner.priority-critical a {
+            color: var(--text-white);
+        }
+
+        .preview-banner.priority-high a {
+            color: var(--text-black);
+        }
+
+        .preview-note {
+            padding: 1rem;
+            font-style: italic;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <p class="preview-note">Preview: how this banner will appear at the top of the site when live.</p>
+    {% if banner.priority_level == "high" %}
+        <div class="preview-banner priority-high">
+            <div class="grid-container">
+                <div class="alert-content">
+                    <img src="{% static 'images/icons/info_icon.svg' %}" alt="Alert" class="alert-icon" />
+                    <div class="alert-text">
+                        <strong>{{ banner.banner_title }}</strong> {{ banner.description|safe }}
+                        {% if banner.document %}
+                            <a href="{{ banner.document.url }}">See the Announcement</a>.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif banner.priority_level == "critical" %}
+        <div class="preview-banner priority-critical">
+            <div class="grid-container">
+                <div class="alert-content">
+                    <img src="{% static 'images/icons/fas.fa-exclamation-circle.svg' %}" alt="Alert" class="alert-icon" />
+                    <div class="alert-text">
+                        <strong>{{ banner.banner_title }}</strong> {{ banner.description|safe }}
+                        {% if banner.document %}
+                            <a href="{{ banner.document.url }}">See the Announcement</a>.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="preview-note">
+            This banner has no priority level set, so it will not be displayed as a
+            site banner. It will still appear in the News &amp; Announcements listing.
+        </p>
+    {% endif %}
+{% endblock %}

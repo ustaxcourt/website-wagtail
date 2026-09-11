@@ -1,7 +1,12 @@
 from django.db import models
 from django.forms import ValidationError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
-from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
+from wagtail.models import (
+    DraftStateMixin,
+    RevisionMixin,
+    WorkflowMixin,
+    PreviewableMixin,
+)
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
@@ -25,7 +30,12 @@ class BannerQuerySet(models.QuerySet):
 
 
 class Banner(
-    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
+    ModerationMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    PreviewableMixin,
+    models.Model,
 ):
     BANNER_CHOICES = [
         ("high", "High priority (Yellow banner)"),
@@ -196,6 +206,56 @@ class Banner(
         if self.document and self.document.url:
             return f"{self.document.url}"
         return "-"
+
+    def as_press_release_entry(self):
+        """
+        Build the same dict shape used by PressReleasePage.group_press_releases_by_year
+        for standalone banners. Shared here so the News & Announcements listing and the
+        "list item" preview mode always render identically from a single source of truth.
+        """
+        banner_label = "High Priority" if self.priority_level == "high" else "Critical"
+        return {
+            "is_news_item": True,
+            "is_banner": True,
+            "release_date": self.banner_start_date.date()
+            if self.banner_start_date
+            else None,
+            "banner_label": banner_label,
+            "banner_title": self.banner_title,
+            "banner_body": self.description,
+            "banner_type": self.priority_level,
+            "details": {
+                "description": "",
+                "file": self.document,
+            },
+        }
+
+    # --- Preview support -------------------------------------------------
+    # A Banner is rendered in multiple, visually distinct contexts across the
+    # site (a dismissible alert at the top of the page, and a plain-text
+    # historical entry on the News & Announcements page). Editors need to be
+    # able to preview both, so we expose them as separate Wagtail preview
+    # modes rather than a single preview.
+    @property
+    def preview_modes(self):
+        return [
+            ("banner", "Site banner (top of page)"),
+            ("news_list", "News & Announcements listing"),
+        ]
+
+    def get_preview_template(self, request, mode_name):
+        if mode_name == "news_list":
+            return "previews/banner_news_list_preview.html"
+        return "previews/banner_site_preview.html"
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        context["banner"] = self
+        if mode_name == "news_list":
+            entry = self.as_press_release_entry()
+            year = entry["release_date"].year if entry["release_date"] else "Preview"
+            context["press_releases_by_year"] = {year: [entry]}
+        return context
 
 
 class BannersFilterSet(WagtailFilterSet):

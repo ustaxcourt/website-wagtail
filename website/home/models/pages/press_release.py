@@ -79,31 +79,10 @@ class PressReleasePage(RoutablePageMixin, EnhancedStandardPage):
             .order_by("-banner_start_date")
         )
         for banner in banners:
-            release_date = (
-                banner.banner_start_date.date() if banner.banner_start_date else None
-            )
+            release_entry = banner.as_press_release_entry()
+            release_date = release_entry["release_date"]
             if release_date:
                 year = release_date.year
-
-                # Determine banner type label
-                banner_label = (
-                    "High Priority" if banner.priority_level == "high" else "Critical"
-                )
-
-                # Create release entry from Banner
-                release_entry = {
-                    "is_news_item": True,
-                    "is_banner": True,
-                    "release_date": release_date,
-                    "banner_label": banner_label,  # "High Priority" or "Critical"
-                    "banner_title": banner.banner_title,  # The title to be bolded
-                    "banner_body": banner.description,  # The body text
-                    "banner_type": banner.priority_level,  # "high" or "critical" for styling
-                    "details": {
-                        "description": "",  # Not used for banners
-                        "file": banner.document,
-                    },
-                }
                 grouped[year].append(release_entry)
 
         sorted_grouped = {
