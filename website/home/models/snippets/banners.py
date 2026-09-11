@@ -207,19 +207,25 @@ class Banner(
             return f"{self.document.url}"
         return "-"
 
-    def as_press_release_entry(self):
+    def as_press_release_entry(self, force_release_date=None):
         """
         Build the same dict shape used by PressReleasePage.group_press_releases_by_year
         for standalone banners. Shared here so the News & Announcements listing and the
-        "list item" preview mode always render identically from a single source of truth.
+        announcements-page preview always render identically from a single source of
+        truth.
+
+        `force_release_date` lets the preview place this banner into a specific
+        year bucket even when it has no banner_start_date yet (or when the
+        editor wants to see it regardless of its actual scheduled date).
         """
         banner_label = "High Priority" if self.priority_level == "high" else "Critical"
+        release_date = force_release_date
+        if release_date is None and self.banner_start_date:
+            release_date = self.banner_start_date.date()
         return {
             "is_news_item": True,
             "is_banner": True,
-            "release_date": self.banner_start_date.date()
-            if self.banner_start_date
-            else None,
+            "release_date": release_date,
             "banner_label": banner_label,
             "banner_title": self.banner_title,
             "banner_body": self.description,
@@ -232,30 +238,48 @@ class Banner(
 
     # --- Preview support -------------------------------------------------
     # A Banner is rendered in multiple, visually distinct contexts across the
-    # site (a dismissible alert at the top of the page, and a plain-text
-    # historical entry on the News & Announcements page). Editors need to be
-    # able to preview both, so we expose them as separate Wagtail preview
-    # modes rather than a single preview.
+    # site (a dismissible alert at the top of the page, and a historical
+    # entry on the News & Announcements page - which itself also shows
+    # unrelated NewsItems and other banners at the same time). Editors need
+    # to be able to preview both contexts, so we expose them as separate
+    # Wagtail preview modes. The "announcements_page" mode renders the real
+    # PressReleasePage template/context (reusing production code), with this
+    # banner forced into view regardless of its live status or scheduled
+    # dates, so both real content and this banner are visible together.
     @property
     def preview_modes(self):
         return [
             ("banner", "Site banner (top of page)"),
-            ("news_list", "News & Announcements listing"),
+            ("announcements_page", "News & Announcements page"),
         ]
 
     def get_preview_template(self, request, mode_name):
-        if mode_name == "news_list":
-            return "previews/banner_news_list_preview.html"
+        if mode_name == "announcements_page":
+            page = self._get_preview_announcements_page()
+            if page is not None:
+                return page.get_template(request)
+            return "previews/banner_announcements_page_unavailable.html"
         return "previews/banner_site_preview.html"
 
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)
         context["banner"] = self
-        if mode_name == "news_list":
-            entry = self.as_press_release_entry()
-            year = entry["release_date"].year if entry["release_date"] else "Preview"
-            context["press_releases_by_year"] = {year: [entry]}
+        if mode_name == "announcements_page":
+            page = self._get_preview_announcements_page()
+            if page is not None:
+                context.update(page.get_context(request, preview_banner=self))
         return context
+
+    @staticmethod
+    def _get_preview_announcements_page():
+        """
+        Find a real, live PressReleasePage to render for the "announcements
+        page" preview mode. Local import avoids a circular import, since
+        press_release.py imports Banner from this module.
+        """
+        from home.models.pages.press_release import PressReleasePage
+
+        return PressReleasePage.objects.live().first()
 
 
 class BannersFilterSet(WagtailFilterSet):

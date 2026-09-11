@@ -145,10 +145,10 @@ class TestBannerPreview:
         banner.document = None
         return banner
 
-    def test_preview_modes_exposes_banner_and_news_list(self):
+    def test_preview_modes_exposes_banner_and_announcements_page(self):
         banner = self._make_banner()
         mode_names = [mode for mode, _ in banner.preview_modes]
-        assert mode_names == ["banner", "news_list"]
+        assert mode_names == ["banner", "announcements_page"]
 
     def test_get_preview_template_defaults_to_site_banner(self):
         banner = self._make_banner()
@@ -161,26 +161,49 @@ class TestBannerPreview:
             == "previews/banner_site_preview.html"
         )
 
-    def test_get_preview_template_news_list_mode(self):
+    def test_get_preview_template_announcements_page_uses_real_page_template(self):
         banner = self._make_banner()
-        assert (
-            banner.get_preview_template(None, "news_list")
-            == "previews/banner_news_list_preview.html"
-        )
+        fake_page = MagicMock()
+        fake_page.get_template.return_value = "home/press_release_page.html"
+        with patch.object(
+            Banner, "_get_preview_announcements_page", return_value=fake_page
+        ):
+            template = banner.get_preview_template(None, "announcements_page")
+        assert template == "home/press_release_page.html"
+        fake_page.get_template.assert_called_once_with(None)
+
+    def test_get_preview_template_announcements_page_falls_back_when_no_page(self):
+        banner = self._make_banner()
+        with patch.object(Banner, "_get_preview_announcements_page", return_value=None):
+            template = banner.get_preview_template(None, "announcements_page")
+        assert template == "previews/banner_announcements_page_unavailable.html"
 
     def test_get_preview_context_includes_banner(self):
         banner = self._make_banner()
         context = banner.get_preview_context(None, "banner")
         assert context["banner"] is banner
 
-    def test_get_preview_context_news_list_builds_grouped_entry(self):
+    def test_get_preview_context_announcements_page_merges_page_context(self):
         banner = self._make_banner(priority="critical")
-        context = banner.get_preview_context(None, "news_list")
-        year = banner.banner_start_date.year
-        assert year in context["press_releases_by_year"]
-        entry = context["press_releases_by_year"][year][0]
-        assert entry["is_banner"] is True
-        assert entry["banner_label"] == "Critical"
+        fake_page = MagicMock()
+        fake_page.get_context.return_value = {
+            "press_releases_by_year": {2024: ["fake entry"]}
+        }
+        with patch.object(
+            Banner, "_get_preview_announcements_page", return_value=fake_page
+        ):
+            context = banner.get_preview_context(None, "announcements_page")
+
+        assert context["banner"] is banner
+        assert context["press_releases_by_year"] == {2024: ["fake entry"]}
+        fake_page.get_context.assert_called_once_with(None, preview_banner=banner)
+
+    def test_get_preview_context_announcements_page_handles_missing_page(self):
+        banner = self._make_banner()
+        with patch.object(Banner, "_get_preview_announcements_page", return_value=None):
+            context = banner.get_preview_context(None, "announcements_page")
+        assert context["banner"] is banner
+        assert "press_releases_by_year" not in context
 
     def test_as_press_release_entry_matches_priority_label(self):
         banner = self._make_banner(priority="high")
@@ -194,3 +217,16 @@ class TestBannerPreview:
         banner.banner_start_date = None
         entry = banner.as_press_release_entry()
         assert entry["release_date"] is None
+
+    def test_as_press_release_entry_force_release_date_overrides_start_date(self):
+        banner = self._make_banner()
+        forced = timezone.now().replace(year=2010).date()
+        entry = banner.as_press_release_entry(force_release_date=forced)
+        assert entry["release_date"] == forced
+
+    def test_as_press_release_entry_force_release_date_used_when_no_start_date(self):
+        banner = self._make_banner()
+        banner.banner_start_date = None
+        forced = timezone.now().date()
+        entry = banner.as_press_release_entry(force_release_date=forced)
+        assert entry["release_date"] == forced

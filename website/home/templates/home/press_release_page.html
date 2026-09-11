@@ -24,6 +24,17 @@
             padding: 0 0.1rem;
             color: black;
         }
+
+        /* Only ever rendered when this page is being used as the Banner
+           "News & Announcements page" preview (see Banner preview_modes);
+           never set during normal page rendering. */
+        .preview-entry-tag {
+            background-color: #d9d9d9;
+            font-weight: bold;
+            padding: 0 0.1rem;
+            color: black;
+            margin-right: 0.25rem;
+        }
     </style>
 {% endblock %}
 {% block content %}
