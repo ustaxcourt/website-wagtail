@@ -89,10 +89,12 @@ class TestGroupPressReleasesByYear:
         self, priority_level, expected_label
     ):
         """Banners are grouped by year and labelled according to their priority level."""
+        from home.models.snippets.banners import Banner
+
         page = self._make_page()
 
         now = timezone.now()
-        banner = MagicMock()
+        banner = Banner()
         banner.banner_start_date = now
         banner.priority_level = priority_level
         banner.banner_title = "Important Banner"
@@ -131,9 +133,11 @@ class TestGroupPressReleasesByYear:
                 assert result == {}
 
     def test_banner_with_none_start_date_is_skipped(self):
+        from home.models.snippets.banners import Banner
+
         page = self._make_page()
 
-        banner = MagicMock()
+        banner = Banner()
         banner.banner_start_date = None
 
         with patch("home.models.pages.press_release.NewsItem") as mock_ni:

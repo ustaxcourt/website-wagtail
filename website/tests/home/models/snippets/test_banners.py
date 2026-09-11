@@ -130,3 +130,67 @@ class TestBannerCleanValidation:
     def test_category_property_accessed_from_banner(self):
         banner = self._make_banner(priority="high")
         assert banner.category == "High Priority"
+
+
+class TestBannerPreview:
+    """Test the multi-context preview support (preview_modes, get_preview_template,
+    get_preview_context, as_press_release_entry)."""
+
+    def _make_banner(self, priority="high", start_date=None):
+        banner = Banner()
+        banner.banner_title = "Important Banner"
+        banner.description = "Details"
+        banner.priority_level = priority
+        banner.banner_start_date = start_date or timezone.now()
+        banner.document = None
+        return banner
+
+    def test_preview_modes_exposes_banner_and_news_list(self):
+        banner = self._make_banner()
+        mode_names = [mode for mode, _ in banner.preview_modes]
+        assert mode_names == ["banner", "news_list"]
+
+    def test_get_preview_template_defaults_to_site_banner(self):
+        banner = self._make_banner()
+        assert (
+            banner.get_preview_template(None, "banner")
+            == "previews/banner_site_preview.html"
+        )
+        assert (
+            banner.get_preview_template(None, "unknown")
+            == "previews/banner_site_preview.html"
+        )
+
+    def test_get_preview_template_news_list_mode(self):
+        banner = self._make_banner()
+        assert (
+            banner.get_preview_template(None, "news_list")
+            == "previews/banner_news_list_preview.html"
+        )
+
+    def test_get_preview_context_includes_banner(self):
+        banner = self._make_banner()
+        context = banner.get_preview_context(None, "banner")
+        assert context["banner"] is banner
+
+    def test_get_preview_context_news_list_builds_grouped_entry(self):
+        banner = self._make_banner(priority="critical")
+        context = banner.get_preview_context(None, "news_list")
+        year = banner.banner_start_date.year
+        assert year in context["press_releases_by_year"]
+        entry = context["press_releases_by_year"][year][0]
+        assert entry["is_banner"] is True
+        assert entry["banner_label"] == "Critical"
+
+    def test_as_press_release_entry_matches_priority_label(self):
+        banner = self._make_banner(priority="high")
+        entry = banner.as_press_release_entry()
+        assert entry["banner_label"] == "High Priority"
+        assert entry["banner_title"] == "Important Banner"
+        assert entry["release_date"] == banner.banner_start_date.date()
+
+    def test_as_press_release_entry_handles_missing_start_date(self):
+        banner = self._make_banner()
+        banner.banner_start_date = None
+        entry = banner.as_press_release_entry()
+        assert entry["release_date"] is None
