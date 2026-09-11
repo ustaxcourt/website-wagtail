@@ -24,8 +24,7 @@ function refreshScrollToTopButton() {
 
     const img = button.querySelector('img');
     const browserWidth = window.innerWidth;
-    console.log(browserWidth);
-    console.log(mobileNavMenuStyle.display)
+
     //only do this on desktop
     if(browserWidth < 1025) {
         if (mobileNavMenuStyle.display != 'none') {
