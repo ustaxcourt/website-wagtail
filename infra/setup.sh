@@ -3,8 +3,6 @@
 source ./helpers.sh
 
 required_env_vars=(
-  "AWS_SECRET_ACCESS_KEY"
-  "AWS_ACCESS_KEY_ID"
   "ENVIRONMENT"
 )
 check_env_vars "${required_env_vars[@]}"
