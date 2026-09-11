@@ -1,0 +1,117 @@
+import logging
+
+from wagtail.models import Page
+
+from home.management.commands.pages.page_initializer import PageInitializer
+from home.models import IconCategories, NavigationRibbon, PetitionerExperiencePage
+from home.models.snippets.call_to_action import CallToActionBox
+from home.models.utils.execute_script import ExecuteScript
+
+logger = logging.getLogger(__name__)
+
+
+class PetitionersPrepareToFilePageInitializer(PageInitializer):
+    def create(self):
+        home_page = Page.objects.get(slug="home")
+        self.create_page_info(home_page)
+
+    def create_page_info(self, home_page):
+        slug = "petitioners-prepare-to-file"
+        title = "Prepare to File"
+
+        if Page.objects.filter(slug=slug).exists():
+            logger.info(f"- {title} page already exists.")
+            return
+
+        navigation_ribbon = NavigationRibbon.objects.filter(
+            name="Guidance for Petitioners Ribbon"
+        ).first()
+        call_to_action = CallToActionBox.objects.filter(
+            header="Ready to begin your petition?"
+        ).first()
+
+        page = home_page.add_child(
+            instance=PetitionerExperiencePage(
+                title=title,
+                slug=slug,
+                seo_title=title,
+                navigation_ribbon=navigation_ribbon,
+                search_description=title,
+                introductory_text=(
+                    "<p>The United States Tax Court encourages electronic filing "
+                    "through DAWSON, the Court's electronic filing and case "
+                    "management system.</p><p><strong>Note:</strong> If filing "
+                    "using DAWSON, once you start this process you won't be able "
+                    "to save your work and come back to it. Petitioners who file "
+                    "by paper cannot immediately switch to electronic access. "
+                    "Consider filing electronically from the start to get "
+                    "electronic access to your case immediately.</p>"
+                ),
+                body=[
+                    {
+                        "type": "printable_section",
+                        "value": {
+                            "icon": IconCategories.CHECK,
+                            "title": "Pre-Filing Checklist",
+                            "intro": "<p>Have these items ready before you begin your petition.</p>",
+                            "body": [
+                                {
+                                    "type": "list",
+                                    "value": {
+                                        "list_type": "checkbox",
+                                        "items": [
+                                            {
+                                                "text": "<p>A copy of the IRS Notice (if you received one).</p>"
+                                            },
+                                            {
+                                                "text": '<p>Statement of <a href="/case-related-forms">Taxpayer Identification Number (STIN)</a> form filled out with your SSN/EIN.</p>'
+                                            },
+                                            {
+                                                "text": '<p><a href="/petitioners-start">Petition Kit</a> for completion only if filing by mail.</p>'
+                                            },
+                                            {
+                                                "text": "<p>Valid email address to register for DAWSON if filing electronically.</p>"
+                                            },
+                                            {
+                                                "text": "<p>$60 filing fee via Pay.gov (after filing the petition).</p>"
+                                            },
+                                            {
+                                                "text": '<p>Complete the <a href="/case-related-forms">Corporate Disclosure Statement</a> form ONLY if you are filing on behalf of a company.</p>'
+                                            },
+                                        ],
+                                    },
+                                },
+                                {
+                                    "type": "paragraph",
+                                    "value": '<p>PLEASE NOTE: <strong><a href="/efile-a-petition">Here are the electronic filing instructions</a></strong> to help you navigate and utilize DAWSON, the United States Tax Court’s electronic filing system.</p>',
+                                },
+                            ],
+                        },
+                    },
+                ],
+                call_to_action=call_to_action,
+            )
+        )
+        page.save_revision().publish()
+        logger.info(f"Created the '{title}' page.")
+
+    def run(self):
+        command_name = "Initialize Petitioners Prepare to File page"
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return 0
+
+        script_entry = ExecuteScript.create_script(command_name)
+        try:
+            self.create()
+            script_entry.execution_status = "SUCCESS"
+            script_entry.execution_log = (
+                "Petitioners Prepare to File page updated successfully."
+            )
+            script_entry.save()
+        except Exception as error:
+            logger.error(error)
+            script_entry.execution_status = "FAILURE"
+            script_entry.execution_log = f"<strong>Error:</strong> {error}"
+            script_entry.save()
+            raise

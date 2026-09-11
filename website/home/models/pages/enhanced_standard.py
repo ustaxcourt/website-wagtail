@@ -27,6 +27,7 @@ from home.models.custom_blocks.common import (
 from home.models.custom_blocks.icon_header import IconHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
+from home.models.custom_blocks.printable_section import PrintableSectionBlock
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.snippets.navigation import NavigationRibbon
@@ -479,6 +480,10 @@ _BASE_BLOCK_TYPES = [
     (
         "summary_timeline",
         SummaryTimelineBlock(),
+    ),
+    (
+        "printable_section",
+        PrintableSectionBlock(),
     ),
 ]
 

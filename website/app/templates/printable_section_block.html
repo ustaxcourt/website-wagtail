@@ -1,0 +1,64 @@
+{% load static %}
+{% with data=block.value %}
+<section id="printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}" class="printable-section">
+    <div class="printable-section__header">
+        <h2 class="printable-section__title icon-header">
+            <span class="icon-header__icon printable-section__check-icon" aria-hidden="true"></span>
+            <span class="icon-header__text">{{ data.title }}</span>
+        </h2>
+        <button type="button" class="printable-section__button" aria-label="Print {{ data.title }}">
+            <span class="printable-section__button-icon" aria-hidden="true"></span>
+            Print
+        </button>
+    </div>
+    {% if data.intro %}<div class="printable-section__intro rich-text">{{ data.intro }}</div>{% endif %}
+    <div class="printable-section__body">
+        {% for sub_block in data.body %}
+            {% if sub_block.block_type == 'heading' %}
+                <div class="heading-wrapper">
+                    <{{ sub_block.value.level }}{% if sub_block.value.id %} id="{{ sub_block.value.id }}"{% endif %}>{{ sub_block.value.text }}</{{ sub_block.value.level }}>
+                </div>
+            {% elif sub_block.block_type == 'list' %}
+                {% include "home/list_block.html" with block=sub_block %}
+            {% elif sub_block.block_type == 'paragraph' %}
+                <div class="rich-text" data-testid="page-body-paragraph">{{ sub_block.value }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endwith %}
+<style>
+    .printable-section { margin: 0 0 24px; padding: 16px 24px 20px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; border: 1px solid #d9d9d9; border-radius: 2px; }
+    .printable-section__header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .printable-section__title { margin: 0; flex: 1 1 auto; min-width: 0; font-size: 1.5rem; }
+    .printable-section__title .icon-header__icon { width: 24px; min-width: 24px; height: 24px; }
+    .printable-section__title .icon-header__icon i { width: 20px; height: 20px; line-height: 20px; font-size: 16px; color: #4a4a4a; }
+    .printable-section__title .icon-header__icon i::before { width: 20px; height: 20px; line-height: 20px; }
+    .printable-section__title .icon-header__text { line-height: 1.2; }
+    .printable-section__check-icon { background: url({% static "images/icon-checked-box.svg" %}) center / 24px 24px no-repeat; }
+    .printable-section .printable-section__button { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; width: auto; white-space: nowrap; background: none; border: none; padding: 0; color: inherit; font-weight: 700; cursor: pointer; }
+    .printable-section__button-icon { width: 20px; height: 20px; flex-shrink: 0; background-color: currentColor; -webkit-mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat; mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat; }
+    .printable-section__intro { margin: 0; }
+    .printable-section__intro > :first-child { margin-top: 0; }
+    .printable-section__intro > :last-child { margin-bottom: 0; }
+    .printable-section .checkbox-list { gap: 16px; }
+    .printable-section .checkbox-list > li { padding: 8px 12px; background-color: #eeeeee; border-left: 4px solid #005ea8; }
+    .printable-section .checkbox-label-container { align-items: center; gap: 8px; }
+    .printable-section .checkbox-list input[type="checkbox"] { appearance: none; width: 20px; height: 20px; margin: 0; border: 2px solid #7d8287; background-color: #ffffff; }
+    .printable-section .checkbox-list input[type="checkbox"]:checked { background-color: #005ea8; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='m9 16.17-4.17-4.17-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-position: center; background-repeat: no-repeat; background-size: 16px 16px; border-color: #005ea8; }
+    .printable-section__body > .rich-text p { margin: 0; }
+    @media print { .printable-section__button { display: none !important; } }
+</style>
+<script>
+    (function() {
+        const block = document.getElementById("printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}");
+        if (!block) return;
+        const button = block.querySelector(".printable-section__button");
+        if (button && button.dataset.initialized !== "true") {
+            button.addEventListener("click", function() {
+                window.print();
+            });
+            button.dataset.initialized = "true";
+        }
+    })();
+</script>
