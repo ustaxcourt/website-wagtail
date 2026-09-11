@@ -39,6 +39,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
         _snippet_name = "Ready to begin your petition?"
         _cta_box = CallToActionBox.objects.filter(header=_snippet_name).first()
         _base_url = getattr(settings, "BASE_URL", "")
+        _petitioner_timeline_url = urljoin(_base_url, "/petitioners-timeline")
 
         arrow_forward_doc = Document.objects.filter(title=arrow_forward_name).first()
         if arrow_forward_doc:
@@ -102,7 +103,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 {
                                     "type": "button",
                                     "value": {
-                                        "icon": arrow_forward_doc.pk,
+                                        "icon": 1,
                                         "icon_location": "after",
                                         "text": "File a Petition Online",
                                         "url": [
@@ -120,7 +121,12 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                             ],
                         },
                         "id": "5e5c3858-b562-4818-9b68-169833009415",
-                    }
+                    },
+                    {
+                        "type": "paragraph",
+                        "value": f'<h2 data-block-key="cuzcn"><b>Get Started</b> <a href="{_petitioner_timeline_url}">(View detailed timeline)</a></h2>',
+                        "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
+                    },
                 ],
             )
         )
