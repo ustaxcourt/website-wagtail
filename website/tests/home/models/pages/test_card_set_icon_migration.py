@@ -1,10 +1,10 @@
 """
-Tests for the 0137 data migration that renames the old 'card' block 'icon'
+Tests for the 0141 data migration that renames the old 'card' block 'icon'
 field to 'numbered_icon' on pre-existing EnhancedStandardPage content saved
 before WAG-1338 reshaped the Card Set block.
 
-Unlike most StreamField data migrations in this codebase, 0137 can't use
-`apps.get_model(...)` + `page.body` the normal way, since migration 0136
+Unlike most StreamField data migrations in this codebase, 0141 can't use
+`apps.get_model(...)` + `page.body` the normal way, since migration 0140
 (which it depends on) already swapped in the new block definitions - reading
 `page.body` through the historical model would silently drop the old 'icon'
 key via StructBlock.to_python() before the migration code ever saw it. So it
@@ -23,7 +23,7 @@ from wagtail.models import Locale, Page, Site
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
 migration_module = importlib.import_module(
-    "home.migrations.0137_migrate_card_block_icon_field"
+    "home.migrations.0141_migrate_card_block_icon_field_pe"
 )
 
 
