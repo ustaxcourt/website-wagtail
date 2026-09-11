@@ -21,7 +21,7 @@ class TestGroupPressReleasesByYear:
             mock_ni.objects.live.return_value.filter.return_value.order_by.return_value = []
             with patch("home.models.pages.press_release.Banner") as mock_banner:
                 mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = []
-                result = page.group_press_releases_by_year
+                result = page.group_press_releases_by_year()
                 assert result == {}
 
     def test_groups_news_items_with_document_by_year(self):
@@ -41,7 +41,7 @@ class TestGroupPressReleasesByYear:
             ]
             with patch("home.models.pages.press_release.Banner") as mock_banner:
                 mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = []
-                result = page.group_press_releases_by_year
+                result = page.group_press_releases_by_year()
                 year = now.year
                 assert year in result
                 assert len(result[year]) == 1
@@ -68,7 +68,7 @@ class TestGroupPressReleasesByYear:
             ]
             with patch("home.models.pages.press_release.Banner") as mock_banner:
                 mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = []
-                result = page.group_press_releases_by_year
+                result = page.group_press_releases_by_year()
                 year = now.year
                 assert year in result
                 entry = result[year][0]
@@ -107,7 +107,7 @@ class TestGroupPressReleasesByYear:
                 mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = [
                     banner
                 ]
-                result = page.group_press_releases_by_year
+                result = page.group_press_releases_by_year()
                 year = now.year
                 assert year in result
                 entry = result[year][0]
@@ -129,7 +129,7 @@ class TestGroupPressReleasesByYear:
             ]
             with patch("home.models.pages.press_release.Banner") as mock_banner:
                 mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = []
-                result = page.group_press_releases_by_year
+                result = page.group_press_releases_by_year()
                 assert result == {}
 
     def test_banner_with_none_start_date_is_skipped(self):
@@ -146,7 +146,7 @@ class TestGroupPressReleasesByYear:
                 mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = [
                     banner
                 ]
-                result = page.group_press_releases_by_year
+                result = page.group_press_releases_by_year()
                 assert result == {}
 
 
@@ -176,11 +176,7 @@ class TestArchiveView:
 
         mock_context = {"page": page, "press_releases_by_year": {}}
 
-        with patch.object(
-            type(page),
-            "group_press_releases_by_year",
-            new_callable=lambda: property(lambda s: grouped),
-        ):
+        with patch.object(page, "group_press_releases_by_year", return_value=grouped):
             with patch.object(page, "get_context", return_value=mock_context):
                 response = page.archive_view(request)
 
@@ -214,11 +210,7 @@ class TestGetContext:
             2020: [],
         }
 
-        with patch.object(
-            type(page),
-            "group_press_releases_by_year",
-            new_callable=lambda: property(lambda s: grouped),
-        ):
+        with patch.object(page, "group_press_releases_by_year", return_value=grouped):
             with patch(
                 "home.models.pages.press_release.EnhancedStandardPage.get_context",
                 return_value={},
@@ -229,3 +221,125 @@ class TestGetContext:
         for recent_year in [2024, 2023, 2022, 2021]:
             assert recent_year in context["press_releases_by_year"]
         assert 2020 not in context["press_releases_by_year"]
+
+    def test_get_context_passes_preview_banner_through_to_grouping(self):
+        """get_context forwards preview_banner so an in-progress edit can be forced into view."""
+        from django.test import RequestFactory
+
+        page = self._make_page()
+        request = RequestFactory().get("/news/")
+        fake_banner = MagicMock()
+
+        with patch.object(
+            page, "group_press_releases_by_year", return_value={}
+        ) as mock_group:
+            with patch(
+                "home.models.pages.press_release.EnhancedStandardPage.get_context",
+                return_value={},
+            ):
+                page.get_context(request, preview_banner=fake_banner)
+
+        mock_group.assert_called_once_with(preview_banner=fake_banner)
+
+    def test_get_context_forces_preview_banner_year_into_view(self):
+        """
+        If the previewed banner's year would normally be paginated off the
+        main page (only the first four years are shown), get_context still
+        includes it so the preview always reflects the banner.
+        """
+        from django.test import RequestFactory
+        from home.models.snippets.banners import Banner
+
+        page = self._make_page()
+        request = RequestFactory().get("/news/")
+
+        preview_banner = Banner()
+        preview_banner.banner_start_date = timezone.now().replace(year=2010)
+
+        grouped = {
+            2024: [],
+            2023: [],
+            2022: [],
+            2021: [],
+            2020: [],
+            2010: [{"is_banner": True, "is_preview_entry": True}],
+        }
+
+        with patch.object(page, "group_press_releases_by_year", return_value=grouped):
+            with patch(
+                "home.models.pages.press_release.EnhancedStandardPage.get_context",
+                return_value={},
+            ):
+                context = page.get_context(request, preview_banner=preview_banner)
+
+        assert 2010 in context["press_releases_by_year"]
+        for recent_year in [2024, 2023, 2022, 2021]:
+            assert recent_year in context["press_releases_by_year"]
+
+
+class TestGroupPressReleasesByYearPreviewBanner:
+    """Test the preview_banner accommodation in group_press_releases_by_year."""
+
+    def _make_page(self):
+        from home.models.pages.press_release import PressReleasePage
+
+        obj = PressReleasePage.__new__(PressReleasePage)
+        return obj
+
+    def test_preview_banner_always_included_even_when_unscheduled(self):
+        """A banner with no start date (not live-eligible) is still forced into view."""
+        from home.models.snippets.banners import Banner
+
+        page = self._make_page()
+        preview_banner = Banner()
+        preview_banner.pk = None
+        preview_banner.banner_title = "Not yet scheduled"
+        preview_banner.description = "Details"
+        preview_banner.priority_level = "high"
+        preview_banner.banner_start_date = None
+        preview_banner.document = None
+
+        with patch("home.models.pages.press_release.NewsItem") as mock_ni:
+            mock_ni.objects.live.return_value.filter.return_value.order_by.return_value = []
+            with patch("home.models.pages.press_release.Banner") as mock_banner:
+                mock_banner.objects.live.return_value.filter.return_value.order_by.return_value.exclude.return_value = []
+                result = page.group_press_releases_by_year(
+                    preview_banner=preview_banner
+                )
+
+        today_year = timezone.now().date().year
+        assert today_year in result
+        entry = result[today_year][0]
+        assert entry["is_preview_entry"] is True
+        assert entry["banner_title"] == "Not yet scheduled"
+
+    def test_preview_banner_not_duplicated_when_already_live(self):
+        """If the previewed banner is also genuinely live, it shouldn't appear twice."""
+        from home.models.snippets.banners import Banner
+
+        page = self._make_page()
+        now = timezone.now()
+
+        preview_banner = Banner()
+        preview_banner.pk = 42
+        preview_banner.banner_title = "Live Banner"
+        preview_banner.description = "Details"
+        preview_banner.priority_level = "high"
+        preview_banner.banner_start_date = now
+        preview_banner.document = None
+
+        with patch("home.models.pages.press_release.NewsItem") as mock_ni:
+            mock_ni.objects.live.return_value.filter.return_value.order_by.return_value = []
+            with patch("home.models.pages.press_release.Banner") as mock_banner:
+                live_qs = mock_banner.objects.live.return_value.filter.return_value.order_by.return_value
+                # Excluding the previewed banner's pk from the "real" live
+                # queryset simulates production behavior.
+                live_qs.exclude.return_value = []
+                result = page.group_press_releases_by_year(
+                    preview_banner=preview_banner
+                )
+                live_qs.exclude.assert_called_once_with(pk=42)
+
+        year = now.year
+        assert len(result[year]) == 1
+        assert result[year][0]["is_preview_entry"] is True

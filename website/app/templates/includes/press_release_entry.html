@@ -3,10 +3,17 @@ Renders a single non-modal entry (NewsItem or standalone Banner) in a
 News & Announcements listing. Expects a `release` dict as built by
 PressReleasePage.group_press_releases_by_year / Banner.as_press_release_entry.
 
-Extracted as its own include so the Banner "News & Announcements listing"
+Extracted as its own include so the Banner "News & Announcements page"
 preview mode can render the exact same markup used on the live page.
+
+`release.is_preview_entry` is only ever set by the Banner preview (never by
+real page rendering) and marks the entry that was force-included regardless
+of its actual live/scheduled status.
 {% endcomment %}
 <li class="margin-bottom-2">
+    {% if release.is_preview_entry %}
+        <span class="usa-tag preview-entry-tag">Previewing</span>
+    {% endif %}
     {% if release.details.file %}
         <a href="{{ release.details.file.url }}"
            style="text-decoration: underline">
