@@ -23,9 +23,11 @@ function refreshScrollToTopButton() {
     button.classList.add('visible');
 
     const img = button.querySelector('img');
-    const screenWidth = window.screen.width;
+    const browserWidth = window.innerWidth;
+    console.log(browserWidth);
+    console.log(mobileNavMenuStyle.display)
     //only do this on desktop
-    if(screenWidth < 1025) {
+    if(browserWidth < 1025) {
         if (mobileNavMenuStyle.display != 'none') {
             button.style.bottom = `${window.innerHeight - mobileNavMenuRect.top + GAP_TO_BOTTOM_FOOTER}px`;
             return;

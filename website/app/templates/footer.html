@@ -1,5 +1,5 @@
 {% load static %}
-{% load wagtailcore_tags navigation_tags filters %}
+{% load wagtailcore_tags filters %}
 <style>
     footer#app-footer .main {
         background: var(--color-primary);
@@ -278,27 +278,26 @@
     </div>
 </footer>
 
-{% get_navigation_ribbon as nav %}
+{% if page.navigation_ribbon %}
 <div id="mobile-nav-menu" class="mobile-nav-menu collapsed">
     <button class="more-information" onclick="toggleNavigationRibbonExpansion()">
         <span
             class="material-symbols-outlined circle collapsed">arrow_drop_down</span>More Information
     </button>
-    {% if nav %}
-        <div class="mobile-nav-ribbon">
-            {% for link in nav.links.all %}
-                {% if link.icon != "dawson" %}
-                    <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
-                        <span class="material-symbols-outlined">
-                            {{ link.icon }}
-                        </span>
-                        <div class="title" style="display: block;">{{ link.title }}</div>
-                    </a>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+    <div class="mobile-nav-ribbon">
+        {% for link in page.navigation_ribbon.links.all %}
+            {% if link.icon != "dawson" %}
+                <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
+                    <span class="material-symbols-outlined">
+                        {{ link.icon }}
+                    </span>
+                    <div class="title" style="display: block;">{{ link.title }}</div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
 </div>
+{% endif %}
 
 <script>
 
@@ -306,9 +305,12 @@
     function toggleNavigationRibbonExpansion() {
         const moreInformationIcon = document.querySelector('.circle');
         const mobileNavMenu = document.querySelector('.mobile-nav-menu');
-        const scrollToTopButton = document.querySelector('.scroll-to-top');
+        const scrollToTopButton = document.getElementById('scroll-to-top');
         moreInformationIcon.classList.toggle('collapsed');
         mobileNavMenu.classList.toggle('collapsed');
         scrollToTopButton.classList.toggle('mobile-nav-ribbon-collapsed');
+
+        const scrollEvent = new Event('scroll', { bubbles: true, cancelable: true });
+        window.dispatchEvent(scrollEvent);
     }
 </script>
