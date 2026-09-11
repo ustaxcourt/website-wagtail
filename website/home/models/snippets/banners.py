@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.forms import ValidationError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
@@ -268,6 +270,7 @@ class Banner(
             page = self._get_preview_announcements_page()
             if page is not None:
                 context.update(page.get_context(request, preview_banner=self))
+            context.update(self._forced_top_of_page_banner_context())
         return context
 
     @staticmethod
@@ -280,6 +283,47 @@ class Banner(
         from home.models.pages.press_release import PressReleasePage
 
         return PressReleasePage.objects.live().first()
+
+    def _forced_top_of_page_banner_context(self):
+        """
+        base.html always includes yellow_news_banner.html / red_news_banner.html,
+        which render whichever banner app.context_processors.yellow_priority_news /
+        critical_priority_news supplied (only genuinely live banners within their
+        scheduled dates), then further filter client-side by date in JavaScript.
+
+        That means an unpublished/expired/future-scheduled banner - exactly the
+        kind of banner an editor is likely previewing - would silently be absent
+        from the top of the announcements-page preview, even though its listing
+        entry appears further down. To fix that, we override the JSON payload
+        for this banner's own priority level so it is always the one shown,
+        with no start/end dates, so the client-side date filter always treats
+        it as active regardless of its real scheduling.
+
+        These keys are only overridden on the Banner preview response itself;
+        real page requests are untouched.
+        """
+        if self.priority_level not in ("high", "critical"):
+            return {}
+
+        payload = json.dumps(
+            [
+                {
+                    "id": self.pk or 0,
+                    "title": self.banner_title,
+                    "description": str(self.description),
+                    "priority_level": self.priority_level,
+                    "document_url": self.document.url if self.document else None,
+                    # Intentionally omitted (None) so the client-side date
+                    # filter always treats this preview banner as active,
+                    # regardless of its real banner_start_date/banner_end_date.
+                    "banner_start_date": None,
+                    "banner_end_date": None,
+                }
+            ]
+        )
+        if self.priority_level == "high":
+            return {"yellow_priority_news_json": payload, "has_yellow_news": True}
+        return {"critical_priority_news_json": payload, "has_critical_news": True}
 
 
 class BannersFilterSet(WagtailFilterSet):
