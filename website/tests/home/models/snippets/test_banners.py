@@ -134,7 +134,7 @@ class TestBannerCleanValidation:
 
 
 class TestBannerPreview:
-    """Test the multi-context preview support (preview_modes, get_preview_template,
+    """Test the single-preview support (preview_modes, get_preview_template,
     get_preview_context, as_press_release_entry)."""
 
     def _make_banner(self, priority="high", start_date=None):
@@ -146,23 +146,18 @@ class TestBannerPreview:
         banner.document = None
         return banner
 
-    def test_preview_modes_exposes_banner_and_announcements_page(self):
+    def test_preview_modes_exposes_a_single_announcements_page_mode(self):
+        """
+        Only one preview mode is exposed (rather than a dropdown switcher),
+        since the announcements-page preview already shows both the
+        top-of-page banner and the historical listing entry together.
+        """
         banner = self._make_banner()
-        mode_names = [mode for mode, _ in banner.preview_modes]
-        assert mode_names == ["banner", "announcements_page"]
+        assert banner.preview_modes == [
+            ("announcements_page", "News & Announcements page")
+        ]
 
-    def test_get_preview_template_defaults_to_site_banner(self):
-        banner = self._make_banner()
-        assert (
-            banner.get_preview_template(None, "banner")
-            == "previews/banner_site_preview.html"
-        )
-        assert (
-            banner.get_preview_template(None, "unknown")
-            == "previews/banner_site_preview.html"
-        )
-
-    def test_get_preview_template_announcements_page_uses_real_page_template(self):
+    def test_get_preview_template_uses_real_page_template(self):
         banner = self._make_banner()
         fake_page = MagicMock()
         fake_page.get_template.return_value = "home/press_release_page.html"
@@ -173,7 +168,7 @@ class TestBannerPreview:
         assert template == "home/press_release_page.html"
         fake_page.get_template.assert_called_once_with(None)
 
-    def test_get_preview_template_announcements_page_falls_back_when_no_page(self):
+    def test_get_preview_template_falls_back_when_no_page(self):
         banner = self._make_banner()
         with patch.object(Banner, "_get_preview_announcements_page", return_value=None):
             template = banner.get_preview_template(None, "announcements_page")
@@ -181,10 +176,11 @@ class TestBannerPreview:
 
     def test_get_preview_context_includes_banner(self):
         banner = self._make_banner()
-        context = banner.get_preview_context(None, "banner")
+        with patch.object(Banner, "_get_preview_announcements_page", return_value=None):
+            context = banner.get_preview_context(None, "announcements_page")
         assert context["banner"] is banner
 
-    def test_get_preview_context_announcements_page_merges_page_context(self):
+    def test_get_preview_context_merges_page_context(self):
         banner = self._make_banner(priority="critical")
         fake_page = MagicMock()
         fake_page.get_context.return_value = {
@@ -199,7 +195,7 @@ class TestBannerPreview:
         assert context["press_releases_by_year"] == {2024: ["fake entry"]}
         fake_page.get_context.assert_called_once_with(None, preview_banner=banner)
 
-    def test_get_preview_context_announcements_page_handles_missing_page(self):
+    def test_get_preview_context_handles_missing_page(self):
         banner = self._make_banner()
         with patch.object(Banner, "_get_preview_announcements_page", return_value=None):
             context = banner.get_preview_context(None, "announcements_page")

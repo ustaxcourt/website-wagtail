@@ -240,37 +240,31 @@ class Banner(
 
     # --- Preview support -------------------------------------------------
     # A Banner is rendered in multiple, visually distinct contexts across the
-    # site (a dismissible alert at the top of the page, and a historical
+    # site: a dismissible alert at the top of the page, and a historical
     # entry on the News & Announcements page - which itself also shows
-    # unrelated NewsItems and other banners at the same time). Editors need
-    # to be able to preview both contexts, so we expose them as separate
-    # Wagtail preview modes. The "announcements_page" mode renders the real
-    # PressReleasePage template/context (reusing production code), with this
-    # banner forced into view regardless of its live status or scheduled
-    # dates, so both real content and this banner are visible together.
+    # unrelated NewsItems and other banners at the same time. Rather than a
+    # dropdown of separate preview modes, a single preview renders the real
+    # PressReleasePage template/context (reusing production code) with this
+    # banner forced into view at the top of the page *and* in the listing,
+    # regardless of its live status or scheduled dates, so editors see both
+    # contexts together alongside real site content in one preview.
     @property
     def preview_modes(self):
-        return [
-            ("banner", "Site banner (top of page)"),
-            ("announcements_page", "News & Announcements page"),
-        ]
+        return [("announcements_page", "News & Announcements page")]
 
     def get_preview_template(self, request, mode_name):
-        if mode_name == "announcements_page":
-            page = self._get_preview_announcements_page()
-            if page is not None:
-                return page.get_template(request)
-            return "previews/banner_announcements_page_unavailable.html"
-        return "previews/banner_site_preview.html"
+        page = self._get_preview_announcements_page()
+        if page is not None:
+            return page.get_template(request)
+        return "previews/banner_announcements_page_unavailable.html"
 
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)
         context["banner"] = self
-        if mode_name == "announcements_page":
-            page = self._get_preview_announcements_page()
-            if page is not None:
-                context.update(page.get_context(request, preview_banner=self))
-            context.update(self._forced_top_of_page_banner_context())
+        page = self._get_preview_announcements_page()
+        if page is not None:
+            context.update(page.get_context(request, preview_banner=self))
+        context.update(self._forced_top_of_page_banner_context())
         return context
 
     @staticmethod
