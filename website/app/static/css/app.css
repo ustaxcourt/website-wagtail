@@ -230,7 +230,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 /* Scroll to Top Button */
 #scroll-to-top {
     position: fixed;
-    bottom: 415px; /* will need to change once size of sticky nav ribbon is determined */
+    bottom: 70px; /* 70px originally */ /* will need to change once size of sticky nav ribbon is determined */
     right: 8px;
     padding: 8px 10px;
     height: 35px;
