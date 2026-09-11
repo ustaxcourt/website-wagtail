@@ -44,9 +44,9 @@
         .petitioner-experience-layout {
             display: grid;
             grid-template-columns: minmax(0, 1fr) 220px;
-            gap: 32px;
+            column-gap: 56px;
+            row-gap: 32px;
             align-items: start;
-            margin-left: -32px;
         }
 
         .petitioner-experience-main {
@@ -109,10 +109,6 @@
         }
 
         @media (max-width: 1200px) {
-            .petitioner-experience-layout {
-                margin-left: -29px;
-            }
-
             .rounded-rectangle {
                 padding: 0 0 32px 0;
             }
