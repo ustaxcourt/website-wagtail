@@ -1,6 +1,6 @@
 {
   "profile": "django",
-  "exclude": "cypress/downloads/",
+  "exclude": "cypress/downloads/,cypress/artifacts/",
   "extend_exclude": "node_modules/",
   "encoding": "utf-8"
 }

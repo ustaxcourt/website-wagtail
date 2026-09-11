@@ -25,12 +25,12 @@ jobs:
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
       - name: Checkout specific commit
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Configure AWS credentials from Prod account
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-workflow-deployer
           aws-region: us-east-1

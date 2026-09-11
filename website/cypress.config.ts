@@ -30,6 +30,8 @@ function getExcludeSpecPattern() {
 
 export default defineConfig({
   e2e: {
+    // CI can exceed 4s during axe checks; raise command timeout to avoid false negatives.
+    defaultCommandTimeout: 10000,
     experimentalStudio: true,
     setupNodeEvents(on, config) {
       if (coverageEnabled) {
