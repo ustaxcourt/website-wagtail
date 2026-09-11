@@ -154,7 +154,7 @@
             {% elif block.block_type == 'card' %}
                 <div class="info-cards">
                     {% for card in block.value %}
-                        <div class="info-card {{ card.color }}">
+                        <div class="info-card {{ card.color }}{% if card.buttons %} has-button{% endif %}">
                             {% if card.numbered_icon %}
                                 <div class="info-card__icon-row info-card__icon-row--{{ card.numbered_icon_alignment|default:'left' }}">
                                     <div class="info-card__icon-badge">

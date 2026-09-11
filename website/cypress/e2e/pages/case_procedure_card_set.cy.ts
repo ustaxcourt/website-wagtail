@@ -33,14 +33,25 @@ describe('Case Procedure Information - Card Set', () => {
     checkA11y('.info-cards');
   });
 
-  it('stacks into a single column on mobile and stays a single row on tablet/desktop', () => {
+  it('is a single row on desktop, wraps 2-up on tablet, and stacks on mobile', () => {
     cy.visit('/case-procedure/');
 
     cy.viewport(1280, 800);
     cy.get('.info-cards').first().should('have.css', 'flex-direction', 'row');
+    cy.get('.info-cards').first().find('.info-card').then(($cards) => {
+      const tops = [...$cards].map((el) => el.getBoundingClientRect().top);
+      expect(new Set(tops).size).to.eq(1); // all 3 cards on one line
+    });
 
-    cy.viewport(900, 1024); // tablet width - the site's mobile breakpoint is max-width:768px
+    // Tablet width - the site's mobile breakpoint is max-width:768px. Per Figma,
+    // 3 cards wrap 2-up-and-1 here rather than squeezing into one cramped row.
+    cy.viewport(900, 1024);
     cy.get('.info-cards').first().should('have.css', 'flex-direction', 'row');
+    cy.get('.info-cards').first().find('.info-card').then(($cards) => {
+      const tops = [...$cards].map((el) => el.getBoundingClientRect().top);
+      expect(tops[0]).to.eq(tops[1]); // first two cards share a line
+      expect(tops[2]).to.be.greaterThan(tops[0]); // third wraps below
+    });
 
     cy.viewport('iphone-x'); // mobile width, below the 768px breakpoint
     cy.get('.info-cards').first().should('have.css', 'flex-direction', 'column');

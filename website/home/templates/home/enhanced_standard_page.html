@@ -348,10 +348,12 @@
 
         }
 
+        /* Single row at desktop; tablet wraps 2-up (see @media 1024 below) to match
+           Figma - a single row of 3 left cards/buttons too cramped at tablet width. */
         .enhanced-page .info-cards {
             display: flex;
             align-items: stretch;
-            gap: 1rem;
+            gap: 48px; /* tablet override to 32px, mobile to 16px, below */
             margin-top: 1rem;
             margin-bottom: 34px;
         }
@@ -363,7 +365,7 @@
 
         .enhanced-page .info-card {
             padding: 24px;
-            border-radius: 8px;
+            border-radius: 8px; /* tablet/mobile override to 16px below */
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -396,6 +398,11 @@
         .enhanced-page .info-card.dark-primary .subtitle,
         .enhanced-page .info-card.dark-primary .title,
         .enhanced-page .info-card.dark-primary .description {
+            color: #FFFFFF;
+        }
+
+        .enhanced-page .info-card.dark-primary .description a,
+        .enhanced-page .info-card.dark-primary .description a:visited {
             color: #FFFFFF;
         }
 
@@ -487,7 +494,7 @@
         .enhanced-page .info-card .title {
             color: #162E51;
             font-weight: 600;
-            font-size: 22px;
+            font-size: 20px; /* mobile override to 18px below */
             text-align: left;
         }
 
@@ -496,9 +503,21 @@
             text-align: left;
         }
 
+        .enhanced-page .info-card .description a {
+            text-decoration: underline;
+        }
+
         .enhanced-page .info-card__buttons {
             display: flex;
             margin-top: auto;
+        }
+
+        /* Stretch-to-sibling-height only pins the button to the bottom when a row has a
+           taller neighbor. Give buttoned cards a floor height so the button still sits
+           away from short body text when a card stacks alone (mobile) or has no taller
+           sibling in its row. */
+        .enhanced-page .info-card.has-button {
+            min-height: 260px;
         }
 
         .enhanced-page .info-card__button {
@@ -555,6 +574,19 @@
             .enhanced-page.grid-container .heading-wrapper a {
                 margin-right: 16px;
             }
+
+            .enhanced-page .info-card {
+                border-radius: 16px;
+            }
+
+            .enhanced-page .info-cards {
+                gap: 32px;
+                flex-wrap: wrap;
+            }
+
+            .enhanced-page .info-cards .info-card {
+                flex: 0 1 calc(50% - 16px);
+            }
         }
 
         @media (max-width: 768px) {
@@ -567,6 +599,21 @@
 
             .enhanced-page .info-cards {
                 flex-direction: column;
+                gap: 16px;
+            }
+
+            /* Mobile: each stacked card hugs its own content - no shared row to
+               stretch against, and no artificial floor height (UX feedback). */
+            .enhanced-page .info-cards .info-card {
+                flex: 1 1 auto;
+            }
+
+            .enhanced-page .info-card.has-button {
+                min-height: auto;
+            }
+
+            .enhanced-page .info-card .title {
+                font-size: 18px;
             }
 
             .enhanced-page .dedication {
