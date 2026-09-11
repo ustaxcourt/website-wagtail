@@ -1,5 +1,6 @@
 """Tests for home/models/snippets/banners.py"""
 
+import json
 import pytest
 from datetime import timedelta
 from unittest.mock import patch, MagicMock
@@ -230,3 +231,58 @@ class TestBannerPreview:
         forced = timezone.now().date()
         entry = banner.as_press_release_entry(force_release_date=forced)
         assert entry["release_date"] == forced
+
+    def test_get_preview_context_announcements_page_forces_yellow_top_banner(self):
+        """
+        The announcements-page preview should also force the top-of-page
+        yellow banner to display this banner, ignoring live status/dates,
+        since base.html's yellow_news_banner.html otherwise only shows
+        genuinely live banners within their scheduled window.
+        """
+        banner = self._make_banner(priority="high")
+        fake_page = MagicMock()
+        fake_page.get_context.return_value = {}
+        with patch.object(
+            Banner, "_get_preview_announcements_page", return_value=fake_page
+        ):
+            context = banner.get_preview_context(None, "announcements_page")
+
+        assert context["has_yellow_news"] is True
+        payload = json.loads(context["yellow_priority_news_json"])
+        assert payload[0]["title"] == "Important Banner"
+        assert payload[0]["banner_start_date"] is None
+        assert payload[0]["banner_end_date"] is None
+        # The critical (red) banner payload should be untouched for a
+        # high-priority banner.
+        assert "critical_priority_news_json" not in context
+
+    def test_get_preview_context_announcements_page_forces_critical_top_banner(self):
+        banner = self._make_banner(priority="critical")
+        fake_page = MagicMock()
+        fake_page.get_context.return_value = {}
+        with patch.object(
+            Banner, "_get_preview_announcements_page", return_value=fake_page
+        ):
+            context = banner.get_preview_context(None, "announcements_page")
+
+        assert context["has_critical_news"] is True
+        payload = json.loads(context["critical_priority_news_json"])
+        assert payload[0]["title"] == "Important Banner"
+        assert payload[0]["banner_start_date"] is None
+        assert "yellow_priority_news_json" not in context
+
+    def test_get_preview_context_announcements_page_skips_top_banner_for_none_priority(
+        self,
+    ):
+        """A banner with no priority level was never shown at the top of the
+        page in production, so the preview shouldn't force it there either."""
+        banner = self._make_banner(priority="none")
+        fake_page = MagicMock()
+        fake_page.get_context.return_value = {}
+        with patch.object(
+            Banner, "_get_preview_announcements_page", return_value=fake_page
+        ):
+            context = banner.get_preview_context(None, "announcements_page")
+
+        assert "yellow_priority_news_json" not in context
+        assert "critical_priority_news_json" not in context
