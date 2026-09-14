@@ -103,7 +103,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 {
                                     "type": "button",
                                     "value": {
-                                        "icon": 1,
+                                        "icon": arrow_forward_doc.pk,
                                         "icon_location": "after",
                                         "text": "File a Petition Online",
                                         "url": [
