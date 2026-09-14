@@ -7,7 +7,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0133_set_sort_order_of_administrative_order_pdfs"),
+        # Rebased onto main: this migration and the rest of the
+        # petitioner-experience stack now depend on main's latest
+        # enhancedstandardpage.body migration (0139) instead of 0133.
+        ("home", "0139_alter_enhancedstandardpage_body"),
     ]
 
     operations = [

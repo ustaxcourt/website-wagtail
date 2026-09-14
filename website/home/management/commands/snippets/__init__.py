@@ -16,9 +16,12 @@ from home.management.commands.snippets.clinics_contact_details_snippet import (
 )
 
 snippets_to_initialize = [
-    CallToActionBoxInitializer,
     NavigationRibbonInitializer,
     ZoomgovProceedingRibbonInitializer,
     DawsonFAQsRibbonInitializer,
     ClinicsContactDetailsSnippetInitializer,
+]
+
+snippets_to_initialize_via_executescript = [
+    CallToActionBoxInitializer,
 ]
