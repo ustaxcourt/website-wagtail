@@ -162,7 +162,7 @@ p:empty {
     position: relative;
 }
 
-.enhanced-page .icon-header {
+.icon-header {
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
@@ -170,7 +170,7 @@ p:empty {
     font-weight: 600;
 }
 
-.enhanced-page .icon-header__icon {
+.icon-header__icon {
     width: 24px;
     min-width: 24px;
     height: 24px;
@@ -180,12 +180,12 @@ p:empty {
     flex-shrink: 0;
 }
 
-.enhanced-page .icon-header__icon i,
-.enhanced-page .icon-header__text {
+.icon-header__icon i,
+.icon-header__text {
     line-height: 1;
 }
 
-.enhanced-page .icon-header__icon i {
+.icon-header__icon i {
     display: block;
     width: 24px;
     height: 24px;
@@ -193,7 +193,7 @@ p:empty {
     font-size: 20px;
 }
 
-.enhanced-page .icon-header__icon i::before {
+.icon-header__icon i::before {
     display: block;
     width: 24px;
     height: 24px;
