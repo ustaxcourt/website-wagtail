@@ -399,7 +399,7 @@ button.link:hover {
         gap: 10px;
         font-size: 14px;
         padding: 16px 8px;
-        text-align: center;
+        text-align: left;
         min-width: 90px;
     }
 
