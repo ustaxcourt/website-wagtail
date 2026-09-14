@@ -5,6 +5,7 @@ import django_filters
 from django.db.models.functions import Lower, Trim
 from django.utils import timezone
 from django.utils.html import format_html, strip_tags
+from wagtail.admin.auth import permission_denied
 from wagtail.admin.filters import (
     WagtailFilterSet,
     DateRangePickerWidget,
@@ -46,7 +47,20 @@ class NewsItemReportFilterSet(WagtailFilterSet):
         ]
 
 
-class NewsItemReportView(ReportView):
+class SuperuserOnlyReportView(ReportView):
+    """A report whose menu item is registered with AdminOnlyMenuItem.
+
+    Wagtail only shows those menu items to superusers, but that is a menu
+    decision and does not gate the URL, so the view has to say the same thing.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return permission_denied(request)
+        return super().dispatch(request, *args, **kwargs)
+
+
+class NewsItemReportView(SuperuserOnlyReportView):
     title = "News & Announcements Report"
 
     index_url_name = "news_and_announcements_report"
@@ -404,7 +418,7 @@ class SearchDefinitionsReportFilterSet(WagtailFilterSet):
         fields = []
 
 
-class SearchDefinitionsReportView(ReportView):
+class SearchDefinitionsReportView(SuperuserOnlyReportView):
     title = "Search Definitions Report"
 
     index_url_name = "search_definitions_report"
