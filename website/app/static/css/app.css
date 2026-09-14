@@ -396,7 +396,7 @@ button.link:hover {
 
 @media (max-width: 1200px) {
     .blue-page-links-bar a {
-        gap: 10px;
+        gap: 8px;
         font-size: 14px;
         padding: 16px 8px;
         text-align: left;
