@@ -401,6 +401,7 @@ button.link:hover {
         font-size: 16px;
         padding: 16px;
         text-align: center;
+        min-width: 75px;
     }
 }
 
