@@ -396,12 +396,15 @@ button.link:hover {
 
 @media (max-width: 1200px) {
     .blue-page-links-bar a {
-        flex-direction: column;
         gap: 10px;
-        font-size: 16px;
-        padding: 16px;
+        font-size: 14px;
+        padding: 16px 8px;
         text-align: center;
-        min-width: 75px;
+        min-width: 90px;
+    }
+
+    .blue-page-links-bar span {
+        font-size: 18px;
     }
 }
 
