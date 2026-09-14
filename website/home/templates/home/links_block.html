@@ -4,23 +4,41 @@
             <li>
                 <a href="{{ link.document.url }}"
                    data-testid="document-link"
-                   title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                   title="{{ link.title }}">
+                    <span class="material-symbols-outlined">
+                        {{ link.icon }}
+                    </span>
+                    {{ link.title }}
+                </a>
             </li>
         {% elif link.video %}
             <li>
                 <a href="{{ link.video.url }}"
                    data-testid="document-link"
                    target="_blank"
-                   title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                   title="{{ link.title }}">
+                   <span class="material-symbols-outlined">
+                     {{ link.icon }}
+                    </span>
+                    {{ link.title }}
+                </a>
             </li>
         {% elif link.text_only %}
             <li>
-                <i class="{{ link.icon }}"></i> {{ link.title }}
+                <!-- <i class="fa-solid fa-building-columns"></i> {{ link.title }} -->
+                <span class="material-symbols-outlined">
+                    {{ link.icon }}
+                </span>
+                {{ link.title }}
             </li>
         {% else %}
             <li>
                 {% if link.url %}
-                    <a href="{{ link.url }}" title="{{ link.title }}"><i class="{{ link.icon }}"></i> {{ link.title }}</a>
+                    <a href="{{ link.url }}" title="{{ link.title }}">
+                        <span class="material-symbols-outlined">
+                            {{ link.icon }}
+                        </span>
+                        {{ link.title }}</a>
                 {% endif %}
             </li>
         {% endif %}
