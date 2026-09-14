@@ -386,7 +386,7 @@ button.link:hover {
 }
 
 .blue-page-links-bar a.current-page:hover {
-    background: rgba(26,68,128, 0.5);
+    background-color: var(--color-primary);
 }
 
 .blue-page-links-bar i {
