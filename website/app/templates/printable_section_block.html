@@ -47,7 +47,22 @@
     .printable-section .checkbox-list input[type="checkbox"] { appearance: none; width: 20px; height: 20px; margin: 0; border: 2px solid #7d8287; background-color: #ffffff; }
     .printable-section .checkbox-list input[type="checkbox"]:checked { background-color: #005ea8; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='m9 16.17-4.17-4.17-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-position: center; background-repeat: no-repeat; background-size: 16px 16px; border-color: #7d8287; }
     .printable-section__body > .rich-text p { margin: 0; }
-    @media print { .printable-section__button { display: none !important; } }
+    @media print {
+        @page { margin: 0; }
+        .printable-section__button { display: none !important; }
+        body.printing-printable-section > * { display: none !important; }
+        body.printing-printable-section .printable-section--printing {
+            display: flex !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 24px;
+            border: 1px solid #d9d9d9;
+            border-bottom: 0;
+        }
+    }
 </style>
 <script>
     (function() {
@@ -55,10 +70,28 @@
         if (!block) return;
         const button = block.querySelector(".printable-section__button");
         if (button && button.dataset.initialized !== "true") {
+            let placeholder;
             button.addEventListener("click", function() {
+                document.querySelectorAll(".printable-section--printing").forEach(function(printableSection) {
+                    printableSection.classList.remove("printable-section--printing");
+                });
+                placeholder = document.createComment("printable-section-placeholder");
+                block.parentNode.insertBefore(placeholder, block);
+                document.body.appendChild(block);
+                block.classList.add("printable-section--printing");
+                document.body.classList.add("printing-printable-section");
                 window.print();
             });
             button.dataset.initialized = "true";
         }
+        window.addEventListener("afterprint", function() {
+            block.classList.remove("printable-section--printing");
+            document.body.classList.remove("printing-printable-section");
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.insertBefore(block, placeholder);
+                placeholder.remove();
+                placeholder = null;
+            }
+        });
     })();
 </script>

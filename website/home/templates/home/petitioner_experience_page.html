@@ -43,69 +43,12 @@
 
         .petitioner-experience-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 220px;
-            column-gap: 56px;
             row-gap: 32px;
             align-items: start;
         }
 
         .petitioner-experience-main {
             min-width: 0;
-        }
-
-        .petitioner-experience-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .petitioner-support-panel {
-            padding: 16px;
-            color: #ffffff;
-            background-color: #005ea8;
-            border: 1px solid #ffffff;
-            border-radius: 4px;
-        }
-
-        .petitioner-support-panel h2 {
-            margin: 0 0 16px;
-            color: inherit;
-            font-size: 1rem;
-            line-height: 1.2;
-        }
-
-        .petitioner-support-panel p {
-            margin: 0 0 12px;
-            font-size: 0.8rem;
-            line-height: 1.4;
-        }
-
-        .petitioner-support-button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            margin-top: 8px;
-            padding: 9px 10px;
-            color: #1b1b1b;
-            background-color: #ffffff;
-            border-radius: 3px;
-            font-size: 0.75rem;
-            line-height: 1.25;
-            text-decoration: none;
-            box-sizing: border-box;
-        }
-
-        .petitioner-support-button:hover {
-            color: #1b1b1b;
-            text-decoration: underline;
-        }
-
-        .petitioner-support-button small {
-            display: block;
-            margin-top: 4px;
-            color: #5c5c5c;
-            font-size: 0.65rem;
         }
 
         @media (max-width: 1200px) {
@@ -130,10 +73,6 @@
                 grid-template-columns: 1fr;
                 gap: 24px;
                 margin-left: 0;
-            }
-
-            .petitioner-experience-sidebar {
-                order: 2;
             }
 
             .rounded-rectangle {
@@ -199,25 +138,6 @@
                     </div>
                 {% endif %}
             </main>
-            <aside class="petitioner-experience-sidebar" aria-label="Petitioner support">
-                <section class="petitioner-support-panel">
-                    <h2>Clerk's Office</h2>
-                    <p>For questions about filing a petition</p>
-                    <a href="mailto:dawson.support@ustaxcourt.gov" class="petitioner-support-button">
-                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                        dawson.support@ustaxcourt.gov
-                    </a>
-                    <a href="tel:2025210700" class="petitioner-support-button">
-                        <i class="fa-solid fa-phone" aria-hidden="true"></i>
-                        <span>(202) 521-0700<small>Mon-Fri, 8:00am–4:30pm ET</small></span>
-                    </a>
-                </section>
-                <section class="petitioner-support-panel">
-                    <h2>Need Legal Help?</h2>
-                    <p>Low Income Taxpayer Clinics (LITCs) provide free or low-cost representation and tax advice. You may qualify based on income.</p>
-                    <a href="/clinics" class="petitioner-support-button">Find an LITC Near You <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-                </section>
-            </aside>
         </div>
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
