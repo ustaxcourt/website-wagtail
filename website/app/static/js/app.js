@@ -11,8 +11,10 @@ document.getElementById('scroll-to-top').addEventListener('click', () => {
 function refreshScrollToTopButton() {
     const button = document.getElementById('scroll-to-top');
     const mobileNavMenu = document.getElementById('mobile-nav-menu');
-    const mobileNavMenuRect = mobileNavMenu.getBoundingClientRect();
-    const mobileNavMenuStyle = window.getComputedStyle(mobileNavMenu);
+    const mobileNavMenuRect = mobileNavMenu?.getBoundingClientRect();
+    const mobileNavMenuStyle = mobileNavMenu
+        ? window.getComputedStyle(mobileNavMenu)
+        : { display: 'none' };
     const footer = document.getElementById('app-footer');
     const footerRect = footer.getBoundingClientRect();
 
