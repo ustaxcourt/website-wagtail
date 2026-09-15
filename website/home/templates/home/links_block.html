@@ -5,7 +5,7 @@
                 <a href="{{ link.document.url }}"
                    data-testid="document-link"
                    title="{{ link.title }}">
-                    <span class="material-symbols-outlined">
+                    <span class="material-symbols-outlined" aria-hidden="true">
                         {{ link.icon }}
                     </span>
                     {{ link.title }}
@@ -17,7 +17,7 @@
                    data-testid="document-link"
                    target="_blank"
                    title="{{ link.title }}">
-                   <span class="material-symbols-outlined">
+                   <span class="material-symbols-outlined" aria-hidden="true">
                      {{ link.icon }}
                     </span>
                     {{ link.title }}
@@ -26,7 +26,7 @@
         {% elif link.text_only %}
             <li>
                 <!-- <i class="fa-solid fa-building-columns"></i> {{ link.title }} -->
-                <span class="material-symbols-outlined">
+                <span class="material-symbols-outlined" aria-hidden="true">
                     {{ link.icon }}
                 </span>
                 {{ link.title }}
@@ -35,7 +35,7 @@
             <li>
                 {% if link.url %}
                     <a href="{{ link.url }}" title="{{ link.title }}">
-                        <span class="material-symbols-outlined">
+                        <span class="material-symbols-outlined" aria-hidden="true">
                             {{ link.icon }}
                         </span>
                         {{ link.title }}</a>

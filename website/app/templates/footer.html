@@ -281,15 +281,15 @@
 
 {% if page.navigation_ribbon %}
 <div id="mobile-nav-menu" class="mobile-nav-menu collapsed">
-    <button class="more-information" onclick="toggleNavigationRibbonExpansion()">
+    <button class="more-information" onclick="toggleNavigationRibbonExpansion()" id="more-information-button" aria-controls="mobile-navigation-ribbon" aria-expanded="false">
         <span
-            class="material-symbols-outlined circle collapsed">arrow_drop_down</span>More Information
+            class="material-symbols-outlined circle collapsed" aria-hidden="true">arrow_drop_down</span>More Information
     </button>
-    <div class="mobile-nav-ribbon">
+    <div class="mobile-nav-ribbon" id="mobile-navigation-ribbon">
         {% for link in page.navigation_ribbon.links.all %}
             {% if link.icon != "dawson" %}
                 <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
-                    <span class="material-symbols-outlined">
+                    <span class="material-symbols-outlined" aria-hidden="true">
                         {{ link.icon }}
                     </span>
                     <div class="title" style="display: block;">{{ link.title }}</div>
@@ -307,7 +307,10 @@
         const moreInformationIcon = document.querySelector('.circle');
         const mobileNavMenu = document.querySelector('.mobile-nav-menu');
         const scrollToTopButton = document.getElementById('scroll-to-top');
-        moreInformationIcon.classList.toggle('collapsed');
+        const wasCollapsed = !moreInformationIcon.classList.toggle('collapsed');
+        const moreInformationButton = document.getElementById('more-information-button');
+
+        moreInformationButton.setAttribute('aria-expanded', wasCollapsed);
         mobileNavMenu.classList.toggle('collapsed');
         scrollToTopButton.classList.toggle('mobile-nav-ribbon-collapsed');
 

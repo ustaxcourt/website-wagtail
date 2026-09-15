@@ -101,7 +101,7 @@
                 {% for link in page.navigation_ribbon.links.all %}
                     <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
                         {% if link.icon != "dawson" %}
-                        <span class="material-symbols-outlined">
+                        <span class="material-symbols-outlined" aria-hidden="true">
                             {{ link.icon }}
                         </span>
                         {% endif %}
