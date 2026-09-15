@@ -156,7 +156,21 @@ jobs:
           ssh-keyscan -H ${BASTION_HOST_IP} > /tmp/known_hosts
           ssh -o UserKnownHostsFile=/tmp/known_hosts -L 5432:${DATABASE_HOSTNAME} -N -i ../.ssh/id_rsa ubuntu@${BASTION_HOST_IP} &
           export DATABASE_URL="postgresql://master:${DATABASE_PASSWORD}@localhost:5432/postgres"
-          make migrate
+          set +e
+          make migrate 2>&1 | tee /tmp/migrate.log
+          migrate_exit_code=${PIPESTATUS[0]}
+          set -e
+
+          if [ ${migrate_exit_code} -ne 0 ]; then
+            if grep -q "Migration home.0137_alter_enhancedstandardpage_body is applied before its dependency home.0136_merge_20260826_1016" /tmp/migrate.log; then
+              echo "Detected known inconsistent migration history. Faking home.0136_merge_20260826_1016 and retrying migrate."
+              make cmd c="python manage.py migrate home 0136_merge_20260826_1016 --fake"
+              make migrate
+            else
+              echo "ERROR: make migrate failed for an unexpected reason"
+              exit ${migrate_exit_code}
+            fi
+          fi
           make superuser settings="app.settings.${ENVIRONMENT}" password=${DJANGO_SUPERUSER_PASSWORD} || echo "user already exists, skipping"
           make preregisterusers settings="app.settings.${ENVIRONMENT}"
           make preregistersuperusers settings="app.settings.${ENVIRONMENT}"

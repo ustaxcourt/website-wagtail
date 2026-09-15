@@ -6,6 +6,9 @@ from home.management.commands.pages.efiling_and_case_maintenance import (
 from home.management.commands.pages.about_the_court import (
     about_the_court_pages_to_update,
 )
+from home.management.commands.pages.rules_and_guidance import (
+    PetitionersPrepareToFilePageInitializer,
+)
 from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.navigation import NavigationInitializer
@@ -26,6 +29,7 @@ pages_to_update = (
     about_the_court_pages_to_update
     + efiling_and_case_maintenance_pages_to_update
     + [FooterInitializer, NavigationInitializer, HomePageInitializer]
+    + [CallToActionBoxInitializer]
     + [
         PetitionersGuidancePageInitializer,
         PetitionersFormsPageInitializer,

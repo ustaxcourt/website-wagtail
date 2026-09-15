@@ -353,9 +353,8 @@ button.link:hover {
 
 .blue-page-links-bar {
     display: flex;
-    background-color: var(--color-primary-legacy);
+    background-color: var(--color-navy);
     border-radius: 5px;
-    gap: 10px;
 }
 
 .blue-page-links-bar a {
@@ -363,22 +362,50 @@ button.link:hover {
     text-decoration: none;
     color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 10px;
     font-weight: normal;
-    font-size: .9rem;
+    font-size: 16px;
     padding: 16px;
+}
+
+.blue-page-links-bar .current-page {
+    background-color: var(--color-primary);
+    border-radius: 5px;
+}
+
+.blue-page-links-bar a.current-page {
+    color: white;
 }
 
 .blue-page-links-bar a:hover {
     background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.blue-page-links-bar a.current-page:hover {
+    background: rgba(26, 68, 128, 0.5);
 }
 
 .blue-page-links-bar i {
     color: white;
     font-size: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .blue-page-links-bar a {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        padding: 16px 8px;
+        text-align: center;
+    }
+
+    .blue-page-links-bar a .title {
+        white-space: nowrap;
+    }
 }
 
 /* ==========================================================================

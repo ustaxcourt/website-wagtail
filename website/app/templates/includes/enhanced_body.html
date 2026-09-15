@@ -2,8 +2,11 @@
 {# Reusable template for rendering a list of blocks #}
 {# Usage: {% include "includes/enhanced_body.html" with blocks=page.body %} #}
 {# Or: {% include "includes/enhanced_body.html" with blocks=block.value.default_content %} #}
+
 {% for block in blocks %}
-    {% if block.block_type == 'h2' %}
+    {% if block.block_type == 'icon_header' %}
+        {% include "icon_header_block.html" with value=block.value %}
+    {% elif block.block_type == 'h2' %}
         <h2>{{ block.value }}</h2>
     {% elif block.block_type == 'h3' %}
         <h3>{{ block.value }}</h3>
@@ -155,6 +158,37 @@
                     </div>
                     <div class="description">{{ card.description|richtext }}</div>
                 </div>
+<<<<<<< HEAD
+            {% elif block.block_type == 'accordion' %}
+                {% if tile_index is not None %}
+                    {% include "accordion_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
+                {% else %}
+                    {% include "accordion_block.html" with block=block block_index=forloop.counter0 suffix="-accordion" %}
+                {% endif %}
+            {% elif block.block_type == 'button' %}
+                {% include "includes/styled_button.html" with block=block %}
+            {% elif block.block_type == 'callout' %}
+                {% include "callout_block.html" with block=block %}
+            {% elif block.block_type == 'quick_access_tiles' %}
+                {% include "quick_access_tiles_block.html" with block=block %}
+            {% elif block.block_type == 'card_tiles' %}
+                {% include "includes/card_tiles.html" with block=block %}
+            {% elif block.block_type == 'grid' %}
+                {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
+            {% elif block.block_type == 'summary_timeline' %}
+                {% include "summary_timeline.html" with block=block %}
+            {% elif block.block_type == 'printable_section' %}
+                {% if tile_index is not None %}
+                    {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
+                {% else %}
+                    {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix=suffix|default:"-prt" %}
+                {% endif %}
+            {% else %}
+                <p>Block type not recognized: {{ block.block_type }}</p>
+                {{ block.value }}
+            {% endif %}
+        {% endfor %}
+=======
             {% endfor %}
         </div>
     {% elif block.block_type == 'accordion' %}
@@ -188,3 +222,4 @@
         {{ block.value }}
     {% endif %}
 {% endfor %}
+>>>>>>> feature/petitioner-experience
