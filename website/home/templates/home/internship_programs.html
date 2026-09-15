@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-{% load wagtailcore_tags %}
+{% load static wagtailcore_tags %}
 {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
     <style>
         .closing-date {
             color: var(--color-error);
