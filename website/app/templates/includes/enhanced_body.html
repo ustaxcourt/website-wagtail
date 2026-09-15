@@ -150,7 +150,9 @@
             {% for card in block.value %}
                 <div class="info-card {{ card.color }}">
                     <div class="card-header">
-                        <i class="{{ card.icon }}" aria-hidden="true"></i>
+                        <span class="material-symbols-outlined" aria-hidden="true">
+                            {{ card.icon }}
+                        </span>
                         <div class="title">{{ card.title }}</div>
                     </div>
                     <div class="description">{{ card.description|richtext }}</div>
