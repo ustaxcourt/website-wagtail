@@ -11,10 +11,14 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
-    flex-wrap: wrap;
+    /* No flex-wrap: the button must stay put in the same spot on every
+       screen size. A long title wraps onto multiple lines instead of
+       pushing the button down to its own row. */
   }
   .printable-section__title {
     margin: 0;
+    flex: 1 1 auto;
+    min-width: 0; /* let a long title wrap instead of overflowing past the button */
   }
   .printable-section .printable-section__button {
     display: flex;

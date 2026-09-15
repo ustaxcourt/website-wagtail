@@ -19,6 +19,7 @@ from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import link_obj
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
+from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.common import ColumnBlock
 from home.models.snippets.navigation import NavigationRibbon
 from home.models.custom_blocks.nested_list import create_nested_list_block
@@ -36,6 +37,17 @@ table_value_types = [
 class IndentStyle(models.TextChoices):
     INDENTED = "indented"
     UNINDENTED = "unindented"
+
+
+FAQ_FILTER_TAG_CHOICES = [
+    ("filing", "Filing"),
+    ("deadlines", "Deadlines"),
+    ("representation", "Representation"),
+    ("forms-documents", "Forms & Documents"),
+    ("trial-process", "Trial Process"),
+    ("fees-costs", "Fees & Costs"),
+    ("after-decision", "After Decision"),
+]
 
 
 class StyledCalloutBlock(blocks.StructBlock):
@@ -240,6 +252,40 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
+class HeroSection(blocks.StructBlock):
+    title = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        help_text="Title displayed at the top of the hero section.",
+    )
+    introductory_text = blocks.CharBlock(
+        max_length=512,
+        required=True,
+        help_text="Introductory text displayed beneath the title in the hero section.",
+    )
+    callout_block = blocks.StreamBlock(
+        [("block", StyledCalloutBlock())],
+        use_json_field=True,
+        blank=True,
+        required=False,
+        min_num=0,
+        max_num=1,
+        help_text="Callout block displayed underneath the introductory text in the hero section.",
+    )
+    buttons = blocks.StreamBlock(
+        [("button", ButtonBlock())],
+        use_json_field=True,
+        blank=True,
+        required=False,
+        min_num=0,
+        max_num=3,
+        help_text="Buttons to display at the bottom of the hero section.",
+    )
+
+    class Meta:
+        label = "Hero Section"
+
+
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
     (
@@ -370,10 +416,18 @@ _BASE_BLOCK_TYPES = [
                     ("question", blocks.CharBlock(required=False)),
                     ("answer", blocks.RichTextBlock()),
                     ("anchortag", blocks.CharBlock()),
+                    (
+                        "filtertag",
+                        blocks.ChoiceBlock(
+                            choices=FAQ_FILTER_TAG_CHOICES,
+                            required=True,
+                            label="FilterTag",
+                        ),
+                    ),
                 ]
             ),
             label="Question and Answer",
-            help_text="Add a question and answer with anchor tag for linking",
+            help_text="Add a question and answer. Link the anchor tag number. Select the FAQ FilterTag type in the dropdown.",
         ),
     ),
     ("columns", ColumnBlock()),
@@ -523,6 +577,14 @@ _BASE_BLOCK_TYPES = [
     (
         "grid",
         GridBlock(),
+    ),
+    (
+        "summary_timeline",
+        SummaryTimelineBlock(),
+    ),
+    (
+        "hero_section",
+        HeroSection(),
     ),
     (
         "printable_section",

@@ -6,7 +6,10 @@ from wagtail.search import index
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 
-from home.models.pages.enhanced_standard import EnhancedStandardPage
+from home.models.pages.enhanced_standard import (
+    EnhancedStandardPage,
+    FAQ_FILTER_TAG_CHOICES,
+)
 
 
 class EnhancedRawHTMLPage(EnhancedStandardPage):
@@ -42,10 +45,18 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
                                 ),
                             ),
                             ("anchortag", blocks.CharBlock(required=False)),
+                            (
+                                "filtertag",
+                                blocks.ChoiceBlock(
+                                    choices=FAQ_FILTER_TAG_CHOICES,
+                                    required=True,
+                                    label="FilterTag",
+                                ),
+                            ),
                         ]
                     ),
                     label="Question and Answer",
-                    help_text="Add a question and answer with anchor tag for linking",
+                    help_text="Add a question and answer. Link the anchor tag number. Select the FAQ FilterTag type in the dropdown.",
                 ),
             ),
         ],

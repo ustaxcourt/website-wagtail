@@ -14,6 +14,14 @@ from home.management.commands.pages.card_set_icons import CardSetIconsInitialize
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 
+from home.management.commands.pages.rules_and_guidance import (
+    PetitionersGuidancePageInitializer,
+    PetitionersFormsPageInitializer,
+    PetitionersPrepareToFilePageInitializer,
+    PetitionersTimelinePageInitializer,
+    PetitionersHelpPageInitializer,
+)
+
 # Ensure Home Page is initialized first
 pages_to_update = (
     about_the_court_pages_to_update
@@ -23,6 +31,13 @@ pages_to_update = (
         NavigationInitializer,
         HomePageInitializer,
         CardSetIconsInitializer,
+    ]
+    + [
+        PetitionersGuidancePageInitializer,
+        PetitionersFormsPageInitializer,
+        PetitionersPrepareToFilePageInitializer,
+        PetitionersTimelinePageInitializer,
+        PetitionersHelpPageInitializer,
     ]
 )
 

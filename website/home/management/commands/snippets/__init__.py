@@ -1,3 +1,6 @@
+from home.management.commands.snippets.call_to_action_box import (
+    CallToActionBoxInitializer,
+)
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
@@ -17,4 +20,8 @@ snippets_to_initialize = [
     ZoomgovProceedingRibbonInitializer,
     DawsonFAQsRibbonInitializer,
     ClinicsContactDetailsSnippetInitializer,
+]
+
+snippets_to_initialize_via_executescript = [
+    CallToActionBoxInitializer,
 ]

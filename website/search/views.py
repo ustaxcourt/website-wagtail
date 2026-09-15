@@ -3,7 +3,6 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
-from django.utils.text import slugify
 
 from wagtail.models import Page
 from wagtail.blocks import StreamValue
@@ -186,7 +185,7 @@ def search(request):
                     "title": judge.display_name
                     or f"{judge.first_name} {judge.last_name}",
                     "search_snippet": f"Judge {judge.display_name or f'{judge.first_name} {judge.last_name}'}",
-                    "url": f"/judges/{judge.id}/{slugify(judge.last_name)}/",
+                    "url": f"/judges/{judge.id}/{judge.last_name.lower()}",
                 },
             )
             search_results.append(judge_page)
