@@ -79,6 +79,8 @@ class NavigationRibbonUpdater:
             )
             link.save()
 
+        navigation_ribbon.save_revision().publish()
+
         self.model = navigation_ribbon
 
     def run(self):
