@@ -55,8 +55,15 @@
                         <span class="material-symbols-outlined" aria-hidden="true">
                             {{ link.icon }}
                         </span>
+                        <div class="title">{{ link.title }}</div>
+                        {% else %}
+                        <div class="{% if link.icon == 'dawson' %}dawson-button{% endif %}">
+                            <img class="dawson"
+                             src="{% static 'images/header/dawson.webp' %}"
+                             alt="DAWSON" />
+                            <div class="title">{{ link.title }}</div>
+                        </div>
                         {% endif %}
-                        <div class="title" style="display: block;">{{ link.title }}</div>
                     </a>
                 {% endfor %}
             </div>
