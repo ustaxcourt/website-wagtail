@@ -8,6 +8,7 @@ from home.templatetags.filters import (
     get_type,
     parse_iso_date,
     slugify_text,
+    strip_trailing_slash,
 )
 
 
@@ -84,3 +85,17 @@ class TestSlugifyText:
 
     def test_numbers(self):
         assert slugify_text("Section 42") == "section-42"
+
+
+class TestStripTrailingSlash:
+    def test_url_with_trailing_slash(self):
+        assert strip_trailing_slash("http://localhost:8000/") == "http://localhost:8000"
+
+    def test_url_without_trailing_slash(self):
+        assert strip_trailing_slash("http://localhost:8000") == "http://localhost:8000"
+
+    def test_only_slash(self):
+        assert strip_trailing_slash("/") == "/"
+
+    def test_non_string_input(self):
+        assert strip_trailing_slash(2) == 2
