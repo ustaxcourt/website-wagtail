@@ -1,7 +1,10 @@
 """
 Tests for the 0141 data migration that renames the old 'card' block 'icon'
 field to 'numbered_icon' on pre-existing EnhancedStandardPage content saved
-before WAG-1338 reshaped the Card Set block.
+before WAG-1338 reshaped the Card Set block. Also covers dropping legacy
+icon values that have no equivalent in the narrowed numbered_icon choices,
+and reconciling existing page revision snapshots (wagtailcore_revision), not
+just the live page row.
 
 Unlike most StreamField data migrations in this codebase, 0141 can't use
 `apps.get_model(...)` + `page.body` the normal way, since migration 0140
@@ -16,9 +19,10 @@ descriptor) to simulate real pre-WAG-1338 production content.
 import importlib
 import json
 
+from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 from django.test import TestCase, override_settings
-from wagtail.models import Locale, Page, Site
+from wagtail.models import Locale, Page, Revision, Site
 
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
@@ -208,6 +212,150 @@ class MigrateCardIconFieldTest(TestCase):
         card = page.body[0].value[0]
         self.assertEqual(card["numbered_icon"], "fa-solid fa-check")
         self.assertEqual(card["numbered_icon_alignment"], "center")
+
+    def test_drops_unmappable_legacy_icon_instead_of_writing_invalid_value(self):
+        """A legacy icon like 'book' has no equivalent in the narrowed
+        numbered_icon choices (None/One/Two/Three/Check/Exclamation). Writing
+        it into numbered_icon anyway would store an invalid choice value, so
+        the migration must drop it instead of copying it over."""
+        page = self._create_page_with_raw_body(
+            "unmappable-icon-page",
+            [
+                {
+                    "type": "card",
+                    "value": [
+                        {
+                            "icon": "fa-solid fa-book",
+                            "title": "Legacy decorative icon",
+                            "description": "desc",
+                            "color": "white",
+                        },
+                    ],
+                    "id": "abc",
+                }
+            ],
+        )
+
+        migration_module.migrate_card_icon_field(
+            apps=None, schema_editor=FakeSchemaEditor(connection)
+        )
+
+        # Read the raw stored JSON directly, bypassing the StreamField
+        # descriptor: a StructValue always exposes every defined sub-field
+        # with its default, so it can't distinguish "numbered_icon was never
+        # set" from "numbered_icon was set to an invalid value" - only the
+        # raw dict can confirm the migration actually dropped the key
+        # instead of writing 'fa-solid fa-book' into it.
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT body FROM home_enhancedstandardpage WHERE page_ptr_id = %s",
+                [page.id],
+            )
+            raw_body = cursor.fetchone()[0]
+        card = json.loads(raw_body)[0]["value"][0]
+        self.assertNotIn("icon", card)
+        self.assertNotIn("numbered_icon", card)
+        self.assertEqual(card["title"], "Legacy decorative icon")
+
+        # Reading through the StreamField descriptor still works and simply
+        # defaults the now-unset field, rather than raising or rendering a
+        # stale/invalid value.
+        page.refresh_from_db()
+        rendered_card = page.body[0].value[0]
+        self.assertEqual(rendered_card["numbered_icon"], "")
+
+    def _create_legacy_revision(self, page, raw_body_list):
+        """Creates a Revision row shaped like a real pre-WAG-1338 snapshot:
+        Revision.content is a plain JSONField (no StructBlock parsing), so
+        unlike the page table this can be built directly through the ORM
+        while still keeping 'body' double-JSON-encoded, matching how Wagtail
+        actually stores it."""
+        return Revision.objects.create(
+            content_type=ContentType.objects.get_for_model(EnhancedStandardPage),
+            base_content_type=ContentType.objects.get_for_model(Page),
+            object_id=str(page.id),
+            object_str=page.title,
+            content={
+                "pk": page.id,
+                "title": page.title,
+                "body": json.dumps(raw_body_list),
+            },
+        )
+
+    def test_updates_revision_content_snapshot(self):
+        """Reverting to, previewing, or approving an old revision after this
+        migration should not restore a copy of 'body' with the pre-migration
+        'icon' key still intact - the revision snapshot needs the same
+        rename applied to it as the live page row."""
+        page = self._create_page_with_raw_body(
+            "revision-icon-page",
+            [
+                {
+                    "type": "card",
+                    "value": [
+                        {
+                            "icon": "fa-solid fa-check",
+                            "title": "Live row",
+                            "description": "desc",
+                            "color": "green",
+                        },
+                    ],
+                    "id": "abc",
+                }
+            ],
+        )
+        revision = self._create_legacy_revision(
+            page,
+            [
+                {
+                    "type": "card",
+                    "value": [
+                        {
+                            "icon": "fa-solid fa-exclamation",
+                            "title": "Old revision snapshot",
+                            "description": "desc",
+                            "color": "yellow",
+                        },
+                    ],
+                    "id": "abc",
+                }
+            ],
+        )
+
+        migration_module.migrate_card_icon_field(
+            apps=None, schema_editor=FakeSchemaEditor(connection)
+        )
+
+        revision.refresh_from_db()
+        migrated_body = json.loads(revision.content["body"])
+        card = migrated_body[0]["value"][0]
+        self.assertNotIn("icon", card)
+        self.assertEqual(card["numbered_icon"], "fa-solid fa-exclamation")
+        self.assertEqual(card["numbered_icon_alignment"], "center")
+        self.assertEqual(card["title"], "Old revision snapshot")
+
+    def test_leaves_revisions_without_a_body_field_untouched(self):
+        """A revision for a snippet or other non-page model has no 'body'
+        field at all; the migration must skip it rather than error."""
+        page = self._create_page_with_raw_body(
+            "revision-no-body-page",
+            [{"type": "paragraph", "value": "<p>Unrelated.</p>"}],
+        )
+        revision = Revision.objects.create(
+            content_type=ContentType.objects.get_for_model(EnhancedStandardPage),
+            base_content_type=ContentType.objects.get_for_model(Page),
+            object_id=str(page.id),
+            object_str=page.title,
+            content={"pk": page.id, "title": "some card icon text but no body key"},
+        )
+
+        # Should not raise despite matching the LIKE '%card%' pattern loosely.
+        migration_module.migrate_card_icon_field(
+            apps=None, schema_editor=FakeSchemaEditor(connection)
+        )
+
+        revision.refresh_from_db()
+        self.assertNotIn("body", revision.content)
 
     def test_skips_pages_without_any_card_block(self):
         page = self._create_page_with_raw_body(

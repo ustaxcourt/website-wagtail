@@ -358,206 +358,6 @@
 
         }
 
-        /* Single row at desktop; tablet wraps 2-up (see @media 1024 below) to match
-           Figma - a single row of 3 left cards/buttons too cramped at tablet width. */
-        .enhanced-page .info-cards {
-            display: flex;
-            align-items: stretch;
-            gap: 48px; /* tablet override to 32px, mobile to 16px, below */
-            margin-top: 1rem;
-            margin-bottom: 34px;
-        }
-
-        .enhanced-page .info-cards .info-card {
-            flex: 1 1 0;
-            min-width: 0;
-        }
-
-        .enhanced-page .info-card {
-            padding: 24px;
-            border-radius: 8px; /* tablet/mobile override to 16px below */
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            position: relative;
-            border: 1px solid #F0F0F0;
-            box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
-        }
-
-        .enhanced-page .info-card.white {
-            background-color: #FFFFFF;
-        }
-
-        .enhanced-page .info-card.gray {
-            background-color: #F0F0F0;
-        }
-
-        .enhanced-page .info-card.dark-primary {
-            background-color: #1A4480;
-            border: none;
-        }
-
-        .enhanced-page .info-card.green {
-            background-color: #ecf3ec;
-        }
-
-        .enhanced-page .info-card.yellow {
-            background-color: #fef0c8;
-        }
-
-        .enhanced-page .info-card.dark-primary .subtitle,
-        .enhanced-page .info-card.dark-primary .title,
-        .enhanced-page .info-card.dark-primary .description {
-            color: #FFFFFF;
-        }
-
-        .enhanced-page .info-card.dark-primary .description a,
-        .enhanced-page .info-card.dark-primary .description a:visited {
-            color: #FFFFFF;
-        }
-
-        .enhanced-page .info-card__icon-row {
-            display: flex;
-            width: 100%;
-        }
-
-        .enhanced-page .info-card__icon-row--left {
-            justify-content: flex-start;
-        }
-
-        .enhanced-page .info-card__icon-row--center {
-            justify-content: center;
-        }
-
-        .enhanced-page .info-card__icon-row--right {
-            justify-content: flex-end;
-        }
-
-        .enhanced-page .info-card__icon-badge {
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            background: #162E51;
-            border: 2px solid #FFFFFF;
-            box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(243, 244, 246, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .enhanced-page .info-card__icon-badge i {
-            color: #FFFFFF;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .enhanced-page .info-card .card-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            position: relative;
-        }
-
-        .enhanced-page .info-card .card-header__text {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .enhanced-page .info-card__title-icon {
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            border-radius: 10px;
-            background: #F3F4F6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .enhanced-page .info-card.gray .info-card__title-icon,
-        .enhanced-page .info-card.green .info-card__title-icon,
-        .enhanced-page .info-card.yellow .info-card__title-icon {
-            background: #162E51;
-        }
-
-        .enhanced-page .info-card__title-icon img {
-            width: 24px;
-            height: 24px;
-        }
-
-        .enhanced-page .info-card.gray .info-card__title-icon img,
-        .enhanced-page .info-card.green .info-card__title-icon img,
-        .enhanced-page .info-card.yellow .info-card__title-icon img {
-            filter: brightness(0) invert(1);
-        }
-
-        .enhanced-page .info-card .subtitle {
-            color: #565C65;
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 16px;
-            letter-spacing: 0.02em;
-        }
-
-        .enhanced-page .info-card .title {
-            color: #162E51;
-            font-weight: 600;
-            font-size: 20px; /* mobile override to 18px below */
-            text-align: left;
-        }
-
-        .enhanced-page .info-card .description {
-            color: #565C65;
-            text-align: left;
-        }
-
-        .enhanced-page .info-card .description a {
-            text-decoration: underline;
-        }
-
-        .enhanced-page .info-card__buttons {
-            display: flex;
-            margin-top: auto;
-        }
-
-        /* Stretch-to-sibling-height only pins the button to the bottom when a row has a
-           taller neighbor. Give buttoned cards a floor height so the button still sits
-           away from short body text when a card stacks alone (mobile) or has no taller
-           sibling in its row. */
-        .enhanced-page .info-card.has-button {
-            min-height: 260px;
-        }
-
-        .enhanced-page .info-card__button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #005EA2;
-            border-radius: 4px;
-            background: #FFFFFF;
-            color: #005EA2;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .enhanced-page .info-card__button:hover {
-            background: #F0F0F0;
-        }
-
-        .enhanced-page .info-card__button.no-hover:hover {
-            background: #FFFFFF;
-        }
-
-        .enhanced-page .info-card__button img {
-            width: 20px;
-            height: 20px;
-        }
-
         @media (max-width: 1024px) {
 
             .enhanced-page .question-answer-block .bookmark {
@@ -588,18 +388,6 @@
                 margin-right: 16px;
             }
 
-            .enhanced-page .info-card {
-                border-radius: 16px;
-            }
-
-            .enhanced-page .info-cards {
-                gap: 32px;
-                flex-wrap: wrap;
-            }
-
-            .enhanced-page .info-cards .info-card {
-                flex: 0 1 calc(50% - 16px);
-            }
         }
 
         @media (max-width: 768px) {
@@ -608,25 +396,6 @@
                 padding-right: 16px;
                 padding-top: 25px;
                 padding-bottom: 25px;
-            }
-
-            .enhanced-page .info-cards {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            /* Mobile: each stacked card hugs its own content - no shared row to
-               stretch against, and no artificial floor height (UX feedback). */
-            .enhanced-page .info-cards .info-card {
-                flex: 1 1 auto;
-            }
-
-            .enhanced-page .info-card.has-button {
-                min-height: auto;
-            }
-
-            .enhanced-page .info-card .title {
-                font-size: 18px;
             }
 
             .enhanced-page .dedication {
@@ -702,7 +471,8 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
@@ -727,7 +497,6 @@
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pageTitle = document.querySelector('[data-testid="page-title"]');
