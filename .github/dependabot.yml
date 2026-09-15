@@ -9,9 +9,17 @@ updates:
       day: "monday"
     open-pull-requests-limit: 5
     groups:
-      pip-dependencies:
+      pip-security:
+        applies-to: security-updates
         patterns:
           - "*"
+      pip-dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     ignore:
       # Major version bumps for Django/Wagtail should be planned as their own
       # tracked work per docs/adr/0010-dependabots-setup.md, not auto-PR'd.
@@ -34,9 +42,17 @@ updates:
       day: "monday"
     open-pull-requests-limit: 5
     groups:
-      npm-dependencies:
+      npm-security:
+        applies-to: security-updates
         patterns:
           - "*"
+      npm-dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     labels:
       - "dependencies"
       - "javascript"
@@ -52,9 +68,17 @@ updates:
       day: "monday"
     open-pull-requests-limit: 5
     groups:
-      npm-dependencies:
+      npm-security:
+        applies-to: security-updates
         patterns:
           - "*"
+      npm-dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     labels:
       - "dependencies"
       - "javascript"
@@ -70,7 +94,12 @@ updates:
       day: "monday"
     open-pull-requests-limit: 5
     groups:
+      github-actions-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
       github-actions:
+        applies-to: version-updates
         patterns:
           - "*"
     labels:
