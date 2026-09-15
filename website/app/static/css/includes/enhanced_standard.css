@@ -164,6 +164,45 @@ p:empty {
     position: relative;
 }
 
+.icon-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: #1B1B1B;
+    font-weight: 600;
+}
+
+.icon-header__icon {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon-header__icon i,
+.icon-header__text {
+    line-height: 1;
+}
+
+.icon-header__icon i {
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 20px;
+}
+
+.icon-header__icon i::before {
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+}
+
 .enhanced-page .heading-wrapper .bookmark {
     position: absolute;
     left: -30px;
