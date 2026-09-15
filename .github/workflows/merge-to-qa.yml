@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
 
       - name: Comment on PR — code conflict
         if: steps.merge.outputs.success == 'false'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.createComment({
@@ -122,7 +122,7 @@ jobs:
 
       - name: Comment on PR — migration problem
         if: steps.migration_check.outputs.success == 'false'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           script: |
             const isConflict = '${{ steps.migration_check.outputs.reason }}' === 'conflict';
@@ -151,7 +151,7 @@ jobs:
         run: git push origin qa
 
       - name: Comment on PR — merged successfully
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.createComment({
@@ -163,7 +163,7 @@ jobs:
 
       - name: Remove qa-ready label
         if: always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           script: |
             try {

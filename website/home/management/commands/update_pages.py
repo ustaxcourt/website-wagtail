@@ -12,12 +12,17 @@ from home.management.commands.pages.rules_and_guidance import (
 from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.navigation import NavigationInitializer
-from home.management.commands.snippets.call_to_action_box import (
-    CallToActionBoxInitializer,
-)
 
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
+
+from home.management.commands.pages.rules_and_guidance import (
+    PetitionersGuidancePageInitializer,
+    PetitionersFormsPageInitializer,
+    PetitionersPrepareToFilePageInitializer,
+    PetitionersTimelinePageInitializer,
+    PetitionersHelpPageInitializer,
+)
 
 # Ensure Home Page is initialized first
 pages_to_update = (
@@ -25,7 +30,13 @@ pages_to_update = (
     + efiling_and_case_maintenance_pages_to_update
     + [FooterInitializer, NavigationInitializer, HomePageInitializer]
     + [CallToActionBoxInitializer]
-    + [PetitionersPrepareToFilePageInitializer]
+    + [
+        PetitionersGuidancePageInitializer,
+        PetitionersFormsPageInitializer,
+        PetitionersPrepareToFilePageInitializer,
+        PetitionersTimelinePageInitializer,
+        PetitionersHelpPageInitializer,
+    ]
 )
 
 

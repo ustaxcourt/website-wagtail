@@ -61,6 +61,7 @@
     --theme-color-base-lightest: #F0F0F0;
 
     /* Border Colors */
+    --border-lighter: #dcdee0;
     --border-light: #dcdcdc;
     --border-base: #dee2e6;
     --border-accent: #97D4EA;

@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "ENVIRONMENT=qa" >> $GITHUB_ENV
       - name: Checkout qa tag
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: qa # Always check out the qa tag
 
