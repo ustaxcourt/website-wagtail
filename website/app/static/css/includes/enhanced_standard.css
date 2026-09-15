@@ -148,8 +148,10 @@ p:empty {
     }
 }
 
-.enhanced-page .links i {
+.enhanced-page .links span {
     padding-right: .4em;
+    font-weight: 900;
+    vertical-align: bottom;
 }
 
 .enhanced-page .links.with-bullets {
@@ -381,7 +383,7 @@ p:empty {
     position: relative;
 }
 
-.enhanced-page .info-card .card-header i {
+.enhanced-page .info-card .card-header span {
     background: #1b1b1b;
     color: white;
     width: 48px;
@@ -392,6 +394,7 @@ p:empty {
     justify-content: center;
     font-size: 1.25rem;
     margin: 0 auto;
+    font-weight:900;
 }
 
 .enhanced-page .info-card .card-header .title {
