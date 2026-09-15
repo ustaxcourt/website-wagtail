@@ -563,7 +563,7 @@ _BASE_BLOCK_TYPES = [
             ),
             max_num=3,
             label="Card Set",
-            help_text="Add up to 3 cards. They display in a single row on desktop/tablet and stack in a single column on mobile.",
+            help_text="Add up to 3 cards. They display in a single row on desktop, wrap 2-up on tablet, and stack in a single column on mobile.",
         ),
     ),
     (
