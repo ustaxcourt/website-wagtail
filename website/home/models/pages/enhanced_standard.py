@@ -32,8 +32,6 @@ from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.snippets.navigation import NavigationRibbon
 
-# from wagtail.contrib.table_block.blocks import TableBlock
-
 table_value_types = [
     ("text", blocks.RichTextBlock()),
 ]
