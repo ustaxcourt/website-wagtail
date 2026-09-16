@@ -1,6 +1,15 @@
 from django.db import models
 
 
+class NumberedIconCategories(models.TextChoices):
+    NONE = ("",)
+    ONE = "fa-solid fa-1"
+    TWO = "fa-solid fa-2"
+    THREE = "fa-solid fa-3"
+    CHECK = "fa-solid fa-check"
+    EXCLAMATION = "fa-solid fa-exclamation"
+
+
 class IconCategories(models.TextChoices):
     NONE = ("",)
     BOOK = "fa-solid fa-book"
