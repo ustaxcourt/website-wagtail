@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
-{% load wagtailcore_tags %}
+{% load static wagtailcore_tags %}
 {% load custom_tags %}
-{% block content %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
     <style>
         #judge-recruiting-page {
             min-height: 40vh;
@@ -12,6 +13,8 @@
             font-weight: bold;
         }
     </style>
+{% endblock %}
+{% block content %}
     <div id="judge-recruiting-page"
          class="grid-container usa-prose margin-top-5">
         <div class="content">
