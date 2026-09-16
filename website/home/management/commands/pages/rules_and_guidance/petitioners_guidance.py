@@ -88,10 +88,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                         "url": [
                                             {
                                                 "type": "external_url",
-                                                "value": urljoin(
-                                                    _base_url,
-                                                    "/petitioners-prepare-to-file",
-                                                ),
+                                                "value": "http://127.0.0.1:8000/petitioners-prepare-to-file",
                                                 "id": "75b8ede0-6600-4f4d-9083-65ddb9f45454",
                                             }
                                         ],
@@ -103,7 +100,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 {
                                     "type": "button",
                                     "value": {
-                                        "icon": arrow_forward_doc.pk,
+                                        "icon": 1,
                                         "icon_location": "after",
                                         "text": "File a Petition Online",
                                         "url": [
@@ -124,8 +121,59 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": f'<h2 data-block-key="cuzcn"><b>Get Started</b> <a href="{_petitioner_timeline_url}">(View detailed timeline)</a></h2>',
+                        "value": '<h2 data-block-key="cuzcn"><b>Get Started</b> <a href="http://127.0.0.1:8000/petitioners-timeline">(View detailed timeline)</a></h2>',
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
+                    },
+                    {
+                        "type": "card",
+                        "value": [
+                            {
+                                "type": "item",
+                                "value": {
+                                    "color": "white",
+                                    "numbered_icon": "fa-solid fa-1",
+                                    "numbered_icon_alignment": "left",
+                                    "title_icon": None,
+                                    "title_icon_alt_text": "",
+                                    "subtitle": "",
+                                    "title": "File Your Petition (DAWSON)",
+                                    "description": '<p data-block-key="j716r">Securely file your petition using the online generator or upload your completed PDF.</p>',
+                                    "buttons": [],
+                                },
+                                "id": "bf1f6c20-d383-4046-bddd-8d671e964f61",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "color": "white",
+                                    "numbered_icon": "fa-solid fa-2",
+                                    "numbered_icon_alignment": "left",
+                                    "title_icon": None,
+                                    "title_icon_alt_text": "",
+                                    "subtitle": "",
+                                    "title": "Receive Confirmation",
+                                    "description": '<p data-block-key="j716r">Instantly receive your official Docket Number and a printable electronic receipt confirming your filing.</p>',
+                                    "buttons": [],
+                                },
+                                "id": "cf8b7b1c-d8cc-40e3-9fd6-62177ab7f8c2",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "color": "white",
+                                    "numbered_icon": "fa-solid fa-3",
+                                    "numbered_icon_alignment": "left",
+                                    "title_icon": None,
+                                    "title_icon_alt_text": "",
+                                    "subtitle": "",
+                                    "title": "Pay Filing Fee (Pay.gov)",
+                                    "description": '<p data-block-key="j716r">Pay the required $60 filing fee through the secure federal payment gateway, or request a fee waiver if you qualify.</p>',
+                                    "buttons": [],
+                                },
+                                "id": "b391b8f5-0a6b-4c32-9dc7-444aee575d74",
+                            },
+                        ],
+                        "id": "8a6d6de4-b347-40c5-9f95-792200a223ab",
                     },
                 ],
             )
