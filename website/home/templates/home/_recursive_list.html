@@ -12,14 +12,16 @@
         {% for item in items %}
             <li {% if list_type == 'checkbox_with_subtext' %}class="has-subtext"{% endif %}>
                 {% if list_type == 'checkbox' or list_type == 'checkbox_with_subtext' %}
-                    {% with checkbox_id=current_id_prefix|add:"-"|add:forloop.counter %}
+                    {% with counter=forloop.counter|stringformat:"s" %}
+                    {% with checkbox_id=current_id_prefix|add:"-"|add:counter %}
                     <div class="checkbox-label-container">
                         <input id="{{ checkbox_id }}" type="checkbox" aria-labelledby="{{ checkbox_id }}-label">
-                        <label id="{{ checkbox_id }}-label" class="list-item-content" for="{{ checkbox_id }}">
+                        <label id="{{ checkbox_id }}-label" class="list-item-content" for="{{ checkbox_id }}" aria-hidden="true">
                             {% if item.text %}{{ item.text|richtext }}{% endif %}
                             {% if list_type == 'checkbox_with_subtext' and item.subtext %}{{ item.subtext|richtext }}{% endif %}
                         </label>
                     </div>
+                    {% endwith %}
                     {% endwith %}
                 {% else %}
 
@@ -33,8 +35,10 @@
                 {% endif %}
                 {% if item.nested_list %}
                     {% for nested in item.nested_list %}
-                        {% with nested_id_prefix=current_id_prefix|add:"-"|add:forloop.counter %}
+                        {% with counter=forloop.counter|stringformat:"s" %}
+                        {% with nested_id_prefix=current_id_prefix|add:"-"|add:counter %}
                             {% include "home/_recursive_list.html" with list_type=nested.list_type items=nested.items id_prefix=nested_id_prefix %}
+                        {% endwith %}
                         {% endwith %}
                     {% endfor %}
                 {% endif %}

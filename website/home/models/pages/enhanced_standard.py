@@ -516,13 +516,10 @@ _BASE_BLOCK_TYPES = [
         SummaryTimelineBlock(),
     ),
     (
-<<<<<<< HEAD
-=======
         "hero_section",
         HeroSection(),
     ),
     (
->>>>>>> feature/petitioner-experience
         "printable_section",
         PrintableSectionBlock(),
     ),
