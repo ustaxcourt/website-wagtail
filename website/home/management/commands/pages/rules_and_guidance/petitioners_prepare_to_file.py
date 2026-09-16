@@ -1,5 +1,6 @@
 import logging
 
+from wagtail.documents.models import Document
 from wagtail.models import Page
 
 from home.management.commands.pages.page_initializer import PageInitializer
@@ -10,7 +11,22 @@ from home.models.utils.execute_script import ExecuteScript
 logger = logging.getLogger(__name__)
 
 
+PETITIONER_DOCUMENT_FILENAMES = {
+    "stin": "Form_4_Statement_of_Taxpayer_Identification_Number.pdf",
+    "petition_kit": "Petition_Kit.pdf",
+    "corporate_disclosure": "Corporate_Disclosure_Statement_Form.pdf",
+}
+
+
 class PetitionersPrepareToFilePageInitializer(PageInitializer):
+    def get_document_url(self, title):
+        document = Document.objects.filter(title=title).first()
+        if document:
+            return document.url
+
+        logger.warning("Document with title '%s' was not found.", title)
+        return f"/files/documents/{title}"
+
     def create(self):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
@@ -29,6 +45,13 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
         call_to_action = CallToActionBox.objects.filter(
             header="Ready to begin your petition?"
         ).first()
+        stin_url = self.get_document_url(PETITIONER_DOCUMENT_FILENAMES["stin"])
+        petition_kit_url = self.get_document_url(
+            PETITIONER_DOCUMENT_FILENAMES["petition_kit"]
+        )
+        corporate_disclosure_url = self.get_document_url(
+            PETITIONER_DOCUMENT_FILENAMES["corporate_disclosure"]
+        )
 
         page = home_page.add_child(
             instance=PetitionerExperiencePage(
@@ -64,10 +87,10 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
                                                 "text": "<p>A copy of the IRS Notice (if you received one).</p>"
                                             },
                                             {
-                                                "text": '<p>Statement of <a href="/case-related-forms">Taxpayer Identification Number (STIN)</a> form filled out with your SSN/EIN.</p>'
+                                                "text": f'<p>Statement of <a href="{stin_url}">Taxpayer Identification Number (STIN)</a> form filled out with your SSN/EIN.</p>'
                                             },
                                             {
-                                                "text": '<p><a href="/petitioners-start">Petition Kit</a> for completion only if filing by mail.</p>'
+                                                "text": f'<p><a href="{petition_kit_url}">Petition Kit</a> for completion only if filing by mail.</p>'
                                             },
                                             {
                                                 "text": "<p>Valid email address to register for DAWSON if filing electronically.</p>"
@@ -76,7 +99,7 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
                                                 "text": "<p>$60 filing fee via Pay.gov (after filing the petition).</p>"
                                             },
                                             {
-                                                "text": '<p>Complete the <a href="/case-related-forms">Corporate Disclosure Statement</a> form ONLY if you are filing on behalf of a company.</p>'
+                                                "text": f'<p>Complete the <a href="{corporate_disclosure_url}">Corporate Disclosure Statement</a> form ONLY if you are filing on behalf of a company.</p>'
                                             },
                                         ],
                                     },
