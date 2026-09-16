@@ -562,6 +562,7 @@ _BASE_BLOCK_TYPES = [
                             max_num=1,
                             required=False,
                             label="Buttons",
+                            default=[],
                         ),
                     ),
                 ],
