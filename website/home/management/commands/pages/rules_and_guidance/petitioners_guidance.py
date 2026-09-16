@@ -88,7 +88,10 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                         "url": [
                                             {
                                                 "type": "external_url",
-                                                "value": "http://127.0.0.1:8000/petitioners-prepare-to-file",
+                                                "value": urljoin(
+                                                    _base_url,
+                                                    "/petitioners-prepare-to-file",
+                                                ),
                                                 "id": "75b8ede0-6600-4f4d-9083-65ddb9f45454",
                                             }
                                         ],
@@ -100,7 +103,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 {
                                     "type": "button",
                                     "value": {
-                                        "icon": 1,
+                                        "icon": arrow_forward_doc.pk,
                                         "icon_location": "after",
                                         "text": "File a Petition Online",
                                         "url": [
@@ -121,7 +124,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": '<h2 data-block-key="cuzcn"><b>Get Started</b> <a href="http://127.0.0.1:8000/petitioners-timeline">(View detailed timeline)</a></h2>',
+                        "value": f'<h2 data-block-key="cuzcn"><b>Get Started</b> <a href={_petitioner_timeline_url}>(View detailed timeline)</a></h2>',
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
                     },
                     {
