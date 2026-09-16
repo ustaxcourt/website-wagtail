@@ -3,7 +3,9 @@
 {# Usage: {% include "includes/enhanced_body.html" with blocks=page.body %} #}
 {# Or: {% include "includes/enhanced_body.html" with blocks=block.value.default_content %} #}
 {% for block in blocks %}
-    {% if block.block_type == 'h2' %}
+    {% if block.block_type == 'icon_header' %}
+        {% include "icon_header_block.html" with value=block.value %}
+    {% elif block.block_type == 'h2' %}
         <h2>{{ block.value }}</h2>
     {% elif block.block_type == 'h3' %}
         <h3>{{ block.value }}</h3>
@@ -33,9 +35,9 @@
             {% with link_item=block.value.link.0 %}
                 {% if link_item %}
                     <a href="{% if link_item.block_type == 'external_url' %}{{ link_item.value }}{% elif link_item.block_type == 'internal_page' %}{% pageurl link_item.value %}{% elif link_item.block_type == 'internal_pdf' %}{{ link_item.value.url }}{% endif %}">
-                {% endif %}
-                {% picture block.value.image format-jpeg width-1000 loading="lazy" %}
-                {% if link_item %}</a>{% endif %}
+                    {% endif %}
+                    {% picture block.value.image format-jpeg width-1000 loading="lazy" %}
+                    {% if link_item %}</a>{% endif %}
             {% endwith %}
         </div>
     {% elif block.block_type == 'hr' %}
@@ -74,7 +76,9 @@
             <div class="question-answer-block">
                 <h3>
                     <a href="#{{ q.anchortag }}">
-                        <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}" aria-hidden="true"></div>
+                        <div class="fa-solid fa-bookmark bookmark"
+                             id="{{ q.anchortag }}"
+                             aria-hidden="true"></div>
                         {{ q.question }}
                     </a>
                 </h3>
@@ -168,7 +172,8 @@
                         <div class="card-header">
                             {% if card.title_icon %}
                                 <div class="info-card__title-icon">
-                                    <img src="{{ card.title_icon.url }}" alt="{{ card.title_icon_alt_text|default:'' }}">
+                                    <img src="{{ card.title_icon.url }}"
+                                         alt="{{ card.title_icon_alt_text|default:'' }}">
                                 </div>
                             {% endif %}
                             {% if card.subtitle or card.title %}
@@ -179,24 +184,14 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                    {% if card.description %}
-                        <div class="description">{{ card.description|richtext }}</div>
-                    {% endif %}
+                    {% if card.description %}<div class="description">{{ card.description|richtext }}</div>{% endif %}
                     {% if card.buttons %}
                         <div class="info-card__buttons">
                             {% for button in card.buttons %}
                                 {% for link_item in button.url %}
                                     <a class="info-card__button {% if not button.button_hover %}no-hover{% endif %}"
-                                       {% if link_item.block_type == 'external_url' %}
-                                           href="{{ link_item.value }}"
-                                       {% elif link_item.block_type == 'internal_page' %}
-                                           href="{% pageurl link_item.value %}"
-                                       {% elif link_item.block_type == 'internal_pdf' %}
-                                           href="{{ link_item.value.url }}"
-                                       {% endif %}>
-                                        {% if button.icon and button.icon.url %}
-                                            <img src="{{ button.icon.url }}" alt="">
-                                        {% endif %}
+                                       {% if link_item.block_type == 'external_url' %} href="{{ link_item.value }}" {% elif link_item.block_type == 'internal_page' %} href="{% pageurl link_item.value %}" {% elif link_item.block_type == 'internal_pdf' %} href="{{ link_item.value.url }}" {% endif %}>
+                                        {% if button.icon and button.icon.url %}<img src="{{ button.icon.url }}" alt="">{% endif %}
                                         {{ button.text }}
                                     </a>
                                 {% endfor %}
@@ -224,8 +219,8 @@
         {% include "grid_block.html" with block=block block_index=forloop.counter0 %}
     {% elif block.block_type == 'summary_timeline' %}
         {% include "summary_timeline.html" with block=block %}
-            {% elif block.block_type == 'hero_section' %}
-                {% include "hero_section.html" with block=block %}
+    {% elif block.block_type == 'hero_section' %}
+        {% include "hero_section.html" with block=block %}
     {% elif block.block_type == 'printable_section' %}
         {% if tile_index is not None %}
             {% include "printable_section_block.html" with block=block block_index=forloop.counter0 suffix="-ct" tile_num=tile_index %}
