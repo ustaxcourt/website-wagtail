@@ -38,7 +38,7 @@ from wagtail.models import Locale, Page, Revision, Site
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
 migration_module = importlib.import_module(
-    "home.migrations.0149_strip_phantom_card_button_pe"
+    "home.migrations.0146_strip_phantom_card_button_pe"
 )
 
 

@@ -27,7 +27,7 @@ from wagtail.models import Locale, Page, Revision, Site
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
 migration_module = importlib.import_module(
-    "home.migrations.0141_migrate_card_block_icon_field_pe"
+    "home.migrations.0144_migrate_card_block_icon_field_pe"
 )
 
 
