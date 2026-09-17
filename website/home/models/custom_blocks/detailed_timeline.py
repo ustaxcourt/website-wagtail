@@ -1,6 +1,5 @@
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
-from wagtail.fields import RichTextField
 
 
 class DetailedTimelinePhaseBlock(blocks.StructBlock):
@@ -21,6 +20,9 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
         FieldPanel("date_range"),
     ]
 
+    class Meta:
+        label = "Phase"
+
 
 class DetailedTimelineBlock(blocks.StructBlock):
     title = blocks.CharBlock(
@@ -29,22 +31,16 @@ class DetailedTimelineBlock(blocks.StructBlock):
         help_text="Text to be displayed at the beginning of the detailed timeline.",
     )
 
-    introduction = RichTextField(
+    introduction = blocks.RichTextBlock(
         help_text="Text to be displayed under the detailed timeline's title.",
-        blank=True,
+        required=True,
     )
 
-    phases = blocks.ListBlock(
-        DetailedTimelinePhaseBlock(),
+    phases = blocks.StreamBlock(
+        [("phase", DetailedTimelinePhaseBlock())],
         blank=True,
         help_text="Phases to be displayed in the detailed timeline.",
     )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("introduction"),
-        FieldPanel("phases"),
-    ]
 
     class Meta:
         icon = "time"
