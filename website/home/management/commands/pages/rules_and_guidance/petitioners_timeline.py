@@ -42,6 +42,57 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
                 search_description=title,
+                body=[
+                    {
+                        "type": "summary_timeline",
+                        "value": {
+                            "title": "TYPICAL CASE TIMELINE",
+                            "phases": [
+                                {
+                                    "type": "item",
+                                    "value": {
+                                        "title": "File Petition",
+                                        "date_range": "Day 0-Deadline",
+                                    },
+                                    "id": "0e88e4c5-a9c6-49a5-9181-d9103c991a0d",
+                                },
+                                {
+                                    "type": "item",
+                                    "value": {
+                                        "title": "IRS Answer",
+                                        "date_range": "~60 days",
+                                    },
+                                    "id": "035ef5a0-94a6-4022-98c1-aa65490c272a",
+                                },
+                                {
+                                    "type": "item",
+                                    "value": {
+                                        "title": "Pre-Trial",
+                                        "date_range": "2-12 months",
+                                    },
+                                    "id": "312473bc-6f85-41c7-a12c-c913d16029be",
+                                },
+                                {
+                                    "type": "item",
+                                    "value": {
+                                        "title": "Trial",
+                                        "date_range": "12-24+ months",
+                                    },
+                                    "id": "50c5f9c3-9f47-4776-b98a-e1de5b4b0b3e",
+                                },
+                                {
+                                    "type": "item",
+                                    "value": {
+                                        "title": "Decision",
+                                        "date_range": "6-12+ months",
+                                    },
+                                    "id": "81478e67-3c14-4339-a5a2-d1f12aa85f04",
+                                },
+                            ],
+                        },
+                        "id": "8c34cf67-1a49-4da5-a508-f35217759926",
+                    }
+                ],
             )
         )
         new_page.save_revision().publish()
