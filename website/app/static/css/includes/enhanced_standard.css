@@ -555,6 +555,18 @@ p:empty {
     justify-content: center;
 }
 
+.info-card.green .info-card__icon-badge {
+    background: black;
+    border: none;
+    box-shadow: none;
+}
+
+.info-card.yellow .info-card__icon-badge {
+    background: black;
+    border: none;
+    box-shadow: none;
+}
+
 .info-card__icon-badge i {
     color: #FFFFFF;
     font-size: 18px;
