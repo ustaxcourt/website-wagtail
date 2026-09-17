@@ -1,7 +1,11 @@
+import logging
+
 from wagtail import blocks
 from home.blocks import SVGDocumentChooserBlock, PDFDocumentChooserBlock
 from wagtail.blocks import PageChooserBlock
 import xml.etree.ElementTree as ET
+
+logger = logging.getLogger(__name__)
 
 
 class IsIconSvgWithWhiteFillStructValue(blocks.StructValue):
@@ -12,7 +16,7 @@ class IsIconSvgWithWhiteFillStructValue(blocks.StructValue):
         Returns:
             bool: True if 'fill' attribute with white value is found, False otherwise.
         """
-        print("is_icon_svg_with_fill called.\n")
+        logger.debug("is_icon_svg_with_fill called.")
         icon = self.get("icon")
         if not icon:
             return False
@@ -36,10 +40,10 @@ class IsIconSvgWithWhiteFillStructValue(blocks.StructValue):
             return False  # No white fill found
 
         except ET.ParseError as e:
-            print(f"Error parsing SVG: {e}")
+            logger.exception("Error parsing SVG: %s", e)
             return False
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            logger.exception("Unexpected error: %s", e)
             return False
 
 
