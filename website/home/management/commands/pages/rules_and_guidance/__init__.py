@@ -9,6 +9,7 @@ from .petitioners_after_trial_page import PetitionersAfterTrialInitializer
 from .petitioners_before_trial_page import PetitionersBeforeTrialInitializer
 from .petitioners_during_page import PetitionersDuringPageInitializer
 from .petitioners_start_page import PetitionersStartPageInitializer
+from .petitioners_prepare_to_file import PetitionersPrepareToFilePageInitializer
 from .remote_basics import RemoteBasicsPageInitializer
 from .remote_proceedings_page import RemoteProceedingsPageInitializer
 from .remote_proceedings_calendar_page import RemoteProceedingsCalendarPageInitializer
@@ -46,6 +47,7 @@ rules_and_guidance_pages_to_initialize = [
     GuidenceForPractitionersPageInitializer,
     # NON-TOP LEVEL PAGES. Order does not matter.
     PetitionersStartPageInitializer,
+    PetitionersPrepareToFilePageInitializer,
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
