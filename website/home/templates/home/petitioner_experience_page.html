@@ -1,17 +1,21 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load filters %}
 {% load static %}
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
     <style>
         /* Rounded rectangle */
         .rounded-rectangle {
             padding: 0 0 48px 0;
-            width: 100%;                 /* Scales with screen width */
-            background-color: var(--color-navy);  /* Fill color */
-            border-radius: 20px;        /* Rounded corners */
+            width: 100%;
+            /* Scales with screen width */
+            background-color: var(--color-navy);
+            /* Fill color */
+            border-radius: 20px;
+            /* Rounded corners */
             margin: 32px 0 32px 0;
         }
 
@@ -37,8 +41,10 @@
         }
 
         .rounded-rectangle-buttons a {
-            display: inline-flex;       /* Make each control inline-flex */
-            margin-right: 0px;          /* Space between controls */
+            display: inline-flex;
+            /* Make each control inline-flex */
+            margin-right: 0px;
+            /* Space between controls */
         }
 
         h2 {
@@ -104,7 +110,9 @@
         {% if page.navigation_ribbon %}
             <div class="blue-page-links-bar">
                 {% for link in page.navigation_ribbon.links.all %}
-                    <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
+                    <a href="{{ link.url }}"
+                       aria-label="{{ link.title }}"
+                       class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
                         {% if link.icon != "dawson" %}
                         <span class="material-symbols-outlined" aria-hidden="true">
                             {{ link.icon }}
@@ -133,6 +141,30 @@
         {% for sub_block in page.raw_html_body %}
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
+        {% if page.side_cards.all %}
+            {# TODO WAG-1339: stub only, for wiring verification - real layout/styling comes in phase 2 #}
+            <div style="display: flex;
+                        flex-direction: column;
+                        gap: 16px;
+                        margin-top: 32px">
+                {% for side_card in page.side_cards.all %}
+                    <div style="border: 2px dashed #999;
+                                padding: 16px;
+                                background-color: {{ side_card.color }}">
+                        {% if side_card.icon %}
+                            <span class="material-symbols-outlined" aria-hidden="true">{{ side_card.icon }}</span>
+                        {% endif %}
+                        <h3>{{ side_card.header_title }}</h3>
+                        {{ side_card.introductory_text|richtext }}
+                        <ul>
+                            {% for link_block in side_card.links %}
+                                <li>{% include "includes/styled_button.html" with block=link_block %}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         {% if page.call_to_action %}
             <div class="rounded-rectangle">
                 <h1>{{ page.call_to_action.header }}</h1>
@@ -145,7 +177,6 @@
             </div>
         {% endif %}
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pageTitle = document.querySelector('[data-testid="page-title"]');
