@@ -1,5 +1,5 @@
 {% load static %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags filters %}
 <style>
     footer#app-footer .main {
         background: var(--color-primary);
@@ -95,6 +95,88 @@
         text-align: center;
     }
 
+    .mobile-nav-menu {
+        background: var(--color-navy);
+        color: #fff;
+        position: sticky;
+        bottom: 0px;
+        padding: 0px 0px 32px 0px;
+        display: none;
+    }
+
+    .mobile-nav-menu .more-information {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-direction: row;
+        gap: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: white;
+        font-size: 16px;
+        line-height: 16px;
+        padding: 12px 28px 16px 28px;
+        width:100%;
+    }
+
+    .mobile-nav-menu .mobile-nav-ribbon a {
+        color: white;
+        font-weight: normal;
+        display: flex;
+        gap: 12px;
+        padding: 12px 24px;
+        flex-direction: row;
+        align-items: center;
+        font-size: 16px;
+        line-height: 16px;
+        text-decoration: none;
+    }
+
+    .mobile-nav-menu.collapsed .mobile-nav-ribbon {
+        display:none;
+    }
+
+    .mobile-nav-menu .current-page {
+        background-color: var(--color-primary);
+        border-radius: 500px; /* just needs to be a large value to get the rounded ends we want the current page highlight to use */
+        margin: 0px 8px;
+    }
+
+    .mobile-nav-menu a.current-page {
+        color: var(--color-white);
+    }
+
+    .circle {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 50%;
+        font-size: 24px;
+        color: black;
+        text-align: center;
+        background: white;
+        z-index: 1;
+    }
+
+    .more-information::before{
+        content: "";
+        position: absolute;
+        top: -4px; /* Move circle up so it cuts into the div */
+        left: 40px;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background: var(--color-navy); /* Match page background */
+        border-radius: 50%;
+        z-index: -100;
+    }
+
+    .circle.collapsed {
+        transform: rotate(180deg);
+        transform-origin: center;
+    }
+
     @media (max-width: 768px) {
         footer#app-footer .footer-address .content {
             grid-template-columns: 1fr;
@@ -126,6 +208,10 @@
         .spacing-fix {
             display: block;
             height: 1em;
+        }
+
+        .mobile-nav-menu {
+            display: block;
         }
     }
 </style>
@@ -192,3 +278,43 @@
         </div>
     </div>
 </footer>
+
+{% if page.navigation_ribbon %}
+<div id="mobile-nav-menu" class="mobile-nav-menu collapsed">
+    <button class="more-information" onclick="toggleNavigationRibbonExpansion()" id="more-information-button" aria-controls="mobile-navigation-ribbon" aria-expanded="false">
+        <span
+            class="material-symbols-outlined circle collapsed" aria-hidden="true">arrow_drop_down</span>More Information
+    </button>
+    <div class="mobile-nav-ribbon" id="mobile-navigation-ribbon">
+        {% for link in page.navigation_ribbon.links.all %}
+            {% if link.icon != "dawson" %}
+                <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
+                    <span class="material-symbols-outlined" aria-hidden="true">
+                        {{ link.icon }}
+                    </span>
+                    <div class="title" style="display: block;">{{ link.title }}</div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+
+
+    function toggleNavigationRibbonExpansion() {
+        const moreInformationIcon = document.querySelector('.circle');
+        const mobileNavMenu = document.querySelector('.mobile-nav-menu');
+        const scrollToTopButton = document.getElementById('scroll-to-top');
+        const wasCollapsed = !moreInformationIcon.classList.toggle('collapsed');
+        const moreInformationButton = document.getElementById('more-information-button');
+
+        moreInformationButton.setAttribute('aria-expanded', wasCollapsed);
+        mobileNavMenu.classList.toggle('collapsed');
+        scrollToTopButton.classList.toggle('mobile-nav-ribbon-collapsed');
+
+        const scrollEvent = new Event('scroll', { bubbles: true, cancelable: true });
+        window.dispatchEvent(scrollEvent);
+    }
+</script>
