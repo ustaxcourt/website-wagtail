@@ -6,6 +6,7 @@ from wagtail.fields import RichTextField, StreamField
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.search import index
+from home.models.config import IconCategories
 from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import custom_promote_panels
 from home.admin.moderation import ModerationTabbedInterface
@@ -17,13 +18,12 @@ class SideCard(Orderable, ClusterableModel):
     page = ParentalKey(
         "PetitionerExperiencePage", related_name="side_cards", on_delete=models.CASCADE
     )
-    icon = models.ForeignKey(
-        "wagtaildocs.Document",
-        null=True,
+    icon = models.CharField(
+        max_length=200,
+        choices=IconCategories.choices,
         blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-        help_text="Optional: any SVG uploaded as a Wagtail Document.",
+        default="",
+        help_text="Optional icon for this side card.",
     )
     header_title = models.CharField(max_length=255)
     introductory_text = RichTextField()
