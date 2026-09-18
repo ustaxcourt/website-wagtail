@@ -47,6 +47,27 @@ class TestSetupWagtailRoles:
             call_command("setup_wagtail_roles", stdout=StringIO())
         assert Group.objects.filter(name="Editors").exists()
 
+    def test_handle_grants_report_permissions_to_editors_moderators_and_administrators(
+        self,
+    ):
+        """Test that report permissions are assigned to Editors, Moderators, and Administrators."""
+        self._setup_wagtail_collections()
+        from wagtail.models import Page
+
+        mock_root = MagicMock()
+        mock_root.slug = "root"
+        mock_root.specific = mock_root
+        with patch.object(Page, "get_first_root_node", return_value=mock_root):
+            from django.core.management import call_command
+
+            call_command("setup_wagtail_roles", stdout=StringIO())
+
+        for group_name in ["Editors", "Moderators", "Administrators"]:
+            group = Group.objects.get(name=group_name)
+            perm_codenames = set(group.permissions.values_list("codename", flat=True))
+            assert "view_newsitem" in perm_codenames
+            assert "view_definitionsquery" in perm_codenames
+
 
 @pytest.mark.django_db
 class TestSetupSnippetPermissions:
