@@ -1,6 +1,15 @@
 from django.db import models
 
 
+class NumberedIconCategories(models.TextChoices):
+    NONE = ("",)
+    ONE = "fa-solid fa-1"
+    TWO = "fa-solid fa-2"
+    THREE = "fa-solid fa-3"
+    CHECK = "check"
+    EXCLAMATION = "exclamation"
+
+
 # Additions or changes to this list should also be made to the CSS line
 # in base.html of link beginning with "https://fonts.googleapis.com/css2"
 class IconCategories(models.TextChoices):
