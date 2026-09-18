@@ -221,6 +221,16 @@ p:empty {
     top: 24px;
 }
 
+.enhanced-page .question-answer-block h3 a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+}
+
+.enhanced-page .question-answer-block h3 a:hover {
+    text-decoration: underline;
+}
+
 .enhanced-page .usa-button {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
