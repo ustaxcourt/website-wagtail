@@ -76,7 +76,7 @@ def migrate_icons(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0147_alter_directoryindex_body_and_more"),
+        ("home", "0147_alter_directoryindex_body_and_more_pe"),
     ]
 
     operations = [
