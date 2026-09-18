@@ -124,7 +124,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": f'<h2 data-block-key="cuzcn"><b>Get Started</b> <a href={_petitioner_timeline_url}>(View detailed timeline)</a></h2>',
+                        "value": '<h2 data-block-key="cuzcn"><b>Get Started</b> <a href={_petitioner_timeline_url}>(View detailed timeline)</a></h2>',
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
                     },
                     {
@@ -177,6 +177,11 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                             },
                         ],
                         "id": "8a6d6de4-b347-40c5-9f95-792200a223ab",
+                    },
+                    {
+                        "type": "icon_header",
+                        "value": {"icon": "fa-solid fa-file", "text": "How to File"},
+                        "id": "346218f7-ec8e-47e0-a60d-6696f90e4d8f",
                     },
                 ],
             )
