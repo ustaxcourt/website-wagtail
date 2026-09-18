@@ -10,6 +10,9 @@ from home.management.commands.pages.home_page import HomePageInitializer
 from home.management.commands.pages.footer import FooterInitializer
 from home.management.commands.pages.navigation import NavigationInitializer
 from home.management.commands.pages.card_set_icons import CardSetIconsInitializer
+from home.management.commands.snippets.navigation_ribbon_update import (
+    NavigationRibbonUpdater,
+)
 
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
@@ -39,6 +42,7 @@ pages_to_update = (
         PetitionersTimelinePageInitializer,
         PetitionersHelpPageInitializer,
     ]
+    + [NavigationRibbonUpdater]
 )
 
 

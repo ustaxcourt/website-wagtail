@@ -148,8 +148,10 @@ p:empty {
     }
 }
 
-.enhanced-page .links i {
+.enhanced-page .links span {
     padding-right: .4em;
+    font-weight: 900;
+    vertical-align: bottom;
 }
 
 .enhanced-page .links.with-bullets {
@@ -217,6 +219,16 @@ p:empty {
     position: absolute;
     left: -22px;
     top: 24px;
+}
+
+.enhanced-page .question-answer-block h3 a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+}
+
+.enhanced-page .question-answer-block h3 a:hover {
+    text-decoration: underline;
 }
 
 .enhanced-page .usa-button {
@@ -347,6 +359,7 @@ p:empty {
     }
 
 }
+
 
 @media (max-width: 1024px) {
 
@@ -567,10 +580,14 @@ p:empty {
     box-shadow: none;
 }
 
-.info-card__icon-badge i {
+.info-card__icon-badge span {
     color: #FFFFFF;
     font-size: 18px;
     font-weight: 700;
+}
+
+.info-card__icon-badge .info-card__non-md-number {
+    color: #FFFFFF;
 }
 
 .info-card .card-header {

@@ -158,12 +158,18 @@
                     {% if card.numbered_icon %}
                         <div class="info-card__icon-row info-card__icon-row--{{ card.numbered_icon_alignment|default:'left' }}">
                             <div class="info-card__icon-badge">
-                                {% if card.numbered_icon == 'fa-solid fa-check' %}
-                                    <i class="{{ card.numbered_icon }}" role="img" aria-label="Success"></i>
-                                {% elif card.numbered_icon == 'fa-solid fa-exclamation' %}
-                                    <i class="{{ card.numbered_icon }}" role="img" aria-label="Warning"></i>
+                                {% if card.numbered_icon == 'check' %}
+                                    <span class="material-symbols-outlined" aria-label="Success">
+                                        {{ card.numbered_icon }}
+                                    </span>
+                                {% elif card.numbered_icon == 'exclamation' %}
+                                    <span class="material-symbols-outlined" aria-label="Warning">
+                                        {{ card.numbered_icon }}
+                                    </span>
                                 {% else %}
-                                    <i class="{{ card.numbered_icon }}" aria-hidden="true"></i>
+                                    <span class="info-card__non-md-number" aria-hidden="true">
+                                        {{ card.numbered_icon }}
+                                    </span>
                                 {% endif %}
                             </div>
                         </div>

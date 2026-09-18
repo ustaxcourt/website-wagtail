@@ -4,6 +4,9 @@ from home.management.commands.snippets.call_to_action_box import (
 from home.management.commands.snippets.navigation_ribbon import (
     NavigationRibbonInitializer,
 )
+from home.management.commands.snippets.navigation_ribbon_update import (
+    NavigationRibbonUpdater,
+)
 from home.management.commands.snippets.zoomgov_proceeding_ribbon import (
     ZoomgovProceedingRibbonInitializer,
 )
@@ -24,4 +27,8 @@ snippets_to_initialize = [
 
 snippets_to_initialize_via_executescript = [
     CallToActionBoxInitializer,
+]
+
+snippets_to_update_via_executescript = [
+    NavigationRibbonUpdater,
 ]

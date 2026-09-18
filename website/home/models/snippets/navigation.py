@@ -43,6 +43,7 @@ class NavigationRibbon(
     ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, ClusterableModel
 ):
     name = models.CharField(max_length=255)
+
     _revisions = GenericRelation(
         "wagtailcore.Revision", related_query_name="navigation_ribbon"
     )

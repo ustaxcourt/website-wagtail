@@ -39,18 +39,18 @@ class CardColorChoicesTest(SimpleTestCase):
 
 
 class NumberedIconChoicesTest(SimpleTestCase):
-    def test_numbered_icon_has_expected_options_and_font_awesome_classes(self):
+    def test_numbered_icon_has_expected_options_and_material_design_text(self):
         numbered_icon_block = get_card_block().child_blocks["numbered_icon"]
         choices = dict(numbered_icon_block.field.choices)
         self.assertEqual(
             choices,
             {
                 "": "None",
-                "fa-solid fa-1": "One",
-                "fa-solid fa-2": "Two",
-                "fa-solid fa-3": "Three",
-                "fa-solid fa-check": "Check",
-                "fa-solid fa-exclamation": "Exclamation",
+                "1": "One",
+                "2": "Two",
+                "3": "Three",
+                "check": "Check",
+                "exclamation": "Exclamation",
             },
         )
 
