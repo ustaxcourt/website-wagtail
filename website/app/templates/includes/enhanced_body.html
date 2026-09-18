@@ -164,11 +164,11 @@
                                     </span>
                                 {% elif card.numbered_icon == 'exclamation' %}
                                     <span class="material-symbols-outlined" aria-label="Warning">
-                                        {{ card.icon }}
+                                        {{ card.numbered_icon }}
                                     </span>
                                 {% else %}
-                                    <span class="material-symbols-outlined" aria-hidden="true">
-                                        {{ card.icon }}
+                                    <span class="info-card__non-md-number" aria-hidden="true">
+                                        {{ card.numbered_icon }}
                                     </span>
                                 {% endif %}
                             </div>
@@ -178,9 +178,8 @@
                         <div class="card-header">
                             {% if card.title_icon %}
                                 <div class="info-card__title-icon">
-                                    <span class="material-symbols-outlined" aria-hidden="true">
-                                        {{ card.icon }}
-                                    </span>
+                                    <img src="{{ card.title_icon.url }}"
+                                         alt="{{ card.title_icon_alt_text|default:'' }}">
                                 </div>
                             {% endif %}
                             {% if card.subtitle or card.title %}

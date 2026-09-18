@@ -626,10 +626,14 @@ p:empty {
     box-shadow: none;
 }
 
-.info-card__icon-badge i {
+.info-card__icon-badge span {
     color: #FFFFFF;
     font-size: 18px;
     font-weight: 700;
+}
+
+.info-card__icon-badge .info-card__non-md-number {
+    color: #FFFFFF;
 }
 
 .info-card .card-header {
