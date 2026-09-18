@@ -218,6 +218,16 @@
             top: 24px;
         }
 
+        .enhanced-page .question-answer-block h3 a {
+            color: inherit;
+            font-weight: inherit;
+            text-decoration: none;
+        }
+
+        .enhanced-page .question-answer-block h3 a:hover {
+            text-decoration: underline;
+        }
+
         .enhanced-page .usa-button {
             width: 95%;
             margin-top: 0.5em;
@@ -348,61 +358,6 @@
 
         }
 
-        .enhanced-page .info-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .enhanced-page .info-card {
-            padding: 1.5rem;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            position: relative;
-            border: none;
-        }
-
-        .enhanced-page .info-card.green {
-            background-color: #ecf3ec;
-        }
-
-        .enhanced-page .info-card.yellow {
-            background-color: #fef0c8;
-        }
-
-        .enhanced-page .info-card .card-header {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-
-        .enhanced-page .info-card .card-header i {
-            background: #1b1b1b;
-            color: white;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            margin: 0 auto;
-        }
-
-        .enhanced-page .info-card .card-header .title {
-            font-weight: bold;
-            text-align: left;
-        }
-
-        .enhanced-page .info-card .description {
-            text-align: left;
-        }
-
         @media (max-width: 1024px) {
 
             .enhanced-page .question-answer-block .bookmark {
@@ -432,6 +387,7 @@
             .enhanced-page.grid-container .heading-wrapper a {
                 margin-right: 16px;
             }
+
         }
 
         @media (max-width: 768px) {
@@ -440,10 +396,6 @@
                 padding-right: 16px;
                 padding-top: 25px;
                 padding-bottom: 25px;
-            }
-
-            .enhanced-page .info-cards {
-                grid-template-columns: 1fr;
             }
 
             .enhanced-page .dedication {
@@ -519,7 +471,8 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
@@ -544,7 +497,6 @@
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pageTitle = document.querySelector('[data-testid="page-title"]');

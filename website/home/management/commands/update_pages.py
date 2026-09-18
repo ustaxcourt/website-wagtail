@@ -12,6 +12,7 @@ from home.management.commands.pages.navigation import NavigationInitializer
 from home.management.commands.snippets.call_to_action_box import (
     CallToActionBoxInitializer,
 )
+from home.management.commands.pages.card_set_icons import CardSetIconsInitializer
 
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
@@ -30,6 +31,12 @@ pages_to_update = (
     + efiling_and_case_maintenance_pages_to_update
     + [FooterInitializer, NavigationInitializer, HomePageInitializer]
     + [CallToActionBoxInitializer]
+    + [
+        FooterInitializer,
+        NavigationInitializer,
+        HomePageInitializer,
+        CardSetIconsInitializer,
+    ]
     + [
         PetitionersGuidancePageInitializer,
         PetitionersFormsPageInitializer,

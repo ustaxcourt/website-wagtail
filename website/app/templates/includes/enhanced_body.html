@@ -1,8 +1,7 @@
 {% load wagtailcore_tags wagtailimages_tags filters static %}
 {# Reusable template for rendering a list of blocks #}
 {# Usage: {% include "includes/enhanced_body.html" with blocks=page.body %} #}
-{# Or : {% include "includes/enhanced_body.html" with blocks=block.value.default_content %} #}
-
+{# Or: {% include "includes/enhanced_body.html" with blocks=block.value.default_content %} #}
 {% for block in blocks %}
     {% if block.block_type == 'icon_header' %}
         {% include "icon_header_block.html" with value=block.value %}
@@ -75,10 +74,14 @@
         <hr />
         {% for q in block.value %}
             <div class="question-answer-block">
-                <a href="#{{ q.anchortag }}" title="{{ q.question }}">
-                    <div class="fa-solid fa-bookmark bookmark" id="{{ q.anchortag }}"></div>
-                </a>
-                <h3>{{ q.question }}</h3>
+                <h3>
+                    <a href="#{{ q.anchortag }}">
+                        <div class="fa-solid fa-bookmark bookmark"
+                             id="{{ q.anchortag }}"
+                             aria-hidden="true"></div>
+                        {{ q.question }}
+                    </a>
+                </h3>
             </div>
             <div>{{ q.answer|richtext }}</div>
             <hr />
@@ -151,12 +154,50 @@
     {% elif block.block_type == 'card' %}
         <div class="info-cards">
             {% for card in block.value %}
-                <div class="info-card {{ card.color }}">
-                    <div class="card-header">
-                        <i class="{{ card.icon }}" aria-hidden="true"></i>
-                        <div class="title">{{ card.title }}</div>
-                    </div>
-                    <div class="description">{{ card.description|richtext }}</div>
+                <div class="info-card {{ card.color }}{% if card.buttons %} has-button{% endif %}">
+                    {% if card.numbered_icon %}
+                        <div class="info-card__icon-row info-card__icon-row--{{ card.numbered_icon_alignment|default:'left' }}">
+                            <div class="info-card__icon-badge">
+                                {% if card.numbered_icon == 'fa-solid fa-check' %}
+                                    <i class="{{ card.numbered_icon }}" role="img" aria-label="Success"></i>
+                                {% elif card.numbered_icon == 'fa-solid fa-exclamation' %}
+                                    <i class="{{ card.numbered_icon }}" role="img" aria-label="Warning"></i>
+                                {% else %}
+                                    <i class="{{ card.numbered_icon }}" aria-hidden="true"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if card.title_icon or card.subtitle or card.title %}
+                        <div class="card-header">
+                            {% if card.title_icon %}
+                                <div class="info-card__title-icon">
+                                    <img src="{{ card.title_icon.url }}"
+                                         alt="{{ card.title_icon_alt_text|default:'' }}">
+                                </div>
+                            {% endif %}
+                            {% if card.subtitle or card.title %}
+                                <div class="card-header__text">
+                                    {% if card.subtitle %}<div class="subtitle">{{ card.subtitle }}</div>{% endif %}
+                                    {% if card.title %}<div class="title">{{ card.title }}</div>{% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if card.description %}<div class="description">{{ card.description|richtext }}</div>{% endif %}
+                    {% if card.buttons %}
+                        <div class="info-card__buttons">
+                            {% for button in card.buttons %}
+                                {% for link_item in button.url %}
+                                    <a class="info-card__button {% if not button.button_hover %}no-hover{% endif %}"
+                                       {% if link_item.block_type == 'external_url' %} href="{{ link_item.value }}" {% elif link_item.block_type == 'internal_page' %} href="{% pageurl link_item.value %}" {% elif link_item.block_type == 'internal_pdf' %} href="{{ link_item.value.url }}" {% endif %}>
+                                        {% if button.icon and button.icon.url %}<img src="{{ button.icon.url }}" alt="">{% endif %}
+                                        {{ button.text }}
+                                    </a>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
