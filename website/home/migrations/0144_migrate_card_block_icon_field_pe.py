@@ -1,4 +1,5 @@
 import json
+import copy
 
 from django.db import migrations
 
@@ -51,17 +52,20 @@ def migrate_card_icon_field(apps, schema_editor):
     is_postgres = connection.vendor == "postgresql"
 
     def migrate_card_value(card):
-        if "icon" in card and "numbered_icon" not in card:
-            card = dict(card)
-            old_icon = card.pop("icon")
-            if old_icon in LEGACY_ICON_TO_NUMBERED_ICON:
-                card["numbered_icon"] = LEGACY_ICON_TO_NUMBERED_ICON[old_icon]
-                card.setdefault("numbered_icon_alignment", "center")
-            else:
-                print(  # noqa: T201
-                    f"0141_migrate_card_block_icon_field_pe: dropping legacy "
-                    f"icon {old_icon!r} with no numbered_icon equivalent"
-                )
+        if card.get("type") == "item" and "value" in card:
+            card_value = card.get("value")
+            if "icon" in card_value and "numbered_icon" not in card_value:
+                card_value = dict(card_value)
+                old_icon = card_value.pop("icon")
+                if old_icon in LEGACY_ICON_TO_NUMBERED_ICON:
+                    card_value["numbered_icon"] = LEGACY_ICON_TO_NUMBERED_ICON[old_icon]
+                    card_value.setdefault("numbered_icon_alignment", "center")
+                else:
+                    print(  # noqa: T201
+                        f"0141_migrate_card_block_icon_field_pe: dropping legacy "
+                        f"icon {old_icon!r} with no numbered_icon equivalent"
+                    )
+                card["value"] = card_value
         return card
 
     def walk(value):
@@ -86,7 +90,7 @@ def migrate_card_icon_field(apps, schema_editor):
 
     for page_id, raw_body in rows:
         data = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-        migrated = walk(data)
+        migrated = walk(copy.deepcopy(data))
         if migrated != data:
             with connection.cursor() as cursor:
                 cursor.execute(
