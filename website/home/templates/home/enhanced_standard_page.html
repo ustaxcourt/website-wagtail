@@ -37,7 +37,8 @@
         }
         /* Styling for judge button will be moved somewhere else*/
     </style>
-    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
@@ -73,7 +74,6 @@
             {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
         {% endfor %}
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pageTitle = document.querySelector('[data-testid="page-title"]');
