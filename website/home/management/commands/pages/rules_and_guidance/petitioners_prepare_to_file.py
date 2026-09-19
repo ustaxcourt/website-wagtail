@@ -2,6 +2,8 @@ from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import NavigationRibbon
 from home.models import PetitionerExperiencePage
+from home.models import SideCard
+from home.models.config import IconCategories
 from home.models.snippets.call_to_action import CallToActionBox
 import logging
 from home.models.utils.execute_script import ExecuteScript
@@ -45,6 +47,15 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
             )
         )
         new_page.save_revision().publish()
+
+        SideCard.objects.create(
+            page=new_page,
+            icon=IconCategories.INFO,
+            header_title="Need Help?",
+            introductory_text="<p>Contact the Clerk's Office for assistance.</p>",
+            color="yellow",
+        )
+
         logger.info(f"Created the '{title}' page.")
 
     def run(self):
