@@ -74,7 +74,7 @@ def split_oversized_card_sets(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0141_migrate_card_block_icon_field_pe"),
+        ("home", "0144_migrate_card_block_icon_field_pe"),
     ]
 
     operations = [
