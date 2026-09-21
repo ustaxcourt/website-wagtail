@@ -134,7 +134,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 "type": "item",
                                 "value": {
                                     "color": "white",
-                                    "numbered_icon": "fa-solid fa-1",
+                                    "numbered_icon": "1",
                                     "numbered_icon_alignment": "left",
                                     "title_icon": None,
                                     "title_icon_alt_text": "",
@@ -149,7 +149,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 "type": "item",
                                 "value": {
                                     "color": "white",
-                                    "numbered_icon": "fa-solid fa-2",
+                                    "numbered_icon": "2",
                                     "numbered_icon_alignment": "left",
                                     "title_icon": None,
                                     "title_icon_alt_text": "",
@@ -164,7 +164,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 "type": "item",
                                 "value": {
                                     "color": "white",
-                                    "numbered_icon": "fa-solid fa-3",
+                                    "numbered_icon": "3",
                                     "numbered_icon_alignment": "left",
                                     "title_icon": None,
                                     "title_icon_alt_text": "",
