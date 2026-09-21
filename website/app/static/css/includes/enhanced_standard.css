@@ -894,3 +894,21 @@ p:empty {
         min-width: 280px;
     }
 }
+
+/* Side Card styling (WAG-1339 phase 2c - mobile). Same 768px threshold
+   .info-cards uses to go back to a single column - the Figma mobile mockup
+   stacks every card full width regardless of how many there are. */
+@media (max-width: 768px) {
+    .side-card-rail {
+        flex-direction: column;
+    }
+
+    .side-card-rail .side-card {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .side-card__title {
+        font-size: 18px;
+    }
+}
