@@ -86,6 +86,19 @@
     background-color: var(--color-white);
   }
 
+  .styled-button-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .styled-button-helper-text {
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
   .svg-inverted-primary-icon {
     width: 20px;
     height: 20px;
@@ -113,6 +126,10 @@
       href="{% pageurl link_item.value %}"
    {% elif link_item.block_type == 'internal_pdf' %}
       href="{{ link_item.value.url }}"
+   {% elif link_item.block_type == 'email' %}
+      href="mailto:{{ link_item.value }}"
+   {% elif link_item.block_type == 'phone' %}
+      href="tel:{{ link_item.value|cut:' '|cut:'('|cut:')'|cut:'-' }}"
    {% endif %}>
 
   {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "before" %}
@@ -122,7 +139,10 @@
       <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
     {% endif %}
   {% endif %}
-  {{ block.value.text }}
+  <span class="styled-button-text">
+    {{ block.value.text }}
+    {% if block.value.helper_text %}<span class="styled-button-helper-text">{{ block.value.helper_text }}</span>{% endif %}
+  </span>
   {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "after" %}
     {% if not block.value.is_icon_svg_with_white_fill %}
       <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>

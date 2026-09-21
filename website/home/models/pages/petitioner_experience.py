@@ -36,8 +36,24 @@ class SideCard(Orderable, ClusterableModel):
             ("dark-primary", "Dark-Primary"),
             ("green", "Green"),
             ("yellow", "Yellow"),
+            ("blue", "Blue"),
+            ("navy", "Navy"),
         ],
         default="white",
+    )
+    # TODO WAG-1339 phase 3: this couples "how the links look" to a single
+    # choice for the whole card. Revisit if a card ever needs to mix styles
+    # (e.g. a contact row alongside a plain link) - not needed for the
+    # Prepare to File / FAQs mockups seen so far.
+    link_display_style = models.CharField(
+        max_length=20,
+        choices=[
+            ("contact", "Contact rows (icon + text in a white pill)"),
+            ("button", "Full-width button(s)"),
+            ("plain_links", "Plain underlined text links"),
+        ],
+        default="button",
+        help_text="How the links below should be displayed on this card.",
     )
     links = StreamField(
         [("button", ButtonBlock())],
@@ -51,6 +67,7 @@ class SideCard(Orderable, ClusterableModel):
         FieldPanel("header_title"),
         FieldPanel("introductory_text"),
         FieldPanel("color"),
+        FieldPanel("link_display_style"),
         FieldPanel("links"),
     ]
 
