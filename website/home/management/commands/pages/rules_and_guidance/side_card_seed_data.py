@@ -8,7 +8,6 @@ into each page initializer.
 import logging
 import uuid
 
-from wagtail.documents.models import Document
 from wagtail.models import Page
 
 from home.models import SideCard
@@ -16,19 +15,7 @@ from home.models import SideCard
 logger = logging.getLogger(__name__)
 
 
-def _load_icon(initializer, filename, title):
-    doc = Document.objects.filter(title=title).first()
-    if doc:
-        return doc
-    return initializer.load_document_from_documents_dir(
-        subdirectory=None, filename=filename, title=title
-    )
-
-
 def add_clerks_office_side_card(initializer, page):
-    mail_icon = _load_icon(initializer, "mail.svg", "Mail Icon")
-    call_icon = _load_icon(initializer, "call.svg", "Call Icon")
-
     SideCard.objects.create(
         page=page,
         header_title="Clerk's Office",
@@ -37,9 +24,9 @@ def add_clerks_office_side_card(initializer, page):
         link_display_style="contact",
         links=[
             {
-                "type": "button",
+                "type": "side_card_link",
                 "value": {
-                    "icon": mail_icon.pk,
+                    "icon": "mail",
                     "text": "dawson.support@ustaxcourt.gov",
                     "url": [
                         {
@@ -53,9 +40,9 @@ def add_clerks_office_side_card(initializer, page):
                 "id": str(uuid.uuid4()),
             },
             {
-                "type": "button",
+                "type": "side_card_link",
                 "value": {
-                    "icon": call_icon.pk,
+                    "icon": "call",
                     "text": "(202) 521-0700",
                     "helper_text": "Mon–Fri, 8:00am–4:30pm ET",
                     "url": [
@@ -74,8 +61,6 @@ def add_clerks_office_side_card(initializer, page):
 
 
 def add_need_legal_help_side_card(initializer, page):
-    open_in_new_icon = _load_icon(initializer, "open_in_new.svg", "Open in New Icon")
-
     litc_page = Page.objects.filter(slug="clinics-and-pro-bono-programs").first()
     if litc_page:
         litc_url_block = [
@@ -105,9 +90,9 @@ def add_need_legal_help_side_card(initializer, page):
         link_display_style="button",
         links=[
             {
-                "type": "button",
+                "type": "side_card_link",
                 "value": {
-                    "icon": open_in_new_icon.pk,
+                    "icon": "open_in_new",
                     "icon_location": "after",
                     "text": "Find an LITC Near You",
                     "url": litc_url_block,
@@ -135,7 +120,7 @@ def add_helpful_links_side_card(initializer, page):
     if user_guides_page:
         links.append(
             {
-                "type": "button",
+                "type": "side_card_link",
                 "value": {
                     "text": "DAWSON Petitioner Electronic Filing Instructions",
                     "url": [
@@ -153,7 +138,7 @@ def add_helpful_links_side_card(initializer, page):
     if training_page:
         links.append(
             {
-                "type": "button",
+                "type": "side_card_link",
                 "value": {
                     "text": "DAWSON Petitioner Training Video",
                     "url": [
