@@ -13,6 +13,8 @@ from wagtail.documents.models import Document
 logger = logging.getLogger(__name__)
 arrow_forward_name = "Arrow Forward"
 computer_icon_name = "computer_icon.svg"
+petition_form_name = "Petition_Simplified_Form_2.pdf"
+ustc_address_url = "https://www.google.com/maps/place/US+Tax+Court/@38.895172,-77.0175094,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b788e9a932e5:0x33d2d11766456bca!8m2!3d38.8951679!4d-77.0149345!16zL20vMDVzZDE0?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D"
 
 
 class PetitionersGuidancePageInitializer(PageInitializer):
@@ -27,11 +29,12 @@ class PetitionersGuidancePageInitializer(PageInitializer):
         slug = "petitioners-guidance"
         title = "Guidance for Self-Represented Petitioners (Pro Se)"
 
-        if Page.objects.filter(slug=slug).exists():
+        existing_page = Page.objects.filter(slug=slug).first()
+        if existing_page:
+            existing_page = existing_page.specific
             logger.info(f"- {title} page already exists.")
-            return
-
-        logger.info(f"Creating the '{title}' page.")
+        else:
+            logger.info(f"Creating the '{title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name="Guidance for Petitioners Ribbon"
@@ -63,6 +66,115 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                 filename="computer_icon.svg",
                 title="Computer Icon",
             )
+
+        petition_form_doc = Document.objects.filter(title=petition_form_name).first()
+        if petition_form_doc:
+            logger.info(f"'{petition_form_name}' already exists.")
+        else:
+            logger.info(f"Creating '{petition_form_name}'.")
+            petition_form_doc = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=petition_form_name,
+                title=petition_form_name,
+            )
+
+        how_to_file_blocks = [
+            {
+                "type": "icon_header",
+                "value": {"icon": "fa-solid fa-file", "text": "How to File"},
+                "id": "346218f7-ec8e-47e0-a60d-6696f90e4d8f",
+            },
+            {
+                "type": "card",
+                "value": [
+                    {
+                        "type": "item",
+                        "value": {
+                            "color": "dark-primary",
+                            "numbered_icon": "",
+                            "numbered_icon_alignment": "left",
+                            "title_icon": computer_doc.pk,
+                            "title_icon_alt_text": "",
+                            "subtitle": "",
+                            "title": "Electronic Filing - Recommended",
+                            "description": f'<ul><li data-block-key="2lysw">File your petition electronically using DAWSON</li><li data-block-key="3rclc">Use the petition generator in DAWSON or upload a PDF (<a linktype="document" id="{petition_form_doc.pk}">Petition Form</a>)</li><li data-block-key="909he">Immediate confirmation of filing</li></ul><p data-block-key="9e3d3">Visit <a href="https://dawson.ustaxcourt.gov">dawson.ustaxcourt.gov</a> to get started.</p>',
+                            "buttons": [],
+                        },
+                        "id": "6623707a-b1e6-4894-85d9-a983996ff861",
+                    },
+                    {
+                        "type": "item",
+                        "value": {
+                            "color": "dark-primary",
+                            "numbered_icon": "",
+                            "numbered_icon_alignment": "left",
+                            "title_icon": computer_doc.pk,
+                            "title_icon_alt_text": "",
+                            "subtitle": "",
+                            "title": "Can't file electronically? Mail Your Petition",
+                            "description": f'<ul><li data-block-key="2lysw">Download the Petition Kit</li><li data-block-key="3rclc">Complete all the forms</li><li data-block-key="909he">Mail all forms to the US Tax Court</li></ul><p data-block-key="9e3d3">Mail to: <a href="{ustc_address_url}">United States Tax Court, 400 Second St. NW Washington, DC 20217</a></p>',
+                            "buttons": [],
+                        },
+                        "id": "a2afe469-e55c-4aa4-9a06-eaaec3ef5cc2",
+                    },
+                ],
+                "id": "562bdadf-fd26-457f-9d22-47b1f810d6ed",
+            },
+            {
+                "type": "callout",
+                "value": {
+                    "heading": "NOTE FOR PETITIONERS WHO FILE BY MAIL:",
+                    "text": '<p data-block-key="b64or">Petitioners who file by mail cannot immediately switch to electronic access. To protect your information, the United States Tax Court will mail identity verification instructions to your address of record. Switching to electronic access will be available only after the verification process is complete. Consider filing electronically from the start to get electronic access to your case immediately.</p>',
+                    "callout_type": "warning",
+                },
+                "id": "b9361c22-d50d-448b-8350-14bf5807fd5f",
+            },
+        ]
+
+        if existing_page:
+
+            def as_stream_item(block):
+                value = block["value"]
+                if block["type"] == "card":
+                    value = []
+                    for item in block["value"]:
+                        item_value = item["value"].copy()
+                        if isinstance(item_value.get("title_icon"), int):
+                            item_value["title_icon"] = Document.objects.get(
+                                pk=item_value["title_icon"]
+                            )
+                        value.append(item_value)
+                return block["type"], value
+
+            current_blocks = list(existing_page.body)
+            body = [(block.block_type, block.value) for block in current_blocks]
+            how_to_file_index = next(
+                (
+                    index
+                    for index, block in enumerate(current_blocks)
+                    if block.block_type == "icon_header"
+                    and block.value.get("text") == "How to File"
+                ),
+                None,
+            )
+            section_has_petition_form_link = any(
+                "Petition Form" in str(block.value) and "linktype" in str(block.value)
+                for block in current_blocks[how_to_file_index:]
+                if how_to_file_index is not None
+            )
+            if how_to_file_index is None:
+                body.extend(as_stream_item(block) for block in how_to_file_blocks)
+            elif not section_has_petition_form_link:
+                body[how_to_file_index : how_to_file_index + 3] = [
+                    as_stream_item(block) for block in how_to_file_blocks
+                ]
+            else:
+                return
+            existing_page.body = body
+            if existing_page.body:
+                existing_page.save_revision().publish()
+                logger.info(f"Added the 'How to File' section to '{title}'.")
+            return
 
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
@@ -190,56 +302,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                         ],
                         "id": "8a6d6de4-b347-40c5-9f95-792200a223ab",
                     },
-                    {
-                        "type": "icon_header",
-                        "value": {"icon": "fa-solid fa-file", "text": "How to File"},
-                        "id": "346218f7-ec8e-47e0-a60d-6696f90e4d8f",
-                    },
-                    {
-                        "type": "card",
-                        "value": [
-                            {
-                                "type": "item",
-                                "value": {
-                                    "color": "dark-primary",
-                                    "numbered_icon": "",
-                                    "numbered_icon_alignment": "left",
-                                    "title_icon": computer_doc.pk,
-                                    "title_icon_alt_text": "",
-                                    "subtitle": "",
-                                    "title": "Electronic Filing - Recommended",
-                                    "description": '<ul><li data-block-key="2lysw">File your petition electronically using DAWSON</li><li data-block-key="3rclc">Use the petition generator in DAWSON or upload a PDF (Petition Form)</li><li data-block-key="909he">Immediate confirmation of filing</li></ul><p data-block-key="9e3d3">Visit <a href="https://dawson.ustaxcourt.gov">dawson.ustaxcourt.gov</a> to get started.</p>',
-                                    "buttons": [],
-                                },
-                                "id": "6623707a-b1e6-4894-85d9-a983996ff861",
-                            },
-                            {
-                                "type": "item",
-                                "value": {
-                                    "color": "dark-primary",
-                                    "numbered_icon": "",
-                                    "numbered_icon_alignment": "left",
-                                    "title_icon": computer_doc.pk,
-                                    "title_icon_alt_text": "",
-                                    "subtitle": "",
-                                    "title": "Can't file electronically? Mail Your Petition",
-                                    "description": '<ul><li data-block-key="2lysw">Download the Petition Kit</li><li data-block-key="3rclc">Complete all the forms</li><li data-block-key="909he">Mail all forms to the US Tax Court</li></ul><p data-block-key="9e3d3">Mail to: <a href="https://www.google.com/maps/place/US+Tax+Court/@38.895172,-77.0175094,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b788e9a932e5:0x33d2d11766456bca!8m2!3d38.8951679!4d-77.0149345!16zL20vMDVzZDE0?entry=ttu&amp;g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D">United States Tax Court, 400 Second St. NW Washington, DC 20217</a></p>',
-                                    "buttons": [],
-                                },
-                                "id": "a2afe469-e55c-4aa4-9a06-eaaec3ef5cc2",
-                            },
-                        ],
-                        "id": "562bdadf-fd26-457f-9d22-47b1f810d6ed",
-                    },
-                    {
-                        "type": "callout",
-                        "value": {
-                            "heading": "NOTE FOR PETITIONERS WHO FILE BY MAIL:",
-                            "text": '<p data-block-key="b64or">Petitioners who file by mail cannot immediately switch to electronic access. To protect your information, the United States Tax Court will mail identity verification instructions to your address of record. Switching to electronic access will be available only after the verification process is complete. Consider filing electronically from the start to get electronic access to your case immediately.</p>',
-                            "callout_type": "warning",
-                        },
-                        "id": "b9361c22-d50d-448b-8350-14bf5807fd5f",
-                    },
+                    *how_to_file_blocks,
                 ],
             )
         )
@@ -248,7 +311,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
 
     def run(self):
         """Update the Petitioners Guidance page."""
-        command_name = "Initialize Petitioners Guidance page"
+        command_name = "Add How to File section to Petitioners Guidance page"
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")

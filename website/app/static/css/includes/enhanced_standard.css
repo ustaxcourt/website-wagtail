@@ -667,6 +667,26 @@ p:empty {
     height: 20px;
 }
 
+/* How to File spacing follows the petitioner experience designs. */
+.enhanced-page .icon-header + .info-cards {
+    margin-top: 24px;
+    margin-bottom: 24px !important;
+    gap: 48px;
+}
+
+.info-cards:has(+ .icon-header) {
+    margin-bottom: 32px;
+}
+
+.info-cards:has(~ div > .styled-callout) {
+    margin-bottom: 24px;
+}
+
+.info-cards ~ div:has(> .styled-callout) .styled-callout {
+    margin-top: 0;
+    margin-bottom: 32px;
+}
+
 @media (max-width: 1024px) {
     .info-card {
         border-radius: 16px;
@@ -675,6 +695,16 @@ p:empty {
     .info-cards {
         gap: 32px;
         flex-wrap: wrap;
+    }
+
+    .icon-header + .info-cards {
+        gap: 48px;
+    }
+
+    .enhanced-page .icon-header + .info-cards {
+        margin-top: 16px;
+        margin-bottom: 16px !important;
+        gap: 16px;
     }
 
     .info-cards .info-card {
