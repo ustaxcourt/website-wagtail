@@ -870,3 +870,27 @@ p:empty {
 .side-card__plain-link:hover {
     opacity: 0.85;
 }
+
+/* Side Card styling (WAG-1339 phase 2b - tablet). Below desktop width the
+   rail drops out of the grid-col split and renders full width beneath the
+   body (see the desktop:grid-col-8/4 classes in
+   petitioner_experience_page.html); wrap it 2-up here, matching the same
+   1024px threshold .info-cards already uses above for the same reason
+   (single column is too cramped once the rail is full width but still
+   narrower than 2 comfortable card widths in the desktop rail). */
+@media (max-width: 1024px) {
+    .side-card-layout {
+        margin-top: 8px;
+    }
+
+    .side-card-rail {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .side-card-rail .side-card {
+        flex: 1 1 calc(50% - 12px);
+        min-width: 280px;
+    }
+}
