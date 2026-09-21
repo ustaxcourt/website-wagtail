@@ -63,10 +63,18 @@ class ButtonBlock(blocks.StructBlock):
                 PDFDocumentChooserBlock(help_text="Select a PDF to link to"),
             ),
             ("external_url", blocks.URLBlock(help_text="Enter an external URL")),
+            ("email", blocks.EmailBlock(help_text="Enter an email address")),
+            (
+                "phone",
+                blocks.CharBlock(
+                    help_text="Enter a phone number, e.g. (202) 521-0700",
+                    max_length=20,
+                ),
+            ),
         ],
         max_num=1,
         min_num=1,
-        help_text="Select exactly one: Internal Page, External URL, or PDF.",
+        help_text="Select exactly one: Internal Page, External URL, PDF, Email, or Phone.",
         label="URL",
     )
 
@@ -78,6 +86,12 @@ class ButtonBlock(blocks.StructBlock):
 
     button_hover = blocks.BooleanBlock(
         required=False, help_text="Enable hover effect on button", default=True
+    )
+
+    helper_text = blocks.CharBlock(
+        required=False,
+        max_length=100,
+        help_text="Optional secondary line displayed under the button/link text (e.g. business hours).",
     )
 
     def clean(self, value):
