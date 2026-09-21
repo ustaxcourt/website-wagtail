@@ -5,7 +5,7 @@
     <style>
         .detailed-timeline-title-block > h2 {
             font-size: 28px;
-            font-weight: semibold;
+            font-weight: 600;
             margin: 0px 0px 8px 0px;
         }
 
@@ -175,7 +175,7 @@
     <div class="detailed-timeline-phases-block">
         {% for phase in block.value.phases %}
             <div class="detailed-timeline-phase">
-                {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix="-accordion" %}
+                {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id %}
             </div>
         {% endfor %}
     </div>

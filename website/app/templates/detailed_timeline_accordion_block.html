@@ -10,12 +10,12 @@
           aria-controls="detailed-timeline-content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
           id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
         >
-          <div class="detailed-timeline-accordion-header-text">{{ data.title }}</div>
+          <span class="detailed-timeline-accordion-header-text">{{ data.title }}</span>
           <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true">keyboard_arrow_down</span>
-          <div class="detailed-timeline-accordion-header-date-range">
+          <span class="detailed-timeline-accordion-header-date-range">
             <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon" aria-hidden="true">schedule</span>
             {{ data.date_range }}
-          </div>
+          </span>
         </button>
     </h3>
   </div>
