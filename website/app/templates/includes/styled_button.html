@@ -1,5 +1,5 @@
 {% load static %}
-{% load wagtailcore_tags navigation_tags custom_tags %}
+{% load wagtailcore_tags navigation_tags custom_tags filters %}
 
 <style>
   .usa-button.styled-primary-button{
@@ -120,17 +120,7 @@
 {% for link_item in block.value.url %}
 <a class="usa-button {% if block.value.style == "inverted-primary" %}usa-button--outline{% endif %} styled-{{ block.value.style }}-button {% if not block.value.button_hover %}no-hover{% endif %}"
    data-is-link="true"
-   {% if link_item.block_type == 'external_url' %}
-      href="{{ link_item.value }}"
-   {% elif link_item.block_type == 'internal_page' %}
-      href="{% pageurl link_item.value %}"
-   {% elif link_item.block_type == 'internal_pdf' %}
-      href="{{ link_item.value.url }}"
-   {% elif link_item.block_type == 'email' %}
-      href="mailto:{{ link_item.value }}"
-   {% elif link_item.block_type == 'phone' %}
-      href="tel:{{ link_item.value|cut:' '|cut:'('|cut:')'|cut:'-' }}"
-   {% endif %}>
+   href="{{ link_item|link_href }}">
 
   {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "before" %}
     {% if not block.value.is_icon_svg_with_white_fill %}

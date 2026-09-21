@@ -137,34 +137,21 @@
         {% if page.introductory_text %}
             {{ page.introductory_text|richtext }}
         {% endif %}
-        {% include "includes/enhanced_body.html" with blocks=page.body %}
-        {% for sub_block in page.raw_html_body %}
-            {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
-        {% endfor %}
-        {% if page.side_cards.all %}
-            {# TODO WAG-1339: stub only, for wiring verification - real layout/styling comes in phase 2 #}
-            <div style="display: flex;
-                        flex-direction: column;
-                        gap: 16px;
-                        margin-top: 32px">
-                {% for side_card in page.side_cards.all %}
-                    <div style="border: 2px dashed #999;
-                                padding: 16px;
-                                background-color: {{ side_card.color }}">
-                        {% if side_card.icon %}
-                            <span class="material-symbols-outlined" aria-hidden="true">{{ side_card.icon }}</span>
-                        {% endif %}
-                        <h3>{{ side_card.header_title }}</h3>
-                        {{ side_card.introductory_text|richtext }}
-                        <ul>
-                            {% for link_block in side_card.links %}
-                                <li>{% include "includes/styled_button.html" with block=link_block %}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+        <div class="grid-row grid-gap side-card-layout">
+            <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">
+                {% include "includes/enhanced_body.html" with blocks=page.body %}
+                {% for sub_block in page.raw_html_body %}
+                    {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
                 {% endfor %}
             </div>
-        {% endif %}
+            {% if page.side_cards.all %}
+                <div class="grid-col-12 desktop:grid-col-4 side-card-rail">
+                    {% for side_card in page.side_cards.all %}
+                        {% include "includes/side_card.html" with side_card=side_card %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
         {% if page.call_to_action %}
             <div class="rounded-rectangle">
                 <h1>{{ page.call_to_action.header }}</h1>

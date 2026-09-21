@@ -1,5 +1,10 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
+from home.management.commands.pages.rules_and_guidance.side_card_seed_data import (
+    add_clerks_office_side_card,
+    add_helpful_links_side_card,
+    add_need_legal_help_side_card,
+)
 from home.models import NavigationRibbon
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.models.snippets.call_to_action import CallToActionBox
@@ -11,22 +16,23 @@ logger = logging.getLogger(__name__)
 
 
 class PetitionersHelpPageInitializer(PageInitializer):
+    COMMAND_NAME = "Initialize Petitioners Help page"
+
     def __init__(self):
         super().__init__()
+        self.slug = "petitioners-help"
+        self.title = "Frequently Asked Questions"
 
     def create(self):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "petitioners-help"
-        title = "Frequently Asked Questions"
-
-        if Page.objects.filter(slug=slug).exists():
-            logger.info(f"- {title} page already exists.")
+        if Page.objects.filter(slug=self.slug).exists():
+            logger.info(f"- {self.title} page already exists.")
             return
 
-        logger.info(f"Creating the '{title}' page.")
+        logger.info(f"Creating the '{self.title}' page.")
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name="Guidance for Petitioners Ribbon"
@@ -36,32 +42,49 @@ class PetitionersHelpPageInitializer(PageInitializer):
         _cta_box = CallToActionBox.objects.filter(header=_snippet_name).first()
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
-                title=title,
+                title=self.title,
                 call_to_action=_cta_box,
-                slug=slug,
-                seo_title=title,
+                slug=self.slug,
+                seo_title=self.title,
                 navigation_ribbon=navigation_ribbon,
-                search_description=title,
+                search_description=self.title,
             )
         )
         new_page.save_revision().publish()
-        logger.info(f"Created the '{title}' page.")
+
+        add_helpful_links_side_card(self, new_page)
+        add_clerks_office_side_card(self, new_page)
+        add_need_legal_help_side_card(self, new_page)
+
+        logger.info(f"Created the '{self.title}' page.")
+
+    def update(self):
+        """Delete and recreate the Petitioners Help page.
+
+        The "only run once per environment" guard lives in run() - see the
+        note on PetitionersPrepareToFilePageInitializer.update() (WAG-1339)
+        for why this method must not repeat that check itself.
+        """
+        existing_page = Page.objects.filter(slug=self.slug).first()
+        if existing_page:
+            logger.info(f"Deleting existing '{self.title}' page to recreate it.")
+            existing_page.delete()
+
+        home_page = Page.objects.get(slug="home")
+        self.create_page_info(home_page)
 
     def run(self):
         """Update the Petitioners Help page."""
-        command_name = "Initialize Petitioners Help page"
-        # Check if script already exists
-        if ExecuteScript.command_exists(command_name):
-            logger.info(f"Script '{command_name}' already exists. Skipping.")
+        if ExecuteScript.command_exists(self.COMMAND_NAME):
+            logger.info(f"Script '{self.COMMAND_NAME}' already exists. Skipping.")
             return 0
 
-        script_entry = ExecuteScript.create_script(command_name)
+        script_entry = ExecuteScript.create_script(self.COMMAND_NAME)
 
         try:
-            self.create()
-            execution_log_text = "Petitioners Help page updated successfully."
+            self.update()
             script_entry.execution_status = "SUCCESS"
-            script_entry.execution_log = execution_log_text
+            script_entry.execution_log = "Petitioners Help page updated successfully."
             script_entry.save()
 
         except Exception as e:
