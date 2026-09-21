@@ -7,7 +7,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.search import index
 from home.models.config import IconCategories
-from home.models.custom_blocks.button import ButtonBlock
+from home.models.custom_blocks.button import SideCardLinkBlock
 from home.models.custom_blocks.common import custom_promote_panels
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
@@ -59,7 +59,7 @@ class SideCard(Orderable, ClusterableModel):
         help_text="How the links below should be displayed on this card.",
     )
     links = StreamField(
-        [("button", ButtonBlock())],
+        [("side_card_link", SideCardLinkBlock())],
         blank=True,
         use_json_field=True,
         help_text="Informational blocks/buttons for this side card.",

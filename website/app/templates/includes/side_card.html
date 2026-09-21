@@ -21,11 +21,8 @@ wants them all to look like the same contact row.
                         <a class="side-card__contact"
                            href="{{ link_item|link_href }}"
                            data-link-type="{{ link_item.block_type }}">
-                            {% if link_block.value.icon and link_block.value.icon.url %}
-                                <img class="side-card__contact-icon"
-                                     src="{{ link_block.value.icon.url }}"
-                                     alt=""
-                                     aria-hidden="true">
+                            {% if link_block.value.icon %}
+                                <span class="material-symbols-outlined side-card__contact-icon" aria-hidden="true">{{ link_block.value.icon }}</span>
                             {% endif %}
                             <span class="side-card__contact-text">
                                 <span class="side-card__contact-label">{{ link_block.value.text }}</span>
