@@ -52,20 +52,47 @@
     .printable-section__body .list-item-content p,
     .printable-section__body > .rich-text,
     .printable-section__body > .rich-text p { font-size: 16px; line-height: 24px; }
+    .printable-section__print-host { display: none; }
     @media print {
         @page { margin: 0; }
         .printable-section__button { display: none !important; }
-        body.printing-printable-section > * { display: none !important; }
-        body.printing-printable-section .printable-section--printing {
-            display: flex !important;
-            position: absolute;
-            top: 0;
-            left: 0;
+        body.printing-printable-section > *:not(.printable-section__print-host) { display: none !important; }
+        body.printing-printable-section .printable-section__print-host {
+            display: block !important;
             width: 100%;
-            margin: 0;
             padding: 24px;
+        }
+        body.printing-printable-section .printable-section__print-host .printable-section {
+            margin: 0;
             border: 1px solid #d9d9d9;
             border-bottom: 0;
+        }
+        body.printing-printable-section .printable-section__print-host .checkbox-label-container {
+            align-items: flex-start;
+        }
+        body.printing-printable-section .printable-section__print-host .checkbox-label-container input[type="checkbox"] {
+            display: none;
+        }
+        body.printing-printable-section .printable-section__print-host .checkbox-label-container::before {
+            content: "";
+            box-sizing: border-box;
+            flex: 0 0 20px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #7d8287;
+            background: #ffffff;
+        }
+        body.printing-printable-section .printable-section__print-host .checkbox-label-container.printable-section__checked::before {
+            content: "\2713";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1;
+            background: #005ea8;
+            border-color: #005ea8;
         }
     }
 </style>
@@ -74,29 +101,48 @@
         const block = document.getElementById("printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}");
         if (!block) return;
         const button = block.querySelector(".printable-section__button");
+        let printHost = null;
+
+        function cleanupPrintHost() {
+            document.body.classList.remove("printing-printable-section");
+            if (printHost) {
+                printHost.remove();
+                printHost = null;
+            }
+        }
+
+        function createPrintClone() {
+            const clone = block.cloneNode(true);
+            clone.removeAttribute("id");
+
+            const originalCheckboxes = block.querySelectorAll('input[type="checkbox"]');
+            const clonedCheckboxes = clone.querySelectorAll('input[type="checkbox"]');
+
+            clonedCheckboxes.forEach(function(checkbox, index) {
+                const isChecked = Boolean(originalCheckboxes[index] && originalCheckboxes[index].checked);
+                const checkboxContainer = checkbox.closest('.checkbox-label-container');
+                checkbox.checked = isChecked;
+                checkbox.toggleAttribute("checked", isChecked);
+                if (checkboxContainer) {
+                    checkboxContainer.classList.toggle("printable-section__checked", isChecked);
+                }
+            });
+
+            return clone;
+        }
+
         if (button && button.dataset.initialized !== "true") {
-            let placeholder;
             button.addEventListener("click", function() {
-                document.querySelectorAll(".printable-section--printing").forEach(function(printableSection) {
-                    printableSection.classList.remove("printable-section--printing");
-                });
-                placeholder = document.createComment("printable-section-placeholder");
-                block.parentNode.insertBefore(placeholder, block);
-                document.body.appendChild(block);
-                block.classList.add("printable-section--printing");
+                cleanupPrintHost();
+                printHost = document.createElement("div");
+                printHost.className = "printable-section__print-host";
+                printHost.appendChild(createPrintClone());
+                document.body.appendChild(printHost);
                 document.body.classList.add("printing-printable-section");
                 window.print();
             });
             button.dataset.initialized = "true";
         }
-        window.addEventListener("afterprint", function() {
-            block.classList.remove("printable-section--printing");
-            document.body.classList.remove("printing-printable-section");
-            if (placeholder && placeholder.parentNode) {
-                placeholder.parentNode.insertBefore(block, placeholder);
-                placeholder.remove();
-                placeholder = null;
-            }
-        });
+        window.addEventListener("afterprint", cleanupPrintHost);
     })();
 </script>
