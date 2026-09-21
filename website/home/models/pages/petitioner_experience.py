@@ -26,7 +26,10 @@ class SideCard(Orderable, ClusterableModel):
         help_text="Optional icon for this side card.",
     )
     header_title = models.CharField(max_length=255)
-    introductory_text = RichTextField()
+    # blank=True added for WAG-1339 phase 2: the FAQs "Helpful Links" card
+    # (plain_links style) has no intro text in the Figma mockup, just a
+    # header and the links themselves.
+    introductory_text = RichTextField(blank=True)
     color = models.CharField(
         max_length=20,
         # TODO: we gotta get this list of colors from a central place

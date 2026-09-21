@@ -1,9 +1,11 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
+from home.management.commands.pages.rules_and_guidance.side_card_seed_data import (
+    add_clerks_office_side_card,
+    add_need_legal_help_side_card,
+)
 from home.models import NavigationRibbon
 from home.models import PetitionerExperiencePage
-from home.models import SideCard
-from home.models.config import IconCategories
 from home.models.snippets.call_to_action import CallToActionBox
 import logging
 from home.models.utils.execute_script import ExecuteScript
@@ -49,30 +51,25 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
         )
         new_page.save_revision().publish()
 
-        SideCard.objects.create(
-            page=new_page,
-            icon=IconCategories.INFO,
-            header_title="Need Help?",
-            introductory_text="<p>Contact the Clerk's Office for assistance.</p>",
-            color="yellow",
-        )
+        add_clerks_office_side_card(self, new_page)
+        add_need_legal_help_side_card(self, new_page)
 
         logger.info(f"Created the '{self.title}' page.")
 
     def update(self):
         """Delete and recreate the Prepare to File page.
 
-        Guarded by the same ExecuteScript marker as run() so this only
-        ever fires the first time the script executes in an
-        environment - once real editors have touched the page in
-        dev-web/sandbox/production, later runs must not clobber it.
+        The "only run once per environment" guard lives in run(), which
+        checks ExecuteScript.command_exists() *before* creating the marker
+        row and only then calls this method - so this method must not
+        repeat that check itself. (It briefly did: run() creates the marker
+        before calling update(), so a check here would always see the
+        marker as already existing and skip every time, silently turning
+        this into a no-op. WAG-1339 caught this because the FAQs page's
+        Helpful Links card - seeded the same way - depends on pages created
+        later in the same script run, so it needs this recreate to actually
+        happen.)
         """
-        if ExecuteScript.command_exists(self.COMMAND_NAME):
-            logger.info(
-                f"Script '{self.COMMAND_NAME}' already exists. Skipping update."
-            )
-            return
-
         existing_page = Page.objects.filter(slug=self.slug).first()
         if existing_page:
             logger.info(f"Deleting existing '{self.title}' page to recreate it.")

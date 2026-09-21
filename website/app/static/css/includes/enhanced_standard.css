@@ -731,3 +731,142 @@ p:empty {
         font-size: 18px;
     }
 }
+
+/* Side Card styling (WAG-1339 phase 2a - desktop). The rail sits beside the
+   body via the desktop:grid-col-8 / desktop:grid-col-4 split in
+   petitioner_experience_page.html; below desktop width both columns collapse
+   to grid-col-12 and stack (tablet/mobile treatment in a later phase). */
+.side-card-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.side-card {
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--color-white);
+}
+
+/* New colors added for WAG-1339 to match the Prepare to File / FAQs
+   mockups. The white/gray/dark-primary/green/yellow options below are
+   inherited from the Card Set (WAG-1338) palette for reuse by any future
+   side card that wants a light background instead. */
+.side-card.side-card--blue {
+    background-color: var(--color-primary);
+}
+
+.side-card.side-card--navy {
+    background-color: var(--color-navy);
+}
+
+.side-card.side-card--white {
+    background-color: #FFFFFF;
+    color: #1B1B1B;
+    border: 1px solid #F0F0F0;
+}
+
+.side-card.side-card--gray {
+    background-color: #F0F0F0;
+    color: #1B1B1B;
+}
+
+.side-card.side-card--dark-primary {
+    background-color: #1A4480;
+}
+
+.side-card.side-card--green {
+    background-color: #ecf3ec;
+    color: #1B1B1B;
+}
+
+.side-card.side-card--yellow {
+    background-color: #fef0c8;
+    color: #1B1B1B;
+}
+
+.side-card__icon {
+    font-size: 28px;
+}
+
+.side-card__title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.side-card__intro {
+    font-size: 16px;
+}
+
+.side-card__intro p {
+    margin: 0;
+}
+
+.side-card__links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* "contact" style: white pill rows, e.g. the Clerk's Office email/phone. */
+.side-card__contact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #1B1B1B;
+}
+
+.side-card__contact-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.side-card__contact-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.side-card__contact-label {
+    font-weight: 700;
+    color: #1B1B1B;
+}
+
+.side-card__contact[data-link-type="email"] .side-card__contact-label {
+    text-decoration: underline;
+}
+
+.side-card__contact-helper {
+    font-size: 14px;
+    color: #565C65;
+}
+
+/* "button" style: reuses styled_button.html's inverted-primary button
+   (white background, primary-blue text/border) - already the visual match
+   for "Find an LITC Near You" - just stretched full width. */
+.side-card__links--button .side-card__button .usa-button.styled-inverted-primary-button {
+    width: 100%;
+    justify-content: center;
+}
+
+/* "plain_links" style: e.g. the FAQs page's "Helpful Links" card. Assumes a
+   dark card background (blue/navy) since the link color is white - a known
+   rough edge to revisit in phase 3 if a light plain-links card is needed. */
+.side-card__plain-link {
+    color: var(--color-white);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.side-card__plain-link:hover {
+    opacity: 0.85;
+}
