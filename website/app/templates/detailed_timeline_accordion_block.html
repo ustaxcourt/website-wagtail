@@ -1,137 +1,4 @@
 {% load static %} {% load wagtailcore_tags %}
-<style>
-  .detailed-timeline-accordion-block {
-    border-radius: 4px;
-    word-wrap: break-word;
-  }
-  .detailed-timeline-accordion-title {
-    width: 100%;
-    color: var(--color-primary);
-    cursor: pointer;
-    margin: 0;
-    padding: 15px 15px;
-    font-size: 1.2rem;
-  }
-  .detailed-timeline-accordion-title:focus:not(:focus-visible),
-  .detailed-timeline-accordion-title:focus-within:not(:focus-visible) {
-    outline: none;
-  }
-  .detailed-timeline-accordion-title.active {
-    color: #ffffff;
-  }
-  .detailed-timeline-accordion-icon {
-    width: 15px;
-    height: 9px;
-    cursor: pointer;
-    flex-shrink: 0;
-
-    background-color: var(--color-primary);
-
-    -webkit-mask-position: center;
-    mask-position: center;
-
-    -webkit-mask-image: url({% static "images/icons/arrow-down-triangle.svg" %});
-    mask-image: url({% static "images/icons/arrow-down-triangle.svg" %});
-
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-
-    transition: transform 0.3s ease;
-  }
-  .detailed-timeline-accordion-icon.active {
-    background-color: var(--color-white);
-  }
-
-  .detailed-timeline-accordion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 55px;
-    background-color: var(--color-white);
-    border-bottom: 1px solid var(--theme-color-base-lighter);
-  }
-  .detailed-timeline-accordion-header:focus:not(:focus-visible),
-  .detailed-timeline-accordion-header:focus-within:not(:focus-visible) {
-    outline: none;
-  }
-  .detailed-timeline-accordion-header.active {
-    background-color: var(--color-primary);
-    border-bottom: none;
-  }
-
-  .detailed-timeline-accordion-header:hover {
-    cursor: pointer;
-  }
-  .detailed-timeline-accordion-header p {
-    color: var(--color-primary);
-  }
-  .hidden {
-    display: none;
-  }
-  .detailed-timeline-accordion-content {
-    padding: 20px 45px;
-    width: 100%;
-    border-bottom: 1px solid var(--theme-color-base-lighter);
-  }
-  .rotated {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
-  }
-
-  .detailed-timeline-accordion-header-button {
-    background: none;
-    color: #1b1b1b;
-    border: none;
-    font: inherit;
-    font-size: 20px;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-  }
-  .detailed-timeline-accordion-header-button:focus:not(:focus-visible) {
-    outline: none;
-  }
-  .detailed-timeline-accordion-header-button.active {
-    color: #ffffff;
-  }
-  .detailed-timeline-accordion-content .detailed-timeline-rich-text ol {
-    list-style-type: decimal;
-  }
-  .detailed-timeline-rich-text img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-  .detailed-timeline-accordion-content .detailed-timeline-rich-text:last-child p:last-child {
-    margin-bottom: 0;
-  }
-  @media (max-width: 768px) {
-    .detailed-timeline-accordion-title {
-      padding: 15px 10px;
-    }
-    .detailed-timeline-accordion-header {
-      width: 100%;
-      height: auto;
-    }
-    .detailed-timeline-accordion-header h3 {
-      font-size: 18px;
-    }
-    .detailed-timeline-accordion-content {
-      width: 100%;
-      padding: 20px 20px;
-    }
-    .detailed-timeline-accordion-header-button {
-      font-size: 18px;
-    }
-  }
-</style>
 {% with data=block.value %}
 <div id="detailed-timeline-accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="detailed-timeline-accordion-block" data-accordion-id="detailed-timeline-accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
 <div class="detailed-timeline-accordion-header {% if data.default_to_open %}active{% endif %}">
@@ -143,8 +10,12 @@
           aria-controls="detailed-timeline-content-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
           id="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
         >
-          {{ data.title }}
-          <span class="detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true"></span>
+          <div class="detailed-timeline-accordion-header-text">{{ data.title }}</div>
+          <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true">keyboard_arrow_down</span>
+          <div class="detailed-timeline-accordion-header-date-range">
+            <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon" aria-hidden="true">schedule</span>
+            {{ data.date_range }}
+          </div>
         </button>
     </h3>
   </div>
