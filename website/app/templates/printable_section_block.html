@@ -3,7 +3,9 @@
 <section id="printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}" class="printable-section">
     <div class="printable-section__header">
         <h2 class="printable-section__title icon-header">
-            <span class="icon-header__icon printable-section__check-icon" aria-hidden="true"></span>
+            <span class="icon-header__icon" aria-hidden="true">
+                <i class="{{ data.icon }}" aria-hidden="true"></i>
+            </span>
             <span class="icon-header__text">{{ data.title }}</span>
         </h2>
         <button type="button" class="printable-section__button" aria-label="Print {{ data.title }}">
@@ -35,7 +37,6 @@
     .printable-section__title .icon-header__icon i { width: 20px; height: 20px; line-height: 20px; font-size: 16px; color: #4a4a4a; }
     .printable-section__title .icon-header__icon i::before { width: 20px; height: 20px; line-height: 20px; }
     .printable-section__title .icon-header__text { line-height: 1.2; }
-    .printable-section__check-icon { background: url({% static "images/icon-checked-box.svg" %}) center / 24px 24px no-repeat; }
     .printable-section .printable-section__button { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; width: auto; white-space: nowrap; background: none; border: none; padding: 0; color: inherit; font-weight: 700; cursor: pointer; }
     .printable-section__button-icon { width: 20px; height: 20px; flex-shrink: 0; background-color: currentColor; -webkit-mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat; mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat; }
     .printable-section__intro { margin: 0; font-size: 16px; line-height: 24px; }

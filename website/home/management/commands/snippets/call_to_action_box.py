@@ -19,7 +19,7 @@ class CallToActionBoxInitializer(PageInitializer):
         self.logger = logger
 
     def create(self):
-        # Delete existing navigation menu if it exists
+        # Delete existing "Ready to begin your petition?" box if it exists
         if settings.SITE_IS_LIVE:
             logger.info(
                 "Skipping Call to Action Box creation. Call to Action Box creation/recreation suppressed past site LIVE DATE."
@@ -27,7 +27,7 @@ class CallToActionBoxInitializer(PageInitializer):
             return
         else:
             logger.info("Creating Call to Action Box...")
-            CallToActionBox.objects.all().delete()
+            CallToActionBox.objects.filter(header=snippet_name).delete()
 
         if CallToActionBox.objects.filter(header=snippet_name).exists():
             logger.info("'Ready to begin your petition?' already exists.")
@@ -96,8 +96,15 @@ class CallToActionBoxInitializer(PageInitializer):
         logger.info("Successfully created Call to Action Box.")
 
     def update(self):
+        # This runs from update_pages against already-deployed sites, so it must
+        # not touch content once the site is live, same as create().
+        if settings.SITE_IS_LIVE:
+            logger.info(
+                "Skipping Call to Action Box update. Call to Action Box update suppressed past site LIVE DATE."
+            )
+            return
         logger.info("Updating Call to Action Box...")
-        CallToActionBox.objects.all().delete()
+        CallToActionBox.objects.filter(header=snippet_name).delete()
         self.create()
 
     def run(self):

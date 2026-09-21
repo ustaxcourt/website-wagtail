@@ -16,7 +16,7 @@
                     {% with checkbox_id=current_id_prefix|add:"-"|add:counter %}
                     <div class="checkbox-label-container">
                         <input id="{{ checkbox_id }}" type="checkbox" aria-labelledby="{{ checkbox_id }}-label">
-                        <label id="{{ checkbox_id }}-label" class="list-item-content" for="{{ checkbox_id }}" aria-hidden="true">
+                        <label id="{{ checkbox_id }}-label" class="list-item-content" for="{{ checkbox_id }}">
                             {% if item.text %}{{ item.text|richtext }}{% endif %}
                             {% if list_type == 'checkbox_with_subtext' and item.subtext %}{{ item.subtext|richtext }}{% endif %}
                         </label>

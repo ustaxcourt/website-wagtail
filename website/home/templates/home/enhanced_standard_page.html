@@ -483,14 +483,19 @@
         </h1>
         <hr />
         {% if page.navigation_ribbon %}
-            <div class="blue-page-links-bar">
-                {% for link in page.navigation_ribbon.links.all %}
-                    <a href="{{ link.url }}" aria-label="{{ link.title }}">
-                        <i class="{{ link.icon }}" aria-hidden="true"></i>
-                        <div class="title" style="display: block;">{{ link.title }}</div>
-                    </a>
-                {% endfor %}
-            </div>
+            {% with current_path=request.path|strip_trailing_slash %}
+                <div class="blue-page-links-bar">
+                    {% for link in page.navigation_ribbon.links.all %}
+                        <a href="{{ link.url }}"
+                           aria-label="{{ link.title }}"
+                           class="{% if link.url|strip_trailing_slash == current_path %}current-page{% endif %}"
+                           {% if link.url|strip_trailing_slash == current_path %}aria-current="page"{% endif %}>
+                            <i class="{{ link.icon }}" aria-hidden="true"></i>
+                            <div class="title" style="display: block;">{{ link.title }}</div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endwith %}
         {% endif %}
         {% include "includes/enhanced_body.html" with blocks=page.body %}
         {% for sub_block in page.raw_html_body %}
