@@ -371,6 +371,10 @@ button.link:hover {
     padding: 16px;
 }
 
+.blue-page-links-bar .title {
+    display: block;
+}
+
 .blue-page-links-bar .current-page {
     background-color: var(--color-primary);
     border-radius: 5px;
@@ -389,9 +393,23 @@ button.link:hover {
     background-color: var(--color-primary);
 }
 
-.blue-page-links-bar i {
-    color: white;
-    font-size: 2rem;
+.blue-page-links-bar .dawson-button {
+    background-color: white;
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 2px solid var(--color-primary);
+    border-radius: 5px;
+}
+
+.blue-page-links-bar .dawson {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 @media (max-width: 1200px) {
@@ -405,6 +423,15 @@ button.link:hover {
 
     .blue-page-links-bar span {
         font-size: 20px;
+    }
+
+    .blue-page-links-bar .dawson-button .title {
+        display: none;
+    }
+
+    .blue-page-links-bar .dawson {
+        width: 40px;
+        height: 40px;
     }
 }
 
@@ -456,7 +483,7 @@ button.link:hover {
         padding: 12px 6px;
     }
 
-    .blue-page-links-bar i {
-        font-size: 20px;
+    .blue-page-links-bar {
+        display: none;
     }
 }
