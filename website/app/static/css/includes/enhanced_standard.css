@@ -473,19 +473,14 @@ p:empty {
     }
 }
 
-/* Card Set styling (WAG-1338). Deliberately not scoped under .enhanced-page:
-   enhanced_body.html (and its 'card' block) is also included by several page
-   templates - judges_recruiting, csv_upload_page, press_release_page,
-   internship_programs - that don't wrap their content in that class. These
-   selectors need to apply wherever a Card Set can render, not just on
-   EnhancedStandardPage/PetitionerExperiencePage. */
+/* Card Set: not scoped under .enhanced-page because enhanced_body.html is
+   also included by templates without that wrapper. */
 
-/* Single row at desktop; tablet wraps 2-up (see @media 1024 below) to match
-   Figma - a single row of 3 left cards/buttons too cramped at tablet width. */
+/* One row at desktop; wraps 2-up at tablet, stacks at mobile. */
 .info-cards {
     display: flex;
     align-items: stretch;
-    gap: 48px; /* tablet override to 32px, mobile to 16px, below */
+    gap: 48px;
     margin-top: 1rem;
     margin-bottom: 34px;
 }
@@ -497,7 +492,7 @@ p:empty {
 
 .info-card {
     padding: 24px;
-    border-radius: 8px; /* tablet/mobile override to 16px below */
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -642,7 +637,7 @@ p:empty {
 .info-card .title {
     color: #162E51;
     font-weight: 600;
-    font-size: 20px; /* mobile override to 18px below */
+    font-size: 20px;
     text-align: left;
 }
 
@@ -660,10 +655,8 @@ p:empty {
     margin-top: auto;
 }
 
-/* Stretch-to-sibling-height only pins the button to the bottom when a row has a
-   taller neighbor. Give buttoned cards a floor height so the button still sits
-   away from short body text when a card stacks alone (mobile) or has no taller
-   sibling in its row. */
+/* Floor height keeps the button off short body text when a card has no
+   taller row sibling. */
 .info-card.has-button {
     min-height: 260px;
 }
@@ -717,8 +710,7 @@ p:empty {
         gap: 16px;
     }
 
-    /* Mobile: each stacked card hugs its own content - no shared row to
-       stretch against, and no artificial floor height (UX feedback). */
+    /* Mobile: stacked cards size to their content; no min-height. */
     .info-cards .info-card {
         flex: 1 1 auto;
     }
@@ -732,10 +724,8 @@ p:empty {
     }
 }
 
-/* Side Card styling (WAG-1339 phase 2a - desktop). The rail sits beside the
-   body via the desktop:grid-col-8 / desktop:grid-col-4 split in
-   petitioner_experience_page.html; below desktop width both columns collapse
-   to grid-col-12 and stack (tablet/mobile treatment in a later phase). */
+/* Side Card rail: beside the body at desktop (grid-col-8/4 split in
+   petitioner_experience_page.html), stacked below it otherwise. */
 .side-card-rail {
     display: flex;
     flex-direction: column;
@@ -751,10 +741,8 @@ p:empty {
     color: var(--color-white);
 }
 
-/* New colors added for WAG-1339 to match the Prepare to File / FAQs
-   mockups. The white/gray/dark-primary/green/yellow options below are
-   inherited from the Card Set (WAG-1338) palette for reuse by any future
-   side card that wants a light background instead. */
+/* blue/navy per the Prepare to File / FAQs mockups; remaining variants
+   mirror the Card Set palette. */
 .side-card.side-card--blue {
     background-color: var(--color-primary);
 }
@@ -849,17 +837,14 @@ p:empty {
     color: #565C65;
 }
 
-/* "button" style: reuses styled_button.html's inverted-primary button
-   (white background, primary-blue text/border) - already the visual match
-   for "Find an LITC Near You" - just stretched full width. */
+/* "button" style: full-width inverted-primary button from styled_button.html. */
 .side-card__links--button .side-card__button .usa-button.styled-inverted-primary-button {
     width: 100%;
     justify-content: center;
 }
 
-/* "plain_links" style: e.g. the FAQs page's "Helpful Links" card. Inherits
-   the card's foreground color so links stay readable on both the dark
-   (white text) and light (dark text) card variants. */
+/* "plain_links" style: inherits the card's foreground color so links work on
+   both dark and light variants. */
 .side-card__plain-link {
     color: inherit;
     text-decoration: underline;
@@ -870,13 +855,8 @@ p:empty {
     opacity: 0.85;
 }
 
-/* Side Card styling (WAG-1339 phase 2b - tablet). Below desktop width the
-   rail drops out of the grid-col split and renders full width beneath the
-   body (see the desktop:grid-col-8/4 classes in
-   petitioner_experience_page.html); wrap it 2-up here, matching the same
-   1024px threshold .info-cards already uses above for the same reason
-   (single column is too cramped once the rail is full width but still
-   narrower than 2 comfortable card widths in the desktop rail). */
+/* Tablet: rail drops below the body; wrap cards 2-up (same breakpoint as
+   .info-cards). */
 @media (max-width: 1024px) {
     .side-card-layout {
         margin-top: 8px;
@@ -894,9 +874,7 @@ p:empty {
     }
 }
 
-/* Side Card styling (WAG-1339 phase 2c - mobile). Same 768px threshold
-   .info-cards uses to go back to a single column - the Figma mobile mockup
-   stacks every card full width regardless of how many there are. */
+/* Mobile: single column, every card full width. */
 @media (max-width: 768px) {
     .side-card-rail {
         flex-direction: column;

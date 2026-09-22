@@ -1,8 +1,6 @@
 """
-Shared SideCard seed data for the Prepare to File and FAQs pages (WAG-1339
-phase 2). Both pages' Figma mockups show the same "Clerk's Office" and "Need
-Legal Help?" cards, so the content lives here once instead of being copied
-into each page initializer.
+Shared SideCard seed data for the Prepare to File and FAQs pages, which both
+use the "Clerk's Office" and "Need Legal Help?" cards.
 """
 
 import logging

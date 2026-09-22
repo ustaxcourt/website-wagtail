@@ -1,9 +1,7 @@
 {% load wagtailcore_tags filters %}
 {% comment %}
-WAG-1339 phase 2: renders one SideCard. The visual treatment is driven by
-side_card.link_display_style rather than by the individual link's own type,
-since a single card (e.g. "Clerk's Office") mixes email/phone link types but
-wants them all to look like the same contact row.
+Renders one SideCard. Link appearance follows side_card.link_display_style,
+not each link's type, so mixed email/phone links render as matching rows.
 {% endcomment %}
 <div class="side-card side-card--{{ side_card.color }}">
     {% if side_card.icon %}

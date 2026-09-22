@@ -26,9 +26,7 @@ class SideCard(Orderable, ClusterableModel):
         help_text="Optional icon for this side card.",
     )
     header_title = models.CharField(max_length=255)
-    # blank=True added for WAG-1339 phase 2: the FAQs "Helpful Links" card
-    # (plain_links style) has no intro text in the Figma mockup, just a
-    # header and the links themselves.
+    # Optional: e.g. a plain_links card may be just a header and links.
     introductory_text = RichTextField(blank=True)
     color = models.CharField(
         max_length=20,
@@ -44,10 +42,8 @@ class SideCard(Orderable, ClusterableModel):
         ],
         default="white",
     )
-    # TODO WAG-1339 phase 3: this couples "how the links look" to a single
-    # choice for the whole card. Revisit if a card ever needs to mix styles
-    # (e.g. a contact row alongside a plain link) - not needed for the
-    # Prepare to File / FAQs mockups seen so far.
+    # TODO: one style applies to every link on the card. Move this per-link
+    # if a card ever needs to mix styles (e.g. a contact row and a plain link).
     link_display_style = models.CharField(
         max_length=20,
         choices=[
