@@ -32,7 +32,6 @@ from home.management.commands.pages.rules_and_guidance import (
 pages_to_update = (
     about_the_court_pages_to_update
     + efiling_and_case_maintenance_pages_to_update
-    + [FooterInitializer, NavigationInitializer, HomePageInitializer]
     + [CallToActionBoxInitializer]
     + [
         FooterInitializer,

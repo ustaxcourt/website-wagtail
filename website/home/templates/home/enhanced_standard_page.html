@@ -49,15 +49,26 @@
         </h1>
         <hr />
         {% if page.navigation_ribbon %}
-            {% with current_path=request.path|strip_trailing_slash %}
+            {% with current_path=request.path|normalize_url_path %}
                 <div class="blue-page-links-bar">
                     {% for link in page.navigation_ribbon.links.all %}
                         <a href="{{ link.url }}"
                            aria-label="{{ link.title }}"
-                           class="{% if link.url|normalize_url_path == current_path|normalize_url_path %}current-page{% endif %}"
-                           {% if link.url|normalize_url_path == current_path|normalize_url_path %}aria-current="page"{% endif %}>
-                            <i class="{{ link.icon }}" aria-hidden="true"></i>
-                            <div class="title" style="display: block;">{{ link.title }}</div>
+                           class="{% if current_path == link.url|normalize_url_path %}current-page{% endif %}"
+                           {% if current_path == link.url|normalize_url_path %}aria-current="page"{% endif %}>
+                            {% if link.icon != "dawson" %}
+                            <span class="material-symbols-outlined" aria-hidden="true">
+                                {{ link.icon }}
+                            </span>
+                            <div class="title">{{ link.title }}</div>
+                            {% else %}
+                            <div class="{% if link.icon == 'dawson' %}dawson-button{% endif %}">
+                                <img class="dawson"
+                                 src="{% static 'images/header/dawson.webp' %}"
+                                 alt="DAWSON" />
+                                <div class="title">{{ link.title }}</div>
+                            </div>
+                            {% endif %}
                         </a>
                     {% endfor %}
                 </div>

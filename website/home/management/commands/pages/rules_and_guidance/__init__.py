@@ -46,7 +46,6 @@ rules_and_guidance_pages_to_initialize = [
     GuidenceForPractitionersPageInitializer,
     # NON-TOP LEVEL PAGES. Order does not matter.
     PetitionersStartPageInitializer,
-    PetitionersPrepareToFilePageInitializer,
     PetitionersAboutInitializer,
     PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
