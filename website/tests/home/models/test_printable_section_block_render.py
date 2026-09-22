@@ -66,6 +66,7 @@ class PrintableSectionBlockRenderTest(TestCase):
                 {
                     "type": "printable_section",
                     "value": {
+                        "icon": "draft",
                         "title": "Test Printable Section",
                         "intro": "<p>Intro text</p>",
                         "body": PRINTABLE_SECTION_BODY,
@@ -89,6 +90,7 @@ class PrintableSectionBlockRenderTest(TestCase):
         rendered = response.render()
         content = rendered.content.decode()
         self.assertIn("Test Printable Section", content)
+        self.assertIn('class="draft"', content)
         self.assertIn("Section Heading", content)
         self.assertIn("List item one", content)
         self.assertIn("Printable paragraph content", content)

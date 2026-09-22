@@ -6,7 +6,7 @@ from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.management.commands.pages.rules_and_guidance.petitioners_prepare_to_file import (
     PetitionersPrepareToFilePageInitializer,
 )
-from home.models.snippets.navigation import NavigationRibbon
+from home.models.snippets.navigation import NavigationRibbon, NavigationRibbonLink
 
 
 @override_settings(
@@ -109,3 +109,27 @@ class IconHeaderBlockRenderTest(TestCase):
         self.assertIn("PLEASE NOTE:", content)
         self.assertIn("Here are the electronic filing instructions", content)
         self.assertEqual(page.slug, "petitioners-prepare-to-file")
+
+    def test_navigation_ribbon_marks_current_page(self):
+        ribbon = NavigationRibbon.objects.create(name="Petitioner Experience Ribbon")
+        page = PetitionerExperiencePage(
+            title="Ribbon Active State Test Page",
+            slug="ribbon-active-state-test-page",
+            introductory_text="Prepare to file",
+            navigation_ribbon=ribbon,
+            body=[],
+        )
+        self.home_page.add_child(instance=page)
+        NavigationRibbonLink.objects.create(
+            navigation_ribbon=ribbon,
+            title="Current Page",
+            icon="fa-solid fa-file",
+            url=page.url,
+        )
+
+        request = self.factory.get(page.url)
+        request.site = Site.objects.get(is_default_site=True)
+        content = page.serve(request).render().content.decode()
+
+        self.assertIn('class="current-page"', content)
+        self.assertIn('aria-current="page"', content)
