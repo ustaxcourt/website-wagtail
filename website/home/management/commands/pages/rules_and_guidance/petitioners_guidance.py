@@ -208,7 +208,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                     "title_icon_alt_text": "",
                                     "subtitle": "",
                                     "title": "Electronic Filing - Recommended",
-                                    "description": '<ul><li data-block-key="2lysw">File your petition electronically using DAWSON</li><li data-block-key="3rclc">Use the petition generator in DAWSON or upload a PDF (Petition Form)</li><li data-block-key="909he">Immediate confirmation of filing</li></ul><p data-block-key="9e3d3">Visit <a href="https://dawson.ustaxcourt.gov">dawson.ustaxcourt.gov</a> to get started.</p>',
+                                    "description": '<ul><li data-block-key="2lysw">File your petition electronically using DAWSON</li><li data-block-key="3rclc">Use the petition generator in DAWSON or upload a PDF (<a linktype="document" id="505">Petition Form</a>)</li><li data-block-key="909he">Immediate confirmation of filing</li></ul><p data-block-key="9e3d3">Visit <a href="https://dawson.ustaxcourt.gov">dawson.ustaxcourt.gov</a> to get started.</p>',
                                     "buttons": [],
                                 },
                                 "id": "6623707a-b1e6-4894-85d9-a983996ff861",
