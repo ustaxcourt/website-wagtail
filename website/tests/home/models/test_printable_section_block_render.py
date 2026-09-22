@@ -66,6 +66,7 @@ class PrintableSectionBlockRenderTest(TestCase):
                 {
                     "type": "printable_section",
                     "value": {
+                        "icon": "fa-solid fa-check",
                         "title": "Test Printable Section",
                         "intro": "<p>Intro text</p>",
                         "body": PRINTABLE_SECTION_BODY,
@@ -93,6 +94,7 @@ class PrintableSectionBlockRenderTest(TestCase):
         self.assertIn("List item one", content)
         self.assertIn("Printable paragraph content", content)
         self.assertIn('id="printable-section-0-prt"', content)
+        self.assertIn('class="fa-solid fa-check"', content)
         # The paragraph body child must not be wrapped in a <p>, since the
         # RichTextBlock value already renders its own block-level markup.
         self.assertNotIn(

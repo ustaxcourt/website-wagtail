@@ -20,6 +20,9 @@
     flex: 1 1 auto;
     min-width: 0; /* let a long title wrap instead of overflowing past the button */
   }
+  .printable-section__title .icon-header__text {
+    line-height: 1.2;
+  }
   .printable-section .printable-section__button {
     display: flex;
     align-items: center;
@@ -107,7 +110,16 @@
     <div id="printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
          class="printable-section">
         <div class="printable-section__header">
-            <h2 class="printable-section__title">{{ data.title }}</h2>
+          <h2 class="printable-section__title{% if data.icon %} icon-header{% endif %}">
+            {% if data.icon %}
+              <span class="icon-header__icon" aria-hidden="true">
+                <i class="{{ data.icon }}" aria-hidden="true"></i>
+              </span>
+              <span class="icon-header__text">{{ data.title }}</span>
+            {% else %}
+              {{ data.title }}
+            {% endif %}
+          </h2>
             <button type="button"
                     class="printable-section__button"
                     aria-label="Print {{ data.title }}">
