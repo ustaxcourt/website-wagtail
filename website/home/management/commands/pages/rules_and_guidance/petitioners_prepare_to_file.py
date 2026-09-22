@@ -49,10 +49,13 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
                 search_description=self.title,
             )
         )
-        new_page.save_revision().publish()
-
         add_clerks_office_side_card(self, new_page)
         add_need_legal_help_side_card(self, new_page)
+
+        # SideCards are InlinePanel children stored in revision content, so
+        # publish only after attaching them - otherwise the editor loads a
+        # revision without them and the next save would delete the cards.
+        new_page.save_revision().publish()
 
         logger.info(f"Created the '{self.title}' page.")
 

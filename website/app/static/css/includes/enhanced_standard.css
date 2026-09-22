@@ -857,11 +857,11 @@ p:empty {
     justify-content: center;
 }
 
-/* "plain_links" style: e.g. the FAQs page's "Helpful Links" card. Assumes a
-   dark card background (blue/navy) since the link color is white - a known
-   rough edge to revisit in phase 3 if a light plain-links card is needed. */
+/* "plain_links" style: e.g. the FAQs page's "Helpful Links" card. Inherits
+   the card's foreground color so links stay readable on both the dark
+   (white text) and light (dark text) card variants. */
 .side-card__plain-link {
-    color: var(--color-white);
+    color: inherit;
     text-decoration: underline;
     font-weight: 600;
 }
