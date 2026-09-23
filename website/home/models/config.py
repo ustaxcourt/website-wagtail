@@ -37,3 +37,4 @@ class IconCategories(models.TextChoices):
     FORMS = "article"
     HELP = "help"
     DAWSON = "dawson"
+    OUTBOUND = "outbound"
