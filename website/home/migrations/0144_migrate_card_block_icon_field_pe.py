@@ -1,5 +1,5 @@
-import copy
 import json
+import copy
 
 from django.db import migrations
 
@@ -62,7 +62,7 @@ def migrate_card_icon_field(apps, schema_editor):
                     card_value.setdefault("numbered_icon_alignment", "center")
                 else:
                     print(  # noqa: T201
-                        "0141_migrate_card_block_icon_field_pe: dropping legacy "
+                        f"0141_migrate_card_block_icon_field_pe: dropping legacy "
                         f"icon {old_icon!r} with no numbered_icon equivalent"
                     )
                 card["value"] = card_value
@@ -82,7 +82,7 @@ def migrate_card_icon_field(apps, schema_editor):
     body_column = "body::text" if is_postgres else "body"
     with connection.cursor() as cursor:
         cursor.execute(
-            f"SELECT page_ptr_id, {body_column} FROM home_enhancedstandardpage "
+            f"SELECT page_ptr_id, {body_column} FROM home_enhancedstandardpage "  # noqa: S608
             f"WHERE {body_column} LIKE %s",
             ['%"card"%'],
         )
@@ -111,7 +111,7 @@ def migrate_card_icon_field(apps, schema_editor):
         # are harmless since the JSON walk below is what actually decides
         # whether a row needs rewriting.
         cursor.execute(
-            f"SELECT id, {content_column} FROM wagtailcore_revision "
+            f"SELECT id, {content_column} FROM wagtailcore_revision "  # noqa: S608
             f"WHERE {content_column} LIKE %s AND {content_column} LIKE %s",
             ["%card%", "%icon%"],
         )
