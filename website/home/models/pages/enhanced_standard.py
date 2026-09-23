@@ -27,11 +27,11 @@ from home.models.custom_blocks.common import (
 from home.models.custom_blocks.icon_header import IconHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
+from home.models.custom_blocks.printable_section import PrintableSectionBlock
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.detailed_timeline import DetailedTimelineBlock
 from home.models.snippets.navigation import NavigationRibbon
-from home.models.custom_blocks.printable_section import PrintableSectionBlock
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
