@@ -800,10 +800,11 @@ p:empty {
     gap: 12px;
 }
 
-/* "contact" style: white pill rows, e.g. the Clerk's Office email/phone. */
+/* "contact" style: white pill rows, e.g. the Clerk's Office email/phone.
+   Icon pins to the top so it stays level with the label when helper text wraps. */
 .side-card__contact {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     background-color: var(--color-white);
     border-radius: 8px;
@@ -887,5 +888,10 @@ p:empty {
 
     .side-card__title {
         font-size: 18px;
+    }
+
+    /* Keeps a typical email address on one line instead of wrapping a stray letter. */
+    .side-card__contact[data-link-type="email"] .side-card__contact-label {
+        font-size: 14px;
     }
 }
