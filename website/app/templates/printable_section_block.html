@@ -3,8 +3,8 @@
 <section id="printable-section-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}" class="printable-section">
     <div class="printable-section__header">
         <h2 class="printable-section__title icon-header">
-            <span class="icon-header__icon" aria-hidden="true">
-                <i class="{{ data.icon }}" aria-hidden="true"></i>
+            <span class="icon-header__icon material-symbols-outlined" aria-hidden="true">
+                {{ data.icon }}
             </span>
             <span class="icon-header__text">{{ data.title }}</span>
         </h2>

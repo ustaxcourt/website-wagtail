@@ -63,7 +63,7 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
                 {
                     "type": "printable_section",
                     "value": {
-                        "icon": IconCategories.CHECK,
+                        "icon": IconCategories.SELECT_CHECK_BOX,
                         "title": "Pre-Filing Checklist",
                         "intro": "<p>Have these items ready before you begin your petition.</p>",
                         "body": [
