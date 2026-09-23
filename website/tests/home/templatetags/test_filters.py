@@ -7,6 +7,7 @@ from home.templatetags.filters import (
     column_width,
     get_type,
     parse_iso_date,
+    normalize_url_path,
     slugify_text,
     strip_trailing_slash,
 )
@@ -99,3 +100,17 @@ class TestStripTrailingSlash:
 
     def test_non_string_input(self):
         assert strip_trailing_slash(2) == 2
+
+
+class TestNormalizeUrlPath:
+    def test_relative_path_with_trailing_slash(self):
+        assert normalize_url_path("/petitioners/") == "/petitioners"
+
+    def test_absolute_url_with_trailing_slash(self):
+        assert normalize_url_path("https://example.com/petitioners/") == "/petitioners"
+
+    def test_root_path_is_preserved(self):
+        assert normalize_url_path("/") == "/"
+
+    def test_non_string_input(self):
+        assert normalize_url_path(2) == 2
