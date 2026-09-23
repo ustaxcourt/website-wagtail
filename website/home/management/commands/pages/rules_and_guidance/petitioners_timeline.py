@@ -108,16 +108,16 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Review your Notice carefully.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Note the date and amounts listed on the notice.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Review your Notice carefully.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Note the date and amounts listed on the notice.</p>',
                                                 },
                                                 "id": "ab246cb9-c514-4cb0-bedd-855f70644732",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Calculate your deadline (No later than 11:59 pm Eastern Time on the last date to file).</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Mark this date on your calendar - It generally cannot be extended.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Calculate your deadline (No later than 11:59 pm Eastern Time on the last date to file).</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Mark this date on your calendar - It generally cannot be extended.</p>',
                                                 },
                                                 "id": "49bb3d8b-910e-450c-8864-0d154cfb415a",
                                             },
@@ -126,18 +126,18 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Icon": "outbound",
-                                                    "Information": '<p data-block-key="8x988">Prepare documents using the <a href="https://ustaxcourt.gov/replace-me"><b>pre-filing checklist</b></a> before getting started in DAWSON.</p>',
-                                                    "InformationSubtext": "",
+                                                    "icon": "outbound",
+                                                    "information": '<p data-block-key="8x988">Prepare documents using the <a href="https://ustaxcourt.gov/replace-me"><b>pre-filing checklist</b></a> before getting started in DAWSON.</p>',
+                                                    "information_subtext": "",
                                                 },
                                                 "id": "7bca949f-9af8-4e6e-8f37-eb7cd9101dc1",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Icon": "help",
-                                                    "Information": '<p data-block-key="8x988">Can I represent myself?</p>',
-                                                    "InformationSubtext": '<p data-block-key="rrk5u">You can represent yourself or get help with your case. View <a href="https://ustaxcourt.gov/replace-me">full FAQ</a> for more details.</p>',
+                                                    "icon": "help",
+                                                    "information": '<p data-block-key="8x988">Can I represent myself?</p>',
+                                                    "information_subtext": '<p data-block-key="rrk5u">You can represent yourself or get help with your case. View <a href="https://ustaxcourt.gov/replace-me">full FAQ</a> for more details.</p>',
                                                 },
                                                 "id": "645cb15d-8ae1-4c31-b3da-c45eb02290c9",
                                             },
@@ -155,64 +155,64 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Determine if you would like to elect small tax case status.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Deficiency disputes $50,000 or less per year are eligible.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Determine if you would like to elect small tax case status.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Deficiency disputes $50,000 or less per year are eligible.</p>',
                                                 },
                                                 "id": "3e35c1a1-b320-4727-81be-1a7977eb5eac",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Complete the Petition form using <a href="https://dawson.ustaxcourt.gov/">dawson.ustaxcourt.gov</a> petition generator.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Otherwise download a Petition form (form 2) from <a href="https://ustaxcourt.gov/replace-me">our Forms page</a>.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Complete the Petition form using <a href="https://dawson.ustaxcourt.gov/">dawson.ustaxcourt.gov</a> petition generator.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Otherwise download a Petition form (form 2) from <a href="https://ustaxcourt.gov/replace-me">our Forms page</a>.</p>',
                                                 },
                                                 "id": "55ed77fc-61be-49e0-bef4-ec1712dccbb7",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Download and complete the Taxpayer Identification Number (STIN) form.</p>',
-                                                    "Subtext": "",
+                                                    "text": '<p data-block-key="l4ngx">Download and complete the Taxpayer Identification Number (STIN) form.</p>',
+                                                    "subtext": "",
                                                 },
                                                 "id": "52840bf2-46a4-45b0-b9da-6d1df571e0c0",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Complete the Corporate Disclosure Statement form ONLY if you are filing on behalf of a company.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Download from <a href="https://ustaxcourt.gov/replace-me">our Forms page</a>.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Complete the Corporate Disclosure Statement form ONLY if you are filing on behalf of a company.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Download from <a href="https://ustaxcourt.gov/replace-me">our Forms page</a>.</p>',
                                                 },
                                                 "id": "5e5f60d1-0222-4c55-8250-5151c2a1523d",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Save a copy of your IRS Notice.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">You will need to upload it to DAWSON and later on during the process.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Save a copy of your IRS Notice.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">You will need to upload it to DAWSON and later on during the process.</p>',
                                                 },
                                                 "id": "8b9e11a9-2276-4f5f-b33c-36c6bf33a1ff",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">File petition via DAWSON or mail.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">In most cases, the United States Tax Court must receive your petition no later than 11:59 pm Eastern Time on the last date to file.</p>',
+                                                    "text": '<p data-block-key="l4ngx">File petition via DAWSON or mail.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">In most cases, the United States Tax Court must receive your petition no later than 11:59 pm Eastern Time on the last date to file.</p>',
                                                 },
                                                 "id": "20d2273e-cf55-4c31-bb21-106c4276b07a",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Pay the $60 filing fee.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Fee waiver may be available for demonstrated financial hardship once a petition is filed. Payment is due once you receive your docket number. E-filers receive their docket number immediately, while people who file by mail will receive it by mail.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Pay the $60 filing fee.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Fee waiver may be available for demonstrated financial hardship once a petition is filed. Payment is due once you receive your docket number. E-filers receive their docket number immediately, while people who file by mail will receive it by mail.</p>',
                                                 },
                                                 "id": "d5ca7ea0-5258-486e-8088-3b18826ce1de",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Keep proof of filing/mailing.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Receipt or certified mail tracking.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Keep proof of filing/mailing.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Receipt or certified mail tracking.</p>',
                                                 },
                                                 "id": "58b175ec-cc9f-4cf8-bf54-f185e6a67a90",
                                             },
@@ -232,27 +232,27 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Icon": "outbound",
-                                                    "Information": '<p data-block-key="8x988">What is an Answer?</p>',
-                                                    "InformationSubtext": "",
+                                                    "icon": "outbound",
+                                                    "information": '<p data-block-key="8x988">What is an Answer?</p>',
+                                                    "information_subtext": "",
                                                 },
                                                 "id": "c580b26a-44e8-4267-986b-13db49a5dad0",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Icon": "outbound",
-                                                    "Information": '<p data-block-key="8x988">How can I check on the status of my case? </p>',
-                                                    "InformationSubtext": "",
+                                                    "icon": "outbound",
+                                                    "information": '<p data-block-key="8x988">How can I check on the status of my case? </p>',
+                                                    "information_subtext": "",
                                                 },
                                                 "id": "f20f7982-acca-4077-8047-1ed42634c55a",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Icon": "help",
-                                                    "Information": '<p data-block-key="8x988">Who can I contact if I have questions? </p>',
-                                                    "InformationSubtext": "",
+                                                    "icon": "help",
+                                                    "information": '<p data-block-key="8x988">Who can I contact if I have questions? </p>',
+                                                    "information_subtext": "",
                                                 },
                                                 "id": "e4b8e5eb-2200-40e9-ba93-849d624b4919",
                                             },
@@ -281,16 +281,16 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Respond to all court deadlines.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Including orders for status reports and to participate in conference calls. </p>',
+                                                    "text": '<p data-block-key="l4ngx">Respond to all court deadlines.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Including orders for status reports and to participate in conference calls. </p>',
                                                 },
                                                 "id": "37ddca32-14b5-48cd-863d-43f51be394ad",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Participate in discussions with the IRS.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Many cases settle before trial.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Participate in discussions with the IRS.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Many cases settle before trial.</p>',
                                                 },
                                                 "id": "39c020dd-f507-4c1a-ba6f-3a96a0d88589",
                                             },
@@ -309,32 +309,32 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Gather all relevant documents.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Tax returns, receipts, prior correspondence with IRS.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Gather all relevant documents.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Tax returns, receipts, prior correspondence with IRS.</p>',
                                                 },
                                                 "id": "aafffc52-4101-484e-9037-ffd886977834",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Organize evidence to support your position.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Documents, receipts, bank statements, etc. Make sure you have copies for yourself, the IRS, and the Judge.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Organize evidence to support your position.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Documents, receipts, bank statements, etc. Make sure you have copies for yourself, the IRS, and the Judge.</p>',
                                                 },
                                                 "id": "3213a259-bd28-4ae2-87a7-5198104d0f5e",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Prepare witness list if applicable.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Consider identifying potential witnesses (including yourself) who could provide testimony in support of your case.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Prepare witness list if applicable.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Consider identifying potential witnesses (including yourself) who could provide testimony in support of your case.</p>',
                                                 },
                                                 "id": "8e4cd5b1-f39d-4e5e-9224-387d03627f08",
                                             },
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "Text": '<p data-block-key="l4ngx">Prepare for trial if case has not settled.</p>',
-                                                    "Subtext": '<p data-block-key="7tw0u">Pre-trial memorandum, exhibits, etc.</p>',
+                                                    "text": '<p data-block-key="l4ngx">Prepare for trial if case has not settled.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Pre-trial memorandum, exhibits, etc.</p>',
                                                 },
                                                 "id": "d3e16464-1209-4a07-af02-31d10c489a7a",
                                             },

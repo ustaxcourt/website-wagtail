@@ -14,8 +14,9 @@
         }
 
         .detailed-timeline-accordion-block {
-            border-radius: 4px;
             word-wrap: break-word;
+            border: 1px solid var(--theme-color-base-lighter);
+            border-radius: 4px;
         }
         .detailed-timeline-accordion-title {
             width: 100%;
@@ -30,7 +31,7 @@
             outline: none;
         }
         .detailed-timeline-accordion-title.active {
-            color: #ffffff;
+            color: black;
         }
         .detailed-timeline-accordion-icon {
             width: 32px;
@@ -56,16 +57,13 @@
             align-items: center;
             width: 100%;
             background-color: var(--theme-color-base-lightest);
-            border: 1px solid var(--theme-color-base-lighter);
-            border-radius: 4px;
         }
         .detailed-timeline-accordion-header:focus:not(:focus-visible),
         .detailed-timeline-accordion-header:focus-within:not(:focus-visible) {
             outline: none;
         }
         .detailed-timeline-accordion-header.active {
-            background-color: var(--color-primary);
-            border-bottom: none;
+            background-color: white;
         }
 
         .detailed-timeline-accordion-header:hover {
@@ -78,9 +76,8 @@
             display: none;
         }
         .detailed-timeline-accordion-content {
-            padding: 20px 45px;
+            padding: 0px 16px;
             width: 100%;
-            border-bottom: 1px solid var(--theme-color-base-lighter);
         }
         .rotated {
             transform: rotate(180deg);
@@ -107,7 +104,7 @@
             outline: none;
         }
         .detailed-timeline-accordion-header-button.active {
-            color: #ffffff;
+            color: black;
         }
 
         .detailed-timeline-accordion-header-text {

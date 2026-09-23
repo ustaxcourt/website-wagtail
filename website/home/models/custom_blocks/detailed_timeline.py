@@ -24,13 +24,13 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
         blocks.StructBlock(
             [
                 (
-                    "Text",
+                    "text",
                     blocks.RichTextBlock(
                         required=True,
                     ),
                 ),
                 (
-                    "Subtext",
+                    "subtext",
                     blocks.RichTextBlock(
                         required=False,
                     ),
@@ -48,7 +48,7 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
         blocks.StructBlock(
             [
                 (
-                    "Icon",
+                    "icon",
                     blocks.ChoiceBlock(
                         choices=[("outbound", "Action"), ("help", "Question")],
                         default="Action",
@@ -58,13 +58,13 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
                     ),
                 ),
                 (
-                    "Information",
+                    "information",
                     blocks.RichTextBlock(
                         help_text="Helpful Information text", label="Information"
                     ),
                 ),
                 (
-                    "InformationSubtext",
+                    "information_subtext",
                     blocks.RichTextBlock(
                         help_text="Helpful Information subtext",
                         label="Information Subtext",
