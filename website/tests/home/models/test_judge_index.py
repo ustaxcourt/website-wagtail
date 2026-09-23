@@ -280,7 +280,7 @@ class JudgeDetailRouteTest(JudgeIndexSetUpMixin):
             )
 
     def test_last_name_with_space_slugifies_in_index_links_and_detail_route(self):
-        """Last names with spaces must produce matching slug-based URLs."""
+        """Last names such as "De Luca" should produce /de-luca/ URLs and resolve."""
         judge = _make_judge("Troy", "De Luca", "Judge")
         slug = "de-luca"
 
@@ -295,7 +295,7 @@ class JudgeDetailRouteTest(JudgeIndexSetUpMixin):
         self.assertEqual(detail_response.status_code, 200)
 
     def test_last_name_with_apostrophe_slugifies_in_index_links_and_detail_route(self):
-        """Last names with apostrophes must produce matching slug-based URLs."""
+        """Last names such as "D'Arcy" should produce /darcy/ URLs and resolve."""
         judge = _make_judge("Jane", "D'Arcy", "Judge")
         slug = "darcy"
 
