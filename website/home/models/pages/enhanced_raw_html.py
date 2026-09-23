@@ -6,10 +6,8 @@ from wagtail.search import index
 from home.admin.moderation import ModerationTabbedInterface
 from home.models.custom_blocks.common import custom_promote_panels
 
-from home.models.pages.enhanced_standard import (
-    EnhancedStandardPage,
-    FAQ_FILTER_TAG_CHOICES,
-)
+from home.models.pages.enhanced_standard import EnhancedStandardPage
+from home.models.snippets.faq_filter_tag import get_faq_filter_tag_choices
 
 
 class EnhancedRawHTMLPage(EnhancedStandardPage):
@@ -48,7 +46,7 @@ class EnhancedRawHTMLPage(EnhancedStandardPage):
                             (
                                 "filtertag",
                                 blocks.ChoiceBlock(
-                                    choices=FAQ_FILTER_TAG_CHOICES,
+                                    choices=get_faq_filter_tag_choices,
                                     required=True,
                                     label="FilterTag",
                                 ),
