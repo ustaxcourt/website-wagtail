@@ -124,7 +124,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": f'<h2 data-block-key="cuzcn"><b>Get Started</b> <a href={_petitioner_timeline_url}>(View detailed timeline)</a></h2>',
+                        "value": f'<div class=get-started-row> <h2 data-block-key="cuzcn"><b>Get Started</b></h2> <a href={_petitioner_timeline_url}>(View detailed timeline)</a> </div>',
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
                     },
                     {

@@ -586,6 +586,18 @@ p:empty {
     font-weight: 700;
 }
 
+.get-started-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.get-started-row a{
+    text-decoration: underline;
+    color: black;
+    font-size: 20px;
+    font-weight: 400;
+}
+
 .info-card__icon-badge .info-card__non-md-number {
     color: #FFFFFF;
 }
