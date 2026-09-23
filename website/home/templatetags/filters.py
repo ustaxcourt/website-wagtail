@@ -2,6 +2,7 @@ from django import template
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.utils.text import slugify
+from urllib.parse import urlsplit
 
 register = template.Library()
 
@@ -79,3 +80,17 @@ def aria_text(value):
     text = re.sub(r"\s+", " ", text).strip()
     text = re.sub(r"(,\s*)+", ", ", text)
     return text.rstrip(", ")
+
+
+@register.filter
+def normalize_url_path(value):
+    """Normalize an absolute or relative URL to a comparable path."""
+    if not value:
+        return "/"
+
+    path = urlsplit(str(value)).path or "/"
+    if not path.startswith("/"):
+        path = f"/{path}"
+    if path != "/":
+        path = path.rstrip("/")
+    return path

@@ -485,10 +485,14 @@
         {% if page.navigation_ribbon %}
             <div class="blue-page-links-bar">
                 {% for link in page.navigation_ribbon.links.all %}
-                    <a href="{{ link.url }}" aria-label="{{ link.title }}">
-                        <i class="{{ link.icon }}" aria-hidden="true"></i>
-                        <div class="title" style="display: block;">{{ link.title }}</div>
-                    </a>
+                    {% with current_path=request.path|normalize_url_path link_path=link.url|normalize_url_path %}
+                        <a href="{{ link.url }}"
+                           aria-label="{{ link.title }}"
+                           {% if current_path == link_path %}class="current-page" aria-current="page"{% endif %}>
+                            <i class="{{ link.icon }}" aria-hidden="true"></i>
+                            <div class="title" style="display: block;">{{ link.title }}</div>
+                        </a>
+                    {% endwith %}
                 {% endfor %}
             </div>
         {% endif %}

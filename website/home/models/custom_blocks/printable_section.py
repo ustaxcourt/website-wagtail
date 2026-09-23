@@ -1,6 +1,7 @@
 from wagtail import blocks
 
 from home.models.custom_blocks.nested_list import create_nested_list_block
+from home.models.config import IconCategories
 
 
 class PrintableSectionHeadingBlock(blocks.StructBlock):
@@ -23,6 +24,14 @@ class PrintableSectionHeadingBlock(blocks.StructBlock):
 
 
 class PrintableSectionBlock(blocks.StructBlock):
+    icon = blocks.ChoiceBlock(
+        choices=[
+            (icon.value, icon.name.replace("_", " ").title()) for icon in IconCategories
+        ],
+        required=False,
+        label="Icon",
+        help_text="Optional icon displayed beside the printable section title",
+    )
     title = blocks.CharBlock(
         required=True, help_text="Title displayed above the printable content"
     )
