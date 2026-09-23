@@ -564,7 +564,7 @@ p:empty {
 .info-card .card-header {
     display: flex;
     align-items: center;
-    gap: 16px;
+    /* gap: 16px; */
     position: relative;
 }
 
@@ -575,14 +575,14 @@ p:empty {
 }
 
 .info-card__title-icon {
-    width: 48px;
+    width: 36px; /* width: 48px; */
     height: 48px;
     flex-shrink: 0;
     border-radius: 10px;
-    background: #F3F4F6;
+    /* background: #F3F4F6; */
     display: flex;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 .info-card.gray .info-card__title-icon,
@@ -594,6 +594,7 @@ p:empty {
 .info-card__title-icon img {
     width: 24px;
     height: 24px;
+    filter: brightness(0) invert(1);
 }
 
 .info-card.gray .info-card__title-icon img,
@@ -624,6 +625,11 @@ p:empty {
 
 .info-card .description a {
     text-decoration: underline;
+}
+
+.info-card .description ul {
+    list-style-position: inside;
+    padding-left: 0px;
 }
 
 .info-card__buttons {

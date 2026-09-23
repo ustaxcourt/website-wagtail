@@ -13,6 +13,7 @@ from wagtail.documents.models import Document
 logger = logging.getLogger(__name__)
 arrow_forward_name = "Arrow Forward"
 computer_icon_name = "computer_icon.svg"
+mail_icon_name = "mail.svg"
 
 
 class PetitionersGuidancePageInitializer(PageInitializer):
@@ -62,6 +63,17 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                 subdirectory=None,
                 filename="computer_icon.svg",
                 title="Computer Icon",
+            )
+
+        mail_doc = Document.objects.filter(title=mail_icon_name).first()
+        if mail_doc:
+            logger.info("'Mail Icon' icon already exists.")
+        else:
+            logger.info("Creating the 'Mail Icon' icon.")
+            mail_doc = self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename="mail.svg",
+                title="Mail Icon",
             )
 
         new_page = home_page.add_child(
@@ -219,7 +231,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                     "color": "dark-primary",
                                     "numbered_icon": "",
                                     "numbered_icon_alignment": "left",
-                                    "title_icon": computer_doc.pk,
+                                    "title_icon": mail_doc.pk,
                                     "title_icon_alt_text": "",
                                     "subtitle": "",
                                     "title": "Can't file electronically? Mail Your Petition",
