@@ -631,6 +631,9 @@ p:empty {
     list-style-position: inside;
     padding-left: 0px;
 }
+.info-card .description ul+p {
+    margin-bottom: 0px;
+}
 
 .info-card__buttons {
     display: flex;
