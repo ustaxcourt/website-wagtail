@@ -564,7 +564,6 @@ p:empty {
 .info-card .card-header {
     display: flex;
     align-items: center;
-    /* gap: 16px; */
     position: relative;
 }
 
@@ -575,14 +574,12 @@ p:empty {
 }
 
 .info-card__title-icon {
-    width: 36px; /* width: 48px; */
+    width: 36px;
     height: 48px;
     flex-shrink: 0;
     border-radius: 10px;
-    /* background: #F3F4F6; */
     display: flex;
     align-items: center;
-    /* justify-content: center; */
 }
 
 .info-card.gray .info-card__title-icon,
@@ -627,12 +624,16 @@ p:empty {
     text-decoration: underline;
 }
 
-.info-card .description ul {
+/* .info-card .description ul {
     list-style-position: inside;
     padding-left: 0px;
+} */
+ .info-card .description ul>li {
+    padding-bottom: 5px;
 }
 .info-card .description ul+p {
     margin-bottom: 0px;
+    font-size: 16px;
 }
 
 .info-card__buttons {
