@@ -4,7 +4,10 @@ from home.models import NavigationRibbon
 from home.models import PetitionerExperiencePage
 from home.models.snippets.call_to_action import CallToActionBox
 import logging
+from urllib.parse import urljoin
 from home.models.utils.execute_script import ExecuteScript
+from django.conf import settings
+from wagtail.documents.models import Document
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +36,20 @@ class PetitionersTimelinePageInitializer(PageInitializer):
 
         _snippet_name = "Ready to begin your petition?"
         _cta_box = CallToActionBox.objects.filter(header=_snippet_name).first()
+
+        _base_url = getattr(settings, "BASE_URL", "")
+        _petitioner_prepare_to_file_url = urljoin(
+            _base_url, "/petitioners-prepare-to-file"
+        )
+        _petitioner_forms_url = urljoin(_base_url, "/petitioners-forms")
+        _petitioner_help_url = urljoin(_base_url, "/petitioners-help")
+        _rule37_doc = Document.objects.filter(title="rule-37.pdf").first()
+        _rule37_doc_url = "" if _rule37_doc is None else _rule37_doc.url
+        _rule143_doc = Document.objects.filter(title="rule-143.pdf").first()
+        _rule143_doc_url = "" if _rule143_doc is None else _rule143_doc.url
+        _rule162_doc = Document.objects.filter(title="rule-162.pdf").first()
+        _rule162_doc_url = "" if _rule162_doc is None else _rule162_doc.url
+
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
@@ -127,7 +144,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                                 "type": "item",
                                                 "value": {
                                                     "icon": "outbound",
-                                                    "information": '<p data-block-key="8x988">Prepare documents using the <a href="https://ustaxcourt.gov/replace-me"><b>pre-filing checklist</b></a> before getting started in DAWSON.</p>',
+                                                    "information": f'<p data-block-key="8x988">Prepare documents using the <a href="{_petitioner_prepare_to_file_url}"><b>pre-filing checklist</b></a> before getting started in DAWSON.</p>',
                                                     "information_subtext": "",
                                                 },
                                                 "id": "7bca949f-9af8-4e6e-8f37-eb7cd9101dc1",
@@ -137,7 +154,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                                 "value": {
                                                     "icon": "help",
                                                     "information": '<p data-block-key="8x988">Can I represent myself?</p>',
-                                                    "information_subtext": '<p data-block-key="rrk5u">You can represent yourself or get help with your case. View <a href="https://ustaxcourt.gov/replace-me">full FAQ</a> for more details.</p>',
+                                                    "information_subtext": f'<p data-block-key="rrk5u">You can represent yourself or get help with your case. View <a href="{_petitioner_help_url}">full FAQ</a> for more details.</p>',
                                                 },
                                                 "id": "645cb15d-8ae1-4c31-b3da-c45eb02290c9",
                                             },
@@ -164,7 +181,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                                 "type": "item",
                                                 "value": {
                                                     "text": '<p data-block-key="l4ngx">Complete the Petition form using <a href="https://dawson.ustaxcourt.gov/">dawson.ustaxcourt.gov</a> petition generator.</p>',
-                                                    "subtext": '<p data-block-key="7tw0u">Otherwise download a Petition form (form 2) from <a href="https://ustaxcourt.gov/replace-me">our Forms page</a>.</p>',
+                                                    "subtext": f'<p data-block-key="7tw0u">Otherwise download a Petition form (form 2) from <a href="{_petitioner_forms_url}">our Forms page</a>.</p>',
                                                 },
                                                 "id": "55ed77fc-61be-49e0-bef4-ec1712dccbb7",
                                             },
@@ -180,7 +197,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                                 "type": "item",
                                                 "value": {
                                                     "text": '<p data-block-key="l4ngx">Complete the Corporate Disclosure Statement form ONLY if you are filing on behalf of a company.</p>',
-                                                    "subtext": '<p data-block-key="7tw0u">Download from <a href="https://ustaxcourt.gov/replace-me">our Forms page</a>.</p>',
+                                                    "subtext": f'<p data-block-key="7tw0u">Download from <a href="{_petitioner_forms_url}">our Forms page</a>.</p>',
                                                 },
                                                 "id": "5e5f60d1-0222-4c55-8250-5151c2a1523d",
                                             },
@@ -226,7 +243,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                     "value": {
                                         "title": "IRS Files Answer",
                                         "date_range": "Up To 60 Days After the Petition is Filed",
-                                        "instructions": '<p data-block-key="k0m49">The IRS responds to your “Petition” with an “Answer.”</p><ul><li data-block-key="en9kt">IRS has 60 days to respond. You may need to fie a reply if there are affirmative allegations made in the Answer (<a href="https://ustaxcourt.gov/replace-me">Rule 37</a>).</li><li data-block-key="29g5r">Review the IRS answer carefully. The answer will tell you the name and phone number of the IRS lawyer assigned to your case.</li></ul>',
+                                        "instructions": f'<p data-block-key="k0m49">The IRS responds to your “Petition” with an “Answer.”</p><ul><li data-block-key="en9kt">IRS has 60 days to respond. You may need to fie a reply if there are affirmative allegations made in the Answer (<a href="{_rule37_doc_url}">Rule 37</a>).</li><li data-block-key="29g5r">Review the IRS answer carefully. The answer will tell you the name and phone number of the IRS lawyer assigned to your case.</li></ul>',
                                         "your_tasks": [],
                                         "helpful_information": [
                                             {
@@ -348,7 +365,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                     "value": {
                                         "title": "Trial",
                                         "date_range": "12-24+ Months After Filing",
-                                        "instructions": '<p data-block-key="x2hae">Present your case before a United States Tax Court Judge.</p><ul><li data-block-key="933h0">Trial held in person or remotely. The United States Tax Court Rules and the <a href="https://ustaxcourt.gov/files/documents/rule-143.pdf">rules of evidence</a> apply either way.</li><li data-block-key="dhe25">Present evidence and witnesses.</li><li data-block-key="ddceg">The Judge may not issue a decision right away. You will receive a copy when the Judge issues in your case.</li></ul>',
+                                        "instructions": f'<p data-block-key="x2hae">Present your case before a United States Tax Court Judge.</p><ul><li data-block-key="933h0">Trial held in person or remotely. The United States Tax Court Rules and the <a href="{_rule143_doc_url}">rules of evidence</a> apply either way.</li><li data-block-key="dhe25">Present evidence and witnesses.</li><li data-block-key="ddceg">The Judge may not issue a decision right away. You will receive a copy when the Judge issues in your case.</li></ul>',
                                         "your_tasks": [],
                                         "helpful_information": [],
                                     },
@@ -359,7 +376,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                     "value": {
                                         "title": "Decision",
                                         "date_range": "6-12+ Months After Trial",
-                                        "instructions": '<p data-block-key="49sn9">US Tax Court decision.</p><ul><li data-block-key="d03o0">Any motion to vacate or revise a decision should be filed within 30 days (See <a href="https://ustaxcourt.gov/replace-me">Rule 162</a>). The United States Tax Court may allow more time.</li></ul>',
+                                        "instructions": f'<p data-block-key="49sn9">US Tax Court decision.</p><ul><li data-block-key="d03o0">Any motion to vacate or revise a decision should be filed within 30 days (See <a href="{_rule162_doc_url}">Rule 162</a>). The United States Tax Court may allow more time.</li></ul>',
                                         "your_tasks": [],
                                         "helpful_information": [],
                                     },
