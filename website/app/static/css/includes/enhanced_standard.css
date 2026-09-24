@@ -748,7 +748,7 @@ p:empty {
 }
 
 .side-card.side-card--navy {
-    background-color: var(--color-navy);
+    background-color: var(--color-secondary);
 }
 
 .side-card.side-card--white {

@@ -91,7 +91,7 @@ def add_need_legal_help_side_card(initializer, page):
                 "type": "side_card_link",
                 "value": {
                     "icon": "open_in_new",
-                    "icon_location": "after",
+                    "icon_location": "before",
                     "text": "Find an LITC Near You",
                     "url": litc_url_block,
                     "style": "inverted-primary",
