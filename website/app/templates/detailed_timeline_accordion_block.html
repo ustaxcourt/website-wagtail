@@ -36,7 +36,9 @@
         <span class="material-symbols-outlined detailed-timeline-accordion-content-your-tasks-icon" aria-hidden="true">checklist</span>
         YOUR TASKS
       </div>
-      {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks %}
+      <div class="detailed-timeline-accordion-content-your-tasks-items">
+        {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks %}
+      </div>
       {% if data.helpful_information %}
         <hr />
       {% endif %}
