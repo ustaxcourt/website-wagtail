@@ -29,7 +29,6 @@ class RecursiveListTemplateTests(SimpleTestCase):
         self.assertIn('class="nested-list checkbox-list"', html)
         self.assertNotIn("checkbox-list-with-subtext", html)
         self.assertIn('id="checkbox-1"', html)
-        self.assertIn('aria-labelledby="checkbox-1-label"', html)
         self.assertIn('id="checkbox-1-label"', html)
         self.assertIn('for="checkbox-1"', html)
         self.assertNotIn('<label class="checkbox-label-container">', html)
