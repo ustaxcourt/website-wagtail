@@ -51,7 +51,7 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
                     "icon",
                     blocks.ChoiceBlock(
                         choices=[("outbound", "Action"), ("help", "Question")],
-                        default="Action",
+                        default="outbound",
                         required=True,
                         help_text="Choose the icon to be displayed in front of the text.",
                         label="Icon",

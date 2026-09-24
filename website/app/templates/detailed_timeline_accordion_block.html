@@ -12,10 +12,10 @@
         >
           <span class="detailed-timeline-accordion-header-text">{{ data.title }}</span>
           <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true">keyboard_arrow_down</span>
-          <div class="detailed-timeline-accordion-header-date-range">
+          <span class="detailed-timeline-accordion-header-date-range">
             <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon" aria-hidden="true">schedule</span>
-            <div class="detailed-timeline-accordion-header-date-range-text">{{ data.date_range }}</div>
-          </div>
+            <span class="detailed-timeline-accordion-header-date-range-text">{{ data.date_range }}</span>
+          </span>
         </button>
     </h3>
   </div>
@@ -37,7 +37,7 @@
         YOUR TASKS
       </div>
       <div class="detailed-timeline-accordion-content-your-tasks-items">
-        {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks %}
+        {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks id_prefix="checkbox-"|add:block.id %}
       </div>
       {% if data.helpful_information %}
         <hr />
@@ -51,9 +51,9 @@
       {% for info_item in data.helpful_information %}
         <div class="detailed-timeline-accordion-content-helpful-information-items">
           <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-item-icon" aria-hidden="true">{{ info_item.icon }}</span>
-          <div class="detailed-timeline-accordion-content-helpful-information-item-infotext" aria-hidden="true">{{ info_item.information }}</div>
+          <div class="detailed-timeline-accordion-content-helpful-information-item-infotext">{{ info_item.information }}</div>
           {% if info_item.information_subtext %}
-            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext" aria-hidden="true">{{ info_item.information_subtext }}</div>
+            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext">{{ info_item.information_subtext }}</div>
           {% endif %}
         </div>
       {% endfor %}
