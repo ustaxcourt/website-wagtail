@@ -2,6 +2,7 @@ from django import template
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.utils.text import slugify
+from urllib.parse import urlparse
 
 register = template.Library()
 
@@ -119,3 +120,21 @@ def strip_trailing_slash(value):
     if value != "/" and value.endswith("/"):
         return value.rstrip("/")
     return value
+
+
+@register.filter
+def normalize_url_path(value):
+    """
+    Normalize a URL or path for comparison.
+
+    Accepts absolute URLs or relative paths, strips the scheme/host when
+    present, and removes a single trailing slash except for the root path.
+    """
+    if not isinstance(value, str):
+        return value
+
+    parsed = urlparse(value)
+    path = parsed.path if parsed.scheme or parsed.netloc else value
+    if path != "/" and path.endswith("/"):
+        path = path.rstrip("/")
+    return path or "/"
