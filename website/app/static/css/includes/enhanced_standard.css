@@ -801,11 +801,12 @@ p:empty {
 }
 
 /* "contact" style: white pill rows, e.g. the Clerk's Office email/phone.
-   Icon pins to the top so it stays level with the label when helper text wraps. */
+   Icon and label share the first row; helper text spans below, starting under the icon. */
 .side-card__contact {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 2px 12px;
     background-color: var(--color-white);
     border-radius: 8px;
     padding: 12px 16px;
@@ -818,12 +819,6 @@ p:empty {
     flex-shrink: 0;
 }
 
-.side-card__contact-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
 .side-card__contact-label {
     font-weight: 700;
     color: #1B1B1B;
@@ -834,6 +829,7 @@ p:empty {
 }
 
 .side-card__contact-helper {
+    grid-column: 1 / -1;
     font-size: 14px;
     color: #565C65;
 }

@@ -22,12 +22,10 @@ not each link's type, so mixed email/phone links render as matching rows.
                             {% if link_block.value.icon %}
                                 <span class="material-symbols-outlined side-card__contact-icon" aria-hidden="true">{{ link_block.value.icon }}</span>
                             {% endif %}
-                            <span class="side-card__contact-text">
-                                <span class="side-card__contact-label">{{ link_block.value.text }}</span>
-                                {% if link_block.value.helper_text %}
-                                    <span class="side-card__contact-helper">{{ link_block.value.helper_text }}</span>
-                                {% endif %}
-                            </span>
+                            <span class="side-card__contact-label">{{ link_block.value.text }}</span>
+                            {% if link_block.value.helper_text %}
+                                <span class="side-card__contact-helper">{{ link_block.value.helper_text }}</span>
+                            {% endif %}
                         </a>
                     {% endfor %}
                 {% elif side_card.link_display_style == "plain_links" %}
