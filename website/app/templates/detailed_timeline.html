@@ -118,7 +118,7 @@
             grid-column: 1 / 2;
             grid-row: 2;
             display: flex;
-            align-items: center;
+            align-items: normal;
             gap: 4px;
         }
 
@@ -130,20 +130,28 @@
                 'wght' 400,
                 'GRAD' 0,
                 'opsz' 16;
+            padding: 4px 0px 0px 0px;
         }
 
-        .detailed-timeline-accordion-content > ul {
+        .detailed-timeline-accordion-content > ul:not(.checkbox-list-with-subtext) {
             padding-inline-start: inherit;
         }
 
-        .detailed-timeline-accordion-content-helpful-information-header-icon {
+        .detailed-timeline-accordion-content > .checkbox-list-with-subtext > li {
+            padding: 0px;
+        }
+
+        .detailed-timeline-accordion-content > .checkbox-list-with-subtext > li p {
             font-size: 16px;
-            color: var(--color-secondary);
-            font-variation-settings:
-                'FILL' 1,
-                'wght' 400,
-                'GRAD' 0,
-                'opsz' 16;
+        }
+
+        .detailed-timeline-accordion-content > .checkbox-list-with-subtext > li .list-item-content {
+            gap: 0px;
+        }
+
+        .detailed-timeline-accordion-content > .checkbox-list-with-subtext > li.has-subtext {
+            background-color: white;
+            border-left: 0px;
         }
 
         .detailed-timeline-accordion-content .detailed-timeline-rich-text ol {
@@ -159,17 +167,37 @@
         }
 
         .detailed-timeline-accordion-content-your-tasks {
+            display: flex;
+            align-items: normal;
+            gap: 4px;
+            font-weight: 600;
+            padding: 0px 0px 16px 0px;
             font-size: 16px;
         }
 
         .detailed-timeline-accordion-content-your-tasks-icon {
             font-size: 16px;
+            padding: 2px 0px 0px 0px;
         }
 
         .detailed-timeline-accordion-content-helpful-information-header {
             display: flex;
-            align-items: center;
+            align-items: normal;
             gap: 4px;
+            font-weight: 600;
+            padding: 0px 0px 16px 0px;
+            font-size: 16px;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-header-icon {
+            font-size: 16px;
+            color: var(--color-secondary);
+            font-variation-settings:
+                'FILL' 1,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 16;
+            padding: 2px 0px 0px 0px;
         }
 
         .detailed-timeline-accordion-content-helpful-information-items {
@@ -177,12 +205,16 @@
             grid-template-columns: auto 1fr;
             grid-template-rows: auto auto;
             column-gap: 4px;
+            align-items: normal;
+            padding: 0px 0px 12px 0px;
+            font-size: 16px;
         }
 
         .detailed-timeline-accordion-content-helpful-information-item-icon {
             font-size: 16px;
             grid-column: 1;
             grid-row: 1;
+            padding: 2px 0px 0px 0px;
         }
 
         .detailed-timeline-accordion-content-helpful-information-item-infotext {
