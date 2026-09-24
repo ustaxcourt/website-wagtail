@@ -12,10 +12,10 @@
         >
           <span class="detailed-timeline-accordion-header-text">{{ data.title }}</span>
           <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true">keyboard_arrow_down</span>
-          <span class="detailed-timeline-accordion-header-date-range">
+          <div class="detailed-timeline-accordion-header-date-range">
             <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon" aria-hidden="true">schedule</span>
-            {{ data.date_range }}
-          </span>
+            <div class="detailed-timeline-accordion-header-date-range-text">{{ data.date_range }}</div>
+          </div>
         </button>
     </h3>
   </div>
@@ -32,26 +32,26 @@
       {% endif %}
     {% endif %}
     {% if data.your_tasks %}
-      <span class="detailed-timeline-accordion-content-your-tasks">
+      <div class="detailed-timeline-accordion-content-your-tasks">
         <span class="material-symbols-outlined detailed-timeline-accordion-content-your-tasks-icon" aria-hidden="true">checklist</span>
         YOUR TASKS
-      </span>
+      </div>
       {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks %}
       {% if data.helpful_information %}
         <hr />
       {% endif %}
     {% endif %}
     {% if data.helpful_information %}
-      <span class="detailed-timeline-accordion-content-helpful-information-header">
+      <div class="detailed-timeline-accordion-content-helpful-information-header">
         <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-header-icon" aria-hidden="true">info</span>
         Helpful Information
-      </span>
+      </div>
       {% for info_item in data.helpful_information %}
-        <div class="detailed-timeline-accordion-content-helpful-information">
-          <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-icon" aria-hidden="true">{{ info_item.icon }}</span>
-          <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-infotext" aria-hidden="true">{{ info_item.information }}</span>
+        <div class="detailed-timeline-accordion-content-helpful-information-items">
+          <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-item-icon" aria-hidden="true">{{ info_item.icon }}</span>
+          <div class="detailed-timeline-accordion-content-helpful-information-item-infotext" aria-hidden="true">{{ info_item.information }}</div>
           {% if info_item.information_subtext %}
-            <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-infosubtext" aria-hidden="true">{{ info_item.information_subtext }}</span>
+            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext" aria-hidden="true">{{ info_item.information_subtext }}</div>
           {% endif %}
         </div>
       {% endfor %}

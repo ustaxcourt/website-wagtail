@@ -117,11 +117,27 @@
             font-weight: normal;
             grid-column: 1 / 2;
             grid-row: 2;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .detailed-timeline-accordion-header-date-range-icon {
             font-size: 16px;
-            vertical-align: sub;
+            color: var(--color-secondary);
+            font-variation-settings:
+                'FILL' 1,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 16;
+        }
+
+        .detailed-timeline-accordion-content > ul {
+            padding-inline-start: inherit;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-header-icon {
+            font-size: 16px;
             color: var(--color-secondary);
             font-variation-settings:
                 'FILL' 1,
@@ -141,6 +157,53 @@
         .detailed-timeline-accordion-content .detailed-timeline-rich-text:last-child p:last-child {
             margin-bottom: 0;
         }
+
+        .detailed-timeline-accordion-content-your-tasks {
+            font-size: 16px;
+        }
+
+        .detailed-timeline-accordion-content-your-tasks-icon {
+            font-size: 16px;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-items {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto;
+            column-gap: 4px;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-item-icon {
+            font-size: 16px;
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-item-infotext {
+            font-size: 16px;
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-item-infotext > p {
+            margin-top: revert;
+            margin-block-start: 0px;
+            margin-block-end: 0px;
+        }
+
+        .detailed-timeline-accordion-content-helpful-information-item-infosubtext {
+            font-size: 16px;
+            grid-column: 2;
+            grid-row: 2;
+            color: var(--theme-color-base-medium);
+        }
+
         @media (max-width: 768px) {
             .detailed-timeline-accordion-title {
                 padding: 15px 10px;
