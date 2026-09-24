@@ -28,6 +28,10 @@ class RecursiveListTemplateTests(SimpleTestCase):
         self.assertNotIn("subtext should not render", html)
         self.assertIn('class="nested-list checkbox-list"', html)
         self.assertNotIn("checkbox-list-with-subtext", html)
+        self.assertIn('id="checkbox-1"', html)
+        self.assertIn('id="checkbox-1-label"', html)
+        self.assertIn('for="checkbox-1"', html)
+        self.assertNotIn('<label class="checkbox-label-container">', html)
 
     def test_checkbox_with_subtext_list_renders_subtext(self):
         html = render_to_string(

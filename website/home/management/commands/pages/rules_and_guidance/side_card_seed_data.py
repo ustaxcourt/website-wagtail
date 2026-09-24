@@ -42,7 +42,7 @@ def add_clerks_office_side_card(initializer, page):
                 "value": {
                     "icon": "call",
                     "text": "(202) 521-0700",
-                    "helper_text": "Mon - Fri, 8:00am - 4:30pm ET",
+                    "helper_text": "Mon - Fri, 8am - 4:30pm ET",
                     "url": [
                         {
                             "type": "phone",

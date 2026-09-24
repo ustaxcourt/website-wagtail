@@ -64,9 +64,11 @@ class PetitionersHelpPageInitializer(PageInitializer):
     def update(self):
         """Delete and recreate the Petitioners Help page.
 
-        The "only run once per environment" guard lives in run() - see the
-        note on PetitionersPrepareToFilePageInitializer.update() (WAG-1339)
-        for why this method must not repeat that check itself.
+        The "only run once per environment" guard lives in run(), which
+        creates the marker row *before* calling this method - so this method
+        must not repeat that check itself, or it would always see the marker
+        and silently skip. The recreate matters because the Helpful Links
+        card depends on pages created later in the same script run.
         """
         existing_page = Page.objects.filter(slug=self.slug).first()
         if existing_page:
