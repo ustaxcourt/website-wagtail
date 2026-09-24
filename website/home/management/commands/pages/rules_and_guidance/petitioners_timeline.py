@@ -91,7 +91,81 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                             ],
                         },
                         "id": "8c34cf67-1a49-4da5-a508-f35217759926",
-                    }
+                    },
+                    {
+                        "type": "detailed_timeline",
+                        "value": {
+                            "title": "United States Tax Court Case Timeline",
+                            "introduction": '<p data-block-key="lamyb">Please note: The timeline of every court case is different. This is a general timeline to help you<br/>understand the lifecycle of a case and should not be used for planning purposes.</p>',
+                            "phases": [
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "Receive an IRS Notice",
+                                        "date_range": "Day 0",
+                                    },
+                                    "id": "b4941d41-ab20-4e73-9ea6-66e6a22001fb",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "File Your Petition",
+                                        "date_range": "Day 0-Deadline",
+                                    },
+                                    "id": "36557146-a5db-462b-9955-a436cd87d486",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "IRS Files Answer",
+                                        "date_range": "Up To 60 Days After the Petition is Filed",
+                                    },
+                                    "id": "96ce579b-89c6-4b01-9013-e33a079314dc",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "Trial Date is Scheduled",
+                                        "date_range": "6-13 Months",
+                                    },
+                                    "id": "c711466a-53f8-4deb-aa63-a0edb2b05cb2",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "Discovery & Discussion",
+                                        "date_range": "4-12 Months",
+                                    },
+                                    "id": "90c53c79-43a6-45d7-b384-a067bc4355e3",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "Trial Preparation",
+                                        "date_range": "2-4 Months Before Trial",
+                                    },
+                                    "id": "92fbd6bf-b338-4993-a5e7-ddffe874c42b",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "Trial",
+                                        "date_range": "12-24+ Months After Filing",
+                                    },
+                                    "id": "49330a63-e33a-4028-9104-32063c7541c0",
+                                },
+                                {
+                                    "type": "phase",
+                                    "value": {
+                                        "title": "Decision",
+                                        "date_range": "6-12+ Months After Trial",
+                                    },
+                                    "id": "6c4a7579-026c-444a-ae78-41d71ce33e7a",
+                                },
+                            ],
+                        },
+                        "id": "b050e963-8231-4c33-817c-101d50838d56",
+                    },
                 ],
             )
         )

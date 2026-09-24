@@ -14,7 +14,7 @@
     margin-top: 0px;
 }
 
-.enhanced-page.grid-container > h1,h2,h3:not(.question-answer-block > h3),h4,h5,h6  {
+.enhanced-page.grid-container > h1,h2,h3:not(.question-answer-block > h3):not(.detailed-timeline-accordion-header > h3),h4,h5,h6  {
     margin-top: 0px;
     margin-bottom: 0px;
 }
