@@ -18,12 +18,17 @@
             border: 1px solid var(--theme-color-base-lighter);
             border-radius: 4px;
         }
+
+        .detailed-timeline-accordion-block hr {
+            margin: 16px 0px;
+        }
+
         .detailed-timeline-accordion-title {
             width: 100%;
             color: var(--color-primary);
             cursor: pointer;
             margin: 0;
-            padding: 16px;
+            padding: 16px 24px;
             font-size: 20px;
         }
         .detailed-timeline-accordion-title:focus:not(:focus-visible),
@@ -76,9 +81,10 @@
             display: none;
         }
         .detailed-timeline-accordion-content {
-            padding: 0px 16px;
+            padding: 0px 24px;
             width: 100%;
         }
+
         .rotated {
             transform: rotate(180deg);
             transition: transform 0.3s ease;
@@ -133,8 +139,17 @@
             padding: 4px 0px 0px 0px;
         }
 
+        .detailed-timeline-accordion-content p {
+            font-size: 16px;
+        }
+
+        .detailed-timeline-accordion-content ul {
+            font-size: 16px;
+        }
+
         .detailed-timeline-accordion-content > ul:not(.checkbox-list-with-subtext) {
             padding-inline-start: inherit;
+            font-size: 16px;
         }
 
         .detailed-timeline-accordion-content > .detailed-timeline-accordion-content-your-tasks-items > .checkbox-list-with-subtext > li {
@@ -199,7 +214,7 @@
             align-items: normal;
             gap: 4px;
             font-weight: 600;
-            padding: 0px 0px 16px 0px;
+            padding: 0px 0px 8px 0px;
             font-size: 16px;
         }
 
@@ -220,7 +235,7 @@
             grid-template-rows: auto auto;
             column-gap: 4px;
             align-items: normal;
-            padding: 0px 0px 8px 0px;
+            padding: 8px 0px 0px 0px;
             font-size: 16px;
         }
 
@@ -252,7 +267,7 @@
 
         @media (max-width: 768px) {
             .detailed-timeline-accordion-title {
-                padding: 15px 10px;
+                padding: 16px;
             }
             .detailed-timeline-accordion-header {
                 width: 100%;
@@ -261,9 +276,12 @@
             .detailed-timeline-accordion-header h3 {
                 font-size: 18px;
             }
+            .detailed-timeline-accordion-header-date-range {
+                padding: 2px 0px 0px 0px;
+            }
             .detailed-timeline-accordion-content {
                 width: 100%;
-                padding: 20px 20px;
+                padding: 0px 16px;
             }
             .detailed-timeline-accordion-header-button {
                 font-size: 18px;
