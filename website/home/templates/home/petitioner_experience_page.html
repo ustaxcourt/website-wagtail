@@ -136,11 +136,11 @@
             <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
             <span class="page-title-breadcrumb" style="display: none;"></span>
         </h1>
-        {% if page.introductory_text %}
-            {{ page.introductory_text|richtext }}
-        {% endif %}
         <div class="grid-row grid-gap side-card-layout">
             <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">
+                {% if page.introductory_text %}
+                    {{ page.introductory_text|richtext }}
+                {% endif %}
                 {% include "includes/enhanced_body.html" with blocks=page.body %}
                 {% for sub_block in page.raw_html_body %}
                 {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
