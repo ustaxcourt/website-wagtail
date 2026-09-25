@@ -624,10 +624,6 @@ p:empty {
     text-decoration: underline;
 }
 
-/* .info-card .description ul {
-    list-style-position: inside;
-    padding-left: 0px;
-} */
  .info-card .description ul>li {
     padding-bottom: 5px;
 }
@@ -710,5 +706,9 @@ p:empty {
 
     .info-card .title {
         font-size: 18px;
+    }
+
+    .info-card .description ul {
+        padding-left: 16px;
     }
 }
