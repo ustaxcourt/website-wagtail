@@ -13,6 +13,7 @@ from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from home.models import (
     CommonText,
+    FAQFilterTag,
     JudgeProfile,
     JudgeCollection,
     JudgeRole,
@@ -243,6 +244,7 @@ class Command(BaseCommand):
         snippet_models = [
             Banner,
             CommonText,
+            FAQFilterTag,
             JudgeProfile,
             JudgeCollection,
             JudgeRole,
@@ -350,6 +352,7 @@ class Command(BaseCommand):
         snippet_models = [
             Banner,
             CommonText,
+            FAQFilterTag,
             JudgeProfile,
             JudgeCollection,
             JudgeRole,

@@ -22,6 +22,7 @@ from wagtail.admin.ui.tables import Column
 from wagtail.admin.viewsets.pages import PageViewSet, base_page_viewset
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole, Header
+from home.models.snippets.faq_filter_tag import block_if_filter_tags_in_use
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
@@ -148,6 +149,18 @@ def prevent_navigation_menu_deletion(request, instances):
         from django.core.exceptions import PermissionDenied
 
         raise PermissionDenied()
+
+
+@hooks.register("before_delete_snippet")
+def protect_filter_tags_in_use_from_deletion(request, instances):
+    """A FilterTag can only be removed once no Q&A uses it."""
+    return block_if_filter_tags_in_use(request, instances, "removed")
+
+
+@hooks.register("before_unpublish")
+def protect_filter_tags_in_use_from_unpublish(request, instance):
+    """An unpublished FilterTag leaves the dropdown, so it needs the same protection."""
+    return block_if_filter_tags_in_use(request, [instance], "unpublished")
 
 
 @hooks.register("before_delete_snippet")
