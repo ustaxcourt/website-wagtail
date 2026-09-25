@@ -139,6 +139,34 @@ class TestSearchView:
                             results = ctx["search_results"].object_list
                             assert any("Smith" in r.title for r in results)
 
+    def test_search_judge_result_uses_slugified_last_name_url(self):
+        from search.views import search
+
+        request = self._make_request(query="judge name")
+
+        judge = MagicMock()
+        judge.display_name = "Judge De Luca"
+        judge.first_name = "Troy"
+        judge.last_name = "De Luca"
+        judge.id = 6
+
+        with patch("search.views.Page") as mock_page_cls:
+            mock_page_cls.objects.live.return_value.search.return_value = []
+            with patch("search.views.JudgeProfile") as mock_judge:
+                mock_judge.objects.filter.return_value.filter.return_value = [judge]
+                with patch("search.views.Query") as mock_query_cls:
+                    mock_query_cls.get.return_value = MagicMock()
+                    with patch("search.views.SearchPromotion") as mock_promo:
+                        mock_promo.objects.filter.return_value.select_related.return_value = []
+                        with patch("search.views.TemplateResponse") as mock_tr:
+                            mock_tr.return_value = MagicMock(status_code=200)
+                            search(request)
+                            results = mock_tr.call_args[0][2][
+                                "search_results"
+                            ].object_list
+
+        assert results[0].url == "/judges/6/de-luca/"
+
 
 @pytest.mark.django_db
 class TestSearchViewDocketDetection:
