@@ -1,5 +1,4 @@
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel
 
 
 class DetailedTimelinePhaseBlock(blocks.StructBlock):
@@ -13,12 +12,73 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
         max_length=255,
         required=True,
         help_text="Text to be displayed at the end of the phase.",
+        label="Date Range",
     )
 
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("date_range"),
-    ]
+    instructions = blocks.RichTextBlock(
+        required=True,
+        help_text="Text to be shown at the top of the phase when it is expanded.",
+    )
+
+    your_tasks = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                (
+                    "text",
+                    blocks.RichTextBlock(
+                        required=True,
+                    ),
+                ),
+                (
+                    "subtext",
+                    blocks.RichTextBlock(
+                        required=False,
+                    ),
+                ),
+            ],
+            label="Task Item",
+        ),
+        required=False,
+        label="Your Tasks",
+        default=[],
+        help_text="Tasks to be completed during this phase.",
+    )
+
+    helpful_information = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                (
+                    "icon",
+                    blocks.ChoiceBlock(
+                        choices=[("outbound", "Action"), ("help", "Question")],
+                        default="outbound",
+                        required=True,
+                        help_text="Choose the icon to be displayed in front of the text.",
+                        label="Icon",
+                    ),
+                ),
+                (
+                    "information",
+                    blocks.RichTextBlock(
+                        help_text="Helpful Information text", label="Information"
+                    ),
+                ),
+                (
+                    "information_subtext",
+                    blocks.RichTextBlock(
+                        help_text="Helpful Information subtext",
+                        label="Information Subtext",
+                        required=False,
+                    ),
+                ),
+            ],
+            label="Helpful Information Item",
+        ),
+        required=False,
+        label="Helpful Information",
+        default=[],
+        help_text="Helpful information to be displayed at the bottom of the phase when expanded.",
+    )
 
     class Meta:
         label = "Phase"
