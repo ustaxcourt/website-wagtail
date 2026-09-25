@@ -1,7 +1,7 @@
 {% load static %} {% load wagtailcore_tags %}
 {% with data=block.value %}
 <div id="detailed-timeline-accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}" class="detailed-timeline-accordion-block" data-accordion-id="detailed-timeline-accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}">
-<div class="detailed-timeline-accordion-header {% if data.default_to_open %}active{% endif %}">
+  <div class="detailed-timeline-accordion-header {% if data.default_to_open %}active{% endif %}">
     <h3 class="detailed-timeline-accordion-title {% if data.default_to_open %}active{% endif %}">
       <button
           type="button"
@@ -14,7 +14,7 @@
           <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}" aria-hidden="true">keyboard_arrow_down</span>
           <span class="detailed-timeline-accordion-header-date-range">
             <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon" aria-hidden="true">schedule</span>
-            {{ data.date_range }}
+            <span class="detailed-timeline-accordion-header-date-range-text">{{ data.date_range }}</span>
           </span>
         </button>
     </h3>
@@ -25,25 +25,39 @@
     role="region"
     aria-labelledby="btn-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}"
   >
-    {% for block in data.description %}
-        {% if block.block_type == 'heading' %}
-        {% with level=block.value.level text=block.value.text id=block.value.id %}
-          {% if level == 'h2' %}
-            <h2{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h2>
-          {% elif level == 'h3' %}
-            <h3{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h3>
-          {% elif level == 'h4' %}
-            <h4{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h4>
-          {% elif level == 'h5' %}
-            <h5{% if id %} id="{{ id }}"{% endif %}>{{ text }}</h5>
-          {% endif %}
-        {% endwith %}
-      {% elif block.block_type == 'prose' %}
-        <div class="detailed-timeline-rich-text">{{ block.value }}</div>
-      {% elif block.block_type == 'callout' %}
-        <div class="callout-content">{% include_block block %}</div>
+    {% if data.instructions %}
+      {{ data.instructions|richtext }}
+      {% if data.your_tasks or data.helpful_information %}
+        <hr />
       {% endif %}
-    {% endfor %}
+    {% endif %}
+    {% if data.your_tasks %}
+      <div class="detailed-timeline-accordion-content-your-tasks">
+        <span class="material-symbols-outlined detailed-timeline-accordion-content-your-tasks-icon" aria-hidden="true">checklist</span>
+        YOUR TASKS
+      </div>
+      <div class="detailed-timeline-accordion-content-your-tasks-items">
+        {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks id_prefix="checkbox-"|add:block.id %}
+      </div>
+      {% if data.helpful_information %}
+        <hr />
+      {% endif %}
+    {% endif %}
+    {% if data.helpful_information %}
+      <div class="detailed-timeline-accordion-content-helpful-information-header">
+        <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-header-icon" aria-hidden="true">info</span>
+        Helpful Information
+      </div>
+      {% for info_item in data.helpful_information %}
+        <div class="detailed-timeline-accordion-content-helpful-information-items">
+          <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-item-icon" aria-hidden="true">{{ info_item.icon }}</span>
+          <div class="detailed-timeline-accordion-content-helpful-information-item-infotext">{{ info_item.information }}</div>
+          {% if info_item.information_subtext %}
+            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext">{{ info_item.information_subtext }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}
   </div>
 </div>
 {% endwith %}
