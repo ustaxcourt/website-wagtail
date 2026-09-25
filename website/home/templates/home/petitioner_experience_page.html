@@ -1,17 +1,21 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load filters %}
 {% load static %}
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/includes/enhanced_standard.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
     <style>
         /* Rounded rectangle */
         .rounded-rectangle {
             padding: 0 0 48px 0;
-            width: 100%;                 /* Scales with screen width */
-            background-color: var(--color-navy);  /* Fill color */
-            border-radius: 20px;        /* Rounded corners */
+            width: 100%;
+            /* Scales with screen width */
+            background-color: var(--color-navy);
+            /* Fill color */
+            border-radius: 20px;
+            /* Rounded corners */
             margin: 32px 0 32px 0;
         }
 
@@ -37,8 +41,10 @@
         }
 
         .rounded-rectangle-buttons a {
-            display: inline-flex;       /* Make each control inline-flex */
-            margin-right: 0px;          /* Space between controls */
+            display: inline-flex;
+            /* Make each control inline-flex */
+            margin-right: 0px;
+            /* Space between controls */
         }
 
         h2 {
@@ -49,17 +55,6 @@
             color: black;
             text-decoration: underline;
             font-weight: 600;
-        }
-
-
-        .petitioner-experience-layout {
-            display: grid;
-            row-gap: 32px;
-            align-items: start;
-        }
-
-        .petitioner-experience-main {
-            min-width: 0;
         }
 
         @media (max-width: 1200px) {
@@ -80,12 +75,6 @@
         }
 
         @media (max-width: 600px) {
-            .petitioner-experience-layout {
-                grid-template-columns: 1fr;
-                gap: 24px;
-                margin-left: 0;
-            }
-
             .rounded-rectangle {
                 padding: 0 0 32px 0;
             }
@@ -147,30 +136,36 @@
             <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
             <span class="page-title-breadcrumb" style="display: none;"></span>
         </h1>
-        {% if page.introductory_text %}
-            {{ page.introductory_text|richtext }}
-        {% endif %}
-        <div class="petitioner-experience-layout">
-            <div class="petitioner-experience-main">
-                {% include "includes/enhanced_body.html" with blocks=page.body %}
-                {% if page.call_to_action %}
-                    <div class="rounded-rectangle">
-                        <h1>{{ page.call_to_action.header }}</h1>
-                        <h2>{{ page.call_to_action.body }}</h2>
-                        <div class="rounded-rectangle-buttons">
-                            {% for button in page.call_to_action.buttons %}
-                                {% include "includes/styled_button.html" with block=button %}
-                            {% endfor %}
-                        </div>
-                    </div>
+        <div class="grid-row grid-gap side-card-layout">
+            <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">
+                {% if page.introductory_text %}
+                    {{ page.introductory_text|richtext }}
                 {% endif %}
+                {% include "includes/enhanced_body.html" with blocks=page.body %}
+                {% for sub_block in page.raw_html_body %}
+                {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
+                {% endfor %}
             </div>
+            {% if page.side_cards.all %}
+            <div class="grid-col-12 desktop:grid-col-4 side-card-rail">
+                {% for side_card in page.side_cards.all %}
+                {% include "includes/side_card.html" with side_card=side_card %}
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
-        {% for sub_block in page.raw_html_body %}
-            {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
-        {% endfor %}
+        {% if page.call_to_action %}
+            <div class="rounded-rectangle">
+                <h1>{{ page.call_to_action.header }}</h1>
+                <h2>{{ page.call_to_action.body }}</h2>
+                <div class="rounded-rectangle-buttons">
+                    {% for button in page.call_to_action.buttons %}
+                        {% include "includes/styled_button.html" with block=button %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pageTitle = document.querySelector('[data-testid="page-title"]');

@@ -473,19 +473,14 @@ p:empty {
     }
 }
 
-/* Card Set styling (WAG-1338). Deliberately not scoped under .enhanced-page:
-   enhanced_body.html (and its 'card' block) is also included by several page
-   templates - judges_recruiting, csv_upload_page, press_release_page,
-   internship_programs - that don't wrap their content in that class. These
-   selectors need to apply wherever a Card Set can render, not just on
-   EnhancedStandardPage/PetitionerExperiencePage. */
+/* Card Set: not scoped under .enhanced-page because enhanced_body.html is
+   also included by templates without that wrapper. */
 
-/* Single row at desktop; tablet wraps 2-up (see @media 1024 below) to match
-   Figma - a single row of 3 left cards/buttons too cramped at tablet width. */
+/* One row at desktop; wraps 2-up at tablet, stacks at mobile. */
 .info-cards {
     display: flex;
     align-items: stretch;
-    gap: 48px; /* tablet override to 32px, mobile to 16px, below */
+    gap: 48px;
     margin-top: 1rem;
     margin-bottom: 34px;
 }
@@ -497,7 +492,7 @@ p:empty {
 
 .info-card {
     padding: 24px;
-    border-radius: 8px; /* tablet/mobile override to 16px below */
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -642,7 +637,7 @@ p:empty {
 .info-card .title {
     color: #162E51;
     font-weight: 600;
-    font-size: 20px; /* mobile override to 18px below */
+    font-size: 20px;
     text-align: left;
 }
 
@@ -660,10 +655,8 @@ p:empty {
     margin-top: auto;
 }
 
-/* Stretch-to-sibling-height only pins the button to the bottom when a row has a
-   taller neighbor. Give buttoned cards a floor height so the button still sits
-   away from short body text when a card stacks alone (mobile) or has no taller
-   sibling in its row. */
+/* Floor height keeps the button off short body text when a card has no
+   taller row sibling. */
 .info-card.has-button {
     min-height: 260px;
 }
@@ -717,8 +710,7 @@ p:empty {
         gap: 16px;
     }
 
-    /* Mobile: each stacked card hugs its own content - no shared row to
-       stretch against, and no artificial floor height (UX feedback). */
+    /* Mobile: stacked cards size to their content; no min-height. */
     .info-cards .info-card {
         flex: 1 1 auto;
     }
@@ -729,5 +721,185 @@ p:empty {
 
     .info-card .title {
         font-size: 18px;
+    }
+}
+
+/* Side Card rail: beside the body at desktop (grid-col-8/4 split in
+   petitioner_experience_page.html), stacked below it otherwise. */
+.side-card-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.side-card {
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--color-white);
+}
+
+/* blue/navy per the Prepare to File / FAQs mockups; remaining variants
+   mirror the Card Set palette. */
+.side-card.side-card--blue {
+    background-color: var(--color-primary);
+}
+
+.side-card.side-card--navy {
+    background-color: var(--color-secondary);
+}
+
+.side-card.side-card--white {
+    background-color: #FFFFFF;
+    color: #1B1B1B;
+    border: 1px solid #F0F0F0;
+}
+
+.side-card.side-card--gray {
+    background-color: #F0F0F0;
+    color: #1B1B1B;
+}
+
+.side-card.side-card--dark-primary {
+    background-color: #1A4480;
+}
+
+.side-card.side-card--green {
+    background-color: #ecf3ec;
+    color: #1B1B1B;
+}
+
+.side-card.side-card--yellow {
+    background-color: #fef0c8;
+    color: #1B1B1B;
+}
+
+.side-card__icon {
+    font-size: 28px;
+}
+
+.side-card__title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.side-card__intro {
+    font-size: 16px;
+}
+
+.side-card__intro p {
+    margin: 0;
+}
+
+.side-card__links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* "contact" style: white pill rows, e.g. the Clerk's Office email/phone.
+   Icon and label share the first row; helper text spans below, starting under the icon. */
+.side-card__contact {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 2px 12px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #1B1B1B;
+}
+
+.side-card__contact-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.side-card__contact-label {
+    font-weight: 700;
+    color: #1B1B1B;
+}
+
+.side-card__contact[data-link-type="email"] .side-card__contact-label {
+    text-decoration: underline;
+}
+
+.side-card__contact-helper {
+    grid-column: 1 / -1;
+    font-size: 14px;
+    color: #565C65;
+}
+
+/* "button" style: full-width inverted-primary button from styled_button.html. */
+.side-card__links--button .side-card__button .usa-button.styled-inverted-primary-button {
+    width: 100%;
+    justify-content: center;
+}
+
+/* "plain_links" style: inherits the card's foreground color so links work on
+   both dark and light variants. */
+.side-card__plain-link {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.side-card__plain-link:hover {
+    opacity: 0.85;
+}
+
+/* Desktop: 16px + the CTA's 32px margin = the mockup's 48px gap. */
+@media (min-width: 1024px) {
+    .side-card-main .printable-section:last-of-type {
+        margin-bottom: 16px;
+    }
+}
+
+/* Tablet: rail drops below the body; wrap cards 2-up (same breakpoint as
+   .info-cards). */
+@media (max-width: 1024px) {
+    .side-card-layout {
+        margin-top: 8px;
+    }
+
+    /* Stacked sections are 32px apart per the mockups. */
+    .side-card-main .printable-section {
+        margin-bottom: 32px;
+    }
+
+    .side-card-rail {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 0;
+    }
+
+    .side-card-rail .side-card {
+        flex: 1 1 calc(50% - 12px);
+        min-width: 280px;
+    }
+}
+
+/* Mobile: single column, every card full width. */
+@media (max-width: 768px) {
+    .side-card-rail {
+        flex-direction: column;
+    }
+
+    .side-card-rail .side-card {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .side-card__title {
+        font-size: 18px;
+    }
+
+    /* Keeps a typical email address on one line instead of wrapping a stray letter. */
+    .side-card__contact[data-link-type="email"] .side-card__contact-label {
+        font-size: 14px;
     }
 }
