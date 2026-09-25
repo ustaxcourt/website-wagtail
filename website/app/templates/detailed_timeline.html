@@ -1,0 +1,185 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        .detailed-timeline-title-block > h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0px 0px 8px 0px;
+        }
+
+        .detailed-timeline-phase {
+            margin: 32px 0px;
+        }
+
+        .detailed-timeline-accordion-block {
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+        .detailed-timeline-accordion-title {
+            width: 100%;
+            color: var(--color-primary);
+            cursor: pointer;
+            margin: 0;
+            padding: 16px;
+            font-size: 20px;
+        }
+        .detailed-timeline-accordion-title:focus:not(:focus-visible),
+        .detailed-timeline-accordion-title:focus-within:not(:focus-visible) {
+            outline: none;
+        }
+        .detailed-timeline-accordion-title.active {
+            color: #ffffff;
+        }
+        .detailed-timeline-accordion-icon {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            flex-shrink: 0;
+
+            align-content: center;
+            text-align: center;
+
+            grid-column: 2;
+            grid-row: 1;
+
+            transition: transform 0.3s ease;
+        }
+        .detailed-timeline-accordion-icon.active {
+            background-color: var(--color-white);
+        }
+
+        .detailed-timeline-accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background-color: var(--theme-color-base-lightest);
+            border: 1px solid var(--theme-color-base-lighter);
+            border-radius: 4px;
+        }
+        .detailed-timeline-accordion-header:focus:not(:focus-visible),
+        .detailed-timeline-accordion-header:focus-within:not(:focus-visible) {
+            outline: none;
+        }
+        .detailed-timeline-accordion-header.active {
+            background-color: var(--color-primary);
+            border-bottom: none;
+        }
+
+        .detailed-timeline-accordion-header:hover {
+            cursor: pointer;
+        }
+        .detailed-timeline-accordion-header p {
+            color: var(--color-primary);
+        }
+        .hidden {
+            display: none;
+        }
+        .detailed-timeline-accordion-content {
+            padding: 20px 45px;
+            width: 100%;
+            border-bottom: 1px solid var(--theme-color-base-lighter);
+        }
+        .rotated {
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+        }
+
+        .detailed-timeline-accordion-header-button {
+            background: none;
+            color: #1b1b1b;
+            border: none;
+            font: inherit;
+            font-size: 20px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+        }
+        .detailed-timeline-accordion-header-button:focus:not(:focus-visible) {
+            outline: none;
+        }
+        .detailed-timeline-accordion-header-button.active {
+            color: #ffffff;
+        }
+
+        .detailed-timeline-accordion-header-text {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .detailed-timeline-accordion-header-date-range {
+            font-size: 16px;
+            font-weight: normal;
+            grid-column: 1 / 2;
+            grid-row: 2;
+        }
+
+        .detailed-timeline-accordion-header-date-range-icon {
+            font-size: 16px;
+            vertical-align: sub;
+            color: var(--color-secondary);
+            font-variation-settings:
+                'FILL' 1,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 16;
+        }
+
+        .detailed-timeline-accordion-content .detailed-timeline-rich-text ol {
+            list-style-type: decimal;
+        }
+        .detailed-timeline-rich-text img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .detailed-timeline-accordion-content .detailed-timeline-rich-text:last-child p:last-child {
+            margin-bottom: 0;
+        }
+        @media (max-width: 768px) {
+            .detailed-timeline-accordion-title {
+                padding: 15px 10px;
+            }
+            .detailed-timeline-accordion-header {
+                width: 100%;
+                height: auto;
+            }
+            .detailed-timeline-accordion-header h3 {
+                font-size: 18px;
+            }
+            .detailed-timeline-accordion-content {
+                width: 100%;
+                padding: 20px 20px;
+            }
+            .detailed-timeline-accordion-header-button {
+                font-size: 18px;
+            }
+            .detailed-timeline-title-block > h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+{% endblock %}
+
+<div class="detailed-timeline-rectangle">
+    <div class="detailed-timeline-title-block">
+        <h2>{{ block.value.title }}</h2>
+    </div>
+
+    {{ block.value.introduction|richtext }}
+    <div class="detailed-timeline-phases-block">
+        {% for phase in block.value.phases %}
+            <div class="detailed-timeline-phase">
+                {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

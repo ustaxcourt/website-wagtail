@@ -277,6 +277,16 @@
         display: block;
     }
 
+    header#top-navigation .navigation-header.current > .link,
+    header#top-navigation .navigation-header.current > a {
+        background-color: var(--color-secondary);
+    }
+
+    header#top-navigation .navigation-list .nav-link.current a {
+        font-weight: 600;
+        background-color: var(--color-secondary);
+    }
+
     header#top-navigation .navigation-header:hover {
         z-index: 501;
     }
@@ -899,7 +909,7 @@
                 </form>
             </li>
             {% for section in nav.menu_items %}
-                <li class="navigation-header">
+                <li class="navigation-header{% for sub_link in section.value.sub_links %}{% if sub_link.page and request.path == sub_link.page.url %} current{% endif %}{% endfor %}">
                     {% if section.value.external_url %}
                         <a href="{{ section.value.external_url }}"
                         target="_blank"
@@ -928,7 +938,7 @@
                             {% endif %}>
 
                             {% for sub_link in section.value.sub_links %}
-                                <li class="nav-link">
+                                <li class="nav-link{% if sub_link.page and request.path == sub_link.page.url %} current{% endif %}">
                                     {% if sub_link.external_url %}
                                         <a target="_blank"
                                         href="{{ sub_link.external_url }}"
@@ -939,6 +949,7 @@
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
+                                        {% if request.path == sub_link.page.url %}aria-current="page"{% endif %}
                                         data-testid="nav-link-{{ sub_link.title|slugify }}"
                                         data-gtm-element="nav-menu-item"
                                         data-gtm-label="{{ sub_link.title }}">
