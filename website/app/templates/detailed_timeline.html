@@ -11,6 +11,7 @@
 
         .detailed-timeline-phase {
             margin: 32px 0px;
+            position: relative;
         }
 
         .detailed-timeline-accordion-block {
@@ -266,10 +267,35 @@
         }
 
         .bubble-line {
-            margin-left: 24px;
-            padding-left: 28px;
-            border-left: 2px solid var(--color-primary);
-            /* border-image: linear-gradient(to bottom, transparent 5%, var(--color-primary), transparent 5%) 1 100%; */
+            padding-left: 52px;
+            position: relative;
+        }
+
+        .bubble-line::before {
+            content: "";
+            position: absolute;
+            left: 24px;
+            top: 48px;
+            bottom: 48px;
+            width: 2px;
+            background-color: var(--color-primary);
+        }
+
+        .bubble-circle::before {
+            content: "";
+            position: absolute;
+            left: -39px; /* position circle over the line */
+            top: 24px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--bg-white-hover);
+            border: 1px solid var(--color-primary);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .bubble-circle:has(* > * > .active)::before {
+            background-color: var(--color-primary);
         }
 
         @media (max-width: 768px) {
@@ -308,7 +334,7 @@
     {{ block.value.introduction|richtext }}
     <div class="detailed-timeline-phases-block bubble-line">
         {% for phase in block.value.phases %}
-            <div class="detailed-timeline-phase">
+            <div class="detailed-timeline-phase bubble-circle">
                 {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id %}
             </div>
         {% endfor %}
