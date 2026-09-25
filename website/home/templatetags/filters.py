@@ -2,6 +2,7 @@ from django import template
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.utils.text import slugify
+from urllib.parse import urlparse
 
 register = template.Library()
 
@@ -82,6 +83,33 @@ def aria_text(value):
 
 
 @register.filter
+def link_href(link_item):
+    """
+    Resolve a single StreamChild from a ButtonBlock.url StreamValue (i.e. one
+    of internal_page/internal_pdf/external_url/email/phone) to an href.
+    Usage: {{ link_item|link_href }}
+    """
+    if link_item is None:
+        return ""
+
+    block_type = link_item.block_type
+    value = link_item.value
+
+    if block_type == "internal_page":
+        return value.url
+    if block_type == "internal_pdf":
+        return value.url
+    if block_type == "external_url":
+        return value
+    if block_type == "email":
+        return f"mailto:{value}"
+    if block_type == "phone":
+        digits = "".join(ch for ch in value if ch.isdigit() or ch == "+")
+        return f"tel:{digits}"
+    return ""
+
+
+@register.filter
 def strip_trailing_slash(value):
     """
     Removes a single trailing slash from a URL/path, except if it's just "/".
@@ -92,3 +120,21 @@ def strip_trailing_slash(value):
     if value != "/" and value.endswith("/"):
         return value.rstrip("/")
     return value
+
+
+@register.filter
+def normalize_url_path(value):
+    """
+    Normalize a URL or path for comparison.
+
+    Accepts absolute URLs or relative paths, strips the scheme/host when
+    present, and removes a single trailing slash except for the root path.
+    """
+    if not isinstance(value, str):
+        return value
+
+    parsed = urlparse(value)
+    path = parsed.path if parsed.scheme or parsed.netloc else value
+    if path != "/" and path.endswith("/"):
+        path = path.rstrip("/")
+    return path or "/"

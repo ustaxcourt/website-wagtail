@@ -1,5 +1,5 @@
 {% load static %}
-{% load wagtailcore_tags navigation_tags custom_tags %}
+{% load wagtailcore_tags navigation_tags custom_tags filters %}
 
 <style>
   .usa-button.styled-primary-button{
@@ -86,6 +86,19 @@
     background-color: var(--color-white);
   }
 
+  .styled-button-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .styled-button-helper-text {
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
   .svg-inverted-primary-icon {
     width: 20px;
     height: 20px;
@@ -102,32 +115,51 @@
     background-color: var(--color-navy);
   }
 
+  .symbol-primary-icon {
+    font-size: 20px;
+    color: var(--color-white);
+  }
+
+  .symbol-inverted-primary-icon {
+    font-size: 20px;
+    color: var(--color-primary);
+  }
+
+  .usa-button.styled-inverted-primary-button:not(.no-hover):hover .symbol-inverted-primary-icon {
+    color: var(--color-navy);
+  }
+
 </style>
 
 {% for link_item in block.value.url %}
 <a class="usa-button {% if block.value.style == "inverted-primary" %}usa-button--outline{% endif %} styled-{{ block.value.style }}-button {% if not block.value.button_hover %}no-hover{% endif %}"
    data-is-link="true"
-   {% if link_item.block_type == 'external_url' %}
-      href="{{ link_item.value }}"
-   {% elif link_item.block_type == 'internal_page' %}
-      href="{% pageurl link_item.value %}"
-   {% elif link_item.block_type == 'internal_pdf' %}
-      href="{{ link_item.value.url }}"
-   {% endif %}>
+   href="{{ link_item|link_href }}">
 
-  {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "before" %}
-    {% if not block.value.is_icon_svg_with_white_fill %}
-      <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+  {% if block.value.icon and block.value.icon_location|default:"before" == "before" %}
+    {% if block.value.icon.url %}
+      {% if not block.value.is_icon_svg_with_white_fill %}
+        <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+      {% else %}
+        <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+      {% endif %}
     {% else %}
-      <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+      <span class="material-symbols-outlined symbol-{{ block.value.style }}-icon" aria-hidden="true">{{ block.value.icon }}</span>
     {% endif %}
   {% endif %}
-  {{ block.value.text }}
-  {% if block.value.icon and block.value.icon.url and block.value.icon_location|default:"before" == "after" %}
-    {% if not block.value.is_icon_svg_with_white_fill %}
-      <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+  <span class="styled-button-text">
+    {{ block.value.text }}
+    {% if block.value.helper_text %}<span class="styled-button-helper-text">{{ block.value.helper_text }}</span>{% endif %}
+  </span>
+  {% if block.value.icon and block.value.icon_location|default:"before" == "after" %}
+    {% if block.value.icon.url %}
+      {% if not block.value.is_icon_svg_with_white_fill %}
+        <span class="svg-{{ block.value.style }}-icon" aria-hidden="true" style="mask-image: url('{{ block.value.icon.url }}'); -webkit-mask-image: url('{{ block.value.icon.url }}');" ></span>
+      {% else %}
+        <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+      {% endif %}
     {% else %}
-      <img title="{{ block.value.icon.filename|clean_filename }}" class="button-icon" src="{{ block.value.icon.url }}" alt="">
+      <span class="material-symbols-outlined symbol-{{ block.value.style }}-icon" aria-hidden="true">{{ block.value.icon }}</span>
     {% endif %}
   {% endif %}
 </a>

@@ -49,25 +49,30 @@
         </h1>
         <hr />
         {% if page.navigation_ribbon %}
-            <div class="blue-page-links-bar">
-                {% for link in page.navigation_ribbon.links.all %}
-                    <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
-                        {% if link.icon != "dawson" %}
-                        <span class="material-symbols-outlined" aria-hidden="true">
-                            {{ link.icon }}
-                        </span>
-                        <div class="title">{{ link.title }}</div>
-                        {% else %}
-                        <div class="{% if link.icon == 'dawson' %}dawson-button{% endif %}">
-                            <img class="dawson"
-                             src="{% static 'images/header/dawson.webp' %}"
-                             alt="DAWSON" />
+            {% with current_path=request.path|normalize_url_path %}
+                <div class="blue-page-links-bar">
+                    {% for link in page.navigation_ribbon.links.all %}
+                        <a href="{{ link.url }}"
+                           aria-label="{{ link.title }}"
+                           class="{% if current_path == link.url|normalize_url_path %}current-page{% endif %}"
+                           {% if current_path == link.url|normalize_url_path %}aria-current="page"{% endif %}>
+                            {% if link.icon != "dawson" %}
+                            <span class="material-symbols-outlined" aria-hidden="true">
+                                {{ link.icon }}
+                            </span>
                             <div class="title">{{ link.title }}</div>
-                        </div>
-                        {% endif %}
-                    </a>
-                {% endfor %}
-            </div>
+                            {% else %}
+                            <div class="{% if link.icon == 'dawson' %}dawson-button{% endif %}">
+                                <img class="dawson"
+                                 src="{% static 'images/header/dawson.webp' %}"
+                                 alt="DAWSON" />
+                                <div class="title">{{ link.title }}</div>
+                            </div>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endwith %}
         {% endif %}
         {% include "includes/enhanced_body.html" with blocks=page.body %}
         {% for sub_block in page.raw_html_body %}

@@ -18,37 +18,24 @@ class CallToActionBoxInitializer(PageInitializer):
     def __init__(self):
         self.logger = logger
 
-    def create(self):
-        # Delete existing navigation menu if it exists
-        if settings.SITE_IS_LIVE:
-            logger.info(
-                "Skipping Call to Action Box creation. Call to Action Box creation/recreation suppressed past site LIVE DATE."
-            )
-            return
-        else:
-            logger.info("Creating Call to Action Box...")
-            CallToActionBox.objects.all().delete()
-
-        if CallToActionBox.objects.filter(header=snippet_name).exists():
-            logger.info("'Ready to begin your petition?' already exists.")
-            return
-
-        logger.info("Creating the 'Ready to begin your petition?' Call to Action Box.")
-
+    def _get_arrow_forward_document(self):
         _base_url = getattr(settings, "BASE_URL", "")
-
         arrow_forward_doc = Document.objects.filter(title=arrow_forward_name).first()
         if arrow_forward_doc:
             logger.info("'Arrow Forward' icon already exists.")
-        else:
-            logger.info("Creating the 'Arrow Forward' icon.")
-            arrow_forward_doc = self.load_document_from_documents_dir(
-                subdirectory=None,
-                filename="arrow_forward.svg",
-                title="Arrow Forward",
-            )
+            return arrow_forward_doc, _base_url
 
-        call_to_action_box = CallToActionBox(
+        logger.info("Creating the 'Arrow Forward' icon.")
+        arrow_forward_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="arrow_forward.svg",
+            title="Arrow Forward",
+        )
+        return arrow_forward_doc, _base_url
+
+    def _build_call_to_action_box(self):
+        arrow_forward_doc, _base_url = self._get_arrow_forward_document()
+        return CallToActionBox(
             header=snippet_name,
             body="Once you have your documents ready, start your petition through DAWSON, the Court's electronic filing system.",
             buttons=[
@@ -92,13 +79,43 @@ class CallToActionBoxInitializer(PageInitializer):
                 },
             ],
         )
+
+    def _upsert_call_to_action_box(self):
+        call_to_action_box = CallToActionBox.objects.filter(header=snippet_name).first()
+        if call_to_action_box is None:
+            logger.info(
+                "Creating the 'Ready to begin your petition?' Call to Action Box."
+            )
+            call_to_action_box = self._build_call_to_action_box()
+        else:
+            logger.info(
+                "Updating the 'Ready to begin your petition?' Call to Action Box."
+            )
+            updated_call_to_action_box = self._build_call_to_action_box()
+            call_to_action_box.body = updated_call_to_action_box.body
+            call_to_action_box.buttons = updated_call_to_action_box.buttons
+
         call_to_action_box.save()
-        logger.info("Successfully created Call to Action Box.")
+        logger.info("Successfully saved Call to Action Box.")
+
+    def create(self):
+        if settings.SITE_IS_LIVE:
+            logger.info(
+                "Skipping Call to Action Box creation. Call to Action Box creation suppressed past site LIVE DATE."
+            )
+            return
+
+        logger.info("Creating Call to Action Box...")
+        self._upsert_call_to_action_box()
 
     def update(self):
+        if settings.SITE_IS_LIVE:
+            logger.info(
+                "Skipping Call to Action Box update. Call to Action Box update suppressed past site LIVE DATE."
+            )
+            return
         logger.info("Updating Call to Action Box...")
-        CallToActionBox.objects.all().delete()
-        self.create()
+        self._upsert_call_to_action_box()
 
     def run(self):
         """Update the Call to Action Box as an execution script"""

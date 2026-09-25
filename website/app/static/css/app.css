@@ -390,6 +390,10 @@ button.link:hover {
 }
 
 .blue-page-links-bar a.current-page:hover {
+    background: rgba(26, 68, 128, 0.5);
+}
+
+.blue-page-links-bar a.current-page:hover {
     background-color: var(--color-primary);
 }
 
@@ -432,6 +436,20 @@ button.link:hover {
     .blue-page-links-bar .dawson {
         width: 40px;
         height: 40px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .blue-page-links-bar a {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        padding: 16px 8px;
+        text-align: center;
+    }
+
+    .blue-page-links-bar a .title {
+        white-space: nowrap;
     }
 }
 

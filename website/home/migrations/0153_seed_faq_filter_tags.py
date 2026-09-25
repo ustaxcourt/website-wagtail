@@ -30,6 +30,6 @@ def seed_filter_tags(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("home", "0149_faq_filter_tag")]
+    dependencies = [("home", "0152_alter_enhancedrawhtmlpage_raw_html_body_and_more")]
 
     operations = [migrations.RunPython(seed_filter_tags, migrations.RunPython.noop)]
