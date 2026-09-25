@@ -852,6 +852,13 @@ p:empty {
     opacity: 0.85;
 }
 
+/* Desktop: 16px + the CTA's 32px margin = the mockup's 48px gap. */
+@media (min-width: 1024px) {
+    .side-card-main .printable-section:last-of-type {
+        margin-bottom: 16px;
+    }
+}
+
 /* Tablet: rail drops below the body; wrap cards 2-up (same breakpoint as
    .info-cards). */
 @media (max-width: 1024px) {
@@ -859,10 +866,15 @@ p:empty {
         margin-top: 8px;
     }
 
+    /* Stacked sections are 32px apart per the mockups. */
+    .side-card-main .printable-section {
+        margin-bottom: 32px;
+    }
+
     .side-card-rail {
         flex-direction: row;
         flex-wrap: wrap;
-        margin-top: 24px;
+        margin-top: 0;
     }
 
     .side-card-rail .side-card {
