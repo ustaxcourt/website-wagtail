@@ -37,5 +37,8 @@ class IconCategories(models.TextChoices):
     FORMS = "article"
     HELP = "help"
     DAWSON = "dawson"
+    MAIL = "mail"
+    CALL = "call"
+    OPEN_IN_NEW = "open_in_new"
     SELECT_CHECK_BOX = "select_check_box"
     OUTBOUND = "outbound"
