@@ -21,6 +21,23 @@ def _make_get_request(path="/"):
     return request
 
 
+def test_page_listing_viewset_includes_slug_column():
+    """Verify the assertion that the columns below are present and in the correct order."""
+    from home.wagtail_hooks import register_slugged_page_viewset
+
+    viewset = register_slugged_page_viewset()
+
+    assert [column.name for column in viewset.columns] == [
+        "bulk_actions",
+        "title",
+        "slug",
+        "parent",
+        "latest_revision_created_at",
+        "type",
+        "status",
+    ]
+
+
 # ---------------------------------------------------------------------------
 # prevent_navigation_menu_deletion
 # ---------------------------------------------------------------------------
