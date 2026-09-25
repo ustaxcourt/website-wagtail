@@ -265,6 +265,13 @@
             color: var(--theme-color-base-medium);
         }
 
+        .bubble-line {
+            margin-left: 24px;
+            padding-left: 28px;
+            border-left: 2px solid var(--color-primary);
+            /* border-image: linear-gradient(to bottom, transparent 5%, var(--color-primary), transparent 5%) 1 100%; */
+        }
+
         @media (max-width: 768px) {
             .detailed-timeline-accordion-title {
                 padding: 16px;
@@ -299,7 +306,7 @@
     </div>
 
     {{ block.value.introduction|richtext }}
-    <div class="detailed-timeline-phases-block">
+    <div class="detailed-timeline-phases-block bubble-line">
         {% for phase in block.value.phases %}
             <div class="detailed-timeline-phase">
                 {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id %}
