@@ -271,16 +271,6 @@
             position: relative;
         }
 
-        .bubble-line::before {
-            content: "";
-            position: absolute;
-            left: 24px;
-            top: 48px;
-            bottom: 48px;
-            width: 2px;
-            background-color: var(--color-primary);
-        }
-
         .bubble-circle::before {
             content: "";
             position: absolute;
@@ -296,6 +286,17 @@
 
         .bubble-circle:has(* > * > .active)::before {
             background-color: var(--color-primary);
+        }
+
+        .bubble-circle:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: -28px; /* center of circle */
+            top: 48px;   /* start at bottom of circle */
+            bottom: -58px; /* end at top of next circle */
+            width: 2px;
+            background-color: var(--color-primary);
+            z-index: 0;
         }
 
         @media (max-width: 768px) {
