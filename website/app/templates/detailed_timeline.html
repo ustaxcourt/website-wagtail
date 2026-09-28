@@ -370,6 +370,11 @@
         </div>
         <div class="detailed-timeline-controls">
             <button type="button"
+                    class="detailed-timeline-control-button detailed-timeline-expand-button"
+                    aria-expanded="false">
+                <span class="detailed-timeline-expand-button-label">Expand All</span>
+            </button>
+            <button type="button"
                     class="detailed-timeline-control-button detailed-timeline-print-button">
                 <span class="detailed-timeline-print-button-icon" aria-hidden="true"></span>
                 Print Detailed Timeline
@@ -389,9 +394,29 @@
     (function() {
         const timeline = document.getElementById("detailed-timeline-{{ block.id }}");
         if (!timeline) return;
+        const expandButton = timeline.querySelector(".detailed-timeline-expand-button");
         const button = timeline.querySelector(".detailed-timeline-print-button");
-        if (!button || button.dataset.initialized === "true") return;
+        if (!expandButton || !button || button.dataset.initialized === "true") return;
         let printHost = null;
+
+        function setAllAccordionsExpanded(isExpanded) {
+            timeline.querySelectorAll(".detailed-timeline-accordion-content").forEach(function(content) {
+                content.classList.toggle("hidden", !isExpanded);
+            });
+            timeline.querySelectorAll(
+                ".detailed-timeline-accordion-header, .detailed-timeline-accordion-title, .detailed-timeline-accordion-header-button, .detailed-timeline-accordion-icon"
+            ).forEach(function(el) {
+                el.classList.toggle("active", isExpanded);
+            });
+            timeline.querySelectorAll(".detailed-timeline-accordion-icon").forEach(function(icon) {
+                icon.classList.toggle("rotated", isExpanded);
+            });
+            timeline.querySelectorAll(".detailed-timeline-accordion-header-button").forEach(function(accordionButton) {
+                accordionButton.setAttribute("aria-expanded", isExpanded);
+            });
+            expandButton.setAttribute("aria-expanded", isExpanded);
+            expandButton.querySelector(".detailed-timeline-expand-button-label").textContent = isExpanded ? "Collapse All" : "Expand All";
+        }
 
         function cleanupPrintHost() {
             document.body.classList.remove("printing-detailed-timeline");
@@ -420,6 +445,9 @@
             ).forEach(function(el) {
                 el.classList.add("active");
             });
+            clone.querySelectorAll(".detailed-timeline-accordion-header-button").forEach(function(accordionButton) {
+                accordionButton.setAttribute("aria-expanded", "true");
+            });
 
             clone.querySelectorAll("[id]").forEach(function(el) {
                 el.removeAttribute("id");
@@ -428,6 +456,10 @@
 
             return clone;
         }
+
+        expandButton.addEventListener("click", function() {
+            setAllAccordionsExpanded(expandButton.getAttribute("aria-expanded") !== "true");
+        });
 
         button.addEventListener("click", function() {
             cleanupPrintHost();
