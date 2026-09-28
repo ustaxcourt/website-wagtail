@@ -16,17 +16,17 @@ not each link's type, so mixed email/phone links render as matching rows.
             {% for link_block in side_card.links %}
                 {% if side_card.link_display_style == "contact" %}
                     {% for link_item in link_block.value.url %}
-                        <a class="side-card__contact"
-                           href="{{ link_item|link_href }}"
-                           data-link-type="{{ link_item.block_type }}">
-                            {% if link_block.value.icon %}
-                                <span class="material-symbols-outlined side-card__contact-icon" aria-hidden="true">{{ link_block.value.icon }}</span>
-                            {% endif %}
-                            <span class="side-card__contact-label">{{ link_block.value.text }}</span>
+                        <div class="side-card__contact" data-link-type="{{ link_item.block_type }}">
+                            <a class="side-card__contact-link" href="{{ link_item|link_href }}">
+                                {% if link_block.value.icon %}
+                                    <span class="material-symbols-outlined side-card__contact-icon" aria-hidden="true">{{ link_block.value.icon }}</span>
+                                {% endif %}
+                                <span class="side-card__contact-label">{{ link_block.value.text }}</span>
+                            </a>
                             {% if link_block.value.helper_text %}
                                 <span class="side-card__contact-helper">{{ link_block.value.helper_text }}</span>
                             {% endif %}
-                        </a>
+                        </div>
                     {% endfor %}
                 {% elif side_card.link_display_style == "plain_links" %}
                     {% for link_item in link_block.value.url %}
