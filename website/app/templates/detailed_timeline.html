@@ -266,12 +266,12 @@
             color: var(--theme-color-base-medium);
         }
 
-        .bubble-line {
+        .bubble-line { /* leave space for bubble line */
             padding-left: 52px;
             position: relative;
         }
 
-        .bubble-circle::before {
+        .bubble-circle::before { /* draw circles of bubble line */
             content: "";
             position: absolute;
             left: -39px; /* position circle over the line */
@@ -284,11 +284,11 @@
             z-index: 1;
         }
 
-        .bubble-circle:has(* > * > .active)::before {
+        .bubble-circle:has(* > * > .active)::before { /* update color of circles where its item is expanded */
             background-color: var(--color-primary);
         }
 
-        .bubble-circle:not(:last-child)::after {
+        .bubble-circle:not(:last-child)::after { /* draw lines connecting a circle with the next circle */
             content: "";
             position: absolute;
             left: -28px; /* center of circle */
