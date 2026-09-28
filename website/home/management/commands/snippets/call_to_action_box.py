@@ -90,11 +90,13 @@ class CallToActionBoxInitializer(PageInitializer):
             for field, value in defaults.items():
                 setattr(call_to_action_box, field, value)
             call_to_action_box.save()
+            call_to_action_box.save_revision().publish()
             logger.info("Updated the '%s' Call to Action Box.", snippet_name)
             return call_to_action_box
 
         call_to_action_box = CallToActionBox(header=snippet_name, **defaults)
         call_to_action_box.save()
+        call_to_action_box.save_revision().publish()
         logger.info("Successfully created Call to Action Box.")
         return call_to_action_box
 
