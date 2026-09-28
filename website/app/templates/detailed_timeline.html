@@ -265,6 +265,71 @@
             color: var(--theme-color-base-medium);
         }
 
+        .detailed-timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+        }
+
+        .detailed-timeline-header-text {
+            flex: 1 1 400px;
+            min-width: 0;
+        }
+
+        .detailed-timeline-controls {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .detailed-timeline-control-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: var(--color-white);
+            border: 1px solid var(--color-primary);
+            border-radius: 4px;
+            color: var(--color-primary);
+            font: inherit;
+            font-size: 16px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .detailed-timeline-print-button-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            background-color: currentColor;
+            -webkit-mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat;
+            mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat;
+        }
+
+        .detailed-timeline-print-host {
+            display: none;
+        }
+
+        @media print {
+            body.printing-detailed-timeline > *:not(.detailed-timeline-print-host) {
+                display: none !important;
+            }
+            body.printing-detailed-timeline .detailed-timeline-print-host {
+                display: block !important;
+                width: 100%;
+            }
+            .detailed-timeline-print-host .detailed-timeline-controls,
+            .detailed-timeline-print-host .detailed-timeline-accordion-icon {
+                display: none !important;
+            }
+            .detailed-timeline-print-host .detailed-timeline-accordion-header {
+                break-after: avoid;
+            }
+        }
+
         @media (max-width: 768px) {
             .detailed-timeline-accordion-title {
                 padding: 16px;
@@ -293,12 +358,24 @@
     </style>
 {% endblock %}
 
-<div class="detailed-timeline-rectangle">
-    <div class="detailed-timeline-title-block">
-        <h2>{{ block.value.title }}</h2>
-    </div>
+<div id="detailed-timeline-{{ block.id }}"
+     class="detailed-timeline-rectangle">
+    <div class="detailed-timeline-header">
+        <div class="detailed-timeline-header-text">
+            <div class="detailed-timeline-title-block">
+                <h2>{{ block.value.title }}</h2>
+            </div>
 
-    {{ block.value.introduction|richtext }}
+            {{ block.value.introduction|richtext }}
+        </div>
+        <div class="detailed-timeline-controls">
+            <button type="button"
+                    class="detailed-timeline-control-button detailed-timeline-print-button">
+                <span class="detailed-timeline-print-button-icon" aria-hidden="true"></span>
+                Print Detailed Timeline
+            </button>
+        </div>
+    </div>
     <div class="detailed-timeline-phases-block">
         {% for phase in block.value.phases %}
             <div class="detailed-timeline-phase">
@@ -307,3 +384,61 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    (function() {
+        const timeline = document.getElementById("detailed-timeline-{{ block.id }}");
+        if (!timeline) return;
+        const button = timeline.querySelector(".detailed-timeline-print-button");
+        if (!button || button.dataset.initialized === "true") return;
+        let printHost = null;
+
+        function cleanupPrintHost() {
+            document.body.classList.remove("printing-detailed-timeline");
+            if (printHost) {
+                printHost.remove();
+                printHost = null;
+            }
+        }
+
+        // Print a copy of the timeline so the on-page accordions keep their open/closed state.
+        function createPrintClone() {
+            const clone = timeline.cloneNode(true);
+
+            const originalCheckboxes = timeline.querySelectorAll('input[type="checkbox"]');
+            clone.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox, index) {
+                const isChecked = Boolean(originalCheckboxes[index] && originalCheckboxes[index].checked);
+                checkbox.checked = isChecked;
+                checkbox.toggleAttribute("checked", isChecked);
+            });
+
+            clone.querySelectorAll(".detailed-timeline-accordion-content").forEach(function(content) {
+                content.classList.remove("hidden");
+            });
+            clone.querySelectorAll(
+                ".detailed-timeline-accordion-header, .detailed-timeline-accordion-title, .detailed-timeline-accordion-header-button"
+            ).forEach(function(el) {
+                el.classList.add("active");
+            });
+
+            clone.querySelectorAll("[id]").forEach(function(el) {
+                el.removeAttribute("id");
+            });
+            clone.removeAttribute("id");
+
+            return clone;
+        }
+
+        button.addEventListener("click", function() {
+            cleanupPrintHost();
+            printHost = document.createElement("div");
+            printHost.className = "detailed-timeline-print-host";
+            printHost.appendChild(createPrintClone());
+            document.body.appendChild(printHost);
+            document.body.classList.add("printing-detailed-timeline");
+            window.print();
+        });
+        button.dataset.initialized = "true";
+        window.addEventListener("afterprint", cleanupPrintHost);
+    })();
+</script>
