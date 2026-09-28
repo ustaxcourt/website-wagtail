@@ -178,6 +178,20 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                         ],
                         "id": "8a6d6de4-b347-40c5-9f95-792200a223ab",
                     },
+                    {
+                        "type": "icon_header",
+                        "value": {"icon": "draft", "text": "How to File"},
+                        "id": "bc4972ca-503f-466a-9fb0-4b204622d650",
+                    },
+                    {
+                        "type": "callout",
+                        "value": {
+                            "heading": "NOTE FOR Petitioners who file by mail:",
+                            "text": '<p data-block-key="vlez3">Petitioners who file by mail cannot immediately switch to electronic access. To protect your information, the United States Tax Court will mail identity verification instructions to your address of record. Switching to electronic access will be available only after the verification process is complete. Consider filing electronically from the start to get electronic access to your case immediately.</p>',
+                            "callout_type": "warning",
+                        },
+                        "id": "037efcb7-c2e8-4847-8d76-f3274ec841bc",
+                    },
                 ],
             )
         )
