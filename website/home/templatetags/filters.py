@@ -83,6 +83,33 @@ def aria_text(value):
 
 
 @register.filter
+def link_href(link_item):
+    """
+    Resolve a single StreamChild from a ButtonBlock.url StreamValue (i.e. one
+    of internal_page/internal_pdf/external_url/email/phone) to an href.
+    Usage: {{ link_item|link_href }}
+    """
+    if link_item is None:
+        return ""
+
+    block_type = link_item.block_type
+    value = link_item.value
+
+    if block_type == "internal_page":
+        return value.url
+    if block_type == "internal_pdf":
+        return value.url
+    if block_type == "external_url":
+        return value
+    if block_type == "email":
+        return f"mailto:{value}"
+    if block_type == "phone":
+        digits = "".join(ch for ch in value if ch.isdigit() or ch == "+")
+        return f"tel:{digits}"
+    return ""
+
+
+@register.filter
 def strip_trailing_slash(value):
     """
     Removes a single trailing slash from a URL/path, except if it's just "/".

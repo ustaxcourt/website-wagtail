@@ -18,6 +18,8 @@ from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBa
 from wagtail.contrib.redirects.models import Redirect
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
+from wagtail.admin.ui.tables import Column
+from wagtail.admin.viewsets.pages import PageViewSet, base_page_viewset
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole, Header
 from home.models.snippets.news_item import NewsItem
@@ -35,6 +37,25 @@ from home.views import NewsItemReportView, PrivateSeminarDisclosureReportView
 from wagtail.admin.menu import AdminOnlyMenuItem
 
 logger = logging.getLogger(__name__)
+
+
+class SluggedPageViewSet(PageViewSet):
+    """
+    Custom page listing that includes the "slug" column
+    """
+
+    model = Page
+    columns = [
+        *base_page_viewset.columns[:2],
+        Column("slug", label=_("Slug"), sort_key="slug"),
+        *base_page_viewset.columns[2:],
+    ]
+
+
+@hooks.register("register_admin_viewset")
+def register_slugged_page_viewset():
+    return SluggedPageViewSet("page_listing")
+
 
 try:
     from app.role_switcher.views import (

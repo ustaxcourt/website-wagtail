@@ -4,7 +4,16 @@ from wagtail.documents.models import Document
 from wagtail.models import Page
 
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import IconCategories, NavigationRibbon, PetitionerExperiencePage
+from home.management.commands.pages.rules_and_guidance.side_card_seed_data import (
+    add_clerks_office_side_card,
+    add_need_legal_help_side_card,
+)
+from home.models import (
+    IconCategories,
+    NavigationRibbon,
+    PetitionerExperiencePage,
+    SideCard,
+)
 from home.models.snippets.call_to_action import CallToActionBox
 from home.models.utils.execute_script import ExecuteScript
 
@@ -55,9 +64,13 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
                 "management system.</p><p><strong>Note:</strong> If filing "
                 "using DAWSON, once you start this process you won't be able "
                 "to save your work and come back to it. Petitioners who file "
-                "by paper cannot immediately switch to electronic access. "
-                "Consider filing electronically from the start to get "
-                "electronic access to your case immediately.</p>"
+                "by paper cannot immediately switch to electronic access. To "
+                "protect your information, the Court will mail identity "
+                "verification instructions to your address of record. "
+                "Switching to electronic access will be available only after "
+                "the verification process is complete. Consider filing "
+                "electronically from the start to get electronic access to "
+                "your case immediately.</p>"
             ),
             "body": [
                 {
@@ -114,26 +127,35 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
             page = existing_page.specific
             for field_name, value in fields.items():
                 setattr(page, field_name, value)
-            page.save_revision().publish()
-            logger.info(f"Updated the '{title}' page with the pre-filing checklist.")
-            return
-
-        page = home_page.add_child(
-            instance=PetitionerExperiencePage(
-                title=title,
-                slug=slug,
-                seo_title=title,
-                **fields,
+            # Replace rather than append so re-running never duplicates cards.
+            SideCard.objects.filter(page=page).delete()
+            action = "Updated"
+        else:
+            page = home_page.add_child(
+                instance=PetitionerExperiencePage(
+                    title=title,
+                    slug=slug,
+                    seo_title=title,
+                    **fields,
+                )
             )
-        )
+            action = "Created"
+
+        add_clerks_office_side_card(self, page)
+        add_need_legal_help_side_card(self, page)
+
+        # SideCards are InlinePanel children stored in revision content, so
+        # publish only after attaching them - otherwise the editor loads a
+        # revision without them and the next save would delete the cards.
         page.save_revision().publish()
-        logger.info(f"Created the '{title}' page.")
+        logger.info(f"{action} the '{title}' page.")
 
     def run(self):
         # Distinct from the original "Initialize Petitioners Prepare to File
-        # page" marker so this also runs (and adds the checklist) on
-        # deployments where that page was already created before this change.
-        command_name = "WAG-1387: Add Pre-Filing Checklist to Prepare to File page"
+        # page" and the WAG-1387 checklist markers so this also runs (and adds
+        # the checklist and side cards) on deployments where either of those
+        # already ran.
+        command_name = "WAG-1339: Add side cards to Prepare to File page"
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")
             return 0

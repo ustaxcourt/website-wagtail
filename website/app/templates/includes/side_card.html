@@ -1,0 +1,43 @@
+{% load wagtailcore_tags filters %}
+{% comment %}
+Renders one SideCard. Link appearance follows side_card.link_display_style,
+not each link's type, so mixed email/phone links render as matching rows.
+{% endcomment %}
+<div class="side-card side-card--{{ side_card.color }}">
+    {% if side_card.icon %}
+        <span class="material-symbols-outlined side-card__icon" aria-hidden="true">{{ side_card.icon }}</span>
+    {% endif %}
+    <h3 class="side-card__title">{{ side_card.header_title }}</h3>
+    {% if side_card.introductory_text %}
+        <div class="side-card__intro">{{ side_card.introductory_text|richtext }}</div>
+    {% endif %}
+    {% if side_card.links %}
+        <div class="side-card__links side-card__links--{{ side_card.link_display_style }}">
+            {% for link_block in side_card.links %}
+                {% if side_card.link_display_style == "contact" %}
+                    {% for link_item in link_block.value.url %}
+                        <a class="side-card__contact"
+                           href="{{ link_item|link_href }}"
+                           data-link-type="{{ link_item.block_type }}">
+                            {% if link_block.value.icon %}
+                                <span class="material-symbols-outlined side-card__contact-icon" aria-hidden="true">{{ link_block.value.icon }}</span>
+                            {% endif %}
+                            <span class="side-card__contact-label">{{ link_block.value.text }}</span>
+                            {% if link_block.value.helper_text %}
+                                <span class="side-card__contact-helper">{{ link_block.value.helper_text }}</span>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                {% elif side_card.link_display_style == "plain_links" %}
+                    {% for link_item in link_block.value.url %}
+                        <a class="side-card__plain-link" href="{{ link_item|link_href }}">{{ link_block.value.text }}</a>
+                    {% endfor %}
+                {% else %}
+                    <div class="side-card__button">
+                        {% include "includes/styled_button.html" with block=link_block %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
