@@ -53,7 +53,7 @@
           <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-item-icon" aria-hidden="true">{{ info_item.icon }}</span>
           <div class="detailed-timeline-accordion-content-helpful-information-item-infotext {% if forloop.last and not info_item.information_subtext %}last-item-no-subtext{% endif %}">{{ info_item.information }}</div>
           {% if info_item.information_subtext %}
-            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext">{{ info_item.information_subtext }}</div>
+            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext {% if forloop.last %}last-item{% endif %}">{{ info_item.information_subtext }}</div>
           {% endif %}
         </div>
       {% endfor %}
