@@ -20,7 +20,7 @@ from wagtail.models import Locale, Page, Site
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
 migration_module = importlib.import_module(
-    "home.migrations.0142_split_oversized_card_sets_pe"
+    "home.migrations.0145_split_oversized_card_sets_pe"
 )
 
 

@@ -148,7 +148,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                     },
                     {
                         "type": "paragraph",
-                        "value": f'<h2 data-block-key="cuzcn"><b>Get Started</b> <a href= {_petitioner_timeline_url}>(View detailed timeline)</a></h2>',
+                        "value": f'<div class=get-started-row> <h2 data-block-key="cuzcn"><b>Get Started</b></h2> (<a href={_petitioner_timeline_url}>View detailed timeline</a>) </div>',
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
                     },
                     {
@@ -158,7 +158,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 "type": "item",
                                 "value": {
                                     "color": "white",
-                                    "numbered_icon": "fa-solid fa-1",
+                                    "numbered_icon": "1",
                                     "numbered_icon_alignment": "left",
                                     "title_icon": None,
                                     "title_icon_alt_text": "",
@@ -173,7 +173,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 "type": "item",
                                 "value": {
                                     "color": "white",
-                                    "numbered_icon": "fa-solid fa-2",
+                                    "numbered_icon": "2",
                                     "numbered_icon_alignment": "left",
                                     "title_icon": None,
                                     "title_icon_alt_text": "",
@@ -188,7 +188,7 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                                 "type": "item",
                                 "value": {
                                     "color": "white",
-                                    "numbered_icon": "fa-solid fa-3",
+                                    "numbered_icon": "3",
                                     "numbered_icon_alignment": "left",
                                     "title_icon": None,
                                     "title_icon_alt_text": "",

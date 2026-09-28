@@ -2,5 +2,5 @@
 {% load filters %}
 {% load wagtailimages_tags %}
 <div class="list-block">
-    {% include "home/_recursive_list.html" with list_type=block.value.list_type items=block.value.items %}
+    {% include "home/_recursive_list.html" with list_type=block.value.list_type items=block.value.items id_prefix="list-"|add:block.id %}
 </div>

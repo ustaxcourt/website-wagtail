@@ -2,7 +2,7 @@ from wagtail_external_links_report.utils import LinkExtractor
 from bs4 import BeautifulSoup
 from wagtail.rich_text import RichText
 from wagtail.contrib.typed_table_block.blocks import TypedTable
-from home.models.custom_blocks.button import ButtonBlock
+from home.models.custom_blocks.button import ButtonBlock, SideCardLinkBlock
 from home.blocks import QuickAccessTileBlock
 from home.models.pages.enhanced_standard import CardTileBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
@@ -27,7 +27,9 @@ class CustomLinkExtractor(LinkExtractor):
         """Recursively extract links depending on value type."""
         links = []
 
-        if isinstance(value, StructValue) and isinstance(value.block, ButtonBlock):
+        if isinstance(value, StructValue) and isinstance(
+            value.block, (ButtonBlock, SideCardLinkBlock)
+        ):
             links.extend(
                 self._get_external_link_with_text_from_attribute(value, "url", "text")
             )

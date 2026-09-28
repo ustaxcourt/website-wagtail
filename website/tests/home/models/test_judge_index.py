@@ -279,6 +279,36 @@ class JudgeDetailRouteTest(JudgeIndexSetUpMixin):
                 request, id=str(self.judge_smith.id), last_name="wrongname"
             )
 
+    def test_last_name_with_space_slugifies_in_index_links_and_detail_route(self):
+        """Last names such as "De Luca" should produce /de-luca/ URLs and resolve."""
+        judge = _make_judge("Troy", "De Luca", "Judge")
+        slug = "de-luca"
+
+        index_request = self._get_request(self.judge_index.url)
+        index_html = self.judge_index.serve(index_request).render().content.decode()
+        self.assertIn(f'href="{self.judge_index.url}{judge.id}/{slug}/"', index_html)
+
+        detail_request = self._get_request(f"{self.judge_index.url}{judge.id}/{slug}/")
+        detail_response = self.judge_index.judge_detail(
+            detail_request, id=str(judge.id), last_name=slug
+        )
+        self.assertEqual(detail_response.status_code, 200)
+
+    def test_last_name_with_apostrophe_slugifies_in_index_links_and_detail_route(self):
+        """Last names such as "D'Arcy" should produce /darcy/ URLs and resolve."""
+        judge = _make_judge("Jane", "D'Arcy", "Judge")
+        slug = "darcy"
+
+        index_request = self._get_request(self.judge_index.url)
+        index_html = self.judge_index.serve(index_request).render().content.decode()
+        self.assertIn(f'href="{self.judge_index.url}{judge.id}/{slug}/"', index_html)
+
+        detail_request = self._get_request(f"{self.judge_index.url}{judge.id}/{slug}/")
+        detail_response = self.judge_index.judge_detail(
+            detail_request, id=str(judge.id), last_name=slug
+        )
+        self.assertEqual(detail_response.status_code, 200)
+
 
 @override_settings(**OVERRIDE)
 class PrivateSeminarDisclosuresRouteTest(JudgeIndexSetUpMixin):

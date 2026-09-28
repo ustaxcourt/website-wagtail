@@ -13,7 +13,7 @@ describe('Case Procedure Information - Card Set', () => {
     cy.get('.info-cards').eq(0).within(() => {
       cy.get('.info-card').should('have.length', 3);
       cy.get('.info-card.green').should('have.length', 3);
-      cy.get('.info-card__icon-badge i[role="img"][aria-label="Success"]').should('have.length', 3);
+      cy.get('.info-card__icon-badge span[class="material-symbols-outlined"][aria-label="Success"]').should('have.length', 3);
       cy.contains('.info-card .title', 'More trial location options');
       cy.contains('.info-card .title', 'Less formal procedures');
       cy.contains('.info-card .title', 'Relaxed evidence rules');
@@ -22,7 +22,7 @@ describe('Case Procedure Information - Card Set', () => {
     cy.get('.info-cards').eq(1).within(() => {
       cy.get('.info-card').should('have.length', 1);
       cy.get('.info-card.yellow').should('have.length', 1);
-      cy.get('.info-card__icon-badge i[role="img"][aria-label="Warning"]').should('have.length', 1);
+      cy.get('.info-card__icon-badge span[class="material-symbols-outlined"][aria-label="Warning"]').should('have.length', 1);
       cy.contains('.info-card .title', 'No appeals process');
     });
 

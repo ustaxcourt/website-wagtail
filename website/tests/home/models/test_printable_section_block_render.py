@@ -90,6 +90,7 @@ class PrintableSectionBlockRenderTest(TestCase):
         rendered = response.render()
         content = rendered.content.decode()
         self.assertIn("Test Printable Section", content)
+        self.assertIn("draft\n            </span>", content)
         self.assertIn("Section Heading", content)
         self.assertIn("List item one", content)
         self.assertIn("Printable paragraph content", content)

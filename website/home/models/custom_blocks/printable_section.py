@@ -1,7 +1,7 @@
 from wagtail import blocks
 
-from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.config import IconCategories
+from home.models.custom_blocks.nested_list import create_nested_list_block
 
 
 class PrintableSectionHeadingBlock(blocks.StructBlock):
@@ -14,13 +14,7 @@ class PrintableSectionHeadingBlock(blocks.StructBlock):
             ("h5", "Heading 5"),
         ]
     )
-    id = blocks.CharBlock(
-        required=False,
-        help_text="Optional ID for linking to this heading",
-    )
-
-    class Meta:
-        label = "Heading"
+    id = blocks.CharBlock(required=False)
 
 
 class PrintableSectionBlock(blocks.StructBlock):
@@ -38,7 +32,6 @@ class PrintableSectionBlock(blocks.StructBlock):
     intro = blocks.RichTextBlock(
         required=False,
         features=["bold", "italic", "link"],
-        help_text="Optional intro text displayed below the title",
     )
     body = blocks.StreamBlock(
         [
@@ -47,7 +40,6 @@ class PrintableSectionBlock(blocks.StructBlock):
             ("paragraph", blocks.RichTextBlock()),
         ],
         required=True,
-        help_text="The content that will be printed",
     )
 
     class Meta:
