@@ -24,6 +24,8 @@
             {{ block.value.text }}
             </{{ block.value.level }}>
         </div>
+    {% elif block.block_type == 'heading_with_link' %}
+        {% include_block block %}
     {% elif block.block_type == 'paragraph' %}
         <p data-testid="page-body-paragraph">{{ block.value }}</p>
     {% elif block.block_type == 'indented_paragraph' %}

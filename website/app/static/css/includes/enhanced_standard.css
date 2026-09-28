@@ -581,12 +581,12 @@ p:empty {
     font-weight: 700;
 }
 
-.get-started-row {
+.heading-with-link {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-.get-started-row a{
+.heading-with-link a {
     text-decoration: underline;
     color: black;
     font-size: 20px;

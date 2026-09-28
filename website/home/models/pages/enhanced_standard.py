@@ -24,6 +24,7 @@ from home.models.custom_blocks.common import (
     custom_promote_panels,
     link_obj,
 )
+from home.models.custom_blocks.heading_with_link import HeadingWithLinkBlock
 from home.models.custom_blocks.icon_header import IconHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
@@ -322,6 +323,7 @@ _BASE_BLOCK_TYPES = [
             ]
         ),
     ),
+    ("heading_with_link", HeadingWithLinkBlock()),
     ("h2", blocks.CharBlock(label="Heading 2")),
     ("h3", blocks.CharBlock(label="Heading 3")),
     ("h4", blocks.CharBlock(label="Heading 4")),

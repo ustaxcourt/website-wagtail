@@ -123,8 +123,19 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                         "id": "5e5c3858-b562-4818-9b68-169833009415",
                     },
                     {
-                        "type": "paragraph",
-                        "value": f'<div class=get-started-row> <h2 data-block-key="cuzcn"><b>Get Started</b></h2> (<a href={_petitioner_timeline_url}>View detailed timeline</a>) </div>',
+                        "type": "heading_with_link",
+                        "value": {
+                            "text": "Get Started",
+                            "level": "h2",
+                            "link_text": "View detailed timeline",
+                            "url": [
+                                {
+                                    "type": "external_url",
+                                    "value": _petitioner_timeline_url,
+                                    "id": "0b7c1f0e-3d7a-4a8e-9a55-6f2f3c1d8e41",
+                                }
+                            ],
+                        },
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
                     },
                     {

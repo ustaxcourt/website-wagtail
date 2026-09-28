@@ -1,0 +1,7 @@
+{% load filters %}
+<div class="heading-with-link">
+    <{{ value.level }}>{{ value.text }}</{{ value.level }}>
+    {% for link_item in value.url %}
+        <span>(<a href="{{ link_item|link_href }}">{{ value.link_text }}</a>)</span>
+    {% endfor %}
+</div>
