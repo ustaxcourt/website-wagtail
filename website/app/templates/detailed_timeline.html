@@ -321,6 +321,9 @@
             body.printing-detailed-timeline .detailed-timeline-print-host {
                 display: block !important;
                 width: 100%;
+                /* Bubble line is drawn with backgrounds, which browsers drop when printing by default. */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .detailed-timeline-print-host .detailed-timeline-controls,
             .detailed-timeline-print-host .detailed-timeline-accordion-icon {
@@ -424,8 +427,6 @@
             </button>
         </div>
     </div>
-    <div class="detailed-timeline-phases-block">
-    {{ block.value.introduction|richtext }}
     <div class="detailed-timeline-phases-block bubble-line">
         {% for phase in block.value.phases %}
             <div class="detailed-timeline-phase bubble-circle">
