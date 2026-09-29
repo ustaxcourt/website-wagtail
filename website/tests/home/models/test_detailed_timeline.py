@@ -46,6 +46,55 @@ class DetailedTimelineRenderTest(TestCase):
             slug="detailed-timeline-test-page",
             body=[
                 {
+                    "type": "summary_timeline",
+                    "value": {
+                        "title": "TYPICAL CASE TIMELINE",
+                        "phases": [
+                            {
+                                "type": "item",
+                                "value": {
+                                    "title": "File Petition",
+                                    "date_range": "Day 0-Deadline",
+                                },
+                                "id": "0e88e4c5-a9c6-49a5-9181-d9103c991a0d",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "title": "IRS Answer",
+                                    "date_range": "~60 days",
+                                },
+                                "id": "035ef5a0-94a6-4022-98c1-aa65490c272a",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "title": "Pre-Trial",
+                                    "date_range": "2-12 months",
+                                },
+                                "id": "312473bc-6f85-41c7-a12c-c913d16029be",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "title": "Trial",
+                                    "date_range": "12-24+ months",
+                                },
+                                "id": "50c5f9c3-9f47-4776-b98a-e1de5b4b0b3e",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "title": "Decision",
+                                    "date_range": "6-12+ months",
+                                },
+                                "id": "81478e67-3c14-4339-a5a2-d1f12aa85f04",
+                            },
+                        ],
+                    },
+                    "id": "8c34cf67-1a49-4da5-a508-f35217759926",
+                },
+                {
                     "type": "detailed_timeline",
                     "value": {
                         "title": "United States Tax Court Case Timeline",
@@ -117,7 +166,7 @@ class DetailedTimelineRenderTest(TestCase):
                                             "type": "item",
                                             "value": {
                                                 "text": '<p data-block-key="l4ngx">Complete the Petition form using <a href="https://dawson.ustaxcourt.gov/">dawson.ustaxcourt.gov</a> petition generator.</p>',
-                                                "subtext": f'<p data-block-key="7tw0u">Otherwise download a Petition form (form 2) from <a href="{_petitioner_forms_url}">our Forms page</a>.</p>',
+                                                "subtext": f'<p data-block-key="7tw0u">Otherwise download petition form 2 from <a href="{_petitioner_forms_url}">our Forms page</a>.</p>',
                                             },
                                             "id": "55ed77fc-61be-49e0-bef4-ec1712dccbb7",
                                         },
@@ -179,7 +228,7 @@ class DetailedTimelineRenderTest(TestCase):
                                 "value": {
                                     "title": "IRS Files Answer",
                                     "date_range": "Up To 60 Days After the Petition is Filed",
-                                    "instructions": f'<p data-block-key="k0m49">The IRS responds to your “Petition” with an “Answer.”</p><ul><li data-block-key="en9kt">IRS has 60 days to respond. You may need to fie a reply if there are affirmative allegations made in the Answer (<a href="{_rule37_doc_url}">Rule 37</a>).</li><li data-block-key="29g5r">Review the IRS answer carefully. The answer will tell you the name and phone number of the IRS lawyer assigned to your case.</li></ul>',
+                                    "instructions": f'<p data-block-key="k0m49">The IRS responds to your “Petition” with an “Answer.”</p><ul><li data-block-key="en9kt">IRS has 60 days to respond. You may need to file a reply if there are affirmative allegations made in the Answer (<a href="{_rule37_doc_url}">Rule 37</a>).</li><li data-block-key="29g5r">Review the IRS answer carefully. The answer will tell you the name and phone number of the IRS lawyer assigned to your case.</li></ul>',
                                     "your_tasks": [],
                                     "helpful_information": [
                                         {
@@ -301,7 +350,7 @@ class DetailedTimelineRenderTest(TestCase):
                                 "value": {
                                     "title": "Trial",
                                     "date_range": "12-24+ Months After Filing",
-                                    "instructions": f'<p data-block-key="x2hae">Present your case before a United States Tax Court Judge.</p><ul><li data-block-key="933h0">Trial held in person or remotely. The United States Tax Court Rules and the <a href="{_rule143_doc_url}">rules of evidence</a> apply either way.</li><li data-block-key="dhe25">Present evidence and witnesses.</li><li data-block-key="ddceg">The Judge may not issue a decision right away. You will receive a copy when the Judge issues in your case.</li></ul>',
+                                    "instructions": f'<p data-block-key="x2hae">Present your case before a United States Tax Court judge.</p><ul><li data-block-key="933h0">Trial held in person or remotely. The United States Tax Court Rules and the <a href="{_rule143_doc_url}">rules of evidence</a> apply either way.</li><li data-block-key="dhe25">Present evidence and witnesses.</li><li data-block-key="ddceg">The judge may not issue a decision right away. You will receive a copy when the judge issues a decision in your case.</li></ul>',
                                     "your_tasks": [],
                                     "helpful_information": [],
                                 },
@@ -321,7 +370,7 @@ class DetailedTimelineRenderTest(TestCase):
                         ],
                     },
                     "id": "b050e963-8231-4c33-817c-101d50838d56",
-                }
+                },
             ],
         )
         home_page.add_child(instance=self.page)
@@ -361,7 +410,7 @@ class DetailedTimelineRenderTest(TestCase):
         self.assertIn("6-12+ Months After Trial", content)
         self.assertIn(
             "checkbox-92fbd6bf-b338-4993-a5e7-ddffe874c42b-1", content
-        )  # Checking for id of fourth task in Trial Preparation phase
+        )  # Checking for id of first task in Trial Preparation phase
         self.assertIn(
             "Can I represent myself?", content
         )  # Checking for information text in second Helpful Information item in Receive an IRS Notice phase
