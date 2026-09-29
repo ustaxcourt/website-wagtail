@@ -114,7 +114,7 @@
                        aria-label="{{ link.title }}"
                        class="{% if current_path == link.url|normalize_url_path %}current-page{% endif %}"
                        {% if current_path == link.url|normalize_url_path %}aria-current="page"{% endif %}>
-                        {% if link.icon != "dawson" %}
+                        {% if link.icon and link.icon != "dawson" %}
                         <span class="material-symbols-outlined" aria-hidden="true">
                             {{ link.icon }}
                         </span>
