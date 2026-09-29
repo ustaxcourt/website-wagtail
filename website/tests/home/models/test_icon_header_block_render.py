@@ -62,7 +62,7 @@ class IconHeaderBlockRenderTest(TestCase):
                 {
                     "type": "icon_header",
                     "value": {
-                        "icon": "fa-solid fa-file",
+                        "icon": "file",
                         "text": "How to File",
                     },
                 }
@@ -71,8 +71,8 @@ class IconHeaderBlockRenderTest(TestCase):
 
         content = self.render_page(page)
 
-        self.assertIn('class="icon-header"', content)
-        self.assertIn('class="fa-solid fa-file"', content)
+        self.assertIn('class="icon-header__icon material-symbols-outlined"', content)
+        self.assertIn("file", content)
         self.assertIn("How to File", content)
 
     def test_icon_header_renders_on_petitioner_experience_page(self):
@@ -87,7 +87,7 @@ class IconHeaderBlockRenderTest(TestCase):
                 {
                     "type": "icon_header",
                     "value": {
-                        "icon": "fa-solid fa-check",
+                        "icon": "check",
                         "text": "Pre-Filing Checklist",
                     },
                 }
@@ -96,8 +96,8 @@ class IconHeaderBlockRenderTest(TestCase):
 
         content = self.render_page(page)
 
-        self.assertIn('class="icon-header"', content)
-        self.assertIn('class="fa-solid fa-check"', content)
+        self.assertIn('class="icon-header__icon material-symbols-outlined"', content)
+        self.assertIn("check", content)
         self.assertIn("Pre-Filing Checklist", content)
         self.assertIn('<h2 class="icon-header">', content)
 
