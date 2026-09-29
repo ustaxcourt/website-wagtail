@@ -181,7 +181,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                                 "type": "item",
                                                 "value": {
                                                     "text": '<p data-block-key="l4ngx">Complete the Petition form using <a href="https://dawson.ustaxcourt.gov/">dawson.ustaxcourt.gov</a> petition generator.</p>',
-                                                    "subtext": f'<p data-block-key="7tw0u">Otherwise download a Petition form (form 2) from <a href="{_petitioner_forms_url}">our Forms page</a>.</p>',
+                                                    "subtext": f'<p data-block-key="7tw0u">Otherwise download petition form 2 from <a href="{_petitioner_forms_url}">our Forms page</a>.</p>',
                                                 },
                                                 "id": "55ed77fc-61be-49e0-bef4-ec1712dccbb7",
                                             },
@@ -243,7 +243,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                     "value": {
                                         "title": "IRS Files Answer",
                                         "date_range": "Up To 60 Days After the Petition is Filed",
-                                        "instructions": f'<p data-block-key="k0m49">The IRS responds to your “Petition” with an “Answer.”</p><ul><li data-block-key="en9kt">IRS has 60 days to respond. You may need to fie a reply if there are affirmative allegations made in the Answer (<a href="{_rule37_doc_url}">Rule 37</a>).</li><li data-block-key="29g5r">Review the IRS answer carefully. The answer will tell you the name and phone number of the IRS lawyer assigned to your case.</li></ul>',
+                                        "instructions": f'<p data-block-key="k0m49">The IRS responds to your “Petition” with an “Answer.”</p><ul><li data-block-key="en9kt">IRS has 60 days to respond. You may need to file a reply if there are affirmative allegations made in the Answer (<a href="{_rule37_doc_url}">Rule 37</a>).</li><li data-block-key="29g5r">Review the IRS answer carefully. The answer will tell you the name and phone number of the IRS lawyer assigned to your case.</li></ul>',
                                         "your_tasks": [],
                                         "helpful_information": [
                                             {
@@ -365,7 +365,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                     "value": {
                                         "title": "Trial",
                                         "date_range": "12-24+ Months After Filing",
-                                        "instructions": f'<p data-block-key="x2hae">Present your case before a United States Tax Court Judge.</p><ul><li data-block-key="933h0">Trial held in person or remotely. The United States Tax Court Rules and the <a href="{_rule143_doc_url}">rules of evidence</a> apply either way.</li><li data-block-key="dhe25">Present evidence and witnesses.</li><li data-block-key="ddceg">The Judge may not issue a decision right away. You will receive a copy when the Judge issues in your case.</li></ul>',
+                                        "instructions": f'<p data-block-key="x2hae">Present your case before a United States Tax Court judge.</p><ul><li data-block-key="933h0">Trial held in person or remotely. The United States Tax Court Rules and the <a href="{_rule143_doc_url}">rules of evidence</a> apply either way.</li><li data-block-key="dhe25">Present evidence and witnesses.</li><li data-block-key="ddceg">The judge may not issue a decision right away. You will receive a copy when the judge issues a decision in your case.</li></ul>',
                                         "your_tasks": [],
                                         "helpful_information": [],
                                     },
