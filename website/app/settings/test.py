@@ -1,5 +1,6 @@
 import os
 from .base import *  # noqa: F403
+from .base import STORAGES
 
 # This test config was inspired by the Django-Styleguide-Example. Some of the
 # settings were copied over from that project and may not be relevant yet.
@@ -42,5 +43,15 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
 
-# Disable static file collection in tests
+# Disable static file collection in tests. base.py sets the modern STORAGES dict
+# (whitenoise's manifest storage), which Django uses in preference to the legacy
+# STATICFILES_STORAGE setting below, so that override alone has no effect and any
+# test that renders a real admin page 404s on missing manifest entries. Override
+# STORAGES itself instead.
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+STORAGES = {
+    **STORAGES,
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
