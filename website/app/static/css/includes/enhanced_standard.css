@@ -823,17 +823,43 @@ p:empty {
 }
 
 /* "contact" style: white pill rows, e.g. the Clerk's Office email/phone.
-   Icon and label share the first row; helper text spans below, starting under the icon. */
+   The pill is a div so helper text sits inside it without being part of the
+   link; the link's ::after stretches over the pill to keep it all clickable. */
 .side-card__contact {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    gap: 2px 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     background-color: var(--color-white);
     border-radius: 8px;
     padding: 12px 16px;
+    color: #1B1B1B;
+}
+
+.side-card__contact:has(.side-card__contact-link:focus-visible) {
+    outline: 0.25rem solid #2491FF;
+    outline-offset: 0.25rem;
+}
+
+.side-card__contact-link {
+    display: flex;
+    align-items: start;
+    gap: 12px;
     text-decoration: none;
     color: #1B1B1B;
+}
+
+.side-card__contact-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.side-card__contact-link:hover,
+.side-card__contact-link:focus {
+    text-decoration: none;
+    outline: none;
 }
 
 .side-card__contact-icon {
@@ -846,12 +872,16 @@ p:empty {
     color: #1B1B1B;
 }
 
+.side-card__contact:hover .side-card__contact-label,
+.side-card__contact:has(.side-card__contact-link:focus-visible) .side-card__contact-label {
+    text-decoration: underline;
+}
+
 .side-card__contact[data-link-type="email"] .side-card__contact-label {
     text-decoration: underline;
 }
 
 .side-card__contact-helper {
-    grid-column: 1 / -1;
     font-size: 14px;
     color: #565C65;
 }
