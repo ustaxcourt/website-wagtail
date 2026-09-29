@@ -65,7 +65,6 @@
         body.printing-printable-section .printable-section__print-host .printable-section {
             margin: 0;
             border: 1px solid #d9d9d9;
-            border-bottom: 0;
         }
         body.printing-printable-section .printable-section__print-host .checkbox-label-container {
             align-items: flex-start;
@@ -117,6 +116,8 @@
 
             const originalCheckboxes = block.querySelectorAll('input[type="checkbox"]');
             const clonedCheckboxes = clone.querySelectorAll('input[type="checkbox"]');
+            const originalLinks = block.querySelectorAll("a[href]");
+            const clonedLinks = clone.querySelectorAll("a[href]");
 
             clonedCheckboxes.forEach(function(checkbox, index) {
                 const isChecked = Boolean(originalCheckboxes[index] && originalCheckboxes[index].checked);
@@ -125,6 +126,12 @@
                 checkbox.toggleAttribute("checked", isChecked);
                 if (checkboxContainer) {
                     checkboxContainer.classList.toggle("printable-section__checked", isChecked);
+                }
+            });
+
+            clonedLinks.forEach(function(link, index) {
+                if (originalLinks[index]) {
+                    link.setAttribute("href", originalLinks[index].href);
                 }
             });
 
