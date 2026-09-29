@@ -52,6 +52,27 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                 title="Arrow Forward",
             )
 
+        computer_icon_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="computer_icon.svg",
+            title="computer_icon.svg",
+        )
+        mail_icon_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="mail.svg",
+            title="mail.svg",
+        )
+        petition_form_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="Petition_Simplified_Form_2.pdf",
+            title="Petition_Simplified_Form_2.pdf",
+        )
+        petition_kit_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="Petition_Kit.pdf",
+            title="Petition_Kit.pdf",
+        )
+
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
@@ -123,8 +144,12 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                         "id": "5e5c3858-b562-4818-9b68-169833009415",
                     },
                     {
-                        "type": "paragraph",
-                        "value": f'<div class=get-started-row> <h2 data-block-key="cuzcn"><b>Get Started</b></h2> (<a href={_petitioner_timeline_url}>View detailed timeline</a>) </div>',
+                        "type": "section_header",
+                        "value": {
+                            "heading": "Get Started",
+                            "link_text": "View detailed timeline",
+                            "link_url": _petitioner_timeline_url,
+                        },
                         "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
                     },
                     {
@@ -182,6 +207,42 @@ class PetitionersGuidancePageInitializer(PageInitializer):
                         "type": "icon_header",
                         "value": {"icon": "draft", "text": "How to File"},
                         "id": "bc4972ca-503f-466a-9fb0-4b204622d650",
+                    },
+                    {
+                        "type": "card",
+                        "value": [
+                            {
+                                "type": "item",
+                                "value": {
+                                    "color": "dark-primary",
+                                    "numbered_icon": "",
+                                    "numbered_icon_alignment": "left",
+                                    "title_icon": computer_icon_doc.pk,
+                                    "title_icon_alt_text": "",
+                                    "subtitle": "",
+                                    "title": "Electronic Filing - Recommended",
+                                    "description": f'<ul><li>File your petition electronically using DAWSON</li><li>Use the petition generator in DAWSON or upload a PDF (<a linktype="document" id="{petition_form_doc.pk}">Petition Form</a>)</li><li>Immediate confirmation of filing</li></ul><p>Visit <strong><a href="https://dawson.ustaxcourt.gov/">dawson.ustaxcourt.gov</a></strong> to get started.</p>',
+                                    "buttons": [],
+                                },
+                                "id": "27680fe9-a643-41cf-b4f7-29dd6ed7ccda",
+                            },
+                            {
+                                "type": "item",
+                                "value": {
+                                    "color": "dark-primary",
+                                    "numbered_icon": "",
+                                    "numbered_icon_alignment": "left",
+                                    "title_icon": mail_icon_doc.pk,
+                                    "title_icon_alt_text": "",
+                                    "subtitle": "",
+                                    "title": "Can't file electronically? Mail Your Petition",
+                                    "description": f'<ul><li>Download the <a linktype="document" id="{petition_kit_doc.pk}">Petition Kit</a></li><li>Complete all the forms</li><li>Mail all forms to the US Tax Court</li></ul><p>Mail to: <a href="https://www.google.com/maps/search/?api=1&amp;query=United+States+Tax+Court%2C+400+Second+Street+NW%2C+Washington%2C+DC+20217">United States Tax Court, 400 Second St. NW Washington, DC 20217</a></p>',
+                                    "buttons": [],
+                                },
+                                "id": "8955354d-3c1d-425d-803a-014b572d2709",
+                            },
+                        ],
+                        "id": "5439cbe3-d512-424d-ac65-06d18cd2e3ac",
                     },
                     {
                         "type": "callout",
