@@ -24,7 +24,7 @@ from home.models.custom_blocks.common import (
     custom_promote_panels,
     link_obj,
 )
-from home.models.custom_blocks.icon_header import IconHeaderBlock
+from home.models.custom_blocks.icon_header import IconHeaderBlock, SectionHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.custom_blocks.printable_section import PrintableSectionBlock
@@ -285,6 +285,10 @@ _BASE_BLOCK_TYPES = [
     (
         "icon_header",
         IconHeaderBlock(),
+    ),
+    (
+        "section_header",
+        SectionHeaderBlock(),
     ),
     (
         "heading",
