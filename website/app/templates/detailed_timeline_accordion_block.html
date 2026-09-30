@@ -94,6 +94,7 @@
 
         const isExpanded = button.getAttribute("aria-expanded") === "true";
         button.setAttribute("aria-expanded", !isExpanded);
+        accordionBlock.dispatchEvent(new CustomEvent("detailedTimelineAccordionToggle", { bubbles: true }));
       });
 
       header.dataset.initialized = "true";

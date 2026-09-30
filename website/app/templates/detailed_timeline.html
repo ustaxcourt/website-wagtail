@@ -464,6 +464,16 @@
             expandButton.querySelector(".detailed-timeline-expand-button-label").textContent = isExpanded ? "Collapse All" : "Expand All";
         }
 
+        function updateExpandButtonState() {
+            const accordionContents = Array.from(timeline.querySelectorAll(".detailed-timeline-accordion-content"));
+            const areAllExpanded = accordionContents.length > 0 && accordionContents.every(function(content) {
+                return !content.classList.contains("hidden");
+            });
+
+            expandButton.setAttribute("aria-expanded", areAllExpanded);
+            expandButton.querySelector(".detailed-timeline-expand-button-label").textContent = areAllExpanded ? "Collapse All" : "Expand All";
+        }
+
         function cleanupPrintHost() {
             document.body.classList.remove("printing-detailed-timeline");
             if (printHost) {
@@ -506,6 +516,8 @@
         expandButton.addEventListener("click", function() {
             setAllAccordionsExpanded(expandButton.getAttribute("aria-expanded") !== "true");
         });
+        timeline.addEventListener("detailedTimelineAccordionToggle", updateExpandButtonState);
+        updateExpandButtonState();
 
         button.addEventListener("click", function() {
             cleanupPrintHost();
