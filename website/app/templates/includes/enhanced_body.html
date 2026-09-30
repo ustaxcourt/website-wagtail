@@ -5,6 +5,8 @@
 {% for block in blocks %}
     {% if block.block_type == 'icon_header' %}
         {% include "icon_header_block.html" with value=block.value %}
+    {% elif block.block_type == 'section_header' %}
+        {% include "section_header_block.html" with value=block.value %}
     {% elif block.block_type == 'h2' %}
         <h2>{{ block.value }}</h2>
     {% elif block.block_type == 'h3' %}

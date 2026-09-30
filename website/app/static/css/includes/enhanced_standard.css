@@ -608,6 +608,7 @@ p:empty {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
 }
 
 .info-card__title-icon {
@@ -627,6 +628,10 @@ p:empty {
     background: #162E51;
 }
 
+.info-card.dark-primary .info-card__title-icon {
+    background: transparent;
+}
+
 .info-card__title-icon img {
     width: 24px;
     height: 24px;
@@ -635,6 +640,10 @@ p:empty {
 .info-card.gray .info-card__title-icon img,
 .info-card.green .info-card__title-icon img,
 .info-card.yellow .info-card__title-icon img {
+    filter: brightness(0) invert(1);
+}
+
+.info-card.dark-primary .info-card__title-icon img {
     filter: brightness(0) invert(1);
 }
 
@@ -656,6 +665,7 @@ p:empty {
 .info-card .description {
     color: #565C65;
     text-align: left;
+    overflow-wrap: anywhere;
 }
 
 .info-card .description a {
