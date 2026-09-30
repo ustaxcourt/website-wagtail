@@ -62,7 +62,7 @@ class IconHeaderBlockRenderTest(TestCase):
                 {
                     "type": "icon_header",
                     "value": {
-                        "icon": "file",
+                        "icon": "draft",
                         "text": "How to File",
                     },
                 }
@@ -72,7 +72,7 @@ class IconHeaderBlockRenderTest(TestCase):
         content = self.render_page(page)
 
         self.assertIn('class="icon-header__icon material-symbols-outlined"', content)
-        self.assertIn("file", content)
+        self.assertIn("draft", content)
         self.assertIn("How to File", content)
 
     def test_icon_header_renders_on_petitioner_experience_page(self):
@@ -189,6 +189,61 @@ class IconHeaderBlockRenderTest(TestCase):
                 expected_text in content,
                 f"Rendered How to File section is missing: {expected_text}",
             )
+
+    def test_petitioners_guidance_initializer_updates_existing_page_once(self):
+        ribbon = NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
+        editor_block = {
+            "type": "paragraph",
+            "value": '<p data-block-key="editor">Editor-managed content</p>',
+            "id": "40d75be6-2ca3-4ac2-b81d-e132a462ca90",
+        }
+        page = PetitionerExperiencePage(
+            title="Guidance for Self-Represented Petitioners (Pro Se)",
+            slug="petitioners-guidance",
+            navigation_ribbon=ribbon,
+            body=[
+                {
+                    "type": "paragraph",
+                    "value": '<div class="get-started-row">Get Started</div>',
+                    "id": "2ba9f031-2068-41b9-afba-0fc25ce8c052",
+                },
+                {
+                    "type": "card",
+                    "value": [],
+                    "id": "8a6d6de4-b347-40c5-9f95-792200a223ab",
+                },
+                editor_block,
+            ],
+        )
+        self.home_page.add_child(instance=page)
+        document = Document.objects.create(
+            collection=Collection.get_first_root_node(),
+            title="How to File update document",
+            file=SimpleUploadedFile(
+                "how-to-file-update.svg",
+                b'<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+                content_type="image/svg+xml",
+            ),
+        )
+
+        with patch.object(
+            PetitionersGuidancePageInitializer,
+            "load_document_from_documents_dir",
+            return_value=document,
+        ):
+            initializer = PetitionersGuidancePageInitializer()
+            initializer.create_page_info(self.home_page)
+            page.refresh_from_db()
+            revision_count = page.revisions.count()
+            initializer.create_page_info(self.home_page)
+            page.refresh_from_db()
+
+        block_ids = [block["id"] for block in page.body.raw_data]
+        self.assertEqual(block_ids.count("bc4972ca-503f-466a-9fb0-4b204622d650"), 1)
+        self.assertEqual(page.body.raw_data[-1], editor_block)
+        self.assertEqual(page.body.raw_data[0]["type"], "section_header")
+        self.assertEqual(page.revisions.count(), revision_count)
+        self.assertEqual(page.live_revision_id, page.latest_revision_id)
 
     def test_navigation_ribbon_marks_current_page(self):
         ribbon = NavigationRibbon.objects.create(name="Petitioner Experience Ribbon")
