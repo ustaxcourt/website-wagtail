@@ -49,6 +49,14 @@ class PetitionersTimelinePageInitializer(PageInitializer):
         _rule143_doc_url = "" if _rule143_doc is None else _rule143_doc.url
         _rule162_doc = Document.objects.filter(title="rule-162.pdf").first()
         _rule162_doc_url = "" if _rule162_doc is None else _rule162_doc.url
+        _case_procedure_page = Page.objects.filter(slug="case-procedure").first()
+        if _case_procedure_page:
+            _small_tax_case_link = f'<a linktype="page" id="{_case_procedure_page.id}">elect small tax case status</a>'
+        else:
+            logger.warning(
+                "'case-procedure' page not found - 'elect small tax case status' will not be linked."
+            )
+            _small_tax_case_link = "elect small tax case status"
 
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
@@ -172,7 +180,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                             {
                                                 "type": "item",
                                                 "value": {
-                                                    "text": '<p data-block-key="l4ngx">Determine if you would like to elect small tax case status.</p>',
+                                                    "text": f'<p data-block-key="l4ngx">Determine if you would like to {_small_tax_case_link}.</p>',
                                                     "subtext": '<p data-block-key="7tw0u">Deficiency disputes $50,000 or less per year are eligible.</p>',
                                                 },
                                                 "id": "3e35c1a1-b320-4727-81be-1a7977eb5eac",
