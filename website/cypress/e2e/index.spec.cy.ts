@@ -34,6 +34,15 @@ describe('index page', () => {
       .should('be.visible').realHover()
 
     cy.get('[data-testid="nav-link-case-related-forms"]')
+      .parent()
+      .should('have.attr', 'class') // Ensure it has a class attribute
+      .then(classAttr => {
+        // Assert that the class list matches exactly
+        expect(classAttr).to.eq('nav-link');
+      });
+
+    // Verify that li tag containing Case Related Forms link only has the nav-link class
+    cy.get('[data-testid="nav-link-case-related-forms"]')
       .should('be.visible')
       .click();
 
