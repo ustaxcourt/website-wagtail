@@ -24,7 +24,7 @@ from home.models.custom_blocks.common import (
     custom_promote_panels,
     link_obj,
 )
-from home.models.custom_blocks.icon_header import IconHeaderBlock
+from home.models.custom_blocks.icon_header import IconHeaderBlock, SectionHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.custom_blocks.printable_section import PrintableSectionBlock
@@ -32,6 +32,7 @@ from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.detailed_timeline import DetailedTimelineBlock
 from home.models.snippets.navigation import NavigationRibbon
+from home.models.snippets.faq_filter_tag import get_faq_filter_tag_choices
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -41,17 +42,6 @@ table_value_types = [
 class IndentStyle(models.TextChoices):
     INDENTED = "indented"
     UNINDENTED = "unindented"
-
-
-FAQ_FILTER_TAG_CHOICES = [
-    ("filing", "Filing"),
-    ("deadlines", "Deadlines"),
-    ("representation", "Representation"),
-    ("forms-documents", "Forms & Documents"),
-    ("trial-process", "Trial Process"),
-    ("fees-costs", "Fees & Costs"),
-    ("after-decision", "After Decision"),
-]
 
 
 class StyledCalloutBlock(blocks.StructBlock):
@@ -297,6 +287,10 @@ _BASE_BLOCK_TYPES = [
         IconHeaderBlock(),
     ),
     (
+        "section_header",
+        SectionHeaderBlock(),
+    ),
+    (
         "heading",
         blocks.StructBlock(
             [
@@ -427,7 +421,7 @@ _BASE_BLOCK_TYPES = [
                     (
                         "filtertag",
                         blocks.ChoiceBlock(
-                            choices=FAQ_FILTER_TAG_CHOICES,
+                            choices=get_faq_filter_tag_choices,
                             required=True,
                             label="FilterTag",
                         ),

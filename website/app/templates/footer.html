@@ -212,6 +212,7 @@
 
         .mobile-nav-menu {
             display: block;
+            z-index: 1000;
         }
     }
 </style>
@@ -289,9 +290,11 @@
         {% for link in page.navigation_ribbon.links.all %}
             {% if link.icon != "dawson" %}
                 <a href="{{ link.url }}" aria-label="{{ link.title }}" class="{% if request.path|strip_trailing_slash == link.url|strip_trailing_slash %}current-page{% endif %}">
+                    {% if link.icon %}
                     <span class="material-symbols-outlined" aria-hidden="true">
                         {{ link.icon }}
                     </span>
+                    {% endif %}
                     <div class="title" style="display: block;">{{ link.title }}</div>
                 </a>
             {% endif %}

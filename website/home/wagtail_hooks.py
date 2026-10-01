@@ -18,8 +18,11 @@ from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBa
 from wagtail.contrib.redirects.models import Redirect
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
+from wagtail.admin.ui.tables import Column
+from wagtail.admin.viewsets.pages import PageViewSet, base_page_viewset
 from wagtail.models import Page
 from home.models import NavigationMenu, JudgeRole, Header
+from home.models.snippets.faq_filter_tag import block_if_filter_tags_in_use
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
@@ -35,6 +38,25 @@ from home.views import NewsItemReportView, PrivateSeminarDisclosureReportView
 from wagtail.admin.menu import AdminOnlyMenuItem
 
 logger = logging.getLogger(__name__)
+
+
+class SluggedPageViewSet(PageViewSet):
+    """
+    Custom page listing that includes the "slug" column
+    """
+
+    model = Page
+    columns = [
+        *base_page_viewset.columns[:2],
+        Column("slug", label=_("Slug"), sort_key="slug"),
+        *base_page_viewset.columns[2:],
+    ]
+
+
+@hooks.register("register_admin_viewset")
+def register_slugged_page_viewset():
+    return SluggedPageViewSet("page_listing")
+
 
 try:
     from app.role_switcher.views import (
@@ -127,6 +149,18 @@ def prevent_navigation_menu_deletion(request, instances):
         from django.core.exceptions import PermissionDenied
 
         raise PermissionDenied()
+
+
+@hooks.register("before_delete_snippet")
+def protect_filter_tags_in_use_from_deletion(request, instances):
+    """A FilterTag can only be removed once no Q&A uses it."""
+    return block_if_filter_tags_in_use(request, instances, "removed")
+
+
+@hooks.register("before_unpublish")
+def protect_filter_tags_in_use_from_unpublish(request, instance):
+    """An unpublished FilterTag leaves the dropdown, so it needs the same protection."""
+    return block_if_filter_tags_in_use(request, [instance], "unpublished")
 
 
 @hooks.register("before_delete_snippet")
