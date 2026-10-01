@@ -5,9 +5,11 @@
                 <a href="{{ link.document.url }}"
                    data-testid="document-link"
                    title="{{ link.title }}">
-                    <span class="material-symbols-outlined" aria-hidden="true">
-                        {{ link.icon }}
-                    </span>
+                    {% if link.icon %}
+                        <span class="material-symbols-outlined" aria-hidden="true">
+                            {{ link.icon }}
+                        </span>
+                    {% endif %}
                     {{ link.title }}
                 </a>
             </li>
@@ -17,26 +19,32 @@
                    data-testid="document-link"
                    target="_blank"
                    title="{{ link.title }}">
-                   <span class="material-symbols-outlined" aria-hidden="true">
-                     {{ link.icon }}
-                    </span>
+                    {% if link.icon %}
+                        <span class="material-symbols-outlined" aria-hidden="true">
+                            {{ link.icon }}
+                        </span>
+                    {% endif %}
                     {{ link.title }}
                 </a>
             </li>
         {% elif link.text_only %}
             <li>
-                <span class="material-symbols-outlined" aria-hidden="true">
-                    {{ link.icon }}
-                </span>
+                {% if link.icon %}
+                    <span class="material-symbols-outlined" aria-hidden="true">
+                        {{ link.icon }}
+                    </span>
+                {% endif %}
                 {{ link.title }}
             </li>
         {% else %}
             <li>
                 {% if link.url %}
                     <a href="{{ link.url }}" title="{{ link.title }}">
-                        <span class="material-symbols-outlined" aria-hidden="true">
-                            {{ link.icon }}
-                        </span>
+                        {% if link.icon %}
+                            <span class="material-symbols-outlined" aria-hidden="true">
+                                {{ link.icon }}
+                            </span>
+                        {% endif %}
                         {{ link.title }}</a>
                 {% endif %}
             </li>
