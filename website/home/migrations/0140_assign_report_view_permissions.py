@@ -31,19 +31,27 @@ def remove_report_permissions(apps, schema_editor):
     Group = apps.get_model("auth", "Group")
     Permission = apps.get_model("auth", "Permission")
 
-    try:
-        def_perm = Permission.objects.get(
-            codename="view_definitionsquery",
-            content_type__app_label="search",
-        )
-        for group_name in ["Editors", "Moderators", "Administrators"]:
-            try:
-                group = Group.objects.get(name=group_name)
-                group.permissions.remove(def_perm)
-            except Group.DoesNotExist:
-                pass
-    except Permission.DoesNotExist:
-        pass
+    permissions = []
+    for codename, app_label in [
+        ("view_newsitem", "home"),
+        ("view_definitionsquery", "search"),
+    ]:
+        try:
+            permissions.append(
+                Permission.objects.get(
+                    codename=codename,
+                    content_type__app_label=app_label,
+                )
+            )
+        except Permission.DoesNotExist:
+            pass
+
+    for group_name in ["Editors", "Moderators", "Administrators"]:
+        try:
+            group = Group.objects.get(name=group_name)
+            group.permissions.remove(*permissions)
+        except Group.DoesNotExist:
+            pass
 
 
 class Migration(migrations.Migration):
