@@ -5,6 +5,10 @@ on:
     tags:
       - 'sandbox-destroy'
 
+# Shared with deploy.yml so a user's sandbox deploy and destroy can't overlap.
+concurrency:
+  group: sandbox-${{ github.actor }}
+
 jobs:
   destroy:
     environment: ${{ github.ref == 'refs/tags/sandbox-destroy' && format('{0}_sandbox', github.actor) || '' }}
@@ -21,10 +25,10 @@ jobs:
             exit 1
           fi
 
-      - name: Checkout sandbox tag
+      # Check out the pushed commit, not the shared `sandbox` tag, which may
+      # point at another user's most recent deploy.
+      - name: Checkout code
         uses: actions/checkout@v7
-        with:
-          ref: sandbox # Always check out the sandbox tag
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform

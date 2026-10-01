@@ -13,9 +13,11 @@ on:
       - 'development'
       - 'train'
 
-# Run one job at a time. Subsequent jobs will wait for the previous job to finish.
+# Run one job at a time per target. Sandbox deploys are grouped per user (each
+# sandbox is its own AWS account) so different users' sandboxes deploy in parallel.
+# The sandbox group is shared with destroy.yml so deploy/destroy can't overlap.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.ref == 'refs/tags/sandbox' && format('sandbox-{0}', github.actor) || format('{0}-{1}', github.workflow, github.ref) }}
 
 jobs:
   deploy:
