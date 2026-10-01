@@ -310,17 +310,37 @@
             mask: url({% static "uswds/img/usa-icons/print.svg" %}) center / contain no-repeat;
         }
 
+        .detailed-timeline-expand-button-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            background-color: currentColor;
+            -webkit-mask: url({% static "uswds/img/usa-icons/visibility.svg" %}) center / contain no-repeat;
+            mask: url({% static "uswds/img/usa-icons/visibility.svg" %}) center / contain no-repeat;
+        }
+        .detailed-timeline-expand-button[aria-expanded="true"] .detailed-timeline-expand-button-icon {
+            -webkit-mask-image: url({% static "uswds/img/usa-icons/visibility_off.svg" %});
+            mask-image: url({% static "uswds/img/usa-icons/visibility_off.svg" %});
+        }
+
         .detailed-timeline-print-host {
             display: none;
         }
 
         @media print {
+            /* Room for the browser's print header/footer so they don't crowd the timeline. */
+            @page detailed-timeline {
+                margin: 0.75in 0.5in;
+            }
             body.printing-detailed-timeline > *:not(.detailed-timeline-print-host) {
                 display: none !important;
             }
             body.printing-detailed-timeline .detailed-timeline-print-host {
                 display: block !important;
                 width: 100%;
+                page: detailed-timeline;
+                /* Scale the on-screen layout down so more of the timeline fits on each printed page. */
+                zoom: 0.8;
                 /* Bubble line is drawn with backgrounds, which browsers drop when printing by default. */
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -418,6 +438,7 @@
             <button type="button"
                     class="detailed-timeline-control-button detailed-timeline-expand-button"
                     aria-expanded="false">
+                <span class="detailed-timeline-expand-button-icon" aria-hidden="true"></span>
                 <span class="detailed-timeline-expand-button-label">Expand All</span>
             </button>
             <button type="button"
