@@ -332,8 +332,18 @@
             @page detailed-timeline {
                 margin: 0.75in 0.5in;
             }
-            body.printing-detailed-timeline > *:not(.detailed-timeline-print-host) {
+            body.printing-detailed-timeline > *:not(.detailed-timeline-print-host),
+            html:has(> body.printing-detailed-timeline) > :not(body) {
                 display: none !important;
+            }
+            /* Leftover height or trailing margin can spill onto an extra blank page. */
+            html:has(> body.printing-detailed-timeline),
+            body.printing-detailed-timeline {
+                height: auto !important;
+                min-height: 0 !important;
+            }
+            .detailed-timeline-print-host .detailed-timeline-phase:last-child {
+                margin-bottom: 0;
             }
             body.printing-detailed-timeline .detailed-timeline-print-host {
                 display: block !important;
