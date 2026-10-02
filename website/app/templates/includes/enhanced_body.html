@@ -63,9 +63,11 @@
         {% include "home/new_styled_table.html" with block=block %}
     {% elif block.block_type == 'links' %}
         {% include "home/links_block.html" with block=block %}
+    {% elif block.block_type == 'questionanswers' and block.value.display_filter_section %}
+        {% include "includes/faq_accordion.html" with qa_block=block %}
     {% elif block.block_type == 'questionanswers' %}
         <ul class="links indented">
-            {% for q in block.value %}
+            {% for q in block.value.questions %}
                 <li>
                     <a href="#{{ q.anchortag }}">
                         <i class="fa-solid fa-circle-info"></i>{{ q.question }}
@@ -74,7 +76,7 @@
             {% endfor %}
         </ul>
         <hr />
-        {% for q in block.value %}
+        {% for q in block.value.questions %}
             <div class="question-answer-block">
                 <h3>
                     <a href="#{{ q.anchortag }}">

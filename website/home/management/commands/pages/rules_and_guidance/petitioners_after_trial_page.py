@@ -136,7 +136,13 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                 search_description="Guidance for Petitioners - Things That Occur After Trial",
                 body=[
                     {"type": "h2", "value": "Things That Occur After Trial"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )
