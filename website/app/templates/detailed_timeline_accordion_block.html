@@ -65,6 +65,37 @@
 <script>
   (function() {
     const accordionId = "detailed-timeline-accordion-{{block_index}}{{suffix}}{% if tile_num is not None %}{{tile_num}}{% endif %}";
+    const storageKey = "detailed-timeline:" + window.location.pathname + ":" + accordionId;
+
+    // Saved state is only restored on back/forward or reload; a fresh visit starts from the defaults.
+    function getNavigationType() {
+      const entry = performance.getEntriesByType("navigation")[0];
+      return entry ? entry.type : "navigate";
+    }
+
+    function readSavedState() {
+      try {
+        return sessionStorage.getItem(storageKey);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveState(expanded) {
+      try {
+        sessionStorage.setItem(storageKey, expanded ? "true" : "false");
+      } catch (e) {
+        // Storage unavailable (e.g. blocked); state just won't persist.
+      }
+    }
+
+    function clearSavedState() {
+      try {
+        sessionStorage.removeItem(storageKey);
+      } catch (e) {
+        // Storage unavailable; nothing to clear.
+      }
+    }
 
     function initializeDetailedTimelineAccordion() {
       const accordionBlock = document.getElementById(accordionId);
@@ -82,19 +113,34 @@
 
       if (!content || !icon || !title || !button) return;
 
+      function setExpanded(expanded) {
+        content.classList.toggle("hidden", !expanded);
+        icon.classList.toggle("rotated", expanded);
+        title.classList.toggle("active", expanded);
+        header.classList.toggle("active", expanded);
+        icon.classList.toggle("active", expanded);
+        button.classList.toggle("active", expanded);
+        button.setAttribute("aria-expanded", expanded);
+      }
+
+      const navigationType = getNavigationType();
+      if (navigationType === "back_forward" || navigationType === "reload") {
+        const savedState = readSavedState();
+        if (savedState !== null) {
+          setExpanded(savedState === "true");
+        }
+      } else {
+        clearSavedState();
+      }
+
       header.addEventListener("click", function(e) {
         e.stopPropagation();
-
-        content.classList.toggle("hidden");
-        icon.classList.toggle("rotated");
-        title.classList.toggle("active");
-        header.classList.toggle("active");
-        icon.classList.toggle("active");
-        button.classList.toggle("active");
 
         const isExpanded = button.getAttribute("aria-expanded") === "true";
         button.setAttribute("aria-expanded", !isExpanded);
         accordionBlock.dispatchEvent(new CustomEvent("detailedTimelineAccordionToggle", { bubbles: true }));
+        setExpanded(!isExpanded);
+        saveState(!isExpanded);
       });
 
       header.dataset.initialized = "true";
