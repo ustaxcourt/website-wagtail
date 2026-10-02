@@ -476,23 +476,66 @@
         if (!expandButton || !button || button.dataset.initialized === "true") return;
         let printHost = null;
 
+        function setAccordionExpanded(accordion, isExpanded) {
+            const content = accordion.querySelector(".detailed-timeline-accordion-content");
+            const header = accordion.querySelector(".detailed-timeline-accordion-header");
+            const title = accordion.querySelector(".detailed-timeline-accordion-title");
+            const accordionButton = accordion.querySelector(".detailed-timeline-accordion-header-button");
+            const icon = accordion.querySelector(".detailed-timeline-accordion-icon");
+
+            if (content) content.classList.toggle("hidden", !isExpanded);
+            [header, title, accordionButton, icon].forEach(function(element) {
+                if (element) element.classList.toggle("active", isExpanded);
+            });
+            if (icon) icon.classList.toggle("rotated", isExpanded);
+            if (accordionButton) accordionButton.setAttribute("aria-expanded", isExpanded);
+        }
+
+        function saveAccordionState() {
+            const states = Array.from(
+                timeline.querySelectorAll(".detailed-timeline-accordion-content")
+            ).map(function(content) {
+                return !content.classList.contains("hidden");
+            });
+            const currentState = window.history.state;
+            const historyState = currentState && typeof currentState === "object"
+                ? currentState
+                : {};
+
+            window.history.replaceState(
+                {
+                    ...historyState,
+                    detailedTimelineStates: {
+                        ...historyState.detailedTimelineStates,
+                        [timeline.id]: states,
+                    },
+                },
+                "",
+                window.location.href
+            );
+        }
+
+        function restoreAccordionState() {
+            const savedStates = window.history.state
+                && window.history.state.detailedTimelineStates
+                && window.history.state.detailedTimelineStates[timeline.id];
+            const accordions = Array.from(
+                timeline.querySelectorAll(".detailed-timeline-accordion-block")
+            );
+
+            if (!Array.isArray(savedStates) || savedStates.length !== accordions.length) return;
+            accordions.forEach(function(accordion, index) {
+                setAccordionExpanded(accordion, Boolean(savedStates[index]));
+            });
+        }
+
         function setAllAccordionsExpanded(isExpanded) {
-            timeline.querySelectorAll(".detailed-timeline-accordion-content").forEach(function(content) {
-                content.classList.toggle("hidden", !isExpanded);
-            });
-            timeline.querySelectorAll(
-                ".detailed-timeline-accordion-header, .detailed-timeline-accordion-title, .detailed-timeline-accordion-header-button, .detailed-timeline-accordion-icon"
-            ).forEach(function(el) {
-                el.classList.toggle("active", isExpanded);
-            });
-            timeline.querySelectorAll(".detailed-timeline-accordion-icon").forEach(function(icon) {
-                icon.classList.toggle("rotated", isExpanded);
-            });
-            timeline.querySelectorAll(".detailed-timeline-accordion-header-button").forEach(function(accordionButton) {
-                accordionButton.setAttribute("aria-expanded", isExpanded);
+            timeline.querySelectorAll(".detailed-timeline-accordion-block").forEach(function(accordion) {
+                setAccordionExpanded(accordion, isExpanded);
             });
             expandButton.setAttribute("aria-expanded", isExpanded);
             expandButton.querySelector(".detailed-timeline-expand-button-label").textContent = isExpanded ? "Collapse All" : "Expand All";
+            saveAccordionState();
         }
 
         function updateExpandButtonState() {
@@ -547,7 +590,11 @@
         expandButton.addEventListener("click", function() {
             setAllAccordionsExpanded(expandButton.getAttribute("aria-expanded") !== "true");
         });
-        timeline.addEventListener("detailedTimelineAccordionToggle", updateExpandButtonState);
+        timeline.addEventListener("detailedTimelineAccordionToggle", function() {
+            updateExpandButtonState();
+            saveAccordionState();
+        });
+        restoreAccordionState();
         updateExpandButtonState();
 
         button.addEventListener("click", function() {
