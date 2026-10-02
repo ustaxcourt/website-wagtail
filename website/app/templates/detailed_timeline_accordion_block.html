@@ -139,6 +139,7 @@
         const isExpanded = button.getAttribute("aria-expanded") === "true";
         setExpanded(!isExpanded);
         saveState(!isExpanded);
+        accordionBlock.dispatchEvent(new CustomEvent("detailedTimelineAccordionToggle", { bubbles: true }));
       });
 
       header.dataset.initialized = "true";
