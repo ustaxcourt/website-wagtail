@@ -14,6 +14,7 @@ from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
+from wagtail.admin.widgets import Button
 from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBatch
 from wagtail.contrib.redirects.models import Redirect
 from wagtail.documents.models import Document
@@ -21,7 +22,9 @@ from wagtail.images.models import Image
 from wagtail.admin.ui.tables import Column
 from wagtail.admin.viewsets.pages import PageViewSet, base_page_viewset
 from wagtail.models import Page
+from home.admin.faq_csv import FAQCSVView, faq_csv_download
 from home.models import NavigationMenu, JudgeRole, Header
+from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.snippets.faq_filter_tag import block_if_filter_tags_in_use
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
@@ -478,6 +481,32 @@ def register_add_entry_above_url():
             name="add_entry_above_view",
         ),
     ]
+
+
+@hooks.register("register_admin_urls")
+def register_faq_csv_urls():
+    return [
+        path("faq-csv/<int:page_id>/", FAQCSVView.as_view(), name="faq_csv"),
+        path(
+            "faq-csv/<int:page_id>/<str:section_id>/download/",
+            faq_csv_download,
+            name="faq_csv_download",
+        ),
+    ]
+
+
+@hooks.register("register_page_header_buttons")
+def faq_csv_page_header_button(page, user, view_name, next_url=None):
+    if (
+        issubclass(page.specific_class, EnhancedStandardPage)
+        and page.permissions_for_user(user).can_edit()
+    ):
+        yield Button(
+            "FAQ CSV import/export",
+            url=reverse("faq_csv", args=[page.pk]),
+            icon_name="table",
+            priority=66,
+        )
 
 
 @hooks.register("after_edit_page")
