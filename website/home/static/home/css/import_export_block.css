@@ -1,0 +1,32 @@
+.import-export-block .w-field__wrapper {
+    margin-bottom: 0.5rem;
+}
+
+.import-export-block textarea {
+    max-height: 25em;
+    overflow-y: auto !important;
+}
+
+.import-export-block .help {
+    padding-top: 0.3rem;
+}
+
+.import-export-block-fileinput {
+    width: 10em !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin-right: 1rem;
+}
+
+.import-export-block-fileinput::file-selector-button {
+    width: 10em;
+    padding: 0.3rem;
+    border: 0;
+    border-radius: 5px;
+}
+
+.import-export-block-fileinput-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1rem 0 1rem 0;
+}

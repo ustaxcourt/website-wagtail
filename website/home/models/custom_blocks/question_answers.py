@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from wagtail import blocks
+from home.models.custom_blocks.import_export_block import ImportExportBlock
 
 from home.models.snippets.faq_filter_tag import (
     FAQFilterTag,
@@ -60,6 +61,13 @@ class QuestionAnswersBlock(blocks.StructBlock):
         label="Display Filter Section",
         help_text="Show FilterTag buttons above the questions and display each question as an accordion.",
     )
+
+    import_export = ImportExportBlock(
+        label="Import/Export Questions",
+        help_text="Select .csv file to import",
+        file_type_filter=".csv",
+    )
+
     questions = blocks.ListBlock(
         QuestionAnswerBlock(),
         label="Questions",
