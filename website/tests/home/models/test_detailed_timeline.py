@@ -417,3 +417,13 @@ class DetailedTimelineRenderTest(TestCase):
         self.assertIn(
             "You can represent yourself or", content
         )  # Checking for information subtext in second Helpful Information item in Receive an IRS Notice phase
+
+    def test_detailed_timeline_has_expand_and_print_controls(self):
+        request = self.factory.get(self.page.url)
+        request.site = Site.objects.get(is_default_site=True)
+        response = self.page.serve(request)
+        content = response.render().content.decode()
+
+        self.assertIn("Expand All", content)
+        self.assertIn("Print Detailed Timeline", content)
+        self.assertIn(".detailed-timeline-print-host", content)
