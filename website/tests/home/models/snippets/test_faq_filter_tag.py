@@ -36,14 +36,17 @@ def make_page_with_qa(title, tag, question="How do I file?"):
         body=[
             (
                 "questionanswers",
-                [
-                    {
-                        "question": question,
-                        "answer": "<p>Answer</p>",
-                        "anchortag": "1",
-                        "filtertag": tag.slug,
-                    }
-                ],
+                {
+                    "display_filter_section": False,
+                    "questions": [
+                        {
+                            "question": question,
+                            "answer": "<p>Answer</p>",
+                            "anchortag": "1",
+                            "filtertag": tag.slug,
+                        }
+                    ],
+                },
             )
         ],
     )
@@ -133,14 +136,17 @@ class TestUsageAndDeleteProtection:
             [
                 {
                     "type": "questionanswers",
-                    "value": [
-                        {
-                            "question": "Draft only?",
-                            "answer": "<p>x</p>",
-                            "anchortag": "2",
-                            "filtertag": tag.slug,
-                        }
-                    ],
+                    "value": {
+                        "display_filter_section": False,
+                        "questions": [
+                            {
+                                "question": "Draft only?",
+                                "answer": "<p>x</p>",
+                                "anchortag": "2",
+                                "filtertag": tag.slug,
+                            }
+                        ],
+                    },
                 }
             ]
         )

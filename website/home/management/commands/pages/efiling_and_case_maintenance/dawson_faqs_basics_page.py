@@ -94,7 +94,10 @@ class DawsonFaqsBasicsPageInitializer(PageInitializer):
         page.search_description = "DAWSON: The Basics"
         page.body = [
             {"type": "h2", "value": "DAWSON: The Basics"},
-            {"type": "questionanswers", "value": questions},
+            {
+                "type": "questionanswers",
+                "value": {"display_filter_section": False, "questions": questions},
+            },
         ]
         page.save_revision().publish()
         logger.info(f"Updated the '{title}' page.")

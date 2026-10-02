@@ -7,16 +7,42 @@ from home.management.commands.pages.rules_and_guidance.side_card_seed_data impor
 )
 from home.models import NavigationRibbon
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
-from home.models.snippets.call_to_action import CallToActionBox
+from home.models.snippets.faq_filter_tag import FAQFilterTag
 import logging
 from home.models.utils.execute_script import ExecuteScript
 
 
 logger = logging.getLogger(__name__)
 
+# Placeholder Q&As until final FAQ content is provided. Every seeded FilterTag is
+# used, some more than once, and their first appearances follow the mockup's
+# button order: Filing, Deadlines, Representation, Forms & Documents,
+# Trial Process, Fees & Costs, After Decision.
+PLACEHOLDER_ANSWER = (
+    "<p>Placeholder answer. Final content for this question will be added in a "
+    "future update.</p>"
+)
+PLACEHOLDER_QUESTIONS = [
+    (
+        "filing",
+        "how-do-i-file",
+        "How do I file a petition with the United States Tax Court?",
+    ),
+    ("deadlines", "petition-deadline", "What is the deadline to file a petition?"),
+    ("deadlines", "missed-deadline", "What happens if I miss the deadline?"),
+    ("filing", "small-tax-case", "What is a small tax case?"),
+    ("representation", "represent-myself", "Can I represent myself in Tax Court?"),
+    ("representation", "legal-help", "Can I get legal help?"),
+    ("forms-documents", "forms-needed", "What forms do I need to file a petition?"),
+    ("trial-process", "trial-location", "Where will my trial be held?"),
+    ("trial-process", "settle-case", "Can I settle my case without going to trial?"),
+    ("fees-costs", "filing-fee", "How much does it cost to file a petition?"),
+    ("after-decision", "appeal-decision", "Can I appeal a Tax Court decision?"),
+]
+
 
 class PetitionersHelpPageInitializer(PageInitializer):
-    COMMAND_NAME = "Initialize Petitioners Help page"
+    COMMAND_NAME = "WAG-1343: Add FAQs with filter section to Petitioners Help page"
 
     def __init__(self):
         super().__init__()
@@ -38,12 +64,10 @@ class PetitionersHelpPageInitializer(PageInitializer):
             name="Guidance for Petitioners Ribbon"
         ).first()
 
-        _snippet_name = "Ready to begin your petition?"
-        _cta_box = CallToActionBox.objects.filter(header=_snippet_name).first()
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=self.title,
-                call_to_action=_cta_box,
+                body=self.build_body(),
                 slug=self.slug,
                 seo_title=self.title,
                 navigation_ribbon=navigation_ribbon,
@@ -60,6 +84,32 @@ class PetitionersHelpPageInitializer(PageInitializer):
         new_page.save_revision().publish()
 
         logger.info(f"Created the '{self.title}' page.")
+
+    def build_body(self):
+        live_slugs = set(
+            FAQFilterTag.objects.filter(live=True).values_list("slug", flat=True)
+        )
+        questions = []
+        for slug, anchortag, question in PLACEHOLDER_QUESTIONS:
+            if slug not in live_slugs:
+                logger.warning(
+                    f"FAQ FilterTag '{slug}' not found; skipping '{question}'."
+                )
+                continue
+            questions.append(
+                {
+                    "question": question,
+                    "answer": PLACEHOLDER_ANSWER,
+                    "anchortag": anchortag,
+                    "filtertag": slug,
+                }
+            )
+        return [
+            {
+                "type": "questionanswers",
+                "value": {"display_filter_section": True, "questions": questions},
+            }
+        ]
 
     def update(self):
         """Delete and recreate the Petitioners Help page.
