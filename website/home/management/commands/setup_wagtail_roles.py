@@ -21,6 +21,7 @@ from home.models import (
     NewsItem,
     Banner,
 )
+from search.models.definitionsQuery import DefinitionsQuery
 
 
 class Command(BaseCommand):
@@ -233,6 +234,7 @@ class Command(BaseCommand):
         # Set up snippet permissions and workflow
         self.setup_snippet_permissions()
         self.setup_snippet_workflow()
+        self.setup_report_permissions()
 
     def setup_snippet_permissions(self):
         """Set up snippet permissions for Editor and Moderator groups."""
@@ -472,3 +474,41 @@ class Command(BaseCommand):
         self.stdout.write(
             f"✅ Chief Judge Moderator workflow: Judge* models already assigned to '{workflow_name}'"
         )
+
+    def setup_report_permissions(self):
+        """Assign report view permissions to Editors, Moderators, and Administrators."""
+        self.stdout.write("\n" + "=" * 70)
+        self.stdout.write(self.style.SUCCESS("SETTING UP REPORT PERMISSIONS"))
+
+        reports_permissions = [
+            (NewsItem, "view_newsitem"),
+            (DefinitionsQuery, "view_definitionsquery"),
+        ]
+
+        target_groups = ["Editors", "Moderators", "Administrators"]
+
+        for group_name in target_groups:
+            try:
+                group = Group.objects.get(name=group_name)
+            except Group.DoesNotExist:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"⚠️ Group '{group_name}' not found - skipping report permissions"
+                    )
+                )
+                continue
+
+            for model, codename in reports_permissions:
+                content_type = ContentType.objects.get_for_model(model)
+                try:
+                    perm = Permission.objects.get(
+                        content_type=content_type, codename=codename
+                    )
+                    group.permissions.add(perm)
+                    self.stdout.write(
+                        self.style.SUCCESS(f"✅ Granted '{codename}' to '{group_name}'")
+                    )
+                except Permission.DoesNotExist:
+                    self.stdout.write(
+                        self.style.WARNING(f"⚠️ Permission '{codename}' not found")
+                    )
