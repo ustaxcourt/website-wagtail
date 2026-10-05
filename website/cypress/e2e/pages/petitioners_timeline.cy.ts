@@ -150,3 +150,93 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
     cy.get('body').should('not.have.class', 'printing-detailed-timeline');
   });
 });
+
+/**
+ * Try to fake-out sessionStorage / history.state with the following scenarios.
+ * 1. Click sections 1 and 3, then Expand All, then Collapse All, then reload. Every section should stay collapsed.
+ * 2. The same sequence, but go Back instead of reloading.
+ * 3. Open and close section 2, click Expand All, then reload. Every section should stay expanded.
+ * 4. Open every section by clicking it, click Collapse All, then reload. The Expand All / Collapse All label should match what's actually open.
+ */
+describe('Process and Timeline Page - Expand All / Collapse All state after reload or Back', () => {
+  const timeline = '#main-content .detailed-timeline-rectangle';
+  const content = `${timeline} .detailed-timeline-accordion-content`;
+  const accordionHeader = `${timeline} .detailed-timeline-accordion-header`;
+  const expandButton = `${timeline} .detailed-timeline-expand-button`;
+
+  const openStates = ($contents: JQuery<HTMLElement>) =>
+    [...$contents].map((el) => !el.classList.contains('hidden'));
+
+  beforeEach(() => {
+    cy.visit('/petitioners-timeline/');
+    cy.get(content).should('have.length.greaterThan', 3);
+  });
+
+  it('keeps sections collapsed after Collapse All and a reload', () => {
+    // Individual clicks write sessionStorage = "true" for sections 1 and 3.
+    cy.get(accordionHeader).eq(1).click();
+    cy.get(accordionHeader).eq(3).click();
+
+    cy.get(expandButton).click(); // Expand All
+    cy.get(expandButton).should('contain', 'Collapse All').click(); // Collapse All
+    cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
+
+    cy.reload();
+
+    cy.get(content).should(($contents) => {
+      expect(openStates($contents).filter(Boolean)).to.have.length(0);
+    });
+  });
+
+  it('keeps sections collapsed after Collapse All and returning with Back', () => {
+    cy.get(accordionHeader).eq(1).click();
+    cy.get(accordionHeader).eq(3).click();
+
+    cy.get(expandButton).click();
+    cy.get(expandButton).should('contain', 'Collapse All').click();
+    cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
+
+    cy.visit('/petitioners-guidance/');
+    cy.go('back');
+
+    cy.get(content).should(($contents) => {
+      expect(openStates($contents).filter(Boolean)).to.have.length(0);
+    });
+  });
+
+  it('keeps every section expanded after Expand All and a reload', () => {
+    // Open then close section 2 individually, so sessionStorage holds "false" for it.
+    cy.get(accordionHeader).eq(2).click();
+    cy.get(accordionHeader).eq(2).click();
+
+    cy.get(expandButton).should('contain', 'Expand All').click();
+    cy.get(content).each(($el) => expect($el).not.to.have.class('hidden'));
+
+    cy.reload();
+
+    cy.get(content).should(($contents) => {
+      expect(openStates($contents).every(Boolean)).to.equal(true);
+    });
+  });
+
+  it('shows a control label that matches the sections after a reload', () => {
+    // Open every section individually so each one has sessionStorage = "true".
+    cy.get(accordionHeader).then(($headers) => {
+      for (let index = 0; index < $headers.length; index += 1) {
+        cy.get(accordionHeader).eq(index).click();
+      }
+    });
+    cy.get(expandButton).should('contain', 'Collapse All').click();
+    cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
+
+    cy.reload();
+
+    // Whichever state wins, the label must agree with it.
+    cy.get(content).then(($contents) => {
+      const allOpen = openStates($contents).every(Boolean);
+      cy.get(expandButton)
+        .should('contain', allOpen ? 'Collapse All' : 'Expand All')
+        .and('have.attr', 'aria-expanded', String(allOpen));
+    });
+  });
+});
