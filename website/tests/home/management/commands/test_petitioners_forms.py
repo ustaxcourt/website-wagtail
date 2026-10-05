@@ -32,7 +32,17 @@ def test_petitioners_forms_body_contains_editable_download_cards():
     ]
 
     buttons = [card["value"]["buttons"][0]["value"] for card in cards]
-    assert [button["text"] for button in buttons] == [form["button"] for form in forms]
+    assert [button["text"] for button in buttons] == [
+        "Download Form 4",
+        "Download Petition Kit",
+        "Download Form 2",
+        "Download Waiver Application",
+        "Download Form 6",
+        "Download Motion Template",
+    ]
+    assert all(card["value"]["color"] == "gray" for card in cards)
+    assert all(button["download"] is True for button in buttons)
+    assert 'href="/dpt-cities"' in cards[5]["value"]["description"]
     assert all(button["icon"] == download_icon.pk for button in buttons)
     assert all(button["icon_location"] == "before" for button in buttons)
     assert all(card["value"]["title_icon"] == article_icon.pk for card in cards)

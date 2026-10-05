@@ -15,23 +15,25 @@ GETTING_STARTED_FORMS = [
         "number": "Form 4",
         "title": "Statement of Taxpayer Identification Number (STIN)",
         "description": (
-            "Complete this form with your taxpayer identification number. "
-            "It is sent to the IRS and is not part of the public case record."
+            "<p>This form is required, regardless of how you file your Petition. "
+            "For security purposes, upload it only when prompted as a separate "
+            "document; the Court will not retain a copy. The STIN is the only "
+            "document you should file with your social security number or EIN.</p>"
+            "<p>The Form 4 is included in the Petition Kit for those filing in mail.</p>"
         ),
-        "button": "Form 4",
+        "button": "Download Form 4",
         "card_id": "05a93f0c-0cb7-42bd-a43c-61363d7784d8",
         "button_id": "5bf7862f-2238-40ef-a9f5-df33c9302be5",
         "link_id": "41e358d1-5873-4637-81f4-da8a33e41d93",
     },
     {
         "key": "petition_kit",
-        "number": "Forms 2, 4 & 5",
+        "number": "Form Collection",
         "title": "Petition Kit",
         "description": (
-            "Use this kit to prepare and file a paper petition. It contains "
-            "the forms needed to start a case."
+            "<p>The Petition Kit includes all the forms you need to start a case by mail.</p>"
         ),
-        "button": "Petition Kit",
+        "button": "Download Petition Kit",
         "card_id": "8a4eb7e5-7b4a-43eb-a01c-c6157642cfbc",
         "button_id": "bc0f8151-e60e-4195-8c7d-fc0b9922ac2e",
         "link_id": "19e3a2ce-3e09-40fb-a4b4-a922fd88e877",
@@ -41,10 +43,11 @@ GETTING_STARTED_FORMS = [
         "number": "Form 2",
         "title": "Petition",
         "description": (
-            "Use Form 2 to ask the United States Tax Court to review an "
-            "IRS determination."
+            "<p>You will need this form only if you plan to upload it as a PDF. "
+            "You do not need it if you file using the petition generator. Form 2 "
+            "is included in the petition kit for those filing by mail.</p>"
         ),
-        "button": "Form 2",
+        "button": "Download Form 2",
         "card_id": "a19a1956-01c9-4ca7-8fae-616224566696",
         "button_id": "a0c61387-e4bd-4999-90ca-b4cb07274070",
         "link_id": "e06a88ba-1704-481e-a2da-419ea9d88f56",
@@ -54,14 +57,14 @@ GETTING_STARTED_FORMS = [
 SPECIAL_CIRCUMSTANCES_FORMS = [
     {
         "key": "fee_waiver",
-        "number": "",
+        "number": "Form",
         "title": "Application for Waiver of Filing Fee",
         "description": (
-            "Request a waiver of the filing fee if you are unable to pay. "
-            "The application requires financial information and a signature "
-            "under penalty of perjury."
+            "<p>File this form if you cannot afford the $60 filing fee only after "
+            "your petition has been served, and would like to request a waiver "
+            "based on demonstrated financial need.</p>"
         ),
-        "button": "Waiver Application",
+        "button": "Download Waiver Application",
         "card_id": "52a76785-108e-4a83-8977-6a5d2cb5d42c",
         "button_id": "e65d1867-56ab-4ae9-b9d6-635ec641470a",
         "link_id": "c3262764-4997-4304-8b2e-7ecf08aa0503",
@@ -70,21 +73,27 @@ SPECIAL_CIRCUMSTANCES_FORMS = [
         "key": "corporate_disclosure",
         "number": "Form 6",
         "title": "Corporate Disclosure Statement",
-        "description": "Complete this form only if you are filing on behalf of a company.",
-        "button": "Form 6",
+        "description": (
+            "<p>This form must accompany a petition filed by an entity to identify "
+            "any parent corporation or publicly held corporation owning 10% or more "
+            "of the entity\u2019s stock. If the entity has none, fill out the form "
+            "accordingly.</p>"
+        ),
+        "button": "Download Form 6",
         "card_id": "a0b1dc9b-ce1d-498a-8af4-24c4ed75a4e3",
         "button_id": "a8d444e6-6a02-47ca-b482-0f87c9540a98",
         "link_id": "f198d580-1211-4507-910c-a0c385d9dadc",
     },
     {
         "key": "remote_motion",
-        "number": "",
+        "number": "Form",
         "title": "Motion to Proceed Remotely",
         "description": (
-            "File this motion to ask to participate in a trial session remotely. "
-            "The judge decides whether to grant the request."
+            "<p>File this form to request a remote trial only after your petition "
+            "has been served. Even if you request a remote proceeding you must still "
+            '<a href="/dpt-cities">pick a place of trial</a>.</p>'
         ),
-        "button": "Motion Template",
+        "button": "Download Motion Template",
         "card_id": "b6b7fdb5-1d49-4caa-9944-b8095f24a91e",
         "button_id": "eeb99465-3194-47aa-9c8d-e593ec1f7843",
         "link_id": "97d476b2-c767-42b5-af20-139430044343",
@@ -142,14 +151,14 @@ class PetitionersFormsPageInitializer(PageInitializer):
         return {
             "type": "item",
             "value": {
-                "color": "white",
+                "color": "gray",
                 "numbered_icon": "",
                 "numbered_icon_alignment": "left",
                 "title_icon": article_icon.pk,
                 "title_icon_alt_text": "",
                 "subtitle": form["number"],
                 "title": form["title"],
-                "description": f"<p>{form['description']}</p>",
+                "description": form["description"],
                 "buttons": [
                     {
                         "type": "item",
@@ -167,6 +176,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
                             "style": "primary",
                             "button_hover": True,
                             "helper_text": "",
+                            "download": True,
                         },
                         "id": form["button_id"],
                     }
@@ -185,8 +195,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
             {
                 "type": "paragraph",
                 "value": (
-                    "Use these forms to prepare and file a petition with the "
-                    "United States Tax Court."
+                    "Download one of the following based on your chosen to file method."
                 ),
                 "id": "4d04948e-e56b-4cd7-ab54-30dfc22098ec",
             },
@@ -206,9 +215,10 @@ class PetitionersFormsPageInitializer(PageInitializer):
             {
                 "type": "paragraph",
                 "value": (
-                    "Use these forms when they apply to your case. Review "
-                    '<a href="/files/documents/rule-50.pdf">Rule 50, General Requirements</a> '
-                    "before filing."
+                    "Download one of the following based on your situation. Most "
+                    "motions do not require a specific form ("
+                    '<a href="/files/documents/rule-50.pdf">'
+                    "TITLE V. MOTIONS RULE 50. GENERAL REQUIREMENTS</a>)."
                 ),
                 "id": "9ed4dbd5-b712-4f1e-8dc4-1b3bfa246d60",
             },
@@ -223,8 +233,12 @@ class PetitionersFormsPageInitializer(PageInitializer):
             {
                 "type": "callout",
                 "value": {
-                    "heading": "Helpful Tip",
-                    "text": "<p>Review each form's instructions before completing it, and keep a copy for your records.</p>",
+                    "heading": "Note:",
+                    "text": (
+                        "<p>Most forms are fillable PDFs. You can type your information "
+                        "directly into the form before printing, or you can print the "
+                        "forms and write clearly in black or blue ink.</p>"
+                    ),
                     "callout_type": "info",
                 },
                 "id": "db314192-839f-4fc1-8679-1d2fb2ef7c7f",

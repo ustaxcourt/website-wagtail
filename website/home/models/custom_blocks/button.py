@@ -109,6 +109,19 @@ class ButtonBlock(blocks.StructBlock):
         value_class = IsIconSvgWithWhiteFillStructValue
 
 
+class CardButtonBlock(ButtonBlock):
+    download = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Download the linked file instead of opening it in the browser (internal PDFs only).",
+    )
+
+    class Meta:
+        icon = "placeholder"
+        label = "Button"
+        value_class = IsIconSvgWithWhiteFillStructValue
+
+
 class SideCardLinkBlock(blocks.StructBlock):
     """
     A link entry for SideCard.links (WAG-1339). Unlike ButtonBlock, icon is a
