@@ -287,19 +287,11 @@
             gap: 24px;
         }
 
-        .detailed-timeline-control-button {
+        .detailed-timeline-controls .detailed-timeline-control-button {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background-color: var(--color-white);
-            border: 1px solid var(--color-primary);
-            border-radius: 4px;
-            color: var(--color-primary);
-            font: inherit;
-            font-size: 16px;
             white-space: nowrap;
-            cursor: pointer;
         }
 
         .detailed-timeline-print-button-icon {
@@ -447,13 +439,13 @@
         </div>
         <div class="detailed-timeline-controls">
             <button type="button"
-                    class="detailed-timeline-control-button detailed-timeline-expand-button"
+                    class="usa-button usa-button--outline detailed-timeline-control-button detailed-timeline-expand-button"
                     aria-expanded="false">
                 <span class="detailed-timeline-expand-button-icon" aria-hidden="true"></span>
                 <span class="detailed-timeline-expand-button-label">Expand All</span>
             </button>
             <button type="button"
-                    class="detailed-timeline-control-button detailed-timeline-print-button">
+                    class="usa-button usa-button--outline detailed-timeline-control-button detailed-timeline-print-button">
                 <span class="detailed-timeline-print-button-icon" aria-hidden="true"></span>
                 Print Detailed Timeline
             </button>
@@ -477,6 +469,21 @@
         if (!expandButton || !button || button.dataset.initialized === "true") return;
         let printHost = null;
 
+        // Single source of truth for persisted accordion state. Individual
+        // accordion clicks used to save to sessionStorage per-accordion while
+        // Expand All/Collapse All saved to history.state; those two stores
+        // could disagree, and since each accordion's own script applied its
+        // sessionStorage value on DOMContentLoaded - after this script's
+        // restore already ran at parse time - the per-accordion value always
+        // won, silently undoing Expand All/Collapse All on reload/back.
+        // Keeping one key, written and read only here, removes that race.
+        const storageKey = "detailed-timeline:" + window.location.pathname + ":" + timeline.id;
+
+        function getNavigationType() {
+            const entry = performance.getEntriesByType("navigation")[0];
+            return entry ? entry.type : "navigate";
+        }
+
         function setAccordionExpanded(accordion, isExpanded) {
             const content = accordion.querySelector(".detailed-timeline-accordion-content");
             const header = accordion.querySelector(".detailed-timeline-accordion-header");
@@ -498,28 +505,34 @@
             ).map(function(content) {
                 return !content.classList.contains("hidden");
             });
-            const currentState = window.history.state;
-            const historyState = currentState && typeof currentState === "object"
-                ? currentState
-                : {};
-
-            window.history.replaceState(
-                {
-                    ...historyState,
-                    detailedTimelineStates: {
-                        ...historyState.detailedTimelineStates,
-                        [timeline.id]: states,
-                    },
-                },
-                "",
-                window.location.href
-            );
+            try {
+                sessionStorage.setItem(storageKey, JSON.stringify(states));
+            } catch (e) {
+                // Storage unavailable (e.g. blocked); state just won't persist.
+            }
         }
 
         function restoreAccordionState() {
-            const savedStates = window.history.state
-                && window.history.state.detailedTimelineStates
-                && window.history.state.detailedTimelineStates[timeline.id];
+            const navigationType = getNavigationType();
+            if (navigationType !== "back_forward" && navigationType !== "reload") {
+                // Saved state is only restored on back/forward or reload; a
+                // fresh visit starts from the template-rendered defaults.
+                try {
+                    sessionStorage.removeItem(storageKey);
+                } catch (e) {
+                    // Storage unavailable; nothing to clear.
+                }
+                return;
+            }
+
+            let savedStates = null;
+            try {
+                const raw = sessionStorage.getItem(storageKey);
+                savedStates = raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                savedStates = null;
+            }
+
             const accordions = Array.from(
                 timeline.querySelectorAll(".detailed-timeline-accordion-block")
             );

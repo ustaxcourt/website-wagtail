@@ -9,7 +9,7 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
   const printHost = '.detailed-timeline-print-host';
 
   const openStates = ($contents: JQuery<HTMLElement>) =>
-    [...$contents].map((el) => !el.classList.contains('hidden'));
+    Array.from($contents).map((el) => !el.classList.contains('hidden'));
 
   beforeEach(() => {
     cy.visit('/petitioners-timeline/');
@@ -165,7 +165,7 @@ describe('Process and Timeline Page - Expand All / Collapse All state after relo
   const expandButton = `${timeline} .detailed-timeline-expand-button`;
 
   const openStates = ($contents: JQuery<HTMLElement>) =>
-    [...$contents].map((el) => !el.classList.contains('hidden'));
+    Array.from($contents).map((el) => !el.classList.contains('hidden'));
 
   beforeEach(() => {
     cy.visit('/petitioners-timeline/');
