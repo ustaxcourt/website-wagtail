@@ -5,12 +5,19 @@ from wagtail import blocks
 from django.utils.translation import gettext_lazy as _
 from wagtail.blocks.struct_block import StructBlockAdapter
 from wagtail.telepath import register
+# from home.models.custom_blocks.question_answer_block import QuestionAnswerBlock
 
 
 class ImportExportBlock(blocks.StructBlock):
     def __init__(self, local_blocks=None, file_type_filter="", **kwargs):
         super().__init__(local_blocks, **kwargs)
         self.accept = file_type_filter
+
+    # questions = blocks.ListBlock(
+    #     QuestionAnswerBlock(),
+    #     label="Questions",
+    #     help_text="Add a question and answer. Link the anchor tag number. Select the FAQ FilterTag type in the dropdown.",
+    # )
 
     class Meta:
         form_template = "import_export_block_form.html"

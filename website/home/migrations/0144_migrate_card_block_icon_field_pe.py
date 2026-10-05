@@ -72,7 +72,11 @@ def migrate_card_icon_field(apps, schema_editor):
         if isinstance(value, list):
             return [walk(item) for item in value]
         if isinstance(value, dict):
+            if value.get("type") == "card":
+                print("value's type is card")
+                print(value)
             if value.get("type") == "card" and isinstance(value.get("value"), list):
+                print("Updating value's value...")
                 value = dict(value)
                 value["value"] = [migrate_card_value(card) for card in value["value"]]
                 return value
@@ -89,6 +93,7 @@ def migrate_card_icon_field(apps, schema_editor):
         rows = cursor.fetchall()
 
     for page_id, raw_body in rows:
+        print(f"Working page {page_id}...")
         data = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
         migrated = walk(copy.deepcopy(data))
         if migrated != data:

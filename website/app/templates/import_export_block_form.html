@@ -1,24 +1,28 @@
 {% load wagtailadmin_tags %}
 <div class="{{ classname }} import-export-block">
     {% if help_text %}
+        <span>
             <div class="help">
                 {% icon name="help" classname="default" %}
                 {{ help_text }}
             </div>
+        </span>
     {% endif %}
-
-    <div class="w-field" data-field>
-        {# -- Begin custom code for file input and instructions -- #}
-        <div class="import-export-block-fileinput-container">
-            <input type="file"
-                    id="{{ prefix }}-fileinput"
-                    class="import-export-block-fileinput"
-                    {% if accept %}accept="{{ accept }}"{% endif %} />
-            <span class="help">{{ instructions }}</span>
-            <button type="button">
-                Export Data
-            </button>
+    {# {% for child in children.values %} #}
+        <div class="w-field" data-field data-contentpath="{{ child.block.name }}">
+            {# -- Begin custom code for file input and instructions -- #}
+            <div class="import-export-block-fileinput-container">
+                <input type="file"
+                       id="{{ prefix }}-fileinput"
+                       class="import-export-block-fileinput"
+                       {% if accept %}accept="{{ accept }}"{% endif %} />
+                <span class="help">{{ instructions }}</span>
+                <button type="button">
+                    Export Data
+                </button>
+            </div>
+            {# {{ child.render_form }} #}
+            {# -- End custom code -- #}
         </div>
-        {# -- End custom code -- #}
-    </div>
+    {# {% endfor %} #}
 </div>

@@ -2,22 +2,11 @@ from functools import cached_property
 
 from wagtail import blocks
 from home.models.custom_blocks.import_export_block import ImportExportBlock
+from home.models.custom_blocks.question_answer_block import QuestionAnswerBlock
 
 from home.models.snippets.faq_filter_tag import (
     FAQFilterTag,
-    get_faq_filter_tag_choices,
 )
-
-
-class QuestionAnswerBlock(blocks.StructBlock):
-    question = blocks.CharBlock(required=False)
-    answer = blocks.RichTextBlock()
-    anchortag = blocks.CharBlock()
-    filtertag = blocks.ChoiceBlock(
-        choices=get_faq_filter_tag_choices,
-        required=True,
-        label="FilterTag",
-    )
 
 
 class QuestionAnswersValue(blocks.StructValue):
