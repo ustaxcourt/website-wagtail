@@ -185,7 +185,7 @@ def _normalize_header(name):
 def _read_rows(text):
     """Return ``(spreadsheet row number, row dict)`` pairs, skipping blank rows."""
     try:
-        reader = csv.reader(io.StringIO(text, newline=""))
+        reader = csv.reader(io.StringIO(text, newline=""), strict=True)
         header = next(reader, None)
         if not header or not any(cell.strip() for cell in header):
             raise FAQCSVError(["The file is empty."])
