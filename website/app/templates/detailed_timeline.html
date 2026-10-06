@@ -469,19 +469,33 @@
         if (!expandButton || !button || button.dataset.initialized === "true") return;
         let printHost = null;
 
-        // Single source of truth for persisted accordion state. Individual
-        // accordion clicks used to save to sessionStorage per-accordion while
-        // Expand All/Collapse All saved to history.state; those two stores
-        // could disagree, and since each accordion's own script applied its
-        // sessionStorage value on DOMContentLoaded - after this script's
-        // restore already ran at parse time - the per-accordion value always
-        // won, silently undoing Expand All/Collapse All on reload/back.
-        // Keeping one key, written and read only here, removes that race.
-        const storageKey = "detailed-timeline:" + window.location.pathname + ":" + timeline.id;
+        // Accordion state is saved per history entry: each entry gets an id in
+        // history.state, and sessionStorage is keyed by that id. A fresh visit
+        // has no id yet and starts from the defaults; Back/Forward/reload get
+        // back the entry's own id, so they restore that visit's state rather
+        // than whichever visit to this page saved last.
+        const historyEntryIdKey = "detailedTimelineEntryId";
 
-        function getNavigationType() {
-            const entry = performance.getEntriesByType("navigation")[0];
-            return entry ? entry.type : "navigate";
+        function getHistoryEntryId() {
+            const state = history.state;
+            return state && typeof state === "object" ? state[historyEntryIdKey] || null : null;
+        }
+
+        function ensureHistoryEntryId() {
+            let entryId = getHistoryEntryId();
+            if (entryId) return entryId;
+            entryId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+            const state = history.state && typeof history.state === "object" ? history.state : {};
+            try {
+                history.replaceState(Object.assign({}, state, { [historyEntryIdKey]: entryId }), "");
+            } catch (e) {
+                return null;
+            }
+            return entryId;
+        }
+
+        function getStorageKey(entryId) {
+            return "detailed-timeline:" + entryId + ":" + timeline.id;
         }
 
         function setAccordionExpanded(accordion, isExpanded) {
@@ -500,34 +514,27 @@
         }
 
         function saveAccordionState() {
+            const entryId = ensureHistoryEntryId();
+            if (!entryId) return;
             const states = Array.from(
                 timeline.querySelectorAll(".detailed-timeline-accordion-content")
             ).map(function(content) {
                 return !content.classList.contains("hidden");
             });
             try {
-                sessionStorage.setItem(storageKey, JSON.stringify(states));
+                sessionStorage.setItem(getStorageKey(entryId), JSON.stringify(states));
             } catch (e) {
                 // Storage unavailable (e.g. blocked); state just won't persist.
             }
         }
 
         function restoreAccordionState() {
-            const navigationType = getNavigationType();
-            if (navigationType !== "back_forward" && navigationType !== "reload") {
-                // Saved state is only restored on back/forward or reload; a
-                // fresh visit starts from the template-rendered defaults.
-                try {
-                    sessionStorage.removeItem(storageKey);
-                } catch (e) {
-                    // Storage unavailable; nothing to clear.
-                }
-                return;
-            }
+            const entryId = getHistoryEntryId();
+            if (!entryId) return;
 
             let savedStates = null;
             try {
-                const raw = sessionStorage.getItem(storageKey);
+                const raw = sessionStorage.getItem(getStorageKey(entryId));
                 savedStates = raw ? JSON.parse(raw) : null;
             } catch (e) {
                 savedStates = null;
