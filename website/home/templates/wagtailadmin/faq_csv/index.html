@@ -6,14 +6,19 @@
         Uploads are saved as a draft and are not published. Questions can still be edited one at a time in the page editor.
     </p>
     <p>
-        Columns: {% for column in columns %}
-        <code>{{ column }}</code>
-        {% if column not in required_columns %}(optional){% endif %}
-        {% if not forloop.last %},{% endif %}
-{% endfor %}.
-FilterTags use their display name. A blank <code>anchortag</code> is generated from the question.
-Answers may be plain text (a blank line starts a new paragraph) or HTML, e.g. <code>&lt;a href="https://example.com"&gt;link&lt;/a&gt;</code>.
-</p>
+        Columns:
+        {% for column in columns %}
+            <code>{{ column }}</code>
+            {% if column not in required_columns %}(optional){% endif %}
+            {% if not forloop.last %},{% endif %}
+        {% endfor %}.
+    </p>
+    <ul>
+        <li>Questions must be plain text.</li>
+        <li>Answers may be plain text (a blank line starts a new paragraph) or HTML, e.g. <code>&lt;a href="https://example.com"&gt;link&lt;/a&gt;</code>.</li>
+        <li>FilterTags use their display name and are case insensitive. The list of FilterTags can be found <a href="{% url 'wagtailsnippets_home_faqfiltertag:list' %}">here</a>.</li>
+        <li>An anchortag is generated from the question if one is not provided during import.</li>
+    </ul>
 {% if lock_message %}
     <div class="help-block help-warning">
         {% icon name="warning" %}
@@ -84,7 +89,7 @@ Answers may be plain text (a blank line starts a new paragraph) or HTML, e.g. <c
 {% endif %}
 {% if not lock_message %}
     <h2>Add a new FAQ section from CSV</h2>
-    <p>The new section is added at the end of the page body. Move it in the page editor if needed.</p>
+    <p>The new FAQ section is added at the end of the page body. Move it in the page editor if needed.</p>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <p>
