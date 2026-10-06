@@ -240,3 +240,52 @@ describe('Process and Timeline Page - Expand All / Collapse All state after relo
     });
   });
 });
+
+describe('Process and Timeline Page - accordion state per history entry', () => {
+  const timeline = '#main-content .detailed-timeline-rectangle';
+  const content = `${timeline} .detailed-timeline-accordion-content`;
+  const accordionHeader = `${timeline} .detailed-timeline-accordion-header`;
+
+  const openStates = ($contents: JQuery<HTMLElement>) =>
+    Array.from($contents).map((el) => !el.classList.contains('hidden'));
+
+  it('restores the state of the visit being returned to, not a later visit to the same page', () => {
+    // First visit: open phase 1.
+    cy.visit('/petitioners-timeline/');
+    cy.get(accordionHeader).eq(1).click();
+    cy.get(content).eq(1).should('not.have.class', 'hidden');
+
+    // Leave, then come back with a fresh visit (not Back) and open phase 3 instead.
+    cy.visit('/petitioners-guidance/');
+    cy.visit('/petitioners-timeline/');
+    cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
+    cy.get(accordionHeader).eq(3).click();
+    cy.get(content).eq(3).should('not.have.class', 'hidden');
+
+    // Back twice lands on the first visit, which had only phase 1 open.
+    cy.go('back');
+    cy.location('pathname').should('eq', '/petitioners-guidance/');
+    cy.go('back');
+    cy.location('pathname').should('eq', '/petitioners-timeline/');
+
+    cy.get(content).should(($contents) => {
+      const open = openStates($contents);
+      expect(open[1], 'phase 1 open').to.equal(true);
+      expect(open[3], 'phase 3 open').to.equal(false);
+      expect(open.filter(Boolean)).to.have.length(1);
+    });
+
+    // Forward twice lands on the second visit, which had only phase 3 open.
+    cy.go('forward');
+    cy.location('pathname').should('eq', '/petitioners-guidance/');
+    cy.go('forward');
+    cy.location('pathname').should('eq', '/petitioners-timeline/');
+
+    cy.get(content).should(($contents) => {
+      const open = openStates($contents);
+      expect(open[1], 'phase 1 open').to.equal(false);
+      expect(open[3], 'phase 3 open').to.equal(true);
+      expect(open.filter(Boolean)).to.have.length(1);
+    });
+  });
+});
