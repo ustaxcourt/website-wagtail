@@ -18,6 +18,7 @@ more than one of these can share a page.
                                name="{{ faq_id }}-filter"
                                value=""
                                checked
+                               autocomplete="off"
                                data-faq-filter>
                         <span class="faq__filter-label">All</span>
                     </label>
@@ -27,6 +28,7 @@ more than one of these can share a page.
                                    type="radio"
                                    name="{{ faq_id }}-filter"
                                    value="{{ slug }}"
+                                   autocomplete="off"
                                    data-faq-filter>
                             <span class="faq__filter-label">{{ name }}</span>
                         </label>
