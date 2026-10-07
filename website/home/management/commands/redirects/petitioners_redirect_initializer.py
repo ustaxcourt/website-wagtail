@@ -19,9 +19,13 @@ class PetitionersRedirectInitializer:
             total += 1
 
             try:
-                if Redirect.objects.filter(old_path=from_link).exists():
+                if Redirect.objects.filter(
+                    old_path=from_link, site=config["site"]
+                ).exists():
                     successes += 1
-                    logger.info(f"- Redirect from '{from_link}' already exists.")
+                    logger.info(
+                        f"- Redirect from '{from_link}' for site '{config['site']}' already exists."
+                    )
                     continue
 
                 Redirect.objects.create(
