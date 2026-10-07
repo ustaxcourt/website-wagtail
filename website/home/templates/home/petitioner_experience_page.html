@@ -80,6 +80,15 @@
             font-size: 16px;
         }
 
+        /* 32px between a card's text and its button: 16px card gap + 16px here. */
+        .petitioners-forms-page .info-card__buttons {
+            padding-top: 16px;
+        }
+
+        .petitioners-forms-page .info-card .description > :last-child {
+            margin-bottom: 0;
+        }
+
         @media (min-width: 769px) {
             .petitioners-forms-page .info-cards {
                 gap: 48px;
@@ -102,7 +111,6 @@
 
             .petitioners-forms-page .info-card {
                 box-sizing: border-box;
-                min-height: 386px;
             }
 
             .petitioners-forms-page .info-cards + h2 {
