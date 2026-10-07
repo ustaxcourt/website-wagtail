@@ -89,10 +89,9 @@
             margin-bottom: 0;
         }
 
-        @media (min-width: 769px) {
-            .petitioners-forms-page .info-cards {
-                gap: 48px;
-            }
+        /* Keep the card icon at the top so long titles don't push it (and the subtitle) down. */
+        .petitioners-forms-page .info-card .card-header {
+            align-items: flex-start;
         }
 
         @media (min-width: 1025px) {
