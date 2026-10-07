@@ -1,0 +1,516 @@
+.summary-timeline-rectangle {
+    width: 100%;
+    background-color: #E8F0FE;
+    border-radius: 10px;
+    margin: 32px 0;
+    padding: 0 24px 0 0;
+    display: grid;
+    grid-template-columns: min-content auto;
+}
+
+.summary-timeline-title-block {
+    color: var(--color-navy);
+    font-size: 16px;
+    font-weight: bold;
+    margin: 16px 16px 16px 24px;
+    white-space: nowrap;
+}
+
+.summary-timeline-phases-block {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 0 8px;
+}
+
+.summary-timeline-phase-content {
+    border-radius: 8px;
+    border: 1px solid rgb(0 94 162 / 30%);
+    background-color: var(--color-white);
+    margin: 8px 0;
+    padding: 8px;
+}
+
+.summary-timeline-rectangle .svg-icon {
+    background-color: var(--color-navy);
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    mask: url('/static/uswds/img/usa-icons/arrow_forward.svg') center / contain no-repeat;
+    -webkit-mask: url('/static/uswds/img/usa-icons/arrow_forward.svg') center / contain no-repeat;
+}
+
+.detailed-timeline-title-block > h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.detailed-timeline-phase {
+    margin: 32px 0;
+    position: relative;
+}
+
+.detailed-timeline-accordion-block {
+    word-wrap: break-word;
+    border: 1px solid var(--theme-color-base-lighter);
+    border-radius: 4px;
+}
+
+.detailed-timeline-accordion-block hr {
+    margin: 16px 0;
+}
+
+.detailed-timeline-accordion-title {
+    width: 100%;
+    color: var(--color-primary);
+    cursor: pointer;
+    margin: 0;
+    padding: 16px 24px;
+    font-size: 20px;
+}
+
+.detailed-timeline-accordion-title:focus:not(:focus-visible),
+.detailed-timeline-accordion-title:focus-within:not(:focus-visible) {
+    outline: none;
+}
+
+.detailed-timeline-accordion-title.active {
+    color: black;
+}
+
+.detailed-timeline-accordion-icon {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    flex-shrink: 0;
+    align-content: center;
+    text-align: center;
+    grid-column: 2;
+    grid-row: 1;
+    transition: transform 0.3s ease;
+}
+
+.detailed-timeline-accordion-icon.active {
+    background-color: var(--color-white);
+}
+
+.detailed-timeline-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: var(--theme-color-base-lightest);
+}
+
+.detailed-timeline-accordion-header:focus:not(:focus-visible),
+.detailed-timeline-accordion-header:focus-within:not(:focus-visible) {
+    outline: none;
+}
+
+.detailed-timeline-accordion-header.active {
+    background-color: white;
+}
+
+.detailed-timeline-accordion-header:hover {
+    cursor: pointer;
+}
+
+.detailed-timeline-accordion-header p {
+    color: var(--color-primary);
+}
+
+.detailed-timeline-accordion-content {
+    padding: 0 24px;
+    width: 100%;
+}
+
+.detailed-timeline-accordion-content.hidden {
+    display: none;
+}
+
+.detailed-timeline-accordion-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.detailed-timeline-accordion-header-button {
+    background: none;
+    color: #1b1b1b;
+    border: none;
+    font: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+
+.detailed-timeline-accordion-header-button:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.detailed-timeline-accordion-header-button.active {
+    color: black;
+}
+
+.detailed-timeline-accordion-header-text {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.detailed-timeline-accordion-header-date-range {
+    font-size: 16px;
+    font-weight: normal;
+    grid-column: 1 / 2;
+    grid-row: 2;
+    display: flex;
+    align-items: normal;
+    gap: 4px;
+}
+
+.detailed-timeline-accordion-header-date-range-icon {
+    font-size: 16px;
+    color: var(--color-secondary);
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 16;
+    padding: 4px 0 0;
+}
+
+.detailed-timeline-accordion-content p,
+.detailed-timeline-accordion-content ul {
+    font-size: 16px;
+}
+
+.detailed-timeline-accordion-content > ul:not(.checkbox-list-with-subtext) {
+    padding-inline-start: inherit;
+    font-size: 16px;
+}
+
+.detailed-timeline-accordion-content > .detailed-timeline-accordion-content-your-tasks-items > .checkbox-list-with-subtext > li {
+    padding: 0;
+}
+
+.detailed-timeline-accordion-content > .detailed-timeline-accordion-content-your-tasks-items > .checkbox-list-with-subtext > li p {
+    font-size: 16px;
+}
+
+.detailed-timeline-accordion-content > .detailed-timeline-accordion-content-your-tasks-items > .checkbox-list-with-subtext > li .list-item-content {
+    gap: 0;
+}
+
+.detailed-timeline-accordion-content > .detailed-timeline-accordion-content-your-tasks-items > .checkbox-list-with-subtext > li.has-subtext {
+    background-color: white;
+    border-left: 0;
+}
+
+.detailed-timeline-accordion-content .detailed-timeline-rich-text ol {
+    list-style-type: decimal;
+}
+
+.detailed-timeline-rich-text img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.detailed-timeline-accordion-content .detailed-timeline-rich-text:last-child p:last-child {
+    margin-bottom: 0;
+}
+
+.detailed-timeline-accordion-content a {
+    text-decoration: underline;
+    font-weight: normal;
+    color: black;
+}
+
+.detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
+    color: inherit;
+}
+
+.detailed-timeline-accordion-content-your-tasks {
+    display: flex;
+    align-items: normal;
+    gap: 4px;
+    font-weight: 600;
+    padding: 0 0 16px;
+    font-size: 16px;
+}
+
+.detailed-timeline-accordion-content-your-tasks-icon {
+    font-size: 16px;
+    padding: 2px 0 0;
+}
+
+.detailed-timeline-accordion-content-your-tasks-items a {
+    color: inherit;
+    font-weight: inherit;
+}
+
+.detailed-timeline-accordion-content-helpful-information-header {
+    display: flex;
+    align-items: normal;
+    gap: 4px;
+    font-weight: 600;
+    padding: 0 0 8px;
+    font-size: 16px;
+}
+
+.detailed-timeline-accordion-content-helpful-information-header-icon {
+    font-size: 16px;
+    color: var(--color-secondary);
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 16;
+    padding: 2px 0 0;
+}
+
+.detailed-timeline-accordion-content-helpful-information-items {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 4px;
+    align-items: normal;
+    padding: 8px 0 0;
+    font-size: 16px;
+}
+
+.detailed-timeline-accordion-content-helpful-information-item-icon {
+    font-size: 16px;
+    grid-column: 1;
+    grid-row: 1;
+    padding: 2px 0 0;
+}
+
+.detailed-timeline-accordion-content-helpful-information-item-infotext {
+    font-size: 16px;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.detailed-timeline-accordion-content-helpful-information-item-infotext:not(.last-item-no-subtext) > p {
+    margin-top: revert;
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.detailed-timeline-accordion-content-helpful-information-item-infosubtext {
+    font-size: 16px;
+    grid-column: 2;
+    grid-row: 2;
+    color: var(--theme-color-base-medium);
+}
+
+.detailed-timeline-accordion-content-helpful-information-item-infosubtext:not(.last-item) > p {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.detailed-timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+}
+
+.detailed-timeline-header-text {
+    flex: 1 1 400px;
+    min-width: 0;
+}
+
+.detailed-timeline-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.detailed-timeline-controls .detailed-timeline-control-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.detailed-timeline-print-button-icon,
+.detailed-timeline-expand-button-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    background-color: currentColor;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+.detailed-timeline-print-button-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/print.svg');
+    mask-image: url('/static/uswds/img/usa-icons/print.svg');
+}
+
+.detailed-timeline-expand-button-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/visibility.svg');
+    mask-image: url('/static/uswds/img/usa-icons/visibility.svg');
+}
+
+.detailed-timeline-expand-button[aria-expanded="true"] .detailed-timeline-expand-button-icon {
+    -webkit-mask-image: url('/static/uswds/img/usa-icons/visibility_off.svg');
+    mask-image: url('/static/uswds/img/usa-icons/visibility_off.svg');
+}
+
+.detailed-timeline-print-host {
+    display: none;
+}
+
+.bubble-line {
+    padding-left: 52px;
+    position: relative;
+}
+
+.bubble-circle::before {
+    content: "";
+    position: absolute;
+    left: -39px;
+    top: 24px;
+    width: 24px;
+    height: 24px;
+    background-color: var(--bg-white-hover);
+    border: 1px solid var(--color-primary);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.bubble-circle:has(* > * > .active)::before {
+    background-color: var(--color-primary);
+}
+
+.bubble-circle:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 48px;
+    bottom: -58px;
+    width: 2px;
+    background-color: var(--color-primary);
+    z-index: 0;
+}
+
+@media (max-width: 1200px) {
+    .summary-timeline-rectangle {
+        padding: 0 24px 16px 0;
+        grid-template-columns: auto;
+    }
+
+    .summary-timeline-title-block {
+        margin: 16px 16px 12px 24px;
+    }
+
+    .summary-timeline-phases-block {
+        margin: 0 0 0 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .detailed-timeline-accordion-title {
+        padding: 16px;
+    }
+
+    .detailed-timeline-accordion-header {
+        width: 100%;
+        height: auto;
+    }
+
+    .detailed-timeline-accordion-header h3,
+    .detailed-timeline-accordion-header-button {
+        font-size: 18px;
+    }
+
+    .detailed-timeline-accordion-header-date-range {
+        padding: 2px 0 0;
+    }
+
+    .detailed-timeline-accordion-content {
+        width: 100%;
+        padding: 0 16px;
+    }
+
+    .detailed-timeline-title-block > h2 {
+        font-size: 22px;
+    }
+
+    .bubble-line {
+        padding-left: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .summary-timeline-rectangle {
+        padding: 0 0 16px;
+    }
+
+    .summary-timeline-phases-block {
+        flex-direction: column;
+        margin: 0 24px;
+        gap: 0;
+    }
+
+    .summary-timeline-phase {
+        width: 100%;
+        text-align: center;
+    }
+
+    .summary-timeline-rectangle .svg-icon {
+        mask-image: url('/static/uswds/img/usa-icons/arrow_downward.svg');
+        -webkit-mask-image: url('/static/uswds/img/usa-icons/arrow_downward.svg');
+    }
+}
+
+@media print {
+    @page detailed-timeline {
+        margin: 0.75in 0.5in;
+    }
+
+    body.printing-detailed-timeline > *:not(.detailed-timeline-print-host),
+    html:has(> body.printing-detailed-timeline) > :not(body) {
+        display: none !important;
+    }
+
+    html:has(> body.printing-detailed-timeline),
+    body.printing-detailed-timeline {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .detailed-timeline-print-host {
+        display: block !important;
+        width: 100%;
+    }
+
+    .detailed-timeline-print-host .detailed-timeline-rectangle {
+        width: 100%;
+        page: detailed-timeline;
+        zoom: 0.8;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .detailed-timeline-print-host .detailed-timeline-phase:last-child {
+        margin-bottom: 0;
+    }
+
+    .detailed-timeline-print-host .detailed-timeline-controls,
+    .detailed-timeline-print-host .detailed-timeline-accordion-icon {
+        display: none !important;
+    }
+
+    .detailed-timeline-print-host .detailed-timeline-accordion-header {
+        break-after: avoid;
+    }
+}

@@ -137,6 +137,15 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
           .should('be.checked');
         cy.get('[id]').should('not.exist');
       });
+      cy.get(`${timeline} .detailed-timeline-accordion-header`).eq(1).then(($sourceHeader) => {
+        const sourceStyles = window.getComputedStyle($sourceHeader[0]);
+        cy.get(`${printHost} .detailed-timeline-accordion-header`).eq(1).then(($printHeader) => {
+          const printStyles = window.getComputedStyle($printHeader[0]);
+          expect(printStyles.backgroundColor).to.equal(sourceStyles.backgroundColor);
+          expect(printStyles.borderRadius).to.equal(sourceStyles.borderRadius);
+          expect(printStyles.borderTopWidth).to.equal(sourceStyles.borderTopWidth);
+        });
+      });
       cy.get('body').should('have.class', 'printing-detailed-timeline');
 
       cy.get(content).then(($after) => {
