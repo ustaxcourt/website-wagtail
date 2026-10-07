@@ -668,6 +668,10 @@ p:empty {
     overflow-wrap: anywhere;
 }
 
+.info-card.gray .description {
+    color: #1B1B1B;
+}
+
 .info-card .description a {
     text-decoration: underline;
 }
