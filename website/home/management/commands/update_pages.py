@@ -28,6 +28,10 @@ from home.management.commands.pages.rules_and_guidance import (
     PetitionersHelpPageInitializer,
 )
 
+from home.management.commands.redirects.petitioners_redirect_initializer import (
+    PetitionersRedirectInitializer,
+)
+
 # Ensure Home Page is initialized first
 pages_to_update = (
     about_the_court_pages_to_update
@@ -46,6 +50,7 @@ pages_to_update = (
         PetitionersTimelinePageInitializer,
         PetitionersHelpPageInitializer,
     ]
+    + [PetitionersRedirectInitializer]
     + [NavigationRibbonUpdater]
 )
 
