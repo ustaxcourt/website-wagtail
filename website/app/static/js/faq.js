@@ -3,7 +3,8 @@
  * includes/faq_accordion.html. Each [data-faq] container is independent.
  *
  * - FilterTag radios show only the questions with the selected tag ("All" = value "").
- * - Clicking a question's header (its link, chevron button, or empty space) toggles it.
+ * - Clicking a question's header (its link, chevron, or empty space) toggles it.
+ *   Modified clicks on the link (Cmd/Ctrl/Shift/Alt) are left to the browser.
  * - Visiting with a #anchortag that matches a question expands it and scrolls to it.
  */
 (function () {
@@ -13,12 +14,12 @@
 
     function setExpanded(item, expanded) {
         item.querySelector('[data-faq-answer]').hidden = !expanded;
-        item.querySelector('[data-faq-toggle]').setAttribute('aria-expanded', String(expanded));
+        item.querySelector('[data-faq-link]').setAttribute('aria-expanded', String(expanded));
         item.classList.toggle('faq__item--expanded', expanded);
     }
 
     function isExpanded(item) {
-        return item.querySelector('[data-faq-toggle]').getAttribute('aria-expanded') === 'true';
+        return item.querySelector('[data-faq-link]').getAttribute('aria-expanded') === 'true';
     }
 
     function applyFilter(faq, slug) {
@@ -51,9 +52,14 @@
 
         faq.querySelectorAll('[data-faq-header]').forEach(function (header) {
             header.addEventListener('click', function (event) {
+                const onLink = Boolean(event.target.closest('[data-faq-link]'));
+                // Let the browser open the permalink in a new tab/window as usual.
+                if (onLink && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) {
+                    return;
+                }
                 const item = header.closest('[data-faq-item]');
                 const expanding = !isExpanded(item);
-                if (event.target.closest('[data-faq-link]')) {
+                if (onLink) {
                     // Handle the link ourselves so an expanded question can collapse;
                     // a real navigation to the same hash wouldn't fire hashchange.
                     event.preventDefault();

@@ -45,17 +45,14 @@ more than one of these can share a page.
                     data-filtertag="{{ item.filtertag }}">
                     <div class="faq__header" data-faq-header>
                         {% if tag_name %}<span class="faq__tag">{{ tag_name }}</span>{% endif %}
-                        <button class="faq__toggle"
-                                type="button"
-                                aria-expanded="false"
-                                aria-controls="{{ faq_id }}-answer-{{ forloop.counter }}"
-                                aria-labelledby="{{ faq_id }}-question-{{ forloop.counter }}"
-                                data-faq-toggle>
-                            <span class="material-symbols-outlined faq__chevron" aria-hidden="true">keyboard_arrow_down</span>
-                        </button>
+                        {# Decorative: the header's click handler toggles; the link carries the state. #}
+                        <span class="faq__toggle" aria-hidden="true">
+                            <span class="material-symbols-outlined faq__chevron">keyboard_arrow_down</span>
+                        </span>
                         <h3 class="faq__question">
                             <a href="#{{ item.anchortag }}"
-                               id="{{ faq_id }}-question-{{ forloop.counter }}"
+                               aria-expanded="false"
+                               aria-controls="{{ faq_id }}-answer-{{ forloop.counter }}"
                                data-faq-link>{{ item.question }}</a>
                         </h3>
                     </div>
