@@ -57,7 +57,7 @@ REDIRECTS = [
     },
     {
         "old_path": "/taxpayers_start.html",
-        "new_path": "/petitioners-start/",
+        "new_path": "/petitioners-start",
         "is_permanent": True,
     },
     {
@@ -154,7 +154,7 @@ LEGACY_URLS = [
 for old_path in LEGACY_URLS:
     if old_path.endswith(".html"):
         cleaned_path = old_path.replace(".html", "").replace("_", "-")
-        new_path = cleaned_path + "/"
+        new_path = cleaned_path  # + "/"
         REDIRECTS.append(
             {
                 "old_path": old_path,
