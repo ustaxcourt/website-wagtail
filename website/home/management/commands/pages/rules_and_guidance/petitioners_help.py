@@ -7,7 +7,6 @@ from home.management.commands.pages.rules_and_guidance.side_card_seed_data impor
 )
 from home.models import NavigationRibbon
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
-from home.models.snippets.call_to_action import CallToActionBox
 from home.models.snippets.faq_filter_tag import FAQFilterTag
 import logging
 from home.models.utils.execute_script import ExecuteScript
@@ -65,12 +64,10 @@ class PetitionersHelpPageInitializer(PageInitializer):
             name="Guidance for Petitioners Ribbon"
         ).first()
 
-        _snippet_name = "Ready to begin your petition?"
-        _cta_box = CallToActionBox.objects.filter(header=_snippet_name).first()
+        # No call_to_action, unlike the other Petitioners pages: the mockup has none.
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=self.title,
-                call_to_action=_cta_box,
                 body=self.build_body(),
                 slug=self.slug,
                 seo_title=self.title,
