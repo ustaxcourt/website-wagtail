@@ -22,10 +22,10 @@ from home.models.custom_blocks.button import ButtonBlock
 from home.models.custom_blocks.common import (
     ColumnBlock,
     custom_promote_panels,
-    link_obj,
 )
 from home.models.custom_blocks.icon_header import IconHeaderBlock, SectionHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
+from home.models.custom_blocks.list_of_links import ListOfLinksBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.custom_blocks.printable_section import PrintableSectionBlock
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
@@ -389,26 +389,7 @@ _BASE_BLOCK_TYPES = [
     ("list", create_nested_list_block(max_depth=4)),
     (
         "links",
-        blocks.StructBlock(
-            [
-                (
-                    "class",
-                    blocks.ChoiceBlock(
-                        choices=[
-                            ("indented", IndentStyle.INDENTED),
-                            ("unindented", IndentStyle.UNINDENTED),
-                        ],
-                        default=IndentStyle.INDENTED,
-                        label="List style",
-                    ),
-                ),
-                (
-                    "links",
-                    blocks.ListBlock(link_obj.child_block, label="Add Entry"),
-                ),
-            ],
-            label="List of Links",
-        ),
+        ListOfLinksBlock(),
     ),
     ("questionanswers", QuestionAnswersBlock()),
     ("columns", ColumnBlock()),
