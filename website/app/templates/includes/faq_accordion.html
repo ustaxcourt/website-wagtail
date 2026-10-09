@@ -59,7 +59,15 @@ more than one of these can share a page.
                     <div class="faq__answer"
                          id="{{ faq_id }}-answer-{{ forloop.counter }}"
                          hidden
-                         data-faq-answer>{{ item.answer|richtext }}</div>
+                         data-faq-answer>
+                         {{ item.answer|richtext }}
+                         {% if item.helpful_resources|length > 0 %}
+                         <div class="faq__helpful-resources">
+                            <p class="helpful_resources_title">Helpful Resources</p>
+                            {% include "home/helpful_resources_block.html" with block=item.helpful_resources %}
+                         </div>
+                         {% endif %}
+                    </div>
                 </li>
             {% endfor %}
         </ul>

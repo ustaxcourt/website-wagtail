@@ -91,6 +91,21 @@ class PetitionersHelpPageInitializer(PageInitializer):
             FAQFilterTag.objects.filter(live=True).values_list("slug", flat=True)
         )
         questions = []
+        petition_form_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="Petition_Simplified_Form_2.pdf",
+            title="Petition_Simplified_Form_2.pdf",
+        )
+        filing_instructions_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="DAWSON_Petitioner_Training_Guide.pdf",
+            title="DAWSON Self-Represented (Pro Se) Training Guide",
+        )
+        dawson_training_video_doc = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="GMT20201013-122947_Jessica-Ma_1600x900.mp4",
+            title="GMT20201013-122947_Jessica-Ma_1600x900.mp4",
+        )
         for slug, anchortag, question in PLACEHOLDER_QUESTIONS:
             if slug not in live_slugs:
                 logger.warning(
@@ -103,6 +118,62 @@ class PetitionersHelpPageInitializer(PageInitializer):
                     "answer": PLACEHOLDER_ANSWER,
                     "anchortag": anchortag,
                     "filtertag": slug,
+                    "helpful_resources": [
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": "DAWSON Log In",
+                                "icon": "open_in_new",
+                                "document": None,
+                                "video": None,
+                                "url": "https://app.dawson.ustaxcourt.gov/login",
+                                "text_only": False,
+                            },
+                            "id": "29bcaaf0-1ae8-4e42-a869-b080eae5357a",
+                        },
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": "Petition Form",
+                                "icon": "draft",
+                                "document": None
+                                if petition_form_doc is None
+                                else petition_form_doc.pk,
+                                "video": None,
+                                "url": "",
+                                "text_only": False,
+                            },
+                            "id": "24388fbd-1f13-42aa-a18f-4ff01c6d3869",
+                        },
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": "DAWSON Petitioner Electronic Filing Instructions",
+                                "icon": "draft",
+                                "document": None
+                                if filing_instructions_doc is None
+                                else filing_instructions_doc.pk,
+                                "video": None,
+                                "url": "",
+                                "text_only": False,
+                            },
+                            "id": "6244374f-d4c2-4e26-947b-6b9a23e1106b",
+                        },
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": "DAWSON Petitioner Training Video",
+                                "icon": "videocam",
+                                "document": None,
+                                "video": None
+                                if dawson_training_video_doc is None
+                                else dawson_training_video_doc.pk,
+                                "url": "",
+                                "text_only": False,
+                            },
+                            "id": "2739b3e9-bb26-43d8-8247-0aa31756f889",
+                        },
+                    ],
                 }
             )
         return [

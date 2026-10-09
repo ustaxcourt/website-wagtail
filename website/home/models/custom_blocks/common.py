@@ -34,7 +34,8 @@ link_obj = blocks.ListBlock(
                 "text_only",
                 blocks.BooleanBlock(required=False),
             ),
-        ]
+        ],
+        label="Item",
     )
 )
 

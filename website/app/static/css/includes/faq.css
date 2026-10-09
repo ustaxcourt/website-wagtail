@@ -171,6 +171,31 @@
     margin-bottom: 0;
 }
 
+.faq__helpful-resources {
+    padding: 1rem 1rem;
+    border-radius: var(--faq-pill-radius);
+    background-color: var(--bg-white-hover);
+    color: var(--faq-tag-ink);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+}
+
+.faq__helpful-resources > p {
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.faq__helpful-resources .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.faq__helpful-resources a {
+    text-decoration: underline;
+    color: var(--color-navy);
+}
+
 /* Tablet + mobile: the tags match the filter buttons, answers get more leading,
    and an expanded question sits further below its tag. */
 @media (max-width: 1024px) {

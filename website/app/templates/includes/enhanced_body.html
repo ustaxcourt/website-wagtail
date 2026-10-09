@@ -62,7 +62,7 @@
     {% elif block.block_type == 'enhanced_table' %}
         {% include "home/new_styled_table.html" with block=block %}
     {% elif block.block_type == 'links' %}
-        {% include "home/links_block.html" with block=block %}
+        {% include "home/links_block.html" with block=block.value %}
     {% elif block.block_type == 'questionanswers' and block.value.display_filter_section %}
         {% include "includes/faq_accordion.html" with qa_block=block %}
     {% elif block.block_type == 'questionanswers' %}
@@ -116,7 +116,7 @@
                             {% elif sub_block.block_type == 'clickableButton' %}
                                 <a href="{{ sub_block.value.url }}" class="usa-button">{{ sub_block.value.text }}</a>
                             {% elif sub_block.block_type == 'links' %}
-                                {% include "home/links_block.html" with block=sub_block %}
+                                {% include "home/links_block.html" with block=sub_block.value %}
                             {% elif sub_block.block_type == 'judgeCollection' %}
                                 {% with judge_collection=sub_block.value %}
                                     {% for ordered_judge in judge_collection.ordered_judges.all %}
