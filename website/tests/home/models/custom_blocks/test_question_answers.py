@@ -1,6 +1,7 @@
 """Tests for home/models/custom_blocks/question_answers.py and its FAQ rendering."""
 
 import importlib
+import re
 
 import pytest
 from django.test import RequestFactory
@@ -175,8 +176,17 @@ class TestRender:
         html = self.render(display_filter_section=True)
         assert 'id="file"' in html
         assert 'href="#file"' in html
-        assert 'aria-expanded="false"' in html
         assert "Answer to How do I file" in html
+
+    def test_filter_section_question_link_is_the_accessible_toggle(self):
+        """The link carries the expanded state; the chevron isn't a second control."""
+        html = self.render(display_filter_section=True)
+        link = re.search(r'<a href="#file"[^>]*>', html).group(0)
+        assert 'aria-expanded="false"' in link
+        answer_id = re.search(r'aria-controls="([^"]+)"', link).group(1)
+        assert f'id="{answer_id}"' in html
+        faq_list = html.split('class="faq__list"', 1)[1].split("</ul>", 1)[0]
+        assert "<button" not in faq_list
 
     def test_without_filter_section_renders_original_layout(self):
         html = self.render(display_filter_section=False)

@@ -125,16 +125,8 @@
 .faq__toggle {
     grid-area: toggle;
     display: flex;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
     color: var(--theme-color-base-medium);
     cursor: pointer;
-}
-
-.faq__toggle:focus-visible {
-    outline: 0.25rem solid var(--faq-focus);
 }
 
 .faq__chevron {

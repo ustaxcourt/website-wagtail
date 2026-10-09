@@ -64,6 +64,7 @@ class PetitionersHelpPageInitializer(PageInitializer):
             name="Guidance for Petitioners Ribbon"
         ).first()
 
+        # No call_to_action, unlike the other Petitioners pages: the mockup has none.
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=self.title,
