@@ -27,41 +27,29 @@
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
-.faq__filter-option {
-    position: relative;
-    cursor: pointer;
-}
-
-/* Visually hidden but still focusable and announced as a radio */
-.faq__filter-input {
-    position: absolute;
-    opacity: 0;
-    width: 1px;
-    height: 1px;
-    margin: 0;
-}
-
-.faq__filter-label {
-    display: inline-block;
+.faq__filter-button {
     padding: 0.5rem 1rem;
+    border: 0;
     border-radius: var(--faq-pill-radius);
     background-color: var(--bg-white-hover);
     color: var(--faq-tag-ink);
+    font-family: inherit;
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.25rem;
+    cursor: pointer;
 }
 
-.faq__filter-option:hover .faq__filter-input:not(:checked) + .faq__filter-label {
+.faq__filter-button[aria-pressed="false"]:hover {
     text-decoration: underline;
 }
 
-.faq__filter-input:checked + .faq__filter-label {
+.faq__filter-button[aria-pressed="true"] {
     background-color: var(--color-navy);
     color: var(--text-white);
 }
 
-.faq__filter-input:focus-visible + .faq__filter-label {
+.faq__filter-button:focus-visible {
     outline: 0.25rem solid var(--faq-focus);
     outline-offset: 0;
 }
@@ -101,8 +89,8 @@
         "tag toggle"
         "question question";
     align-items: start;
+    position: relative;
     row-gap: 0.5rem;
-    cursor: pointer;
 }
 
 .faq__tag {
@@ -126,7 +114,6 @@
     grid-area: toggle;
     display: flex;
     color: var(--theme-color-base-medium);
-    cursor: pointer;
 }
 
 .faq__chevron {
@@ -151,6 +138,15 @@
     text-decoration: none;
 }
 
+/* Stretch the link's click area over the whole header (tag, chevron, gaps) so
+   only the link has a click handler; screen readers then don't call the tag
+   "clickable". */
+.faq__question a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
 .faq__header:hover .faq__question a,
 .faq__question a:focus-visible {
     text-decoration: underline;
@@ -171,15 +167,9 @@
     margin-bottom: 0;
 }
 
-/* Tablet + mobile: the tags match the filter buttons, answers get more leading,
-   and an expanded question sits further below its tag. */
+/* Tablet + mobile: answers get more leading, and an expanded question sits
+   further below its tag. Tags stay 14px semibold per UX review. */
 @media (max-width: 1024px) {
-    .faq__tag {
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.25rem;
-    }
-
     .faq__item--expanded .faq__header {
         row-gap: 1rem;
     }

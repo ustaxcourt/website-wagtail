@@ -1,7 +1,7 @@
 """
 Data migration: wrap existing ``questionanswers`` blocks in the new struct shape.
 
-0156 changed the EnhancedStandardPage ``questionanswers`` block from a bare list of
+0157 changed the EnhancedStandardPage ``questionanswers`` block from a bare list of
 Q&As to a struct of ``{"display_filter_section": bool, "questions": [...]}``. This
 rewrites saved content to match, with ``display_filter_section`` off so existing
 pages render as before.
@@ -113,6 +113,6 @@ def backwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("home", "0156_alter_enhancedstandardpage_body_pe")]
+    dependencies = [("home", "0157_alter_enhancedstandardpage_body_pe")]
 
     operations = [migrations.RunPython(forwards, backwards)]

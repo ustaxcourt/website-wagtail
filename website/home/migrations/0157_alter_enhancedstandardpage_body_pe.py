@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0155_alter_enhancedstandardpage_body_pe"),
+        ("home", "0156_data_delete_html_redirects_pe"),
     ]
 
     operations = [
