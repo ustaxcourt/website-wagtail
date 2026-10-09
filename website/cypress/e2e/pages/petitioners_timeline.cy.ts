@@ -35,6 +35,21 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
       .and('have.attr', 'aria-expanded', 'false');
   });
 
+  it('renders the expand and print button icons', () => {
+    [
+      [`.detailed-timeline-expand-button-icon`, 'visibility.svg'],
+      [`.detailed-timeline-print-button-icon`, 'print.svg'],
+    ].forEach(([iconSelector, iconFile]) => {
+      cy.get(`${timeline} ${iconSelector}`).should(($icon) => {
+        const styles = window.getComputedStyle($icon[0]);
+        const bounds = $icon[0].getBoundingClientRect();
+        expect(bounds.width).to.be.greaterThan(0);
+        expect(bounds.height).to.be.greaterThan(0);
+        expect(styles.maskImage).to.contain(iconFile);
+      });
+    });
+  });
+
   it('keeps the control and accordion indicators synchronized with individual toggles', () => {
     cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
     cy.get(accordionButton).each(($el) =>
@@ -174,7 +189,7 @@ describe('Process and Timeline Page - Expand All / Collapse All state after relo
   const expandButton = `${timeline} .detailed-timeline-expand-button`;
 
   const openStates = ($contents: JQuery<HTMLElement>) =>
-    Array.from($contents).map((el) => !el.classList.contains('hidden'));
+   Array.from($contents).map((el) => !el.classList.contains('hidden'));
 
   beforeEach(() => {
     cy.visit('/petitioners-timeline/');
