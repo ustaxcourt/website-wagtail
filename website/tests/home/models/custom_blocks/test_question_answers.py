@@ -14,7 +14,7 @@ from home.models import EnhancedStandardPage, FAQFilterTag
 from home.models.custom_blocks.question_answers import QuestionAnswersBlock
 
 data_migration = importlib.import_module(
-    "home.migrations.0157_data_wrap_questionanswers_pe"
+    "home.migrations.0158_data_wrap_questionanswers_pe"
 )
 
 pytestmark = pytest.mark.django_db
