@@ -127,6 +127,10 @@
                 }
             });
 
+            clone.querySelectorAll("a[href]").forEach(function(link) {
+                link.setAttribute("href", link.href);
+            });
+
             return clone;
         }
 
