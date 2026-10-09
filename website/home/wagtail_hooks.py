@@ -14,6 +14,7 @@ from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
+from wagtail.admin.panels import FieldPanel
 from wagtail.admin.widgets import Button
 from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBatch
 from wagtail.contrib.redirects.models import Redirect
@@ -499,14 +500,21 @@ def register_faq_csv_urls():
 def faq_csv_page_header_button(page, user, view_name, next_url=None):
     if (
         issubclass(page.specific_class, EnhancedStandardPage)
+        and page.alias_of is None
         and page.permissions_for_user(user).can_edit()
     ):
-        yield Button(
-            "FAQ CSV import/export",
-            url=reverse("faq_csv", args=[page.pk]),
-            icon_name="table",
-            priority=66,
-        )
+        has_body_fieldpanel = False
+        for panel in page.specific_class.content_panels:
+            if isinstance(panel, FieldPanel) and panel.field_name == "body":
+                has_body_fieldpanel = True
+
+        if has_body_fieldpanel:
+            yield Button(
+                "FAQ CSV import/export",
+                url=reverse("faq_csv", args=[page.pk]),
+                icon_name="table",
+                priority=66,
+            )
 
 
 @hooks.register("after_edit_page")
