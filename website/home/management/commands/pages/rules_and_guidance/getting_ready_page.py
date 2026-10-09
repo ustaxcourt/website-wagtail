@@ -121,7 +121,13 @@ class GettingReadyPageInitializer(PageInitializer):
                 search_description="Getting Ready",
                 body=[
                     {"type": "h2", "value": "Zoomgov FAQs: Getting Ready"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )

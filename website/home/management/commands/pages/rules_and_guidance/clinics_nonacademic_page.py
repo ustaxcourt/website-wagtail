@@ -169,7 +169,13 @@ If a practitioner who is employed by a nonacademic clinic or who accepts a case 
                         "type": "h2",
                         "value": "Requirements For Participation in the United States Tax Court Clinical, Student Practice & Calendar Call Program by Nonacademic Clinics",
                     },
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                     {
                         "type": "snippet",
                         "value": CommonText.objects.get(

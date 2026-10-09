@@ -1,0 +1,180 @@
+/* ==========================================================================
+   FAQ filter + accordion (includes/faq_accordion.html, js/faq.js)
+   Values taken from the PE FAQ desktop, tablet and mobile mockups (WAG-1343).
+   ========================================================================== */
+
+.faq {
+    --faq-ink: #1B1B1B;
+    --faq-tag-ink: #364153;
+    --faq-answer-ink: #565C65;
+    --faq-border: var(--border-lighter);
+    --faq-pill-radius: 10px;
+    --faq-focus: #2491FF;
+    margin-bottom: 2rem;
+}
+
+/* ---- Filter section ---- */
+
+.faq__filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    min-width: 0;
+    margin: 0 0 1.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--faq-border);
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.faq__filter-button {
+    padding: 0.5rem 1rem;
+    border: 0;
+    border-radius: var(--faq-pill-radius);
+    background-color: var(--bg-white-hover);
+    color: var(--faq-tag-ink);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    cursor: pointer;
+}
+
+.faq__filter-button[aria-pressed="false"]:hover {
+    text-decoration: underline;
+}
+
+.faq__filter-button[aria-pressed="true"] {
+    background-color: var(--color-navy);
+    color: var(--text-white);
+}
+
+.faq__filter-button:focus-visible {
+    outline: 0.25rem solid var(--faq-focus);
+    outline-offset: 0;
+}
+
+/* ---- Accordion list ---- */
+
+.faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.faq__item {
+    padding: 1.5rem;
+    border: 1px solid var(--faq-border);
+    border-radius: 10px;
+    background-color: var(--theme-color-base-lightest);
+}
+
+.faq__item[hidden] {
+    display: none;
+}
+
+.faq__item--expanded {
+    border-radius: 8px;
+    background-color: var(--bg-white);
+}
+
+/* Tag + chevron on the first line, question beneath; the chevron stays top-right */
+.faq__header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "tag toggle"
+        "question question";
+    align-items: start;
+    position: relative;
+    row-gap: 0.5rem;
+}
+
+.faq__tag {
+    grid-area: tag;
+    justify-self: start;
+    padding: 0.5rem 1rem;
+    border-radius: var(--faq-pill-radius);
+    background-color: var(--bg-white);
+    color: var(--faq-ink);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.125rem;
+}
+
+.faq__item--expanded .faq__tag {
+    background-color: var(--bg-white-hover);
+    color: var(--faq-tag-ink);
+}
+
+.faq__toggle {
+    grid-area: toggle;
+    display: flex;
+    color: var(--theme-color-base-medium);
+}
+
+.faq__chevron {
+    transition: transform 0.2s ease;
+}
+
+.faq__item--expanded .faq__chevron {
+    transform: rotate(180deg);
+}
+
+.faq__question {
+    grid-area: question;
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5625rem;
+}
+
+.faq__question a,
+.faq__question a:visited {
+    color: var(--faq-ink);
+    text-decoration: none;
+}
+
+/* Stretch the link's click area over the whole header (tag, chevron, gaps) so
+   only the link has a click handler; screen readers then don't call the tag
+   "clickable". */
+.faq__question a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.faq__header:hover .faq__question a,
+.faq__question a:focus-visible {
+    text-decoration: underline;
+}
+
+.faq__answer {
+    margin-top: 1rem;
+    color: var(--faq-answer-ink);
+    font-size: 1rem;
+    line-height: 1.25rem;
+}
+
+.faq__answer > :first-child {
+    margin-top: 0;
+}
+
+.faq__answer > :last-child {
+    margin-bottom: 0;
+}
+
+/* Tablet + mobile: answers get more leading, and an expanded question sits
+   further below its tag. Tags stay 14px semibold per UX review. */
+@media (max-width: 1024px) {
+    .faq__item--expanded .faq__header {
+        row-gap: 1rem;
+    }
+
+    .faq__answer {
+        line-height: 1.625rem;
+    }
+}

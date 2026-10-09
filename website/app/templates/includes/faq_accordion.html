@@ -1,0 +1,59 @@
+{% load wagtailcore_tags static %}
+{% comment %}
+Renders a questionanswers block with "Display Filter Section" on: FilterTag radio
+buttons above the questions, and each question as a collapsible accordion.
+Behavior lives in js/faq.js; everything is scoped to the [data-faq] container so
+more than one of these can share a page.
+{% endcomment %}
+<link rel="stylesheet" href="{% static 'css/includes/faq.css' %}">
+{% with qa=qa_block.value faq_id="faq-"|add:qa_block.id %}
+    <div class="faq" id="{{ faq_id }}" data-faq>
+        {% with tags=qa.filter_tags %}
+            {% if tags %}
+                <fieldset class="faq__filter">
+                    <legend class="usa-sr-only">Filter questions by topic</legend>
+                    <button type="button"
+                            class="faq__filter-button"
+                            value=""
+                            aria-pressed="true"
+                            data-faq-filter>All</button>
+                    {% for slug, name in tags %}
+                        <button type="button"
+                                class="faq__filter-button"
+                                value="{{ slug }}"
+                                aria-pressed="false"
+                                data-faq-filter>{{ name }}</button>
+                    {% endfor %}
+                </fieldset>
+                <p class="usa-sr-only" aria-live="polite" data-faq-status></p>
+            {% endif %}
+        {% endwith %}
+        <ul class="faq__list">
+            {% for item, tag_name in qa.entries %}
+                <li class="faq__item"
+                    id="{{ item.anchortag }}"
+                    data-faq-item
+                    data-filtertag="{{ item.filtertag }}">
+                    <div class="faq__header">
+                        {% if tag_name %}<span class="faq__tag">{{ tag_name }}</span>{% endif %}
+                        {# Decorative: the link's click area stretches over the whole header (see faq.css). #}
+                        <span class="faq__toggle" aria-hidden="true">
+                            <span class="material-symbols-outlined faq__chevron">keyboard_arrow_down</span>
+                        </span>
+                        <h3 class="faq__question">
+                            <a href="#{{ item.anchortag }}"
+                               aria-expanded="false"
+                               aria-controls="{{ faq_id }}-answer-{{ forloop.counter }}"
+                               data-faq-link>{{ item.question }}</a>
+                        </h3>
+                    </div>
+                    <div class="faq__answer"
+                         id="{{ faq_id }}-answer-{{ forloop.counter }}"
+                         hidden
+                         data-faq-answer>{{ item.answer|richtext }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endwith %}
+<script defer src="{% static 'js/faq.js' %}"></script>
