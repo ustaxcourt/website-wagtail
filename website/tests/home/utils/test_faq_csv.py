@@ -2,7 +2,9 @@
 
 import csv
 import io
+import json
 import re
+from types import SimpleNamespace
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -10,7 +12,7 @@ from django.test import RequestFactory
 from django.urls import reverse
 from wagtail.models import Locale, Page, Site
 
-from home.models import EnhancedStandardPage, FAQFilterTag
+from home.models import EnhancedStandardPage, FAQFilterTag, ReleaseNotes
 from home.utils.faq_csv import (
     FAQCSVError,
     faq_csv_parse,
@@ -214,6 +216,18 @@ class TestFaqCsvParse:
             "Row 5: FilterTag is required.",
         ]
 
+    def test_tag_unpublished_mid_upload_is_a_row_error(self, filing, monkeypatch):
+        # The tag lookup still sees "Filing", but the block's choices no longer do
+        stale = FAQFilterTag(name="Unpublished", slug="unpublished")
+        monkeypatch.setattr(
+            "home.utils.faq_csv.FAQFilterTag",
+            SimpleNamespace(objects=SimpleNamespace(filter=lambda **kwargs: [stale])),
+        )
+        errors = errors_for(
+            to_csv([["question", "answer", "filtertag"], ["Q", "A", "Unpublished"]])
+        )
+        assert errors
+
     @pytest.mark.parametrize(
         "data, expected",
         [
@@ -332,6 +346,43 @@ class TestFaqSectionImportCsv:
         assert latest.body[-1].value["display_filter_section"] is True
         assert latest.body[-1].value["questions"][0]["question"] == "Added"
 
+    @pytest.fixture
+    def older_format_page(self, page):
+        """``page`` with its nested section's questions stored as bare dicts."""
+        revision = page.latest_revision
+        body = json.loads(revision.content["body"])
+        nested = body[1]["value"]["default_content"][0]["value"]
+        nested["questions"] = [item["value"] for item in nested["questions"]]
+        revision.content["body"] = json.dumps(body)
+        revision.save()
+        return page
+
+    def test_replace_with_an_older_format_section_on_the_page(
+        self, older_format_page, admin_user
+    ):
+        data = to_csv([["question", "answer", "filtertag"], ["Appeal", "A", "Filing"]])
+        faq_section_import_csv(
+            request=self.request(admin_user),
+            page=older_format_page,
+            data=data,
+            section_id="top-section",
+        )
+        top = faq_sections_list(self.latest(older_format_page))[0]
+        # "appeal" is taken by the older-format section
+        assert top["value"]["questions"][0]["value"]["anchortag"] == "appeal-2"
+
+    def test_add_with_an_older_format_section_on_the_page(
+        self, older_format_page, admin_user
+    ):
+        data = to_csv([["question", "answer", "filtertag"], ["Added", "A", "Filing"]])
+        faq_section_import_csv(
+            request=self.request(admin_user),
+            page=older_format_page,
+            data=data,
+        )
+        latest = self.latest(older_format_page)
+        assert latest.body[-1].value["questions"][0]["question"] == "Added"
+
     def test_invalid_csv_saves_nothing(self, page, admin_user):
         revisions = page.revisions.count()
         data = to_csv([["question", "answer", "filtertag"], ["Q", "A", "Nope"]])
@@ -441,3 +492,36 @@ class TestFaqCsvAdminViews:
     def test_page_editor_shows_header_button(self, client, page):
         response = client.get(reverse("wagtailadmin_pages:edit", args=[page.pk]))
         assert reverse("faq_csv", args=[page.pk]) in response.content.decode()
+
+    @pytest.fixture
+    def release_notes(self, page):
+        release_notes = ReleaseNotes(title="Release notes", slug="release-notes")
+        page.get_parent().add_child(instance=release_notes)
+        release_notes.save_revision().publish()
+        return release_notes
+
+    @pytest.fixture
+    def alias(self, page):
+        return page.create_alias(update_slug="faq-alias")
+
+    @pytest.mark.parametrize("target", ["release_notes", "alias"])
+    def test_no_header_button(self, request, target, admin_user):
+        target_page = request.getfixturevalue(target)
+        assert list(faq_csv_page_header_button(target_page, admin_user, "edit")) == []
+
+    @pytest.mark.parametrize("target", ["release_notes", "alias"])
+    def test_index_is_404(self, request, client, target):
+        target_page = request.getfixturevalue(target)
+        assert client.get(reverse("faq_csv", args=[target_page.pk])).status_code == 404
+
+    @pytest.mark.parametrize("target", ["release_notes", "alias"])
+    def test_upload_is_404_and_saves_nothing(self, request, client, target):
+        target_page = request.getfixturevalue(target)
+        revisions = target_page.revisions.count()
+        response = self.upload(
+            client,
+            target_page,
+            [["question", "answer", "filtertag"], ["Q", "A", "Filing"]],
+        )
+        assert response.status_code == 404
+        assert target_page.revisions.count() == revisions
