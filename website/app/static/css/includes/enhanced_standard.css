@@ -3,8 +3,18 @@
     overflow-x: auto;
 }
 
-.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block) {
+.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .page-introductory-text) {
     margin-bottom: 32px;
+}
+
+/* Seeded introductory text is bare text, but the editor wraps it in <p> on
+   save. Keep the spacing the same either way. */
+.page-introductory-text > :first-child {
+    margin-top: 0;
+}
+
+.page-introductory-text > :last-child {
+    margin-bottom: 0;
 }
 
 .enhanced-page.grid-container .accordion-block:has(~ .accordion-block) {

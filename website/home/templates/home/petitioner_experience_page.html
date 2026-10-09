@@ -139,7 +139,7 @@
             <span class="page-title-breadcrumb" style="display: none;"></span>
         </h1>
         {% if page.introductory_text %}
-            {{ page.introductory_text|richtext }}
+            <div class="page-introductory-text">{{ page.introductory_text|richtext }}</div>
         {% endif %}
         <div class="grid-row grid-gap side-card-layout">
             <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">
