@@ -129,7 +129,13 @@ A student practice program submitting a pleading, motion, stipulation, or other 
                         "type": "h2",
                         "value": "Requirements for Participation in the United States Tax Court Clinical, Student Practice & Calendar call Program by the Office of Chief Counsel Student Practice Program",
                     },
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                     {
                         "type": "snippet",
                         "value": CommonText.objects.get(

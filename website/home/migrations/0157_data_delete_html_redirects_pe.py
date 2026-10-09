@@ -90,7 +90,7 @@ def delete_redirect_if_exists(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0155_alter_enhancedstandardpage_body_pe"),
+        ("home", "0156_alter_enhancedstandardpage_body_pe"),
         (
             "wagtailredirects",
             "0008_add_verbose_name_plural",

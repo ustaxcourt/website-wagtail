@@ -148,7 +148,13 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 search_description="Zoomgov Proceedings",
                 body=[
                     {"type": "h2", "value": "Zoomgov FAQs: Zoomgov Proceedings"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )
