@@ -1,5 +1,11 @@
 from types import SimpleNamespace
 
+import pytest
+from django.template.loader import render_to_string
+from django.test import SimpleTestCase
+from wagtail.admin.rich_text import get_rich_text_editor_widget
+from wagtail.rich_text import RichText
+
 from home.management.commands.pages.rules_and_guidance.petitioners_forms import (
     GETTING_STARTED_FORMS,
     SPECIAL_CIRCUMSTANCES_FORMS,
@@ -55,3 +61,52 @@ def test_petitioners_forms_body_contains_editable_download_cards():
     assert 'href="/files/documents/rule-50.pdf"' in special_description
     assert body[-1]["type"] == "callout"
     assert body[-1]["value"]["callout_type"] == "info"
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "Download forms you may need.",
+        '<p>Download <a href="/petitioners-start/">forms</a> you may need.</p>',
+        "<p>First paragraph.</p><p>Second paragraph.</p>",
+    ],
+)
+def test_petitioners_forms_paragraphs_do_not_nest_after_editor_save(source):
+    converter = get_rich_text_editor_widget("default").converter
+    saved_source = converter.to_database_format(converter.from_database_format(source))
+
+    for value in (source, saved_source):
+        html = render_to_string(
+            "includes/enhanced_body.html",
+            {
+                "page": SimpleNamespace(slug="petitioners-forms"),
+                "blocks": [
+                    SimpleNamespace(block_type="paragraph", value=RichText(value))
+                ],
+            },
+        )
+
+        SimpleTestCase().assertHTMLEqual(
+            html,
+            '<div class="forms-paragraph" data-testid="page-body-paragraph">'
+            f"{RichText(value)}</div>",
+        )
+        assert html.count("<p") == str(RichText(value)).count("<p")
+
+
+def test_other_pages_keep_existing_paragraph_markup():
+    html = render_to_string(
+        "includes/enhanced_body.html",
+        {
+            "page": SimpleNamespace(slug="petitioners-start"),
+            "blocks": [
+                SimpleNamespace(
+                    block_type="paragraph", value=RichText("Existing content.")
+                )
+            ],
+        },
+    )
+
+    SimpleTestCase().assertHTMLEqual(
+        html, '<p data-testid="page-body-paragraph">Existing content.</p>'
+    )
