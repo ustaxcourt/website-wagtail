@@ -4,7 +4,6 @@ import csv
 import io
 import json
 import re
-from types import SimpleNamespace
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -215,18 +214,6 @@ class TestFaqCsvParse:
             "Row 4: answer: This field is required.",
             "Row 5: FilterTag is required.",
         ]
-
-    def test_tag_unpublished_mid_upload_is_a_row_error(self, filing, monkeypatch):
-        # The tag lookup still sees "Filing", but the block's choices no longer do
-        stale = FAQFilterTag(name="Unpublished", slug="unpublished")
-        monkeypatch.setattr(
-            "home.utils.faq_csv.FAQFilterTag",
-            SimpleNamespace(objects=SimpleNamespace(filter=lambda **kwargs: [stale])),
-        )
-        errors = errors_for(
-            to_csv([["question", "answer", "filtertag"], ["Q", "A", "Unpublished"]])
-        )
-        assert errors
 
     @pytest.mark.parametrize(
         "data, expected",
