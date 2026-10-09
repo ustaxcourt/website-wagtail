@@ -18,7 +18,7 @@ from home.blocks import (
 from home.forms import ReviewByRequiredOnSubmitForm
 from home.mixins.moderation import ModerationMixin
 from home.models.config import NumberedIconCategories
-from home.models.custom_blocks.button import ButtonBlock
+from home.models.custom_blocks.button import ButtonBlock, CardButtonBlock
 from home.models.custom_blocks.common import (
     ColumnBlock,
     custom_promote_panels,
@@ -552,7 +552,7 @@ _BASE_BLOCK_TYPES = [
                     (
                         "buttons",
                         blocks.ListBlock(
-                            ButtonBlock(),
+                            CardButtonBlock(),
                             min_num=0,
                             max_num=1,
                             required=False,

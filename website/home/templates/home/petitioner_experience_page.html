@@ -51,10 +51,94 @@
             font-weight: 400;
         }
 
+        /* Section headings in the page body (e.g. Forms page sections): H2 Semibold with 8pt spacing. */
+        .side-card-main > h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 56px 0 8px;
+        }
+
+        .side-card-main > h2:first-child {
+            margin-top: 32px;
+        }
+
+        .side-card-main > h2 + p {
+            margin: 0 0 24px;
+        }
+
         h2 a {
             color: black;
             text-decoration: underline;
             font-weight: 600;
+        }
+
+        /* Forms page body text is 16px (headings, card titles and subtitles keep their sizes). */
+        .petitioners-forms-page,
+        .petitioners-forms-page p,
+        .petitioners-forms-page .info-card .description,
+        .petitioners-forms-page .info-card__button {
+            font-size: 16px;
+        }
+
+        /* 32px between a card's text and its button: 16px card gap + 16px here. */
+        .petitioners-forms-page .info-card__buttons {
+            padding-top: 16px;
+        }
+
+        .petitioners-forms-page .side-card-main > h2:first-child {
+            margin-top: 32px;
+        }
+
+        .petitioners-forms-page .forms-paragraph {
+            margin: 0 0 24px;
+        }
+
+        .petitioners-forms-page .forms-paragraph > :last-child {
+            margin-bottom: 0;
+        }
+
+        .enhanced-page.grid-container.petitioners-forms-page > p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .petitioners-forms-page .info-card .description > :last-child {
+            margin-bottom: 0;
+        }
+
+        /* Keep the card icon at the top so long titles don't push it (and the subtitle) down. */
+        .petitioners-forms-page .info-card .card-header {
+            align-items: flex-start;
+        }
+
+        @media (min-width: 1025px) {
+            .petitioners-forms-page .side-card-main > h2 {
+                margin-bottom: 8px;
+            }
+
+            .petitioners-forms-page .side-card-main > h2 + p {
+                margin: 0 0 24px;
+            }
+
+            .petitioners-forms-page .info-cards {
+                gap: 48px;
+                margin: 0 0 32px;
+            }
+
+            .petitioners-forms-page .info-card {
+                box-sizing: border-box;
+            }
+
+            .petitioners-forms-page .info-cards + h2 {
+                margin-top: 56px;
+            }
+
+            .petitioners-forms-page .styled-callout {
+                margin: 0;
+            }
+
+            .petitioners-forms-page .rounded-rectangle {
+                margin-top: 32px;
+            }
         }
 
         @media (max-width: 1200px) {
@@ -105,7 +189,7 @@
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
-    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
+    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}">
         {% if page.navigation_ribbon %}
             {% with current_path=request.path|normalize_url_path %}
             <div class="blue-page-links-bar">
