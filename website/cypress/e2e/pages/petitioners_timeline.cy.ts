@@ -35,6 +35,21 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
       .and('have.attr', 'aria-expanded', 'false');
   });
 
+  it('renders the expand and print button icons', () => {
+    [
+      [`.detailed-timeline-expand-button-icon`, 'visibility.svg'],
+      [`.detailed-timeline-print-button-icon`, 'print.svg'],
+    ].forEach(([iconSelector, iconFile]) => {
+      cy.get(`${timeline} ${iconSelector}`).should(($icon) => {
+        const styles = window.getComputedStyle($icon[0]);
+        const bounds = $icon[0].getBoundingClientRect();
+        expect(bounds.width).to.be.greaterThan(0);
+        expect(bounds.height).to.be.greaterThan(0);
+        expect(styles.maskImage).to.contain(iconFile);
+      });
+    });
+  });
+
   it('keeps the control and accordion indicators synchronized with individual toggles', () => {
     cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
     cy.get(accordionButton).each(($el) =>
@@ -137,6 +152,15 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
           .should('be.checked');
         cy.get('[id]').should('not.exist');
       });
+      cy.get(`${timeline} .detailed-timeline-accordion-header`).eq(1).then(($sourceHeader) => {
+        const sourceStyles = window.getComputedStyle($sourceHeader[0]);
+        cy.get(`${printHost} .detailed-timeline-accordion-header`).eq(1).then(($printHeader) => {
+          const printStyles = window.getComputedStyle($printHeader[0]);
+          expect(printStyles.backgroundColor).to.equal(sourceStyles.backgroundColor);
+          expect(printStyles.borderRadius).to.equal(sourceStyles.borderRadius);
+          expect(printStyles.borderTopWidth).to.equal(sourceStyles.borderTopWidth);
+        });
+      });
       cy.get('body').should('have.class', 'printing-detailed-timeline');
 
       cy.get(content).then(($after) => {
@@ -165,7 +189,7 @@ describe('Process and Timeline Page - Expand All / Collapse All state after relo
   const expandButton = `${timeline} .detailed-timeline-expand-button`;
 
   const openStates = ($contents: JQuery<HTMLElement>) =>
-    Array.from($contents).map((el) => !el.classList.contains('hidden'));
+   Array.from($contents).map((el) => !el.classList.contains('hidden'));
 
   beforeEach(() => {
     cy.visit('/petitioners-timeline/');
@@ -237,6 +261,55 @@ describe('Process and Timeline Page - Expand All / Collapse All state after relo
       cy.get(expandButton)
         .should('contain', allOpen ? 'Collapse All' : 'Expand All')
         .and('have.attr', 'aria-expanded', String(allOpen));
+    });
+  });
+});
+
+describe('Process and Timeline Page - accordion state per history entry', () => {
+  const timeline = '#main-content .detailed-timeline-rectangle';
+  const content = `${timeline} .detailed-timeline-accordion-content`;
+  const accordionHeader = `${timeline} .detailed-timeline-accordion-header`;
+
+  const openStates = ($contents: JQuery<HTMLElement>) =>
+    Array.from($contents).map((el) => !el.classList.contains('hidden'));
+
+  it('restores the state of the visit being returned to, not a later visit to the same page', () => {
+    // First visit: open phase 1.
+    cy.visit('/petitioners-timeline/');
+    cy.get(accordionHeader).eq(1).click();
+    cy.get(content).eq(1).should('not.have.class', 'hidden');
+
+    // Leave, then come back with a fresh visit (not Back) and open phase 3 instead.
+    cy.visit('/petitioners-guidance/');
+    cy.visit('/petitioners-timeline/');
+    cy.get(content).each(($el) => expect($el).to.have.class('hidden'));
+    cy.get(accordionHeader).eq(3).click();
+    cy.get(content).eq(3).should('not.have.class', 'hidden');
+
+    // Back twice lands on the first visit, which had only phase 1 open.
+    cy.go('back');
+    cy.location('pathname').should('eq', '/petitioners-guidance/');
+    cy.go('back');
+    cy.location('pathname').should('eq', '/petitioners-timeline/');
+
+    cy.get(content).should(($contents) => {
+      const open = openStates($contents);
+      expect(open[1], 'phase 1 open').to.equal(true);
+      expect(open[3], 'phase 3 open').to.equal(false);
+      expect(open.filter(Boolean)).to.have.length(1);
+    });
+
+    // Forward twice lands on the second visit, which had only phase 3 open.
+    cy.go('forward');
+    cy.location('pathname').should('eq', '/petitioners-guidance/');
+    cy.go('forward');
+    cy.location('pathname').should('eq', '/petitioners-timeline/');
+
+    cy.get(content).should(($contents) => {
+      const open = openStates($contents);
+      expect(open[1], 'phase 1 open').to.equal(false);
+      expect(open[3], 'phase 3 open').to.equal(true);
+      expect(open.filter(Boolean)).to.have.length(1);
     });
   });
 });

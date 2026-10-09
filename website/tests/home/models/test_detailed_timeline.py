@@ -426,4 +426,5 @@ class DetailedTimelineRenderTest(TestCase):
 
         self.assertIn("Expand All", content)
         self.assertIn("Print Detailed Timeline", content)
-        self.assertIn(".detailed-timeline-print-host", content)
+        self.assertIn("css/includes/timeline.css", content)
+        self.assertIn("js/detailed_timeline.js", content)
