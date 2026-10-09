@@ -223,7 +223,12 @@ describe('Process and Timeline Page - Expand All / Collapse All state after relo
     cy.visit('/petitioners-guidance/');
     cy.go('back');
 
+    // cy.go('back') can return before the Back navigation starts. Wait for the
+    // timeline itself; "no open sections" is also true of a page with none,
+    // and ending the test mid-navigation hangs the next test's cy.visit().
+    cy.location('pathname').should('eq', '/petitioners-timeline/');
     cy.get(content).should(($contents) => {
+      expect($contents).to.have.length.greaterThan(3);
       expect(openStates($contents).filter(Boolean)).to.have.length(0);
     });
   });
