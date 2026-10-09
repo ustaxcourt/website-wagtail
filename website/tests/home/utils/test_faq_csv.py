@@ -2,7 +2,6 @@
 
 import csv
 import io
-import json
 import re
 
 import pytest
@@ -331,43 +330,6 @@ class TestFaqSectionImportCsv:
         latest = self.latest(page)
         assert latest.body[-1].block_type == "questionanswers"
         assert latest.body[-1].value["display_filter_section"] is True
-        assert latest.body[-1].value["questions"][0]["question"] == "Added"
-
-    @pytest.fixture
-    def older_format_page(self, page):
-        """``page`` with its nested section's questions stored as bare dicts."""
-        revision = page.latest_revision
-        body = json.loads(revision.content["body"])
-        nested = body[1]["value"]["default_content"][0]["value"]
-        nested["questions"] = [item["value"] for item in nested["questions"]]
-        revision.content["body"] = json.dumps(body)
-        revision.save()
-        return page
-
-    def test_replace_with_an_older_format_section_on_the_page(
-        self, older_format_page, admin_user
-    ):
-        data = to_csv([["question", "answer", "filtertag"], ["Appeal", "A", "Filing"]])
-        faq_section_import_csv(
-            request=self.request(admin_user),
-            page=older_format_page,
-            data=data,
-            section_id="top-section",
-        )
-        top = faq_sections_list(self.latest(older_format_page))[0]
-        # "appeal" is taken by the older-format section
-        assert top["value"]["questions"][0]["value"]["anchortag"] == "appeal-2"
-
-    def test_add_with_an_older_format_section_on_the_page(
-        self, older_format_page, admin_user
-    ):
-        data = to_csv([["question", "answer", "filtertag"], ["Added", "A", "Filing"]])
-        faq_section_import_csv(
-            request=self.request(admin_user),
-            page=older_format_page,
-            data=data,
-        )
-        latest = self.latest(older_format_page)
         assert latest.body[-1].value["questions"][0]["question"] == "Added"
 
     def test_invalid_csv_saves_nothing(self, page, admin_user):

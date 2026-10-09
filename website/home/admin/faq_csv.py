@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.models import Page
+from wagtail.admin.panels import FieldPanel
 
 from home.models.custom_blocks.question_answers import QuestionAnswersBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
@@ -51,8 +52,19 @@ def _get_editable_page(request, page_id):
     page = get_object_or_404(Page, id=page_id)
     if not issubclass(page.specific_class, EnhancedStandardPage):
         raise Http404("This page type does not support FAQ sections.")
+    if page.alias_of is not None:
+        raise Http404("Aliases do not support FAQ import/export.")
     if not page.permissions_for_user(request.user).can_edit():
         raise PermissionDenied
+
+    has_body_fieldpanel = False
+    for panel in page.specific_class.content_panels:
+        if isinstance(panel, FieldPanel) and panel.field_name == "body":
+            has_body_fieldpanel = True
+
+    if not has_body_fieldpanel:
+        raise Http404("This page type does not support FAQ sections.")
+
     return page.specific
 
 
@@ -107,6 +119,20 @@ class FAQCSVView(WagtailAdminTemplateMixin, TemplateView):
         lock = self.page.get_lock()
         if lock and lock.for_user(request.user):
             raise PermissionDenied
+
+        if not (
+            issubclass(self.page.specific_class, EnhancedStandardPage)
+            and self.page.alias_of is None
+        ):
+            raise Http404("FAQ section upload not found.")
+
+        has_body_fieldpanel = False
+        for panel in self.page.specific_class.content_panels:
+            if isinstance(panel, FieldPanel) and panel.field_name == "body":
+                has_body_fieldpanel = True
+
+        if not has_body_fieldpanel:
+            raise Http404("FAQ section upload not found.")
 
         form = FAQCSVUploadForm(request.POST, request.FILES)
         if not form.is_valid():
