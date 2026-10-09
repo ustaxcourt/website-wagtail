@@ -336,6 +336,10 @@
     white-space: nowrap;
 }
 
+.enhanced-page .detailed-timeline-controls .detailed-timeline-control-button {
+    display: inline-flex;
+}
+
 .detailed-timeline-print-button-icon,
 .detailed-timeline-expand-button-icon {
     width: 20px;
