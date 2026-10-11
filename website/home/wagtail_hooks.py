@@ -32,7 +32,6 @@ from .views import (
 import logging
 
 from home.views import NewsItemReportView, PrivateSeminarDisclosureReportView
-from wagtail.admin.menu import AdminOnlyMenuItem
 
 logger = logging.getLogger(__name__)
 
@@ -500,11 +499,43 @@ def notify_submitter_on_superseding_edit_of_draft_currently_in_moderation(
     )
 
 
+class PermissionCheckedMenuItem(MenuItem):
+    """
+    A MenuItem that is only shown if the user has permission according to
+    the given permission policy and action (or is a superuser).
+    """
+
+    def __init__(
+        self,
+        label,
+        url,
+        permission_policy=None,
+        permission_required=None,
+        **kwargs,
+    ):
+        self.permission_policy = permission_policy
+        self.permission_required = permission_required
+        super().__init__(label, url, **kwargs)
+
+    def is_shown(self, request):
+        if not request.user.is_authenticated:
+            return False
+        if request.user.is_superuser:
+            return True
+        if self.permission_policy and self.permission_required:
+            return self.permission_policy.user_has_permission(
+                request.user, self.permission_required
+            )
+        return super().is_shown(request)
+
+
 @hooks.register("register_reports_menu_item")
 def register_unpublished_changes_report_menu_item():
-    return AdminOnlyMenuItem(
+    return PermissionCheckedMenuItem(
         "News and Announcements Publish Report",
         reverse("news_and_announcements_report"),
+        permission_policy=NewsItemReportView.permission_policy,
+        permission_required=NewsItemReportView.permission_required,
         icon_name="clipboard-list",
         order=700,
     )
@@ -528,9 +559,11 @@ def register_news_and_announcements_report_url():
 
 @hooks.register("register_reports_menu_item")
 def register_searched_definitions_report_menu_item():
-    return AdminOnlyMenuItem(
+    return PermissionCheckedMenuItem(
         "Search Definitions Report",
         reverse("search_definitions_report"),
+        permission_policy=SearchDefinitionsReportView.permission_policy,
+        permission_required=SearchDefinitionsReportView.permission_required,
         icon_name="clipboard-list",
     )
 

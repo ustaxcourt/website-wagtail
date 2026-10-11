@@ -13,6 +13,7 @@ from wagtail.admin.ui.tables import Column
 from wagtail.admin.views.reports import ReportView
 from wagtail.admin.views.generic.base import BaseListingView
 from wagtail.documents.views.chooser import DocumentChooserViewSet
+from wagtail.permission_policies import ModelPermissionPolicy
 
 from wagtail_external_links_report.views import ExternalLinksReportView
 
@@ -51,6 +52,8 @@ class NewsItemReportView(ReportView):
 
     index_url_name = "news_and_announcements_report"
     index_results_url_name = "news_and_announcements_report_results"
+    permission_policy = ModelPermissionPolicy(NewsItem)
+    permission_required = "view"
 
     # Disable filtering since we're combining two different model types
     filterset_class = NewsItemReportFilterSet
@@ -85,13 +88,15 @@ class NewsItemReportView(ReportView):
         Column(
             "document",
             label="Document",
-            accessor=lambda obj: format_html(
-                '<a href="{}" target="_blank">{}</a>',
-                obj.document.url,
-                obj.document.filename,
-            )
-            if obj.document
-            else "-",
+            accessor=lambda obj: (
+                format_html(
+                    '<a href="{}" target="_blank">{}</a>',
+                    obj.document.url,
+                    obj.document.filename,
+                )
+                if obj.document
+                else "-"
+            ),
         ),
         Column(
             "publish_date",
@@ -409,6 +414,8 @@ class SearchDefinitionsReportView(ReportView):
 
     index_url_name = "search_definitions_report"
     index_results_url_name = "search_definitions_report_results"
+    permission_policy = ModelPermissionPolicy(DefinitionsQuery)
+    permission_required = "view"
     filterset_class = SearchDefinitionsReportFilterSet
 
     columns = [
@@ -423,12 +430,14 @@ class SearchDefinitionsReportView(ReportView):
         Column(
             "number_of_hits",
             label="Times Searched",
-            accessor=lambda obj: format_html(
-                '<span style="background-color: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 12px;">{}</span>',
-                obj.number_of_hits,
-            )
-            if obj.number_of_hits
-            else "-",
+            accessor=lambda obj: (
+                format_html(
+                    '<span style="background-color: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 12px;">{}</span>',
+                    obj.number_of_hits,
+                )
+                if obj.number_of_hits
+                else "-"
+            ),
         ),
         Column(
             "id",
@@ -498,9 +507,11 @@ class PrivateSeminarDisclosureReportView(ReportView):
         Column(
             "program_topics",
             label="Program Topics",
-            accessor=lambda d: format_html("{}", strip_tags(d.program_topics))
-            if d.program_topics
-            else "—",
+            accessor=lambda d: (
+                format_html("{}", strip_tags(d.program_topics))
+                if d.program_topics
+                else "—"
+            ),
         ),
         Column(
             "supporter",
