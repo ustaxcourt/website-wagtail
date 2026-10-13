@@ -248,9 +248,10 @@ class TestBannerPreview:
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
         assert payload[0]["banner_end_date"] is None
-        # The critical (red) banner payload should be untouched for a
-        # high-priority banner.
-        assert "critical_priority_news_json" not in context
+        # Any live critical (red) banner is hidden so only the previewed
+        # banner shows at the top of the page.
+        assert context["has_critical_news"] is False
+        assert json.loads(context["critical_priority_news_json"]) == []
 
     def test_get_preview_context_announcements_page_forces_critical_top_banner(self):
         banner = self._make_banner(priority="critical")
@@ -265,13 +266,16 @@ class TestBannerPreview:
         payload = json.loads(context["critical_priority_news_json"])
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
-        assert "yellow_priority_news_json" not in context
+        # Any live high priority (yellow) banner is hidden.
+        assert context["has_yellow_news"] is False
+        assert json.loads(context["yellow_priority_news_json"]) == []
 
     def test_get_preview_context_announcements_page_skips_top_banner_for_none_priority(
         self,
     ):
         """A banner with no priority level was never shown at the top of the
-        page in production, so the preview shouldn't force it there either."""
+        page in production, so the preview shouldn't force it there either,
+        and other live banners are still hidden."""
         banner = self._make_banner(priority="none")
         fake_page = MagicMock()
         fake_page.get_context.return_value = {}
@@ -280,5 +284,34 @@ class TestBannerPreview:
         ):
             context = banner.get_preview_context(None, "announcements_page")
 
-        assert "yellow_priority_news_json" not in context
-        assert "critical_priority_news_json" not in context
+        assert context["has_yellow_news"] is False
+        assert context["has_critical_news"] is False
+
+    @pytest.mark.parametrize("priority", ["high", "critical", "none"])
+    def test_get_preview_context_sets_is_banner_preview(self, priority):
+        """
+        is_banner_preview tells yellow_news_banner.html to ignore localStorage
+        dismissals, so dismissing in a preview never hides the live banner.
+        """
+        banner = self._make_banner(priority=priority)
+        with patch.object(Banner, "_get_preview_announcements_page", return_value=None):
+            context = banner.get_preview_context(None, "announcements_page")
+        assert context["is_banner_preview"] is True
+
+
+class TestYellowNewsBannerTemplatePreviewFlag:
+    """yellow_news_banner.html only skips localStorage dismissals in a preview."""
+
+    def _render(self, **extra):
+        from django.template.loader import render_to_string
+
+        context = {"has_yellow_news": True, "yellow_priority_news_json": "[]"}
+        context.update(extra)
+        return render_to_string("yellow_news_banner.html", context)
+
+    def test_flag_is_false_on_normal_pages(self):
+        assert "var IS_BANNER_PREVIEW = false;" in self._render()
+
+    def test_flag_is_true_in_banner_preview(self):
+        html = self._render(is_banner_preview=True)
+        assert "var IS_BANNER_PREVIEW = true;" in html

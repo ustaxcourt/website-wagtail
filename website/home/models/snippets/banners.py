@@ -293,11 +293,24 @@ class Banner(
         with no start/end dates, so the client-side date filter always treats
         it as active regardless of its real scheduling.
 
+        The other priority level's top-of-page banner is cleared, so no other
+        currently scheduled banner shows alongside the one being previewed.
+        `is_banner_preview` tells yellow_news_banner.html to ignore (and not
+        record) localStorage dismissals, so dismissing the banner in a preview
+        never hides the real banner on the site, and vice versa.
+
         These keys are only overridden on the Banner preview response itself;
         real page requests are untouched.
         """
+        context = {
+            "is_banner_preview": True,
+            "yellow_priority_news_json": "[]",
+            "has_yellow_news": False,
+            "critical_priority_news_json": "[]",
+            "has_critical_news": False,
+        }
         if self.priority_level not in ("high", "critical"):
-            return {}
+            return context
 
         payload = json.dumps(
             [
@@ -316,8 +329,14 @@ class Banner(
             ]
         )
         if self.priority_level == "high":
-            return {"yellow_priority_news_json": payload, "has_yellow_news": True}
-        return {"critical_priority_news_json": payload, "has_critical_news": True}
+            context.update(
+                {"yellow_priority_news_json": payload, "has_yellow_news": True}
+            )
+        else:
+            context.update(
+                {"critical_priority_news_json": payload, "has_critical_news": True}
+            )
+        return context
 
 
 class BannersFilterSet(WagtailFilterSet):
