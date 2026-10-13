@@ -1,5 +1,7 @@
 """Tests for home/models/pages/press_release.py"""
 
+from datetime import timedelta
+
 import pytest
 from unittest.mock import patch, MagicMock
 from django.utils import timezone
@@ -312,6 +314,47 @@ class TestGroupPressReleasesByYearPreviewBanner:
         entry = result[today_year][0]
         assert entry["is_preview_entry"] is True
         assert entry["banner_title"] == "Not yet scheduled"
+
+    @pytest.mark.parametrize(
+        "start_offset,end_offset,live",
+        [
+            (timedelta(days=2), None, False),
+            (-timedelta(days=2), -timedelta(days=1), True),
+        ],
+        ids=["unpublished-future-start", "past-end"],
+    )
+    def test_preview_banner_ignores_live_and_schedule_status(
+        self, start_offset, end_offset, live
+    ):
+        from home.models.snippets.banners import Banner
+
+        page = self._make_page()
+        now = timezone.now()
+        preview_banner = Banner()
+        preview_banner.pk = 42
+        preview_banner.live = live
+        preview_banner.banner_title = "Scheduled Banner"
+        preview_banner.description = "Details"
+        preview_banner.priority_level = "high"
+        preview_banner.banner_start_date = now + start_offset
+        preview_banner.banner_end_date = (
+            now + end_offset if end_offset is not None else None
+        )
+        preview_banner.document = None
+
+        with patch("home.models.pages.press_release.NewsItem") as mock_ni:
+            mock_ni.objects.live.return_value.filter.return_value.order_by.return_value = []
+            with patch("home.models.pages.press_release.Banner") as mock_banner:
+                (
+                    mock_banner.objects.live.return_value.filter.return_value.order_by.return_value.exclude.return_value
+                ) = []
+                result = page.group_press_releases_by_year(
+                    preview_banner=preview_banner
+                )
+
+        release_date = preview_banner.banner_start_date.date()
+        assert result[release_date.year][0]["is_preview_entry"] is True
+        assert result[release_date.year][0]["banner_title"] == "Scheduled Banner"
 
     def test_preview_banner_not_duplicated_when_already_live(self):
         """If the previewed banner is also genuinely live, it shouldn't appear twice."""

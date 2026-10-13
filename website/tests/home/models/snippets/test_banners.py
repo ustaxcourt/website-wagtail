@@ -253,6 +253,32 @@ class TestBannerPreview:
         assert context["has_critical_news"] is False
         assert json.loads(context["critical_priority_news_json"]) == []
 
+    @pytest.mark.parametrize(
+        "start_offset,end_offset",
+        [
+            (timedelta(days=2), None),
+            (-timedelta(days=2), -timedelta(days=1)),
+        ],
+        ids=["future-start", "past-end"],
+    )
+    def test_preview_top_banner_ignores_schedule_dates(self, start_offset, end_offset):
+        now = timezone.now()
+        banner = self._make_banner(start_date=now + start_offset)
+        banner.banner_end_date = now + end_offset if end_offset is not None else None
+        banner.live = False
+        fake_page = MagicMock()
+        fake_page.get_context.return_value = {}
+
+        with patch.object(
+            Banner, "_get_preview_announcements_page", return_value=fake_page
+        ):
+            context = banner.get_preview_context(None, "announcements_page")
+
+        payload = json.loads(context["yellow_priority_news_json"])
+        assert payload[0]["title"] == "Important Banner"
+        assert payload[0]["banner_start_date"] is None
+        assert payload[0]["banner_end_date"] is None
+
     def test_get_preview_context_announcements_page_forces_critical_top_banner(self):
         banner = self._make_banner(priority="critical")
         fake_page = MagicMock()
