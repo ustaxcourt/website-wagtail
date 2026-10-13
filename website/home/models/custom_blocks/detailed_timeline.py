@@ -10,7 +10,7 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
 
     date_range = blocks.CharBlock(
         max_length=255,
-        required=True,
+        required=False,
         help_text="Text to be displayed at the end of the phase.",
         label="Date Range",
     )
@@ -94,6 +94,10 @@ class DetailedTimelineBlock(blocks.StructBlock):
     introduction = blocks.RichTextBlock(
         help_text="Text to be displayed under the detailed timeline's title.",
         required=True,
+    )
+
+    show_numbers_in_bubbles = blocks.BooleanBlock(
+        default=False, label="Bubble Line Numbers?"
     )
 
     phases = blocks.StreamBlock(
