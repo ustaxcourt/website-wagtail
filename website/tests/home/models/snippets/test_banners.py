@@ -132,6 +132,89 @@ class TestBannerCleanValidation:
         banner = self._make_banner(priority="high")
         assert banner.category == "High Priority"
 
+    @pytest.mark.parametrize("priority", ["high", "critical"])
+    def test_clean_allows_missing_start_date_in_preview(self, priority):
+        """A banner can be previewed before a start date is set."""
+        banner = self._make_banner(priority=priority, start_date=None)
+        banner._is_preview = True
+        with patch("django.db.models.Model.clean"):
+            Banner.clean(banner)
+
+    def test_clean_skips_overlap_check_in_preview(self):
+        banner = self._make_banner(priority="high", start_date=timezone.now())
+        banner._is_preview = True
+        with patch("django.db.models.Model.clean"):
+            with patch.object(banner, "_check_banner_overlap") as mock_check:
+                Banner.clean(banner)
+        mock_check.assert_not_called()
+
+    def test_clean_still_requires_title_in_preview(self):
+        banner = self._make_banner(title="", start_date=None)
+        banner._is_preview = True
+        with patch("django.db.models.Model.clean"):
+            with pytest.raises(ValidationError) as exc_info:
+                Banner.clean(banner)
+        assert "banner_title" in exc_info.value.message_dict
+
+
+@pytest.mark.django_db
+class TestBannerPreviewViews:
+    """The admin preview endpoints accept a banner with no start date."""
+
+    def _form_data(self, **overrides):
+        data = {
+            "banner_title": "No start date",
+            "description": "Preview me",
+            "priority_level": "high",
+            "banner_start_date": "",
+            "banner_end_date": "",
+        }
+        data.update(overrides)
+        return data
+
+    @pytest.fixture
+    def admin_client(self, client, django_user_model, settings):
+        settings.GITHUB_SHA = "test1234567"
+        user = django_user_model.objects.create_superuser(
+            username="preview-admin", email="preview@example.com", password="x"
+        )
+        client.force_login(user)
+        return client
+
+    def test_preview_on_create_is_valid_without_start_date(self, admin_client):
+        response = admin_client.post(
+            "/admin/snippets/home/banner/preview/", self._form_data()
+        )
+        assert response.json() == {"is_valid": True, "is_available": True}
+
+    def test_preview_on_edit_is_valid_without_start_date(self, admin_client):
+        banner = Banner.objects.create(
+            banner_title="Existing",
+            description="Desc",
+            priority_level="critical",
+            live=False,
+        )
+        response = admin_client.post(
+            f"/admin/snippets/home/banner/preview/{banner.pk}/",
+            self._form_data(priority_level="critical"),
+        )
+        assert response.json() == {"is_valid": True, "is_available": True}
+
+    def test_preview_shows_message_when_no_announcements_page(self, admin_client):
+        """With no News & Announcements page, the preview explains why instead of erroring."""
+        url = "/admin/snippets/home/banner/preview/"
+        admin_client.post(url, self._form_data())
+        response = admin_client.get(url, {"mode": "announcements_page"})
+        assert response.status_code == 200
+        assert "Unable to render a preview" in response.content.decode()
+
+    def test_saving_still_requires_start_date(self, admin_client):
+        response = admin_client.post(
+            "/admin/snippets/home/banner/add/", self._form_data()
+        )
+        assert not Banner.objects.filter(banner_title="No start date").exists()
+        assert "Start date and time are required" in response.content.decode()
+
 
 class TestBannerPreview:
     """Test the single-preview support (preview_modes, get_preview_template,

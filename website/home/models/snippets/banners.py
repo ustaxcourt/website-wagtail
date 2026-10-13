@@ -14,7 +14,11 @@ from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
-from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.snippets.views.snippets import (
+    PreviewOnCreateView,
+    PreviewOnEditView,
+    SnippetViewSet,
+)
 from wagtail.admin.filters import WagtailFilterSet
 
 
@@ -152,6 +156,10 @@ class Banner(
         Validate that high priority banners don't overlap with other high priority banners,
         and critical priority banners don't overlap with other critical priority banners.
         Start date is required for high and critical banners. End date is optional.
+
+        The start date and overlap checks are skipped while previewing (see
+        BannerPreviewMixin) so an editor can preview a banner before scheduling
+        it. They still apply when saving or publishing.
         """
         super().clean()
 
@@ -160,6 +168,9 @@ class Banner(
 
         if not self.description:
             raise ValidationError({"description": "Description is required."})
+
+        if getattr(self, "_is_preview", False):
+            return
 
         # Require start date for high and critical priority banners
         if self.priority_level in ["high", "critical"] and not self.banner_start_date:
@@ -349,8 +360,29 @@ class BannersFilterSet(WagtailFilterSet):
         ]
 
 
+class BannerPreviewMixin:
+    """
+    Flag the banner as a preview before the form is validated, so Banner.clean()
+    lets an editor preview a banner that has no start date yet.
+    """
+
+    def validate_form(self, form):
+        form.instance._is_preview = True
+        return super().validate_form(form)
+
+
+class BannerPreviewOnCreateView(BannerPreviewMixin, PreviewOnCreateView):
+    pass
+
+
+class BannerPreviewOnEditView(BannerPreviewMixin, PreviewOnEditView):
+    pass
+
+
 class BannerViewSet(SnippetViewSet):
     model = Banner
+    preview_on_add_view_class = BannerPreviewOnCreateView
+    preview_on_edit_view_class = BannerPreviewOnEditView
     filterset_class = BannersFilterSet
     list_display = [
         "banner_title",
