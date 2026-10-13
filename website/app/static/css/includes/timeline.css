@@ -376,6 +376,7 @@
 .bubble-line {
     padding-left: 52px;
     position: relative;
+    counter-reset: bubbleitem 0;
 }
 
 .bubble-circle::before {
@@ -391,8 +392,21 @@
     z-index: 1;
 }
 
+.bubble-number::before {
+    counter-increment: bubbleitem;
+    content: counter(bubbleitem);
+    text-align: center;
+    color: var(--color-secondary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
 .bubble-circle:has(* > * > .active)::before {
     background-color: var(--color-primary);
+}
+
+.bubble-number:has(* > * > .active)::before {
+    color: white;
 }
 
 .bubble-circle:not(:last-child)::after {
