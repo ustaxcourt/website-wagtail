@@ -57,6 +57,11 @@
             font-weight: 600;
         }
 
+        .petitioner-breadcrumb-link {
+            color: inherit;
+            text-decoration: underline;
+        }
+
         @media (max-width: 1200px) {
             .rounded-rectangle {
                 padding: 0 0 32px 0;
@@ -135,6 +140,10 @@
             {% endwith %}
         {% endif %}
         <h1 data-testid="page-title" tabindex="-1">
+            {% if page.breadcrumb_title and page.breadcrumb_page_url %}
+                <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
+                <span aria-hidden="true"> / </span>
+            {% endif %}
             <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
             <span class="page-title-breadcrumb" style="display: none;"></span>
         </h1>
