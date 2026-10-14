@@ -2,7 +2,7 @@
     width: 100%;
     background-color: #E8F0FE;
     border-radius: 10px;
-    margin: 32px 0;
+    margin: 0 0 32px 0;
     padding: 0 24px 0 0;
     display: grid;
     grid-template-columns: min-content auto;
