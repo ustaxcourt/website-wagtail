@@ -35,6 +35,7 @@ type DOMNode = {
     nodeId: number;
     nodeName: string;
     frameId?: string;
+    attributes?: string[];
     children?: DOMNode[];
     contentDocument?: DOMNode;
 };
@@ -74,14 +75,18 @@ function normalize(text: string): string {
     return text.replace(/\s+/g, " ").trim().toLowerCase();
 }
 
-/** The iframe element Cypress runs the app under test in, inside the runner's DOM. */
-function findAppFrame(node: DOMNode, url: string): DOMNode | undefined {
+/** The iframe Cypress runs the app under test in, inside the runner's DOM. */
+function findAppFrame(node: DOMNode): DOMNode | undefined {
     if (node.nodeName === "IFRAME" && node.contentDocument) {
-        const frameUrl = (node.contentDocument as DOMNode & { documentURL?: string }).documentURL;
-        if (frameUrl === url) return node;
+        // CDP lists attributes as a flat [name, value, name, value, ...] array.
+        const attrs = node.attributes || [];
+        const classIndex = attrs.indexOf("class");
+        if (classIndex !== -1 && attrs[classIndex + 1].split(" ").indexOf("aut-iframe") !== -1) {
+            return node;
+        }
     }
     for (const child of node.children || []) {
-        const found = findAppFrame(child, url);
+        const found = findAppFrame(child);
         if (found) return found;
     }
     return undefined;
@@ -130,13 +135,11 @@ export function checkNoDoubleAnnouncements(selector = "main") {
     let frame: DOMNode;
     let nodes: AXNode[];
     const byId: { [id: string]: AXNode } = {};
-    cy.url()
-        .then((url) =>
-            cdp<{ root: DOMNode }>("DOM.getDocument", { depth: -1, pierce: true }).then(({ root }) => {
-                frame = findAppFrame(root, url)!;
-                expect(frame, `app iframe for ${url}`).to.exist;
-            }),
-        )
+    cdp<{ root: DOMNode }>("DOM.getDocument", { depth: -1, pierce: true })
+        .then(({ root }) => {
+            frame = findAppFrame(root)!;
+            expect(frame, "Cypress app iframe").to.exist;
+        })
         .then(() =>
             cdp<{ nodes: AXNode[] }>("Accessibility.getFullAXTree", { frameId: frame.frameId }),
         )
