@@ -113,6 +113,6 @@ def backwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("home", "0157_data_delete_html_redirects_pe")]
+    dependencies = [("home", "0157_alter_enhancedstandardpage_body_pe")]
 
     operations = [migrations.RunPython(forwards, backwards)]
