@@ -19,7 +19,7 @@ GETTING_STARTED_FORMS = [
             "For security purposes, upload it only when prompted as a separate "
             "document; the Court will not retain a copy. The STIN is the only "
             "document you should file with your social security number or EIN.</p>"
-            "<p>The Form 4 is included in the Petition Kit for those filing by mail.</p>"
+            "<p>Form 4 is included in the Petition Kit for those filing by mail.</p>"
         ),
         "button": "Download Form 4",
         "card_id": "05a93f0c-0cb7-42bd-a43c-61363d7784d8",
@@ -301,7 +301,8 @@ class PetitionersFormsPageInitializer(PageInitializer):
         logger.info("Created the Forms to File a Petition page.")
 
     def run(self):
-        command_name = "Create editable forms content for Forms to File a Petition"
+        # Renamed so environments that already ran the original script pick up the copy fixes.
+        command_name = "Update Forms to File a Petition content with grammar fixes"
         if ExecuteScript.command_exists(command_name):
             logger.info("Script '%s' already exists. Skipping.", command_name)
             return 0
