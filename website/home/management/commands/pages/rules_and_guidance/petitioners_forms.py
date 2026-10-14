@@ -288,7 +288,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text="Download forms you may need.",
+                introductory_text="<p>Download forms you may need.</p>",
                 call_to_action=call_to_action,
                 slug=slug,
                 seo_title=title,
