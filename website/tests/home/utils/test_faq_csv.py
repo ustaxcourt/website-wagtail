@@ -10,7 +10,7 @@ from django.test import RequestFactory
 from django.urls import reverse
 from wagtail.models import Locale, Page, Site
 
-from home.models import EnhancedStandardPage, FAQFilterTag
+from home.models import EnhancedStandardPage, FAQFilterTag, ReleaseNotes
 from home.utils.faq_csv import (
     FAQCSVError,
     faq_csv_parse,
@@ -441,3 +441,36 @@ class TestFaqCsvAdminViews:
     def test_page_editor_shows_header_button(self, client, page):
         response = client.get(reverse("wagtailadmin_pages:edit", args=[page.pk]))
         assert reverse("faq_csv", args=[page.pk]) in response.content.decode()
+
+    @pytest.fixture
+    def release_notes(self, page):
+        release_notes = ReleaseNotes(title="Release notes", slug="release-notes")
+        page.get_parent().add_child(instance=release_notes)
+        release_notes.save_revision().publish()
+        return release_notes
+
+    @pytest.fixture
+    def alias(self, page):
+        return page.create_alias(update_slug="faq-alias")
+
+    @pytest.mark.parametrize("target", ["release_notes", "alias"])
+    def test_no_header_button(self, request, target, admin_user):
+        target_page = request.getfixturevalue(target)
+        assert list(faq_csv_page_header_button(target_page, admin_user, "edit")) == []
+
+    @pytest.mark.parametrize("target", ["release_notes", "alias"])
+    def test_index_is_404(self, request, client, target):
+        target_page = request.getfixturevalue(target)
+        assert client.get(reverse("faq_csv", args=[target_page.pk])).status_code == 404
+
+    @pytest.mark.parametrize("target", ["release_notes", "alias"])
+    def test_upload_is_404_and_saves_nothing(self, request, client, target):
+        target_page = request.getfixturevalue(target)
+        revisions = target_page.revisions.count()
+        response = self.upload(
+            client,
+            target_page,
+            [["question", "answer", "filtertag"], ["Q", "A", "Filing"]],
+        )
+        assert response.status_code == 404
+        assert target_page.revisions.count() == revisions
