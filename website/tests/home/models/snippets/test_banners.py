@@ -331,10 +331,10 @@ class TestBannerPreview:
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
         assert payload[0]["banner_end_date"] is None
-        # Any live critical (red) banner is hidden so only the previewed
-        # banner shows at the top of the page.
-        assert context["has_critical_news"] is False
-        assert json.loads(context["critical_priority_news_json"]) == []
+        # The live critical (red) banner remains supplied by its context
+        # processor because preview context does not override that slot.
+        assert "has_critical_news" not in context
+        assert "critical_priority_news_json" not in context
 
     @pytest.mark.parametrize(
         "start_offset,end_offset",
@@ -375,16 +375,16 @@ class TestBannerPreview:
         payload = json.loads(context["critical_priority_news_json"])
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
-        # Any live high priority (yellow) banner is hidden.
-        assert context["has_yellow_news"] is False
-        assert json.loads(context["yellow_priority_news_json"]) == []
+        # The live high priority (yellow) banner remains supplied by its
+        # context processor because preview context does not override that slot.
+        assert "has_yellow_news" not in context
+        assert "yellow_priority_news_json" not in context
 
     def test_get_preview_context_announcements_page_skips_top_banner_for_none_priority(
         self,
     ):
-        """A banner with no priority level was never shown at the top of the
-        page in production, so the preview shouldn't force it there either,
-        and other live banners are still hidden."""
+        """A no-priority banner is not forced into a top slot, and existing
+        live priority banners remain supplied by their context processors."""
         banner = self._make_banner(priority="none")
         fake_page = MagicMock()
         fake_page.get_context.return_value = {}
@@ -393,8 +393,8 @@ class TestBannerPreview:
         ):
             context = banner.get_preview_context(None, "announcements_page")
 
-        assert context["has_yellow_news"] is False
-        assert context["has_critical_news"] is False
+        assert "has_yellow_news" not in context
+        assert "has_critical_news" not in context
 
     @pytest.mark.parametrize("priority", ["high", "critical", "none"])
     def test_get_preview_context_sets_is_banner_preview(self, priority):

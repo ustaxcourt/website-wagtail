@@ -304,8 +304,8 @@ class Banner(
         with no start/end dates, so the client-side date filter always treats
         it as active regardless of its real scheduling.
 
-        The other priority level's top-of-page banner is cleared, so no other
-        currently scheduled banner shows alongside the one being previewed.
+        The other priority level is left to the normal context processor, so
+        its currently scheduled banner remains visible alongside the preview.
         `is_banner_preview` tells yellow_news_banner.html to ignore (and not
         record) localStorage dismissals, so dismissing the banner in a preview
         never hides the real banner on the site, and vice versa.
@@ -315,10 +315,6 @@ class Banner(
         """
         context = {
             "is_banner_preview": True,
-            "yellow_priority_news_json": "[]",
-            "has_yellow_news": False,
-            "critical_priority_news_json": "[]",
-            "has_critical_news": False,
         }
         if self.priority_level not in ("high", "critical"):
             return context
