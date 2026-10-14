@@ -97,7 +97,10 @@ class DetailedTimelineBlock(blocks.StructBlock):
     )
 
     show_numbers_in_bubbles = blocks.BooleanBlock(
-        required=False, default=False, label="Bubble Line Numbers?"
+        required=False,
+        default=False,
+        label="Bubble Line Numbers?",
+        help_text="Check to display a Phase's place within the timeline inside its adjacent bubble.",
     )
 
     phases = blocks.StreamBlock(
