@@ -19,7 +19,7 @@ GETTING_STARTED_FORMS = [
             "For security purposes, upload it only when prompted as a separate "
             "document; the Court will not retain a copy. The STIN is the only "
             "document you should file with your social security number or EIN.</p>"
-            "<p>The Form 4 is included in the Petition Kit for those filing in mail.</p>"
+            "<p>The Form 4 is included in the Petition Kit for those filing by mail.</p>"
         ),
         "button": "Download Form 4",
         "card_id": "05a93f0c-0cb7-42bd-a43c-61363d7784d8",
@@ -195,7 +195,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
             {
                 "type": "paragraph",
                 "value": (
-                    "Download one of the following based on your chosen to file method."
+                    "Download one of the following based on your chosen filing method."
                 ),
                 "id": "4d04948e-e56b-4cd7-ab54-30dfc22098ec",
             },
