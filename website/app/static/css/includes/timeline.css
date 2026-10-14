@@ -179,7 +179,11 @@
     font-size: 16px;
     color: var(--color-secondary);
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 16;
-    padding: 4px 0 0;
+    padding: 2px 0 0;
+}
+
+.material-symbols-outlined.detailed-timeline-accordion-header-date-range-icon {
+    font-size: 20px;
 }
 
 .detailed-timeline-accordion-content p,
@@ -399,6 +403,7 @@
     color: var(--color-secondary);
     font-size: 14px;
     font-weight: 600;
+    padding-top: 1px;
 }
 
 .bubble-circle:has(* > * > .active)::before {
