@@ -97,7 +97,7 @@ class DetailedTimelineBlock(blocks.StructBlock):
     )
 
     show_numbers_in_bubbles = blocks.BooleanBlock(
-        default=False, label="Bubble Line Numbers?"
+        required=False, default=False, label="Bubble Line Numbers?"
     )
 
     phases = blocks.StreamBlock(

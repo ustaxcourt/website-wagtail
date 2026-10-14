@@ -17,7 +17,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 class DetailedTimelineRenderTest(TestCase):
     """Verify that an EnhancedStandardPage with a detailed timeline renders without error."""
 
-    def setUp(self):
+    def page_setup(self, show_bubble_line_numbers):
         self.factory = RequestFactory()
 
         Locale.objects.get_or_create(language_code="en")
@@ -46,58 +46,10 @@ class DetailedTimelineRenderTest(TestCase):
             slug="detailed-timeline-test-page",
             body=[
                 {
-                    "type": "summary_timeline",
-                    "value": {
-                        "title": "TYPICAL CASE TIMELINE",
-                        "phases": [
-                            {
-                                "type": "item",
-                                "value": {
-                                    "title": "File Petition",
-                                    "date_range": "Day 0-Deadline",
-                                },
-                                "id": "0e88e4c5-a9c6-49a5-9181-d9103c991a0d",
-                            },
-                            {
-                                "type": "item",
-                                "value": {
-                                    "title": "IRS Answer",
-                                    "date_range": "~60 days",
-                                },
-                                "id": "035ef5a0-94a6-4022-98c1-aa65490c272a",
-                            },
-                            {
-                                "type": "item",
-                                "value": {
-                                    "title": "Pre-Trial",
-                                    "date_range": "2-12 months",
-                                },
-                                "id": "312473bc-6f85-41c7-a12c-c913d16029be",
-                            },
-                            {
-                                "type": "item",
-                                "value": {
-                                    "title": "Trial",
-                                    "date_range": "12-24+ months",
-                                },
-                                "id": "50c5f9c3-9f47-4776-b98a-e1de5b4b0b3e",
-                            },
-                            {
-                                "type": "item",
-                                "value": {
-                                    "title": "Decision",
-                                    "date_range": "6-12+ months",
-                                },
-                                "id": "81478e67-3c14-4339-a5a2-d1f12aa85f04",
-                            },
-                        ],
-                    },
-                    "id": "8c34cf67-1a49-4da5-a508-f35217759926",
-                },
-                {
                     "type": "detailed_timeline",
                     "value": {
                         "title": "United States Tax Court Case Timeline",
+                        "show_numbers_in_bubbles": show_bubble_line_numbers,
                         "introduction": '<p data-block-key="lamyb">Please note: The timeline of every court case is different. This is a general timeline to help you<br/>understand the lifecycle of a case and should not be used for planning purposes.</p>',
                         "phases": [
                             {
@@ -277,7 +229,7 @@ class DetailedTimelineRenderTest(TestCase):
                                 "type": "phase",
                                 "value": {
                                     "title": "Discovery & Discussion",
-                                    "date_range": "4-12 Months",
+                                    "date_range": "",  # "4-12 Months", #Removed to test that this date range does not appear now that date_range is optional
                                     "instructions": '<p data-block-key="5t5z1">Exchange information and documents with the IRS.</p><ul><li data-block-key="aekn5">Exchange documents and supporting materials.</li><li data-block-key="38ts4">Participate in discussions about your case with the IRS.</li><li data-block-key="4e0df">Cases may be set for trial or motion during this time.</li></ul>',
                                     "your_tasks": [
                                         {
@@ -375,7 +327,10 @@ class DetailedTimelineRenderTest(TestCase):
         )
         home_page.add_child(instance=self.page)
 
-    def test_detailed_timeline_renders_without_variable_does_not_exist(self):
+    def test_page_with_detailed_timeline_renders_successfully(self):
+        self.page_setup(False)
+        # def test_page_with_detailed_timeline_renders_successfully(self):
+        #     self.page_setup(False)
         """Page with a detailed timeline in body must return HTTP 200."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
@@ -383,7 +338,10 @@ class DetailedTimelineRenderTest(TestCase):
         rendered = response.render()
         self.assertEqual(rendered.status_code, 200)
 
-    def test_detailed_timeline_content_appears_in_response(self):
+    def test_detailed_timeline_content_without_bubble_line_numbers_appears_in_response(
+        self,
+    ):
+        self.page_setup(False)
         """Accordion title must appear in the rendered HTML."""
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
@@ -401,7 +359,7 @@ class DetailedTimelineRenderTest(TestCase):
         self.assertIn("Trial Date is Scheduled", content)
         self.assertIn("6-13 Months", content)
         self.assertIn("Discovery &amp; Discussion", content)
-        self.assertIn("4-12 Months", content)
+        self.assertNotIn("4-12 Months", content)
         self.assertIn("Trial Preparation", content)
         self.assertIn("2-4 Months Before Trial", content)
         self.assertIn("Trial", content)
@@ -417,8 +375,53 @@ class DetailedTimelineRenderTest(TestCase):
         self.assertIn(
             "You can represent yourself or", content
         )  # Checking for information subtext in second Helpful Information item in Receive an IRS Notice phase
+        self.assertNotIn(
+            "bubble-number", content
+        )  # Validate that bubble numbers are not shown when show_numbers_in_bubbles is False
+
+    def test_detailed_timeline_content_with_bubble_line_numbers_appears_in_response(
+        self,
+    ):
+        self.page_setup(True)
+        """Accordion title must appear in the rendered HTML."""
+        request = self.factory.get(self.page.url)
+        request.site = Site.objects.get(is_default_site=True)
+        response = self.page.serve(request)
+        rendered = response.render()
+        content = rendered.content.decode()
+        self.assertIn("United States Tax Court Case Timeline", content)
+        self.assertIn("Please note:", content)
+        self.assertIn("Receive an IRS Notice", content)
+        self.assertIn("Day 0", content)
+        self.assertIn("File Your Petition", content)
+        self.assertIn("Day 0-Deadline", content)
+        self.assertIn("IRS Files Answer", content)
+        self.assertIn("Up To 60 Days After the Petition is Filed", content)
+        self.assertIn("Trial Date is Scheduled", content)
+        self.assertIn("6-13 Months", content)
+        self.assertIn("Discovery &amp; Discussion", content)
+        self.assertNotIn("4-12 Months", content)
+        self.assertIn("Trial Preparation", content)
+        self.assertIn("2-4 Months Before Trial", content)
+        self.assertIn("Trial", content)
+        self.assertIn("12-24+ Months After Filing", content)
+        self.assertIn("Decision", content)
+        self.assertIn("6-12+ Months After Trial", content)
+        self.assertIn(
+            "checkbox-92fbd6bf-b338-4993-a5e7-ddffe874c42b-1", content
+        )  # Checking for id of first task in Trial Preparation phase
+        self.assertIn(
+            "Can I represent myself?", content
+        )  # Checking for information text in second Helpful Information item in Receive an IRS Notice phase
+        self.assertIn(
+            "You can represent yourself or", content
+        )  # Checking for information subtext in second Helpful Information item in Receive an IRS Notice phase
+        self.assertIn(
+            "bubble-number", content
+        )  # Validate that bubble numbers are not shown when show_numbers_in_bubbles is False
 
     def test_detailed_timeline_has_expand_and_print_controls(self):
+        self.page_setup(False)
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
         response = self.page.serve(request)
