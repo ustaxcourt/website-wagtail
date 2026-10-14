@@ -142,6 +142,14 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "CLOUDFRONT_DISTRIBUTION_ID",
         value = aws_cloudfront_distribution.app.id
+      },
+      {
+        name = "GUNICORN_WORKERS",
+        value = tostring(local.gunicorn_workers)
+      },
+      {
+        name = "GUNICORN_THREADS",
+        value = tostring(local.gunicorn_threads)
       }
     ],
     secrets: [
