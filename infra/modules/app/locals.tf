@@ -9,4 +9,6 @@ locals {
   # separate Django process (~150-250MB); threads share their worker's memory.
   gunicorn_workers = var.environment == "sandbox" ? 2 : 3
   gunicorn_threads = 4
+
+  health_check_path = "/healthz/"
 }
