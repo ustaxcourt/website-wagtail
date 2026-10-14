@@ -121,6 +121,9 @@ def _find_qas_with_tag(node, slug):
     if isinstance(node, dict):
         if node.get("type") == QA_BLOCK_TYPE:
             items = node.get("value") or []
+            if isinstance(items, dict):
+                # EnhancedStandardPage wraps its list: {"display_filter_section", "questions"}
+                items = items.get("questions") or []
             for item in items:
                 # ListBlock items are {"type": "item", "value": {...}} or bare dicts
                 qa = item.get("value", item) if isinstance(item, dict) else None

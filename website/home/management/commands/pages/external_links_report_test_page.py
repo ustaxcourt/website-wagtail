@@ -344,35 +344,38 @@ class ExternalLinksReportTestPageInitializer(PageInitializer):
             },
             {
                 "type": "questionanswers",
-                "value": [
-                    {
-                        "type": "item",
-                        "value": {
-                            "question": "Q1",
-                            "answer": '<p data-block-key="jsnxn"><a href="https://www.google.com">External Link in Q&amp;A</a></p>',
-                            "anchortag": "QA1",
+                "value": {
+                    "display_filter_section": False,
+                    "questions": [
+                        {
+                            "type": "item",
+                            "value": {
+                                "question": "Q1",
+                                "answer": '<p data-block-key="jsnxn"><a href="https://www.google.com">External Link in Q&amp;A</a></p>',
+                                "anchortag": "QA1",
+                            },
+                            "id": "06f8c64e-7985-4141-be19-0d141db5bdc4",
                         },
-                        "id": "06f8c64e-7985-4141-be19-0d141db5bdc4",
-                    },
-                    {
-                        "type": "item",
-                        "value": {
-                            "question": "Q2",
-                            "answer": '<p data-block-key="i1xjt"><a href="https://www.google.com">https://www.google.com</a></p>',
-                            "anchortag": "QA2",
+                        {
+                            "type": "item",
+                            "value": {
+                                "question": "Q2",
+                                "answer": '<p data-block-key="i1xjt"><a href="https://www.google.com">https://www.google.com</a></p>',
+                                "anchortag": "QA2",
+                            },
+                            "id": "3a0a087c-cbc4-40d4-b9dd-19a34820681b",
                         },
-                        "id": "3a0a087c-cbc4-40d4-b9dd-19a34820681b",
-                    },
-                    {
-                        "type": "item",
-                        "value": {
-                            "question": "Q3",
-                            "answer": '<p data-block-key="i1xjt"><a href="http://www.yahoo.com">http://www.yahoo.com External Link in Q&amp;A with URL in text</a></p>',
-                            "anchortag": "QA3",
+                        {
+                            "type": "item",
+                            "value": {
+                                "question": "Q3",
+                                "answer": '<p data-block-key="i1xjt"><a href="http://www.yahoo.com">http://www.yahoo.com External Link in Q&amp;A with URL in text</a></p>',
+                                "anchortag": "QA3",
+                            },
+                            "id": "4390fba0-5624-461e-a3ac-bf005dd1c001",
                         },
-                        "id": "4390fba0-5624-461e-a3ac-bf005dd1c001",
-                    },
-                ],
+                    ],
+                },
                 "id": "df2f2ede-33b9-402d-8cb0-6d76f62b4a94",
             },
             {
