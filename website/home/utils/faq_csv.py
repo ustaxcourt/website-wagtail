@@ -18,6 +18,7 @@ goes through the normal review workflow and can be reverted from the page histor
 
 import csv
 import io
+import ast
 import re
 
 from django.core.exceptions import ValidationError
@@ -85,7 +86,9 @@ def faq_section_to_csv(section):
                 qa["answer"].source,
                 tag_name,
                 qa["anchortag"],
-                qa["helpful_resources"],
+                qa["helpful_resources"].list_block.get_prep_value(
+                    qa["helpful_resources"]
+                ),
             ]
         )
     return output.getvalue()
@@ -150,7 +153,7 @@ def faq_csv_parse(data, *, reserved_anchors=()):
                 "answer": _answer_to_rich_text(row["answer"]),
                 "anchortag": anchor,
                 "filtertag": slug or "",
-                "helpful_resources": row["helpfulresources"],
+                "helpful_resources": ast.literal_eval(row["helpfulresources"]),
             }
         )
 
