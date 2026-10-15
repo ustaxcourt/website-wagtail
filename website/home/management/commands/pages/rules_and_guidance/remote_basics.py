@@ -84,7 +84,13 @@ class RemoteBasicsPageInitializer(PageInitializer):
                 search_description="Zoomgov FAQs: The Basics",
                 body=[
                     {"type": "h2", "value": "Zoomgov FAQs: The Basics"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )

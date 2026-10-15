@@ -90,7 +90,13 @@ class PetitionersDuringPageInitializer(PageInitializer):
                 search_description=title,
                 body=[
                     {"type": "h2", "value": "Things That Occur During Trial"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )
