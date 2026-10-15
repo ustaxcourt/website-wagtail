@@ -111,6 +111,6 @@ def backwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("home", "0159_alter_directoryindex_body_and_more_pe")]
+    dependencies = [("home", "0160_alter_directoryindex_body_and_more_pe")]
 
     operations = [migrations.RunPython(forwards, backwards)]
