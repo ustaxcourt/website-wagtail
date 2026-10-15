@@ -28,7 +28,7 @@ from wagtail import hooks
 from home.models.custom_blocks.question_answers import QuestionAnswersBlock
 from home.models.snippets.faq_filter_tag import QA_BLOCK_TYPE, FAQFilterTag
 
-COLUMNS = ["question", "answer", "filtertag", "anchortag"]
+COLUMNS = ["question", "answer", "filtertag", "anchortag", "helpfulresources"]
 REQUIRED_COLUMNS = ["question", "answer", "filtertag"]
 MAX_ROWS = 500
 MAX_GENERATED_ANCHOR_LENGTH = 60
@@ -80,7 +80,13 @@ def faq_section_to_csv(section):
     writer.writerow(COLUMNS)
     for qa, tag_name in value.entries:
         writer.writerow(
-            [qa["question"], qa["answer"].source, tag_name, qa["anchortag"]]
+            [
+                qa["question"],
+                qa["answer"].source,
+                tag_name,
+                qa["anchortag"],
+                qa["helpful_resources"],
+            ]
         )
     return output.getvalue()
 
@@ -144,6 +150,7 @@ def faq_csv_parse(data, *, reserved_anchors=()):
                 "answer": _answer_to_rich_text(row["answer"]),
                 "anchortag": anchor,
                 "filtertag": slug or "",
+                "helpful_resources": row["helpfulresources"],
             }
         )
 
