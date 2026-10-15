@@ -24,7 +24,7 @@
     </div>
     <div class="detailed-timeline-phases-block bubble-line">
         {% for phase in block.value.phases %}
-            <div class="detailed-timeline-phase bubble-circle">
+            <div class="detailed-timeline-phase bubble-circle {% if block.value.show_numbers_in_bubbles %}bubble-number{% endif %}">
                 {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id %}
             </div>
         {% endfor %}
