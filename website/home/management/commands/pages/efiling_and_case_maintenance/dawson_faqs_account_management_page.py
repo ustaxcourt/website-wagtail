@@ -142,7 +142,13 @@ class DawsonFaqsAccountManagementPageInitializer(PageInitializer):
                 search_description="DAWSON: Account Management",
                 body=[
                     {"type": "h2", "value": "DAWSON: Account Management"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )

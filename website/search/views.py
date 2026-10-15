@@ -36,7 +36,9 @@ def extract_text_from_streamfield(stream_value, max_length=300):
     for block in stream_value:
         value = block.value
         if block.block_type == "questionanswers":
-            for qa in value:
+            # EnhancedStandardPage wraps its list in a struct; the raw HTML page doesn't
+            questions = value["questions"] if isinstance(value, dict) else value
+            for qa in questions:
                 if isinstance(qa, dict):
                     if "question" in qa:
                         text.append(qa["question"])
