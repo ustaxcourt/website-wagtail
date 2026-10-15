@@ -20,6 +20,7 @@ import csv
 import io
 import ast
 import re
+import uuid
 
 from django.core.exceptions import ValidationError
 from django.utils.html import escape
@@ -86,9 +87,12 @@ def faq_section_to_csv(section):
                 qa["answer"].source,
                 tag_name,
                 qa["anchortag"],
-                qa["helpful_resources"].list_block.get_prep_value(
-                    qa["helpful_resources"]
-                ),
+                [
+                    o["value"]
+                    for o in qa["helpful_resources"].list_block.get_prep_value(
+                        qa["helpful_resources"]
+                    )
+                ],
             ]
         )
     return output.getvalue()
@@ -153,7 +157,7 @@ def faq_csv_parse(data, *, reserved_anchors=()):
                 "answer": _answer_to_rich_text(row["answer"]),
                 "anchortag": anchor,
                 "filtertag": slug or "",
-                "helpful_resources": ast.literal_eval(row["helpfulresources"]),
+                "helpful_resources": _build_helpful_resources(row["helpfulresources"]),
             }
         )
 
@@ -268,6 +272,21 @@ def _answer_to_rich_text(text):
     return widget.value_from_datadict(
         {"answer": widget.format_value(text)}, {}, "answer"
     )
+
+
+def _build_helpful_resources(text):
+    result = []
+
+    for item in ast.literal_eval(text):
+        result.append(
+            {
+                "type": "item",
+                "value": item,
+                "id": str(uuid.uuid4()),
+            }
+        )
+
+    return result
 
 
 def _generate_anchor(question, used):
