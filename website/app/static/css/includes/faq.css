@@ -159,6 +159,13 @@
     line-height: 1.25rem;
 }
 
+/* Rich-text answers render as <p>; app.css's global `p { font-size: 17px;
+   line-height: 20px }` would otherwise override the sizes above. */
+.faq__answer p {
+    font-size: inherit;
+    line-height: inherit;
+}
+
 .faq__answer > :first-child {
     margin-top: 0;
 }
