@@ -157,7 +157,9 @@ def faq_csv_parse(data, *, reserved_anchors=()):
                 "answer": _answer_to_rich_text(row["answer"]),
                 "anchortag": anchor,
                 "filtertag": slug or "",
-                "helpful_resources": _build_helpful_resources(row["helpfulresources"]),
+                "helpful_resources": _build_helpful_resources(
+                    row.get("helpfulresources", "")
+                ),
             }
         )
 
@@ -276,6 +278,9 @@ def _answer_to_rich_text(text):
 
 def _build_helpful_resources(text):
     result = []
+
+    if not text:
+        return result
 
     for item in ast.literal_eval(text):
         result.append(
