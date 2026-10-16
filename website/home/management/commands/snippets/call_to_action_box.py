@@ -99,21 +99,10 @@ class CallToActionBoxInitializer(PageInitializer):
         logger.info("Successfully saved Call to Action Box.")
 
     def create(self):
-        if settings.SITE_IS_LIVE:
-            logger.info(
-                "Skipping Call to Action Box creation. Call to Action Box creation suppressed past site LIVE DATE."
-            )
-            return
-
         logger.info("Creating Call to Action Box...")
         self._upsert_call_to_action_box()
 
     def update(self):
-        if settings.SITE_IS_LIVE:
-            logger.info(
-                "Skipping Call to Action Box update. Call to Action Box update suppressed past site LIVE DATE."
-            )
-            return
         logger.info("Updating Call to Action Box...")
         self._upsert_call_to_action_box()
 
