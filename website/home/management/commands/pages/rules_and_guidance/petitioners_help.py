@@ -27,17 +27,23 @@ PLACEHOLDER_QUESTIONS = [
         "filing",
         "how-do-i-file",
         "How do I file a petition with the United States Tax Court?",
+        [],
     ),
-    ("deadlines", "petition-deadline", "What is the deadline to file a petition?"),
-    ("deadlines", "missed-deadline", "What happens if I miss the deadline?"),
-    ("filing", "small-tax-case", "What is a small tax case?"),
-    ("representation", "represent-myself", "Can I represent myself in Tax Court?"),
-    ("representation", "legal-help", "Can I get legal help?"),
-    ("forms-documents", "forms-needed", "What forms do I need to file a petition?"),
-    ("trial-process", "trial-location", "Where will my trial be held?"),
-    ("trial-process", "settle-case", "Can I settle my case without going to trial?"),
-    ("fees-costs", "filing-fee", "How much does it cost to file a petition?"),
-    ("after-decision", "appeal-decision", "Can I appeal a Tax Court decision?"),
+    ("deadlines", "petition-deadline", "What is the deadline to file a petition?", []),
+    ("deadlines", "missed-deadline", "What happens if I miss the deadline?", []),
+    ("filing", "small-tax-case", "What is a small tax case?", []),
+    ("representation", "represent-myself", "Can I represent myself in Tax Court?", []),
+    ("representation", "legal-help", "Can I get legal help?", []),
+    ("forms-documents", "forms-needed", "What forms do I need to file a petition?", []),
+    ("trial-process", "trial-location", "Where will my trial be held?", []),
+    (
+        "trial-process",
+        "settle-case",
+        "Can I settle my case without going to trial?",
+        [],
+    ),
+    ("fees-costs", "filing-fee", "How much does it cost to file a petition?", []),
+    ("after-decision", "appeal-decision", "Can I appeal a Tax Court decision?", []),
 ]
 
 
@@ -106,7 +112,12 @@ class PetitionersHelpPageInitializer(PageInitializer):
             filename="GMT20201013-122947_Jessica-Ma_1600x900.mp4",
             title="GMT20201013-122947_Jessica-Ma_1600x900.mp4",
         )
-        for slug, anchortag, question in PLACEHOLDER_QUESTIONS:
+        for (
+            slug,
+            anchortag,
+            question,
+            helpful_resources_placeholder,
+        ) in PLACEHOLDER_QUESTIONS:
             if slug not in live_slugs:
                 logger.warning(
                     f"FAQ FilterTag '{slug}' not found; skipping '{question}'."
