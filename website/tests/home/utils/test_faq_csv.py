@@ -118,12 +118,19 @@ class TestFaqCsvParse:
         parsed = faq_csv_parse(
             to_csv(
                 [
-                    ["question", "answer", "filtertag", "anchortag"],
+                    [
+                        "question",
+                        "answer",
+                        "filtertag",
+                        "anchortag",
+                        "helpfulresources",
+                    ],
                     [
                         "How do I file?",
                         "Line one\nline two\n\nSecond",
                         "FILING",
                         "file",
+                        "[]",
                     ],
                 ]
             )
@@ -134,6 +141,7 @@ class TestFaqCsvParse:
                 "answer": "<p>Line one<br/>line two</p><p>Second</p>",
                 "anchortag": "file",
                 "filtertag": filing.slug,
+                "helpful_resources": [],
             }
         ]
 
@@ -221,7 +229,7 @@ class TestFaqCsvParse:
             (b"question,answer,filtertag\n", "The file has no questions."),
             (
                 b"question,answer,tag\n",
-                'Unrecognized column(s): "tag". Expected columns: question, answer, filtertag, anchortag.',
+                'Unrecognized column(s): "tag". Expected columns: question, answer, filtertag, anchortag, helpfulresources.',
             ),
             (b"question,answer\n", "Missing required column(s): filtertag."),
             (b"question,answer,filtertag,Answer\n", "Repeated column(s): answer."),
@@ -240,8 +248,8 @@ class TestFaqSectionToCsv:
         section = faq_sections_list(page)[0]
         text = faq_section_to_csv(section)
         assert text.splitlines() == [
-            "question,answer,filtertag,anchortag",
-            "How do I file,<p>Answer to How do I file</p>,Filing,file",
+            "question,answer,filtertag,anchortag,helpfulresources",
+            "How do I file,<p>Answer to How do I file</p>,Filing,file,[]",
         ]
         assert values(faq_csv_parse(text.encode("utf-8"))) == values(
             section["value"]["questions"]
