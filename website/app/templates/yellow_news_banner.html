@@ -126,6 +126,9 @@
     </script>
     <div id="yellow-news-banner-container"></div>
     <script type="text/javascript">
+        // Set only by the Banner snippet preview (see Banner.get_preview_context)
+        var IS_BANNER_PREVIEW = {{ is_banner_preview|yesno:"true,false" }};
+
         (function() {
             // Timezone offset from Django settings (in milliseconds)
             // This offset is applied to banner start/end dates to account for server timezone handling.
@@ -208,9 +211,10 @@
 
             container.innerHTML = bannerHTML;
 
-            // Check if banner was previously dismissed
+            // Check if banner was previously dismissed. A Banner snippet preview
+            // always shows the banner and ignores dismissals made on the live site.
             const dismissKey = 'yellowNewsBanner-' + itemToShow.id + '-dismissed';
-            if (localStorage.getItem(dismissKey) !== 'true') {
+            if (IS_BANNER_PREVIEW || localStorage.getItem(dismissKey) !== 'true') {
                 document.getElementById(bannerId).style.display = 'block';
             }
         })();
@@ -220,8 +224,11 @@
             const banner = document.getElementById('yellowNewsBanner-' + newsItemId);
             if (banner) {
                 banner.style.display = 'none';
-                // Store dismissal in localStorage keyed to the unique news item ID
-                localStorage.setItem('yellowNewsBanner-' + newsItemId + '-dismissed', 'true');
+                // Store dismissal in localStorage keyed to the unique news item ID.
+                // Skipped in a preview so it never hides the real banner on the site.
+                if (!IS_BANNER_PREVIEW) {
+                    localStorage.setItem('yellowNewsBanner-' + newsItemId + '-dismissed', 'true');
+                }
             }
         }
     </script>
