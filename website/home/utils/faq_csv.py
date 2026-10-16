@@ -151,15 +151,26 @@ def faq_csv_parse(data, *, reserved_anchors=()):
                 )
             given_anchors.setdefault(anchor, row_number)
 
+        helpful_resources = []
+        try:
+            helpful_resources = _build_helpful_resources(
+                row.get("helpfulresources", "")
+            )
+        except ValueError:
+            errors.append(
+                (
+                    row_number,
+                    f'helpfulresources "{row.get("helpfulresources", "")}" is not well-formed.',
+                )
+            )
+
         questions.append(
             {
                 "question": row["question"],
                 "answer": _answer_to_rich_text(row["answer"]),
                 "anchortag": anchor,
                 "filtertag": slug or "",
-                "helpful_resources": _build_helpful_resources(
-                    row.get("helpfulresources", "")
-                ),
+                "helpful_resources": helpful_resources,
             }
         )
 
