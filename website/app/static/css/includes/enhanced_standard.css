@@ -750,6 +750,11 @@ p:empty {
     }
 }
 
+/* 32px below the page title on every PE page*/
+.side-card-layout {
+    margin-top: 32px;
+}
+
 /* Side Card rail: beside the body at desktop (grid-col-8/4 split in
    petitioner_experience_page.html), stacked below it otherwise. */
 .side-card-rail {
@@ -918,10 +923,6 @@ p:empty {
 /* Tablet: rail drops below the body; wrap cards 2-up (same breakpoint as
    .info-cards). */
 @media (max-width: 1024px) {
-    .side-card-layout {
-        margin-top: 8px;
-    }
-
     /* Stacked sections are 32px apart per the mockups. */
     .side-card-main .printable-section {
         margin-bottom: 32px;

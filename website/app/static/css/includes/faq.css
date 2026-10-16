@@ -1,6 +1,6 @@
 /* ==========================================================================
    FAQ filter + accordion (includes/faq_accordion.html, js/faq.js)
-   Values taken from the PE FAQ desktop mockup (WAG-1343).
+   Values taken from the PE FAQ desktop, tablet and mobile mockups (WAG-1343).
    ========================================================================== */
 
 .faq {
@@ -8,7 +8,7 @@
     --faq-tag-ink: #364153;
     --faq-answer-ink: #565C65;
     --faq-border: var(--border-lighter);
-    --faq-radius: 4px;
+    --faq-pill-radius: 10px;
     --faq-focus: #2491FF;
     margin-bottom: 2rem;
 }
@@ -23,43 +23,33 @@
     margin: 0 0 1.5rem;
     padding: 0.5rem 1rem;
     border: 1px solid var(--faq-border);
-    border-radius: var(--faq-radius);
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
-.faq__filter-option {
-    position: relative;
+.faq__filter-button {
+    padding: 0.5rem 1rem;
+    border: 0;
+    border-radius: var(--faq-pill-radius);
+    background-color: var(--bg-white-hover);
+    color: var(--faq-tag-ink);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
     cursor: pointer;
 }
 
-/* Visually hidden but still focusable and announced as a radio */
-.faq__filter-input {
-    position: absolute;
-    opacity: 0;
-    width: 1px;
-    height: 1px;
-    margin: 0;
-}
-
-.faq__filter-label {
-    display: inline-block;
-    padding: 0.375rem 0.75rem;
-    border-radius: 6px;
-    background-color: var(--bg-white-hover);
-    color: var(--faq-tag-ink);
-    font-size: 1rem;
-    line-height: 1.5rem;
-}
-
-.faq__filter-option:hover .faq__filter-input:not(:checked) + .faq__filter-label {
+.faq__filter-button[aria-pressed="false"]:hover {
     text-decoration: underline;
 }
 
-.faq__filter-input:checked + .faq__filter-label {
+.faq__filter-button[aria-pressed="true"] {
     background-color: var(--color-navy);
     color: var(--text-white);
 }
 
-.faq__filter-input:focus-visible + .faq__filter-label {
+.faq__filter-button:focus-visible {
     outline: 0.25rem solid var(--faq-focus);
     outline-offset: 0;
 }
@@ -78,7 +68,7 @@
 .faq__item {
     padding: 1.5rem;
     border: 1px solid var(--faq-border);
-    border-radius: var(--faq-radius);
+    border-radius: 10px;
     background-color: var(--theme-color-base-lightest);
 }
 
@@ -87,6 +77,7 @@
 }
 
 .faq__item--expanded {
+    border-radius: 8px;
     background-color: var(--bg-white);
 }
 
@@ -98,20 +89,20 @@
         "tag toggle"
         "question question";
     align-items: start;
-    row-gap: 1rem;
-    cursor: pointer;
+    position: relative;
+    row-gap: 0.5rem;
 }
 
 .faq__tag {
     grid-area: tag;
     justify-self: start;
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--faq-radius);
+    padding: 0.5rem 1rem;
+    border-radius: var(--faq-pill-radius);
     background-color: var(--bg-white);
     color: var(--faq-ink);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    line-height: 1rem;
+    line-height: 1.125rem;
 }
 
 .faq__item--expanded .faq__tag {
@@ -122,16 +113,7 @@
 .faq__toggle {
     grid-area: toggle;
     display: flex;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
     color: var(--theme-color-base-medium);
-    cursor: pointer;
-}
-
-.faq__toggle:focus-visible {
-    outline: 0.25rem solid var(--faq-focus);
 }
 
 .faq__chevron {
@@ -145,15 +127,24 @@
 .faq__question {
     grid-area: question;
     margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5625rem;
 }
 
 .faq__question a,
 .faq__question a:visited {
     color: var(--faq-ink);
     text-decoration: none;
+}
+
+/* Stretch the link's click area over the whole header (tag, chevron, gaps) so
+   only the link has a click handler; screen readers then don't call the tag
+   "clickable". */
+.faq__question a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
 }
 
 .faq__header:hover .faq__question a,
@@ -164,8 +155,15 @@
 .faq__answer {
     margin-top: 1rem;
     color: var(--faq-answer-ink);
-    font-size: 0.875rem;
-    line-height: 1.375rem;
+    font-size: 1rem;
+    line-height: 1.25rem;
+}
+
+/* Rich-text answers render as <p>; app.css's global `p { font-size: 17px;
+   line-height: 20px }` would otherwise override the sizes above. */
+.faq__answer p {
+    font-size: inherit;
+    line-height: inherit;
 }
 
 .faq__answer > :first-child {
@@ -176,12 +174,14 @@
     margin-bottom: 0;
 }
 
-@media (max-width: 640px) {
-    .faq__filter {
-        gap: 0.5rem;
+/* Tablet + mobile: answers get more leading, and an expanded question sits
+   further below its tag. Tags stay 14px semibold per UX review. */
+@media (max-width: 1024px) {
+    .faq__item--expanded .faq__header {
+        row-gap: 1rem;
     }
 
-    .faq__item {
-        padding: 1rem;
+    .faq__answer {
+        line-height: 1.625rem;
     }
 }

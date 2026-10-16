@@ -1,6 +1,7 @@
 """Tests for home/models/custom_blocks/question_answers.py and its FAQ rendering."""
 
 import importlib
+import re
 
 import pytest
 from django.test import RequestFactory
@@ -167,16 +168,40 @@ class TestRender:
     def test_filter_section_renders_all_first_then_tags_in_order(self):
         html = self.render(display_filter_section=True)
         assert "data-faq" in html
-        labels = ['class="faq__filter-label">All<', ">Filing<", ">Appeals<"]
+        labels = [
+            "data-faq-filter>All<",
+            "data-faq-filter>Filing<",
+            "data-faq-filter>Appeals<",
+        ]
         positions = [html.index(label) for label in labels]
         assert positions == sorted(positions)
+
+    def test_filter_section_uses_toggle_buttons_with_only_all_pressed(self):
+        """Buttons (not hidden radios) so each pill is a Tab stop, works with Enter,
+        and is read once by screen readers."""
+        html = self.render(display_filter_section=True)
+        filters = re.findall(r"<button[^>]*data-faq-filter>[^<]*<", html)
+        assert len(filters) == 3
+        assert all('type="button"' in f for f in filters)
+        pressed = [f for f in filters if 'aria-pressed="true"' in f]
+        assert pressed == [f for f in filters if 'value=""' in f]
+        assert 'type="radio"' not in html
 
     def test_filter_section_renders_collapsed_linked_questions(self):
         html = self.render(display_filter_section=True)
         assert 'id="file"' in html
         assert 'href="#file"' in html
-        assert 'aria-expanded="false"' in html
         assert "Answer to How do I file" in html
+
+    def test_filter_section_question_link_is_the_accessible_toggle(self):
+        """The link carries the expanded state; the chevron isn't a second control."""
+        html = self.render(display_filter_section=True)
+        link = re.search(r'<a href="#file"[^>]*>', html).group(0)
+        assert 'aria-expanded="false"' in link
+        answer_id = re.search(r'aria-controls="([^"]+)"', link).group(1)
+        assert f'id="{answer_id}"' in html
+        faq_list = html.split('class="faq__list"', 1)[1].split("</ul>", 1)[0]
+        assert "<button" not in faq_list
 
     def test_without_filter_section_renders_original_layout(self):
         html = self.render(display_filter_section=False)
