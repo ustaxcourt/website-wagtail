@@ -12,26 +12,17 @@ more than one of these can share a page.
             {% if tags %}
                 <fieldset class="faq__filter">
                     <legend class="usa-sr-only">Filter questions by topic</legend>
-                    <label class="faq__filter-option">
-                        <input class="faq__filter-input"
-                               type="radio"
-                               name="{{ faq_id }}-filter"
-                               value=""
-                               checked
-                               autocomplete="off"
-                               data-faq-filter>
-                        <span class="faq__filter-label">All</span>
-                    </label>
+                    <button type="button"
+                            class="faq__filter-button"
+                            value=""
+                            aria-pressed="true"
+                            data-faq-filter>All</button>
                     {% for slug, name in tags %}
-                        <label class="faq__filter-option">
-                            <input class="faq__filter-input"
-                                   type="radio"
-                                   name="{{ faq_id }}-filter"
-                                   value="{{ slug }}"
-                                   autocomplete="off"
-                                   data-faq-filter>
-                            <span class="faq__filter-label">{{ name }}</span>
-                        </label>
+                        <button type="button"
+                                class="faq__filter-button"
+                                value="{{ slug }}"
+                                aria-pressed="false"
+                                data-faq-filter>{{ name }}</button>
                     {% endfor %}
                 </fieldset>
                 <p class="usa-sr-only" aria-live="polite" data-faq-status></p>
@@ -43,9 +34,9 @@ more than one of these can share a page.
                     id="{{ item.anchortag }}"
                     data-faq-item
                     data-filtertag="{{ item.filtertag }}">
-                    <div class="faq__header" data-faq-header>
+                    <div class="faq__header">
                         {% if tag_name %}<span class="faq__tag">{{ tag_name }}</span>{% endif %}
-                        {# Decorative: the header's click handler toggles; the link carries the state. #}
+                        {# Decorative: the link's click area stretches over the whole header (see faq.css). #}
                         <span class="faq__toggle" aria-hidden="true">
                             <span class="material-symbols-outlined faq__chevron">keyboard_arrow_down</span>
                         </span>

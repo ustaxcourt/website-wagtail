@@ -180,9 +180,24 @@ class TestRender:
     def test_filter_section_renders_all_first_then_tags_in_order(self):
         html = self.render(display_filter_section=True)
         assert "data-faq" in html
-        labels = ['class="faq__filter-label">All<', ">Filing<", ">Appeals<"]
+        labels = [
+            "data-faq-filter>All<",
+            "data-faq-filter>Filing<",
+            "data-faq-filter>Appeals<",
+        ]
         positions = [html.index(label) for label in labels]
         assert positions == sorted(positions)
+
+    def test_filter_section_uses_toggle_buttons_with_only_all_pressed(self):
+        """Buttons (not hidden radios) so each pill is a Tab stop, works with Enter,
+        and is read once by screen readers."""
+        html = self.render(display_filter_section=True)
+        filters = re.findall(r"<button[^>]*data-faq-filter>[^<]*<", html)
+        assert len(filters) == 3
+        assert all('type="button"' in f for f in filters)
+        pressed = [f for f in filters if 'aria-pressed="true"' in f]
+        assert pressed == [f for f in filters if 'value=""' in f]
+        assert 'type="radio"' not in html
 
     def test_filter_section_renders_collapsed_linked_questions(self):
         html = self.render(display_filter_section=True)

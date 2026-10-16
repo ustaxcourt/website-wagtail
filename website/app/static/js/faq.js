@@ -2,9 +2,10 @@
  * FAQ filter + accordion behavior for questionanswers blocks rendered by
  * includes/faq_accordion.html. Each [data-faq] container is independent.
  *
- * - FilterTag radios show only the questions with the selected tag ("All" = value "").
- * - Clicking a question's header (its link, chevron, or empty space) toggles it.
- *   Modified clicks on the link (Cmd/Ctrl/Shift/Alt) are left to the browser.
+ * - FilterTag toggle buttons show only the questions with the selected tag ("All" = value "").
+ * - Clicking a question's link toggles it. The link's click area covers the whole
+ *   header (faq.css), so the handler stays on the link and the tag isn't announced
+ *   as "clickable". Modified clicks (Cmd/Ctrl/Shift/Alt) are left to the browser.
  * - Visiting with a #anchortag that matches a question expands it and scrolls to it.
  */
 (function () {
@@ -35,36 +36,35 @@
         }
     }
 
+    function selectFilter(faq, button) {
+        faq.querySelectorAll('[data-faq-filter]').forEach(function (other) {
+            other.setAttribute('aria-pressed', String(other === button));
+        });
+        applyFilter(faq, button.value);
+    }
+
     function selectAll(faq) {
         const all = faq.querySelector('[data-faq-filter][value=""]');
-        if (all && !all.checked) {
-            all.checked = true;
-            applyFilter(faq, '');
-        }
+        if (all && all.getAttribute('aria-pressed') !== 'true') selectFilter(faq, all);
     }
 
     function initFaq(faq) {
-        faq.querySelectorAll('[data-faq-filter]').forEach(function (radio) {
-            radio.addEventListener('change', function () {
-                if (radio.checked) applyFilter(faq, radio.value);
+        faq.querySelectorAll('[data-faq-filter]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                selectFilter(faq, button);
             });
         });
 
-        faq.querySelectorAll('[data-faq-header]').forEach(function (header) {
-            header.addEventListener('click', function (event) {
-                const onLink = Boolean(event.target.closest('[data-faq-link]'));
+        faq.querySelectorAll('[data-faq-link]').forEach(function (link) {
+            link.addEventListener('click', function (event) {
                 // Let the browser open the permalink in a new tab/window as usual.
-                if (onLink && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) {
-                    return;
-                }
-                const item = header.closest('[data-faq-item]');
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                // Handle the link ourselves so an expanded question can collapse;
+                // a real navigation to the same hash wouldn't fire hashchange.
+                event.preventDefault();
+                const item = link.closest('[data-faq-item]');
                 const expanding = !isExpanded(item);
-                if (onLink) {
-                    // Handle the link ourselves so an expanded question can collapse;
-                    // a real navigation to the same hash wouldn't fire hashchange.
-                    event.preventDefault();
-                    if (expanding) history.replaceState(null, '', '#' + item.id);
-                }
+                if (expanding) history.replaceState(null, '', '#' + item.id);
                 setExpanded(item, expanding);
             });
         });
