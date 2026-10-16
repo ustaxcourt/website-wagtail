@@ -156,11 +156,11 @@ def faq_csv_parse(data, *, reserved_anchors=()):
             helpful_resources = _build_helpful_resources(
                 row.get("helpfulresources", "")
             )
-        except ValueError:
+        except ValueError as exc:
             errors.append(
                 (
                     row_number,
-                    f'helpfulresources "{row.get("helpfulresources", "")}" is not well-formed.',
+                    f'helpfulresources "{row.get("helpfulresources", "")}" is not well-formed. {exc}',
                 )
             )
 
@@ -293,7 +293,13 @@ def _build_helpful_resources(text):
     if not text:
         return result
 
-    for item in ast.literal_eval(text):
+    try:
+        items = ast.literal_eval(text)
+    except (SyntaxError, ValueError) as exc:
+        raise ValueError("Invalid helpfulresources literal.") from exc
+    if not isinstance(items, list) or not all(isinstance(item, dict) for item in items):
+        raise ValueError("helpfulresources must be a list of resource objects.")
+    for item in items:
         result.append(
             {
                 "type": "item",
