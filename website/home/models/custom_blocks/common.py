@@ -34,7 +34,8 @@ link_obj = blocks.ListBlock(
                 "text_only",
                 blocks.BooleanBlock(required=False),
             ),
-        ]
+        ],
+        label="Item",
     )
 )
 
@@ -76,7 +77,7 @@ class CommonBlock(blocks.StreamBlock):
     links = blocks.StructBlock(
         [
             (
-                "class",
+                "style",
                 blocks.ChoiceBlock(
                     choices=[
                         ("indented", "Indented"),
