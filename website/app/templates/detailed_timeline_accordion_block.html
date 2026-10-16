@@ -13,11 +13,13 @@
                     <span class="detailed-timeline-accordion-header-text">{{ data.title }}</span>
                     <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}"
                           aria-hidden="true">keyboard_arrow_down</span>
+                    {% if data.date_range %}
                     <span class="detailed-timeline-accordion-header-date-range">
                         <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon"
                               aria-hidden="true">schedule</span>
                         <span class="detailed-timeline-accordion-header-date-range-text">{{ data.date_range }}</span>
                     </span>
+                    {% endif %}
                 </button>
             </h3>
         </div>
