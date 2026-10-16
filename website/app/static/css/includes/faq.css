@@ -202,27 +202,6 @@
 /* Tablet + mobile: the tags match the filter buttons, answers get more leading,
    and an expanded question sits further below its tag. */
 @media (max-width: 1024px) {
-    .faq__tag {
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.25rem;
-    }
-
-    .faq__helpful-resources > p {
-        margin-bottom: 12px;
-        font-size: 16px;
-        font-weight: 600;
-    }
-
-    .faq__helpful-resources .material-symbols-outlined {
-        font-size: 20px;
-    }
-
-    .faq__helpful-resources a {
-        text-decoration: underline;
-        color: var(--color-navy);
-    }
-
     .faq__item--expanded .faq__header {
         row-gap: 1rem;
     }
