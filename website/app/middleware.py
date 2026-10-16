@@ -1,6 +1,9 @@
 import logging
 import traceback
 
+from django.conf import settings
+from whitenoise.middleware import WhiteNoiseMiddleware
+
 
 class JSONExceptionMiddleware:
     def __init__(self, get_response):
@@ -93,3 +96,32 @@ class NoIndexMiddleware:
         response = self.get_response(request)
         response["X-Robots-Tag"] = "noindex, nofollow, noarchive"
         return response
+
+
+class CachedWhiteNoiseMiddleware(WhiteNoiseMiddleware):
+    """
+    WhiteNoiseMiddleware that indexes STATIC_ROOT once per process instead of
+    on every instantiation.
+
+    Wagtail builds a fresh middleware chain for every preview render
+    (PreviewableMixin.make_preview_request calls BaseHandler.load_middleware()),
+    and when autorefresh is off (DEBUG=False) WhiteNoise's __init__ walks and
+    stats every file in STATIC_ROOT. With ~50k collected static files this added
+    ~10 seconds to each preview refresh on AWS.
+
+    The index only depends on settings and files baked into the image, so it is
+    identical for every instance in a process and safe to share. In autorefresh
+    mode (local DEBUG) WhiteNoise doesn't scan at init, so nothing is cached.
+    """
+
+    _shared_state: dict | None = None
+
+    def __init__(self, get_response=None, settings=settings):
+        shared_state = CachedWhiteNoiseMiddleware._shared_state
+        if shared_state is None:
+            super().__init__(get_response, settings=settings)
+            if not self.autorefresh:
+                CachedWhiteNoiseMiddleware._shared_state = self.__dict__.copy()
+        else:
+            self.__dict__.update(shared_state)
+            self.get_response = get_response
