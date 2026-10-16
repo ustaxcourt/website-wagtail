@@ -47,7 +47,7 @@ module "alb" {
       health_check = {
         healthy_threshold   = 3
         interval           = 30
-        path               = "/"
+        path               = local.health_check_path
         port               = "traffic-port"
         protocol          = "HTTP"
         timeout           = 5
