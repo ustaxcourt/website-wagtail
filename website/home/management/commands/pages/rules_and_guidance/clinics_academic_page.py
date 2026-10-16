@@ -122,7 +122,13 @@ class ClinicsAcademicPageInitializer(PageInitializer):
                         "type": "h2",
                         "value": "Requirements for Participation in the United States Tax Court Clinical, Student Practice & Calendar Call Program by Academic Clinics (Law School)",
                     },
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                     {
                         "type": "snippet",
                         "value": CommonText.objects.get(

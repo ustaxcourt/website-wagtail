@@ -90,7 +90,13 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
                 search_description="Search and Public Access",
                 body=[
                     {"type": "h2", "value": "DAWSON: Searches and Public Access"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )
