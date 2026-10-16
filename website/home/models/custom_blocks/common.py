@@ -77,7 +77,7 @@ class CommonBlock(blocks.StreamBlock):
     links = blocks.StructBlock(
         [
             (
-                "class",
+                "style",
                 blocks.ChoiceBlock(
                     choices=[
                         ("indented", "Indented"),
