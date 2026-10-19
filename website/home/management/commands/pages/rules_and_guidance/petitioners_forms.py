@@ -241,7 +241,8 @@ class PetitionersFormsPageInitializer(PageInitializer):
             },
         ]
 
-    def update_existing_page(self, page, body):
+    def update_existing_page(self, page, body, intro_text):
+        update_made = False
         current_body = list(page.body.raw_data)
         managed_indexes = [
             index
@@ -250,29 +251,34 @@ class PetitionersFormsPageInitializer(PageInitializer):
         ]
         if managed_indexes:
             insert_at = managed_indexes[0]
-            updated_body = [
-                block
-                for block in current_body
-                if block.get("id") not in MANAGED_BODY_BLOCK_IDS
-            ]
+            updated_body = []
             updated_body[insert_at:insert_at] = body
         else:
             updated_body = current_body + body
 
         if updated_body != current_body:
             page.body = updated_body
+            update_made = True
+
+        if intro_text != page.introductory_text:
+            page.introductory_text = intro_text
+
+        if update_made:
             page.save_revision().publish()
             logger.info("Updated the Forms to File a Petition page.")
 
     def create_page_info(self, home_page):
         slug = "petitioners-forms"
         title = "Forms to File a Petition"
+        intro_text = (
+            "<p>Download one of the following based on your chosen filing method.</p>"
+        )
         documents, article_icon, download_icon = self._load_documents()
         body = self.build_page_body(documents, article_icon, download_icon)
 
         existing_page = Page.objects.filter(slug=slug).first()
         if existing_page:
-            self.update_existing_page(existing_page.specific, body)
+            self.update_existing_page(existing_page.specific, body, intro_text)
             return
 
         navigation_ribbon = NavigationRibbon.objects.filter(
@@ -284,7 +290,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text="<p>Download one of the following based on your chosen filing method.</p>",
+                introductory_text=intro_text,
                 call_to_action=call_to_action,
                 slug=slug,
                 seo_title=title,
