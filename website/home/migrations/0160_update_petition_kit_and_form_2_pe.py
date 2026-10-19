@@ -76,15 +76,13 @@ def update_document_file(
             f"Found document by filename '{current_filename}' (ID: {doc_to_update.id}). Updating..."
         )
 
-        # Update the title field
-        # doc_to_update.title = new_title
-        # doc_to_update.collection = collection
-        # doc_to_update.save(update_fields=["title", "collection"])
-        # logger.info(
-        #     f"  -> Successfully updated title to '{new_title}' and set collection."
-        # )
+        # Blank out the file's hash. It will be recreated after the file is updated.
         doc_to_update.file_hash = ""
         doc_to_update.save(update_fields=["file_hash"])
+
+        # Delete the file in storage so when we recreate it in the next steps, the new
+        # file does not have a random string of characters at the end of its file name.
+        doc_to_update.file.storage.delete(doc_to_update.file.path)
 
         # Open the new PDF file from the constructed full path
         with open(full_path, "rb") as f:
@@ -95,9 +93,10 @@ def update_document_file(
             doc_to_update.file_size = file_from_disk.size
             doc_to_update.file.save(source_filename, file_from_disk)
 
-        logger.info(
-            f"  -> Successfully updated to title '{new_title}' with file '{source_filename}'."
-        )
+            # Reset the file's hash
+            doc_to_update.get_file_hash()
+
+        logger.info(f"  -> Successfully updated file '{source_filename}'.")
 
     except Document.DoesNotExist:
         logger.error(
