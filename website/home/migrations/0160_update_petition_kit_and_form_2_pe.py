@@ -76,13 +76,14 @@ def update_document_file(
             f"Found document by filename '{current_filename}' (ID: {doc_to_update.id}). Updating..."
         )
 
-        # Blank out the file's hash. It will be recreated after the file is updated.
+        # Blank out the file's hash. It will be recreated by "make updatepages" later
+        # in the deployment process.
         doc_to_update.file_hash = ""
         doc_to_update.save(update_fields=["file_hash"])
 
         # Delete the file in storage so when we recreate it in the next steps, the new
         # file does not have a random string of characters at the end of its file name.
-        doc_to_update.file.storage.delete(doc_to_update.file.path)
+        doc_to_update.file.storage.delete(doc_to_update.file.name)
 
         # Open the new PDF file from the constructed full path
         with open(full_path, "rb") as f:
@@ -92,9 +93,6 @@ def update_document_file(
             file_from_disk = File(f)
             doc_to_update.file_size = file_from_disk.size
             doc_to_update.file.save(source_filename, file_from_disk)
-
-            # Reset the file's hash
-            doc_to_update.get_file_hash()
 
         logger.info(f"  -> Successfully updated file '{source_filename}'.")
 
