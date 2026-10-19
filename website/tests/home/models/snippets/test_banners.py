@@ -327,14 +327,14 @@ class TestBannerPreview:
             context = banner.get_preview_context(None, "announcements_page")
 
         assert context["has_yellow_news"] is True
-        payload = json.loads(context["yellow_priority_news_json"])
+        payload = context["yellow_priority_news"]
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
         assert payload[0]["banner_end_date"] is None
         # Any live critical (red) banner is hidden so only the previewed
         # banner shows at the top of the page.
         assert context["has_critical_news"] is False
-        assert json.loads(context["critical_priority_news_json"]) == []
+        assert context["critical_priority_news"] == []
 
     @pytest.mark.parametrize(
         "start_offset,end_offset",
@@ -357,7 +357,7 @@ class TestBannerPreview:
         ):
             context = banner.get_preview_context(None, "announcements_page")
 
-        payload = json.loads(context["yellow_priority_news_json"])
+        payload = context["yellow_priority_news"]
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
         assert payload[0]["banner_end_date"] is None
@@ -372,12 +372,12 @@ class TestBannerPreview:
             context = banner.get_preview_context(None, "announcements_page")
 
         assert context["has_critical_news"] is True
-        payload = json.loads(context["critical_priority_news_json"])
+        payload = context["critical_priority_news"]
         assert payload[0]["title"] == "Important Banner"
         assert payload[0]["banner_start_date"] is None
         # Any live high priority (yellow) banner is hidden.
         assert context["has_yellow_news"] is False
-        assert json.loads(context["yellow_priority_news_json"]) == []
+        assert context["yellow_priority_news"] == []
 
     def test_get_preview_context_announcements_page_skips_top_banner_for_none_priority(
         self,
@@ -408,13 +408,51 @@ class TestBannerPreview:
         assert context["is_banner_preview"] is True
 
 
+class TestBannerTemplateSecurity:
+    @pytest.mark.parametrize(
+        "template,context_key,flag,script_id",
+        [
+            (
+                "yellow_news_banner.html",
+                "yellow_priority_news",
+                "has_yellow_news",
+                "yellow-news-data",
+            ),
+            (
+                "red_news_banner.html",
+                "critical_priority_news",
+                "has_critical_news",
+                "critical-news-data",
+            ),
+        ],
+    )
+    def test_banner_json_cannot_close_script(
+        self, template, context_key, flag, script_id
+    ):
+        from bs4 import BeautifulSoup
+        from django.template.loader import render_to_string
+
+        payload = [
+            {
+                "id": 1,
+                "title": '</script><script>alert("banner")</script>',
+                "description": "<h1>this should not allow html tags</h1>",
+            }
+        ]
+        html = render_to_string(template, {flag: True, context_key: payload})
+        document = BeautifulSoup(html, "html.parser")
+
+        assert len(document.find_all("script")) == 2
+        assert json.loads(document.find("script", id=script_id).string) == payload
+
+
 class TestYellowNewsBannerTemplatePreviewFlag:
     """yellow_news_banner.html only skips localStorage dismissals in a preview."""
 
     def _render(self, **extra):
         from django.template.loader import render_to_string
 
-        context = {"has_yellow_news": True, "yellow_priority_news_json": "[]"}
+        context = {"has_yellow_news": True, "yellow_priority_news": []}
         context.update(extra)
         return render_to_string("yellow_news_banner.html", context)
 

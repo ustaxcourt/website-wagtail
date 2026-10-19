@@ -1,5 +1,3 @@
-import json
-
 from django.db import models
 from django.forms import ValidationError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
@@ -315,37 +313,33 @@ class Banner(
         """
         context = {
             "is_banner_preview": True,
-            "yellow_priority_news_json": "[]",
+            "yellow_priority_news": [],
             "has_yellow_news": False,
-            "critical_priority_news_json": "[]",
+            "critical_priority_news": [],
             "has_critical_news": False,
         }
         if self.priority_level not in ("high", "critical"):
             return context
 
-        payload = json.dumps(
-            [
-                {
-                    "id": self.pk or 0,
-                    "title": self.banner_title,
-                    "description": str(self.description),
-                    "priority_level": self.priority_level,
-                    "document_url": self.document.url if self.document else None,
-                    # Intentionally omitted (None) so the client-side date
-                    # filter always treats this preview banner as active,
-                    # regardless of its real banner_start_date/banner_end_date.
-                    "banner_start_date": None,
-                    "banner_end_date": None,
-                }
-            ]
-        )
+        payload = [
+            {
+                "id": self.pk or 0,
+                "title": self.banner_title,
+                "description": str(self.description),
+                "priority_level": self.priority_level,
+                "document_url": self.document.url if self.document else None,
+                # Intentionally omitted (None) so the client-side date
+                # filter always treats this preview banner as active,
+                # regardless of its real banner_start_date/banner_end_date.
+                "banner_start_date": None,
+                "banner_end_date": None,
+            }
+        ]
         if self.priority_level == "high":
-            context.update(
-                {"yellow_priority_news_json": payload, "has_yellow_news": True}
-            )
+            context.update({"yellow_priority_news": payload, "has_yellow_news": True})
         else:
             context.update(
-                {"critical_priority_news_json": payload, "has_critical_news": True}
+                {"critical_priority_news": payload, "has_critical_news": True}
             )
         return context
 

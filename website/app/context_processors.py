@@ -37,8 +37,6 @@ def yellow_priority_news(request):
     Returns all live high priority banners without date filtering.
     Client-side JavaScript will handle date filtering and display logic.
     """
-    import json
-
     yellow_banners = (
         Banner.objects.live()
         .filter(priority_level="high")
@@ -65,7 +63,7 @@ def yellow_priority_news(request):
         )
 
     return {
-        "yellow_priority_news_json": json.dumps(banners_data),
+        "yellow_priority_news": banners_data,
         "has_yellow_news": len(banners_data) > 0,
         "timezone_offset_ms": _get_timezone_offset_ms(),
     }
@@ -77,8 +75,6 @@ def critical_priority_news(request):
     Returns all live critical priority banners without date filtering.
     Client-side JavaScript will handle date filtering and display logic.
     """
-    import json
-
     critical_banners = (
         Banner.objects.live()
         .filter(priority_level="critical")
@@ -105,7 +101,7 @@ def critical_priority_news(request):
         )
 
     return {
-        "critical_priority_news_json": json.dumps(banners_data),
+        "critical_priority_news": banners_data,
         "has_critical_news": len(banners_data) > 0,
         "timezone_offset_ms": _get_timezone_offset_ms(),
     }

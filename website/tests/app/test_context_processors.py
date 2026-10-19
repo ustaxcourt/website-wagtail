@@ -45,7 +45,7 @@ class TestYellowPriorityNews:
         with patch("app.context_processors.Banner") as mock_banner:
             mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = []
             result = yellow_priority_news(request)
-        assert "yellow_priority_news_json" in result
+        assert "yellow_priority_news" in result
         assert "has_yellow_news" in result
         assert result["has_yellow_news"] is False
 
@@ -74,6 +74,6 @@ class TestCriticalPriorityNews:
         with patch("app.context_processors.Banner") as mock_banner:
             mock_banner.objects.live.return_value.filter.return_value.order_by.return_value = []
             result = critical_priority_news(request)
-        assert "critical_priority_news_json" in result
+        assert "critical_priority_news" in result
         assert "has_critical_news" in result
         assert result["has_critical_news"] is False

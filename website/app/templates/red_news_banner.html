@@ -105,9 +105,7 @@
 </style>
 {% if has_critical_news %}
     <!-- Embed critical news data as JSON for client-side processing -->
-    <script id="critical-news-data" type="application/json">
-{{ critical_priority_news_json | safe }}
-    </script>
+    {{ critical_priority_news|json_script:"critical-news-data" }}
     <div id="red-news-banner-container"></div>
     <script type="text/javascript">
         (function() {
@@ -162,22 +160,17 @@
             const container = document.getElementById('red-news-banner-container');
             const bannerId = 'redNewsBanner-' + itemToShow.id;
 
-            // Build the document link if available
-            const documentLink = itemToShow.document_url
-                ? ` <a href="${itemToShow.document_url}">See the Announcement</a>.`
-                : '';
             const bannerHTML = `
             <div
                 class="red-news-banner"
                 id="${bannerId}"
                 tabindex="0"
-                aria-label='Critical Priority Banner. ${itemToShow.title}. ${itemToShow.description}'
                 role="region">
                 <div class="grid-container">
                     <div class="alert-content">
                         <img src="{% static 'images/icons/fas.fa-exclamation-circle.svg' %}" alt="Alert" class="alert-icon" />
                         <div class="alert-text">
-                            <strong>${itemToShow.title}</strong> ${itemToShow.description}${documentLink}
+                            <strong></strong>
                         </div>
                     </div>
                 </div>
@@ -185,6 +178,21 @@
         `;
 
             container.innerHTML = bannerHTML;
+
+            const banner = document.getElementById(bannerId);
+            banner.setAttribute('aria-label', `Critical Priority Banner. ${itemToShow.title}. ${itemToShow.description}`);
+            const alertText = banner.querySelector('.alert-text');
+            alertText.querySelector('strong').textContent = itemToShow.title;
+            alertText.append(document.createTextNode(' ' + itemToShow.description));
+            if (itemToShow.document_url) {
+                const documentUrl = new URL(itemToShow.document_url, window.location.href);
+                if (documentUrl.protocol === 'http:' || documentUrl.protocol === 'https:') {
+                    const link = document.createElement('a');
+                    link.href = documentUrl.href;
+                    link.textContent = 'See the Announcement';
+                    alertText.append(' ', link, '.');
+                }
+            }
 
             // Always show the banner (no dismissal for critical banners)
             document.getElementById(bannerId).style.display = 'block';
