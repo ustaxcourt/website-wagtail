@@ -1,7 +1,7 @@
 from functools import cached_property
 
 from wagtail import blocks
-from home.models.custom_blocks.common import link_obj
+from home.models.custom_blocks.link import LinkBlock
 
 from home.models.snippets.faq_filter_tag import (
     FAQFilterTag,
@@ -19,7 +19,7 @@ class QuestionAnswerBlock(blocks.StructBlock):
         label="FilterTag",
     )
     helpful_resources = blocks.ListBlock(
-        link_obj.child_block, label="Helpful Resources", default=[]
+        LinkBlock(), label="Helpful Resources", default=[]
     )
 
     class Meta:

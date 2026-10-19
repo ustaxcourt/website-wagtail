@@ -1,6 +1,6 @@
 from django.db import models
 from wagtail import blocks
-from home.models.custom_blocks.common import link_obj
+from home.models.custom_blocks.link import LinkBlock
 
 
 class IndentStyle(models.TextChoices):
@@ -19,7 +19,7 @@ class ListOfLinksBlock(blocks.StructBlock):
         required=True,
     )
 
-    links = blocks.ListBlock(link_obj.child_block, label="Add Entry")
+    links = blocks.ListBlock(LinkBlock, label="Add Entry")
 
     class Meta:
         label = "List of Links"
