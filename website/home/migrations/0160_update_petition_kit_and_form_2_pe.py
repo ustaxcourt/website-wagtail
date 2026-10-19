@@ -71,7 +71,7 @@ def update_document_file(
     full_path = os.path.join(base_path, source_filename)
     try:
         # Get the document object using the provided filename.
-        doc_to_update = Document.objects.get(title=new_title)
+        doc_to_update = Document.objects.get(file__endswith=current_filename)
         logger.info(
             f"Found document by filename '{current_filename}' (ID: {doc_to_update.id}). Updating..."
         )
