@@ -1,7 +1,7 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import IconCategories
-from home.models import EnhancedStandardPage
+from home.models import PetitionerExperiencePage
 import logging
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
 
     def create_page_info(self, home_page):
         slug = "dawson-user-guides"
-        title = "DAWSON User Guides"
+        title = "DAWSON User Guides & Electronic Filing Instructions"
 
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")
@@ -42,7 +42,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
             docs[doc_name] = document
 
         new_page = home_page.add_child(
-            instance=EnhancedStandardPage(
+            instance=PetitionerExperiencePage(
                 title=title,
                 slug=slug,
                 seo_title=title,
