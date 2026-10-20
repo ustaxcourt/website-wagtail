@@ -614,6 +614,11 @@ p:empty {
     color: #FFFFFF;
     text-decoration: underline;
 }
+@media (max-width: 768px) {
+    .section-header--blue-bar h2 {
+        font-size: 22px;
+    }
+}
 
 .info-card__icon-badge .info-card__non-md-number {
     color: #FFFFFF;
