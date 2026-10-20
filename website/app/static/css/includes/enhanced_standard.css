@@ -593,6 +593,28 @@ p:empty {
     font-weight: 400;
 }
 
+.section-header--blue-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    background-color: #005EA2;
+}
+.section-header--blue-bar h2 {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 30px;
+}
+.section-header--blue-bar a {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
 .info-card__icon-badge .info-card__non-md-number {
     color: #FFFFFF;
 }

@@ -125,6 +125,33 @@ class IconHeaderBlockRenderTest(TestCase):
         self.assertIn("<h2>Get Started</h2>", content)
         self.assertIn('href="https://example.com/petitioners-timeline"', content)
         self.assertIn("View detailed timeline", content)
+        self.assertNotIn("section-header--blue-bar", content)
+
+    def test_section_header_blue_bar_style_renders_without_link(self):
+        page = EnhancedStandardPage(
+            title="Blue Bar Section Header Test Page",
+            slug="blue-bar-section-header-test-page",
+            body=[
+                {
+                    "type": "section_header",
+                    "value": {
+                        "heading": "Starting a Case",
+                        "style": "blue_bar",
+                        "link_text": "",
+                        "link_url": "",
+                    },
+                }
+            ],
+        )
+
+        content = self.render_page(page)
+
+        self.assertIn('<div class="section-header section-header--blue-bar">', content)
+        self.assertIn("<h2>Starting a Case</h2>", content)
+        self.assertNotIn("get-started-row", content)
+        self.assertNotIn(
+            "<a href", content.split("section-header--blue-bar")[1].split("</div>")[0]
+        )
 
     def test_prepare_to_file_initializer_generates_printable_checklist(self):
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
