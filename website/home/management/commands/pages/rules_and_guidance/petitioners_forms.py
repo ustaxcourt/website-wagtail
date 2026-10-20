@@ -262,6 +262,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
 
         if intro_text != page.introductory_text:
             page.introductory_text = intro_text
+            update_made = True
 
         if update_made:
             page.save_revision().publish()
