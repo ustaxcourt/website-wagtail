@@ -1,5 +1,4 @@
-from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -19,19 +18,22 @@ def make_page(breadcrumb_title="", page_block=None):
     page.navigation_ribbon_id = 1
     page.breadcrumb = []
     if breadcrumb_title or page_block:
-        page.breadcrumb = [
-            {
-                "type": "breadcrumb",
-                "value": {
-                    "breadcrumb_title": breadcrumb_title,
-                    "breadcrumb_page": (
-                        [{"type": page_block[0], "value": page_block[1]}]
-                        if page_block
-                        else []
-                    ),
+        breadcrumb_field = PetitionerExperiencePage._meta.get_field("breadcrumb")
+        page.breadcrumb = breadcrumb_field.to_python(
+            [
+                {
+                    "type": "breadcrumb",
+                    "value": {
+                        "breadcrumb_title": breadcrumb_title,
+                        "breadcrumb_page": (
+                            [{"type": page_block[0], "value": page_block[1]}]
+                            if page_block
+                            else []
+                        ),
+                    },
                 },
-            }
-        ]
+            ]
+        )
     return page
 
 
@@ -85,7 +87,12 @@ def test_breadcrumb_uses_external_page_url():
 
 def test_breadcrumb_uses_internal_page_url():
     page = make_page("Petitioner Experience", ("internal_page", 1))
-    selected_page = SimpleNamespace(url="/petitioners/")
+    selected_page = Page(id=1)
 
-    with patch.object(Page.objects, "in_bulk", return_value={1: selected_page}):
+    with (
+        patch.object(Page.objects, "in_bulk", return_value={1: selected_page}),
+        patch.object(
+            Page, "url", new_callable=PropertyMock, return_value="/petitioners/"
+        ),
+    ):
         assert page.breadcrumb_page_url == "/petitioners/"
