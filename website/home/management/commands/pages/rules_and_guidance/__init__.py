@@ -34,6 +34,7 @@ from .petitioners_timeline import PetitionersTimelinePageInitializer
 from .petitioners_prepare_to_file import PetitionersPrepareToFilePageInitializer
 from .petitioners_forms import PetitionersFormsPageInitializer
 from .petitioners_help import PetitionersHelpPageInitializer
+from .dawson_how_to_efile_petition import DawsonHowToEfilePetition
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -69,4 +70,5 @@ rules_and_guidance_pages_to_initialize = [
     PetitionersPrepareToFilePageInitializer,
     PetitionersFormsPageInitializer,
     PetitionersHelpPageInitializer,
+    DawsonHowToEfilePetition,
 ]
