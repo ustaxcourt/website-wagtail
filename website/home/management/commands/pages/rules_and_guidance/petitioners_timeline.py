@@ -61,7 +61,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text="What to expect during the tax court process, what documents you will need, links to forms, and a checklist to use.",
+                introductory_text="<p>What to expect during the tax court process, what documents you will need, links to forms, and a checklist to use.</p>",
                 call_to_action=_cta_box,
                 slug=slug,
                 seo_title=title,

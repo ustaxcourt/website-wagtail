@@ -18,7 +18,7 @@ from home.blocks import (
 from home.forms import ReviewByRequiredOnSubmitForm
 from home.mixins.moderation import ModerationMixin
 from home.models.config import NumberedIconCategories
-from home.models.custom_blocks.button import ButtonBlock
+from home.models.custom_blocks.button import ButtonBlock, CardButtonBlock
 from home.models.custom_blocks.common import (
     ColumnBlock,
     custom_promote_panels,
@@ -31,8 +31,8 @@ from home.models.custom_blocks.printable_section import PrintableSectionBlock
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
 from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
 from home.models.custom_blocks.detailed_timeline import DetailedTimelineBlock
+from home.models.custom_blocks.question_answers import QuestionAnswersBlock
 from home.models.snippets.navigation import NavigationRibbon
-from home.models.snippets.faq_filter_tag import get_faq_filter_tag_choices
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -410,28 +410,7 @@ _BASE_BLOCK_TYPES = [
             label="List of Links",
         ),
     ),
-    (
-        "questionanswers",
-        blocks.ListBlock(
-            blocks.StructBlock(
-                [
-                    ("question", blocks.CharBlock(required=False)),
-                    ("answer", blocks.RichTextBlock()),
-                    ("anchortag", blocks.CharBlock()),
-                    (
-                        "filtertag",
-                        blocks.ChoiceBlock(
-                            choices=get_faq_filter_tag_choices,
-                            required=True,
-                            label="FilterTag",
-                        ),
-                    ),
-                ]
-            ),
-            label="Question and Answer",
-            help_text="Add a question and answer. Link the anchor tag number. Select the FAQ FilterTag type in the dropdown.",
-        ),
-    ),
+    ("questionanswers", QuestionAnswersBlock()),
     ("columns", ColumnBlock()),
     (
         "embedded_video",
@@ -552,7 +531,7 @@ _BASE_BLOCK_TYPES = [
                     (
                         "buttons",
                         blocks.ListBlock(
-                            ButtonBlock(),
+                            CardButtonBlock(),
                             min_num=0,
                             max_num=1,
                             required=False,

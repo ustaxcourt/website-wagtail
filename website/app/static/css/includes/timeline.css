@@ -2,7 +2,7 @@
     width: 100%;
     background-color: #E8F0FE;
     border-radius: 10px;
-    margin: 32px 0;
+    margin: 0 0 32px 0;
     padding: 0 24px 0 0;
     display: grid;
     grid-template-columns: min-content auto;
@@ -171,7 +171,7 @@
     grid-column: 1 / 2;
     grid-row: 2;
     display: flex;
-    align-items: normal;
+    align-items: center;
     gap: 4px;
 }
 
@@ -179,7 +179,10 @@
     font-size: 16px;
     color: var(--color-secondary);
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 16;
-    padding: 4px 0 0;
+}
+
+.material-symbols-outlined.detailed-timeline-accordion-header-date-range-icon {
+    font-size: 20px;
 }
 
 .detailed-timeline-accordion-content p,
@@ -254,7 +257,7 @@
 
 .detailed-timeline-accordion-content-helpful-information-header {
     display: flex;
-    align-items: normal;
+    align-items: center;
     gap: 4px;
     font-weight: 600;
     padding: 0 0 8px;
@@ -265,7 +268,10 @@
     font-size: 16px;
     color: var(--color-secondary);
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 16;
-    padding: 2px 0 0;
+}
+
+.material-symbols-outlined.detailed-timeline-accordion-content-helpful-information-header-icon {
+    font-size: 20px;
 }
 
 .detailed-timeline-accordion-content-helpful-information-items {
@@ -273,7 +279,7 @@
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
     column-gap: 4px;
-    align-items: normal;
+    align-items: center;
     padding: 8px 0 0;
     font-size: 16px;
 }
@@ -376,6 +382,7 @@
 .bubble-line {
     padding-left: 52px;
     position: relative;
+    counter-reset: bubbleitem 0;
 }
 
 .bubble-circle::before {
@@ -391,8 +398,22 @@
     z-index: 1;
 }
 
+.bubble-number::before {
+    counter-increment: bubbleitem;
+    content: counter(bubbleitem);
+    text-align: center;
+    color: var(--color-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    padding-top: 1px;
+}
+
 .bubble-circle:has(* > * > .active)::before {
     background-color: var(--color-primary);
+}
+
+.bubble-number:has(* > * > .active)::before {
+    color: white;
 }
 
 .bubble-circle:not(:last-child)::after {
