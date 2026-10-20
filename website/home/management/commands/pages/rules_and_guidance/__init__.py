@@ -36,6 +36,12 @@ from .petitioners_forms import PetitionersFormsPageInitializer
 from .petitioners_help import PetitionersHelpPageInitializer
 from .dawson_how_to_efile_petition import DawsonHowToEfilePetition
 from .dawson_how_to_merge_pdfs import DawsonHowToMergePdfs
+from .dawson_troubleshoot_file_uploads import DawsonTroubleshootFileUploads
+from .dawson_how_to_search_for_a_case import DawsonHowToSearchForACase
+from .dawson_how_to_search_for_an_order import DawsonHowToSearchForAnOrder
+from .dawson_how_to_search_for_an_opinion import DawsonHowToSearchForAnOpinion
+from .dawson_how_to_update_contact_info import DawsonHowToUpdateContactInfo
+from .dawson_how_to_view_dashboard import DawsonHowToViewDashboard
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -73,4 +79,10 @@ rules_and_guidance_pages_to_initialize = [
     PetitionersHelpPageInitializer,
     DawsonHowToEfilePetition,
     DawsonHowToMergePdfs,
+    DawsonTroubleshootFileUploads,
+    DawsonHowToSearchForACase,
+    DawsonHowToSearchForAnOrder,
+    DawsonHowToSearchForAnOpinion,
+    DawsonHowToUpdateContactInfo,
+    DawsonHowToViewDashboard,
 ]
