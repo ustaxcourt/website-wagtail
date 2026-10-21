@@ -108,6 +108,20 @@ class TestDawsonUserGuidePages(TestCase):
                 script = ExecuteScript.objects.get(command_name=command_name)
                 self.assertEqual(script.execution_status, "SUCCESS")
 
+    def test_run_raises_without_recording_when_user_guides_page_missing(self):
+        self.user_guides_page.delete()
+
+        for initializer, slug, command_name in DAWSON_PAGES:
+            with self.subTest(initializer=initializer.__name__):
+                with self.assertRaises(Exception):
+                    initializer().run()
+
+                # Nothing is recorded, so the next deploy retries.
+                self.assertFalse(Page.objects.filter(slug=slug).exists())
+                self.assertFalse(
+                    ExecuteScript.objects.filter(command_name=command_name).exists()
+                )
+
     def test_run_only_executes_once(self):
         for initializer, slug, command_name in DAWSON_PAGES:
             with self.subTest(initializer=initializer.__name__):
