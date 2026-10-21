@@ -596,7 +596,6 @@ p:empty {
 .section-header--blue-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     flex-wrap: wrap;
     gap: 8px;
     width: 100%;
@@ -616,7 +615,7 @@ p:empty {
 }
 @media (max-width: 768px) {
     .section-header--blue-bar h2 {
-        font-size: 22px;
+        font-size: 20px;
     }
 }
 
