@@ -110,13 +110,12 @@ FORM_DOCUMENT_FILENAMES = {
 }
 
 MANAGED_BODY_BLOCK_IDS = {
-    "31117854-55ac-458b-944a-70961a3bf5b6",
-    "4d04948e-e56b-4cd7-ab54-30dfc22098ec",
     "d793fe7d-1e1a-4b4d-b8d9-a615e68ae129",
     "c4490303-b368-49f7-9b1f-858d035dfae1",
     "9ed4dbd5-b712-4f1e-8dc4-1b3bfa246d60",
     "81a1441d-89c3-456b-95b5-9666d32d541b",
     "db314192-839f-4fc1-8679-1d2fb2ef7c7f",
+    "906fa76c-1f20-47ba-956b-4e1f42200b4f",
 }
 
 
@@ -188,18 +187,6 @@ class PetitionersFormsPageInitializer(PageInitializer):
     def build_page_body(self, documents, article_icon, download_icon):
         return [
             {
-                "type": "h2",
-                "value": "Getting Started",
-                "id": "31117854-55ac-458b-944a-70961a3bf5b6",
-            },
-            {
-                "type": "paragraph",
-                "value": (
-                    "Download one of the following based on your chosen filing method."
-                ),
-                "id": "4d04948e-e56b-4cd7-ab54-30dfc22098ec",
-            },
-            {
                 "type": "card",
                 "value": [
                     self._build_form_card(form, documents, article_icon, download_icon)
@@ -243,9 +230,19 @@ class PetitionersFormsPageInitializer(PageInitializer):
                 },
                 "id": "db314192-839f-4fc1-8679-1d2fb2ef7c7f",
             },
+            {
+                "type": "callout",
+                "value": {
+                    "heading": "Note for Petitioners who file by mail:",
+                    "text": '<p data-block-key="yjvqa">Petitioners who file by mail cannot immediately switch to electronic access. To protect your information, the United States Tax Court will mail identity verification instructions to your address of record. Switching to electronic access will be available only after the verification process is complete. Consider filing electronically from the start to get electronic access to your case immediately.</p>',
+                    "callout_type": "warning",
+                },
+                "id": "906fa76c-1f20-47ba-956b-4e1f42200b4f",
+            },
         ]
 
-    def update_existing_page(self, page, body):
+    def update_existing_page(self, page, body, intro_text):
+        update_made = False
         current_body = list(page.body.raw_data)
         managed_indexes = [
             index
@@ -254,29 +251,35 @@ class PetitionersFormsPageInitializer(PageInitializer):
         ]
         if managed_indexes:
             insert_at = managed_indexes[0]
-            updated_body = [
-                block
-                for block in current_body
-                if block.get("id") not in MANAGED_BODY_BLOCK_IDS
-            ]
+            updated_body = []
             updated_body[insert_at:insert_at] = body
         else:
             updated_body = current_body + body
 
         if updated_body != current_body:
             page.body = updated_body
+            update_made = True
+
+        if intro_text != page.introductory_text:
+            page.introductory_text = intro_text
+            update_made = True
+
+        if update_made:
             page.save_revision().publish()
             logger.info("Updated the Forms to File a Petition page.")
 
     def create_page_info(self, home_page):
         slug = "petitioners-forms"
         title = "Forms to File a Petition"
+        intro_text = (
+            "<p>Download one of the following based on your chosen filing method.</p>"
+        )
         documents, article_icon, download_icon = self._load_documents()
         body = self.build_page_body(documents, article_icon, download_icon)
 
         existing_page = Page.objects.filter(slug=slug).first()
         if existing_page:
-            self.update_existing_page(existing_page.specific, body)
+            self.update_existing_page(existing_page.specific, body, intro_text)
             return
 
         navigation_ribbon = NavigationRibbon.objects.filter(
@@ -288,7 +291,7 @@ class PetitionersFormsPageInitializer(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text="<p>Download forms you may need.</p>",
+                introductory_text=intro_text,
                 call_to_action=call_to_action,
                 slug=slug,
                 seo_title=title,
@@ -302,7 +305,9 @@ class PetitionersFormsPageInitializer(PageInitializer):
 
     def run(self):
         # Renamed so environments that already ran the original script pick up the copy fixes.
-        command_name = "Update Forms to File a Petition content with grammar fixes"
+        command_name = (
+            "Update Forms to File a Petition content with new intro and callout"
+        )
         if ExecuteScript.command_exists(command_name):
             logger.info("Script '%s' already exists. Skipping.", command_name)
             return 0
