@@ -57,10 +57,18 @@ def test_petitioners_forms_body_contains_editable_download_cards():
         for button, form in zip(buttons, forms, strict=True)
     )
 
-    special_description = body[4]["value"]
-    assert 'href="/files/documents/rule-50.pdf"' in special_description
+    paragraphs = [block["value"] for block in body if block["type"] == "paragraph"]
+    assert len(paragraphs) == 1
+    assert 'href="/files/documents/rule-50.pdf"' in paragraphs[0]
+
+    callouts = [block["value"] for block in body if block["type"] == "callout"]
+    assert [callout["heading"] for callout in callouts] == [
+        "Note:",
+        "Note for Petitioners who file by mail:",
+    ]
+    assert [callout["callout_type"] for callout in callouts] == ["info", "warning"]
+    assert "identity verification instructions" in callouts[1]["text"]
     assert body[-1]["type"] == "callout"
-    assert body[-1]["value"]["callout_type"] == "info"
 
 
 @pytest.mark.parametrize(
