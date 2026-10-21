@@ -64,6 +64,33 @@
             font-weight: 600;
         }
 
+        .enhanced-page.grid-container > div.petitioner-page-heading {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            column-gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .petitioner-page-heading h1 {
+            margin: 0;
+        }
+
+        .petitioner-breadcrumb {
+            font-size: 32px;
+            line-height: 38px;
+        }
+
+        .petitioner-breadcrumb-link {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 400;
+        }
+
+        .page-title-breadcrumb {
+            display: none;
+        }
+
         /* Forms page body text is 16px (headings, card titles and subtitles keep their sizes). */
         .petitioners-forms-page,
         .petitioners-forms-page p,
@@ -151,6 +178,11 @@
         }
 
         @media (max-width: 600px) {
+            .petitioner-breadcrumb {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
             .rounded-rectangle {
                 padding: 0 0 32px 0;
             }
@@ -210,10 +242,18 @@
             </div>
             {% endwith %}
         {% endif %}
-        <h1 data-testid="page-title" tabindex="-1">
-            <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
-            <span class="page-title-breadcrumb" style="display: none;"></span>
-        </h1>
+        <div class="petitioner-page-heading">
+            {% if page.breadcrumb_title and page.breadcrumb_page_url %}
+                <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
+                    <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
+                    <span aria-hidden="true"> / </span>
+                </nav>
+            {% endif %}
+            <h1 data-testid="page-title" tabindex="-1">
+                <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
+                <span class="page-title-breadcrumb"></span>
+            </h1>
+        </div>
         {% if page.introductory_text %}
             {{ page.introductory_text|richtext }}
         {% endif %}
@@ -245,13 +285,6 @@
         {% endif %}
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const pageTitle = document.querySelector('[data-testid="page-title"]');
-            if (pageTitle && !document.querySelector('.card-tile')) {
-                pageTitle.setAttribute('tabindex', '0');
-            }
-        });
-
         // Actions to reset the breadcrumb at the top of the page
         function resetBreadcrumb(eventFromListener) {
             eventFromListener.preventDefault();
