@@ -1,6 +1,7 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
 from home.models import IconCategories
+from home.models import NavigationRibbon
 from home.models import PetitionerExperiencePage
 import logging
 
@@ -41,12 +42,16 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
             )
             docs[doc_name] = document
 
+        navigation_ribbon = NavigationRibbon.objects.filter(
+            name="Guidance for Petitioners Ribbon"
+        ).first()
+
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
                 slug=slug,
                 seo_title=title,
-                navigation_ribbon=None,
+                navigation_ribbon=navigation_ribbon,
                 search_description=title,
                 body=[
                     {
