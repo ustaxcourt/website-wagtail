@@ -51,12 +51,12 @@ class DawsonHowToMergePdfs(PageInitializer):
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text="<p>Learn how to merge pdfs</p>",
                 slug=slug,
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
                 search_description=title,
                 breadcrumb=breadcrumb,
+                show_floating_definitions_button=True,
             )
         )
 
