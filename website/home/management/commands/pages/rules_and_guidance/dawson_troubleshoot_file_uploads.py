@@ -29,6 +29,23 @@ class DawsonTroubleshootFileUploads(PageInitializer):
             logger.info(f"- {title} page already exists.")
             return
 
+        user_guides_page = Page.objects.filter(slug="dawson-user-guides").first()
+        breadcrumb = []
+        if user_guides_page:
+            breadcrumb = [
+                {
+                    "type": "breadcrumb",
+                    "value": {
+                        "breadcrumb_title": "DAWSON User Guides & Electronic Filing Instructions",
+                        "breadcrumb_page": [
+                            {"type": "internal_page", "value": user_guides_page.id}
+                        ],
+                    },
+                }
+            ]
+        else:
+            logger.warning("'dawson-user-guides' page not found; skipping breadcrumb.")
+
         logger.info(f"Creating the '{title}' page.")
 
         new_page = home_page.add_child(
@@ -39,6 +56,7 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
                 search_description=title,
+                breadcrumb=breadcrumb,
             )
         )
 
