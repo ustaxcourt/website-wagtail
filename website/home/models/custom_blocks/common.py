@@ -1,42 +1,9 @@
 from wagtail import blocks
-from wagtail.documents.blocks import DocumentChooserBlock
-from home.models.config import IconCategories
+from home.models.custom_blocks.link import LinkBlock
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
-link_obj = blocks.ListBlock(
-    blocks.StructBlock(
-        [
-            ("title", blocks.CharBlock()),
-            (
-                "icon",
-                blocks.ChoiceBlock(
-                    choices=[
-                        (
-                            icon.value,
-                            icon.name.replace("_", " ").title(),
-                        )
-                        for icon in IconCategories
-                    ],
-                    required=False,
-                ),
-            ),
-            (
-                "document",
-                DocumentChooserBlock(required=False),
-            ),
-            (
-                "video",
-                DocumentChooserBlock(required=False),
-            ),
-            ("url", blocks.CharBlock(required=False)),
-            (
-                "text_only",
-                blocks.BooleanBlock(required=False),
-            ),
-        ]
-    )
-)
+link_obj = blocks.ListBlock(LinkBlock())
 
 custom_promote_panels = [
     MultiFieldPanel(
@@ -76,7 +43,7 @@ class CommonBlock(blocks.StreamBlock):
     links = blocks.StructBlock(
         [
             (
-                "class",
+                "style",
                 blocks.ChoiceBlock(
                     choices=[
                         ("indented", "Indented"),
