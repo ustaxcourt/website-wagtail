@@ -104,6 +104,11 @@ class TestDawsonUserGuidePages(TestCase):
                 page = PetitionerExperiencePage.objects.get(slug=slug)
                 self.assertTrue(page.live)
                 self.assertEqual(page.breadcrumb_page_url, self.user_guides_page.url)
+                self.assertEqual(
+                    page.breadcrumb_title,
+                    "DAWSON User Guides & Electronic Filing Instructions",
+                )
+                self.assertTrue(page.show_floating_definitions_button)
 
                 script = ExecuteScript.objects.get(command_name=command_name)
                 self.assertEqual(script.execution_status, "SUCCESS")
