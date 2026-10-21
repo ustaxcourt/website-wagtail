@@ -19,7 +19,7 @@ class ListOfLinksBlock(blocks.StructBlock):
         required=True,
     )
 
-    links = blocks.ListBlock(LinkBlock, label="Add Entry")
+    links = blocks.ListBlock(LinkBlock(), label="Add Entry")
 
     class Meta:
         label = "List of Links"

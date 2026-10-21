@@ -3,7 +3,7 @@ from home.models.custom_blocks.link import LinkBlock
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
-link_obj = blocks.ListBlock(LinkBlock)
+link_obj = blocks.ListBlock(LinkBlock())
 
 custom_promote_panels = [
     MultiFieldPanel(
