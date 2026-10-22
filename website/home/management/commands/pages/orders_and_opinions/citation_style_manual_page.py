@@ -57,7 +57,7 @@ class CitationStyleManualPageInitializer(PageInitializer):
                     {
                         "type": "links",
                         "value": {
-                            "class": IndentStyle.UNINDENTED,
+                            "style": IndentStyle.UNINDENTED,
                             "links": [
                                 {
                                     "title": "USTC Citation and Style Manual",

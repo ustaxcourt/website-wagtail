@@ -5,8 +5,10 @@ import re
 
 import pytest
 from django.test import RequestFactory
-from wagtail.models import Locale, Page, Site
+from wagtail.models import Collection, Locale, Page, Site
+from taggit.models import Tag
 
+from home.data.role_tag_names import ROLE_TAGS_NAMES
 from home.management.commands.pages.rules_and_guidance.petitioners_help import (
     PLACEHOLDER_QUESTIONS,
     PetitionersHelpPageInitializer,
@@ -35,6 +37,7 @@ def qa(question, filtertag, anchortag=None):
         "answer": f"<p>Answer to {question}</p>",
         "anchortag": anchortag or question.lower().replace(" ", "-").strip("?"),
         "filtertag": filtertag,
+        "helpfulresources": [],
     }
 
 
@@ -110,10 +113,19 @@ class TestDataMigration:
 
 class TestPetitionersHelpSeeder:
     def test_body_enables_filter_and_uses_only_existing_tags(self):
-        seeded = {slug for slug, _, _ in PLACEHOLDER_QUESTIONS}
+        seeded = {slug for slug, _, _, _ in PLACEHOLDER_QUESTIONS}
         missing = "after-decision"
         for slug in seeded - {missing}:
             make_tag(slug.replace("-", " ").title(), slug=slug)
+
+        root_collection = Collection.add_root(name="Root")
+        root_collection.add_child(name="DAWSON Training Guides")
+        Tag.objects.get_or_create(name="Forms")
+        Tag.objects.get_or_create(name="Tax Court Rules")
+        Tag.objects.get_or_create(name="Guidance for Petitioners")
+        Tag.objects.get_or_create(name="DAWSON Training Guides")
+        for tag in ROLE_TAGS_NAMES:
+            Tag.objects.get_or_create(name=tag)
 
         [block] = PetitionersHelpPageInitializer().build_body()
 
