@@ -1,6 +1,5 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationRibbon
 from home.models import PetitionerExperiencePage
 from urllib.parse import urljoin
 from django.conf import settings
@@ -83,19 +82,16 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
             _base_url, "/dawson-how-to-view-dashboard"
         )
 
-        navigation_ribbon = NavigationRibbon.objects.filter(
-            name="Guidance for Petitioners Ribbon"
-        ).first()
-
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
                 slug=slug,
                 seo_title=title,
-                navigation_ribbon=navigation_ribbon,
+                navigation_ribbon=None,
                 search_description=title,
                 introductory_text="Explore guides and videos designed to help you navigate and use DAWSON, the United States Tax Court's electronic filing and case management system. These resources provide step-by-step guidance for filing documents, managing your case, and using key DAWSON features.",
                 show_floating_definitions_button=True,
+                show_dawson_logo=True,
                 body=[
                     {
                         "type": "quick_access_tiles",
@@ -238,8 +234,18 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                         "id": "c9d4064c-2277-4d20-b0f4-9c7843281762",
                     },
                     {
+                        "type": "section_header",
+                        "value": {
+                            "heading": "DAWSON Topic-Specific Guides",
+                            "style": "default",
+                            "link_text": "",
+                            "link_url": "",
+                        },
+                        "id": "94c03bee-0adf-4f28-8142-3e02fee28692",
+                    },
+                    {
                         "type": "paragraph",
-                        "value": '<h2 data-block-key="cnklq"><b>DAWSON Topic-Specific Guides</b></h2><p data-block-key="582ej">These detailed topic guides provide step-by-step instructions for completing common actions in DAWSON, the Court\'s electronic filing and case management system. Select a guide below to learn about specific topics, such as filing and managing cases, searching Court records, updating account information, and using other DAWSON features.</p>',
+                        "value": '<p data-block-key="cnklq">These detailed topic guides provide step-by-step instructions for completing common actions in DAWSON, the Court\'s electronic filing and case management system. Select a guide below to learn about specific topics, such as filing and managing cases, searching Court records, updating account information, and using other DAWSON features.</p>',
                         "id": "d6e5e2bc-4a70-43a2-842a-96b2689d6bc1",
                     },
                     {
