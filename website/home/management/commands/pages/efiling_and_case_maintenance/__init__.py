@@ -13,6 +13,7 @@ from .definitions_page import DefinitionsPageInitializer
 from .searches_and_public_access_page import SearchesAndPublicAccessPageInitializer
 from .dawson_faqs_case_management_page import DawsonFaqsCaseManagementPageInitializer
 from .dawson_user_guides_page import DawsonUserGuidesPageInitializer
+from .dawson_user_guides_pe_page import DawsonUserGuidesPEPageInitializer
 from .dashboard_page import DashboardPageInitializer
 from .find_order_page import DawsonFindAnOrderPageInitializer
 from .find_an_opinion import DawsonFindAnOpinionPageInitializer
@@ -63,4 +64,5 @@ efiling_and_case_maintenance_pages_to_initialize = [
 efiling_and_case_maintenance_pages_to_update = [
     DefinitionsPageInitializer,
     LITCPageInitializer,
+    DawsonUserGuidesPEPageInitializer,
 ]
