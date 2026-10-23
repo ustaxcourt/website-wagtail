@@ -29,34 +29,30 @@ class DawsonHowToViewDashboard(PageInitializer):
             logger.info(f"- {title} page already exists.")
             return
 
-        user_guides_page = Page.objects.filter(slug="dawson-user-guides").first()
-        breadcrumb = []
-        if user_guides_page:
-            breadcrumb = [
-                {
-                    "type": "breadcrumb",
-                    "value": {
-                        "breadcrumb_title": "DAWSON User Guides & Electronic Filing Instructions",
-                        "breadcrumb_page": [
-                            {"type": "internal_page", "value": user_guides_page.id}
-                        ],
-                    },
-                }
-            ]
-        else:
-            logger.warning("'dawson-user-guides' page not found; skipping breadcrumb.")
+        user_guides_page = Page.objects.get(slug="dawson-user-guides")
+        breadcrumb = [
+            {
+                "type": "breadcrumb",
+                "value": {
+                    "breadcrumb_title": "DAWSON User Guides & Electronic Filing Instructions",
+                    "breadcrumb_page": [
+                        {"type": "internal_page", "value": user_guides_page.id}
+                    ],
+                },
+            }
+        ]
 
         logger.info(f"Creating the '{title}' page.")
 
         new_page = home_page.add_child(
             instance=PetitionerExperiencePage(
                 title=title,
-                introductory_text="<p>Learn how to view the DAWSON dashboard</p>",
                 slug=slug,
                 seo_title=title,
                 navigation_ribbon=navigation_ribbon,
                 search_description=title,
                 breadcrumb=breadcrumb,
+                show_floating_definitions_button=True,
             )
         )
 
@@ -69,6 +65,13 @@ class DawsonHowToViewDashboard(PageInitializer):
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")
             return 0
+
+        # Check before recording the script so a missing parent page is retried
+        # on the next deploy instead of being permanently marked as run.
+        if not Page.objects.filter(slug="dawson-user-guides").exists():
+            raise Exception(
+                f"'dawson-user-guides' page not found; cannot run '{command_name}'."
+            )
 
         script_entry = ExecuteScript.create_script(command_name)
 
