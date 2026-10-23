@@ -4,7 +4,7 @@ beautifulsoup4==4.15.0
 html5lib==1.1
 boto3==1.43.114
 botocore==1.43.114
-certifi==2026.7.22
+certifi==2026.10.19
 cfgv==3.5.0
 charset-normalizer==3.5.2
 defusedxml==0.7.1
@@ -34,7 +34,7 @@ nodeenv==1.11.0
 openpyxl==3.1.5
 packaging==26.3
 pillow_heif==1.8.1
-pillow==12.3.0
+pillow==13.0.0
 platformdirs==4.13.3
 pluggy==1.7.0
 psycopg2-binary==2.9.13
@@ -51,7 +51,7 @@ sqlparse==0.6.0
 telepath==0.3.1
 typing_extensions==4.16.0
 urllib3==2.8.0
-virtualenv==21.14.8
+virtualenv==21.14.12
 wagtail>=7.4.3,<7.5
 # Forked to fix base model lookup bug (upstream PR #173)
 # Revert to official package once https://github.com/wagtail/wagtail-transfer/pull/173 is merged
