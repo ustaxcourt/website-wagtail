@@ -135,6 +135,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         FieldPanel("show_floating_definitions_button"),
         FieldPanel("navigation_ribbon"),
         FieldPanel("breadcrumb"),
+        FieldPanel("show_dawson_logo"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
         FieldPanel("call_to_action"),
