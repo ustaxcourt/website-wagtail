@@ -94,6 +94,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
     show_dawson_logo = models.BooleanField(
         default=False,
         help_text="Check to display the DAWSON logo to the left of the page's title and introductory text.",
+        verbose_name="Show DAWSON Logo",
     )
 
     breadcrumb = StreamField(
