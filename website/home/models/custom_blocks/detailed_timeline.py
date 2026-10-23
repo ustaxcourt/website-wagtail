@@ -96,6 +96,21 @@ class DetailedTimelineBlock(blocks.StructBlock):
         required=True,
     )
 
+    show_title = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        label="Show Timeline Title",
+    )
+
+    warning_callout = blocks.StructBlock(
+        [
+            ("heading", blocks.CharBlock(required=True)),
+            ("text", blocks.RichTextBlock(required=True)),
+        ],
+        required=False,
+        label="Warning Callout",
+    )
+
     show_numbers_in_bubbles = blocks.BooleanBlock(
         required=False,
         default=False,

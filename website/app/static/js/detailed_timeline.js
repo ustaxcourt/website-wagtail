@@ -110,9 +110,9 @@
         saveAccordionState(timeline);
     }
 
-    function createPrintClone(timeline) {
-        const clone = timeline.cloneNode(true);
-        const originalCheckboxes = timeline.querySelectorAll('input[type="checkbox"]');
+    function createPrintClone(printRoot) {
+        const clone = printRoot.cloneNode(true);
+        const originalCheckboxes = printRoot.querySelectorAll('input[type="checkbox"]');
 
         clone.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox, index) {
             const isChecked = Boolean(originalCheckboxes[index] && originalCheckboxes[index].checked);
@@ -188,10 +188,16 @@
 
             const clickedPrintButton = target.closest(".detailed-timeline-print-button");
             if (clickedPrintButton && timeline.contains(clickedPrintButton)) {
+                const printRootSelector = printButton.dataset.printRoot;
+                const printRoot = printRootSelector
+                    ? document.querySelector(printRootSelector)
+                    : timeline;
+                if (!printRoot) return;
+
                 cleanupPrintHost();
                 printHost = document.createElement("div");
                 printHost.className = "detailed-timeline-print-host";
-                printHost.appendChild(createPrintClone(timeline));
+                printHost.appendChild(createPrintClone(printRoot));
                 document.body.appendChild(printHost);
                 document.body.classList.add("printing-detailed-timeline");
                 window.print();

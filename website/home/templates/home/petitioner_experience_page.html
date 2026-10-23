@@ -91,6 +91,78 @@
             display: none;
         }
 
+        .enhanced-page.grid-container.dawson-efile-guide {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 1600px;
+            padding: 48px 64px 25px;
+        }
+
+        .dawson-efile-guide .petitioner-page-heading {
+            flex-direction: column;
+            align-items: stretch;
+            row-gap: 34px;
+        }
+
+        .dawson-efile-guide .petitioner-breadcrumb {
+            min-height: 38px;
+            font-size: 16px;
+            line-height: 38px;
+        }
+
+        .dawson-efile-guide .petitioner-page-heading h1 {
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 38px;
+        }
+
+        .dawson-efile-guide .detailed-timeline-header {
+            align-items: center;
+        }
+
+        @media (min-width: 1201px) {
+            .dawson-efile-guide .detailed-timeline-header {
+                column-gap: 73px;
+            }
+        }
+
+        .dawson-efile-guide .detailed-timeline-controls {
+            gap: 24px;
+        }
+
+        .dawson-efile-guide .detailed-timeline-control-button {
+            height: 40px;
+            min-height: 40px;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .dawson-efile-guide .detailed-timeline-control-button-icon,
+        .dawson-efile-guide .detailed-timeline-expand-button-icon,
+        .dawson-efile-guide .detailed-timeline-print-button-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        @media (min-width: 1201px) {
+            .dawson-efile-guide .detailed-timeline-expand-button {
+                width: 130px;
+            }
+
+            .dawson-efile-guide .detailed-timeline-print-button {
+                width: 93px;
+            }
+        }
+
+        .dawson-efile-guide .detailed-timeline-phase:last-child {
+            margin-bottom: 0;
+        }
+
+        body:has(.dawson-efile-guide) .definitions-btn .button-contents {
+            padding-right: 0;
+            padding-left: 0;
+        }
+
         /* Forms page body text is 16px (headings, card titles and subtitles keep their sizes). */
         .petitioners-forms-page,
         .petitioners-forms-page p,
@@ -161,6 +233,11 @@
         }
 
         @media (max-width: 1200px) {
+            .enhanced-page.grid-container.dawson-efile-guide {
+                padding-right: 32px;
+                padding-left: 32px;
+            }
+
             .rounded-rectangle {
                 padding: 0 0 32px 0;
             }
@@ -178,7 +255,29 @@
         }
 
         @media (max-width: 600px) {
+            .enhanced-page.grid-container.dawson-efile-guide {
+                padding-top: 25px;
+                padding-bottom: 25px;
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .dawson-efile-guide .petitioner-page-heading {
+                row-gap: 12px;
+            }
+
             .petitioner-breadcrumb {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            .dawson-efile-guide .petitioner-breadcrumb {
+                min-height: 0;
+                font-size: 16px;
+                line-height: 24px;
+            }
+
+            .dawson-efile-guide .petitioner-page-heading h1 {
                 font-size: 24px;
                 line-height: 32px;
             }
@@ -213,7 +312,7 @@
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
-    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}">
+    <div {% if page.slug == "dawson-how-to-e-file-a-petition" %}id="dawson-efile-guide-print-content"{% endif %} class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}{% if page.slug == 'dawson-how-to-e-file-a-petition' %} dawson-efile-guide{% endif %}">
         {% if page.navigation_ribbon %}
             {% with current_path=request.path|normalize_url_path %}
             <div class="blue-page-links-bar">
@@ -247,6 +346,9 @@
                 <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
                     <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
                     <span aria-hidden="true"> / </span>
+                    {% if page.slug == "dawson-how-to-e-file-a-petition" %}
+                        <span class="petitioner-breadcrumb-current" aria-hidden="true">How to e-file a petition</span>
+                    {% endif %}
                 </nav>
             {% endif %}
             <h1 data-testid="page-title" tabindex="-1">

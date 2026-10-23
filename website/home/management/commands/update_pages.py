@@ -27,6 +27,9 @@ from home.management.commands.pages.rules_and_guidance import (
     PetitionersTimelinePageInitializer,
     PetitionersHelpPageInitializer,
 )
+from home.management.commands.pages.rules_and_guidance.dawson_how_to_efile_petition import (
+    DawsonHowToEfilePetitionPageInitializer,
+)
 
 from home.management.commands.redirects.petitioners_redirect_initializer import (
     PetitionersRedirectInitializer,
@@ -49,6 +52,7 @@ pages_to_update = (
         PetitionersPrepareToFilePageInitializer,
         PetitionersTimelinePageInitializer,
         PetitionersHelpPageInitializer,
+        DawsonHowToEfilePetitionPageInitializer,
     ]
     + [PetitionersRedirectInitializer]
     + [NavigationRibbonUpdater]

@@ -328,6 +328,46 @@
     min-width: 0;
 }
 
+.detailed-timeline-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 24px 0 32px;
+    padding: 21px 15px;
+    min-height: 108px;
+    box-sizing: border-box;
+    border-left: 8px solid #ffbe2e;
+    background: #faf3d1;
+    color: #1b1b1b;
+}
+
+.detailed-timeline-warning-icon {
+    flex: 0 0 32px;
+    margin-top: 2px;
+    height: 32px;
+    background-color: #1b1b1b;
+    -webkit-mask: url('/static/uswds/img/usa-icons/warning.svg') center / contain no-repeat;
+    mask: url('/static/uswds/img/usa-icons/warning.svg') center / contain no-repeat;
+}
+
+.detailed-timeline-warning-content {
+    min-width: 0;
+}
+
+.detailed-timeline-warning-content h3 {
+    margin: 0 0 15px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 25px;
+    text-transform: uppercase;
+}
+
+.detailed-timeline-warning-content p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 25px;
+}
+
 .detailed-timeline-controls {
     display: flex;
     align-items: center;
