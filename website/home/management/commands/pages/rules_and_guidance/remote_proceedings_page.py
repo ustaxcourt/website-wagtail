@@ -144,7 +144,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                     {
                         "type": "links",
                         "value": {
-                            "class": IndentStyle.UNINDENTED,
+                            "style": IndentStyle.UNINDENTED,
                             "links": [
                                 {
                                     "title": "Pre-Calendar Call (Speaker View)",
@@ -168,7 +168,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                     {
                         "type": "links",
                         "value": {
-                            "class": IndentStyle.UNINDENTED,
+                            "style": IndentStyle.UNINDENTED,
                             "links": [
                                 {
                                     "title": "Clinic Breakout Room (Speaker View)",
@@ -192,7 +192,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                     {
                         "type": "links",
                         "value": {
-                            "class": IndentStyle.UNINDENTED,
+                            "style": IndentStyle.UNINDENTED,
                             "links": [
                                 {
                                     "title": "Calendar Call (Speaker View)",
@@ -213,7 +213,7 @@ class RemoteProceedingsPageInitializer(PageInitializer):
                     {
                         "type": "links",
                         "value": {
-                            "class": IndentStyle.UNINDENTED,
+                            "style": IndentStyle.UNINDENTED,
                             "links": [
                                 {
                                     "title": "Trial (Speaker View)",

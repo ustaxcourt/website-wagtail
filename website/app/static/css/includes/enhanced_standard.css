@@ -600,14 +600,13 @@ div.get-started-row + p + p {
 .get-started-row a{
     text-decoration: underline;
     color: black;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
 }
 
 .section-header--blue-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     flex-wrap: wrap;
     gap: 8px;
     width: 100%;
@@ -623,7 +622,13 @@ div.get-started-row + p + p {
 }
 .section-header--blue-bar a {
     color: #FFFFFF;
+    font-size: 16px;
     text-decoration: underline;
+}
+@media (max-width: 768px) {
+    .section-header--blue-bar h2 {
+        font-size: 20px;
+    }
 }
 
 .info-card__icon-badge .info-card__non-md-number {

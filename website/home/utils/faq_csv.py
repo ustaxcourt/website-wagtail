@@ -18,7 +18,9 @@ goes through the normal review workflow and can be reverted from the page histor
 
 import csv
 import io
+import ast
 import re
+import uuid
 
 from django.core.exceptions import ValidationError
 from django.utils.html import escape
@@ -28,7 +30,7 @@ from wagtail import hooks
 from home.models.custom_blocks.question_answers import QuestionAnswersBlock
 from home.models.snippets.faq_filter_tag import QA_BLOCK_TYPE, FAQFilterTag
 
-COLUMNS = ["question", "answer", "filtertag", "anchortag"]
+COLUMNS = ["question", "answer", "filtertag", "anchortag", "helpfulresources"]
 REQUIRED_COLUMNS = ["question", "answer", "filtertag"]
 MAX_ROWS = 500
 MAX_GENERATED_ANCHOR_LENGTH = 60
@@ -80,7 +82,18 @@ def faq_section_to_csv(section):
     writer.writerow(COLUMNS)
     for qa, tag_name in value.entries:
         writer.writerow(
-            [qa["question"], qa["answer"].source, tag_name, qa["anchortag"]]
+            [
+                qa["question"],
+                qa["answer"].source,
+                tag_name,
+                qa["anchortag"],
+                [
+                    o["value"]
+                    for o in qa["helpful_resources"].list_block.get_prep_value(
+                        qa["helpful_resources"]
+                    )
+                ],
+            ]
         )
     return output.getvalue()
 
@@ -138,12 +151,26 @@ def faq_csv_parse(data, *, reserved_anchors=()):
                 )
             given_anchors.setdefault(anchor, row_number)
 
+        helpful_resources = []
+        try:
+            helpful_resources = _build_helpful_resources(
+                row.get("helpfulresources", "")
+            )
+        except ValueError as exc:
+            errors.append(
+                (
+                    row_number,
+                    f'helpfulresources "{row.get("helpfulresources", "")}" is not well-formed. {exc}',
+                )
+            )
+
         questions.append(
             {
                 "question": row["question"],
                 "answer": _answer_to_rich_text(row["answer"]),
                 "anchortag": anchor,
                 "filtertag": slug or "",
+                "helpful_resources": helpful_resources,
             }
         )
 
@@ -258,6 +285,30 @@ def _answer_to_rich_text(text):
     return widget.value_from_datadict(
         {"answer": widget.format_value(text)}, {}, "answer"
     )
+
+
+def _build_helpful_resources(text):
+    result = []
+
+    if not text:
+        return result
+
+    try:
+        items = ast.literal_eval(text)
+    except (SyntaxError, ValueError) as exc:
+        raise ValueError("Invalid helpfulresources literal.") from exc
+    if not isinstance(items, list) or not all(isinstance(item, dict) for item in items):
+        raise ValueError("helpfulresources must be a list of resource objects.")
+    for item in items:
+        result.append(
+            {
+                "type": "item",
+                "value": item,
+                "id": str(uuid.uuid4()),
+            }
+        )
+
+    return result
 
 
 def _generate_anchor(question, used):
