@@ -75,6 +75,70 @@ describe("DAWSON How to e-file a Petition guide", () => {
         cy.get("@nativePrint").should("have.been.calledOnce");
     });
 
+    [375, 600, 768, 834, 1024, 1200].forEach((width) => {
+        it(`uses petitioner-page responsive styling at ${width}px`, () => {
+            cy.viewport(width, 1000);
+            cy.visit("/petitioners-timeline/");
+
+            const styleProperties = {
+                ".enhanced-page": ["padding-top", "padding-right", "padding-bottom", "padding-left"],
+                '[data-testid="page-title"]': ["font-size", "line-height", "font-weight"],
+                ".detailed-timeline-header": ["align-items", "gap"],
+                ".detailed-timeline-expand-button": ["font-size", "padding", "min-height"],
+                ".detailed-timeline-expand-button-icon": ["width", "height"],
+                ".detailed-timeline-accordion-title": ["font-size", "padding"],
+            };
+
+            cy.document().then((referenceDocument) => {
+                const referenceStyles = Object.entries(styleProperties).map(([selector, properties]) => {
+                    const element = referenceDocument.querySelector(selector);
+                    expect(element, selector).not.to.be.null;
+                    const styles = referenceDocument.defaultView!.getComputedStyle(element!);
+                    return { selector, properties: properties.map((property) => [property, styles.getPropertyValue(property)]) };
+                });
+
+                cy.visit("/dawson-how-to-e-file-a-petition/");
+                cy.document().then((guideDocument) => {
+                    referenceStyles.forEach(({ selector, properties }) => {
+                        const element = guideDocument.querySelector(selector);
+                        expect(element, selector).not.to.be.null;
+                        const styles = guideDocument.defaultView!.getComputedStyle(element!);
+                        properties.forEach(([property, value]) => {
+                            expect(styles.getPropertyValue(property), `${selector} ${property}`).to.equal(value);
+                        });
+                    });
+                });
+            });
+
+            if (width < 480) {
+                cy.get(".detailed-timeline-controls").then(($controls) => {
+                    const controls = $controls[0].getBoundingClientRect();
+                    cy.get(".detailed-timeline-control-button").each(($button) => {
+                        const button = $button[0].getBoundingClientRect();
+                        expect(button.width).to.be.at.least(controls.width - 8);
+                        expect(button.right).to.be.at.most(controls.right);
+                    });
+                });
+            }
+
+            cy.get(".detailed-timeline-expand-button").click();
+            cy.get(".detailed-timeline-accordion-content").should("be.visible");
+            cy.get(".enhanced-page").should(($page) => {
+                expect($page[0].scrollWidth).to.be.at.most($page[0].clientWidth);
+            });
+        });
+    });
+
+    it("preserves the desktop design", () => {
+        cy.get(".enhanced-page")
+            .should("have.css", "padding-left", "64px")
+            .and("have.css", "padding-top", "48px");
+        cy.get('[data-testid="page-title"]').should("have.css", "font-size", "28px");
+        cy.get(".detailed-timeline-expand-button")
+            .should("have.css", "width", "130px")
+            .and("have.css", "font-size", "14px");
+    });
+
     it("passes the accessibility audit", () => {
         checkA11y(".enhanced-page");
     });
