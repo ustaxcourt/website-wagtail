@@ -1,6 +1,6 @@
 /* ==========================================================================
    FAQ filter + accordion (includes/faq_accordion.html, js/faq.js)
-   Values taken from the PE FAQ desktop, tablet and mobile mockups (WAG-1343).
+   Values taken from the PE FAQ desktop, tablet and mobile mockups (WAG-1343, WAG-1462).
    ========================================================================== */
 
 .faq {
@@ -77,20 +77,35 @@
 }
 
 .faq__item--expanded {
+    padding-top: 1rem;
     border-radius: 8px;
     background-color: var(--bg-white);
 }
 
-/* Tag + chevron on the first line, question beneath; the chevron stays top-right */
+/* Tag + chevron on the first line, question (and Print, when expanded) beneath;
+   the chevron stays top-right */
 .faq__header {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-areas:
         "tag toggle"
-        "question question";
+        "question print";
     align-items: start;
     position: relative;
+    column-gap: 1.5rem;
     row-gap: 0.5rem;
+}
+
+.faq__item--expanded .faq__header {
+    row-gap: 1rem;
+}
+
+/* Question and Print are both top-aligned, so Print stays put when the question wraps.
+   The 3.5px (half of Print's 32px line less the question's 25px) centers a one-line
+   question against Print, as in the mockups. */
+.faq__item--expanded .faq__question {
+    align-self: start;
+    padding-top: 0.21875rem;
 }
 
 .faq__tag {
@@ -112,6 +127,7 @@
 
 .faq__toggle {
     grid-area: toggle;
+    justify-self: end;
     display: flex;
     color: var(--theme-color-base-medium);
 }
@@ -150,6 +166,47 @@
 .faq__header:hover .faq__question a,
 .faq__question a:focus-visible {
     text-decoration: underline;
+}
+
+/* Sits above the question link's stretched click area (below) so it gets its own clicks. */
+.faq__print {
+    grid-area: print;
+    align-self: start;
+    /* Don't let the taller Print box widen the gap under a one-line question. */
+    margin-bottom: -0.21875rem;
+    display: none;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--faq-ink);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 2rem;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.faq__item--expanded .faq__print {
+    display: inline-flex;
+}
+
+.faq__print:hover {
+    text-decoration: underline;
+}
+
+.faq__print:focus-visible {
+    outline: 0.25rem solid var(--faq-focus);
+    outline-offset: 0.125rem;
+}
+
+/* A margin, not a flex gap: Chrome also gaps the absolutely positioned sr-only text. */
+.faq__print-icon {
+    margin-right: 0.75rem;
+    color: var(--color-primary);
+    font-size: 1rem;
 }
 
 .faq__answer {
@@ -199,14 +256,60 @@
     color: var(--color-navy);
 }
 
-/* Tablet + mobile: the tags match the filter buttons, answers get more leading,
-   and an expanded question sits further below its tag. */
+/* Tablet + mobile: answers get more leading. */
 @media (max-width: 1024px) {
-    .faq__item--expanded .faq__header {
-        row-gap: 1rem;
-    }
-
     .faq__answer {
         line-height: 1.625rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Print drops below the question, left-aligned, as in the mobile mockup. */
+    .faq__item--expanded .faq__header {
+        grid-template-areas:
+            "tag toggle"
+            "question question"
+            "print print";
+    }
+
+    .faq__print {
+        justify-self: start;
+        margin-bottom: 0;
+    }
+
+    /* Print is on its own row here, so the question needs no centering offset. */
+    .faq__item--expanded .faq__question {
+        padding-top: 0;
+    }
+}
+
+/* ---- Printing one question (js/faq.js copies it into .faq-print-host) ---- */
+
+.faq-print-host {
+    display: none;
+}
+
+@media print {
+    body.printing-faq > *:not(.faq-print-host),
+    html:has(> body.printing-faq) > :not(body) {
+        display: none !important;
+    }
+
+    html:has(> body.printing-faq),
+    body.printing-faq {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .faq-print-host {
+        display: block !important;
+        width: 100%;
+        margin: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .faq-print-host .faq__header {
+        break-after: avoid;
     }
 }
