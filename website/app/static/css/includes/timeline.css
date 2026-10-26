@@ -232,8 +232,16 @@
     color: black;
 }
 
+.dawson-efile-guide .detailed-timeline-accordion-content a {
+    color: var(--color-primary);
+}
+
 .detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
     color: inherit;
+}
+
+.dawson-efile-guide .detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
+    color: var(--color-primary);
 }
 
 .detailed-timeline-accordion-content-your-tasks {

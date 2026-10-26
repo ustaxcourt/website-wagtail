@@ -16,8 +16,13 @@ def test_initializer_creates_the_dawson_efile_guide():
     assert DawsonHowToEfilePetitionPageInitializer in pages_to_update
 
     Locale.objects.get_or_create(language_code="en")
-    home_page = Page.add_root(title="Home", slug="home")
-    Site.objects.create(hostname="localhost", root_page=home_page, is_default_site=True)
+    home_page = Page.objects.filter(slug="home").first()
+    if home_page is None:
+        home_page = Page.add_root(title="Home", slug="home")
+    Site.objects.get_or_create(
+        hostname="localhost",
+        defaults={"root_page": home_page, "is_default_site": True},
+    )
     user_guides_page = home_page.add_child(
         instance=Page(title="DAWSON User Guides", slug="dawson-user-guides")
     )
@@ -31,7 +36,7 @@ def test_initializer_creates_the_dawson_efile_guide():
 
     page = PetitionerExperiencePage.objects.get(slug="dawson-how-to-e-file-a-petition")
     script = ExecuteScript.objects.get(
-        command_name="WAG-1451: Populate How to e-file a Petition User Guide"
+        command_name=DawsonHowToEfilePetitionPageInitializer.SCRIPT_NAME
     )
     timeline = page.body[0].value
 
@@ -45,6 +50,8 @@ def test_initializer_creates_the_dawson_efile_guide():
     assert timeline["show_numbers_in_bubbles"] is True
     assert timeline["warning_callout"]["heading"] == "Important Reminder"
     assert len(timeline["phases"]) == 5
+    assert all(not phase.value["your_tasks"] for phase in timeline["phases"])
+    assert all(phase.value["default_to_open"] for phase in timeline["phases"])
     assert script.execution_status == "SUCCESS"
 
     with patch.object(

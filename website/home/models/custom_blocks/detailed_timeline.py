@@ -8,6 +8,12 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
         help_text="Text to be displayed at the beginning of the phase.",
     )
 
+    default_to_open = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        label="Open by Default",
+    )
+
     date_range = blocks.CharBlock(
         max_length=255,
         required=False,

@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
     SLUG = "dawson-how-to-e-file-a-petition"
     TITLE = "How to e-file a Petition"
-    SCRIPT_NAME = "WAG-1451: Populate How to e-file a Petition User Guide"
+    SCRIPT_NAME = "WAG-1451: Match e-file petition guide design with expanded phases"
     BREADCRUMB_TITLE = "DAWSON User Guides & Electronic Filing Instructions"
 
     DOCUMENT_FILENAMES = {
@@ -58,13 +58,6 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
             ),
         }
 
-    @staticmethod
-    def _task(text, subtext=""):
-        return {
-            "text": f"<p>{text}</p>",
-            "subtext": f"<p>{subtext}</p>" if subtext else "",
-        }
-
     def build_timeline(self):
         document_urls = {
             key: self.get_document_url(filename)
@@ -90,6 +83,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "type": "phase",
                 "value": {
                     "title": "Gather Your Information and Documents",
+                    "default_to_open": True,
                     "instructions": (
                         "<p>Before starting your case in DAWSON, have the following ready:</p>"
                         "<ul>"
@@ -99,28 +93,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                         "<li>A completed Corporate Disclosure Statement (Form 6), if filing on behalf of a corporation, partnership, or LLC</li>"
                         "</ul>"
                     ),
-                    "your_tasks": [
-                        self._task(
-                            "Review the filing deadline on your IRS notice.",
-                            "Find the last date to file listed on your IRS notice.",
-                        ),
-                        self._task(
-                            "Make sure you can submit your Petition before the filing deadline.",
-                            "In most cases, your Petition must be received by the Court by 11:59 p.m. Eastern Time on the filing deadline.",
-                        ),
-                        self._task(
-                            "Gather the documents you will need before beginning the filing process.",
-                            "Preparing your documents in advance can make filing your case faster and easier.",
-                        ),
-                        self._task(
-                            "Decide how you will prepare your Petition.",
-                            "Choose whether to use the Petition Generator, the Court's standard form, or your own Petition.",
-                        ),
-                        self._task(
-                            "Review your Petition to ensure it meets filing requirements if uploading your own.",
-                            "Remove prohibited information and confirm your Petition meets Court filing requirements before uploading.",
-                        ),
-                    ],
+                    "your_tasks": [],
                     "helpful_information": [
                         {
                             "icon": "outbound",
@@ -181,26 +154,14 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "type": "phase",
                 "value": {
                     "title": "Create a DAWSON Account",
+                    "default_to_open": True,
                     "instructions": (
                         "<p>To file electronically, create a DAWSON account.</p>"
                         "<ol><li>Go to DAWSON.</li>"
                         "<li>Select <strong>Create Account</strong>.</li>"
                         "<li>Follow the prompts to create your account.</li></ol>"
                     ),
-                    "your_tasks": [
-                        self._task(
-                            "Determine whether you are filing on behalf of a corporation, partnership, or LLC.",
-                            "Business entities are required to submit additional disclosure information when commencing a case.",
-                        ),
-                        self._task(
-                            "If applicable, complete the Corporate Disclosure Statement (Form 6).",
-                            "A Corporate Disclosure Statement is required for corporations, partnerships, and LLCs filing a Petition with the Court.",
-                        ),
-                        self._task(
-                            "Save the completed form so it is ready to upload.",
-                            "Prepare the completed form for submission during the Create a Case process in DAWSON.",
-                        ),
-                    ],
+                    "your_tasks": [],
                     "helpful_information": [
                         {
                             "icon": "outbound",
@@ -237,6 +198,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "type": "phase",
                 "value": {
                     "title": "Start Your Case and File Your Petition",
+                    "default_to_open": True,
                     "instructions": (
                         "<p>After signing in to DAWSON:</p>"
                         "<ol><li>Select Create a Case.</li>"
@@ -288,20 +250,12 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "type": "phase",
                 "value": {
                     "title": "Receive Your Docket Number and Pay the Filing Fee",
+                    "default_to_open": True,
                     "instructions": (
                         "<p>Once your petition is submitted, the Court will assign a docket number.</p>"
                         "<p>Use the docket number to pay the <strong>$60 Petition Filing Fee</strong> through Pay.gov or follow the instructions for mailing payment. Save your docket number and payment confirmation for your records.</p>"
                     ),
-                    "your_tasks": [
-                        self._task(
-                            "Download the Statement of Taxpayer Identification Number (Form 4).",
-                            "The STIN helps the IRS identify you and is not visible as part of the case record.",
-                        ),
-                        self._task(
-                            "Complete and save the form so it is ready to upload.",
-                            "This is the only document that should contain your Social Security Number (SSN), Taxpayer Identification Number (TIN), or Employer Identification Number (EIN).",
-                        ),
-                    ],
+                    "your_tasks": [],
                     "helpful_information": [
                         {
                             "icon": "outbound",
@@ -340,6 +294,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "type": "phase",
                 "value": {
                     "title": "Manage Your Case in DAWSON",
+                    "default_to_open": True,
                     "instructions": (
                         "<p>After filing, use DAWSON to:</p>"
                         "<ul><li>View case activity and documents</li>"
@@ -347,16 +302,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                         "<li>Update your contact information</li>"
                         "<li>File additional documents when required</li></ul>"
                     ),
-                    "your_tasks": [
-                        self._task(
-                            "Create a DAWSON account.",
-                            "You must have a DAWSON account before you can electronically file a Petition with the Court.",
-                        ),
-                        self._task(
-                            "Verify that you can successfully access your account.",
-                            "After your account is created, you will use it to start a case, file documents, and manage your case online.",
-                        ),
-                    ],
+                    "your_tasks": [],
                     "helpful_information": [
                         {
                             "icon": "outbound",

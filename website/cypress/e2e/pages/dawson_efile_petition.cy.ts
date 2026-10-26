@@ -45,22 +45,21 @@ describe("DAWSON How to e-file a Petition guide", () => {
         });
     });
 
-    it("expands and collapses all five phases", () => {
-        cy.get(".detailed-timeline-expand-button")
-            .should("have.attr", "aria-expanded", "false")
-            .and("contain.text", "Expand All")
-            .click();
-
+    it("opens all five phases by default and supports collapse and expand", () => {
         cy.get(".detailed-timeline-expand-button")
             .should("have.attr", "aria-expanded", "true")
             .and("contain.text", "Collapse All");
         cy.get(".detailed-timeline-accordion-content").should("be.visible");
 
-        cy.get(".detailed-timeline-expand-button").click();
-        cy.get(".detailed-timeline-expand-button")
+        cy.get(".detailed-timeline-expand-button").click()
             .should("have.attr", "aria-expanded", "false")
             .and("contain.text", "Expand All");
         cy.get(".detailed-timeline-accordion-content.hidden").should("have.length", 5);
+
+        cy.get(".detailed-timeline-expand-button").click()
+            .should("have.attr", "aria-expanded", "true")
+            .and("contain.text", "Collapse All");
+        cy.get(".detailed-timeline-accordion-content").should("be.visible");
     });
 
     it("prints the page title, reminder, and expanded guide content", () => {
@@ -121,7 +120,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
                 });
             }
 
-            cy.get(".detailed-timeline-expand-button").click();
+            cy.get(".detailed-timeline-expand-button").should("contain.text", "Collapse All");
             cy.get(".detailed-timeline-accordion-content").should("be.visible");
             cy.get(".enhanced-page").should(($page) => {
                 expect($page[0].scrollWidth).to.be.at.most($page[0].clientWidth);
