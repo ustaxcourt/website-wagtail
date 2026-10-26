@@ -1,4 +1,15 @@
-<div class="get-started-row">
-    <h2>{{ value.heading }}</h2>
-    <span><span aria-hidden="true">(</span><a href="{{ value.link_url }}">{{ value.link_text }}</a><span aria-hidden="true">)</span></span>
-</div>
+{% if value.style == "blue_bar" %}
+    <div class="section-header section-header--blue-bar">
+        <h2>{{ value.heading }}</h2>
+        {% if value.link_text and value.link_url %}
+            <a href="{{ value.link_url }}">{{ value.link_text }}</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="get-started-row">
+        <h2>{{ value.heading }}</h2>
+        {% if value.link_text and value.link_url %}
+            <span><span aria-hidden="true">(</span><a href="{{ value.link_url }}">{{ value.link_text }}</a><span aria-hidden="true">)</span></span>
+        {% endif %}
+    </div>
+{% endif %}
