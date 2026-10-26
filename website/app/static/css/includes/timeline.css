@@ -152,6 +152,16 @@
     padding: 0;
 }
 
+.dawson-efile-guide .detailed-timeline-accordion-header-button,
+.dawson-efile-guide .detailed-timeline-warning-content h3 {
+    font-size: 19.2px;
+    line-height: 25px;
+}
+
+.dawson-efile-guide .detailed-timeline-warning-content h3 {
+    font-weight: 600;
+}
+
 .detailed-timeline-accordion-header-button:focus:not(:focus-visible) {
     outline: none;
 }
@@ -230,6 +240,15 @@
     text-decoration: underline;
     font-weight: normal;
     color: black;
+}
+
+.dawson-efile-guide .detailed-timeline-accordion-content p,
+.dawson-efile-guide .detailed-timeline-accordion-content ul,
+.dawson-efile-guide .detailed-timeline-accordion-content a,
+.dawson-efile-guide .detailed-timeline-warning-content p,
+.dawson-efile-guide .detailed-timeline-accordion-content-helpful-information-header {
+    font-size: 17px;
+    line-height: 20px;
 }
 
 .dawson-efile-guide .detailed-timeline-accordion-content a {
@@ -516,6 +535,21 @@
 
     .detailed-timeline-title-block > h2 {
         font-size: 22px;
+    }
+
+    .dawson-efile-guide .detailed-timeline-accordion-header-button,
+    .dawson-efile-guide .detailed-timeline-warning-content h3 {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
+    .dawson-efile-guide .detailed-timeline-accordion-content p,
+    .dawson-efile-guide .detailed-timeline-accordion-content ul,
+    .dawson-efile-guide .detailed-timeline-accordion-content a,
+    .dawson-efile-guide .detailed-timeline-warning-content p,
+    .dawson-efile-guide .detailed-timeline-accordion-content-helpful-information-header {
+        font-size: 16px;
+        line-height: 20px;
     }
 
     .bubble-line {

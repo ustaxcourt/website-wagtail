@@ -132,10 +132,31 @@ describe("DAWSON How to e-file a Petition guide", () => {
         cy.get(".enhanced-page")
             .should("have.css", "padding-left", "32px")
             .and("have.css", "padding-top", "45px");
-        cy.get('[data-testid="page-title"]').should("have.css", "font-size", "28px");
+        cy.get('[data-testid="page-title"]').should("have.css", "font-size", "32px");
         cy.get(".detailed-timeline-expand-button")
             .should("have.css", "width", "130px")
             .and("have.css", "font-size", "14px");
+    });
+
+    [1536, 768].forEach((width) => {
+        it(`matches practitioner typography at ${width}px`, () => {
+            cy.viewport(width, 1000);
+            cy.visit("/practitioners/");
+
+            cy.get('[data-testid="page-title"]').then(($title) => {
+                const titleSize = getComputedStyle($title[0]).fontSize;
+                cy.get(".enhanced-page p").first().then(($paragraph) => {
+                    const bodySize = getComputedStyle($paragraph[0]).fontSize;
+
+                    cy.visit("/dawson-how-to-e-file-a-petition/");
+                    cy.get('[data-testid="page-title"]').should("have.css", "font-size", titleSize);
+                    cy.get(".detailed-timeline-accordion-content p").first()
+                        .should("have.css", "font-size", bodySize);
+                    cy.get(".detailed-timeline-accordion-header-button")
+                        .should("have.css", "font-size", width > 768 ? "19.2px" : "18px");
+                });
+            });
+        });
     });
 
     it("passes the accessibility audit", () => {
