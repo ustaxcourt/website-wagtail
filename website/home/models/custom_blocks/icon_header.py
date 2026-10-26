@@ -20,8 +20,18 @@ class IconHeaderBlock(blocks.StructBlock):
 
 class SectionHeaderBlock(blocks.StructBlock):
     heading = blocks.CharBlock(required=True, label="Heading")
-    link_text = blocks.CharBlock(required=True, label="Link Text")
-    link_url = blocks.URLBlock(required=True, label="Link URL")
+    style = blocks.ChoiceBlock(
+        choices=[
+            ("default", "Default"),
+            ("blue_bar", "Blue Bar"),
+        ],
+        default="default",
+        required=True,
+        label="Style",
+        help_text="Blue Bar displays white heading text on a full-width blue background.",
+    )
+    link_text = blocks.CharBlock(required=False, label="Link Text")
+    link_url = blocks.URLBlock(required=False, label="Link URL")
 
     class Meta:
         label = "Section Header"
