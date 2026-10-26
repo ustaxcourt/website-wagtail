@@ -46,7 +46,7 @@ requests==2.34.2
 s3transfer==0.19.2
 setuptools==84.0.0
 six==1.17.0
-soupsieve==2.10
+soupsieve==3.0.4
 sqlparse==0.6.0
 telepath==0.3.1
 typing_extensions==4.16.0
