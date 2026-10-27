@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
     SLUG = "dawson-how-to-e-file-a-petition"
     TITLE = "How to e-file a Petition"
-    SCRIPT_NAME = "WAG-1451: Match e-file petition guide design with expanded phases"
+    SCRIPT_NAME = "WAG-1450: How to e-file a Petition"
     BREADCRUMB_TITLE = "DAWSON User Guides & Electronic Filing Instructions"
 
     DOCUMENT_FILENAMES = {
@@ -419,6 +419,11 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
             logger.info("Script '%s' already exists. Skipping.", self.SCRIPT_NAME)
             return 0
 
+        if not Page.objects.filter(slug="dawson-user-guides").exists():
+            raise Page.DoesNotExist(
+                f"'dawson-user-guides' page not found; cannot run '{self.SCRIPT_NAME}'."
+            )
+
         script_entry = ExecuteScript.create_script(self.SCRIPT_NAME)
         try:
             self.create()
@@ -433,3 +438,6 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
             script_entry.execution_log = f"<strong>Error:</strong> {error}"
             script_entry.save()
             raise
+
+
+DawsonHowToEfilePetition = DawsonHowToEfilePetitionPageInitializer

@@ -29,7 +29,7 @@
             </button>
         </div>
     </div>
-    {% if block.value.warning_callout %}
+    {% if block.value.warning_callout.heading or block.value.warning_callout.text %}
         {% include "detailed_timeline_warning.html" with warning=block.value.warning_callout %}
     {% endif %}
     <div class="detailed-timeline-phases-block bubble-line">

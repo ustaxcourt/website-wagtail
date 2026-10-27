@@ -84,9 +84,12 @@ class SideCard(Orderable, ClusterableModel):
 class PetitionerExperienceReviewByRequiredOnSubmitForm(ReviewByRequiredOnSubmitForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        is_dawson_user_guide = getattr(self.instance, "slug", "").startswith(
-            "dawson-how-to-"
+        slug = (
+            self.data.get(self.add_prefix("slug"), "")
+            if self.is_bound
+            else getattr(self.instance, "slug", "")
         )
+        is_dawson_user_guide = slug.startswith("dawson-how-to-")
         self.fields["navigation_ribbon"].required = not is_dawson_user_guide
 
 

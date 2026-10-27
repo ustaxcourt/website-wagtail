@@ -1,4 +1,28 @@
 from wagtail import blocks
+from django.core.exceptions import ValidationError
+
+
+class WarningCalloutBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False)
+    text = blocks.RichTextBlock(required=False)
+
+    def clean(self, value):
+        value = super().clean(value)
+        heading = value.get("heading")
+        text = value.get("text")
+
+        if not heading and not text:
+            return value
+
+        errors = {}
+        if not heading:
+            errors["heading"] = ValidationError("This field is required.")
+        if not text:
+            errors["text"] = ValidationError("This field is required.")
+        if errors:
+            raise blocks.StructBlockValidationError(block_errors=errors)
+
+        return value
 
 
 class DetailedTimelinePhaseBlock(blocks.StructBlock):
@@ -108,11 +132,7 @@ class DetailedTimelineBlock(blocks.StructBlock):
         label="Show Timeline Title",
     )
 
-    warning_callout = blocks.StructBlock(
-        [
-            ("heading", blocks.CharBlock(required=True)),
-            ("text", blocks.RichTextBlock(required=True)),
-        ],
+    warning_callout = WarningCalloutBlock(
         required=False,
         label="Warning Callout",
     )
