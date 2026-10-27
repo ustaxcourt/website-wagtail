@@ -107,7 +107,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
                     [
                         (
                             "breadcrumb_title",
-                            blocks.CharBlock(label="Breadcrumb Title", required=False),
+                            blocks.CharBlock(label="Breadcrumb Title"),
                         ),
                         (
                             "breadcrumb_page",
@@ -163,16 +163,22 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         if breadcrumb:
             has_title = bool(breadcrumb.value.get("breadcrumb_title"))
             has_page = bool(breadcrumb.value.get("breadcrumb_page"))
+            if has_page and not has_title:
+                raise ValidationError(
+                    {
+                        "breadcrumb": "A Breadcrumb Title must be provided when Breadcrumb Page is provided."
+                    }
+                )
             if has_title and not has_page:
                 raise ValidationError(
                     {
                         "breadcrumb": "A Breadcrumb Page must be provided when Breadcrumb Title is provided."
                     }
                 )
-            if has_page and not has_title:
+            if not has_title:
                 raise ValidationError(
                     {
-                        "breadcrumb": "A Breadcrumb Title must be provided when Breadcrumb Page is provided."
+                        "breadcrumb": "A Breadcrumb Title is required when a Page Breadcrumb is provided."
                     }
                 )
 

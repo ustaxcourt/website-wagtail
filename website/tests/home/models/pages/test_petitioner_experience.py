@@ -64,11 +64,33 @@ def test_breadcrumb_fields_must_be_provided_together(
     assert error_message in error.value.message_dict["breadcrumb"]
 
 
-def test_breadcrumb_fields_may_both_be_empty():
+def test_breadcrumb_may_be_omitted():
     page = make_page()
 
     with patch("home.models.pages.petitioner_experience.EnhancedStandardPage.clean"):
         page.clean()
+
+
+def test_breadcrumb_title_is_required_when_breadcrumb_is_added():
+    page = make_page()
+    breadcrumb_field = PetitionerExperiencePage._meta.get_field("breadcrumb")
+    page.breadcrumb = breadcrumb_field.to_python(
+        [
+            {
+                "type": "breadcrumb",
+                "value": {"breadcrumb_title": "", "breadcrumb_page": []},
+            }
+        ]
+    )
+
+    with patch("home.models.pages.petitioner_experience.EnhancedStandardPage.clean"):
+        with pytest.raises(ValidationError) as error:
+            page.clean()
+
+    assert (
+        "A Breadcrumb Title is required when a Page Breadcrumb is provided."
+        in error.value.message_dict["breadcrumb"]
+    )
 
 
 def test_page_selector_block_supports_internal_and_external_pages():
@@ -76,6 +98,10 @@ def test_page_selector_block_supports_internal_and_external_pages():
     assert set(child_blocks) == {"internal_page", "external_url"}
     assert isinstance(child_blocks["internal_page"], blocks.PageChooserBlock)
     assert isinstance(child_blocks["external_url"], blocks.URLBlock)
+    breadcrumb = PetitionerExperiencePage._meta.get_field(
+        "breadcrumb"
+    ).stream_block.child_blocks["breadcrumb"]
+    assert breadcrumb.child_blocks["breadcrumb_title"].required
 
 
 def test_breadcrumb_uses_external_page_url():
