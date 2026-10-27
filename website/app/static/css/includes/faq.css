@@ -290,6 +290,12 @@
 }
 
 @media print {
+    /* Room between the browser's printed header/footer and the question, matching
+       the Detailed Timeline print (css/includes/timeline.css). */
+    @page faq-print {
+        margin: 0.75in 0.5in;
+    }
+
     body.printing-faq > *:not(.faq-print-host),
     html:has(> body.printing-faq) > :not(body) {
         display: none !important;
@@ -305,6 +311,7 @@
         display: block !important;
         width: 100%;
         margin: 0;
+        page: faq-print;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
