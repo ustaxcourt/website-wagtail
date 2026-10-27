@@ -135,7 +135,15 @@ describe("DAWSON How to e-file a Petition guide", () => {
         cy.get('[data-testid="page-title"]').should("have.css", "font-size", "32px");
         cy.get(".detailed-timeline-expand-button")
             .should("have.css", "width", "130px")
-            .and("have.css", "font-size", "14px");
+            .and("have.css", "font-size", "16.96px");
+
+        cy.get('[data-testid="page-title"]').then(($title) => {
+            const titleBottom = $title[0].getBoundingClientRect().bottom;
+            cy.get(".detailed-timeline-header-text > p").should(($intro) => {
+                const introTop = $intro[0].getBoundingClientRect().top;
+                expect(introTop - titleBottom).to.be.at.most(20);
+            });
+        });
     });
 
     [1536, 768].forEach((width) => {
@@ -153,7 +161,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
                     cy.get(".detailed-timeline-accordion-content p").first()
                         .should("have.css", "font-size", bodySize);
                     cy.get(".detailed-timeline-accordion-header-button")
-                        .should("have.css", "font-size", width > 768 ? "19.2px" : "18px");
+                        .should("have.css", "font-size", width > 768 ? "20px" : "18px");
                 });
             });
         });
