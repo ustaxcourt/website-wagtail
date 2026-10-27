@@ -1,9 +1,9 @@
 -r base.txt
 
-coverage==7.16.2
+coverage==7.17.0
 detect-secrets==1.5.0
 pytest-cov==7.1.0
-djlint==1.46.6
+djlint==1.47.0
 django-debug-toolbar
 mypy==2.4.0
 mypy-extensions==1.1.0
@@ -11,4 +11,4 @@ moto==5.2.4
 pre_commit==4.7.0
 pytest-django==4.14.0
 pytest==9.1.1
-ruff==0.17.1
+ruff==0.17.2
