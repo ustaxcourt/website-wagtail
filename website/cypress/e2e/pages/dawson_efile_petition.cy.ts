@@ -67,7 +67,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
         cy.get(".detailed-timeline-accordion-content").should("be.visible");
     });
 
-    it("prints the page title, reminder, and expanded guide content", () => {
+    it("prints the page title and expanded guide content without the introduction or reminder", () => {
         cy.get(".detailed-timeline-expand-button").click()
             .should("have.attr", "aria-expanded", "false");
         cy.get(".detailed-timeline-accordion-content.hidden").should("have.length", 5);
@@ -75,9 +75,20 @@ describe("DAWSON How to e-file a Petition guide", () => {
         cy.get(".detailed-timeline-print-button").should("contain.text", "Print").click();
 
         cy.get(".detailed-timeline-print-host")
-            .should("contain.text", "How to e-file a Petition")
-            .and("contain.text", "A petition should only be filed once.");
-        cy.get(".detailed-timeline-print-host .enhanced-page").should("have.length", 1);
+            .should("contain.text", "How to e-file a Petition");
+        cy.get(".detailed-timeline-print-host .detailed-timeline-header-text p")
+            .should("not.exist");
+        cy.get(".detailed-timeline-print-host .detailed-timeline-warning")
+            .should("not.exist");
+        cy.get(".detailed-timeline-print-host .enhanced-page")
+            .should("not.exist");
+        cy.get(".detailed-timeline-print-host .detailed-timeline-rectangle")
+            .should("have.length", 1)
+            .find(".detailed-timeline-title-block h2")
+            .should("have.text", "How to e-file a Petition");
+        cy.get(".detailed-timeline-print-host")
+            .should("not.contain.text", "Before starting the e-filing process")
+            .and("not.contain.text", "A petition should only be filed once.");
         cy.get(".detailed-timeline-print-host .detailed-timeline-phase")
             .should("have.length", 5);
         cy.get(".detailed-timeline-print-host .detailed-timeline-accordion-content.hidden")
