@@ -1,6 +1,8 @@
 from unittest.mock import patch
 
+from bs4 import BeautifulSoup
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase, override_settings
 from wagtail.documents.models import Document
 from wagtail.models import Collection, Locale, Page, Site
@@ -125,6 +127,54 @@ class IconHeaderBlockRenderTest(TestCase):
         self.assertIn("<h2>Get Started</h2>", content)
         self.assertIn('href="https://example.com/petitioners-timeline"', content)
         self.assertIn("View detailed timeline", content)
+        self.assertNotIn("section-header--blue-bar", content)
+
+    def test_section_header_blue_bar_style_renders_without_link(self):
+        page = EnhancedStandardPage(
+            title="Blue Bar Section Header Test Page",
+            slug="blue-bar-section-header-test-page",
+            body=[
+                {
+                    "type": "section_header",
+                    "value": {
+                        "heading": "Starting a Case",
+                        "style": "blue_bar",
+                        "link_text": "",
+                        "link_url": "",
+                    },
+                }
+            ],
+        )
+
+        content = self.render_page(page)
+
+        self.assertIn('<div class="section-header section-header--blue-bar">', content)
+        self.assertIn("<h2>Starting a Case</h2>", content)
+        self.assertNotIn("get-started-row", content)
+        self.assertNotIn(
+            "<a href", content.split("section-header--blue-bar")[1].split("</div>")[0]
+        )
+
+    def test_petitioner_breadcrumb_is_separate_from_page_heading(self):
+        content = render_to_string(
+            "home/petitioner_experience_page.html",
+            {
+                "page": {
+                    "title": "Prepare to File",
+                    "breadcrumb_title": "Guidance for Petitioners",
+                    "breadcrumb_page_url": "/petitioners-guidance/",
+                },
+            },
+        )
+        document = BeautifulSoup(content, "html.parser")
+        heading = document.select_one('[data-testid="page-title"]')
+        breadcrumb = document.select_one(".petitioner-breadcrumb-link")
+
+        self.assertIsNotNone(breadcrumb)
+        self.assertIsNone(heading.select_one(".petitioner-breadcrumb-link"))
+        self.assertEqual(heading.get_text(strip=True), "Prepare to File")
+        self.assertEqual(heading.get("tabindex"), "-1")
+        self.assertNotIn("pageTitle.setAttribute('tabindex', '0')", content)
 
     def test_prepare_to_file_initializer_generates_printable_checklist(self):
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")

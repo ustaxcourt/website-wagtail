@@ -1,13 +1,24 @@
+import json
+
 from django.db import models
 from django.forms import ValidationError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
-from wagtail.models import DraftStateMixin, RevisionMixin, WorkflowMixin
+from wagtail.models import (
+    DraftStateMixin,
+    RevisionMixin,
+    WorkflowMixin,
+    PreviewableMixin,
+)
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.snippets.models import register_snippet
 from home.mixins.moderation import ModerationMixin
 from home.admin.moderation import ModerationTabbedInterface
-from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.snippets.views.snippets import (
+    PreviewOnCreateView,
+    PreviewOnEditView,
+    SnippetViewSet,
+)
 from wagtail.admin.filters import WagtailFilterSet
 
 
@@ -25,7 +36,12 @@ class BannerQuerySet(models.QuerySet):
 
 
 class Banner(
-    ModerationMixin, WorkflowMixin, DraftStateMixin, RevisionMixin, models.Model
+    ModerationMixin,
+    WorkflowMixin,
+    DraftStateMixin,
+    RevisionMixin,
+    PreviewableMixin,
+    models.Model,
 ):
     BANNER_CHOICES = [
         ("high", "High priority (Yellow banner)"),
@@ -140,6 +156,10 @@ class Banner(
         Validate that high priority banners don't overlap with other high priority banners,
         and critical priority banners don't overlap with other critical priority banners.
         Start date is required for high and critical banners. End date is optional.
+
+        The start date and overlap checks are skipped while previewing (see
+        BannerPreviewMixin) so an editor can preview a banner before scheduling
+        it. They still apply when saving or publishing.
         """
         super().clean()
 
@@ -148,6 +168,9 @@ class Banner(
 
         if not self.description:
             raise ValidationError({"description": "Description is required."})
+
+        if getattr(self, "_is_preview", False):
+            return
 
         # Require start date for high and critical priority banners
         if self.priority_level in ["high", "critical"] and not self.banner_start_date:
@@ -197,6 +220,131 @@ class Banner(
             return f"{self.document.url}"
         return "-"
 
+    def as_press_release_entry(self, force_release_date=None):
+        """
+        Build the same dict shape used by PressReleasePage.group_press_releases_by_year
+        for standalone banners. Shared here so the News & Announcements listing and the
+        announcements-page preview always render identically from a single source of
+        truth.
+
+        `force_release_date` lets the preview place this banner into a specific
+        year bucket even when it has no banner_start_date yet (or when the
+        editor wants to see it regardless of its actual scheduled date).
+        """
+        banner_label = "High Priority" if self.priority_level == "high" else "Critical"
+        release_date = force_release_date
+        if release_date is None and self.banner_start_date:
+            release_date = self.banner_start_date.date()
+        return {
+            "is_news_item": True,
+            "is_banner": True,
+            "release_date": release_date,
+            "banner_label": banner_label,
+            "banner_title": self.banner_title,
+            "banner_body": self.description,
+            "banner_type": self.priority_level,
+            "details": {
+                "description": "",
+                "file": self.document,
+            },
+        }
+
+    # --- Preview support -------------------------------------------------
+    # A Banner is rendered in multiple, visually distinct contexts across the
+    # site: a dismissible alert at the top of the page, and a historical
+    # entry on the News & Announcements page - which itself also shows
+    # unrelated NewsItems and other banners at the same time. Rather than a
+    # dropdown of separate preview modes, a single preview renders the real
+    # PressReleasePage template/context (reusing production code) with this
+    # banner forced into view at the top of the page *and* in the listing,
+    # regardless of its live status or scheduled dates, so editors see both
+    # contexts together alongside real site content in one preview.
+    @property
+    def preview_modes(self):
+        return [("announcements_page", "News & Announcements page")]
+
+    def get_preview_template(self, request, mode_name):
+        page = self._get_preview_announcements_page()
+        if page is not None:
+            return page.get_template(request)
+        return "previews/banner_announcements_page_unavailable.html"
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        context["banner"] = self
+        page = self._get_preview_announcements_page()
+        if page is not None:
+            context.update(page.get_context(request, preview_banner=self))
+        context.update(self._forced_top_of_page_banner_context())
+        return context
+
+    @staticmethod
+    def _get_preview_announcements_page():
+        """
+        Find a real, live PressReleasePage to render for the "announcements
+        page" preview mode. Local import avoids a circular import, since
+        press_release.py imports Banner from this module.
+        """
+        from home.models.pages.press_release import PressReleasePage
+
+        return PressReleasePage.objects.live().first()
+
+    def _forced_top_of_page_banner_context(self):
+        """
+        base.html always includes yellow_news_banner.html / red_news_banner.html,
+        which render whichever banner app.context_processors.yellow_priority_news /
+        critical_priority_news supplied (only genuinely live banners within their
+        scheduled dates), then further filter client-side by date in JavaScript.
+
+        That means an unpublished/expired/future-scheduled banner - exactly the
+        kind of banner an editor is likely previewing - would silently be absent
+        from the top of the announcements-page preview, even though its listing
+        entry appears further down. To fix that, we override the JSON payload
+        for this banner's own priority level so it is always the one shown,
+        with no start/end dates, so the client-side date filter always treats
+        it as active regardless of its real scheduling.
+
+        The other priority level is left to the normal context processor, so
+        its currently scheduled banner remains visible alongside the preview.
+        `is_banner_preview` tells yellow_news_banner.html to ignore (and not
+        record) localStorage dismissals, so dismissing the banner in a preview
+        never hides the real banner on the site, and vice versa.
+
+        These keys are only overridden on the Banner preview response itself;
+        real page requests are untouched.
+        """
+        context = {
+            "is_banner_preview": True,
+        }
+        if self.priority_level not in ("high", "critical"):
+            return context
+
+        payload = json.dumps(
+            [
+                {
+                    "id": self.pk or 0,
+                    "title": self.banner_title,
+                    "description": str(self.description),
+                    "priority_level": self.priority_level,
+                    "document_url": self.document.url if self.document else None,
+                    # Intentionally omitted (None) so the client-side date
+                    # filter always treats this preview banner as active,
+                    # regardless of its real banner_start_date/banner_end_date.
+                    "banner_start_date": None,
+                    "banner_end_date": None,
+                }
+            ]
+        )
+        if self.priority_level == "high":
+            context.update(
+                {"yellow_priority_news_json": payload, "has_yellow_news": True}
+            )
+        else:
+            context.update(
+                {"critical_priority_news_json": payload, "has_critical_news": True}
+            )
+        return context
+
 
 class BannersFilterSet(WagtailFilterSet):
     class Meta:
@@ -208,8 +356,29 @@ class BannersFilterSet(WagtailFilterSet):
         ]
 
 
+class BannerPreviewMixin:
+    """
+    Flag the banner as a preview before the form is validated, so Banner.clean()
+    lets an editor preview a banner that has no start date yet.
+    """
+
+    def validate_form(self, form):
+        form.instance._is_preview = True
+        return super().validate_form(form)
+
+
+class BannerPreviewOnCreateView(BannerPreviewMixin, PreviewOnCreateView):
+    pass
+
+
+class BannerPreviewOnEditView(BannerPreviewMixin, PreviewOnEditView):
+    pass
+
+
 class BannerViewSet(SnippetViewSet):
     model = Banner
+    preview_on_add_view_class = BannerPreviewOnCreateView
+    preview_on_edit_view_class = BannerPreviewOnEditView
     filterset_class = BannersFilterSet
     list_display = [
         "banner_title",

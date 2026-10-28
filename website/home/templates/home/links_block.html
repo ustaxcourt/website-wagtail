@@ -1,5 +1,5 @@
-<ul class="links {{ block.value.class }}">
-    {% for link in block.value.links %}
+<ul class="links {{ block.style }}">
+    {% for link in block.links %}
         {% if link.document %}
             <li>
                 <a href="{{ link.document.url }}"

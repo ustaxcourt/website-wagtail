@@ -49,6 +49,16 @@ class TestExtractTextFromStreamfield:
         assert "What is it?" in result
         assert "It is a test." in result
 
+    def test_questionanswers_wrapped_in_struct_extracts_qa(self):
+        qa_entry = {"question": "What is it?", "answer": "It is a test."}
+        block = SimpleNamespace(
+            block_type="questionanswers",
+            value={"display_filter_section": True, "questions": [qa_entry]},
+        )
+        result = extract_text_from_streamfield([block])
+        assert "What is it?" in result
+        assert "It is a test." in result
+
     def test_questionanswers_rich_text_answer(self):
         qa_entry = {
             "question": "Q?",

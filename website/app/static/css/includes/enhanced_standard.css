@@ -589,8 +589,35 @@ p:empty {
 .get-started-row a{
     text-decoration: underline;
     color: black;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
+}
+
+.section-header--blue-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    background-color: #005EA2;
+}
+.section-header--blue-bar h2 {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 30px;
+}
+.section-header--blue-bar a {
+    color: #FFFFFF;
+    font-size: 16px;
+    text-decoration: underline;
+}
+@media (max-width: 768px) {
+    .section-header--blue-bar h2 {
+        font-size: 20px;
+    }
 }
 
 .info-card__icon-badge .info-card__non-md-number {
@@ -666,6 +693,10 @@ p:empty {
     color: #565C65;
     text-align: left;
     overflow-wrap: anywhere;
+}
+
+.info-card.gray .description {
+    color: #1B1B1B;
 }
 
 .info-card .description a {
@@ -744,6 +775,11 @@ p:empty {
     .info-card .title {
         font-size: 18px;
     }
+}
+
+/* 32px below the page title on every PE page*/
+.side-card-layout {
+    margin-top: 32px;
 }
 
 /* Side Card rail: beside the body at desktop (grid-col-8/4 split in
@@ -914,10 +950,6 @@ p:empty {
 /* Tablet: rail drops below the body; wrap cards 2-up (same breakpoint as
    .info-cards). */
 @media (max-width: 1024px) {
-    .side-card-layout {
-        margin-top: 8px;
-    }
-
     /* Stacked sections are 32px apart per the mockups. */
     .side-card-main .printable-section {
         margin-bottom: 32px;

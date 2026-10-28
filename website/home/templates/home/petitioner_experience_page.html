@@ -51,10 +51,113 @@
             font-weight: 400;
         }
 
+        /* Forms page section headings: H2 Semibold with 8pt spacing. */
+        .petitioners-forms-page .side-card-main > h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 56px 0 8px;
+        }
+
         h2 a {
             color: black;
             text-decoration: underline;
             font-weight: 600;
+        }
+
+        .enhanced-page.grid-container > div.petitioner-page-heading {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            column-gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .petitioner-page-heading h1 {
+            margin: 0;
+        }
+
+        .petitioner-breadcrumb {
+            font-size: 32px;
+            line-height: 38px;
+        }
+
+        .petitioner-breadcrumb-link {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 400;
+        }
+
+        .page-title-breadcrumb {
+            display: none;
+        }
+
+        /* Forms page body text is 16px (headings, card titles and subtitles keep their sizes). */
+        .petitioners-forms-page,
+        .petitioners-forms-page p,
+        .petitioners-forms-page .info-card .description,
+        .petitioners-forms-page .info-card__button {
+            font-size: 16px;
+        }
+
+        /* 32px between a card's text and its button: 16px card gap + 16px here. */
+        .petitioners-forms-page .info-card__buttons {
+            padding-top: 16px;
+        }
+
+        .petitioners-forms-page .side-card-main > h2:first-child {
+            margin-top: 32px;
+        }
+
+        .petitioners-forms-page .forms-paragraph {
+            margin: 0 0 24px;
+        }
+
+        .petitioners-forms-page .forms-paragraph > :last-child {
+            margin-bottom: 0;
+        }
+
+        .enhanced-page.grid-container.petitioners-forms-page > p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .petitioners-forms-page .info-card .description > :last-child {
+            margin-bottom: 0;
+        }
+
+        /* Keep the card icon at the top so long titles don't push it (and the subtitle) down. */
+        .petitioners-forms-page .info-card .card-header {
+            align-items: flex-start;
+        }
+
+        @media (min-width: 1025px) {
+            .petitioners-forms-page .side-card-main > h2 {
+                margin-bottom: 8px;
+            }
+
+            .petitioners-forms-page .side-card-main > h2 + p {
+                margin: 0 0 24px;
+            }
+
+            .petitioners-forms-page .info-cards {
+                gap: 48px;
+                margin: 0 0 32px;
+            }
+
+            .petitioners-forms-page .info-card {
+                box-sizing: border-box;
+            }
+
+            .petitioners-forms-page .info-cards + h2 {
+                margin-top: 56px;
+            }
+
+            .petitioners-forms-page .styled-callout {
+                margin: 1.5rem 0 0 0;
+            }
+
+            .petitioners-forms-page .rounded-rectangle {
+                margin-top: 32px;
+            }
         }
 
         @media (max-width: 1200px) {
@@ -75,6 +178,11 @@
         }
 
         @media (max-width: 600px) {
+            .petitioner-breadcrumb {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
             .rounded-rectangle {
                 padding: 0 0 32px 0;
             }
@@ -105,7 +213,7 @@
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
-    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2">
+    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}">
         {% if page.navigation_ribbon %}
             {% with current_path=request.path|normalize_url_path %}
             <div class="blue-page-links-bar">
@@ -134,10 +242,18 @@
             </div>
             {% endwith %}
         {% endif %}
-        <h1 data-testid="page-title" tabindex="-1">
-            <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
-            <span class="page-title-breadcrumb" style="display: none;"></span>
-        </h1>
+        <div class="petitioner-page-heading">
+            {% if page.breadcrumb_title and page.breadcrumb_page_url %}
+                <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
+                    <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
+                    <span aria-hidden="true"> / </span>
+                </nav>
+            {% endif %}
+            <h1 data-testid="page-title" tabindex="-1">
+                <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
+                <span class="page-title-breadcrumb"></span>
+            </h1>
+        </div>
         {% if page.introductory_text %}
             {{ page.introductory_text|richtext }}
         {% endif %}
@@ -169,13 +285,6 @@
         {% endif %}
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const pageTitle = document.querySelector('[data-testid="page-title"]');
-            if (pageTitle && !document.querySelector('.card-tile')) {
-                pageTitle.setAttribute('tabindex', '0');
-            }
-        });
-
         // Actions to reset the breadcrumb at the top of the page
         function resetBreadcrumb(eventFromListener) {
             eventFromListener.preventDefault();

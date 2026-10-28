@@ -1,6 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from wagtail import blocks
 from wagtail.models import Orderable, Page
 from wagtail.fields import RichTextField, StreamField
 from home.models.pages.enhanced_standard import EnhancedStandardPage
@@ -12,6 +14,11 @@ from home.models.custom_blocks.common import custom_promote_panels
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
 from home.models.snippets.call_to_action import CallToActionBox
+
+
+class PageSelectorBlock(blocks.StreamBlock):
+    internal_page = blocks.PageChooserBlock(label="Internal page")
+    external_url = blocks.URLBlock(label="External page URL")
 
 
 class SideCard(Orderable, ClusterableModel):
@@ -92,6 +99,33 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         blank=True,
     )
 
+    breadcrumb = StreamField(
+        [
+            (
+                "breadcrumb",
+                blocks.StructBlock(
+                    [
+                        (
+                            "breadcrumb_title",
+                            blocks.CharBlock(label="Breadcrumb Title", required=False),
+                        ),
+                        (
+                            "breadcrumb_page",
+                            PageSelectorBlock(
+                                label="Breadcrumb Page", required=False, max_num=1
+                            ),
+                        ),
+                    ],
+                    label="Page Breadcrumb",
+                    required=False,
+                ),
+            ),
+        ],
+        blank=True,
+        max_num=1,
+        use_json_field=True,
+    )
+
     call_to_action = models.ForeignKey(
         CallToActionBox,
         null=True,
@@ -103,6 +137,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
     content_panels = Page.content_panels + [
         FieldPanel("show_floating_definitions_button"),
         FieldPanel("navigation_ribbon"),
+        FieldPanel("breadcrumb"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
         FieldPanel("call_to_action"),
@@ -120,8 +155,43 @@ class PetitionerExperiencePage(EnhancedStandardPage):
     def clean(self):
         super().clean()
         if not self.navigation_ribbon_id:
-            from django.core.exceptions import ValidationError
-
             raise ValidationError(
                 {"navigation_ribbon": "Navigation Ribbon is required."}
             )
+
+        breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
+        if breadcrumb:
+            has_title = bool(breadcrumb.value.get("breadcrumb_title"))
+            has_page = bool(breadcrumb.value.get("breadcrumb_page"))
+            if has_title and not has_page:
+                raise ValidationError(
+                    {
+                        "breadcrumb": "A Breadcrumb Page must be provided when Breadcrumb Title is provided."
+                    }
+                )
+            if has_page and not has_title:
+                raise ValidationError(
+                    {
+                        "breadcrumb": "A Breadcrumb Title must be provided when Breadcrumb Page is provided."
+                    }
+                )
+
+    @property
+    def breadcrumb_title(self):
+        breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
+        return breadcrumb.value.get("breadcrumb_title") if breadcrumb else ""
+
+    @property
+    def breadcrumb_page_url(self):
+        breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
+        if not breadcrumb:
+            return ""
+
+        page_selection = breadcrumb.value.get("breadcrumb_page")
+        if not page_selection:
+            return ""
+
+        selected_page = page_selection[0]
+        if selected_page.block_type == "internal_page":
+            return selected_page.value.url
+        return selected_page.value
