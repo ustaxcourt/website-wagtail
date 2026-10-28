@@ -119,19 +119,9 @@
             checkbox.checked = isChecked;
             checkbox.toggleAttribute("checked", isChecked);
         });
-        clone.querySelectorAll(".detailed-timeline-accordion-content").forEach(
-            function(content) {
-                content.classList.remove("hidden");
-            }
-        );
-        clone.querySelectorAll(
-            ".detailed-timeline-accordion-header, .detailed-timeline-accordion-title, .detailed-timeline-accordion-header-button"
-        ).forEach(function(element) {
-            element.classList.add("active");
-        });
-        clone.querySelectorAll(".detailed-timeline-accordion-header-button").forEach(
-            function(button) {
-                button.setAttribute("aria-expanded", "true");
+        clone.querySelectorAll(".detailed-timeline-accordion-block").forEach(
+            function(accordion) {
+                setAccordionExpanded(accordion, true);
             }
         );
         clone.querySelectorAll("[id]").forEach(function(element) {
@@ -200,7 +190,9 @@
                 printHost.appendChild(createPrintClone(printRoot));
                 document.body.appendChild(printHost);
                 document.body.classList.add("printing-detailed-timeline");
-                window.print();
+                window.requestAnimationFrame(function() {
+                    window.print();
+                });
             }
         });
 

@@ -23,6 +23,11 @@ describe("DAWSON How to e-file a Petition guide", () => {
             .and("have.css", "text-transform", "uppercase");
         cy.get(".detailed-timeline-warning")
             .and("contain.text", "A petition should only be filed once.");
+        cy.get(".petitioner-breadcrumb").should(
+            "have.css",
+            "font-size",
+            Cypress.config("viewportWidth") <= 600 ? "24px" : "32px",
+        );
 
         const phaseTitles = [
             "Gather Your Information and Documents",
@@ -63,14 +68,23 @@ describe("DAWSON How to e-file a Petition guide", () => {
     });
 
     it("prints the page title, reminder, and expanded guide content", () => {
+        cy.get(".detailed-timeline-expand-button").click()
+            .should("have.attr", "aria-expanded", "false");
+        cy.get(".detailed-timeline-accordion-content.hidden").should("have.length", 5);
         cy.window().then((window) => cy.stub(window, "print").as("nativePrint"));
         cy.get(".detailed-timeline-print-button").should("contain.text", "Print").click();
 
         cy.get(".detailed-timeline-print-host")
             .should("contain.text", "How to e-file a Petition")
             .and("contain.text", "A petition should only be filed once.");
+        cy.get(".detailed-timeline-print-host .enhanced-page").should("have.length", 1);
+        cy.get(".detailed-timeline-print-host .detailed-timeline-phase")
+            .should("have.length", 5);
         cy.get(".detailed-timeline-print-host .detailed-timeline-accordion-content.hidden")
             .should("not.exist");
+        cy.get(".detailed-timeline-print-host .detailed-timeline-accordion-header-button")
+            .each(($button) => expect($button).to.have.attr("aria-expanded", "true"));
+        cy.get(".detailed-timeline-accordion-content.hidden").should("have.length", 5);
         cy.get("@nativePrint").should("have.been.calledOnce");
     });
 

@@ -584,8 +584,11 @@
         margin: 0.75in 0.5in;
     }
 
-    body.printing-detailed-timeline > *:not(.detailed-timeline-print-host),
-    html:has(> body.printing-detailed-timeline) > :not(body) {
+    body.printing-detailed-timeline {
+        page: detailed-timeline;
+    }
+
+    body.printing-detailed-timeline > *:not(.detailed-timeline-print-host) {
         display: none !important;
     }
 
@@ -602,7 +605,6 @@
 
     .detailed-timeline-print-host .detailed-timeline-rectangle {
         width: 100%;
-        page: detailed-timeline;
         zoom: 0.8;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
