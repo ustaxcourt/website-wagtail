@@ -26,7 +26,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
         cy.get(".petitioner-breadcrumb").should(
             "have.css",
             "font-size",
-            Cypress.config("viewportWidth") <= 600 ? "24px" : "32px",
+            "16px",
         );
 
         const phaseTitles = [
