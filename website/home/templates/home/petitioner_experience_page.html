@@ -65,21 +65,22 @@
         }
 
         .petitioner-page-heading {
-            display: flex;
-            flex-direction: row;
-            gap: 32px;
+            display: grid;
+            grid-template-rows: auto auto;
+            grid-template-columns: 95px auto;
+            column-gap: 32px;
+            row-gap: 16px;
+            margin-bottom: 32px;
         }
 
         .petitioner-page-heading.no-logo {
-            gap: 0px;
+            grid-template-columns: auto;
+            column-gap: 0px;
         }
 
         .petitioner-page-heading-logo {
-            flex: 0 0 95px;
-        }
-
-        .petitioner-page-heading-logo.no-logo {
-            flex: 0;
+            grid-row: span 2;
+            grid-column: 1;
         }
 
         .petitioner-page-heading-logo img {
@@ -89,16 +90,14 @@
             filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
         }
 
-        .petitioner-page-heading-text {
-            flex: 1;
+        .petitioner-page-heading-title {
+            grid-column: 2;
+            grid-row: 1;
         }
 
-        .enhanced-page.grid-container div.petitioner-page-heading-title {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            column-gap: 8px;
-            margin-bottom: 15px;
+        .petitioner-page-heading-intro {
+            grid-column: 2;
+            grid-row: 2;
         }
 
         .petitioner-page-heading-title h1 {
@@ -210,7 +209,7 @@
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .petitioner-breadcrumb {
                 font-size: 24px;
                 line-height: 32px;
@@ -240,6 +239,29 @@
 
             .rounded-rectangle-buttons a {
                 width: 100%
+            }
+
+            .petitioner-page-heading {
+                grid-template-columns: 48px auto;
+                column-gap: 24px;
+                row-gap: 24px;
+            }
+
+            .petitioner-page-heading-logo {
+                grid-row: 1;
+                grid-column: 1;
+                align-content: center;
+            }
+
+            .petitioner-page-heading-title {
+                grid-column: 2;
+                grid-row: 1;
+                align-content: center;
+            }
+
+            .petitioner-page-heading-intro {
+                grid-column: span 2;
+                grid-row: 2;
             }
         }
     </style>
@@ -276,12 +298,14 @@
             {% endwith %}
         {% endif %}
         <div class="petitioner-page-heading {% if not page.show_dawson_logo %}no-logo{% endif %}">
-            <div class="petitioner-page-heading-logo {% if not page.show_dawson_logo %}no-logo{% endif %}">
-                <img class="dawson"
-                    src="{% static 'images/header/dawson.webp' %}"
-                    alt="DAWSON" />
-            </div>
-            <div class="petitioner-page-heading-text">
+            {% if page.show_dawson_logo %}
+                <div class="petitioner-page-heading-logo">
+                    <img class="dawson"
+                        src="{% static 'images/header/dawson.webp' %}"
+                        alt="DAWSON" />
+                </div>
+            {% endif %}
+            <!-- <div class="petitioner-page-heading-text"> -->
                 <div class="petitioner-page-heading-title">
                     {% if page.breadcrumb_title and page.breadcrumb_page_url %}
                         <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
@@ -294,10 +318,12 @@
                         <span class="page-title-breadcrumb"></span>
                     </h1>
                 </div>
-                {% if page.introductory_text %}
-                    {{ page.introductory_text|richtext }}
-                {% endif %}
-            </div>
+                <div class="petitioner-page-heading-intro">
+                    {% if page.introductory_text %}
+                        {{ page.introductory_text|richtext }}
+                    {% endif %}
+                </div>
+            <!-- </div> -->
         </div>
         <div class="grid-row grid-gap side-card-layout">
             <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">

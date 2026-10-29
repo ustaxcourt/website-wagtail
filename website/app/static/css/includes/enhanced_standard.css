@@ -3,7 +3,7 @@
     overflow-x: auto;
 }
 
-.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block) {
+.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .petitioner-page-heading) {
     margin-bottom: 32px;
 }
 
@@ -330,7 +330,7 @@ p:empty {
 }
 
 div.quick-access-tiles-container + div.get-started-row {
-    margin-top: 48px;
+    margin-top: 28px;
     margin-bottom: 16px;
     font-weight: 600;
 }
