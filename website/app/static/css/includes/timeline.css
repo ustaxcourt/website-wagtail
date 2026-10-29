@@ -152,6 +152,16 @@
     padding: 0;
 }
 
+.dawson-efile-guide .detailed-timeline-accordion-header-button,
+.dawson-efile-guide .detailed-timeline-warning-content h3 {
+    font-size: 20px;
+    line-height: 25px;
+}
+
+.dawson-efile-guide .detailed-timeline-warning-content h3 {
+    font-weight: 600;
+}
+
 .detailed-timeline-accordion-header-button:focus:not(:focus-visible) {
     outline: none;
 }
@@ -232,8 +242,37 @@
     color: black;
 }
 
+.dawson-efile-guide .detailed-timeline-accordion-content p,
+.dawson-efile-guide .detailed-timeline-accordion-content ul,
+.dawson-efile-guide .detailed-timeline-accordion-content a,
+.dawson-efile-guide .detailed-timeline-warning-content p,
+.dawson-efile-guide .detailed-timeline-accordion-content-helpful-information-header {
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.detailed-timeline-warning-sr-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.dawson-efile-guide .detailed-timeline-accordion-content a {
+    color: var(--color-primary);
+}
+
 .detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
     color: inherit;
+}
+
+.dawson-efile-guide .detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
+    color: var(--color-primary);
 }
 
 .detailed-timeline-accordion-content-your-tasks {
@@ -326,6 +365,50 @@
 .detailed-timeline-header-text {
     flex: 1 1 400px;
     min-width: 0;
+    font-size: 16px;
+}
+.detailed-timeline-header-text p {
+    font-size: 16px;
+}
+
+.detailed-timeline-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 24px 0 32px;
+    padding: 21px 15px;
+    min-height: 108px;
+    box-sizing: border-box;
+    border-left: 8px solid #ffbe2e;
+    background: #faf3d1;
+    color: #1b1b1b;
+}
+
+.detailed-timeline-warning-icon {
+    flex: 0 0 32px;
+    margin-top: 2px;
+    height: 32px;
+    background-color: #1b1b1b;
+    -webkit-mask: url('/static/uswds/img/usa-icons/warning.svg') center / contain no-repeat;
+    mask: url('/static/uswds/img/usa-icons/warning.svg') center / contain no-repeat;
+}
+
+.detailed-timeline-warning-content {
+    min-width: 0;
+}
+
+.detailed-timeline-warning-content h3 {
+    margin: 0 0 15px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 25px;
+    text-transform: uppercase;
+}
+
+.detailed-timeline-warning-content p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 25px;
 }
 
 .detailed-timeline-controls {
@@ -470,6 +553,21 @@
         font-size: 22px;
     }
 
+    .dawson-efile-guide .detailed-timeline-accordion-header-button,
+    .dawson-efile-guide .detailed-timeline-warning-content h3 {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
+    .dawson-efile-guide .detailed-timeline-accordion-content p,
+    .dawson-efile-guide .detailed-timeline-accordion-content ul,
+    .dawson-efile-guide .detailed-timeline-accordion-content a,
+    .dawson-efile-guide .detailed-timeline-warning-content p,
+    .dawson-efile-guide .detailed-timeline-accordion-content-helpful-information-header {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
     .bubble-line {
         padding-left: 40px;
     }
@@ -502,8 +600,11 @@
         margin: 0.75in 0.5in;
     }
 
-    body.printing-detailed-timeline > *:not(.detailed-timeline-print-host),
-    html:has(> body.printing-detailed-timeline) > :not(body) {
+    body.printing-detailed-timeline {
+        page: detailed-timeline;
+    }
+
+    body.printing-detailed-timeline > *:not(.detailed-timeline-print-host) {
         display: none !important;
     }
 
@@ -520,7 +621,6 @@
 
     .detailed-timeline-print-host .detailed-timeline-rectangle {
         width: 100%;
-        page: detailed-timeline;
         zoom: 0.8;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;

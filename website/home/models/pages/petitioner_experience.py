@@ -84,7 +84,13 @@ class SideCard(Orderable, ClusterableModel):
 class PetitionerExperienceReviewByRequiredOnSubmitForm(ReviewByRequiredOnSubmitForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["navigation_ribbon"].required = True  # Force required in admin
+        slug = (
+            self.data.get(self.add_prefix("slug"), "")
+            if self.is_bound
+            else getattr(self.instance, "slug", "")
+        )
+        is_dawson_user_guide = slug.startswith("dawson-how-to-")
+        self.fields["navigation_ribbon"].required = not is_dawson_user_guide
 
 
 class PetitionerExperiencePage(EnhancedStandardPage):
@@ -154,7 +160,8 @@ class PetitionerExperiencePage(EnhancedStandardPage):
 
     def clean(self):
         super().clean()
-        if not self.navigation_ribbon_id:
+        is_dawson_user_guide = self.slug.startswith("dawson-how-to-")
+        if not self.navigation_ribbon_id and not is_dawson_user_guide:
             raise ValidationError(
                 {"navigation_ribbon": "Navigation Ribbon is required."}
             )

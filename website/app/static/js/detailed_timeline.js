@@ -110,28 +110,34 @@
         saveAccordionState(timeline);
     }
 
-    function createPrintClone(timeline) {
-        const clone = timeline.cloneNode(true);
-        const originalCheckboxes = timeline.querySelectorAll('input[type="checkbox"]');
+    function createPrintClone(printRoot, isPetitionGuide) {
+        const clone = printRoot.cloneNode(true);
+        const originalCheckboxes = printRoot.querySelectorAll('input[type="checkbox"]');
+
+        if (isPetitionGuide) {
+            clone.querySelectorAll(
+                ".detailed-timeline-header-text > p, .detailed-timeline-warning"
+            ).forEach(function(element) {
+                element.remove();
+            });
+            const pageTitle = printRoot.closest(".dawson-efile-guide")
+                .querySelector('[data-testid="page-title"]');
+            const titleBlock = document.createElement("div");
+            titleBlock.className = "detailed-timeline-title-block";
+            const title = document.createElement("h2");
+            title.textContent = pageTitle.textContent.trim();
+            titleBlock.appendChild(title);
+            clone.querySelector(".detailed-timeline-header-text").prepend(titleBlock);
+        }
 
         clone.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox, index) {
             const isChecked = Boolean(originalCheckboxes[index] && originalCheckboxes[index].checked);
             checkbox.checked = isChecked;
             checkbox.toggleAttribute("checked", isChecked);
         });
-        clone.querySelectorAll(".detailed-timeline-accordion-content").forEach(
-            function(content) {
-                content.classList.remove("hidden");
-            }
-        );
-        clone.querySelectorAll(
-            ".detailed-timeline-accordion-header, .detailed-timeline-accordion-title, .detailed-timeline-accordion-header-button"
-        ).forEach(function(element) {
-            element.classList.add("active");
-        });
-        clone.querySelectorAll(".detailed-timeline-accordion-header-button").forEach(
-            function(button) {
-                button.setAttribute("aria-expanded", "true");
+        clone.querySelectorAll(".detailed-timeline-accordion-block").forEach(
+            function(accordion) {
+                setAccordionExpanded(accordion, true);
             }
         );
         clone.querySelectorAll("[id]").forEach(function(element) {
@@ -188,13 +194,22 @@
 
             const clickedPrintButton = target.closest(".detailed-timeline-print-button");
             if (clickedPrintButton && timeline.contains(clickedPrintButton)) {
+                const isPetitionGuide = clickedPrintButton.hasAttribute("data-print-guide");
+                const printRootSelector = printButton.dataset.printRoot;
+                const printRoot = printRootSelector
+                    ? document.querySelector(printRootSelector)
+                    : timeline;
+                if (!printRoot) return;
+
                 cleanupPrintHost();
                 printHost = document.createElement("div");
                 printHost.className = "detailed-timeline-print-host";
-                printHost.appendChild(createPrintClone(timeline));
+                printHost.appendChild(createPrintClone(printRoot, isPetitionGuide));
                 document.body.appendChild(printHost);
                 document.body.classList.add("printing-detailed-timeline");
-                window.print();
+                window.requestAnimationFrame(function() {
+                    window.print();
+                });
             }
         });
 

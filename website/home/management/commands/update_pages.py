@@ -35,7 +35,6 @@ from home.management.commands.pages.rules_and_guidance import (
     DawsonHowToUpdateContactInfo,
     DawsonHowToViewDashboard,
 )
-
 from home.management.commands.redirects.petitioners_redirect_initializer import (
     PetitionersRedirectInitializer,
 )
