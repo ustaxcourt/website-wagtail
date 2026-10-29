@@ -365,6 +365,10 @@
 .detailed-timeline-header-text {
     flex: 1 1 400px;
     min-width: 0;
+    font-size: 16px;
+}
+.detailed-timeline-header-text p {
+    font-size: 16px;
 }
 
 .detailed-timeline-warning {
