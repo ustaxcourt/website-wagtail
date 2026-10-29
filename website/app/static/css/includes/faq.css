@@ -77,7 +77,6 @@
 }
 
 .faq__item--expanded {
-    padding-top: 1rem;
     border-radius: 8px;
     background-color: var(--bg-white);
 }
@@ -94,18 +93,6 @@
     position: relative;
     column-gap: 1.5rem;
     row-gap: 0.5rem;
-}
-
-.faq__item--expanded .faq__header {
-    row-gap: 1rem;
-}
-
-/* Question and Print are both top-aligned, so Print stays put when the question wraps.
-   The 3.5px (half of Print's 32px line less the question's 25px) centers a one-line
-   question against Print, as in the mockups. */
-.faq__item--expanded .faq__question {
-    align-self: start;
-    padding-top: 0.21875rem;
 }
 
 .faq__tag {
@@ -172,8 +159,11 @@
 .faq__print {
     grid-area: print;
     align-self: start;
-    /* Don't let the taller Print box widen the gap under a one-line question. */
-    margin-bottom: -0.21875rem;
+    /* Print is top-aligned with the question, so it stays put when the question wraps.
+       The -3.5px (half of Print's 32px line less the question's 25px) centers it on a
+       one-line question and keeps its taller box from widening the gap to the answer.
+       Nothing here depends on the expanded state, so the tag and question don't shift. */
+    margin-block: -0.21875rem;
     display: none;
     align-items: center;
     position: relative;
@@ -272,14 +262,10 @@
             "print print";
     }
 
+    /* Own row: 8px row gap + 8px margin = the mockup's 16px under the question. */
     .faq__print {
         justify-self: start;
-        margin-bottom: 0;
-    }
-
-    /* Print is on its own row here, so the question needs no centering offset. */
-    .faq__item--expanded .faq__question {
-        padding-top: 0;
+        margin-block: 0.5rem 0;
     }
 }
 
