@@ -29,21 +29,22 @@ troubleshoot_file_uploads_images = [
 ]
 
 
-def _phase(title, instructions, your_tasks=(), helpful_information=()):
+def _options(
+    summary, options, lead="Try one of the following options to resolve the issue:"
+):
+    items = "".join(f"<li>{option}</li>" for option in options)
+    return f"<p>{summary}</p><p>{lead}</p><ul>{items}</ul>"
+
+
+def _phase(title, instructions, helpful_information=(), show_info_icon=False):
     return {
         "type": "phase",
         "value": {
             "title": title,
             "date_range": "",
+            "show_info_icon": show_info_icon,
             "instructions": instructions,
-            "your_tasks": [
-                {
-                    "type": "item",
-                    "value": {"text": f"<p>{text}</p>", "subtext": f"<p>{subtext}</p>"},
-                    "id": str(uuid.uuid4()),
-                }
-                for text, subtext in your_tasks
-            ],
+            "your_tasks": [],
             "helpful_information": [
                 {
                     "type": "item",
@@ -58,24 +59,6 @@ def _phase(title, instructions, your_tasks=(), helpful_information=()):
             ],
         },
     }
-
-
-# Shown under both Error Message #2 and #3, as in the design.
-_new_pdf_tasks = [
-    (
-        "Re-save the file and confirm it opens properly in Adobe Acrobat.",
-        "Verify that the PDF opens without error before uploading it again.",
-    ),
-    (
-        "Save the document using Print to PDF.",
-        "Creating a new PDF may resolve formatting or compatibility issues.",
-    ),
-    (
-        "Print the document and scan it as a new PDF.",
-        "A newly scanned PDF may upload successfully if the original file is "
-        "damaged or unsupported.",
-    ),
-]
 
 
 class DawsonTroubleshootFileUploads(PageInitializer):
@@ -149,59 +132,72 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                             "phases": [
                                 _phase(
                                     "Error Message #1: File size too big",
-                                    "<p>DAWSON could not upload the document because the file "
-                                    "exceeds the maximum upload size limit.</p>",
-                                    your_tasks=[
-                                        (
-                                            "Check the size of the document you are uploading.",
+                                    _options(
+                                        "DAWSON could not upload the document because the file "
+                                        "exceeds the maximum upload size limit.",
+                                        [
+                                            "Check the size of the document you are uploading. "
                                             "Documents uploaded to DAWSON must be 250 MB or less.",
-                                        ),
-                                        (
-                                            "Split large documents into smaller files, if necessary.",
                                             "If a document exceeds 250 MB, divide it into multiple "
                                             "files before uploading.",
-                                        ),
-                                    ],
+                                        ],
+                                    ),
                                 ),
                                 _phase(
                                     "Error Message #2: The file is corrupt or in an unsupported PDF format",
-                                    "<p>DAWSON cannot process PDF files that are damaged, improperly "
-                                    "created, or saved in an unsupported format. Creating a new PDF "
-                                    "often resolves these issues.</p>",
-                                    your_tasks=_new_pdf_tasks,
+                                    _options(
+                                        "DAWSON cannot process PDF files that are damaged, improperly "
+                                        "created, or saved in an unsupported format. Creating a new PDF "
+                                        "often resolves these issues.",
+                                        [
+                                            "Re-save the file and confirm it opens properly in Adobe "
+                                            "Acrobat. Verify that the PDF opens without error before "
+                                            "uploading it again.",
+                                            "Save the document using Print to PDF. Creating a new PDF "
+                                            "may resolve formatting or compatibility issues.",
+                                            "Print the document and scan it as a new PDF. A newly "
+                                            "scanned PDF may upload successfully if the original file "
+                                            "is damaged or unsupported.",
+                                        ],
+                                    ),
                                 ),
                                 _phase(
                                     "Error Message #3: Your firewall or network may be preventing submission",
-                                    "<p>DAWSON could not complete the upload because a network or "
-                                    "firewall setting may be blocking the connection.</p>",
-                                    your_tasks=_new_pdf_tasks,
+                                    _options(
+                                        "DAWSON could not complete the upload because a network or "
+                                        "firewall setting may be blocking the connection.",
+                                        [
+                                            "Try uploading the document using a different network or "
+                                            "Wi-Fi connection. Testing another network can help "
+                                            "determine whether your current network is blocking the "
+                                            "upload.",
+                                            "If the upload succeeds on another network, the issue may "
+                                            "be caused by a network or firewall restriction.",
+                                            "If necessary, contact your network administrator. They "
+                                            "may need to adjust firewall settings to allow document "
+                                            "submissions to DAWSON.",
+                                        ],
+                                    ),
                                 ),
                                 _phase(
                                     "Error Message #4: There is a problem with this file",
-                                    "<p>DAWSON encountered an issue while processing the uploaded "
-                                    "document. This may be related to the file itself or the browser "
-                                    "being used.</p>",
-                                    your_tasks=[
-                                        (
-                                            "Download the Statement of Taxpayer Identification Number (Form 4)",
-                                            "The STIN helps the IRS identify you and is not visible "
-                                            "as part of the case record.",
-                                        ),
-                                        (
-                                            "Complete and save the form so it is ready to upload",
-                                            "This is the only document that should contain your "
-                                            "Social Security Number (SSN), Taxpayer Identification "
-                                            "Number (TIN), or Employer Identification Number (EIN).",
-                                        ),
-                                    ],
+                                    _options(
+                                        "DAWSON encountered an issue while processing the uploaded "
+                                        "document. This may be related to the file itself or the "
+                                        "browser being used.",
+                                        [
+                                            "Verify that your browser is up to date.",
+                                            "Install any available browser updates.",
+                                            "Try uploading the file again after updating your browser.",
+                                        ],
+                                    ),
                                     helpful_information=[
                                         (
-                                            "What information should I remove from documents before filing?",
-                                            "Before filing a document, remove or redact sensitive "
-                                            "personal information such as Social Security numbers, "
-                                            "dates of birth, names of minor children, and financial "
-                                            "account numbers. View "
-                                            '<a href="/petitioners-start#START17">full FAQ</a> for more details.',
+                                            "What are the technical requirements for accessing DAWSON?",
+                                            "To use DAWSON, you only need an internet connection and a "
+                                            "current web browser. DAWSON works with Chrome, Microsoft "
+                                            "Edge, Firefox, and Safari. You do not need to install any "
+                                            "software.",
                                         ),
                                     ],
                                 ),
@@ -248,25 +244,23 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                                 ),
                                 _phase(
                                     "Additional Troubleshooting",
-                                    "<p>If the upload continues to fail after following the "
-                                    "recommended troubleshooting steps, additional assistance may "
-                                    "be required.</p>",
-                                    your_tasks=[
-                                        (
-                                            "Review the troubleshooting steps for your specific error message.",
-                                            "Most upload issues are resolved by correcting the file, "
+                                    _options(
+                                        "If the upload continues to fail after following the "
+                                        "recommended troubleshooting steps, additional assistance "
+                                        "may be required.",
+                                        [
+                                            "Review the troubleshooting steps for your specific error "
+                                            "message.",
+                                            "Most upload issues can be resolved by correcting file, "
                                             "browser, network, or security settings.",
-                                        ),
-                                        (
-                                            "Attempt the upload again.",
-                                            "Retry the upload after making the recommended changes.",
-                                        ),
-                                        (
-                                            "Contact DAWSON Support.",
-                                            "Technical support is available if the issue continues "
-                                            "after troubleshooting.",
-                                        ),
-                                    ],
+                                            "Attempt the upload again after making the recommended "
+                                            "changes.",
+                                            "Contact DAWSON Support if the issue continues after "
+                                            "troubleshooting.",
+                                        ],
+                                        lead="Consider the following options:",
+                                    ),
+                                    show_info_icon=True,
                                     helpful_information=[
                                         (
                                             "How can I access DAWSON and confirm it is working properly?",
