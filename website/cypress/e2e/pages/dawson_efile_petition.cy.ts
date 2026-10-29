@@ -23,6 +23,13 @@ describe("DAWSON How to e-file a Petition guide", () => {
             .and("have.css", "text-transform", "uppercase");
         cy.get(".detailed-timeline-warning")
             .and("contain.text", "A petition should only be filed once.");
+        cy.get(".detailed-timeline-warning-sr-label")
+            .should("have.text", "Warning");
+        cy.get(".detailed-timeline-accordion-content p")
+            .first()
+            .should("have.css", "font-size", "16px");
+        cy.get(".detailed-timeline-warning-content p")
+            .should("have.css", "font-size", "16px");
         cy.get(".petitioner-breadcrumb").should(
             "have.css",
             "font-size",
@@ -172,22 +179,16 @@ describe("DAWSON How to e-file a Petition guide", () => {
     });
 
     [1536, 768].forEach((width) => {
-        it(`matches practitioner typography at ${width}px`, () => {
+        it(`matches practitioner heading typography at ${width}px`, () => {
             cy.viewport(width, 1000);
             cy.visit("/practitioners/");
 
             cy.get('[data-testid="page-title"]').then(($title) => {
                 const titleSize = getComputedStyle($title[0]).fontSize;
-                cy.get(".enhanced-page p").first().then(($paragraph) => {
-                    const bodySize = getComputedStyle($paragraph[0]).fontSize;
-
-                    cy.visit("/dawson-how-to-e-file-a-petition/");
-                    cy.get('[data-testid="page-title"]').should("have.css", "font-size", titleSize);
-                    cy.get(".detailed-timeline-accordion-content p").first()
-                        .should("have.css", "font-size", bodySize);
-                    cy.get(".detailed-timeline-accordion-header-button")
-                        .should("have.css", "font-size", width > 768 ? "20px" : "18px");
-                });
+                cy.visit("/dawson-how-to-e-file-a-petition/");
+                cy.get('[data-testid="page-title"]').should("have.css", "font-size", titleSize);
+                cy.get(".detailed-timeline-accordion-header-button")
+                    .should("have.css", "font-size", width > 768 ? "20px" : "18px");
             });
         });
     });
