@@ -46,6 +46,11 @@ more than one of these can share a page.
                                aria-controls="{{ faq_id }}-answer-{{ forloop.counter }}"
                                data-faq-link>{{ item.question }}</a>
                         </h3>
+                        {# Shown only while the question is expanded (see faq.css). #}
+                        <button type="button" class="faq__print" data-faq-print>
+                            <i class="fa-solid fa-print faq__print-icon" aria-hidden="true"></i>
+                            Print<span class="usa-sr-only"> this question</span>
+                        </button>
                     </div>
                     <div class="faq__answer"
                          id="{{ faq_id }}-answer-{{ forloop.counter }}"
