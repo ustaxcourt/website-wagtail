@@ -3,7 +3,7 @@
     overflow-x: auto;
 }
 
-.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block) {
+.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .petitioner-page-heading) {
     margin-bottom: 32px;
 }
 
@@ -14,10 +14,11 @@
     margin-top: 0px;
 }
 
-.enhanced-page.grid-container > h1,h2,h3:not(.question-answer-block > h3):not(.detailed-timeline-accordion-header > h3),h4,h5,h6  {
+.enhanced-page.grid-container > h1,h2:not(.get-started-row > h2),h3:not(.question-answer-block > h3):not(.detailed-timeline-accordion-header > h3),h4,h5,h6  {
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
 .enhanced-page.grid-container {
     padding-top: 45px;
     padding-bottom: 45px;
@@ -326,6 +327,16 @@ p:empty {
 .enhanced-page .table-container {
     width: 100%;
     margin: 1rem 0;
+}
+
+div.quick-access-tiles-container + div.get-started-row {
+    margin-top: 28px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+div.get-started-row + p + p {
+    margin-bottom: 48px;
 }
 
 @media (max-width: 740px) {
