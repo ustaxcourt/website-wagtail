@@ -216,7 +216,8 @@
     list-style-type: decimal;
 }
 
-.detailed-timeline-rich-text img {
+.detailed-timeline-rich-text img,
+.detailed-timeline-accordion-content img {
     max-width: 100%;
     height: auto;
     display: block;
@@ -405,6 +406,16 @@
     color: var(--color-secondary);
     font-size: 14px;
     font-weight: 600;
+    padding-top: 1px;
+}
+
+.bubble-info::before {
+    content: "i";
+    text-align: center;
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
     padding-top: 1px;
 }
 
