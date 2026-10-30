@@ -77,10 +77,6 @@ class DawsonTroubleshootFileUploads(PageInitializer):
             name="Guidance for Petitioners Ribbon"
         ).first()
 
-        if Page.objects.filter(slug=slug).exists():
-            logger.info(f"- {title} page already exists.")
-            return
-
         user_guides_page = Page.objects.get(slug="dawson-user-guides")
         breadcrumb = [
             {
