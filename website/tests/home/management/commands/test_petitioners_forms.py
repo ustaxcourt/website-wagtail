@@ -1,11 +1,15 @@
 from types import SimpleNamespace
 
 import pytest
+import re
 from django.template.loader import render_to_string
 from django.test import SimpleTestCase
 from wagtail.admin.rich_text import get_rich_text_editor_widget
 from wagtail.rich_text import RichText
-
+from wagtail.models import Collection, Page, Locale, Site
+from taggit.models import Tag
+from home.models import NavigationRibbon
+from home.models.utils.execute_script import ExecuteScript
 from home.management.commands.pages.rules_and_guidance.petitioners_forms import (
     GETTING_STARTED_FORMS,
     SPECIAL_CIRCUMSTANCES_FORMS,
@@ -118,3 +122,95 @@ def test_other_pages_keep_existing_paragraph_markup():
     SimpleTestCase().assertHTMLEqual(
         html, '<p data-testid="page-body-paragraph">Existing content.</p>'
     )
+
+
+@pytest.mark.django_db
+def test_run_without_page_existing_creates_page():
+    command_name = "Update Forms to File a Petition content with new intro and callout"
+
+    TAGS_AND_COLLECTION_NAMES = [
+        "Administrative Orders",
+        "Cases Commenced in the Court of Appeals",
+        "Citation and Style Manual",
+        "Clinics",
+        "DAWSON Training Guides",
+        "Directory",
+        "Discipline",
+        "Engagement & Outreach",
+        "Events and Webinars",
+        "Fees & Charges",
+        "Forms",
+        "Guidance for Petitioners",
+        "Guidance for Practitioners",
+        "History",
+        "Internship Programs",
+        "Judges & Bios",
+        "Judicial Conduct and Disability Procedures",
+        "Law Clerk Programs",
+        "LITC",
+        "Mission Statement",
+        "Pamphlets",
+        "Press Releases",
+        "Pro Bono Programs",
+        "Records (Transcripts & Copies)",
+        "DAWSON Release Notes",
+        "Remote Proceedings",
+        "Reports & Statistics",
+        "Rules Comments and Suggestions",
+        "Tax Court Reports",
+        "Tax Court Rules",
+        "Trial Sessions",
+        "Vacancy Announcements",
+    ]
+
+    ROLE_TAGS_NAMES = [
+        "Role Content Manager",
+        "Role Website Manager",
+        "Role Chief Judge",
+        "Role Dawson Contributor",
+        "Role Public Affairs",
+        "Role Clerk Office",
+        "Role Hr Committee",
+        "Role Pro Se Committee",
+        "Role Rules Committee",
+        "Role Admissions Committee",
+        "Role Ethics Committee",
+        "Role Disciplinary Committee",
+        "Role Reporters Office",
+        "Role Appellate Reports",
+        "Role Case Services",
+    ]
+
+    Locale.objects.get_or_create(language_code="en")
+
+    Collection.add_root(name="Root")
+
+    root_page = Page.objects.filter(depth=1).first()
+    if root_page is None:
+        root_page = Page.add_root(title="Root", slug="root")
+
+    home_page = Page(title="Home", slug="home")
+    root_page.add_child(instance=home_page)
+
+    Site.objects.get_or_create(
+        hostname="localhost",
+        defaults={"root_page": home_page, "is_default_site": True},
+    )
+
+    NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
+
+    for tag_name in TAGS_AND_COLLECTION_NAMES:
+        slug = re.sub(r"\s+", "-", tag_name.lower())
+        # Use the slug to check for existence, and provide the name as a default
+        # for creation. This avoids the unique constraint error.
+        Tag.objects.get_or_create(slug=slug, defaults={"name": tag_name})
+
+    for tag_name in ROLE_TAGS_NAMES:
+        slug = re.sub(r"\s+", "-", tag_name.lower())
+        # Use the slug to check for existence, and provide the name as a default
+        # for creation. This avoids the unique constraint error.
+        Tag.objects.get_or_create(slug=slug, defaults={"name": tag_name})
+
+    assert not ExecuteScript.command_exists(command_name)
+    PetitionersFormsPageInitializer().run()
+    assert ExecuteScript.command_exists(command_name)
