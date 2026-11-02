@@ -175,12 +175,6 @@ class PetitionerExperiencePage(EnhancedStandardPage):
                         "breadcrumb": "A Breadcrumb Page must be provided when Breadcrumb Title is provided."
                     }
                 )
-            if not has_title:
-                raise ValidationError(
-                    {
-                        "breadcrumb": "A Breadcrumb Title is required when a Page Breadcrumb is provided."
-                    }
-                )
 
     @property
     def breadcrumb_title(self):
