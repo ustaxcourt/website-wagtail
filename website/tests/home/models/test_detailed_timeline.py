@@ -1,10 +1,44 @@
+from types import SimpleNamespace
+
 import pytest
 from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
 from django.test import TestCase, RequestFactory, override_settings
 from wagtail.models import Locale, Page, Site
 
 from home.models.custom_blocks.detailed_timeline import DetailedTimelineBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
+
+
+@pytest.mark.parametrize(
+    "slug",
+    [
+        "dawson-how-to-e-file-a-petition",
+        "petitioners-timeline",
+    ],
+)
+def test_timeline_introduction_is_preserved(slug):
+    block = DetailedTimelineBlock()
+    value = block.to_python(
+        {
+            "title": "Timeline",
+            "show_title": False,
+            "introduction": "<p>Existing introductory text.</p>",
+            "phases": [],
+        }
+    )
+
+    html = render_to_string(
+        "detailed_timeline.html",
+        {
+            "page": SimpleNamespace(slug=slug),
+            "block": SimpleNamespace(id="test-timeline", value=value),
+        },
+    )
+
+    assert "Existing introductory text." in html
+    assert "detailed-timeline-expand-button" in html
+    assert "detailed-timeline-print-button" in html
 
 
 @override_settings(

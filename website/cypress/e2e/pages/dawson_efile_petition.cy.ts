@@ -17,6 +17,10 @@ describe("DAWSON How to e-file a Petition guide", () => {
             "contain.text",
             "Before starting the e-filing process",
         );
+        cy.get(".enhanced-page").should(
+            "not.contain.text",
+            "After the title, the page’s introductory text is displayed.",
+        );
         cy.get(".detailed-timeline-warning")
             .find("h3")
             .should("contain.text", "Important Reminder")

@@ -47,6 +47,11 @@ def test_initializer_creates_the_dawson_efile_guide():
     )
     assert page.breadcrumb_page_url == user_guides_page.url
     assert timeline["show_title"] is False
+    introduction = timeline["introduction"].source
+    assert introduction.count("<p>") == 2
+    assert (
+        "management system.</p><p>In most cases, the Court must receive" in introduction
+    )
     assert timeline["show_numbers_in_bubbles"] is True
     assert timeline["warning_callout"]["heading"] == "Important Reminder"
     assert len(timeline["phases"]) == 5
