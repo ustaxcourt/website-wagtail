@@ -182,4 +182,30 @@ class TestCachedWhiteNoiseMiddleware:
     def test_autorefresh_mode_is_not_cached(self):
         with override_settings(WHITENOISE_AUTOREFRESH=True):
             CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
-        assert CachedWhiteNoiseMiddleware._shared_state is None
+            assert CachedWhiteNoiseMiddleware._shared_state is None
+
+    def test_populated_cache_is_not_reused_after_enabling_autorefresh(
+        self, static_root
+    ):
+        """A cache built with autorefresh off must not leak its flag or index into a later autorefresh instance."""
+        CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
+        assert CachedWhiteNoiseMiddleware._shared_state is not None
+
+        (static_root / "css" / "added.css").write_text("p {}")
+        with override_settings(WHITENOISE_AUTOREFRESH=True):
+            mw = CachedWhiteNoiseMiddleware(lambda r: HttpResponse(status=404))
+            assert mw.autorefresh is True
+            response = mw(self.factory.get("/static/css/added.css"))
+        assert response.status_code == 200
+        assert b"".join(response.streaming_content) == b"p {}"
+
+    def test_cache_is_rebuilt_after_static_root_changes(self, tmp_path_factory):
+        """Changing a setting WhiteNoise reads clears the cache, so the next instance re-indexes."""
+        CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
+
+        other_root = tmp_path_factory.mktemp("other_static")
+        (other_root / "other.css").write_text("a {}")
+        with override_settings(STATIC_ROOT=str(other_root)):
+            mw = CachedWhiteNoiseMiddleware(lambda r: HttpResponse(status=404))
+            assert mw(self.factory.get("/static/other.css")).status_code == 200
+            assert mw(self.factory.get("/static/css/site.css")).status_code == 404
