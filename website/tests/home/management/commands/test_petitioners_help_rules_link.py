@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.test import TestCase
 from wagtail.models import Locale, Page, Site
 
@@ -110,3 +112,54 @@ class TestPetitionersHelpRulesLink(TestCase):
             ).count(),
             1,
         )
+
+    def script_rows(self):
+        return ExecuteScript.objects.filter(
+            command_name=PetitionersHelpRulesLinkUpdater.COMMAND_NAME
+        )
+
+    def test_run_skips_without_recording_when_card_missing_then_retries(self):
+        """A missing card is not recorded as run, so a later deploy adds the link."""
+        self.assertEqual(PetitionersHelpRulesLinkUpdater().run(), 0)
+        self.assertFalse(self.script_rows().exists())
+
+        self.seed_card_without_rules_link()
+        PetitionersHelpRulesLinkUpdater().run()
+
+        self.assertEqual(self.link_texts()[-1], "Tax Court Rules")
+        self.assertEqual(self.script_rows().get().execution_status, "SUCCESS")
+
+    def test_run_skips_without_recording_when_card_renamed(self):
+        self.seed_card_without_rules_link()
+        SideCard.objects.filter(page=self.help_page).update(
+            header_title="Helpful Resources"
+        )
+
+        self.assertEqual(PetitionersHelpRulesLinkUpdater().run(), 0)
+
+        self.assertFalse(self.script_rows().exists())
+
+    def test_run_records_success_log_when_link_already_present(self):
+        add_helpful_links_side_card(None, self.help_page)
+
+        PetitionersHelpRulesLinkUpdater().run()
+
+        script = self.script_rows().get()
+        self.assertEqual(script.execution_status, "SUCCESS")
+        self.assertIn("already", script.execution_log)
+
+    def test_run_rolls_back_card_when_publish_fails(self):
+        """A publish failure leaves the card unchanged and records FAILURE."""
+        self.seed_card_without_rules_link()
+        links_before = self.link_texts()
+
+        with mock.patch(
+            "wagtail.models.Revision.publish", side_effect=RuntimeError("boom")
+        ):
+            with self.assertRaises(RuntimeError):
+                PetitionersHelpRulesLinkUpdater().run()
+
+        self.assertEqual(self.link_texts(), links_before)
+        script = self.script_rows().get()
+        self.assertEqual(script.execution_status, "FAILURE")
+        self.assertIn("boom", script.execution_log)

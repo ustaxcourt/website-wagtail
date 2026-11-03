@@ -1,5 +1,6 @@
 import logging
 
+from django.db import transaction
 from wagtail.models import Page
 
 from home.management.commands.pages.rules_and_guidance.side_card_seed_data import (
@@ -24,25 +25,31 @@ class PetitionersHelpRulesLinkUpdater:
     LINK_TEXT = "Tax Court Rules"
 
     def update(self):
+        """Add the Rules link if it is missing.
+
+        Returns a log message describing what happened, or None if the page,
+        the rules page, or the card could not be found and nothing was done.
+        """
         page = Page.objects.filter(slug=self.PAGE_SLUG).first()
         rules_page = Page.objects.filter(slug="rules").first()
         if page is None or rules_page is None:
             logger.warning(
                 f"'{self.PAGE_SLUG}' or 'rules' page not found. Skipping Rules link."
             )
-            return
+            return None
 
         card = SideCard.objects.filter(
             page_id=page.pk, header_title=self.CARD_TITLE
         ).first()
         if card is None:
             logger.warning(f"'{self.CARD_TITLE}' card not found. Skipping Rules link.")
-            return
+            return None
 
         raw_links = list(card.links.raw_data)
         if any(link["value"].get("text") == self.LINK_TEXT for link in raw_links):
-            logger.info("Rules link already on the Helpful Links card.")
-            return
+            message = "Rules link already on the Helpful Links card."
+            logger.info(message)
+            return message
 
         card.links = raw_links + [build_rules_link(rules_page)]
         card.save()
@@ -50,24 +57,36 @@ class PetitionersHelpRulesLinkUpdater:
         # SideCards live in revision content, so republish to keep the editor
         # from loading a revision without the new link.
         page.specific.save_revision().publish()
-        logger.info("Added the Rules link to the Helpful Links card.")
+        message = "Added the Rules link to the Helpful Links card."
+        logger.info(message)
+        return message
 
     def run(self):
         if ExecuteScript.command_exists(self.COMMAND_NAME):
             logger.info(f"Script '{self.COMMAND_NAME}' already exists. Skipping.")
             return 0
 
-        script_entry = ExecuteScript.create_script(self.COMMAND_NAME)
-
         try:
-            self.update()
-            script_entry.execution_status = "SUCCESS"
-            script_entry.execution_log = "Rules link added to Helpful Links card."
-            script_entry.save()
+            # The card save, the republish and the SUCCESS record commit
+            # together, so a failed publish can't leave the card and the
+            # latest revision out of sync.
+            with transaction.atomic():
+                message = self.update()
+                if message is None:
+                    # Nothing to update yet. Don't record the script, so the
+                    # next deploy tries again.
+                    return 0
+                ExecuteScript.create_script(
+                    self.COMMAND_NAME,
+                    execution_status="SUCCESS",
+                    execution_log=message,
+                )
 
         except Exception as e:
             logger.error(e)
-            script_entry.execution_status = "FAILURE"
-            script_entry.execution_log = f"<strong>Error:</strong> {e}"
-            script_entry.save()
+            ExecuteScript.create_script(
+                self.COMMAND_NAME,
+                execution_status="FAILURE",
+                execution_log=f"<strong>Error:</strong> {e}",
+            )
             raise
