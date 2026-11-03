@@ -213,7 +213,16 @@ class TestRender:
         answer_id = re.search(r'aria-controls="([^"]+)"', link).group(1)
         assert f'id="{answer_id}"' in html
         faq_list = html.split('class="faq__list"', 1)[1].split("</ul>", 1)[0]
-        assert "<button" not in faq_list
+        buttons = re.findall(r"<button[^>]*>", faq_list)
+        assert all("data-faq-print" in b for b in buttons)
+
+    def test_filter_section_gives_each_question_a_print_button(self):
+        html = self.render(display_filter_section=True)
+        faq_list = html.split('class="faq__list"', 1)[1].split("</ul>", 1)[0]
+        buttons = re.findall(r"<button[^>]*data-faq-print[^>]*>", faq_list)
+        assert len(buttons) == 2
+        assert all('type="button"' in b for b in buttons)
+        assert '<span class="usa-sr-only"> this question</span>' in faq_list
 
     def test_without_filter_section_renders_original_layout(self):
         html = self.render(display_filter_section=False)
