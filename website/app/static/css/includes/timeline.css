@@ -319,14 +319,26 @@
 .detailed-timeline-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: flex-end;
     flex-wrap: wrap;
     gap: 16px 24px;
+    margin-bottom: 16px;
 }
 
 .detailed-timeline-header-text {
     flex: 1 1 400px;
     min-width: 0;
+}
+
+/* Drop the description's trailing margin so the buttons line up with the bottom of the text. */
+.detailed-timeline-header-text > :last-child {
+    margin-bottom: 0;
+}
+
+/* Body text is 16px; overrides the global 17px p size. */
+.detailed-timeline-header-text p,
+.detailed-timeline-accordion-content p {
+    font-size: 16px;
 }
 
 .detailed-timeline-controls {
