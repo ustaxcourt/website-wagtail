@@ -2,6 +2,8 @@ import logging
 import traceback
 
 from django.conf import settings
+from django.core.signals import setting_changed
+from django.dispatch import receiver
 from whitenoise.middleware import WhiteNoiseMiddleware
 
 
@@ -112,6 +114,10 @@ class CachedWhiteNoiseMiddleware(WhiteNoiseMiddleware):
     The index only depends on settings and files baked into the image, so it is
     identical for every instance in a process and safe to share. In autorefresh
     mode (local DEBUG) WhiteNoise doesn't scan at init, so nothing is cached.
+
+    Settings don't change in a running server, but override_settings does change
+    them in tests. The cache is cleared on any setting change (see
+    _clear_whitenoise_cache) so a stale index or autorefresh flag is never reused.
     """
 
     _shared_state: dict | None = None
@@ -125,3 +131,11 @@ class CachedWhiteNoiseMiddleware(WhiteNoiseMiddleware):
         else:
             self.__dict__.update(shared_state)
             self.get_response = get_response
+
+
+@receiver(setting_changed)
+def _clear_whitenoise_cache(**kwargs):
+    # WhiteNoise reads DEBUG, STATIC_*, STATICFILES_*, STORAGES, FORCE_SCRIPT_NAME
+    # and WHITENOISE_*. Clearing on every change is simpler than tracking that
+    # list, and setting_changed only fires under override_settings in tests.
+    CachedWhiteNoiseMiddleware._shared_state = None
