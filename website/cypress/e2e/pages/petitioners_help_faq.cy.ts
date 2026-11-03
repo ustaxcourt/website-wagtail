@@ -73,6 +73,33 @@ describe("Petitioners Help FAQ filter and accordion", () => {
         cy.get("@link").should("have.attr", "aria-expanded", "false");
     });
 
+    it("shows Print only on an expanded question", () => {
+        cy.get("#petition-deadline").as("item");
+        cy.get("@item").find("[data-faq-print]").should("not.be.visible");
+        cy.get("@item").find("[data-faq-link]").click();
+        cy.get("@item").find("[data-faq-print]").should("be.visible");
+    });
+
+    it("prints only the selected question without collapsing it", () => {
+        cy.window().then((win) => {
+            cy.stub(win, "print").as("print");
+        });
+        cy.get("#petition-deadline").as("item");
+        cy.get("@item").find("[data-faq-link]").click();
+        cy.get("@item").find("[data-faq-print]").realClick();
+        cy.get("@print").should("have.been.calledOnce");
+        cy.get("@item").find("[data-faq-link]").should("have.attr", "aria-expanded", "true");
+        cy.get("body").should("have.class", "printing-faq");
+        cy.get(".faq-print-host [data-faq-item]").should("have.length", 1);
+        cy.get(".faq-print-host").within(() => {
+            cy.get("[data-faq-answer]").should("not.have.attr", "hidden");
+            cy.get("[data-faq-print], .faq__toggle, [id]").should("not.exist");
+        });
+        cy.window().then((win) => win.dispatchEvent(new Event("afterprint")));
+        cy.get(".faq-print-host").should("not.exist");
+        cy.get("body").should("not.have.class", "printing-faq");
+    });
+
     [
         { name: "desktop", width: 1280, height: 800 },
         { name: "tablet", width: 768, height: 1024 },
