@@ -51,13 +51,16 @@ def make_page(breadcrumb_title="", page_block=None):
         ),
     ],
 )
-
-
-def test_breadcrumb_fields_may_both_be_empty():
-    page = make_page()
+def test_breadcrumb_fields_must_be_provided_together(
+    breadcrumb_title, page_block, error_message
+):
+    page = make_page(breadcrumb_title, page_block)
 
     with patch("home.models.pages.petitioner_experience.EnhancedStandardPage.clean"):
-        page.clean()
+        with pytest.raises(ValidationError) as error:
+            page.clean()
+
+    assert error_message in error.value.message_dict["breadcrumb"]
 
 
 def test_navigation_ribbon_is_optional():
