@@ -234,7 +234,7 @@
 }
 
 .detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
-    color: inherit;
+    color: var(--color-link);
 }
 
 .detailed-timeline-accordion-content-your-tasks {

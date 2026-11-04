@@ -1,6 +1,5 @@
 from wagtail.models import Page
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationRibbon
 import logging
 import uuid
 from home.models.utils.execute_script import ExecuteScript
@@ -73,10 +72,6 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         slug = "dawson-troubleshoot-file-uploads"
         title = "How to troubleshoot file upload errors"
 
-        navigation_ribbon = NavigationRibbon.objects.filter(
-            name="Guidance for Petitioners Ribbon"
-        ).first()
-
         if Page.objects.filter(slug=slug).exists():
             logger.info(f"- {title} page already exists.")
             return
@@ -112,7 +107,6 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                 title=title,
                 slug=slug,
                 seo_title=title,
-                navigation_ribbon=navigation_ribbon,
                 search_description=title,
                 breadcrumb=breadcrumb,
                 show_floating_definitions_button=True,
@@ -209,13 +203,13 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                                     "or password-protected PDF files. Review the document for a "
                                     '"(SECURED)" banner or security settings before attempting to '
                                     "upload it again.</p>"
-                                    f"{images['dawson_faqs_case_management_secured.jpg']}"
+                                    f"{images['dawson_faqs_case_management_secured.jpg']}<hr/>"
                                     '<p><b>If you see "(SECURED)" at the top of the document</b></p>'
                                     "<p>Create a new document file, and when signing it, decline "
                                     'Adobe\'s prompt to save a read-only copy by clicking "Cancel" on '
                                     "the screen when prompted. This will prevent Adobe from "
                                     "automatically applying security measures to the file.</p>"
-                                    f"{images['dawson_faqs_case_management_banner.jpg']}"
+                                    f"{images['dawson_faqs_case_management_banner.jpg']}<hr/>"
                                     '<p><b>If you do not see "(SECURED)" at the top of the document</b></p>'
                                     '<p>If you do NOT see the above banner or "(SECURED)" in the '
                                     "document window, follow these steps.</p>"

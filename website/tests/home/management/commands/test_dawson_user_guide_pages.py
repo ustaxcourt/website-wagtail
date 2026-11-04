@@ -85,7 +85,7 @@ class TestDawsonUserGuidePages(TestCase):
         )
         home_page.add_child(instance=self.user_guides_page)
 
-        # PetitionerExperiencePage requires a navigation ribbon.
+        # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
 
     def test_registered_only_in_update_pages(self):
