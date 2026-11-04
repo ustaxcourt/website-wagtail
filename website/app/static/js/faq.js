@@ -7,11 +7,14 @@
  *   header (faq.css), so the handler stays on the link and the tag isn't announced
  *   as "clickable". Modified clicks (Cmd/Ctrl/Shift/Alt) are left to the browser.
  * - Visiting with a #anchortag that matches a question expands it and scrolls to it.
+ * - An expanded question's Print button prints only that question and its answer.
  */
 (function () {
     // The template includes this script once per FAQ block; only wire up once.
     if (window.ustcFaqInitialized) return;
     window.ustcFaqInitialized = true;
+
+    let printHost = null;
 
     function setExpanded(item, expanded) {
         item.querySelector('[data-faq-answer]').hidden = !expanded;
@@ -48,10 +51,49 @@
         if (all && all.getAttribute('aria-pressed') !== 'true') selectFilter(faq, all);
     }
 
+    function cleanupPrintHost() {
+        document.body.classList.remove('printing-faq');
+        if (printHost) {
+            printHost.remove();
+            printHost = null;
+        }
+    }
+
+    // Print just one question: copy it into a host that faq.css's print styles
+    // show on its own, like the Detailed Timeline's print (js/detailed_timeline.js).
+    function printItem(item) {
+        cleanupPrintHost();
+        const clone = item.cloneNode(true);
+        clone.querySelectorAll('[data-faq-print], .faq__toggle').forEach(function (el) {
+            el.remove();
+        });
+        clone.querySelectorAll('[id]').forEach(function (el) {
+            el.removeAttribute('id');
+        });
+        clone.removeAttribute('id');
+
+        const list = document.createElement('ul');
+        list.className = 'faq__list';
+        list.appendChild(clone);
+        printHost = document.createElement('div');
+        // enhanced-page keeps the page's Helpful Resources link styles (app.css).
+        printHost.className = 'enhanced-page faq faq-print-host';
+        printHost.appendChild(list);
+        document.body.appendChild(printHost);
+        document.body.classList.add('printing-faq');
+        window.print();
+    }
+
     function initFaq(faq) {
         faq.querySelectorAll('[data-faq-filter]').forEach(function (button) {
             button.addEventListener('click', function () {
                 selectFilter(faq, button);
+            });
+        });
+
+        faq.querySelectorAll('[data-faq-print]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                printItem(button.closest('[data-faq-item]'));
             });
         });
 
@@ -88,6 +130,7 @@
         document.querySelectorAll('[data-faq]').forEach(initFaq);
         openFromHash();
         window.addEventListener('hashchange', openFromHash);
+        window.addEventListener('afterprint', cleanupPrintHost);
     }
 
     if (document.readyState === 'loading') {
