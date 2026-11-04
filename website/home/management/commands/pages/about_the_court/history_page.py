@@ -83,7 +83,7 @@ class HistoryPageInitializer(PageInitializer):
                                              <p>
                                                  The Tax Court is a court of law with nationwide jurisdiction exercising judicial power independent of the Executive and Legislative Branches. The Tax Court is one of the courts in which taxpayers can bring suit to contest IRS determinations, and it is the primary court in which taxpayers can do so without prepaying any portion of the disputed taxes.
                                              </p>""",
-            alt_text="US Tax Court Building",
+            alt_text="United States Tax Court Building",
         )
 
         photo_dedication.photo = history_image
@@ -133,7 +133,7 @@ class HistoryPageInitializer(PageInitializer):
                         "value": {
                             "title": "Victor Lundy: Sculptor of Space",
                             "description": """<p>We are excited to include here <strong><em>Victor Lundy: Sculptor of Space.</em></strong> This informative and entertaining documentary was produced by the GSA (General Services Administration) as part of <strong><em><a href="https://www.youtube.com/playlist?list=PLvdwyPgXnxxU_f2Ee8FnuBdflb6pEtF_Z"  target="_blank" title="The Historic Building Film Series">The Historic Building Film Series</a></em></strong>.</p>
-                                            <blockquote><i>Victor Lundy: Sculptor of Space captures the recollections of the modern American master architect and artist who designed GSA's historic U.S. Tax Court Building in Washington, DC.</i>
+                                            <blockquote><i>Victor Lundy: Sculptor of Space captures the recollections of the modern American master architect and artist who designed GSA's historic United States Tax Court Building in Washington, DC.</i>
                                             <cite title="Source Title">- GSA YouTube Channel</cite>
                                             </blockquote>""",
                             "video_url": "https://www.youtube.com/embed/s6umLipF7-E",
