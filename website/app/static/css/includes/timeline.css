@@ -423,10 +423,11 @@
     content: "i";
     text-align: center;
     background-color: var(--color-primary);
+    box-shadow: inset 0 0 0 4px var(--bg-white-hover);
     color: white;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 700;
-    padding-top: 1px;
+    line-height: 24px;
 }
 
 .bubble-circle:has(* > * > .active)::before {
@@ -435,6 +436,13 @@
 
 .bubble-number:has(* > * > .active)::before {
     color: white;
+}
+
+.bubble-info:has(* > * > .active)::before {
+    background-color: white;
+    box-shadow: inset 0 0 0 4px var(--color-primary);
+    color: var(--color-primary);
+    font-size: 12px;
 }
 
 .bubble-circle:not(:last-child)::after {
