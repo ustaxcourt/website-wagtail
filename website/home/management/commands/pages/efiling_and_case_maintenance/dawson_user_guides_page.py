@@ -109,7 +109,9 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
         _dawson_how_to_e_file_a_petition = urljoin(
             _base_url, "/dawson-how-to-e-file-a-petition"
         )
-        _dawson_how_to_merge_pdfs = urljoin(_base_url, "/dawson-how-to-merge-pdfs")
+        _dawson_how_to_pay_filing_fee = urljoin(
+            _base_url, "/dawson-how-to-pay-filing-fee"
+        )
         _dawson_troubleshoot_file_uploads = urljoin(
             _base_url, "/dawson-troubleshoot-file-uploads"
         )
@@ -297,7 +299,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                 {
                     "type": "section_header",
                     "value": {
-                        "heading": "Starting a Case",
+                        "heading": "Case Management",
                         "style": "blue_bar",
                         "link_text": "",
                         "link_url": "",
@@ -352,8 +354,8 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "title_icon": icons["PDF_icon.svg"].pk,
                                 "title_icon_alt_text": "",
                                 "subtitle": "Starting a case",
-                                "title": "How to merge PDFs",
-                                "description": '<p data-block-key="k9szf">Read this guide to combine multiple PDF files into a single document.</p>',
+                                "title": "How to pay the filing fee",
+                                "description": '<p data-block-key="k9szf">Learn how to pay the Tax Court filing fee online, by mail, or in person.</p>',
                                 "buttons": [
                                     {
                                         "type": "item",
@@ -364,7 +366,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                             "url": [
                                                 {
                                                     "type": "external_url",
-                                                    "value": _dawson_how_to_merge_pdfs,
+                                                    "value": _dawson_how_to_pay_filing_fee,
                                                     "id": "e71589ea-ea1c-4e01-9f91-e382a3cb6095",
                                                 }
                                             ],
@@ -417,6 +419,84 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                         },
                     ],
                     "id": "9d5fc1a5-3a4a-472c-a533-fee906eac374",
+                },
+                {
+                    "type": "card",
+                    "value": [
+                        {
+                            "type": "item",
+                            "value": {
+                                "color": "white",
+                                "numbered_icon": "",
+                                "numbered_icon_alignment": "left",
+                                "title_icon": icons["computer_icon.svg"].pk,
+                                "title_icon_alt_text": "",
+                                "subtitle": "DAWSON Account Management",
+                                "title": "How to update contact information",
+                                "description": '<p data-block-key="8erb6">Read this guide to update your contact information in DAWSON.</p>',
+                                "buttons": [
+                                    {
+                                        "type": "item",
+                                        "value": {
+                                            "icon": None,
+                                            "icon_location": "before",
+                                            "text": "View Guide",
+                                            "url": [
+                                                {
+                                                    "type": "external_url",
+                                                    "value": _dawson_how_to_update_contact_info,
+                                                    "id": "362e30a8-4ab8-40dd-8972-0aa9fbaeee6a",
+                                                }
+                                            ],
+                                            "style": "primary",
+                                            "button_hover": True,
+                                            "helper_text": "",
+                                            "download": False,
+                                        },
+                                        "id": "35565d23-bbf5-4cc0-9197-ff2108ba4f28",
+                                    }
+                                ],
+                            },
+                            "id": "92a1121d-ff38-4faf-b903-0b9226a994a6",
+                        },
+                        {
+                            "type": "item",
+                            "value": {
+                                "color": "white",
+                                "numbered_icon": "",
+                                "numbered_icon_alignment": "left",
+                                "title_icon": icons["computer_icon.svg"].pk,
+                                "title_icon_alt_text": "",
+                                "subtitle": "DAWSON Account Management",
+                                "title": "How to view the DAWSON dashboard",
+                                "description": '<p data-block-key="77zje">Read this guide to navigate your DAWSON dashboard and view your cases.</p>',
+                                "buttons": [
+                                    {
+                                        "type": "item",
+                                        "value": {
+                                            "icon": None,
+                                            "icon_location": "before",
+                                            "text": "View Guide",
+                                            "url": [
+                                                {
+                                                    "type": "external_url",
+                                                    "value": _dawson_how_to_view_dashboard,
+                                                    "id": "0a6de403-4957-45f9-b93e-75de14bda2b4",
+                                                }
+                                            ],
+                                            "style": "primary",
+                                            "button_hover": True,
+                                            "helper_text": "",
+                                            "download": False,
+                                        },
+                                        "id": "397062d7-9299-488d-8ea8-dfd62c7455f7",
+                                    }
+                                ],
+                            },
+                            "id": "544ed410-2807-4f81-8e64-a37fb8da1da2",
+                        },
+                    ],
+                    "id": "f956fb29-1ba7-40e2-89ee-937c6c172d7a",
                 },
                 {
                     "type": "section_header",
@@ -541,94 +621,6 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                         },
                     ],
                     "id": "21d95900-e908-4cdf-b233-a4469b527dd7",
-                },
-                {
-                    "type": "section_header",
-                    "value": {
-                        "heading": "DAWSON Account Management",
-                        "style": "blue_bar",
-                        "link_text": "",
-                        "link_url": "",
-                    },
-                    "id": "7c8a1c99-ac6c-483f-ac38-0dfa8ae9f2a9",
-                },
-                {
-                    "type": "card",
-                    "value": [
-                        {
-                            "type": "item",
-                            "value": {
-                                "color": "white",
-                                "numbered_icon": "",
-                                "numbered_icon_alignment": "left",
-                                "title_icon": icons["computer_icon.svg"].pk,
-                                "title_icon_alt_text": "",
-                                "subtitle": "DAWSON Account Management",
-                                "title": "How to update contact information",
-                                "description": '<p data-block-key="8erb6">Read this guide to update your contact information in DAWSON.</p>',
-                                "buttons": [
-                                    {
-                                        "type": "item",
-                                        "value": {
-                                            "icon": None,
-                                            "icon_location": "before",
-                                            "text": "View Guide",
-                                            "url": [
-                                                {
-                                                    "type": "external_url",
-                                                    "value": _dawson_how_to_update_contact_info,
-                                                    "id": "362e30a8-4ab8-40dd-8972-0aa9fbaeee6a",
-                                                }
-                                            ],
-                                            "style": "primary",
-                                            "button_hover": True,
-                                            "helper_text": "",
-                                            "download": False,
-                                        },
-                                        "id": "35565d23-bbf5-4cc0-9197-ff2108ba4f28",
-                                    }
-                                ],
-                            },
-                            "id": "92a1121d-ff38-4faf-b903-0b9226a994a6",
-                        },
-                        {
-                            "type": "item",
-                            "value": {
-                                "color": "white",
-                                "numbered_icon": "",
-                                "numbered_icon_alignment": "left",
-                                "title_icon": icons["computer_icon.svg"].pk,
-                                "title_icon_alt_text": "",
-                                "subtitle": "DAWSON Account Management",
-                                "title": "How to view the DAWSON dashboard",
-                                "description": '<p data-block-key="77zje">Read this guide to navigate your DAWSON dashboard and view your cases.</p>',
-                                "buttons": [
-                                    {
-                                        "type": "item",
-                                        "value": {
-                                            "icon": None,
-                                            "icon_location": "before",
-                                            "text": "View Guide",
-                                            "url": [
-                                                {
-                                                    "type": "external_url",
-                                                    "value": _dawson_how_to_view_dashboard,
-                                                    "id": "0a6de403-4957-45f9-b93e-75de14bda2b4",
-                                                }
-                                            ],
-                                            "style": "primary",
-                                            "button_hover": True,
-                                            "helper_text": "",
-                                            "download": False,
-                                        },
-                                        "id": "397062d7-9299-488d-8ea8-dfd62c7455f7",
-                                    }
-                                ],
-                            },
-                            "id": "544ed410-2807-4f81-8e64-a37fb8da1da2",
-                        },
-                    ],
-                    "id": "f956fb29-1ba7-40e2-89ee-937c6c172d7a",
                 },
             ],
         )

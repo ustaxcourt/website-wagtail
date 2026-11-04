@@ -40,7 +40,9 @@ from .petitioners_help_rules_link import (
 from .dawson_how_to_efile_petition import (
     DawsonHowToEfilePetition as DawsonHowToEfilePetition,
 )
-from .dawson_how_to_merge_pdfs import DawsonHowToMergePdfs as DawsonHowToMergePdfs
+from .dawson_how_to_pay_filing_fee import (
+    DawsonHowToPayFilingFee as DawsonHowToPayFilingFee,
+)
 from .dawson_troubleshoot_file_uploads import (
     DawsonTroubleshootFileUploads as DawsonTroubleshootFileUploads,
 )
