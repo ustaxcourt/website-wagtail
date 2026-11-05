@@ -675,7 +675,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                     content_cast = "::jsonb" if is_postgres else ""
 
                     cursor.execute(
-                        f"UPDATE wagtailcore_revision SET object_id = '{old_page_id}', {content_column}=replace(content, '\"pk\": {new_page_id}', '\"pk\": {old_page_id}'){content_cast} WHERE object_id = '{new_page_id}'"
+                        f"UPDATE wagtailcore_revision SET object_id = '{old_page_id}', content=replace({content_column}, '\"pk\": {new_page_id}', '\"pk\": {old_page_id}'){content_cast} WHERE object_id = '{new_page_id}'"
                     )
                     cursor.execute(
                         f"UPDATE wagtailcore_page SET numchild = numchild - 1 WHERE id = {home_page.pk}",
