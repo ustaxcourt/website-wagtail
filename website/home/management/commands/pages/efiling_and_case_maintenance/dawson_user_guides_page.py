@@ -82,6 +82,10 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
     def create_page_info(self, home_page, slug_to_create, id_to_use=None):
         title = "DAWSON User Guides & Electronic Filing Instructions"
 
+        if Page.objects.filter(slug=slug_to_create).exists():
+            logger.info(f"{title} page with slug '{slug_to_create}' already exists.")
+            return
+
         logger.info(f"Creating the '{title}' page.")
 
         for doc_name in docs.keys():
