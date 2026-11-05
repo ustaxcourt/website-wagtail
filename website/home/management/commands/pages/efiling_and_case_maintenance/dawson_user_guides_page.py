@@ -669,7 +669,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                         f"DELETE FROM wagtailcore_revision WHERE object_id = '{old_page_id}'"
                     )
                     cursor.execute(
-                        f"UPDATE wagtailcore_revision SET object_id = {old_page_id}, content=replace(content, '\"pk\": 88', '\"pk\": 57') WHERE object_id = {new_page_id}"
+                        f"UPDATE wagtailcore_revision SET object_id = {old_page_id}, content=replace(content, '\"pk\": 88', '\"pk\": 57') WHERE object_id = '{new_page_id}'"
                     )
                     cursor.execute(
                         f"UPDATE wagtailcore_page SET numchild = numchild - 1 WHERE id = {home_page.pk}",
