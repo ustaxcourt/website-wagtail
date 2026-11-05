@@ -56,7 +56,7 @@ while IFS= read -r url; do
     # }')
     # PAGE_CONTENT="${PAGE_CONTENT:0:$pos}"
 
-    if echo "$PAGE_CONTENT" | grep -qi "$SEARCH_TEXT"; then
+    if echo "$PAGE_CONTENT" | grep -Fqi "$SEARCH_TEXT"; then
         echo "MATCH FOUND: $url"
     fi
 done <<< "$URLS"
