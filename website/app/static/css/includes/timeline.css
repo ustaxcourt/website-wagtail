@@ -363,7 +363,9 @@
 }
 
 .detailed-timeline-header-text {
-    flex: 1;
+    /* Real basis (not 0) so the controls wrap onto their own row on tablet
+       widths instead of squeezing the intro text into a narrow column. */
+    flex: 1 1 480px;
     min-width: 0;
     font-size: 16px;
 }
