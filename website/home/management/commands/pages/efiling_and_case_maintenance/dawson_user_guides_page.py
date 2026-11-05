@@ -633,6 +633,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
             old_page_path = old_page.path
             old_page_depth = old_page.depth
             old_page_slug = old_page.slug
+            old_page_url_path = old_page.url_path
             new_page_id = new_page.id
 
             with transaction.atomic():
@@ -647,7 +648,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                         f"UPDATE home_petitionerexperiencepage SET enhancedstandardpage_ptr_id = -1 * enhancedstandardpage_ptr_id WHERE enhancedstandardpage_ptr_id = {old_page_id}"
                     )
                     cursor.execute(
-                        f"UPDATE wagtailcore_page SET id = {old_page_id}, path = '{old_page_path}', depth = {old_page_depth}, slug = '{old_page_slug}' WHERE id = {new_page_id}"
+                        f"UPDATE wagtailcore_page SET id = {old_page_id}, path = '{old_page_path}', depth = {old_page_depth}, slug = '{old_page_slug}', url_path = '{old_page_url_path}' WHERE id = {new_page_id}"
                     )
                     cursor.execute(
                         f"UPDATE home_enhancedstandardpage SET page_ptr_id = {old_page_id} WHERE page_ptr_id = {new_page_id}"
@@ -663,6 +664,15 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                     )
                     cursor.execute(
                         f"DELETE FROM wagtailcore_page WHERE id = -1 * {old_page_id}"
+                    )
+                    cursor.execute(
+                        f"DELETE FROM wagtailcore_revision WHERE object_id = {old_page_id}"
+                    )
+                    cursor.execute(
+                        f"UPDATE wagtailcore_revision SET object_id = {old_page_id}, content=replace(content, '\"pk\": 88', '\"pk\": 57') WHERE object_id = {new_page_id}"
+                    )
+                    cursor.execute(
+                        f"UPDATE wagtailcore_page SET numchild = numchild - 1 WHERE id = {home_page.pk}",
                     )
 
         logger.info(f"Created the '{title}' page.")
