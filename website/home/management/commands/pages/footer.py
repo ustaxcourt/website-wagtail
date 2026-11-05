@@ -43,7 +43,7 @@ class FooterInitializer(PageInitializer):
 
         footer = Footer.objects.first()
         footer.technicalQuestions = (
-            "For assistance with DAWSON, the Court's Electronic Filing and Case Management System, "
+            "For assistance with DAWSON, the Court's Electronic filing and case management system, "
             "refer to the "
             '<a href="/dawson">DAWSON</a> page or email '
             '<a href="mailto:dawson.support@ustaxcourt.gov?subject=Assistance%20for%20Dawson"> dawson.support@ustaxcourt.gov</a>.<br>'
