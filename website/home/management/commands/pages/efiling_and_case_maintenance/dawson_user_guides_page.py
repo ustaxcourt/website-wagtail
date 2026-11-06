@@ -317,7 +317,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "numbered_icon_alignment": "left",
                                 "title_icon": icons["computer_icon.svg"].pk,
                                 "title_icon_alt_text": "",
-                                "subtitle": "Starting a case",
+                                "subtitle": "Case Management",
                                 "title": "How to e-file a petition",
                                 "description": '<p data-block-key="5j6a9">Read this guide before filing to prepare and submit your petition in DAWSON.</p>',
                                 "buttons": [
@@ -353,7 +353,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "numbered_icon_alignment": "left",
                                 "title_icon": icons["PDF_icon.svg"].pk,
                                 "title_icon_alt_text": "",
-                                "subtitle": "Starting a case",
+                                "subtitle": "Case Management",
                                 "title": "How to pay the filing fee",
                                 "description": '<p data-block-key="k9szf">Learn how to pay the Tax Court filing fee online, by mail, or in person.</p>',
                                 "buttons": [
@@ -389,7 +389,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "numbered_icon_alignment": "left",
                                 "title_icon": icons["PDF_icon.svg"].pk,
                                 "title_icon_alt_text": "",
-                                "subtitle": "Starting a case",
+                                "subtitle": "Case Management",
                                 "title": "How to troubleshoot file upload errors",
                                 "description": '<p data-block-key="k9szf">Read this guide to troubleshoot common file upload errors</p>',
                                 "buttons": [
