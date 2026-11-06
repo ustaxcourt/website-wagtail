@@ -65,4 +65,5 @@ ENV DJANGO_SETTINGS_MODULE=app.settings.$ENVIRONMENT
 
 # Run the service using the exec form without the --env flag.
 # Gunicorn will automatically pick up the DJANGO_SETTINGS_MODULE from the environment.
-CMD ["gunicorn", "--timeout", "90", "app.wsgi:application"]
+# Worker/thread settings live in gunicorn.conf.py.
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "app.wsgi:application"]
