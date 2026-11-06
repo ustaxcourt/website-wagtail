@@ -431,7 +431,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "numbered_icon_alignment": "left",
                                 "title_icon": icons["computer_icon.svg"].pk,
                                 "title_icon_alt_text": "",
-                                "subtitle": "DAWSON Account Management",
+                                "subtitle": "Case Management",
                                 "title": "How to update contact information",
                                 "description": '<p data-block-key="8erb6">Read this guide to update your contact information in DAWSON.</p>',
                                 "buttons": [
@@ -467,7 +467,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "numbered_icon_alignment": "left",
                                 "title_icon": icons["computer_icon.svg"].pk,
                                 "title_icon_alt_text": "",
-                                "subtitle": "DAWSON Account Management",
+                                "subtitle": "Case Management",
                                 "title": "How to view the DAWSON dashboard",
                                 "description": '<p data-block-key="77zje">Read this guide to navigate your DAWSON dashboard and view your cases.</p>',
                                 "buttons": [
