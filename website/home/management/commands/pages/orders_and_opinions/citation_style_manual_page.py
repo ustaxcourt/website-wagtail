@@ -44,7 +44,7 @@ class CitationStyleManualPageInitializer(PageInitializer):
                     {
                         "type": "paragraph",
                         "value": (
-                            "In January 2022, the Tax Court modified the format, citation, and style "
+                            "In January 2022, the United States Tax Court modified the format, citation, and style "
                             "used for all opinions and orders. The Citation and Style Manual was updated "
                             "September 2024 and is available below. Opinions and orders issued before 2022 "
                             "reflect the pre-2022 format and style."

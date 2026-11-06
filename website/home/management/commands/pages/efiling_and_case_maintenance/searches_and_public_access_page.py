@@ -42,7 +42,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
             <li>The ability to search by part of a name (e.g., entering "Ron" for Ronald) is expected to be available in the future.</li>
             <li>The ability to search for orders by keyword or phrase, docket number, case title/petitioner name, judge, or date is available in DAWSON.</li>
             <li>The ability to search for opinions by keyword or phrase, docket number, case title/petitioner name, judge, type of opinion, or date is available in DAWSON.</li>
-            <li>The ability to search for practitioners by name or U.S. Tax Court bar number.</li>
+            <li>The ability to search for practitioners by name or United States Tax Court bar number.</li>
             </ul>""",
                 "anchortag": "START1",
             },
@@ -72,7 +72,7 @@ class SearchesAndPublicAccessPageInitializer(PageInitializer):
                 "question": "What documents are viewable electronically by the general public?",
                 "answer": """<ul>
              <li>Opinions and orders issued by the Court.</li>
-             <li>Post-trial briefs e-Filed by practitioners on or after August 1, 2023.</li>
+             <li>Post-trial briefs e-filed by practitioners on or after August 1, 2023.</li>
              <li>Amicus briefs filed on or after August 1, 2023.</li>
              <li>Stipulated Decisions filed on or after August 1, 2023.</li>
              <li>Documents in sealed cases, or individual documents that are sealed, <strong>are not viewable</strong> other than by the parties.</li>

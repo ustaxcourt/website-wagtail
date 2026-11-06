@@ -108,7 +108,7 @@ PRESS_RELEASE_NEWS_ITEMS = [
         2023,
         5,
         8,
-        "The U.S. Tax Court announced that the written examination for applicants other than attorneys at law (nonattorney applicants) for admission to practice before the U.S. Tax Court will be held remotely at 12:30pm EST on Wednesday, November 8, 2023, using the ExamSoft platform.",
+        "The United States Tax Court announced that the written examination for applicants other than attorneys at law (nonattorney applicants) for admission to practice before the United States Tax Court will be held remotely at 12:30pm EST on Wednesday, November 8, 2023, using the ExamSoft platform.",
         "05082023.pdf",
     ),
     (2023, 3, 20, "Tax Court Disciplinary Matters.", "03202023.pdf"),
