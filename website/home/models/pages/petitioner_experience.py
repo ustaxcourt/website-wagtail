@@ -11,14 +11,10 @@ from wagtail.search import index
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import SideCardLinkBlock
 from home.models.custom_blocks.common import custom_promote_panels
+from home.models.custom_blocks.page_selector import PageSelectorBlock
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
 from home.models.snippets.call_to_action import CallToActionBox
-
-
-class PageSelectorBlock(blocks.StreamBlock):
-    internal_page = blocks.PageChooserBlock(label="Internal page")
-    external_url = blocks.URLBlock(label="External page URL")
 
 
 class SideCard(Orderable, ClusterableModel):
