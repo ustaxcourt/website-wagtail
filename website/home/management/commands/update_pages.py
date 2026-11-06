@@ -20,6 +20,10 @@ from home.management.commands.snippets.navigation_ribbon_update import (
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 
+from home.management.commands.pages.efiling_and_case_maintenance.dawson_user_guides_page import (
+    DawsonUserGuidesPageInitializer,
+)
+
 from home.management.commands.pages.rules_and_guidance import (
     PetitionersGuidancePageInitializer,
     PetitionersFormsPageInitializer,
@@ -28,7 +32,7 @@ from home.management.commands.pages.rules_and_guidance import (
     PetitionersHelpPageInitializer,
     PetitionersHelpRulesLinkUpdater,
     DawsonHowToEfilePetition,
-    DawsonHowToMergePdfs,
+    DawsonHowToPayFilingFee,
     DawsonTroubleshootFileUploads,
     DawsonHowToSearchForACase,
     DawsonHowToSearchForAnOrder,
@@ -60,13 +64,14 @@ pages_to_update = (
         PetitionersHelpPageInitializer,
         PetitionersHelpRulesLinkUpdater,
         DawsonHowToEfilePetition,
-        DawsonHowToMergePdfs,
+        DawsonHowToPayFilingFee,
         DawsonTroubleshootFileUploads,
         DawsonHowToSearchForACase,
         DawsonHowToSearchForAnOrder,
         DawsonHowToSearchForAnOpinion,
         DawsonHowToUpdateContactInfo,
         DawsonHowToViewDashboard,
+        DawsonUserGuidesPageInitializer,
     ]
     + [PetitionersRedirectInitializer]
     + [NavigationRibbonUpdater]

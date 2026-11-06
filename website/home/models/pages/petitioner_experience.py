@@ -89,6 +89,12 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         blank=True,
     )
 
+    show_dawson_logo = models.BooleanField(
+        default=False,
+        help_text="Check to display the DAWSON logo to the left of the page's title and introductory text.",
+        verbose_name="Show DAWSON Logo",
+    )
+
     breadcrumb = StreamField(
         [
             (
@@ -128,6 +134,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         FieldPanel("show_floating_definitions_button"),
         FieldPanel("navigation_ribbon"),
         FieldPanel("breadcrumb"),
+        FieldPanel("show_dawson_logo"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
         FieldPanel("call_to_action"),
