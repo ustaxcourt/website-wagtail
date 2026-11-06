@@ -102,10 +102,6 @@ def convert_section_header_link_urls(apps, schema_editor):
                 )
 
 
-def noop(apps, schema_editor):
-    pass
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0164_alter_petitionerexperiencepage_breadcrumb"),
@@ -1797,5 +1793,5 @@ class Migration(migrations.Migration):
                 },
             ),
         ),
-        migrations.RunPython(convert_section_header_link_urls, noop),
+        migrations.RunPython(convert_section_header_link_urls),
     ]

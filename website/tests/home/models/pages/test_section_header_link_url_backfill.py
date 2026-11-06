@@ -53,6 +53,11 @@ def _legacy_section_header(link_text="View detailed timeline", link_url=LEGACY_U
     },
 )
 class ConvertSectionHeaderLinkUrlTest(TestCase):
+    def test_data_migration_is_explicitly_irreversible(self):
+        operation = backfill_module.Migration.operations[-1]
+
+        self.assertFalse(operation.reversible)
+
     def setUp(self):
         Locale.objects.get_or_create(language_code="en")
 
