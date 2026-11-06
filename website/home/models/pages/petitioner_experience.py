@@ -13,6 +13,7 @@ from home.models.custom_blocks.button import SideCardLinkBlock
 from home.models.custom_blocks.common import custom_promote_panels
 from home.models.custom_blocks.page_selector import PageSelectorBlock
 from home.admin.moderation import ModerationTabbedInterface
+from home.forms import ReviewByRequiredOnSubmitForm
 from home.models.snippets.call_to_action import CallToActionBox
 
 
@@ -78,6 +79,7 @@ class SideCard(Orderable, ClusterableModel):
 
 class PetitionerExperiencePage(EnhancedStandardPage):
     template = "home/petitioner_experience_page.html"
+    base_form_class = ReviewByRequiredOnSubmitForm
 
     class Meta:
         verbose_name = "Petitioner Experience Page"
