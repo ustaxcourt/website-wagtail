@@ -571,7 +571,7 @@
         height: auto;
     }
 
-    .detailed-timeline-accordion-header h3,
+    .detailed-timeline-accordion-header .detailed-timeline-accordion-title,
     .detailed-timeline-accordion-header-button {
         font-size: 18px;
     }

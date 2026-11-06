@@ -22,7 +22,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
             "After the title, the page’s introductory text is displayed.",
         );
         cy.get(".detailed-timeline-warning")
-            .find("h3")
+            .find("h2.detailed-timeline-warning-heading")
             .should("contain.text", "Important Reminder")
             .and("have.css", "text-transform", "uppercase");
         cy.get(".detailed-timeline-warning")
@@ -48,6 +48,8 @@ describe("DAWSON How to e-file a Petition guide", () => {
             "Manage Your Case in DAWSON",
         ];
         cy.get(".detailed-timeline-phase").should("have.length", phaseTitles.length);
+        cy.get(".detailed-timeline-phase h2.detailed-timeline-accordion-title")
+            .should("have.length", phaseTitles.length);
         phaseTitles.forEach((title, index) => {
             cy.get(".detailed-timeline-phase")
                 .eq(index)
