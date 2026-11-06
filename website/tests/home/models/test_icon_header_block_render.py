@@ -4,9 +4,11 @@ from bs4 import BeautifulSoup
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase, override_settings
+from wagtail.blocks import StructBlockValidationError
 from wagtail.documents.models import Document
 from wagtail.models import Collection, Locale, Page, Site
 
+from home.models.custom_blocks.icon_header import SectionHeaderBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.management.commands.pages.rules_and_guidance.petitioners_prepare_to_file import (
@@ -113,7 +115,12 @@ class IconHeaderBlockRenderTest(TestCase):
                     "value": {
                         "heading": "Get Started",
                         "link_text": "View detailed timeline",
-                        "link_url": "https://example.com/petitioners-timeline",
+                        "link_url": [
+                            {
+                                "type": "external_url",
+                                "value": "https://example.com/petitioners-timeline",
+                            }
+                        ],
                     },
                 }
             ],
@@ -140,7 +147,7 @@ class IconHeaderBlockRenderTest(TestCase):
                         "heading": "Starting a Case",
                         "style": "blue_bar",
                         "link_text": "",
-                        "link_url": "",
+                        "link_url": [],
                     },
                 }
             ],
@@ -154,6 +161,71 @@ class IconHeaderBlockRenderTest(TestCase):
         self.assertNotIn(
             "<a href", content.split("section-header--blue-bar")[1].split("</div>")[0]
         )
+
+    def test_section_header_resolves_internal_page_link(self):
+        page = EnhancedStandardPage(
+            title="Internal Link Section Header Test Page",
+            slug="internal-link-section-header-test-page",
+            body=[
+                {
+                    "type": "section_header",
+                    "value": {
+                        "heading": "Get Started",
+                        "link_text": "Go home",
+                        "link_url": [
+                            {
+                                "type": "internal_page",
+                                "value": self.home_page.pk,
+                            }
+                        ],
+                    },
+                }
+            ],
+        )
+
+        content = self.render_page(page)
+
+        self.assertIn(f'href="{self.home_page.url}"', content)
+        self.assertIn("Go home", content)
+
+    def _section_header_value(self, link_text, link_url):
+        block = SectionHeaderBlock()
+        return block, block.to_python(
+            {
+                "heading": "Get Started",
+                "style": "default",
+                "link_text": link_text,
+                "link_url": link_url,
+            }
+        )
+
+    def test_section_header_requires_link_url_when_link_text_is_provided(self):
+        block, value = self._section_header_value("View detailed timeline", [])
+
+        with self.assertRaises(StructBlockValidationError) as context:
+            block.clean(value)
+
+        self.assertIn("link_url", context.exception.block_errors)
+
+    def test_section_header_requires_link_text_when_link_url_is_provided(self):
+        block, value = self._section_header_value(
+            "", [{"type": "external_url", "value": "https://example.com"}]
+        )
+
+        with self.assertRaises(StructBlockValidationError) as context:
+            block.clean(value)
+
+        self.assertIn("link_text", context.exception.block_errors)
+
+    def test_section_header_accepts_both_or_neither_link_field(self):
+        block, value = self._section_header_value(
+            "View detailed timeline",
+            [{"type": "external_url", "value": "https://example.com"}],
+        )
+        block.clean(value)
+
+        block, value = self._section_header_value("", [])
+        block.clean(value)
 
     def test_petitioner_breadcrumb_is_separate_from_page_heading(self):
         content = render_to_string(
