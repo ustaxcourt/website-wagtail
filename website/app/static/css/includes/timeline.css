@@ -45,7 +45,7 @@
 .detailed-timeline-title-block > h2 {
     font-size: 28px;
     font-weight: 600;
-    margin: 0 0 8px;
+    margin: 0 0 16px;
 }
 
 .detailed-timeline-phase {
@@ -216,7 +216,8 @@
     list-style-type: decimal;
 }
 
-.detailed-timeline-rich-text img {
+.detailed-timeline-rich-text img,
+.detailed-timeline-accordion-content img {
     max-width: 100%;
     height: auto;
     display: block;
@@ -233,7 +234,7 @@
 }
 
 .detailed-timeline-accordion-content-helpful-information-item-infosubtext a {
-    color: inherit;
+    color: var(--color-link);
 }
 
 .detailed-timeline-accordion-content-your-tasks {
@@ -318,14 +319,24 @@
 .detailed-timeline-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: flex-end;
     flex-wrap: wrap;
     gap: 16px 24px;
+    margin-bottom: 16px;
 }
 
 .detailed-timeline-header-text {
     flex: 1 1 400px;
     min-width: 0;
+}
+
+.detailed-timeline-header-text > :last-child {
+    margin-bottom: 0;
+}
+
+.detailed-timeline-header-text p,
+.detailed-timeline-accordion-content p {
+    font-size: 16px;
 }
 
 .detailed-timeline-controls {
@@ -408,12 +419,30 @@
     padding-top: 1px;
 }
 
+.bubble-info::before {
+    content: "i";
+    text-align: center;
+    background-color: var(--color-primary);
+    box-shadow: inset 0 0 0 4px var(--bg-white-hover);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 24px;
+}
+
 .bubble-circle:has(* > * > .active)::before {
     background-color: var(--color-primary);
 }
 
 .bubble-number:has(* > * > .active)::before {
     color: white;
+}
+
+.bubble-info:has(* > * > .active)::before {
+    background-color: white;
+    box-shadow: inset 0 0 0 4px var(--color-primary);
+    color: var(--color-primary);
+    font-size: 12px;
 }
 
 .bubble-circle:not(:last-child)::after {

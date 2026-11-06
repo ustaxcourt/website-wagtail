@@ -1,5 +1,5 @@
 from django.test import TestCase
-from wagtail.models import Locale, Page, Site
+from wagtail.models import Collection, Locale, Page, Site
 
 from home.management.commands.pages.rules_and_guidance import (
     DawsonHowToEfilePetition,
@@ -66,6 +66,8 @@ class TestDawsonUserGuidePages(TestCase):
     def setUp(self):
         Locale.objects.get_or_create(language_code="en")
 
+        if Collection.get_first_root_node() is None:
+            Collection.add_root(name="Root")
         root_page = Page.objects.filter(depth=1).first()
         if root_page is None:
             root_page = Page.add_root(title="Root", slug="root")
@@ -83,7 +85,7 @@ class TestDawsonUserGuidePages(TestCase):
         )
         home_page.add_child(instance=self.user_guides_page)
 
-        # PetitionerExperiencePage requires a navigation ribbon.
+        # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
 
     def test_registered_only_in_update_pages(self):

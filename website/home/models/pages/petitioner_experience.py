@@ -77,15 +77,9 @@ class SideCard(Orderable, ClusterableModel):
         return self.header_title
 
 
-class PetitionerExperienceReviewByRequiredOnSubmitForm(ReviewByRequiredOnSubmitForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["navigation_ribbon"].required = True  # Force required in admin
-
-
 class PetitionerExperiencePage(EnhancedStandardPage):
     template = "home/petitioner_experience_page.html"
-    base_form_class = PetitionerExperienceReviewByRequiredOnSubmitForm
+    base_form_class = ReviewByRequiredOnSubmitForm
 
     class Meta:
         verbose_name = "Petitioner Experience Page"
@@ -150,10 +144,6 @@ class PetitionerExperiencePage(EnhancedStandardPage):
 
     def clean(self):
         super().clean()
-        if not self.navigation_ribbon_id:
-            raise ValidationError(
-                {"navigation_ribbon": "Navigation Ribbon is required."}
-            )
 
         breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
         if breadcrumb:

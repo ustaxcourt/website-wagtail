@@ -15,6 +15,13 @@ class DetailedTimelinePhaseBlock(blocks.StructBlock):
         label="Date Range",
     )
 
+    show_info_icon = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        label="Info Icon in Bubble?",
+        help_text="Check to display an info icon in this Phase's bubble instead of its number.",
+    )
+
     instructions = blocks.RichTextBlock(
         required=True,
         help_text="Text to be shown at the top of the phase when it is expanded.",

@@ -1,3 +1,5 @@
+import re
+
 from django.test import TestCase, RequestFactory, override_settings
 from wagtail.models import Locale, Page, Site
 
@@ -17,7 +19,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 class DetailedTimelineRenderTest(TestCase):
     """Verify that an EnhancedStandardPage with a detailed timeline renders without error."""
 
-    def page_setup(self, show_bubble_line_numbers):
+    def page_setup(self, show_bubble_line_numbers, show_info_icon_on_first_phase=False):
         self.factory = RequestFactory()
 
         Locale.objects.get_or_create(language_code="en")
@@ -56,6 +58,7 @@ class DetailedTimelineRenderTest(TestCase):
                                 "type": "phase",
                                 "value": {
                                     "title": "Receive an IRS Notice",
+                                    "show_info_icon": show_info_icon_on_first_phase,
                                     "date_range": "Day 0",
                                     "instructions": '<p data-block-key="7qeva">You receive an IRS Notice.</p><ul><li data-block-key="2f120">Note the deadline on the notice - this is your starting point.</li><li data-block-key="d1h80">Do not ignore this notice.</li></ul>',
                                     "your_tasks": [
@@ -419,6 +422,25 @@ class DetailedTimelineRenderTest(TestCase):
         self.assertIn(
             "bubble-number", content
         )  # Validate that bubble numbers are not shown when show_numbers_in_bubbles is False
+
+    def test_detailed_timeline_info_icon_overrides_bubble_number(self):
+        """A phase with show_info_icon gets bubble-info instead of bubble-number."""
+        self.page_setup(True, show_info_icon_on_first_phase=True)
+        request = self.factory.get(self.page.url)
+        request.site = Site.objects.get(is_default_site=True)
+        response = self.page.serve(request)
+        content = response.render().content.decode()
+
+        phase_classes = re.findall(
+            r'class="(detailed-timeline-phase bubble-circle[^"]*)"', content
+        )
+        self.assertGreater(len(phase_classes), 1)
+        first_phase_classes = phase_classes[0].split()
+        self.assertIn("bubble-info", first_phase_classes)
+        self.assertNotIn("bubble-number", first_phase_classes)
+        for classes in phase_classes[1:]:
+            self.assertIn("bubble-number", classes.split())
+            self.assertNotIn("bubble-info", classes.split())
 
     def test_detailed_timeline_has_expand_and_print_controls(self):
         self.page_setup(False)

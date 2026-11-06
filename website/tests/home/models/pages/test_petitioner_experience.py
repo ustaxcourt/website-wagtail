@@ -15,7 +15,6 @@ from home.models.pages.petitioner_experience import (
 def make_page(breadcrumb_title="", page_block=None):
     page = PetitionerExperiencePage.__new__(PetitionerExperiencePage)
     models.Model.__init__(page)
-    page.navigation_ribbon_id = 1
     page.breadcrumb = []
     if breadcrumb_title or page_block:
         breadcrumb_field = PetitionerExperiencePage._meta.get_field("breadcrumb")
@@ -62,6 +61,14 @@ def test_breadcrumb_fields_must_be_provided_together(
             page.clean()
 
     assert error_message in error.value.message_dict["breadcrumb"]
+
+
+def test_navigation_ribbon_is_optional():
+    page = make_page()
+    assert page.navigation_ribbon_id is None
+
+    with patch("home.models.pages.petitioner_experience.EnhancedStandardPage.clean"):
+        page.clean()
 
 
 def test_page_selector_block_supports_internal_and_external_pages():
