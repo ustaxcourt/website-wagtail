@@ -3,9 +3,11 @@
 <div id="detailed-timeline-{{ block.id }}" class="detailed-timeline-rectangle">
     <div class="detailed-timeline-header">
         <div class="detailed-timeline-header-text">
-            <div class="detailed-timeline-title-block">
-                <h2>{{ block.value.title }}</h2>
-            </div>
+            {% if block.value.show_title %}
+                <div class="detailed-timeline-title-block">
+                    <h2>{{ block.value.title }}</h2>
+                </div>
+            {% endif %}
             {{ block.value.introduction|richtext }}
         </div>
         <div class="detailed-timeline-controls">
@@ -16,12 +18,20 @@
                 <span class="detailed-timeline-expand-button-label">Expand All</span>
             </button>
             <button type="button"
-                    class="usa-button usa-button--outline detailed-timeline-control-button detailed-timeline-print-button">
+                    class="usa-button usa-button--outline detailed-timeline-control-button detailed-timeline-print-button"
+                    {% if page.slug == "dawson-how-to-e-file-a-petition" %}data-print-guide="true"{% endif %}>
                 <span class="detailed-timeline-print-button-icon" aria-hidden="true"></span>
-                Print Detailed Timeline
+                {% if page.slug == "dawson-how-to-e-file-a-petition" %}
+                    Print
+                {% else %}
+                    Print Detailed Timeline
+                {% endif %}
             </button>
         </div>
     </div>
+    {% if block.value.warning_callout.heading or block.value.warning_callout.text %}
+        {% include "detailed_timeline_warning.html" with warning=block.value.warning_callout %}
+    {% endif %}
     <div class="detailed-timeline-phases-block bubble-line">
         {% for phase in block.value.phases %}
             <div class="detailed-timeline-phase bubble-circle {% if block.value.show_numbers_in_bubbles %}bubble-number{% endif %}">

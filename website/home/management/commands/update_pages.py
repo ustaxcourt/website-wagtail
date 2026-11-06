@@ -26,6 +26,7 @@ from home.management.commands.pages.rules_and_guidance import (
     PetitionersPrepareToFilePageInitializer,
     PetitionersTimelinePageInitializer,
     PetitionersHelpPageInitializer,
+    PetitionersHelpRulesLinkUpdater,
     DawsonHowToEfilePetition,
     DawsonHowToMergePdfs,
     DawsonTroubleshootFileUploads,
@@ -35,7 +36,6 @@ from home.management.commands.pages.rules_and_guidance import (
     DawsonHowToUpdateContactInfo,
     DawsonHowToViewDashboard,
 )
-
 from home.management.commands.redirects.petitioners_redirect_initializer import (
     PetitionersRedirectInitializer,
 )
@@ -57,6 +57,7 @@ pages_to_update = (
         PetitionersPrepareToFilePageInitializer,
         PetitionersTimelinePageInitializer,
         PetitionersHelpPageInitializer,
+        PetitionersHelpRulesLinkUpdater,
         DawsonHowToEfilePetition,
         DawsonHowToMergePdfs,
         DawsonTroubleshootFileUploads,

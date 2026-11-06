@@ -102,6 +102,25 @@ def add_need_legal_help_side_card(initializer, page):
     )
 
 
+def build_rules_link(rules_page):
+    """The "Tax Court Rules" entry for the Helpful Links card (WAG-1465)."""
+    return {
+        "type": "side_card_link",
+        "value": {
+            "text": "Tax Court Rules",
+            "url": [
+                {
+                    "type": "internal_page",
+                    "value": rules_page.pk,
+                    "id": str(uuid.uuid4()),
+                }
+            ],
+            "style": "primary",
+        },
+        "id": str(uuid.uuid4()),
+    }
+
+
 def add_helpful_links_side_card(initializer, page):
     """
     "Helpful Links" only appears on the FAQs mockup, not Prepare to File.
@@ -113,6 +132,7 @@ def add_helpful_links_side_card(initializer, page):
     """
     user_guides_page = Page.objects.filter(slug="dawson-user-guides").first()
     training_page = Page.objects.filter(slug="dawson-faqs-training-and-support").first()
+    rules_page = Page.objects.filter(slug="rules").first()
 
     links = []
     if user_guides_page:
@@ -151,6 +171,10 @@ def add_helpful_links_side_card(initializer, page):
                 "id": str(uuid.uuid4()),
             }
         )
+
+    # Sits under the training video link.
+    if rules_page:
+        links.append(build_rules_link(rules_page))
 
     if not links:
         logger.warning(
