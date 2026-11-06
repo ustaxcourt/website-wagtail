@@ -37,7 +37,7 @@ class DawsonAccountPractitionerPageInitializer(PageInitializer):
                         <ul>
                             <li>Practitioners with eAccess credentials who did not receive temporary DAWSON credentials, or did not activate them before they expired, should contact  <a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON support">dawson.support@ustaxcourt.gov</a> to request new temporary DAWSON credentials.</li>
                             <li>Practitioners who did not previously register for eAccess and would like to register for DAWSON should contact <a href="mailto:dawson.support@ustaxcourt.gov" title="Contact DAWSON support">dawson.support@ustaxcourt.gov</a>.</li>
-                            <li>Practitioners who would like to apply for admission to practice before the U.S. Tax Court can find the application and instructions <a href="/practitioners" title="Guidance for Practitioners
+                            <li>Practitioners who would like to apply for admission to practice before the United States Tax Court can find the application and instructions <a href="/practitioners" title="Guidance for Practitioners
 ">here</a>. DAWSON access will be provided to successful applicants with their other admissions materials.</li>
                         </ul>
                         """,
