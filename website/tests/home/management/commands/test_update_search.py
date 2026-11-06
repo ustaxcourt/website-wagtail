@@ -62,6 +62,25 @@ class TestUpdateSearchHandle:
 
         assert SearchPromotion.objects.filter(page=page).exists()
 
+    def test_removes_duplicate_promotions_and_keeps_oldest(self, root_page):
+        from wagtail.contrib.search_promotions.models import Query, SearchPromotion
+
+        page = root_page.add_child(
+            instance=Page(title="Petitioners", slug="petitioners", live=True)
+        )
+        query = Query.objects.create(query_string="taxpayer")
+        original = SearchPromotion.objects.create(query=query, page=page, sort_order=0)
+        duplicate = SearchPromotion.objects.create(
+            query=query, page=page, sort_order=2, description="Added in admin"
+        )
+
+        cmd = _make_cmd()
+        cmd.handle()
+
+        promotions = SearchPromotion.objects.filter(query=query, page=page)
+        assert list(promotions.values_list("id", flat=True)) == [original.id]
+        assert f"Removed duplicate promotions [{duplicate.id}]" in cmd.stdout.getvalue()
+
     def test_skips_entries_with_no_matching_pages(self):
         from wagtail.contrib.search_promotions.models import SearchPromotion
 
