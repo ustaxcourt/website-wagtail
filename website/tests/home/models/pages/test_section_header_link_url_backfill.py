@@ -24,7 +24,7 @@ from wagtail.models import Locale, Page, Revision, Site
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 
 backfill_module = importlib.import_module(
-    "home.migrations.0165_alter_enhancedstandardpage_body"
+    "home.migrations.0165_alter_enhancedstandardpage_body_pe"
 )
 
 LEGACY_URL = "https://example.com/petitioners-timeline"
