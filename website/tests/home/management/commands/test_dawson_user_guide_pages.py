@@ -24,7 +24,7 @@ DAWSON_PAGES = [
     (
         DawsonHowToEfilePetition,
         "dawson-how-to-e-file-a-petition",
-        "WAG-1450: How to e-file a Petition",
+        "WAG-1450: Populate e-file Petition guide timeline and instructions",
     ),
     (
         DawsonHowToMergePdfs,
@@ -70,6 +70,8 @@ class TestDawsonUserGuidePages(TestCase):
         if not Collection.objects.exists():
             Collection.add_root(name="Root")
 
+        if Collection.get_first_root_node() is None:
+            Collection.add_root(name="Root")
         root_page = Page.objects.filter(depth=1).first()
         if root_page is None:
             root_page = Page.add_root(title="Root", slug="root")
@@ -87,7 +89,7 @@ class TestDawsonUserGuidePages(TestCase):
         )
         home_page.add_child(instance=self.user_guides_page)
 
-        # PetitionerExperiencePage requires a navigation ribbon.
+        # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
         for filename in DawsonHowToEfilePetition.DOCUMENT_FILENAMES.values():
             for tag_name in get_tags_for_document(filename):

@@ -39,7 +39,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": """It is the policy of U.S. Tax Court, as an equal opportunity employer, to attract and retain the best-qualified people available, without regard to race, gender, religion, national origin, age, or disability.
+                        "value": """It is the policy of United States Tax Court, as an equal opportunity employer, to attract and retain the best-qualified people available, without regard to race, gender, religion, national origin, age, or disability.
                                         <br/><br/>
                                         Law clerk positions are filled as vacancies occur, and many are filled by applicants who participate in the Court’s annual “Law Clerk Interview Day”, which occurs each Fall. A few weeks prior to Law Clerk Interview Day,
                                         the Court posts on its website the instructions for submitting applications to the Judges participating in this event. The Court also will notify law school career services offices about Law Clerk Interview Day. Candidates may submit application packets to one or more participating Judge.

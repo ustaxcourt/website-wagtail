@@ -4,7 +4,7 @@
          class="detailed-timeline-accordion-block"
          data-accordion-id="detailed-timeline-accordion-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}">
         <div class="detailed-timeline-accordion-header {% if data.default_to_open %}active{% endif %}">
-            <h3 class="detailed-timeline-accordion-title {% if data.default_to_open %}active{% endif %}">
+            <h{{ heading_level|default:"3" }} class="detailed-timeline-accordion-title {% if data.default_to_open %}active{% endif %}">
                 <button type="button"
                         class="detailed-timeline-accordion-header-button {% if data.default_to_open %}active{% endif %}"
                         aria-expanded="{% if data.default_to_open %}true{% else %}false{% endif %}"
@@ -21,7 +21,7 @@
                     </span>
                     {% endif %}
                 </button>
-            </h3>
+            </h{{ heading_level|default:"3" }}>
         </div>
         <div id="detailed-timeline-content-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
              class="detailed-timeline-accordion-content {% if not data.default_to_open %}hidden{% endif %}"

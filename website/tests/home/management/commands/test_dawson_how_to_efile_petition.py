@@ -12,7 +12,8 @@ from home.models.utils.execute_script import ExecuteScript
 
 
 @pytest.mark.django_db
-def test_initializer_creates_the_dawson_efile_guide():
+@pytest.mark.parametrize("existing_placeholder", [False, True])
+def test_initializer_creates_or_updates_the_dawson_efile_guide(existing_placeholder):
     assert DawsonHowToEfilePetitionPageInitializer in pages_to_update
 
     Locale.objects.get_or_create(language_code="en")
@@ -26,6 +27,19 @@ def test_initializer_creates_the_dawson_efile_guide():
     user_guides_page = home_page.add_child(
         instance=Page(title="DAWSON User Guides", slug="dawson-user-guides")
     )
+
+    if existing_placeholder:
+        placeholder = home_page.add_child(
+            instance=PetitionerExperiencePage(
+                title="How to e-file a Petition",
+                slug="dawson-how-to-e-file-a-petition",
+                body=[],
+            )
+        )
+        placeholder.save_revision().publish()
+        legacy_script = ExecuteScript.create_script(
+            "WAG-1450: How to e-file a Petition", execution_status="SUCCESS"
+        )
 
     with patch.object(
         DawsonHowToEfilePetitionPageInitializer,
@@ -58,6 +72,12 @@ def test_initializer_creates_the_dawson_efile_guide():
     assert all(not phase.value["your_tasks"] for phase in timeline["phases"])
     assert all(phase.value["default_to_open"] for phase in timeline["phases"])
     assert script.execution_status == "SUCCESS"
+    assert page.live
+    if existing_placeholder:
+        assert page.pk == placeholder.pk
+        legacy_script.refresh_from_db()
+        assert legacy_script.execution_status == "SUCCESS"
+        assert script.pk != legacy_script.pk
 
     with patch.object(
         DawsonHowToEfilePetitionPageInitializer,

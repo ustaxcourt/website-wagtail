@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
     SLUG = "dawson-how-to-e-file-a-petition"
     TITLE = "How to e-file a Petition"
-    SCRIPT_NAME = "WAG-1450: How to e-file a Petition"
+    SCRIPT_NAME = "WAG-1450: Populate e-file Petition guide timeline and instructions"
     BREADCRUMB_TITLE = "DAWSON User Guides & Electronic Filing Instructions"
 
     DOCUMENT_FILENAMES = {

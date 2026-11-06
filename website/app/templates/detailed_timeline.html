@@ -30,12 +30,12 @@
         </div>
     </div>
     {% if block.value.warning_callout.heading or block.value.warning_callout.text %}
-        {% include "detailed_timeline_warning.html" with warning=block.value.warning_callout %}
+        {% include "detailed_timeline_warning.html" with warning=block.value.warning_callout heading_level=block.value.show_title|yesno:"3,2" %}
     {% endif %}
     <div class="detailed-timeline-phases-block bubble-line">
         {% for phase in block.value.phases %}
-            <div class="detailed-timeline-phase bubble-circle {% if block.value.show_numbers_in_bubbles %}bubble-number{% endif %}">
-                {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id %}
+            <div class="detailed-timeline-phase bubble-circle {% if phase.value.show_info_icon %}bubble-info{% elif block.value.show_numbers_in_bubbles %}bubble-number{% endif %}">
+                {% include "detailed_timeline_accordion_block.html" with block=phase block_index=forloop.counter0 suffix=block.id heading_level=block.value.show_title|yesno:"3,2" %}
             </div>
         {% endfor %}
     </div>

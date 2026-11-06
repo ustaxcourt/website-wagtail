@@ -9,11 +9,10 @@ from wagtail.models import Page
 from home.models.pages.petitioner_experience import (
     PageSelectorBlock,
     PetitionerExperiencePage,
-    PetitionerExperienceReviewByRequiredOnSubmitForm,
 )
 
 
-class PetitionerExperienceTestForm(PetitionerExperienceReviewByRequiredOnSubmitForm):
+class PetitionerExperienceTestForm(PetitionerExperiencePage.base_form_class):
     class Meta:
         model = PetitionerExperiencePage
         fields = ("slug", "navigation_ribbon")
@@ -22,7 +21,6 @@ class PetitionerExperienceTestForm(PetitionerExperienceReviewByRequiredOnSubmitF
 def make_page(breadcrumb_title="", page_block=None):
     page = PetitionerExperiencePage.__new__(PetitionerExperiencePage)
     models.Model.__init__(page)
-    page.navigation_ribbon_id = 1
     page.breadcrumb = []
     if breadcrumb_title or page_block:
         breadcrumb_field = PetitionerExperiencePage._meta.get_field("breadcrumb")
@@ -71,6 +69,19 @@ def test_breadcrumb_fields_must_be_provided_together(
     assert error_message in error.value.message_dict["breadcrumb"]
 
 
+@pytest.mark.parametrize(
+    "slug",
+    ["ordinary-page", "dawson-how-to-guide", "dawson-troubleshoot-file-uploads"],
+)
+def test_navigation_ribbon_is_optional(slug):
+    page = make_page()
+    page.slug = slug
+    assert page.navigation_ribbon_id is None
+
+    with patch("home.models.pages.petitioner_experience.EnhancedStandardPage.clean"):
+        page.clean()
+
+
 def test_page_selector_block_supports_internal_and_external_pages():
     child_blocks = PageSelectorBlock().child_blocks
     assert set(child_blocks) == {"internal_page", "external_url"}
@@ -83,36 +94,35 @@ def test_page_selector_block_supports_internal_and_external_pages():
 
 
 @pytest.mark.parametrize(
-    "instance_slug,submitted_slug,expected_required",
+    "instance_slug,submitted_slug",
     [
-        ("ordinary-page", "dawson-how-to-new-guide", False),
-        ("dawson-how-to-old-guide", "ordinary-page", True),
+        ("ordinary-page", "dawson-how-to-new-guide"),
+        ("dawson-how-to-old-guide", "ordinary-page"),
+        ("ordinary-page", "dawson-troubleshoot-file-uploads"),
     ],
 )
 @pytest.mark.django_db
-def test_navigation_ribbon_requirement_uses_submitted_slug(
-    instance_slug, submitted_slug, expected_required
+def test_navigation_ribbon_is_optional_regardless_of_submitted_slug(
+    instance_slug, submitted_slug
 ):
     page = PetitionerExperiencePage(title="Test", slug=instance_slug)
 
     form = PetitionerExperienceTestForm(data={"slug": submitted_slug}, instance=page)
 
-    assert form.fields["navigation_ribbon"].required is expected_required
+    assert not form.fields["navigation_ribbon"].required
 
 
 @pytest.mark.parametrize(
-    "slug,expected_required",
-    [("ordinary-page", True), ("dawson-how-to-guide", False)],
+    "slug",
+    ["ordinary-page", "dawson-how-to-guide", "dawson-troubleshoot-file-uploads"],
 )
 @pytest.mark.django_db
-def test_unbound_navigation_ribbon_requirement_uses_instance_slug(
-    slug, expected_required
-):
+def test_unbound_navigation_ribbon_is_optional_regardless_of_instance_slug(slug):
     page = PetitionerExperiencePage(title="Test", slug=slug)
 
     form = PetitionerExperienceTestForm(instance=page)
 
-    assert form.fields["navigation_ribbon"].required is expected_required
+    assert not form.fields["navigation_ribbon"].required
 
 
 def test_breadcrumb_uses_external_page_url():
