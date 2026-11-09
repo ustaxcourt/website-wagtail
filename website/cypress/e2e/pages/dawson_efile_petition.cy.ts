@@ -121,6 +121,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
                 ".enhanced-page": ["padding-top", "padding-right", "padding-bottom", "padding-left"],
                 '[data-testid="page-title"]': ["font-size", "line-height", "font-weight"],
                 ".detailed-timeline-header": ["align-items", "gap"],
+                ".detailed-timeline-controls": ["padding-bottom"],
                 ".detailed-timeline-expand-button": ["font-size", "padding", "min-height"],
                 ".detailed-timeline-expand-button-icon": ["width", "height"],
                 ".detailed-timeline-accordion-title": ["font-size", "padding"],
@@ -180,6 +181,19 @@ describe("DAWSON How to e-file a Petition guide", () => {
             cy.get(".detailed-timeline-header-text > p").should(($intro) => {
                 const introTop = $intro[0].getBoundingClientRect().top;
                 expect(introTop - titleBottom).to.be.at.most(20);
+            });
+        });
+    });
+
+    [1201, 1440].forEach((width) => {
+        it(`has no space beneath the control buttons at ${width}px`, () => {
+            cy.viewport(width, 1000);
+            cy.get(".detailed-timeline-controls").then(($controls) => {
+                const controlsBottom = $controls[0].getBoundingClientRect().bottom;
+                cy.get(".detailed-timeline-control-button").each(($button) => {
+                    expect($button[0].getBoundingClientRect().bottom)
+                        .to.be.closeTo(controlsBottom, 1);
+                });
             });
         });
     });
