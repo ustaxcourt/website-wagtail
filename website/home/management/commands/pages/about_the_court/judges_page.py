@@ -441,7 +441,7 @@ class JudgesPageInitializer(PageInitializer):
                 slug=self.slug,
                 seo_title=title,
                 search_description=title,
-                intro_text="See the Judge's biography by clicking on the cards.",
+                intro_text="See the judge's biography by clicking on the cards.",
                 seminar_intro_text="<p>The US Tax Court follows the <a href='https://www.uscourts.gov/administration-policies/privately-funded-seminars-disclosure-system/judicial-conference-policy-judges-attendance-privately-funded-educational-programs'> private seminars disclosure reporting policy</a> of all Federal US Courts which requires educational program providers and judges to disclose certain information relevant to judges' attendance at privately-funded educational programs. Any organization covered by the policy that issues an invitation to a federal judge to attend an educational program as a speaker, panelist, or attendee and offers to pay for or reimburse that judge, in excess of $480, must disclose financial and programmatic information and publish it on the Court's website for three years time.</p>",
             )
         )

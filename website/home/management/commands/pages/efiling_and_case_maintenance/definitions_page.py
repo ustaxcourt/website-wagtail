@@ -145,7 +145,7 @@ class DefinitionsPageInitializer(PageInitializer):
             },
             {
                 "question": "Bench Opinion",
-                "answer": "<p>An oral opinion rendered by the Judge at the close of trial.</p>",
+                "answer": "<p>An oral opinion rendered by the judge at the close of trial.</p>",
             },
             {
                 "question": "Brief",
@@ -153,11 +153,11 @@ class DefinitionsPageInitializer(PageInitializer):
             },
             {
                 "question": "Burden of Proof",
-                "answer": "<p>The taxpayer who is asking the Court to change the IRS's determination must present evidence to the Court which will support his/her position, and must persuade the Judge that the evidence supports the taxpayer's position.</p>",
+                "answer": "<p>The taxpayer who is asking the Court to change the IRS's determination must present evidence to the Court which will support his/her position, and must persuade the judge that the evidence supports the taxpayer's position.</p>",
             },
             {
                 "question": "Calendar Call",
-                "answer": "<p>Calendar call occurs on the first day of a trial session (normally Monday) and provides the Judge with the opportunity to ensure that all cases listed on the docket are ready for trial or other disposition. All parties are required to attend unless specifically excused.</p>",
+                "answer": "<p>Calendar call occurs on the first day of a trial session (normally Monday) and provides the judge with the opportunity to ensure that all cases listed on the docket are ready for trial or other disposition. All parties are required to attend unless specifically excused.</p>",
             },
             {
                 "question": "Caption",
@@ -181,7 +181,7 @@ class DefinitionsPageInitializer(PageInitializer):
             },
             {
                 "question": "Decision",
-                "answer": "<p>A decision document closes a case. A decision is signed by a Judge and entered in the Court's record. The decision reflects the conclusions of the Court. A decision can be entered in a case after the parties have settled all issues or the Judge has issued an opinion or order deciding all issues in a case.</p>",
+                "answer": "<p>A decision document closes a case. A decision is signed by a judge and entered in the Court's record. The decision reflects the conclusions of the Court. A decision can be entered in a case after the parties have settled all issues or the judge has issued an opinion or order deciding all issues in a case.</p>",
             },
             {
                 "question": "Designated Service Person",
@@ -305,7 +305,7 @@ class DefinitionsPageInitializer(PageInitializer):
             },
             {
                 "question": "Record",
-                "answer": "<p>All of the documents and evidence (including testimony) that the Judge will consider when deciding a case.</p>",
+                "answer": "<p>All of the documents and evidence (including testimony) that the judge will consider when deciding a case.</p>",
             },
             {
                 "question": "Regular Tax Case",

@@ -66,7 +66,7 @@ class DawsonFindAnOpinionPageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": "An opinion is the written determination of a Judge on the issues tried and submitted to the Court for decision. Each day's opinions are posted on the Court's website, <strong><a href='https://www.ustaxcourt.gov/'>www.ustaxcourt.gov</a></strong>, in 'Today's Opinions' under 'Orders & Opinions'. If you need to search for an opinion, you can search by a keyword or phrase. In addition, you may narrow your search results by adding in a specific Docket Number, Case Title/Petitioner's name, the Judge who issued the Opinion, or by including a specific date or date range. You may also filter by opinion type.",
+                        "value": "An opinion is the written determination of a judge on the issues tried and submitted to the Court for decision. Each day's opinions are posted on the Court's website, <strong><a href='https://www.ustaxcourt.gov/'>www.ustaxcourt.gov</a></strong>, in 'Today's Opinions' under 'Orders & Opinions'. If you need to search for an opinion, you can search by a keyword or phrase. In addition, you may narrow your search results by adding in a specific Docket Number, Case Title/Petitioner's name, the judge who issued the Opinion, or by including a specific date or date range. You may also filter by opinion type.",
                     },
                     {"type": "hr", "value": True},
                     {
@@ -263,7 +263,7 @@ class DawsonFindAnOpinionPageInitializer(PageInitializer):
                                             "list_type": "unordered",
                                             "items": [
                                                 {
-                                                    "text": "Enter a specific Judge's name."
+                                                    "text": "Enter a specific judge's name."
                                                 },
                                                 {
                                                     "text": "Note: the default is all Judges."
@@ -311,7 +311,7 @@ class DawsonFindAnOpinionPageInitializer(PageInitializer):
                                             "list_type": "unordered",
                                             "items": [
                                                 {
-                                                    "text": "After you click <strong>Search or hit the enter key on your keyboard</strong>, you will see how many search results are shown. In the example below, a keyword search for Smith returned the first 100 matches. If the opinion that you are looking for is not in the first 100 matches, try to refine your search by adding in additional search criteria (date ranges, a specific Judge, etc.)."
+                                                    "text": "After you click <strong>Search or hit the enter key on your keyboard</strong>, you will see how many search results are shown. In the example below, a keyword search for Smith returned the first 100 matches. If the opinion that you are looking for is not in the first 100 matches, try to refine your search by adding in additional search criteria (date ranges, a specific judge, etc.)."
                                                 },
                                                 {
                                                     "text": "DAWSON will only load the first 25 results on the page. If you would like to view more results than what initially is displayed, scroll to the bottom of the page and click <strong>Load more</strong>.",

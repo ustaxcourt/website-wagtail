@@ -79,7 +79,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "If I want to represent myself or if I don't qualify for representation by a tax clinic, can I represent myself?",
-                "answer": 'You may file a petition with the Tax Court even if you do not have a representative. You may also present your case to a Judge without being represented. This guide is provided to help you in that process. If you decide to file a petition and to proceed to trial without a representative, you must pay close attention to all the Tax Court orders and notices you receive and all the instructions provided. A petitioner who is not represented is still required to abide by the <strong><a href="/rules" title="Rules of Practice and Procedure">Tax Court Rules of Practice and Procedure</a></strong> (Rules). If you have difficulty reading, writing, or understanding written instructions, you should seek help.',
+                "answer": 'You may file a petition with the Tax Court even if you do not have a representative. You may also present your case to a judge without being represented. This guide is provided to help you in that process. If you decide to file a petition and to proceed to trial without a representative, you must pay close attention to all the Tax Court orders and notices you receive and all the instructions provided. A petitioner who is not represented is still required to abide by the <strong><a href="/rules" title="Rules of Practice and Procedure">Tax Court Rules of Practice and Procedure</a></strong> (Rules). If you have difficulty reading, writing, or understanding written instructions, you should seek help.',
                 "anchortag": "START5",
             },
             {
@@ -219,7 +219,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "May I request that my case be heard remotely?",
-                "answer": f'Yes. File a <strong><a linktype="document" id="{petitioners_docs["Motion_to_Proceed_Remotely.pdf"].id}" target="_blank" title="Motion to Proceed Remotely">Motion To Proceed Remotely</a></strong>. A Motion To Proceed Remotely may be filed at the time a petition is filed and up until 31 days before the first day of the trial session. The granting of the motion is at the Judge\'s discretion. If the Judge grants the Motion To Proceed Remotely, the parties will be provided with detailed instructions, including the date, time, and Zoomgov information for the remote (virtual) proceeding',
+                "answer": f'Yes. File a <strong><a linktype="document" id="{petitioners_docs["Motion_to_Proceed_Remotely.pdf"].id}" target="_blank" title="Motion to Proceed Remotely">Motion To Proceed Remotely</a></strong>. A Motion To Proceed Remotely may be filed at the time a petition is filed and up until 31 days before the first day of the trial session. The granting of the motion is at the Judge\'s discretion. If the judge grants the Motion To Proceed Remotely, the parties will be provided with detailed instructions, including the date, time, and Zoomgov information for the remote (virtual) proceeding',
                 "anchortag": "START33",
             },
             {
@@ -284,7 +284,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": 'What should I do if I receive a "no change" letter from the IRS after I file a petition in the Tax Court?',
-                "answer": 'You should contact the IRS attorney, paralegal or Appeals officer handling your case and provide them with a copy of the "no change" letter. <strong>Be sure to redact your Social Security number from the "no change" letter</strong>. In most instances, the IRS will prepare a stipulated decision (an agreed decision) consistent with the "no change" letter. You and the IRS attorney should sign the stipulated decision and submit it to the Court. Your Tax Court case will be closed once the Judge enters the stipulated decision.',
+                "answer": 'You should contact the IRS attorney, paralegal or Appeals officer handling your case and provide them with a copy of the "no change" letter. <strong>Be sure to redact your Social Security number from the "no change" letter</strong>. In most instances, the IRS will prepare a stipulated decision (an agreed decision) consistent with the "no change" letter. You and the IRS attorney should sign the stipulated decision and submit it to the Court. Your Tax Court case will be closed once the judge enters the stipulated decision.',
                 "anchortag": "START46",
             },
             {

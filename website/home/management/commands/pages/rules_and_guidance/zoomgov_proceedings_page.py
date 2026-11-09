@@ -62,8 +62,8 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
             {
                 "question": "Do I have to be on video?",
                 "answer": """<ul>
-            <li>All participants should be connected by video. You and the Judge and the other party will be able to see each other and it will be easier to follow what is happening.</li>
-            <li>If you have technology limitations, inform the Judge as soon as possible.</li>
+            <li>All participants should be connected by video. You and the judge and the other party will be able to see each other and it will be easier to follow what is happening.</li>
+            <li>If you have technology limitations, inform the judge as soon as possible.</li>
             <li>To see the other participants, choose “gallery view” if connected to Zoomgov on your computer, smartphone, or tablet.</li>
             <li>To see just the person speaking, choose “speaker view” if connected to Zoomgov on your computer, smartphone, or tablet.</li>
             </ul>""",
@@ -79,9 +79,9 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
                 "answer": """<ul>
              <li>Yes. Mute your microphone when you are not speaking. Even background noise can be heard.</li>
              <li>Make sure the camera is at eye level. You may want to put your device on a stack of books so you can be hands-free and look directly at the camera while talking.</li>
-             <li>Don’t leave the proceeding, even for a short time, unless you have been excused by the Judge or Trial Clerk.</li>
+             <li>Don’t leave the proceeding, even for a short time, unless you have been excused by the judge or Trial Clerk.</li>
              <li>Avoid moving around with your device during the proceeding.</li>
-             <li>Wait for the Judge to call on you. Raise your hand if you need to speak to the Judge or Trial Clerk.</li>
+             <li>Wait for the judge to call on you. Raise your hand if you need to speak to the judge or Trial Clerk.</li>
              <li>Avoid speaking to someone not in the proceeding.</li>
              <li>Do not speak over other participants.</li>
              </ul>""",
@@ -105,7 +105,7 @@ class ZoomgovProceedingPageInitializer(PageInitializer):
             },
             {
                 "question": "What if I want to speak with my representative (or client) privately?",
-                "answer": "Tell the Judge that you would like to speak with your representative (or client) privately. The Judge may excuse you to a private breakout room on Zoomgov, or provide further direction as appropriate.",
+                "answer": "Tell the judge that you would like to speak with your representative (or client) privately. The judge may excuse you to a private breakout room on Zoomgov, or provide further direction as appropriate.",
                 "anchortag": "START9",
             },
             {
