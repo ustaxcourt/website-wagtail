@@ -4,7 +4,7 @@ from wagtail.models import Collection, Locale, Page, Site
 
 from home.management.commands.pages.rules_and_guidance import (
     DawsonHowToEfilePetition,
-    DawsonHowToMergePdfs,
+    DawsonHowToPayFilingFee,
     DawsonTroubleshootFileUploads,
     DawsonHowToSearchForACase,
     DawsonHowToSearchForAnOrder,
@@ -27,9 +27,9 @@ DAWSON_PAGES = [
         "WAG-1450: Populate e-file Petition guide timeline and instructions",
     ),
     (
-        DawsonHowToMergePdfs,
-        "dawson-how-to-merge-pdfs",
-        "WAG-1450: How to merge PDFs",
+        DawsonHowToPayFilingFee,
+        "dawson-how-to-pay-filing-fee",
+        "WAG-1450: How to pay the filing fee",
     ),
     (
         DawsonTroubleshootFileUploads,
