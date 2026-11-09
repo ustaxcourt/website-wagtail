@@ -12,6 +12,12 @@ from home.models.pages.petitioner_experience import (
 )
 
 
+class PetitionerExperienceTestForm(PetitionerExperiencePage.base_form_class):
+    class Meta:
+        model = PetitionerExperiencePage
+        fields = ("slug", "navigation_ribbon")
+
+
 def make_page(breadcrumb_title="", page_block=None):
     page = PetitionerExperiencePage.__new__(PetitionerExperiencePage)
     models.Model.__init__(page)
@@ -63,8 +69,13 @@ def test_breadcrumb_fields_must_be_provided_together(
     assert error_message in error.value.message_dict["breadcrumb"]
 
 
-def test_navigation_ribbon_is_optional():
+@pytest.mark.parametrize(
+    "slug",
+    ["ordinary-page", "dawson-how-to-guide", "dawson-troubleshoot-file-uploads"],
+)
+def test_navigation_ribbon_is_optional(slug):
     page = make_page()
+    page.slug = slug
     assert page.navigation_ribbon_id is None
 
     with patch("home.models.pages.petitioner_experience.EnhancedStandardPage.clean"):
@@ -80,6 +91,38 @@ def test_page_selector_block_supports_internal_and_external_pages():
         "breadcrumb"
     ).stream_block.child_blocks["breadcrumb"]
     assert breadcrumb.child_blocks["breadcrumb_title"].required
+
+
+@pytest.mark.parametrize(
+    "instance_slug,submitted_slug",
+    [
+        ("ordinary-page", "dawson-how-to-new-guide"),
+        ("dawson-how-to-old-guide", "ordinary-page"),
+        ("ordinary-page", "dawson-troubleshoot-file-uploads"),
+    ],
+)
+@pytest.mark.django_db
+def test_navigation_ribbon_is_optional_regardless_of_submitted_slug(
+    instance_slug, submitted_slug
+):
+    page = PetitionerExperiencePage(title="Test", slug=instance_slug)
+
+    form = PetitionerExperienceTestForm(data={"slug": submitted_slug}, instance=page)
+
+    assert not form.fields["navigation_ribbon"].required
+
+
+@pytest.mark.parametrize(
+    "slug",
+    ["ordinary-page", "dawson-how-to-guide", "dawson-troubleshoot-file-uploads"],
+)
+@pytest.mark.django_db
+def test_unbound_navigation_ribbon_is_optional_regardless_of_instance_slug(slug):
+    page = PetitionerExperiencePage(title="Test", slug=slug)
+
+    form = PetitionerExperienceTestForm(instance=page)
+
+    assert not form.fields["navigation_ribbon"].required
 
 
 def test_breadcrumb_uses_external_page_url():
