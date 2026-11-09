@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0166_alter_enhancedstandardpage_body"),
+        ("home", "0165_alter_enhancedstandardpage_body_pe"),
     ]
 
     operations = [

@@ -151,7 +151,6 @@ class PetitionerExperiencePage(EnhancedStandardPage):
 
     def clean(self):
         super().clean()
-
         breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
         if breadcrumb:
             has_title = bool(breadcrumb.value.get("breadcrumb_title"))
