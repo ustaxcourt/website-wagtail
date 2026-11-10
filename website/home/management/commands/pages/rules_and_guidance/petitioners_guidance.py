@@ -13,6 +13,7 @@ from wagtail.documents.models import Document
 logger = logging.getLogger(__name__)
 arrow_forward_name = "Arrow Forward"
 GET_STARTED_BLOCK_ID = "2ba9f031-2068-41b9-afba-0fc25ce8c052"
+GET_STARTED_LINK_URL_ID = "6f3f8f2e-9a74-4a4f-9a0b-6cb1f9f3a9d1"
 GET_STARTED_CARDS_BLOCK_ID = "8a6d6de4-b347-40c5-9f95-792200a223ab"
 HOW_TO_FILE_HEADER_BLOCK_ID = "bc4972ca-503f-466a-9fb0-4b204622d650"
 HOW_TO_FILE_CARDS_BLOCK_ID = "5439cbe3-d512-424d-ac65-06d18cd2e3ac"
@@ -38,7 +39,13 @@ class PetitionersGuidancePageInitializer(PageInitializer):
             "value": {
                 "heading": "Get Started",
                 "link_text": "View detailed timeline",
-                "link_url": petitioner_timeline_url,
+                "link_url": [
+                    {
+                        "type": "external_url",
+                        "value": petitioner_timeline_url,
+                        "id": GET_STARTED_LINK_URL_ID,
+                    }
+                ],
             },
             "id": GET_STARTED_BLOCK_ID,
         }

@@ -1,7 +1,81 @@
+from types import SimpleNamespace
+
+import pytest
+from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
+import re
+
 from django.test import TestCase, RequestFactory, override_settings
 from wagtail.models import Locale, Page, Site
 
+from home.models.custom_blocks.detailed_timeline import DetailedTimelineBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
+
+
+@pytest.mark.parametrize(
+    "slug",
+    [
+        "dawson-how-to-e-file-a-petition",
+        "petitioners-timeline",
+    ],
+)
+def test_timeline_introduction_is_preserved(slug):
+    block = DetailedTimelineBlock()
+    value = block.to_python(
+        {
+            "title": "Timeline",
+            "show_title": False,
+            "introduction": "<p>Existing introductory text.</p>",
+            "phases": [],
+        }
+    )
+
+    html = render_to_string(
+        "detailed_timeline.html",
+        {
+            "page": SimpleNamespace(slug=slug),
+            "block": SimpleNamespace(id="test-timeline", value=value),
+        },
+    )
+
+    assert "Existing introductory text." in html
+    assert "detailed-timeline-expand-button" in html
+    assert "detailed-timeline-print-button" in html
+
+
+@pytest.mark.parametrize("show_title,heading_level", [(False, 2), (True, 3)])
+def test_timeline_heading_hierarchy(show_title, heading_level):
+    value = DetailedTimelineBlock().to_python(
+        {
+            "title": "Timeline title",
+            "show_title": show_title,
+            "warning_callout": {
+                "heading": "Important Reminder",
+                "text": "<p>File only once.</p>",
+            },
+            "phases": [
+                {"type": "phase", "value": {"title": "Gather documents"}},
+                {"type": "phase", "value": {"title": "File petition"}},
+            ],
+        }
+    )
+
+    html = render_to_string(
+        "detailed_timeline.html",
+        {"block": SimpleNamespace(id="heading-test", value=value)},
+    )
+
+    assert ("<h2>Timeline title</h2>" in html) is show_title
+    phase_headings = re.findall(
+        r'<h([23]) class="detailed-timeline-accordion-title[^"]*">.*?</h\1>',
+        html,
+        re.DOTALL,
+    )
+    assert phase_headings == [str(heading_level)] * 2
+    assert (
+        f'<h{heading_level} class="detailed-timeline-warning-heading">'
+        f"Important Reminder</h{heading_level}>"
+    ) in html
 
 
 @override_settings(
@@ -17,7 +91,7 @@ from home.models.pages.enhanced_standard import EnhancedStandardPage
 class DetailedTimelineRenderTest(TestCase):
     """Verify that an EnhancedStandardPage with a detailed timeline renders without error."""
 
-    def page_setup(self, show_bubble_line_numbers):
+    def page_setup(self, show_bubble_line_numbers, show_info_icon_on_first_phase=False):
         self.factory = RequestFactory()
 
         Locale.objects.get_or_create(language_code="en")
@@ -56,6 +130,7 @@ class DetailedTimelineRenderTest(TestCase):
                                 "type": "phase",
                                 "value": {
                                     "title": "Receive an IRS Notice",
+                                    "show_info_icon": show_info_icon_on_first_phase,
                                     "date_range": "Day 0",
                                     "instructions": '<p data-block-key="7qeva">You receive an IRS Notice.</p><ul><li data-block-key="2f120">Note the deadline on the notice - this is your starting point.</li><li data-block-key="d1h80">Do not ignore this notice.</li></ul>',
                                     "your_tasks": [
@@ -349,6 +424,7 @@ class DetailedTimelineRenderTest(TestCase):
         rendered = response.render()
         content = rendered.content.decode()
         self.assertIn("United States Tax Court Case Timeline", content)
+        self.assertNotIn('class="detailed-timeline-warning"', content)
         self.assertIn("Please note:", content)
         self.assertIn("Receive an IRS Notice", content)
         self.assertIn("Day 0", content)
@@ -420,6 +496,25 @@ class DetailedTimelineRenderTest(TestCase):
             "bubble-number", content
         )  # Validate that bubble numbers are not shown when show_numbers_in_bubbles is False
 
+    def test_detailed_timeline_info_icon_overrides_bubble_number(self):
+        """A phase with show_info_icon gets bubble-info instead of bubble-number."""
+        self.page_setup(True, show_info_icon_on_first_phase=True)
+        request = self.factory.get(self.page.url)
+        request.site = Site.objects.get(is_default_site=True)
+        response = self.page.serve(request)
+        content = response.render().content.decode()
+
+        phase_classes = re.findall(
+            r'class="(detailed-timeline-phase bubble-circle[^"]*)"', content
+        )
+        self.assertGreater(len(phase_classes), 1)
+        first_phase_classes = phase_classes[0].split()
+        self.assertIn("bubble-info", first_phase_classes)
+        self.assertNotIn("bubble-number", first_phase_classes)
+        for classes in phase_classes[1:]:
+            self.assertIn("bubble-number", classes.split())
+            self.assertNotIn("bubble-info", classes.split())
+
     def test_detailed_timeline_has_expand_and_print_controls(self):
         self.page_setup(False)
         request = self.factory.get(self.page.url)
@@ -431,3 +526,40 @@ class DetailedTimelineRenderTest(TestCase):
         self.assertIn("Print Detailed Timeline", content)
         self.assertIn("css/includes/timeline.css", content)
         self.assertIn("js/detailed_timeline.js", content)
+
+
+def test_warning_callout_can_be_empty():
+    warning_block = DetailedTimelineBlock().child_blocks["warning_callout"]
+
+    value = warning_block.to_python({"heading": "", "text": ""})
+    cleaned = warning_block.clean(value)
+
+    assert not cleaned["heading"]
+    assert not cleaned["text"]
+
+
+@pytest.mark.parametrize(
+    "warning",
+    [
+        {"heading": "Reminder", "text": ""},
+        {"heading": "", "text": "<p>Important information.</p>"},
+    ],
+)
+def test_partial_warning_callout_is_invalid(warning):
+    warning_block = DetailedTimelineBlock().child_blocks["warning_callout"]
+
+    with pytest.raises(ValidationError):
+        warning_block.clean(warning_block.to_python(warning))
+
+
+def test_populated_warning_callout_is_valid():
+    warning_block = DetailedTimelineBlock().child_blocks["warning_callout"]
+
+    cleaned = warning_block.clean(
+        warning_block.to_python(
+            {"heading": "Reminder", "text": "<p>Important information.</p>"}
+        )
+    )
+
+    assert cleaned["heading"] == "Reminder"
+    assert cleaned["text"]

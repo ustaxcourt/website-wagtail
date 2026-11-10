@@ -9,7 +9,7 @@ from home.models.pages.petitioner_experience import PetitionerExperiencePage
 logger = logging.getLogger(__name__)
 
 
-class DawsonHowToMergePdfs(PageInitializer):
+class DawsonHowToPayFilingFee(PageInitializer):
     def __init__(self):
         super().__init__()
 
@@ -18,8 +18,8 @@ class DawsonHowToMergePdfs(PageInitializer):
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
-        slug = "dawson-how-to-merge-pdfs"
-        title = "How to merge PDFs"
+        slug = "dawson-how-to-pay-filing-fee"
+        title = "How to Pay Filing Fee"
 
         navigation_ribbon = NavigationRibbon.objects.filter(
             name="Guidance for Petitioners Ribbon"
@@ -59,8 +59,8 @@ class DawsonHowToMergePdfs(PageInitializer):
         new_page.save_revision().publish()
 
     def run(self):
-        """Update the Dawson How to merge PDFs"""
-        command_name = "WAG-1450: How to merge PDFs"
+        """Update the Dawson How to pay the filing fee"""
+        command_name = "WAG-1450: How to pay the filing fee"
         # Check if script already exists
         if ExecuteScript.command_exists(command_name):
             logger.info(f"Script '{command_name}' already exists. Skipping.")
@@ -77,7 +77,9 @@ class DawsonHowToMergePdfs(PageInitializer):
 
         try:
             self.create()
-            execution_log_text = "Dawson How to merge PDFs page updated successfully."
+            execution_log_text = (
+                "Dawson How to pay the filing fee page updated successfully."
+            )
             script_entry.execution_status = "SUCCESS"
             script_entry.execution_log = execution_log_text
             script_entry.save()

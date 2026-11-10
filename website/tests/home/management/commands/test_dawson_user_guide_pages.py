@@ -1,9 +1,10 @@
 from django.test import TestCase
-from wagtail.models import Locale, Page, Site
+from taggit.models import Tag
+from wagtail.models import Collection, Locale, Page, Site
 
 from home.management.commands.pages.rules_and_guidance import (
     DawsonHowToEfilePetition,
-    DawsonHowToMergePdfs,
+    DawsonHowToPayFilingFee,
     DawsonTroubleshootFileUploads,
     DawsonHowToSearchForACase,
     DawsonHowToSearchForAnOrder,
@@ -16,18 +17,19 @@ from home.management.commands.update_pages import pages_to_update
 from home.models import NavigationRibbon
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.models.utils.execute_script import ExecuteScript
+from home.utils.document_collection_and_tag_assignment import get_tags_for_document
 
 # (initializer, slug, ExecuteScript command name)
 DAWSON_PAGES = [
     (
         DawsonHowToEfilePetition,
         "dawson-how-to-e-file-a-petition",
-        "WAG-1450: How to e-file a Petition",
+        "WAG-1450: Populate e-file Petition guide timeline and instructions",
     ),
     (
-        DawsonHowToMergePdfs,
-        "dawson-how-to-merge-pdfs",
-        "WAG-1450: How to merge PDFs",
+        DawsonHowToPayFilingFee,
+        "dawson-how-to-pay-filing-fee",
+        "WAG-1450: How to pay the filing fee",
     ),
     (
         DawsonTroubleshootFileUploads,
@@ -65,7 +67,11 @@ DAWSON_PAGES = [
 class TestDawsonUserGuidePages(TestCase):
     def setUp(self):
         Locale.objects.get_or_create(language_code="en")
+        if not Collection.objects.exists():
+            Collection.add_root(name="Root")
 
+        if Collection.get_first_root_node() is None:
+            Collection.add_root(name="Root")
         root_page = Page.objects.filter(depth=1).first()
         if root_page is None:
             root_page = Page.add_root(title="Root", slug="root")
@@ -83,8 +89,11 @@ class TestDawsonUserGuidePages(TestCase):
         )
         home_page.add_child(instance=self.user_guides_page)
 
-        # PetitionerExperiencePage requires a navigation ribbon.
+        # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
+        for filename in DawsonHowToEfilePetition.DOCUMENT_FILENAMES.values():
+            for tag_name in get_tags_for_document(filename):
+                Tag.objects.get_or_create(name=tag_name)
 
     def test_registered_only_in_update_pages(self):
         for initializer, _, _ in DAWSON_PAGES:
