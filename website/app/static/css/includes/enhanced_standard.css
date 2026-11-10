@@ -719,12 +719,6 @@ div.get-started-row + p + p {
     margin-top: auto;
 }
 
-/* Floor height keeps the button off short body text when a card has no
-   taller row sibling. */
-.info-card.has-button {
-    min-height: 260px;
-}
-
 .info-card__button {
     display: flex;
     align-items: center;
@@ -738,6 +732,23 @@ div.get-started-row + p + p {
     color: #005EA2;
     font-weight: 600;
     text-decoration: none;
+}
+
+/* Default spacing between text in card and button. If description text is not
+displayed, add the gap in .info-card to margin-top to determine the spacing
+between the text and the button. If description text is displayed, this style
+is ignored (see next CSS) and the minimum spacing between the text and button
+in the card is determined by adding the gap in .info-card to the margin-block-end
+of <p> tags. */
+.card-header + .info-card__buttons {
+    margin-top: 16px;
+}
+
+/* Set the top margin of buttons in a card tile to be automatic so the button
+always shifts to the bottom of the card tile when any card tile in the row has
+description text */
+.info-cards:has(.info-card > .description) > .info-card > .info-card__buttons {
+    margin-top: auto;
 }
 
 .info-card__button:hover {
