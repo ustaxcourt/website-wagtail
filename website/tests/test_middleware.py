@@ -1,16 +1,9 @@
-from unittest import mock
-
 import pytest
 from django.http import HttpResponse
-from django.test import RequestFactory, override_settings
+from django.test import RequestFactory
 from django.contrib.auth.models import AnonymousUser, User
-from whitenoise.middleware import WhiteNoiseMiddleware
 
-from app.middleware import (
-    CachedWhiteNoiseMiddleware,
-    CacheControlMiddleware,
-    JSONExceptionMiddleware,
-)
+from app.middleware import JSONExceptionMiddleware, CacheControlMiddleware
 
 
 class TestJSONExceptionMiddleware:
@@ -135,77 +128,3 @@ class TestCacheControlMiddleware:
         # login path rule fires first — should not have 'private'
         assert "private" not in response["Cache-Control"]
         assert "no-store" in response["Cache-Control"]
-
-
-class TestCachedWhiteNoiseMiddleware:
-    @pytest.fixture(autouse=True)
-    def static_root(self, tmp_path):
-        (tmp_path / "css").mkdir()
-        (tmp_path / "css" / "site.css").write_text("body {}")
-        CachedWhiteNoiseMiddleware._shared_state = None
-        with override_settings(
-            STATIC_ROOT=str(tmp_path),
-            STATIC_URL="/static/",
-            WHITENOISE_AUTOREFRESH=False,
-        ):
-            yield tmp_path
-        CachedWhiteNoiseMiddleware._shared_state = None
-
-    def setup_method(self):
-        self.factory = RequestFactory()
-
-    def test_static_root_is_scanned_only_once(self):
-        """Wagtail preview re-instantiates middleware per render; only the first should walk STATIC_ROOT."""
-        with mock.patch.object(
-            WhiteNoiseMiddleware,
-            "add_files",
-            autospec=True,
-            side_effect=WhiteNoiseMiddleware.add_files,
-        ) as add_files:
-            for _ in range(3):
-                CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
-        assert add_files.call_count == 1
-
-    def test_cached_instance_serves_static_files(self):
-        CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
-        mw = CachedWhiteNoiseMiddleware(lambda r: HttpResponse(status=404))
-        response = mw(self.factory.get("/static/css/site.css"))
-        assert response.status_code == 200
-        assert b"".join(response.streaming_content) == b"body {}"
-
-    def test_each_instance_keeps_its_own_get_response(self):
-        first = CachedWhiteNoiseMiddleware(lambda r: HttpResponse("first"))
-        second = CachedWhiteNoiseMiddleware(lambda r: HttpResponse("second"))
-        assert first(self.factory.get("/page/")).content == b"first"
-        assert second(self.factory.get("/page/")).content == b"second"
-
-    def test_autorefresh_mode_is_not_cached(self):
-        with override_settings(WHITENOISE_AUTOREFRESH=True):
-            CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
-            assert CachedWhiteNoiseMiddleware._shared_state is None
-
-    def test_populated_cache_is_not_reused_after_enabling_autorefresh(
-        self, static_root
-    ):
-        """A cache built with autorefresh off must not leak its flag or index into a later autorefresh instance."""
-        CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
-        assert CachedWhiteNoiseMiddleware._shared_state is not None
-
-        (static_root / "css" / "added.css").write_text("p {}")
-        with override_settings(WHITENOISE_AUTOREFRESH=True):
-            mw = CachedWhiteNoiseMiddleware(lambda r: HttpResponse(status=404))
-            assert mw.autorefresh is True
-            response = mw(self.factory.get("/static/css/added.css"))
-        assert response.status_code == 200
-        assert b"".join(response.streaming_content) == b"p {}"
-
-    def test_cache_is_rebuilt_after_static_root_changes(self, tmp_path_factory):
-        """Changing a setting WhiteNoise reads clears the cache, so the next instance re-indexes."""
-        CachedWhiteNoiseMiddleware(lambda r: HttpResponse())
-
-        other_root = tmp_path_factory.mktemp("other_static")
-        (other_root / "other.css").write_text("a {}")
-        with override_settings(STATIC_ROOT=str(other_root)):
-            mw = CachedWhiteNoiseMiddleware(lambda r: HttpResponse(status=404))
-            assert mw(self.factory.get("/static/other.css")).status_code == 200
-            assert mw(self.factory.get("/static/css/site.css")).status_code == 404
