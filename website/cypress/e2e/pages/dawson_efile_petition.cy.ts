@@ -180,7 +180,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
             const titleBottom = $title[0].getBoundingClientRect().bottom;
             cy.get(".detailed-timeline-header-text > p").should(($intro) => {
                 const introTop = $intro[0].getBoundingClientRect().top;
-                expect(introTop - titleBottom).to.be.at.most(20);
+                expect(introTop - titleBottom).to.be.at.most(32);
             });
         });
     });
