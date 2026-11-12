@@ -3,7 +3,7 @@
     overflow-x: auto;
 }
 
-.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .petitioner-page-heading) {
+.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .petitioner-page-heading, .grid-row) {
     margin-bottom: 32px;
 }
 
@@ -493,6 +493,9 @@ div.get-started-row + p + p {
     align-items: stretch;
     gap: 48px;
     margin-top: 1rem;
+}
+
+.info-cards:not(:last-child) {
     margin-bottom: 34px;
 }
 
