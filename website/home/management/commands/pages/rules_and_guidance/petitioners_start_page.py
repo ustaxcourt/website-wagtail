@@ -89,7 +89,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "Are there any circumstances where the Court will help pay for the cost of an interpreter at trial?",
-                "answer": "Ordinarily, the parties are expected to arrange for and compensate any needed interpreters. There may, however, be extraordinary situations in which the Court will compensate an interpreter. You may file a motion requesting that the Court pay the expenses of an interpreter. In your motion you must satisfy the Court that (1) a language barrier exists (you speak primarily a language other than English or you have a hearing impairment); (2) you do not have the financial means to pay for an interpreter; and (3) the case presents a substantial question which is not frivolous. A Judge has discretion to grant or deny your motion to pay the expenses of an interpreter.",
+                "answer": "Ordinarily, the parties are expected to arrange for and compensate any needed interpreters. There may, however, be extraordinary situations in which the Court will compensate an interpreter. You may file a motion requesting that the Court pay the expenses of an interpreter. In your motion you must satisfy the Court that (1) a language barrier exists (you speak primarily a language other than English or you have a hearing impairment); (2) you do not have the financial means to pay for an interpreter; and (3) the case presents a substantial question which is not frivolous. A judge has discretion to grant or deny your motion to pay the expenses of an interpreter.",
                 "anchortag": "START7",
             },
             {
@@ -219,7 +219,7 @@ class PetitionersStartPageInitializer(PageInitializer):
             },
             {
                 "question": "May I request that my case be heard remotely?",
-                "answer": f'Yes. File a <strong><a linktype="document" id="{petitioners_docs["Motion_to_Proceed_Remotely.pdf"].id}" target="_blank" title="Motion to Proceed Remotely">Motion To Proceed Remotely</a></strong>. A Motion To Proceed Remotely may be filed at the time a petition is filed and up until 31 days before the first day of the trial session. The granting of the motion is at the Judge\'s discretion. If the judge grants the Motion To Proceed Remotely, the parties will be provided with detailed instructions, including the date, time, and Zoomgov information for the remote (virtual) proceeding',
+                "answer": f'Yes. File a <strong><a linktype="document" id="{petitioners_docs["Motion_to_Proceed_Remotely.pdf"].id}" target="_blank" title="Motion to Proceed Remotely">Motion To Proceed Remotely</a></strong>. A Motion To Proceed Remotely may be filed at the time a petition is filed and up until 31 days before the first day of the trial session. The granting of the motion is at the judge\'s discretion. If the judge grants the Motion To Proceed Remotely, the parties will be provided with detailed instructions, including the date, time, and Zoomgov information for the remote (virtual) proceeding',
                 "anchortag": "START33",
             },
             {
