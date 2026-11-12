@@ -224,3 +224,79 @@ class TestModerationAdminMixinGetPanels:
         result = FakeAdmin.get_panels()
         assert isinstance(result, list)
         assert len(result) > 0
+
+
+def _count_publishing_panels(panel):
+    """Count PublishingPanels in a model-bound panel tree."""
+    count = 1 if isinstance(panel, PublishingPanel) else 0
+    for child in getattr(panel, "children", []):
+        count += _count_publishing_panels(child)
+    return count
+
+
+class TestPublishingPanelNotDuplicated:
+    """
+    WAG-1433: a second PublishingPanel renders duplicate go_live_at/expire_at
+    inputs and #schedule-publishing-dialog ids, which leaves the "Set schedule"
+    datetimepicker blank. Every edit form must have exactly one.
+    """
+
+    def test_create_for_page_with_default_settings_panels(self):
+        from home.admin.moderation import ModerationTabbedInterface
+        from wagtail.models import Page
+
+        handler = ModerationTabbedInterface.create_for_page(
+            content_panels=[FieldPanel("title")]
+        ).bind_to_model(Page)
+        assert _count_publishing_panels(handler) == 1
+
+    def test_create_for_page_with_settings_panels_lacking_publishing_panel(self):
+        """A custom settings tab without PublishingPanel keeps it on the Moderation tab."""
+        from home.admin.moderation import ModerationTabbedInterface
+        from wagtail.models import Page
+
+        handler = ModerationTabbedInterface.create_for_page(
+            content_panels=[FieldPanel("title")], settings_panels=[]
+        ).bind_to_model(Page)
+        assert _count_publishing_panels(handler) == 1
+        moderation_tab = next(t for t in handler.children if t.heading == "Moderation")
+        assert _count_publishing_panels(moderation_tab) == 1
+
+    def test_create_for_model_page_uses_default_settings_panels(self):
+        from home.admin.moderation import ModerationTabbedInterface
+        from wagtail.models import Page
+
+        handler = ModerationTabbedInterface.create_for_model(
+            Page, content_panels=[FieldPanel("title")]
+        ).bind_to_model(Page)
+        assert _count_publishing_panels(handler) == 1
+
+    def test_create_for_snippet_when_content_panels_include_publishing_panel(self):
+        from home.admin.moderation import ModerationTabbedInterface
+        from home.models.snippets.news_item import NewsItem
+
+        handler = ModerationTabbedInterface.create_for_snippet(
+            [FieldPanel("title"), PublishingPanel()]
+        ).bind_to_model(NewsItem)
+        assert _count_publishing_panels(handler) == 1
+
+    def test_get_moderation_edit_handler_simple_does_not_duplicate(self):
+        from home.admin.moderation import get_moderation_edit_handler_simple
+
+        result = get_moderation_edit_handler_simple(
+            FakeSnippetModel, content_panels=[FieldPanel("title"), PublishingPanel()]
+        )
+        assert sum(isinstance(p, PublishingPanel) for p in result) == 1
+
+    def test_every_registered_model_has_one_publishing_panel(self):
+        from django.apps import apps
+
+        offenders = {}
+        for model in apps.get_models():
+            edit_handler = getattr(model, "edit_handler", None)
+            if edit_handler is None or not hasattr(edit_handler, "bind_to_model"):
+                continue
+            count = _count_publishing_panels(edit_handler.bind_to_model(model))
+            if count > 1:
+                offenders[model.__name__] = count
+        assert offenders == {}
