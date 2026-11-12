@@ -11,14 +11,10 @@ from wagtail.search import index
 from home.models.config import IconCategories
 from home.models.custom_blocks.button import SideCardLinkBlock
 from home.models.custom_blocks.common import custom_promote_panels
+from home.models.custom_blocks.page_selector import PageSelectorBlock
 from home.admin.moderation import ModerationTabbedInterface
 from home.forms import ReviewByRequiredOnSubmitForm
 from home.models.snippets.call_to_action import CallToActionBox
-
-
-class PageSelectorBlock(blocks.StreamBlock):
-    internal_page = blocks.PageChooserBlock(label="Internal page")
-    external_url = blocks.URLBlock(label="External page URL")
 
 
 class SideCard(Orderable, ClusterableModel):
@@ -81,15 +77,9 @@ class SideCard(Orderable, ClusterableModel):
         return self.header_title
 
 
-class PetitionerExperienceReviewByRequiredOnSubmitForm(ReviewByRequiredOnSubmitForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["navigation_ribbon"].required = True  # Force required in admin
-
-
 class PetitionerExperiencePage(EnhancedStandardPage):
     template = "home/petitioner_experience_page.html"
-    base_form_class = PetitionerExperienceReviewByRequiredOnSubmitForm
+    base_form_class = ReviewByRequiredOnSubmitForm
 
     class Meta:
         verbose_name = "Petitioner Experience Page"
@@ -97,6 +87,12 @@ class PetitionerExperiencePage(EnhancedStandardPage):
     introductory_text = RichTextField(
         help_text="Text to be displayed at the top of the page under the page's title.",
         blank=True,
+    )
+
+    show_dawson_logo = models.BooleanField(
+        default=False,
+        help_text="Check to display the DAWSON logo to the left of the page's title and introductory text.",
+        verbose_name="Show DAWSON Logo",
     )
 
     breadcrumb = StreamField(
@@ -138,6 +134,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         FieldPanel("show_floating_definitions_button"),
         FieldPanel("navigation_ribbon"),
         FieldPanel("breadcrumb"),
+        FieldPanel("show_dawson_logo"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
         FieldPanel("call_to_action"),
@@ -154,11 +151,6 @@ class PetitionerExperiencePage(EnhancedStandardPage):
 
     def clean(self):
         super().clean()
-        if not self.navigation_ribbon_id:
-            raise ValidationError(
-                {"navigation_ribbon": "Navigation Ribbon is required."}
-            )
-
         breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
         if breadcrumb:
             has_title = bool(breadcrumb.value.get("breadcrumb_title"))

@@ -83,7 +83,11 @@ class Command(BaseCommand):
                 "jcdp",
             ],
             "Content Manager  Moderator": [Page.get_first_root_node().slug],
-            "DAWSON Contributor Moderator": ["dawson-user-guides", "release-notes"],
+            "DAWSON Contributor Moderator": [
+                "dawson-user-guides",
+                "dawson-how-to-e-file-a-petition",
+                "release-notes",
+            ],
             "HR Committee Editor": [
                 "vacancy-announcements",
                 "internship-programs",

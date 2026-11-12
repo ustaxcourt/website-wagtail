@@ -3,7 +3,7 @@
     overflow-x: auto;
 }
 
-.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block) {
+.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .petitioner-page-heading, .grid-row) {
     margin-bottom: 32px;
 }
 
@@ -14,13 +14,14 @@
     margin-top: 0px;
 }
 
-.enhanced-page.grid-container > h1,h2,h3:not(.question-answer-block > h3):not(.detailed-timeline-accordion-header > h3),h4,h5,h6  {
+.enhanced-page.grid-container > h1,h2:not(.get-started-row > h2),h3:not(.question-answer-block > h3):not(.detailed-timeline-accordion-header > h3),h4,h5,h6  {
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
 .enhanced-page.grid-container {
-    padding-top: 45px;
-    padding-bottom: 45px;
+    padding-top: 48px;
+    padding-bottom: 48px;
     padding-left: 32px;
     padding-right: 32px;
     margin-bottom: 0px;
@@ -328,6 +329,16 @@ p:empty {
     margin: 1rem 0;
 }
 
+div.quick-access-tiles-container + div.get-started-row {
+    margin-top: 28px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+div.get-started-row + p + p {
+    margin-bottom: 48px;
+}
+
 @media (max-width: 740px) {
     .enhanced-page .table-container {
         overflow-x: auto;
@@ -482,6 +493,9 @@ p:empty {
     align-items: stretch;
     gap: 48px;
     margin-top: 1rem;
+}
+
+.info-cards:not(:last-child) {
     margin-bottom: 34px;
 }
 
@@ -708,12 +722,6 @@ p:empty {
     margin-top: auto;
 }
 
-/* Floor height keeps the button off short body text when a card has no
-   taller row sibling. */
-.info-card.has-button {
-    min-height: 260px;
-}
-
 .info-card__button {
     display: flex;
     align-items: center;
@@ -727,6 +735,23 @@ p:empty {
     color: #005EA2;
     font-weight: 600;
     text-decoration: none;
+}
+
+/* Default spacing between text in card and button. If description text is not
+displayed, add the gap in .info-card to margin-top to determine the spacing
+between the text and the button. If description text is displayed, this style
+is ignored (see next CSS) and the minimum spacing between the text and button
+in the card is determined by adding the gap in .info-card to the margin-block-end
+of <p> tags. */
+.card-header + .info-card__buttons {
+    margin-top: 16px;
+}
+
+/* Set the top margin of buttons in a card tile to be automatic so the button
+always shifts to the bottom of the card tile when any card tile in the row has
+description text */
+.info-cards:has(.info-card > .description) > .info-card > .info-card__buttons {
+    margin-top: auto;
 }
 
 .info-card__button:hover {
