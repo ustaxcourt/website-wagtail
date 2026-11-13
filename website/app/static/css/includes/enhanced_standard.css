@@ -365,7 +365,7 @@ div.get-started-row + p + p {
     .enhanced-page.grid-container {
         padding-left: 16px;
         padding-right: 16px;
-        padding-bottom: 25px;
+        padding-bottom: 24px;
         margin:0px;
     }
 
@@ -407,8 +407,8 @@ div.get-started-row + p + p {
     .enhanced-page.grid-container {
         padding-left: 16px;
         padding-right: 16px;
-        padding-top: 25px;
-        padding-bottom: 25px;
+        padding-top: 24px;
+        padding-bottom: 24px;
     }
 
     .enhanced-page .dedication {
