@@ -127,3 +127,43 @@ class TestAboutTheCourtPages(BasePageInitializerTestCase):
                 self.assertTrue(Page.objects.filter(slug=slug).exists())
                 initializer().create()
                 mock_logger.assert_called_once
+
+    def test_create_fails_to_create_page_when_home_page_does_not_exist(self):
+        def side_effect_func(slug):
+            if slug == "home":
+                raise Page.DoesNotExist
+
+            return MagicMock(slug=slug)
+
+        # mock_commontext = MagicMock(id=1)
+        for initializer, slug in ABOUT_THE_COURT_PAGES:
+            with (
+                self.subTest(initializer=initializer.__name__),
+                patch("wagtail.models.Page.objects.get", side_effect=side_effect_func),
+                patch("logging.getLogger") as mock_logger,
+            ):
+                self.assertFalse(Page.objects.filter(slug=slug).exists())
+                initializer().create()
+                mock_logger.assert_called_once
+                self.assertFalse(Page.objects.filter(slug=slug).exists())
+
+    def test_create_fails_to_create_employment_sub_pages_when_employment_page_does_not_exist(
+        self,
+    ):
+        def side_effect_func(slug):
+            if slug == "employment":
+                raise Page.DoesNotExist
+
+            return MagicMock(slug=slug)
+
+        # mock_commontext = MagicMock(id=1)
+        for initializer, slug in ABOUT_THE_COURT_EMPLOYMENT_SUB_PAGES:
+            with (
+                self.subTest(initializer=initializer.__name__),
+                patch("wagtail.models.Page.objects.get", side_effect=side_effect_func),
+                patch("logging.getLogger") as mock_logger,
+            ):
+                self.assertFalse(Page.objects.filter(slug=slug).exists())
+                initializer().create()
+                mock_logger.assert_called_once
+                self.assertFalse(Page.objects.filter(slug=slug).exists())
