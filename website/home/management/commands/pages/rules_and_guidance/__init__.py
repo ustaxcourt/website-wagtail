@@ -37,6 +37,9 @@ from .petitioners_help import PetitionersHelpPageInitializer
 from .petitioners_help_rules_link import (
     PetitionersHelpRulesLinkUpdater as PetitionersHelpRulesLinkUpdater,
 )
+from .petitioners_definitions_button import (
+    PetitionersDefinitionsButtonUpdater as PetitionersDefinitionsButtonUpdater,
+)
 from .dawson_how_to_efile_petition import (
     DawsonHowToEfilePetition as DawsonHowToEfilePetition,
 )

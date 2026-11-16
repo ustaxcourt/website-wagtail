@@ -27,6 +27,10 @@
     margin-bottom: 0px;
 }
 
+.enhanced-page.grid-container.petitioners-guidance-page {
+    padding-bottom: 0;
+}
+
 .enhanced-page.grid-container > hr {
     margin-top: 17px;
     margin-bottom: 34px;
