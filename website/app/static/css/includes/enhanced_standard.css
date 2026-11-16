@@ -723,6 +723,10 @@ div.get-started-row + p + p {
     margin-top: auto;
 }
 
+.dawson-user-guides-page .info-card__buttons {
+    margin-top: 16px;
+}
+
 /* Floor height keeps the button off short body text when a card has no
    taller row sibling. */
 .info-card.has-button {
