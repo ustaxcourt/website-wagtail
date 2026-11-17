@@ -9,10 +9,8 @@ def update_dawson_user_guides_landing_page_to_add_period(apps, schema_editor):
 
     logger = logging.getLogger(__name__)
     try:
-        PetitionerExperiencePage = apps.get_model("home", "PetitionerExperiencePage")
-
         try:
-            page = PetitionerExperiencePage.objects.get(slug="dawson-user-guides")
+            page = Page.objects.get(slug="dawson-user-guides")
         except Page.DoesNotExist:
             logger.info("0167: dawson-user-guides page not found — skipping.")
             return
