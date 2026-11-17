@@ -40,37 +40,31 @@
             </div>
             {% endwith %}
         {% endif %}
-        <div class="petitioner-page-heading {% if not page.show_dawson_logo %}no-logo{% endif %}">
-            {% if page.show_dawson_logo %}
-                <div class="petitioner-page-heading-logo">
-                    <img class="dawson"
-                        src="{% static 'images/header/dawson.webp' %}"
-                        alt="" />
+        {% if page.resource_cards %}
+            {# Title, intro and body share the left column so the Resources column sits beside them. #}
+            <div class="petitioner-resource-breadcrumb">
+                {% include "includes/petitioner_breadcrumb.html" %}
+            </div>
+            <div class="grid-row grid-gap petitioner-resource-layout">
+                <div class="grid-col-12 desktop:grid-col-9 petitioner-resource-main">
+                    {% include "includes/petitioner_page_heading.html" with hide_breadcrumb=True %}
+                    <div class="side-card-main">
+                        {% include "includes/enhanced_body.html" with blocks=page.body %}
+                        {% for sub_block in page.raw_html_body %}
+                        {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
+                        {% endfor %}
+                    </div>
                 </div>
-            {% endif %}
-            <!-- <div class="petitioner-page-heading-text"> -->
-                <div class="petitioner-page-heading-title">
-                    {% if page.breadcrumb_title and page.breadcrumb_page_url %}
-                        <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
-                            <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
-                            <span aria-hidden="true"> / </span>
-                            {% if page.slug == "dawson-how-to-e-file-a-petition" %}
-                                <span class="petitioner-breadcrumb-current" aria-hidden="true">How to e-file a petition</span>
-                            {% endif %}
-                        </nav>
-                    {% endif %}
-                    <h1 data-testid="page-title" tabindex="-1">
-                        <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
-                        <span class="page-title-breadcrumb"></span>
-                    </h1>
-                </div>
-                <div class="petitioner-page-heading-intro">
-                    {% if page.introductory_text %}
-                        {{ page.introductory_text|richtext }}
-                    {% endif %}
-                </div>
-            <!-- </div> -->
-        </div>
+                <section class="grid-col-12 desktop:grid-col-3 petitioner-resource-rail"
+                         aria-labelledby="petitioner-resources-heading">
+                    <h2 id="petitioner-resources-heading" class="petitioner-resource-rail-heading">Resources</h2>
+                    {% for resource_block in page.resource_cards %}
+                        {% include "quick_access_tiles_block.html" with block=resource_block %}
+                    {% endfor %}
+                </section>
+            </div>
+        {% else %}
+        {% include "includes/petitioner_page_heading.html" %}
         <div class="grid-row grid-gap side-card-layout">
             <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">
                 {% include "includes/enhanced_body.html" with blocks=page.body %}
@@ -86,6 +80,7 @@
             </div>
             {% endif %}
         </div>
+        {% endif %}
         {% if page.call_to_action %}
             <div class="rounded-rectangle">
                 <h1>{{ page.call_to_action.header }}</h1>

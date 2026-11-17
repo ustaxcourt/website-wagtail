@@ -362,3 +362,104 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
         grid-row: 2;
     }
 }
+
+/* Resources column (pages with Resource Cards).
+   Desktop: beside the title, intro, controls and body. Tablet/mobile: below the body. */
+.petitioner-resource-breadcrumb .petitioner-breadcrumb {
+    font-size: 16px;
+    line-height: 20px;
+    min-height: 0;
+}
+
+.petitioner-resource-main .petitioner-page-heading {
+    row-gap: 15px;
+    margin-bottom: 0;
+}
+
+.petitioner-resource-main .petitioner-page-heading h1 {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 38px;
+}
+
+.petitioner-resource-layout {
+    margin-top: 15px;
+}
+
+.petitioner-resource-main .side-card-main {
+    margin-top: 15px;
+}
+
+.petitioner-resource-rail {
+    margin-top: 32px;
+}
+
+.petitioner-resource-rail-heading {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 38px;
+}
+
+/* The rail is one column at every width, so these beat the tile grid's multi-column rules. */
+.petitioner-resource-rail .quick-access-tiles-grid[data-max-columns] {
+    grid-template-columns: 1fr;
+    row-gap: 16px;
+    margin: 15px 0 0;
+}
+
+/* Icon beside the title, left-aligned, at every width. */
+.petitioner-resource-rail .quick-access-tile.icon-desktop_top_mobile_left {
+    padding: 16px;
+}
+
+.petitioner-resource-rail .quick-access-tile.icon-desktop_top_mobile_left .tile-content {
+    display: grid !important;
+    grid-template-columns: 32px 1fr;
+    column-gap: 8px;
+    row-gap: 0;
+    align-items: center;
+    text-align: left !important;
+}
+
+.petitioner-resource-rail .quick-access-tile.icon-desktop_top_mobile_left .tile-icon {
+    grid-column: 1;
+    grid-row: 1;
+    order: unset;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    align-self: center;
+}
+
+/* The PDF icon is blue by default; the design uses black. */
+.petitioner-resource-rail .quick-access-tile .tile-icon svg path {
+    fill: #000;
+}
+
+.petitioner-resource-rail .quick-access-tile.icon-desktop_top_mobile_left h2 {
+    grid-column: 2;
+    grid-row: 1;
+    order: unset;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    text-align: left;
+}
+
+.petitioner-resource-rail .quick-access-tile .tile-description {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 4px;
+}
+
+.petitioner-resource-rail .quick-access-tile .link-without-description + .tile-description {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .petitioner-resource-rail {
+        margin-top: 0;
+    }
+}

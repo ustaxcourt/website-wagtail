@@ -5,6 +5,7 @@ from modelcluster.models import ClusterableModel
 from wagtail import blocks
 from wagtail.models import Orderable, Page
 from wagtail.fields import RichTextField, StreamField
+from home.blocks import QuickAccessTilesBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.search import index
@@ -122,6 +123,18 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         use_json_field=True,
     )
 
+    resource_cards = StreamField(
+        [("quick_access_tiles", QuickAccessTilesBlock(label="Resource Cards"))],
+        blank=True,
+        max_num=1,
+        use_json_field=True,
+        help_text=(
+            "Resource cards shown in a right-hand 'Resources' column beside the page "
+            "content on desktop, and below it on tablet and mobile. Side Cards are not "
+            "shown on a page that has Resource Cards."
+        ),
+    )
+
     call_to_action = models.ForeignKey(
         CallToActionBox,
         null=True,
@@ -137,6 +150,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         FieldPanel("show_dawson_logo"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
+        FieldPanel("resource_cards"),
         FieldPanel("call_to_action"),
         InlinePanel("side_cards", label="Side Cards"),
     ]

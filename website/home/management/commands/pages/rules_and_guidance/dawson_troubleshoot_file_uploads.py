@@ -8,6 +8,32 @@ from home.models.pages.petitioner_experience import PetitionerExperiencePage
 
 logger = logging.getLogger(__name__)
 
+PAGE_SLUG = "dawson-troubleshoot-file-uploads"
+CREATE_COMMAND_NAME = "WAG-1450: How to troubleshoot file upload errors"
+RESOURCES_COMMAND_NAME = (
+    "WAG-1484: Add resource cards to How to troubleshoot file upload errors"
+)
+HIDE_TITLE_COMMAND_NAME = (
+    "WAG-1484: Hide duplicate timeline title on How to troubleshoot file upload errors"
+)
+PDF_ICON_FILENAME = "PDF_icon.svg"
+
+# (title, link) for the Resources column, in display order.
+troubleshoot_file_uploads_resources = [
+    (
+        "Adobe Convert files to PDFs User Guide",
+        "https://helpx.adobe.com/acrobat/desktop/create-documents/create-pdfs/convert-to-pdf.html",
+    ),
+    (
+        "Adobe Combine files into one PDF User Guide",
+        "https://helpx.adobe.com/acrobat/desktop/edit-documents/combine-files/combine-files.html",
+    ),
+    (
+        "Adobe Remove passwords from PDF User Guide",
+        "https://helpx.adobe.com/acrobat/desktop/protect-documents/protect-with-passwords/remove-passwords-from-pdfs.html",
+    ),
+]
+
 # Same images (and titles) as the DAWSON FAQs page, so existing uploads are reused.
 troubleshoot_file_uploads_images = [
     {
@@ -68,8 +94,79 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
+    def build_resource_cards(self):
+        icon = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename=PDF_ICON_FILENAME,
+            title=PDF_ICON_FILENAME,
+        )
+        return [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": [
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": title,
+                                "description": "",
+                                "icon": {"svg_file": icon.pk},
+                                "content_alignment": "left",
+                                "link": [
+                                    {
+                                        "type": "external_url",
+                                        "value": url,
+                                        "id": str(uuid.uuid4()),
+                                    }
+                                ],
+                            },
+                            "id": str(uuid.uuid4()),
+                        }
+                        for title, url in troubleshoot_file_uploads_resources
+                    ],
+                },
+                "id": str(uuid.uuid4()),
+            }
+        ]
+
+    def hide_timeline_title(self):
+        """The page heading already shows the title, so hide the timeline's copy."""
+        page = PetitionerExperiencePage.objects.filter(slug=PAGE_SLUG).first()
+        if page is None:
+            logger.warning(f"Page '{PAGE_SLUG}' not found; timeline title unchanged.")
+            return
+
+        body = page.body.get_prep_value()
+        changed = False
+        for block in body:
+            if block["type"] == "detailed_timeline" and block["value"].get(
+                "show_title", True
+            ):
+                block["value"]["show_title"] = False
+                changed = True
+        if not changed:
+            return
+
+        page.body = body
+        page.save_revision().publish()
+
+    def add_resource_cards(self):
+        """Adds the Resources column to a page created before it existed."""
+        page = PetitionerExperiencePage.objects.filter(slug=PAGE_SLUG).first()
+        if page is None:
+            logger.warning(f"Page '{PAGE_SLUG}' not found; no resource cards added.")
+            return
+        if page.resource_cards:
+            logger.info(f"Page '{PAGE_SLUG}' already has resource cards.")
+            return
+
+        page.resource_cards = self.build_resource_cards()
+        page.save_revision().publish()
+
     def create_page_info(self, home_page):
-        slug = "dawson-troubleshoot-file-uploads"
+        slug = PAGE_SLUG
         title = "How to troubleshoot file upload errors"
 
         if Page.objects.filter(slug=slug).exists():
@@ -110,6 +207,7 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                 search_description=title,
                 breadcrumb=breadcrumb,
                 show_floating_definitions_button=True,
+                resource_cards=self.build_resource_cards(),
                 body=[
                     {
                         "type": "detailed_timeline",
@@ -122,6 +220,7 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                                 "<p>Use the steps below to identify and resolve the most common "
                                 "upload errors.</p>"
                             ),
+                            "show_title": False,
                             "show_numbers_in_bubbles": True,
                             "phases": [
                                 _phase(
@@ -278,32 +377,41 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         new_page.save_revision().publish()
 
     def run(self):
-        """Update the Dawson How to troubleshoot file upload errors"""
-        command_name = "WAG-1450: How to troubleshoot file upload errors"
-        # Check if script already exists
-        if ExecuteScript.command_exists(command_name):
-            logger.info(f"Script '{command_name}' already exists. Skipping.")
+        """Create the Dawson How to troubleshoot file upload errors page and its resource cards"""
+        created = self._run_once(CREATE_COMMAND_NAME, self.create, self._check_parent)
+        updated = self._run_once(RESOURCES_COMMAND_NAME, self.add_resource_cards)
+        retitled = self._run_once(HIDE_TITLE_COMMAND_NAME, self.hide_timeline_title)
+        if not (created or updated or retitled):
             return 0
 
+    def _check_parent(self):
         # Check before recording the script so a missing parent page is retried
         # on the next deploy instead of being permanently marked as run.
         if not Page.objects.filter(slug="dawson-user-guides").exists():
             raise Exception(
-                f"'dawson-user-guides' page not found; cannot run '{command_name}'."
+                f"'dawson-user-guides' page not found; cannot run '{CREATE_COMMAND_NAME}'."
             )
+
+    def _run_once(self, command_name, action, precheck=None):
+        """Runs action once per environment; returns False if it already ran."""
+        if ExecuteScript.command_exists(command_name):
+            logger.info(f"Script '{command_name}' already exists. Skipping.")
+            return False
+
+        if precheck:
+            precheck()
 
         script_entry = ExecuteScript.create_script(command_name)
 
         try:
-            self.create()
-            execution_log_text = "Dawson How to troubleshoot file upload errors page updated successfully."
+            action()
             script_entry.execution_status = "SUCCESS"
-            script_entry.execution_log = execution_log_text
+            script_entry.execution_log = f"{command_name} completed successfully."
             script_entry.save()
-
         except Exception as e:
             logger.error(e)
             script_entry.execution_status = "FAILURE"
             script_entry.execution_log = f"<strong>Error:</strong> {e}"
             script_entry.save()
             raise
+        return True
