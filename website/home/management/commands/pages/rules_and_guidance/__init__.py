@@ -29,6 +29,38 @@ from .clinics_nonacademic_page import ClinicsNonAcademicPageInitializer
 from .clinics_calendar_call_page import ClinicsCalendarCallPageInitializer
 from .clinics_chief_counsel_page import ClinicsChiefCounselPageInitializer
 from .comments_and_suggestions_page import CommentsAndSuggestionsPageInitializer
+from .petitioners_guidance import PetitionersGuidancePageInitializer
+from .petitioners_timeline import PetitionersTimelinePageInitializer
+from .petitioners_prepare_to_file import PetitionersPrepareToFilePageInitializer
+from .petitioners_forms import PetitionersFormsPageInitializer
+from .petitioners_help import PetitionersHelpPageInitializer
+from .petitioners_help_rules_link import (
+    PetitionersHelpRulesLinkUpdater as PetitionersHelpRulesLinkUpdater,
+)
+from .dawson_how_to_efile_petition import (
+    DawsonHowToEfilePetition as DawsonHowToEfilePetition,
+)
+from .dawson_how_to_pay_filing_fee import (
+    DawsonHowToPayFilingFee as DawsonHowToPayFilingFee,
+)
+from .dawson_troubleshoot_file_uploads import (
+    DawsonTroubleshootFileUploads as DawsonTroubleshootFileUploads,
+)
+from .dawson_how_to_search_for_a_case import (
+    DawsonHowToSearchForACase as DawsonHowToSearchForACase,
+)
+from .dawson_how_to_search_for_an_order import (
+    DawsonHowToSearchForAnOrder as DawsonHowToSearchForAnOrder,
+)
+from .dawson_how_to_search_for_an_opinion import (
+    DawsonHowToSearchForAnOpinion as DawsonHowToSearchForAnOpinion,
+)
+from .dawson_how_to_update_contact_info import (
+    DawsonHowToUpdateContactInfo as DawsonHowToUpdateContactInfo,
+)
+from .dawson_how_to_view_dashboard import (
+    DawsonHowToViewDashboard as DawsonHowToViewDashboard,
+)
 
 rules_and_guidance_pages_to_initialize = [
     # TOP LEVEL PAGES. Order matters.
@@ -45,7 +77,6 @@ rules_and_guidance_pages_to_initialize = [
     PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
     PetitionersAfterTrialInitializer,
-    PetitionersBeforeTrialInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
     GettingReadyPageInitializer,
@@ -59,4 +90,9 @@ rules_and_guidance_pages_to_initialize = [
     CaseProcedurePageInitializer,
     JCDPOrdersIssuedStartPageInitializer,
     CommentsAndSuggestionsPageInitializer,
+    PetitionersGuidancePageInitializer,
+    PetitionersTimelinePageInitializer,
+    PetitionersPrepareToFilePageInitializer,
+    PetitionersFormsPageInitializer,
+    PetitionersHelpPageInitializer,
 ]

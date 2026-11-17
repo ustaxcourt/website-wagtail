@@ -14,6 +14,12 @@ function setupLinkHandlers() {
             return;
         }
 
+        // Links marked for download (e.g. card buttons with "download" checked) should
+        // save the file rather than open it in a new tab.
+        if (link.hasAttribute('download') && isSamedomain(href)) {
+            return;
+        }
+
         // For same-domain PDFs, let GA track first
         if (isSamedomain(href) && isPdf(href)) {
             window.open(href, '_blank');

@@ -70,6 +70,6 @@ def create_nested_list_block(max_depth=5, current_depth=1):
         )
 
     return NestedListBlock(
-        blocks.StructBlock(list_item_blocks, required=False),
+        blocks.StructBlock(list_item_blocks, required=False, label="Item"),
         required=False,
     )

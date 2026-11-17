@@ -195,7 +195,13 @@ class PetitionersBeforeTrialInitializer(PageInitializer):
                 search_description="Guidance for Petitioners - Things That Occur Before Trial",
                 body=[
                     {"type": "h2", "value": "Things That Occur Before Trial"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )

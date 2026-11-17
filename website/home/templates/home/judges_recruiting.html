@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
-{% load wagtailcore_tags %}
+{% load static wagtailcore_tags %}
 {% load custom_tags %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
+{% endblock %}
 {% block content %}
     <style>
         #judge-recruiting-page {
@@ -12,6 +16,8 @@
             font-weight: bold;
         }
     </style>
+{% endblock %}
+{% block content %}
     <div id="judge-recruiting-page"
          class="grid-container usa-prose margin-top-5">
         <div class="content">
@@ -60,14 +66,11 @@
                 {% if page.body %}
                     {% for block in page.body %}
                         {% if block.block_type == 'heading' %}
-                            <{{block.value.level}} class="rich-text">
-                                {{ block.value.text }}
-                            </{{block.value.level}}>
-
+                            <{{ block.value.level }} class="rich-text">
+                            {{ block.value.text }}
+                            </{{ block.value.level }}>
                         {% elif block.block_type == 'paragraph' %}
-                            <p class="rich-text">
-                                {{ block.value|richtext }}
-                            </p>
+                            <p class="rich-text">{{ block.value|richtext }}</p>
                         {% endif %}
                     {% endfor %}
                 {% endif %}

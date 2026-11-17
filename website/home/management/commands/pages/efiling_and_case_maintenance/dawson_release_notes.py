@@ -404,7 +404,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2021-06-10",
-                "description": "<ul><li>Improved pagination for eFiled documents.</li></ul>",
+                "description": "<ul><li>Improved pagination for e-filed documents.</li></ul>",
             },
             {
                 "release_date": "2021-06-06",

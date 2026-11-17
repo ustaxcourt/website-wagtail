@@ -124,7 +124,13 @@ Immediately inform the Chief Judge of any material changes in the information su
                         "type": "h2",
                         "value": "Requirements For Participation in the United States Tax Court Clinical, Student Practice & Calendar Call Program by Bar Sponsored Calendar Call Programs",
                     },
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                     {
                         "type": "snippet",
                         "value": CommonText.objects.get(

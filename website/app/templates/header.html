@@ -939,6 +939,7 @@
                                         </a>
                                     {% elif sub_link.page %}
                                         <a href="{% pageurl sub_link.page %}"
+                                        {% if request.path == sub_link.page.url %}aria-current="page"{% endif %}
                                         data-testid="nav-link-{{ sub_link.title|slugify }}"
                                         data-gtm-element="nav-menu-item"
                                         data-gtm-label="{{ sub_link.title }}">

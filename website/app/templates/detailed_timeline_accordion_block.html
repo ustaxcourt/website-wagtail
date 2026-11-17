@@ -1,0 +1,68 @@
+{% load wagtailcore_tags %}
+{% with data=block.value %}
+    <div id="detailed-timeline-accordion-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
+         class="detailed-timeline-accordion-block"
+         data-accordion-id="detailed-timeline-accordion-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}">
+        <div class="detailed-timeline-accordion-header {% if data.default_to_open %}active{% endif %}">
+            <h{{ heading_level|default:"3" }} class="detailed-timeline-accordion-title {% if data.default_to_open %}active{% endif %}">
+                <button type="button"
+                        class="detailed-timeline-accordion-header-button {% if data.default_to_open %}active{% endif %}"
+                        aria-expanded="{% if data.default_to_open %}true{% else %}false{% endif %}"
+                        aria-controls="detailed-timeline-content-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
+                        id="btn-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}">
+                    <span class="detailed-timeline-accordion-header-text">{{ data.title }}</span>
+                    <span class="material-symbols-outlined detailed-timeline-accordion-icon {% if data.default_to_open %}rotated active{% endif %}"
+                          aria-hidden="true">keyboard_arrow_down</span>
+                    {% if data.date_range %}
+                    <span class="detailed-timeline-accordion-header-date-range">
+                        <span class="material-symbols-outlined detailed-timeline-accordion-header-date-range-icon"
+                              aria-hidden="true">schedule</span>
+                        <span class="detailed-timeline-accordion-header-date-range-text">{{ data.date_range }}</span>
+                    </span>
+                    {% endif %}
+                </button>
+            </h{{ heading_level|default:"3" }}>
+        </div>
+        <div id="detailed-timeline-content-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}"
+             class="detailed-timeline-accordion-content {% if not data.default_to_open %}hidden{% endif %}"
+             role="region"
+             aria-labelledby="btn-{{ block_index }}{{ suffix }}{% if tile_num is not None %}{{ tile_num }}{% endif %}">
+            {% if data.instructions %}
+                {{ data.instructions|richtext }}
+                {% if data.your_tasks or data.helpful_information %}<hr />{% endif %}
+            {% endif %}
+            {% if data.your_tasks %}
+                <div class="detailed-timeline-accordion-content-your-tasks">
+                    <span class="material-symbols-outlined detailed-timeline-accordion-content-your-tasks-icon"
+                          aria-hidden="true">checklist</span>
+                    YOUR TASKS
+                </div>
+                <div class="detailed-timeline-accordion-content-your-tasks-items">
+                    {% include "home/_recursive_list.html" with list_type="checkbox_with_subtext" items=data.your_tasks id_prefix="checkbox-"|add:block.id %}
+                </div>
+                {% if data.helpful_information %}<hr />{% endif %}
+            {% endif %}
+            {% if data.helpful_information %}
+                <div class="detailed-timeline-accordion-content-helpful-information-header">
+                    <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-header-icon"
+                          aria-hidden="true">info</span>
+                    Helpful Information
+                </div>
+                {% for info_item in data.helpful_information %}
+                    <div class="detailed-timeline-accordion-content-helpful-information-items">
+                        <span class="material-symbols-outlined detailed-timeline-accordion-content-helpful-information-item-icon"
+                              aria-hidden="true">{{ info_item.icon }}</span>
+                        <div class="detailed-timeline-accordion-content-helpful-information-item-infotext {% if forloop.last and not info_item.information_subtext %}last-item-no-subtext{% endif %}">
+                            {{ info_item.information }}
+                        </div>
+                        {% if info_item.information_subtext %}
+                            <div class="detailed-timeline-accordion-content-helpful-information-item-infosubtext {% if forloop.last %}last-item{% endif %}">
+                                {{ info_item.information_subtext }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endwith %}

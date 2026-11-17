@@ -14,12 +14,19 @@ from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.mail import send_mail
 from wagtail.admin.menu import MenuItem
+from wagtail.admin.panels import FieldPanel
+from wagtail.admin.widgets import Button
 from wagtail.contrib.frontend_cache.utils import purge_pages_from_cache, PurgeBatch
 from wagtail.contrib.redirects.models import Redirect
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
+from wagtail.admin.ui.tables import Column
+from wagtail.admin.viewsets.pages import PageViewSet, base_page_viewset
 from wagtail.models import Page
+from home.admin.faq_csv import FAQCSVView, faq_csv_download
 from home.models import NavigationMenu, JudgeRole, Header
+from home.models.pages.enhanced_standard import EnhancedStandardPage
+from home.models.snippets.faq_filter_tag import block_if_filter_tags_in_use
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.judges import RESTRICTED_ROLES
 from home.models.custom_blocks.add_entry_above_view import add_entry_above_view
@@ -35,6 +42,25 @@ from home.views import NewsItemReportView, PrivateSeminarDisclosureReportView
 from wagtail.admin.menu import AdminOnlyMenuItem
 
 logger = logging.getLogger(__name__)
+
+
+class SluggedPageViewSet(PageViewSet):
+    """
+    Custom page listing that includes the "slug" column
+    """
+
+    model = Page
+    columns = [
+        *base_page_viewset.columns[:2],
+        Column("slug", label=_("Slug"), sort_key="slug"),
+        *base_page_viewset.columns[2:],
+    ]
+
+
+@hooks.register("register_admin_viewset")
+def register_slugged_page_viewset():
+    return SluggedPageViewSet("page_listing")
+
 
 try:
     from app.role_switcher.views import (
@@ -127,6 +153,18 @@ def prevent_navigation_menu_deletion(request, instances):
         from django.core.exceptions import PermissionDenied
 
         raise PermissionDenied()
+
+
+@hooks.register("before_delete_snippet")
+def protect_filter_tags_in_use_from_deletion(request, instances):
+    """A FilterTag can only be removed once no Q&A uses it."""
+    return block_if_filter_tags_in_use(request, instances, "removed")
+
+
+@hooks.register("before_unpublish")
+def protect_filter_tags_in_use_from_unpublish(request, instance):
+    """An unpublished FilterTag leaves the dropdown, so it needs the same protection."""
+    return block_if_filter_tags_in_use(request, [instance], "unpublished")
 
 
 @hooks.register("before_delete_snippet")
@@ -444,6 +482,39 @@ def register_add_entry_above_url():
             name="add_entry_above_view",
         ),
     ]
+
+
+@hooks.register("register_admin_urls")
+def register_faq_csv_urls():
+    return [
+        path("faq-csv/<int:page_id>/", FAQCSVView.as_view(), name="faq_csv"),
+        path(
+            "faq-csv/<int:page_id>/<str:section_id>/download/",
+            faq_csv_download,
+            name="faq_csv_download",
+        ),
+    ]
+
+
+@hooks.register("register_page_header_buttons")
+def faq_csv_page_header_button(page, user, view_name, next_url=None):
+    if (
+        issubclass(page.specific_class, EnhancedStandardPage)
+        and page.alias_of is None
+        and page.permissions_for_user(user).can_edit()
+    ):
+        has_body_fieldpanel = False
+        for panel in page.specific_class.content_panels:
+            if isinstance(panel, FieldPanel) and panel.field_name == "body":
+                has_body_fieldpanel = True
+
+        if has_body_fieldpanel:
+            yield Button(
+                "FAQ CSV import/export",
+                url=reverse("faq_csv", args=[page.pk]),
+                icon_name="table",
+                priority=66,
+            )
 
 
 @hooks.register("after_edit_page")

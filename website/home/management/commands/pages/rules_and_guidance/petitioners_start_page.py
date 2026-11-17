@@ -308,7 +308,13 @@ class PetitionersStartPageInitializer(PageInitializer):
                 search_description="Guidance for Petitioners - Starting a Case",
                 body=[
                     {"type": "h2", "value": "Starting A Case"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )

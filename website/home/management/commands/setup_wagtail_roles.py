@@ -13,6 +13,7 @@ from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from home.models import (
     CommonText,
+    FAQFilterTag,
     JudgeProfile,
     JudgeCollection,
     JudgeRole,
@@ -82,7 +83,11 @@ class Command(BaseCommand):
                 "jcdp",
             ],
             "Content Manager  Moderator": [Page.get_first_root_node().slug],
-            "DAWSON Contributor Moderator": ["dawson-user-guides", "release-notes"],
+            "DAWSON Contributor Moderator": [
+                "dawson-user-guides",
+                "dawson-how-to-e-file-a-petition",
+                "release-notes",
+            ],
             "HR Committee Editor": [
                 "vacancy-announcements",
                 "internship-programs",
@@ -243,6 +248,7 @@ class Command(BaseCommand):
         snippet_models = [
             Banner,
             CommonText,
+            FAQFilterTag,
             JudgeProfile,
             JudgeCollection,
             JudgeRole,
@@ -350,6 +356,7 @@ class Command(BaseCommand):
         snippet_models = [
             Banner,
             CommonText,
+            FAQFilterTag,
             JudgeProfile,
             JudgeCollection,
             JudgeRole,

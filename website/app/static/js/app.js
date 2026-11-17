@@ -10,6 +10,11 @@ document.getElementById('scroll-to-top').addEventListener('click', () => {
  */
 function refreshScrollToTopButton() {
     const button = document.getElementById('scroll-to-top');
+    const mobileNavMenu = document.getElementById('mobile-nav-menu');
+    const mobileNavMenuRect = mobileNavMenu?.getBoundingClientRect();
+    const mobileNavMenuStyle = mobileNavMenu
+        ? window.getComputedStyle(mobileNavMenu)
+        : { display: 'none' };
     const footer = document.getElementById('app-footer');
     const footerRect = footer.getBoundingClientRect();
 
@@ -20,9 +25,14 @@ function refreshScrollToTopButton() {
     button.classList.add('visible');
 
     const img = button.querySelector('img');
-    const screenWidth = window.screen.width;
+    const browserWidth = window.innerWidth;
+
     //only do this on desktop
-    if(screenWidth < 1025) {
+    if(browserWidth < 1025) {
+        if (mobileNavMenuStyle.display != 'none') {
+            button.style.bottom = `${window.innerHeight - mobileNavMenuRect.top + GAP_TO_BOTTOM_FOOTER}px`;
+            return;
+        }
         button.style.bottom = `${GAP_TO_BOTTOM_FOOTER}px`;
         return;
     }

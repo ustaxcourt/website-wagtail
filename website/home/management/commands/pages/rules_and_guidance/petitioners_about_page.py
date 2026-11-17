@@ -73,7 +73,13 @@ class PetitionersAboutInitializer(PageInitializer):
                 search_description="Guidance for Petitioners - About the Court",
                 body=[
                     {"type": "h2", "value": "About the Court"},
-                    {"type": "questionanswers", "value": questions},
+                    {
+                        "type": "questionanswers",
+                        "value": {
+                            "display_filter_section": False,
+                            "questions": questions,
+                        },
+                    },
                 ],
             )
         )

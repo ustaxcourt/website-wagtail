@@ -94,11 +94,11 @@ class TestRedirectBehavior(TestCase):
         """Test that sample legacy URLs are redirected correctly."""
         # Test a few legacy URLs that should be transformed
         test_cases = [
-            ("/administrative_orders.html", "/administrative-orders/"),
-            ("/case_procedure.html", "/case-procedure/"),
-            ("/citation_and_style_manual.html", "/citation-and-style-manual/"),
-            ("/dawson_faqs_basics.html", "/dawson-faqs-basics/"),
-            ("/employment.html", "/employment/"),
+            ("/administrative_orders.html", "/administrative-orders"),
+            ("/case_procedure.html", "/case-procedure"),
+            ("/citation_and_style_manual.html", "/citation-and-style-manual"),
+            ("/dawson_faqs_basics.html", "/dawson-faqs-basics"),
+            ("/employment.html", "/employment"),
         ]
 
         for old_path, expected_new_path in test_cases:

@@ -1,0 +1,118 @@
+{% extends "wagtailadmin/generic/base.html" %}
+{% load wagtailadmin_tags %}
+{% block main_content %}
+    <p>
+        Upload a CSV file to add a new FAQ section to the body of <strong>{{ page.get_admin_display_title }}</strong>, or to replace every question in an existing section.
+        Uploads are saved as a draft and are not published. Questions can still be edited one at a time in the page editor.
+    </p>
+    <p>
+        Columns:
+        {% for column in columns %}
+            <code>{{ column }}</code>
+            {% if column not in required_columns %}(optional){% endif %}
+            {% if not forloop.last %},{% endif %}
+        {% endfor %}.
+    </p>
+    <ul>
+        <li>Questions must be plain text.</li>
+        <li>Answers may be plain text (a blank line starts a new paragraph) or HTML, e.g. <code>&lt;a href="https://example.com"&gt;link&lt;/a&gt;</code>.</li>
+        <li>FilterTags use their display name and are case insensitive. The list of FilterTags can be found <a href="{% url 'wagtailsnippets_home_faqfiltertag:list' %}">here</a>.</li>
+        <li>An anchortag is generated from the question if one is not provided during import.</li>
+    </ul>
+{% if lock_message %}
+    <div class="help-block help-warning">
+        {% icon name="warning" %}
+        {{ lock_message }}
+    </div>
+{% endif %}
+{% if import_errors %}
+    <div class="help-block help-critical" role="alert">
+        {% icon name="warning" %}
+        <div>
+            <p>The CSV was not imported, and the page was not changed:</p>
+            <ul>
+                {% for error in import_errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+<h2>FAQ sections on this page</h2>
+{% if sections %}
+    <table class="listing">
+        <thead>
+            <tr>
+                <th>Section</th>
+                <th>Questions</th>
+                <th>First question</th>
+                <th>Download</th>
+                <th>Replace questions from CSV</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in sections %}
+                <tr>
+                    <td>{{ section.number }}</td>
+                    <td>{{ section.count }}</td>
+                    <td>{{ section.first_question|default:"(none)" }}</td>
+                    <td>
+                        <a class="button button-small button-secondary"
+                           href="{% url 'faq_csv_download' page.pk section.id %}">
+                            {% icon name="download" classname="default" %}
+                            Download CSV
+                        </a>
+                    </td>
+                    <td>
+                        {% if not lock_message %}
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="section_id" value="{{ section.id }}">
+                                <label class="w-sr-only"
+                                       for="csv-file-{{ section.id }}">CSV file for section {{ section.number }}</label>
+                                <input type="file"
+                                       id="csv-file-{{ section.id }}"
+                                       name="csv_file"
+                                       accept=".csv,text/csv"
+                                       required>
+                                <button type="submit" class="button button-small">
+                                    {% icon name="upload" classname="default" %}
+                                    Replace
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>This page has no FAQ sections yet.</p>
+{% endif %}
+{% if not lock_message %}
+    <h2>Add a new FAQ section from CSV</h2>
+    <p>The new FAQ section is added at the end of the page body. Move it in the page editor if needed.</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+            <label for="csv-file-new">CSV file</label>
+            <input type="file"
+                   id="csv-file-new"
+                   name="csv_file"
+                   accept=".csv,text/csv"
+                   required>
+        </p>
+        <p>
+            <label>
+                <input type="checkbox" name="display_filter_section">
+                Display Filter Section
+            </label>
+        </p>
+        <button type="submit" class="button">
+            {% icon name="upload" classname="default" %}
+            Add FAQ section
+        </button>
+    </form>
+{% endif %}
+<p>
+    <a href="{% url 'wagtailadmin_pages:edit' page.pk %}">Back to editing {{ page.get_admin_display_title }}</a>
+</p>
+{% endblock %}

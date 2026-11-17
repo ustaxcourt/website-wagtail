@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import { Result } from 'axe-core';
+import { checkNoDoubleAnnouncements } from './screen_reader';
 
 declare global {
   namespace Cypress {
@@ -67,6 +68,8 @@ export function terminalLog(violations: Result[]): void {
 }
 
 
+// Runs axe, then checks that a screen reader doesn't read anything twice
+// (e.g. a hidden radio and its visible label); see support/screen_reader.ts.
 export function checkA11y(context?: any, options: Record<string, unknown> = {}) {
   cy.injectAxe();
   // hack: tweak any statuspage.io message so it doesn't cause A11y test to fail
@@ -80,6 +83,7 @@ export function checkA11y(context?: any, options: Record<string, unknown> = {}) 
         },
         terminalLog,
     );
+    checkNoDoubleAnnouncements(typeof context === 'string' ? context : 'body');
 }
 
 export function checkA11yWithModerate() {
@@ -93,6 +97,7 @@ export function checkA11yWithModerate() {
     },
     terminalLog,
   );
+  checkNoDoubleAnnouncements('body');
 }
 
 export function checkHeaderOrder() {

@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
+{% endblock %}
 {% block content %}
     <div class="grid-container">
         <div class="content">

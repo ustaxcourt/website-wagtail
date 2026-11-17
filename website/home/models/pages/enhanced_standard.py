@@ -1,32 +1,38 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 from wagtail import blocks
-from wagtail.blocks import PageChooserBlock, StructBlockValidationError
-from wagtail.models import Page
-from wagtail.fields import StreamField
-from wagtail.snippets.blocks import SnippetChooserBlock
-from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
-
-# from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.admin.panels import FieldPanel
+from wagtail.blocks import PageChooserBlock, StructBlockValidationError
+from wagtail.contrib.typed_table_block.blocks import TypedTableBlock
+from wagtail.fields import StreamField
+from wagtail.models import Page
 from wagtail.search import index
+from wagtail.snippets.blocks import SnippetChooserBlock
 
-from home.blocks import SVGDocumentChooserBlock
-from home.blocks import QuickAccessTilesBlock
-from home.blocks import NoCaptionTypedTableBlock
-from home.models.config import IconCategories
-from home.models.custom_blocks.button import ButtonBlock
-from home.models.custom_blocks.common import link_obj
-from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
+from home.admin.moderation import ModerationTabbedInterface
+from home.blocks import (
+    NoCaptionTypedTableBlock,
+    QuickAccessTilesBlock,
+    SVGDocumentChooserBlock,
+)
+from home.forms import ReviewByRequiredOnSubmitForm
+from home.mixins.moderation import ModerationMixin
+from home.models.config import NumberedIconCategories
+from home.models.custom_blocks.button import ButtonBlock, CardButtonBlock
+from home.models.custom_blocks.common import (
+    ColumnBlock,
+    custom_promote_panels,
+)
+from home.models.custom_blocks.icon_header import IconHeaderBlock, SectionHeaderBlock
 from home.models.custom_blocks.image_with_link import ImageWithLinkBlock
-from home.models.custom_blocks.common import ColumnBlock
-from home.models.snippets.navigation import NavigationRibbon
+from home.models.custom_blocks.list_of_links import ListOfLinksBlock
 from home.models.custom_blocks.nested_list import create_nested_list_block
 from home.models.custom_blocks.printable_section import PrintableSectionBlock
-from home.models.custom_blocks.common import custom_promote_panels
-from home.mixins.moderation import ModerationMixin
-from home.admin.moderation import ModerationTabbedInterface
-from home.forms import ReviewByRequiredOnSubmitForm
+from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
+from home.models.custom_blocks.summary_timeline import SummaryTimelineBlock
+from home.models.custom_blocks.detailed_timeline import DetailedTimelineBlock
+from home.models.custom_blocks.question_answers import QuestionAnswersBlock
+from home.models.snippets.navigation import NavigationRibbon
 
 table_value_types = [
     ("text", blocks.RichTextBlock()),
@@ -240,8 +246,50 @@ class GridBlock(blocks.StructBlock):
         template = "grid_block.html"
 
 
+class HeroSection(blocks.StructBlock):
+    title = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        help_text="Title displayed at the top of the hero section.",
+    )
+    introductory_text = blocks.CharBlock(
+        max_length=512,
+        required=True,
+        help_text="Introductory text displayed beneath the title in the hero section.",
+    )
+    callout_block = blocks.StreamBlock(
+        [("block", StyledCalloutBlock())],
+        use_json_field=True,
+        blank=True,
+        required=False,
+        min_num=0,
+        max_num=1,
+        help_text="Callout block displayed underneath the introductory text in the hero section.",
+    )
+    buttons = blocks.StreamBlock(
+        [("button", ButtonBlock())],
+        use_json_field=True,
+        blank=True,
+        required=False,
+        min_num=0,
+        max_num=3,
+        help_text="Buttons to display at the bottom of the hero section.",
+    )
+
+    class Meta:
+        label = "Hero Section"
+
+
 # Base block definitions used in ENHANCED_STANDARD_PAGE_CONTENT
 _BASE_BLOCK_TYPES = [
+    (
+        "icon_header",
+        IconHeaderBlock(),
+    ),
+    (
+        "section_header",
+        SectionHeaderBlock(),
+    ),
     (
         "heading",
         blocks.StructBlock(
@@ -341,41 +389,9 @@ _BASE_BLOCK_TYPES = [
     ("list", create_nested_list_block(max_depth=4)),
     (
         "links",
-        blocks.StructBlock(
-            [
-                (
-                    "class",
-                    blocks.ChoiceBlock(
-                        choices=[
-                            ("indented", IndentStyle.INDENTED),
-                            ("unindented", IndentStyle.UNINDENTED),
-                        ],
-                        default=IndentStyle.INDENTED,
-                        label="List style",
-                    ),
-                ),
-                (
-                    "links",
-                    blocks.ListBlock(link_obj.child_block, label="Add Entry"),
-                ),
-            ],
-            label="List of Links",
-        ),
+        ListOfLinksBlock(),
     ),
-    (
-        "questionanswers",
-        blocks.ListBlock(
-            blocks.StructBlock(
-                [
-                    ("question", blocks.CharBlock(required=False)),
-                    ("answer", blocks.RichTextBlock()),
-                    ("anchortag", blocks.CharBlock()),
-                ]
-            ),
-            label="Question and Answer",
-            help_text="Add a question and answer with anchor tag for linking",
-        ),
-    ),
+    ("questionanswers", QuestionAnswersBlock()),
     ("columns", ColumnBlock()),
     (
         "embedded_video",
@@ -406,34 +422,111 @@ _BASE_BLOCK_TYPES = [
             blocks.StructBlock(
                 [
                     (
-                        "icon",
+                        "color",
+                        blocks.ChoiceBlock(
+                            choices=[
+                                ("white", "White"),
+                                ("gray", "Gray"),
+                                ("dark-primary", "Dark-Primary"),
+                                ("green", "Green"),
+                                ("yellow", "Yellow"),
+                            ],
+                            default="white",
+                            required=True,
+                            label="Card Color",
+                        ),
+                    ),
+                    (
+                        "numbered_icon",
                         blocks.ChoiceBlock(
                             choices=[
                                 (
                                     icon.value,
-                                    icon.name.replace("_", " ").title(),
+                                    "None"
+                                    if icon.name == "NONE"
+                                    else icon.name.replace("_", " ").title(),
                                 )
-                                for icon in IconCategories
+                                for icon in NumberedIconCategories
                             ],
-                            required=True,
+                            default=NumberedIconCategories.NONE,
+                            required=False,
+                            label="Numbered Icon",
+                            help_text="Optional numbered or status icon displayed on the card.",
                         ),
                     ),
-                    ("title", blocks.CharBlock(required=True)),
-                    ("description", blocks.RichTextBlock(required=True)),
                     (
-                        "color",
+                        "numbered_icon_alignment",
                         blocks.ChoiceBlock(
                             choices=[
-                                ("green", "Green"),
-                                ("yellow", "Yellow"),
+                                ("left", "Left"),
+                                ("center", "Center"),
+                                ("right", "Right"),
                             ],
+                            default="left",
                             required=True,
+                            label="Numbered Icon Alignment",
+                            help_text="Only applies when Numbered Icon is not 'None'.",
+                        ),
+                    ),
+                    (
+                        "title_icon",
+                        SVGDocumentChooserBlock(
+                            required=False,
+                            label="Title Icon",
+                            help_text="Optional: any SVG uploaded as a Wagtail Document.",
+                        ),
+                    ),
+                    (
+                        "title_icon_alt_text",
+                        blocks.CharBlock(
+                            required=False,
+                            label="Title Icon Alt Text",
+                            help_text="Leave blank if the Title Icon is purely decorative. "
+                            "Fill in if it conveys meaning not already in the Card Title (e.g. distinguishing icons for different options).",
+                        ),
+                    ),
+                    (
+                        "subtitle",
+                        blocks.CharBlock(
+                            required=False,
+                            label="Card Sub-title",
+                            help_text="Displays the card sub title",
+                        ),
+                    ),
+                    (
+                        "title",
+                        blocks.CharBlock(
+                            required=False,
+                            label="Card Title",
+                            help_text="Displays the card title",
+                        ),
+                    ),
+                    (
+                        "description",
+                        blocks.RichTextBlock(
+                            required=False,
+                            label="Body Text",
+                            help_text="Displays the text that goes under the header",
+                        ),
+                    ),
+                    (
+                        "buttons",
+                        blocks.ListBlock(
+                            CardButtonBlock(),
+                            min_num=0,
+                            max_num=1,
+                            required=False,
+                            label="Buttons",
+                            default=[],
                         ),
                     ),
                 ],
                 label="Card",
+                label_format="Card: {title}",
             ),
+            max_num=3,
             label="Card Set",
+            help_text="Add up to 3 cards. They display in a single row on desktop, wrap 2-up on tablet, and stack in a single column on mobile.",
         ),
     ),
     (
@@ -447,6 +540,18 @@ _BASE_BLOCK_TYPES = [
     (
         "grid",
         GridBlock(),
+    ),
+    (
+        "summary_timeline",
+        SummaryTimelineBlock(),
+    ),
+    (
+        "detailed_timeline",
+        DetailedTimelineBlock(),
+    ),
+    (
+        "hero_section",
+        HeroSection(),
     ),
     (
         "printable_section",

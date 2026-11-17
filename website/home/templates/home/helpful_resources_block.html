@@ -1,0 +1,28 @@
+<ul class="links unindented helpful_resources">
+    {% for link in block %}
+        {% if link.document %}
+            <li>
+                <a href="{{ link.document.url }}"
+                   data-testid="document-link"
+                   title="{{ link.title }}">{% if link.icon %}<span class="material-symbols-outlined" aria-hidden="true">{{ link.icon }}</span>{% endif %}{{ link.title }}</a>
+            </li>
+        {% elif link.video %}
+            <li>
+                <a href="{{ link.video.url }}"
+                   data-testid="document-link"
+                   target="_blank"
+                   title="{{ link.title }}">{% if link.icon %}<span class="material-symbols-outlined" aria-hidden="true">{{ link.icon }}</span>{% endif %}{{ link.title }}</a>
+            </li>
+        {% elif link.text_only %}
+            <li>
+                {% if link.icon %}<span class="material-symbols-outlined" aria-hidden="true">{{ link.icon }}</span>{% endif %}{{ link.title }}
+            </li>
+        {% else %}
+            <li>
+                {% if link.url %}
+                    <a href="{{ link.url }}" title="{{ link.title }}">{% if link.icon %}<span class="material-symbols-outlined" aria-hidden="true">{{ link.icon }}</span>{% endif %}{{ link.title }}</a>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

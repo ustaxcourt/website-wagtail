@@ -1,0 +1,1014 @@
+.enhanced-page {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.enhanced-page.grid-container > :not(.heading-wrapper, h1:not(.page-title),h2,h3,h4,h5,h6,hr, .question-answer-block, .petitioner-page-heading, .grid-row) {
+    margin-bottom: 32px;
+}
+
+.enhanced-page.grid-container .accordion-block:has(~ .accordion-block) {
+    margin-bottom: 18px;
+}
+.page-title,p,ul {
+    margin-top: 0px;
+}
+
+.enhanced-page.grid-container > h1,h2:not(.get-started-row > h2),h3:not(.question-answer-block > h3):not(.detailed-timeline-accordion-header > h3),h4,h5,h6  {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.enhanced-page.grid-container {
+    padding-top: 48px;
+    padding-bottom: 48px;
+    padding-left: 32px;
+    padding-right: 32px;
+    margin-bottom: 0px;
+}
+
+.enhanced-page.grid-container > hr {
+    margin-top: 17px;
+    margin-bottom: 34px;
+}
+
+.heading-wrapper + p, h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
+    margin-top: 0px;
+}
+.enhanced-page.enhanced-page.grid-container > .heading-wrapper,
+.enhanced-page.enhanced-page.grid-container > h1:not(.page-title),
+.enhanced-page.enhanced-page.grid-container > h2,
+.enhanced-page.enhanced-page.grid-container > h3,
+.enhanced-page.enhanced-page.grid-container > h4,
+.enhanced-page.enhanced-page.grid-container > h5,
+.enhanced-page.enhanced-page.grid-container > h6,
+.enhanced-page.enhanced-page.grid-container > p:has(~ ul):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr) ~ ul)),
+.enhanced-page.enhanced-page.grid-container > ul:has(~ p):not(:has(~ :is(.heading-wrapper, h1, h2, h3, h4, h5, h6,hr,p:empty) ~ p)),
+.enhanced-page.enhanced-page.grid-container > p:has(+ ul),
+.enhanced-page.enhanced-page.grid-container > p:has(+ p:not(:empty)),
+.enhanced-page.enhanced-page.grid-container > ul:has(+ p:not(:empty)),
+.enhanced-page.enhanced-page.grid-container > .page-title:has(+ p) {
+    margin-bottom: 15px;
+}
+p:empty {
+    display: none;
+}
+
+
+.enhanced-page iframe {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    display: block;
+    border: none;
+}
+
+.enhanced-page .centered-image {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.enhanced-page .centered-image img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.enhanced-page .None {
+    display: none;
+}
+
+.enhanced-page .nested-list img {
+    padding-top: 1rem;
+    display: block;
+    margin: 0 auto;
+    width: 55%;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+
+.nested-list.checkbox-list .list-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+}
+.checkbox-list > li {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    flex-direction: column;
+
+    padding: 12px 14px;
+}
+.checkbox-list-with-subtext > li.has-subtext {
+    background-color: var(--theme-color-base-lightest);
+    border-left: 4px solid var(--color-secondary);
+}
+.checkbox-label-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+.checkbox-list li p{
+    margin: 0;
+}
+.checkbox-list li p:first-child {
+    color: #000000;
+}
+.checkbox-list-with-subtext li p:nth-child(2) {
+    color: #3D4551;
+}
+.checkbox-list input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .enhanced-page .nested-list img {
+        width: 90%;
+        height: auto;
+        margin: 0 0 1rem 0;
+    }
+}
+
+.enhanced-page .links span {
+    padding-right: .4em;
+    font-weight: 900;
+    vertical-align: bottom;
+}
+
+.enhanced-page .links.with-bullets {
+    list-style-type: disc;
+    padding-left: 40px;
+}
+
+.enhanced-page .heading-wrapper {
+    gap: 4px;
+    position: relative;
+}
+
+.icon-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: #1B1B1B;
+    font-weight: 600;
+}
+
+.icon-header__icon {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon-header__icon i,
+.icon-header__text {
+    line-height: 1;
+}
+
+.icon-header__icon i {
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 20px;
+}
+
+.icon-header__icon i::before {
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.enhanced-page .heading-wrapper .bookmark {
+    position: absolute;
+    left: -30px;
+    flex-shrink: 0;
+    top: 4px;
+}
+
+.enhanced-page .question-answer-block {
+    display: flex;
+    position: relative;
+}
+
+.enhanced-page .question-answer-block .bookmark {
+    position: absolute;
+    left: -22px;
+    top: 24px;
+}
+
+.enhanced-page .question-answer-block h3 a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+}
+
+.enhanced-page .question-answer-block h3 a:hover {
+    text-decoration: underline;
+}
+
+.enhanced-page .usa-button {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    display: block;
+    font-weight: normal;
+}
+
+.enhanced-page .dedication {
+    margin-bottom: 2rem;
+    display: flow-root;
+}
+
+.enhanced-page .dedication .dedication-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.enhanced-page .dedication .dedication-image {
+    float: left;
+    max-width: 200px;
+    margin: 0 1.5rem 17.5px 0;
+    padding: 0;
+}
+
+.enhanced-page .dedication .dedication-image.dedication-image--landscape {
+    max-width: 300px;
+}
+
+.enhanced-page .dedication.dedication-right .dedication-image {
+    float: right;
+    margin: 0 0 17.5px 1.5rem;
+}
+
+.enhanced-page .dedication .dedication-image img {
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.33);
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.enhanced-page .dedication .dedication-image:focus {
+    outline: 2px solid #005EA2;
+    outline-offset: 2px;
+}
+
+.enhanced-page .dedication .dedication-image:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.enhanced-page .dedication .dedication-text p {
+    margin-bottom: 15px;
+}
+
+.enhanced-page .dedication .dedication-text p:last-child {
+    margin-bottom: 0;
+}
+
+.enhanced-page .enhanced-table.unstyled {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    table-layout: fixed;
+}
+
+.enhanced-page .enhanced-table.unstyled td:not(:has(.cell-header)),
+.enhanced-page .enhanced-table.unstyled th {
+    padding: 1rem;
+    vertical-align: top;
+}
+
+.enhanced-page .enhanced-table:not(.unstyled) {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.enhanced-page .enhanced-table:not(.unstyled) th:not([scope="row"]) {
+    background-color: #005EA2;
+    color: white;
+}
+
+.enhanced-page .enhanced-table:not(.unstyled-borderless, .usa-table--borderless) th,
+.enhanced-page .enhanced-table:not(.unstyled-borderless, .usa-table--borderless) td:not(:has(.cell-header)) {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #dfe1e2;
+    vertical-align: top;
+}
+
+.enhanced-page .enhanced-table:not(.unstyled) tr:nth-child(odd) {
+    background-color: white;
+}
+
+.enhanced-page .table-container {
+    width: 100%;
+    margin: 1rem 0;
+}
+
+div.quick-access-tiles-container + div.get-started-row {
+    margin-top: 28px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+div.get-started-row + p + p {
+    margin-bottom: 48px;
+}
+
+@media (max-width: 740px) {
+    .enhanced-page .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .enhanced-page .enhanced-table {
+        margin: 0;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .enhanced-page .enhanced-table.usa-table--stacked tr,
+    .enhanced-page .usa-table--stacked-header tr {
+        border-bottom: 0px;
+    }
+
+    .enhanced-page .enhanced-table.usa-table--stacked td,
+    .enhanced-page .usa-table--stacked-header td {
+        border-bottom: 0px;
+    }
+
+    .enhanced-page.grid-container {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: 24px;
+        margin:0px;
+    }
+
+}
+
+
+@media (max-width: 1024px) {
+
+    .enhanced-page .question-answer-block .bookmark {
+        top: 24px;
+        left: -4px;
+    }
+    .enhanced-page.grid-container {
+        padding-left: 29px;
+        padding-right: 29px;
+    }
+
+    .enhanced-page .question-answer-block h3,
+    .enhanced-page .question-answer-block h4,
+    .enhanced-page .question-answer-block h5,
+    .enhanced-page .question-answer-block h6 {
+        padding-left: 16px;
+    }
+
+    .enhanced-page .heading-wrapper .bookmark {
+        left: -12px;
+    }
+
+    .enhanced-page .heading-wrapper h2,
+    .enhanced-page .heading-wrapper h3,
+    .enhanced-page .heading-wrapper h4,
+    .enhanced-page .heading-wrapper h5,
+    .enhanced-page.grid-container .heading-wrapper a {
+        margin-right: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .enhanced-page.grid-container {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .enhanced-page .dedication {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .enhanced-page .dedication .dedication-image {
+        float: none;
+        max-width: 200px;
+        margin: 0 auto 1rem auto;
+    }
+
+    .enhanced-page .dedication .dedication-image.dedication-image--landscape {
+        max-width: 100%;
+    }
+
+    .enhanced-page .dedication.dedication-right .dedication-image {
+        float: none;
+        order: 2;
+        max-width: 200px;
+        margin: 1rem auto 0 auto;
+    }
+
+    .enhanced-page .dedication.dedication-right .dedication-image.dedication-image--landscape {
+        max-width: 100%;
+    }
+
+    .enhanced-page .dedication.dedication-right .dedication-text {
+        order: 1;
+    }
+
+    .enhanced-page .dedication .dedication-text blockquote {
+        margin: 15px;
+    }
+
+    .enhanced-page .video-container .video-desc-block {
+        flex-direction: column;
+        padding: 20px;
+        gap: 10px;
+    }
+}
+
+.enhanced-page .alert {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    color: #1B1B1B;
+}
+
+.enhanced-page .alert.success {
+    border: none;
+    background-color: #ecf3ce;
+    border-color: #e4eeba;
+}
+
+.enhanced-page .alert.info {
+    background-color: #f1f9fc;
+    border-color: #d4ecf6;
+    border: none;
+}
+
+.enhanced-page .alert a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .enhanced-page .dedication .dedication-text {
+        blockquote {
+            margin: 15px;
+        }
+    }
+}
+
+/* Card Set: not scoped under .enhanced-page because enhanced_body.html is
+   also included by templates without that wrapper. */
+
+/* One row at desktop; wraps 2-up at tablet, stacks at mobile. */
+.info-cards {
+    display: flex;
+    align-items: stretch;
+    gap: 48px;
+    margin-top: 1rem;
+}
+
+.info-cards:not(:last-child) {
+    margin-bottom: 34px;
+}
+
+.info-cards .info-card {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.info-card {
+    padding: 24px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    border: 1px solid #F0F0F0;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.info-card.white {
+    background-color: #FFFFFF;
+}
+
+.info-card.gray {
+    background-color: #F0F0F0;
+}
+
+.info-card.dark-primary {
+    background-color: #1A4480;
+    border: none;
+}
+
+.info-card.green {
+    background-color: #ecf3ec;
+}
+
+.info-card.yellow {
+    background-color: #fef0c8;
+}
+
+.info-card.dark-primary .subtitle,
+.info-card.dark-primary .title,
+.info-card.dark-primary .description {
+    color: #FFFFFF;
+}
+
+.info-card.dark-primary .description a,
+.info-card.dark-primary .description a:visited {
+    color: #FFFFFF;
+}
+
+.info-card__icon-row {
+    display: flex;
+    width: 100%;
+}
+
+.info-card__icon-row--left {
+    justify-content: flex-start;
+}
+
+.info-card__icon-row--center {
+    justify-content: center;
+}
+
+.info-card__icon-row--right {
+    justify-content: flex-end;
+}
+
+.info-card__icon-badge {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #162E51;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(243, 244, 246, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-card.green .info-card__icon-badge {
+    background: black;
+    border: none;
+    box-shadow: none;
+}
+
+.info-card.yellow .info-card__icon-badge {
+    background: black;
+    border: none;
+    box-shadow: none;
+}
+
+.info-card__icon-badge span {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.get-started-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.get-started-row a{
+    text-decoration: underline;
+    color: black;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.section-header--blue-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    background-color: #005EA2;
+}
+.section-header--blue-bar h2 {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 30px;
+}
+.section-header--blue-bar a {
+    color: #FFFFFF;
+    font-size: 16px;
+    text-decoration: underline;
+}
+@media (max-width: 768px) {
+    .section-header--blue-bar h2 {
+        font-size: 20px;
+    }
+}
+
+.info-card__icon-badge .info-card__non-md-number {
+    color: #FFFFFF;
+}
+
+.info-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+.info-card .card-header__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.info-card__title-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #F3F4F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-card.gray .info-card__title-icon,
+.info-card.green .info-card__title-icon,
+.info-card.yellow .info-card__title-icon {
+    background: #162E51;
+}
+
+.info-card.dark-primary .info-card__title-icon {
+    background: transparent;
+}
+
+.info-card__title-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+.info-card.gray .info-card__title-icon img,
+.info-card.green .info-card__title-icon img,
+.info-card.yellow .info-card__title-icon img {
+    filter: brightness(0) invert(1);
+}
+
+.info-card.dark-primary .info-card__title-icon img {
+    filter: brightness(0) invert(1);
+}
+
+.info-card .subtitle {
+    color: #565C65;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+}
+
+.info-card .title {
+    color: #162E51;
+    font-weight: 600;
+    font-size: 20px;
+    text-align: left;
+}
+
+.info-card .description {
+    color: #565C65;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.info-card.gray .description {
+    color: #1B1B1B;
+}
+
+.info-card .description a {
+    text-decoration: underline;
+}
+
+.info-card__buttons {
+    display: flex;
+    margin-top: auto;
+}
+
+.info-card__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #005EA2;
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: #005EA2;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Default spacing between text in card and button. If description text is not
+displayed, add the gap in .info-card to margin-top to determine the spacing
+between the text and the button. If description text is displayed, this style
+is ignored (see next CSS) and the minimum spacing between the text and button
+in the card is determined by adding the gap in .info-card to the margin-block-end
+of <p> tags. */
+.card-header + .info-card__buttons {
+    margin-top: 16px;
+}
+
+/* Set the top margin of buttons in a card tile to be automatic so the button
+always shifts to the bottom of the card tile when any card tile in the row has
+description text */
+.info-cards:has(.info-card > .description) > .info-card > .info-card__buttons {
+    margin-top: auto;
+}
+
+.info-card__button:hover {
+    background: #F0F0F0;
+}
+
+.info-card__button.no-hover:hover {
+    background: #FFFFFF;
+}
+
+.info-card__button img {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 1024px) {
+    .info-card {
+        border-radius: 16px;
+    }
+
+    .info-cards {
+        gap: 32px;
+        flex-wrap: wrap;
+    }
+
+    .info-cards .info-card {
+        flex: 0 1 calc(50% - 16px);
+    }
+}
+
+@media (max-width: 768px) {
+    .info-cards {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* Mobile: stacked cards size to their content; no min-height. */
+    .info-cards .info-card {
+        flex: 1 1 auto;
+    }
+
+    .info-card.has-button {
+        min-height: auto;
+    }
+
+    .info-card .title {
+        font-size: 18px;
+    }
+}
+
+/* 32px below the page title on every PE page*/
+.side-card-layout {
+    margin-top: 32px;
+}
+
+/* Side Card rail: beside the body at desktop (grid-col-8/4 split in
+   petitioner_experience_page.html), stacked below it otherwise. */
+.side-card-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.side-card {
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--color-white);
+}
+
+/* blue/navy per the Prepare to File / FAQs mockups; remaining variants
+   mirror the Card Set palette. */
+.side-card.side-card--blue {
+    background-color: var(--color-primary);
+}
+
+.side-card.side-card--navy {
+    background-color: var(--color-secondary);
+}
+
+.side-card.side-card--white {
+    background-color: #FFFFFF;
+    color: #1B1B1B;
+    border: 1px solid #F0F0F0;
+}
+
+.side-card.side-card--gray {
+    background-color: #F0F0F0;
+    color: #1B1B1B;
+}
+
+.side-card.side-card--dark-primary {
+    background-color: #1A4480;
+}
+
+.side-card.side-card--green {
+    background-color: #ecf3ec;
+    color: #1B1B1B;
+}
+
+.side-card.side-card--yellow {
+    background-color: #fef0c8;
+    color: #1B1B1B;
+}
+
+.side-card__icon {
+    font-size: 28px;
+}
+
+.side-card__title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.side-card__intro {
+    font-size: 16px;
+}
+
+.side-card__intro p {
+    margin: 0;
+}
+
+.side-card__links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* "contact" style: white pill rows, e.g. the Clerk's Office email/phone.
+   The pill is a div so helper text sits inside it without being part of the
+   link; the link's ::after stretches over the pill to keep it all clickable. */
+.side-card__contact {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #1B1B1B;
+}
+
+.side-card__contact:has(.side-card__contact-link:focus-visible) {
+    outline: 0.25rem solid #2491FF;
+    outline-offset: 0.25rem;
+}
+
+.side-card__contact-link {
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    text-decoration: none;
+    color: #1B1B1B;
+}
+
+.side-card__contact-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.side-card__contact-link:hover,
+.side-card__contact-link:focus {
+    text-decoration: none;
+    outline: none;
+}
+
+.side-card__contact-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.side-card__contact-label {
+    font-weight: 700;
+    color: #1B1B1B;
+}
+
+.side-card__contact:hover .side-card__contact-label,
+.side-card__contact:has(.side-card__contact-link:focus-visible) .side-card__contact-label {
+    text-decoration: underline;
+}
+
+.side-card__contact[data-link-type="email"] .side-card__contact-label {
+    text-decoration: underline;
+}
+
+.side-card__contact-helper {
+    font-size: 14px;
+    color: #565C65;
+}
+
+/* "button" style: full-width inverted-primary button from styled_button.html. */
+.side-card__links--button .side-card__button .usa-button.styled-inverted-primary-button {
+    width: 100%;
+    justify-content: center;
+}
+
+/* "plain_links" style: inherits the card's foreground color so links work on
+   both dark and light variants. */
+.side-card__plain-link {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.side-card__plain-link:hover {
+    opacity: 0.85;
+}
+
+/* Desktop: 16px + the CTA's 32px margin = the mockup's 48px gap. */
+@media (min-width: 1024px) {
+    .side-card-main .printable-section:last-of-type {
+        margin-bottom: 16px;
+    }
+}
+
+/* Tablet: rail drops below the body; wrap cards 2-up (same breakpoint as
+   .info-cards). */
+@media (max-width: 1024px) {
+    /* Stacked sections are 32px apart per the mockups. */
+    .side-card-main .printable-section {
+        margin-bottom: 32px;
+    }
+
+    .side-card-rail {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 0;
+    }
+
+    .side-card-rail .side-card {
+        flex: 1 1 calc(50% - 12px);
+        min-width: 280px;
+    }
+}
+
+/* Mobile: single column, every card full width. */
+@media (max-width: 768px) {
+    .side-card-rail {
+        flex-direction: column;
+    }
+
+    .side-card-rail .side-card {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .side-card__title {
+        font-size: 18px;
+    }
+
+    /* Keeps a typical email address on one line instead of wrapping a stray letter. */
+    .side-card__contact[data-link-type="email"] .side-card__contact-label {
+        font-size: 14px;
+    }
+}

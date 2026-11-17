@@ -24,7 +24,7 @@ PRINTABLE_SECTION_BODY = [
     },
     {
         "type": "paragraph",
-        "value": "<p>Printable paragraph content</p>",
+        "value": '<p>Printable paragraph content with an <a href="/relative-link/">internal link</a></p>',
     },
 ]
 
@@ -66,6 +66,7 @@ class PrintableSectionBlockRenderTest(TestCase):
                 {
                     "type": "printable_section",
                     "value": {
+                        "icon": "draft",
                         "title": "Test Printable Section",
                         "intro": "<p>Intro text</p>",
                         "body": PRINTABLE_SECTION_BODY,
@@ -89,10 +90,17 @@ class PrintableSectionBlockRenderTest(TestCase):
         rendered = response.render()
         content = rendered.content.decode()
         self.assertIn("Test Printable Section", content)
+        self.assertIn("draft\n            </span>", content)
         self.assertIn("Section Heading", content)
         self.assertIn("List item one", content)
         self.assertIn("Printable paragraph content", content)
+        self.assertIn('href="/relative-link/"', content)
         self.assertIn('id="printable-section-0-prt"', content)
+        self.assertIn('clone.querySelectorAll("a[href]")', content)
+        self.assertIn('link.setAttribute("href", link.href)', content)
+        self.assertIn(
+            'window.addEventListener("afterprint", cleanupPrintHost)', content
+        )
         # The paragraph body child must not be wrapped in a <p>, since the
         # RichTextBlock value already renders its own block-level markup.
         self.assertNotIn(

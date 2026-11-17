@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load filters %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'css/includes/enhanced_standard.css' %}">
+    <style>
+        /* Rounded rectangle */
+        .rounded-rectangle {
+            padding: 0 0 48px 0;
+            width: 100%;
+            /* Scales with screen width */
+            background-color: var(--color-navy);
+            /* Fill color */
+            border-radius: 20px;
+            /* Rounded corners */
+            margin: 32px 0 32px 0;
+        }
+
+        .rounded-rectangle h1 {
+            padding: 48px 48px 0 48px;
+            color: var(--text-white);
+            font-size: 42px;
+            line-height: 42px;
+        }
+
+        .rounded-rectangle h2 {
+            padding: 24px 48px 0 48px;
+            color: var(--text-white);
+            font-weight: 400;
+        }
+
+        .rounded-rectangle-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: start;
+            padding: 32px 48px 0 48px;
+            gap: 24px;
+        }
+
+        .rounded-rectangle-buttons a {
+            display: inline-flex;
+            /* Make each control inline-flex */
+            margin-right: 0px;
+            /* Space between controls */
+        }
+
+        h2 {
+            font-weight: 400;
+        }
+
+        /* Forms page section headings: H2 Semibold with 8pt spacing. */
+        .petitioners-forms-page .side-card-main > h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 56px 0 8px;
+        }
+
+        h2 a {
+            color: black;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .petitioner-page-heading {
+            display: grid;
+            grid-template-rows: auto auto;
+            grid-template-columns: 95px auto;
+            column-gap: 32px;
+            row-gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .petitioner-page-heading.no-logo {
+            grid-template-columns: auto;
+            column-gap: 0px;
+        }
+
+        .petitioner-page-heading-logo {
+            grid-row: span 2;
+            grid-column: 1;
+        }
+
+        .petitioner-page-heading-logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        }
+
+        .petitioner-page-heading-title {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .petitioner-page-heading-intro {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .petitioner-page-heading.no-logo .petitioner-page-heading-title,
+        .petitioner-page-heading.no-logo .petitioner-page-heading-intro {
+            grid-column: 1;
+        }
+
+        .petitioner-page-heading-title h1 {
+            margin: 0;
+        }
+
+        .petitioner-breadcrumb {
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        .petitioner-breadcrumb + h1 {
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        .petitioner-breadcrumb-link {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 400;
+        }
+
+        .page-title-breadcrumb {
+            display: none;
+        }
+
+        .dawson-efile-guide .petitioner-page-heading {
+            flex-direction: column;
+            align-items: stretch;
+            row-gap: 15px;
+            margin-bottom: 0;
+        }
+
+        .dawson-efile-guide .petitioner-breadcrumb {
+            font-size: 16px;
+            line-height: 20px;
+            min-height: 0;
+        }
+
+        .dawson-efile-guide .petitioner-page-heading-title {
+            display: flex;
+            flex-direction: column;
+            row-gap: 15px;
+        }
+
+        .dawson-efile-guide .petitioner-page-heading h1 {
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 38px;
+        }
+
+        .dawson-efile-guide .grid-row.side-card-layout {
+            margin-top: 15px;
+        }
+
+        @media (min-width: 1201px) {
+            .dawson-efile-guide .detailed-timeline-header {
+                align-items: center;
+                column-gap: 73px;
+            }
+
+            .dawson-efile-guide .detailed-timeline-controls {
+                padding-bottom: 0;
+            }
+
+            .dawson-efile-guide .detailed-timeline-control-button {
+                height: 40px;
+                min-height: 40px;
+                padding: 8px;
+                margin-block: 0;
+            }
+
+            .dawson-efile-guide .detailed-timeline-control-button-icon,
+            .dawson-efile-guide .detailed-timeline-expand-button-icon,
+            .dawson-efile-guide .detailed-timeline-print-button-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .dawson-efile-guide .detailed-timeline-expand-button {
+                width: 130px;
+            }
+
+            .dawson-efile-guide .detailed-timeline-print-button {
+                width: 93px;
+            }
+        }
+
+        .dawson-efile-guide .detailed-timeline-phase:last-child {
+            margin-bottom: 0;
+        }
+
+        body:has(.dawson-efile-guide) .definitions-btn .button-contents {
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        /* Forms page body text is 16px (headings, card titles and subtitles keep their sizes). */
+        .petitioners-forms-page,
+        .petitioners-forms-page p,
+        .petitioners-forms-page .info-card .description,
+        .petitioners-forms-page .info-card__button {
+            font-size: 16px;
+        }
+
+        /* 32px between a card's text and its button: 16px card gap + 16px here. */
+        .petitioners-forms-page .info-card__buttons {
+            padding-top: 16px;
+        }
+
+        .petitioners-forms-page .side-card-main > h2:first-child {
+            margin-top: 32px;
+        }
+
+        .petitioners-forms-page .forms-paragraph {
+            margin: 0 0 24px;
+        }
+
+        .petitioners-forms-page .forms-paragraph > :last-child {
+            margin-bottom: 0;
+        }
+
+        .enhanced-page.grid-container.petitioners-forms-page > p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .petitioners-forms-page .info-card .description > :last-child {
+            margin-bottom: 0;
+        }
+
+        /* Keep the card icon at the top so long titles don't push it (and the subtitle) down. */
+        .petitioners-forms-page .info-card .card-header {
+            align-items: flex-start;
+        }
+
+        .quick-access-tiles-container:first-of-type .quick-access-tiles-grid {
+            margin-top: 0px;
+        }
+
+        @media (min-width: 1025px) {
+            .petitioners-forms-page .side-card-main > h2 {
+                margin-bottom: 8px;
+            }
+
+            .petitioners-forms-page .side-card-main > h2 + p {
+                margin: 0 0 24px;
+            }
+
+            .petitioners-forms-page .info-cards {
+                gap: 48px;
+                margin: 0 0 32px;
+            }
+
+            .petitioners-forms-page .info-card {
+                box-sizing: border-box;
+            }
+
+            .petitioners-forms-page .info-cards + h2 {
+                margin-top: 56px;
+            }
+
+            .petitioners-forms-page .styled-callout {
+                margin: 1.5rem 0 0 0;
+            }
+
+            .petitioners-forms-page .rounded-rectangle {
+                margin-top: 32px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .rounded-rectangle {
+                padding: 0 0 32px 0;
+            }
+
+            .rounded-rectangle h1 {
+                padding: 32px 48px 0 48px;
+                font-size: 42px;
+                line-height: 42px;
+            }
+
+            .rounded-rectangle h2 {
+                font-size: 24px;
+                line-height: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dawson-efile-guide .petitioner-page-heading h1 {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            .dawson-efile-guide .petitioner-page-heading {
+                row-gap: 12px;
+            }
+
+            .dawson-efile-guide .petitioner-breadcrumb {
+                min-height: 0;
+            }
+
+            .dawson-efile-guide .petitioner-page-heading-title {
+                row-gap: 12px;
+            }
+
+        }
+
+        @media (max-width: 479px) {
+            .dawson-efile-guide .detailed-timeline-controls {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .petitioner-breadcrumb {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            .rounded-rectangle {
+                padding: 0 0 32px 0;
+            }
+
+            .rounded-rectangle h1 {
+                padding: 32px 24px 0 24px;
+                font-size: 32px;
+                line-height: 32px;
+            }
+
+            .rounded-rectangle h2 {
+                padding: 24px 24px 0 24px;
+                font-size: 16px;
+                line-height: 16px;
+            }
+
+            .rounded-rectangle-buttons {
+                flex-direction: column;
+                padding: 32px 24px 0 24px;
+                gap: 0px;
+            }
+
+            .rounded-rectangle-buttons a {
+                width: 100%
+            }
+
+            .petitioner-page-heading {
+                grid-template-columns: 48px auto;
+                column-gap: 24px;
+                row-gap: 24px;
+            }
+
+            .petitioner-page-heading-logo {
+                grid-row: 1;
+                grid-column: 1;
+                align-content: center;
+            }
+
+            .petitioner-page-heading-title {
+                grid-column: 2;
+                grid-row: 1;
+                align-content: center;
+            }
+
+            .petitioner-page-heading-intro {
+                grid-column: span 2;
+                grid-row: 2;
+            }
+        }
+    </style>
+{% endblock %}
+{% block body_class %}template-standard_page{% endblock %}
+{% block content %}
+    <div {% if page.slug == "dawson-how-to-e-file-a-petition" %}id="dawson-efile-guide-print-content"{% endif %} class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}{% if page.slug == 'dawson-how-to-e-file-a-petition' %} dawson-efile-guide{% endif %}">
+        {% if page.navigation_ribbon %}
+            {% with current_path=request.path|normalize_url_path %}
+            <div class="blue-page-links-bar">
+                {% for link in page.navigation_ribbon.links.all %}
+                    <a href="{{ link.url }}"
+                       aria-label="{{ link.title }}"
+                       class="{% if current_path == link.url|normalize_url_path %}current-page{% endif %}"
+                       {% if current_path == link.url|normalize_url_path %}aria-current="page"{% endif %}>
+                        {% if link.icon != "dawson" %}
+                            {% if link.icon %}
+                            <span class="material-symbols-outlined" aria-hidden="true">
+                                {{ link.icon }}
+                            </span>
+                            {% endif %}
+                        <div class="title">{{ link.title }}</div>
+                        {% else %}
+                        <div class="{% if link.icon == 'dawson' %}dawson-button{% endif %}">
+                            <img class="dawson"
+                             src="{% static 'images/header/dawson.webp' %}"
+                             alt="DAWSON" />
+                            <div class="title">{{ link.title }}</div>
+                        </div>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+            {% endwith %}
+        {% endif %}
+        <div class="petitioner-page-heading {% if not page.show_dawson_logo %}no-logo{% endif %}">
+            {% if page.show_dawson_logo %}
+                <div class="petitioner-page-heading-logo">
+                    <img class="dawson"
+                        src="{% static 'images/header/dawson.webp' %}"
+                        alt="" />
+                </div>
+            {% endif %}
+            <!-- <div class="petitioner-page-heading-text"> -->
+                <div class="petitioner-page-heading-title">
+                    {% if page.breadcrumb_title and page.breadcrumb_page_url %}
+                        <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
+                            <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
+                            <span aria-hidden="true"> / </span>
+                            {% if page.slug == "dawson-how-to-e-file-a-petition" %}
+                                <span class="petitioner-breadcrumb-current" aria-hidden="true">How to e-file a petition</span>
+                            {% endif %}
+                        </nav>
+                    {% endif %}
+                    <h1 data-testid="page-title" tabindex="-1">
+                        <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
+                        <span class="page-title-breadcrumb"></span>
+                    </h1>
+                </div>
+                <div class="petitioner-page-heading-intro">
+                    {% if page.introductory_text %}
+                        {{ page.introductory_text|richtext }}
+                    {% endif %}
+                </div>
+            <!-- </div> -->
+        </div>
+        <div class="grid-row grid-gap side-card-layout">
+            <div class="grid-col-12 {% if page.side_cards.all %}desktop:grid-col-8{% endif %} side-card-main">
+                {% include "includes/enhanced_body.html" with blocks=page.body %}
+                {% for sub_block in page.raw_html_body %}
+                {% include "home/enhanced_raw_html_page.html" with block=sub_block %}
+                {% endfor %}
+            </div>
+            {% if page.side_cards.all %}
+            <div class="grid-col-12 desktop:grid-col-4 side-card-rail">
+                {% for side_card in page.side_cards.all %}
+                {% include "includes/side_card.html" with side_card=side_card %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% if page.call_to_action %}
+            <div class="rounded-rectangle">
+                <h1>{{ page.call_to_action.header }}</h1>
+                <h2>{{ page.call_to_action.body }}</h2>
+                <div class="rounded-rectangle-buttons">
+                    {% for button in page.call_to_action.buttons %}
+                        {% include "includes/styled_button.html" with block=button %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        // Actions to reset the breadcrumb at the top of the page
+        function resetBreadcrumb(eventFromListener) {
+            eventFromListener.preventDefault();
+            const url = new URL(window.location.href);
+            url.searchParams.delete('card');
+
+            // Update URL without reloading
+            window.history.pushState({}, '', url.toString());
+
+            // Trigger popstate to clear card selection
+            window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+
+        window.addEventListener('cardTilesBreadcrumbReady', function(event) {
+            const breadcrumbSpan = document.querySelector('.page-title-breadcrumb');
+            const titleStart = document.querySelector('.page-title-start');
+            if (breadcrumbSpan && event.detail.breadcrumb) {
+                breadcrumbSpan.textContent = ' / ' + event.detail.breadcrumb;
+                breadcrumbSpan.style.display = 'inline';
+                // Add underline to the start when breadcrumb is present
+                if (titleStart) {
+                    titleStart.style.textDecoration = 'underline';
+                    titleStart.style.cursor = 'pointer';
+
+                    // Make it clickable to remove the card query parameter
+                    // Remove any existing click listeners to avoid duplicates
+                    const newTitleStart = titleStart.cloneNode(true);
+                    titleStart.parentNode.replaceChild(newTitleStart, titleStart);
+
+                    newTitleStart.addEventListener('click', function(event) {
+                        resetBreadcrumb(event);
+                    });
+
+                    newTitleStart.addEventListener('keypress', function(event) {
+                        if (event.key === "Enter") {
+                            resetBreadcrumb(event);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock content %}

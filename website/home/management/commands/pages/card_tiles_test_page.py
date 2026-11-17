@@ -116,13 +116,16 @@ class CardTilesTestPageInitializer(PageInitializer):
             # questionanswers - ListBlock of StructBlocks
             {
                 "type": "questionanswers",
-                "value": [
-                    {
-                        "question": "What is this block?",
-                        "answer": "<p>This is a <strong>Question and Answer</strong> block.</p>",
-                        "anchortag": "qa-sample",
-                    },
-                ],
+                "value": {
+                    "display_filter_section": False,
+                    "questions": [
+                        {
+                            "question": "What is this block?",
+                            "answer": "<p>This is a <strong>Question and Answer</strong> block.</p>",
+                            "anchortag": "qa-sample",
+                        },
+                    ],
+                },
             },
             # list - Nested list block
             {

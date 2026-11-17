@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+
+<div class="summary-timeline-rectangle">
+    <div class="summary-timeline-title-block">{{ block.value.title }}:</div>
+    <div class="summary-timeline-phases-block">
+        {% for phase in block.value.phases %}
+            {% if not forloop.first %}<span class="svg-icon" aria-hidden="true"></span>{% endif %}
+            <div class="summary-timeline-phase">
+                <div class="summary-timeline-phase-content">
+                    {{ phase.title }}: <b>{{ phase.date_range }}</b>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

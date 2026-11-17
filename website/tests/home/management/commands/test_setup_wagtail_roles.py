@@ -32,6 +32,35 @@ class TestSetupWagtailRoles:
         assert Group.objects.filter(name="Editors").exists()
         assert Group.objects.filter(name="Moderators").exists()
 
+    def test_dawson_contributors_receive_permissions_for_efile_guide(self):
+        from django.contrib.contenttypes.models import ContentType
+        from django.contrib.auth.models import Permission
+        from django.core.management import call_command
+        from wagtail.models import GroupPagePermission, Locale, Page
+
+        self._setup_wagtail_collections()
+        Locale.objects.get_or_create(language_code="en")
+        root_page = Page.objects.filter(depth=1).first()
+        if root_page is None:
+            root_page = Page.add_root(title="Root", slug="root")
+        guide_page = Page(
+            title="How to e-file a Petition",
+            slug="dawson-how-to-e-file-a-petition",
+        )
+        root_page.add_child(instance=guide_page)
+
+        call_command("setup_wagtail_roles", stdout=StringIO())
+
+        group = Group.objects.get(name="DAWSON Contributor Moderator")
+        page_content_type = ContentType.objects.get_for_model(Page)
+        for codename in ("change_page", "publish_page"):
+            permission = Permission.objects.get(
+                codename=codename, content_type=page_content_type
+            )
+            assert GroupPagePermission.objects.filter(
+                group=group, page=guide_page, permission=permission
+            ).exists()
+
     def test_handle_is_idempotent(self):
         """Running twice should not fail."""
         self._setup_wagtail_collections()

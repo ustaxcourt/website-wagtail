@@ -14,6 +14,7 @@ from home.models.settings import (
     PrivateSeminarDisclosureSettings,
 )
 from home.models.config import IconCategories
+from home.models.snippets.call_to_action import CallToActionBox
 from home.models.snippets.news_item import NewsItem
 from home.models.snippets.navigation import (
     NavigationRibbon,
@@ -22,6 +23,7 @@ from home.models.snippets.navigation import (
     SubNavigationLinkBlock,
 )
 from home.models.snippets.common import CommonText
+from home.models.snippets.faq_filter_tag import FAQFilterTag
 from home.models.snippets.tagmanager import TagsSnippetViewSet
 from home.models.pages.standard import StandardPage
 from home.models.custom_blocks.photo_dedication import PhotoDedicationBlock
@@ -33,6 +35,8 @@ from home.models.pages.enhanced_standard import IndentStyle
 from home.models.pages.trial import PlacesOfTrialPage
 from home.models.pages.definitions import DefinitionsPage
 from home.models.pages.pamphlet import PamphletsPage, PamphletEntry
+from home.models.pages.petitioner_experience import PetitionerExperiencePage
+from home.models.pages.petitioner_experience import SideCard
 from home.models.pages.release_notes import ReleaseNotes
 from home.models.pages.internship import InternshipPrograms
 from home.models.pages.press_release import PressReleasePage
