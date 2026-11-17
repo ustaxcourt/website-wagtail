@@ -16,6 +16,9 @@ RESOURCES_COMMAND_NAME = (
 HIDE_TITLE_COMMAND_NAME = (
     "WAG-1484: Hide duplicate timeline title on How to troubleshoot file upload errors"
 )
+RESTORE_BODY_COMMAND_NAME = (
+    "WAG-1484: Restore missing timeline body on How to troubleshoot file upload errors"
+)
 PDF_ICON_FILENAME = "PDF_icon.svg"
 
 # (title, link) for the Resources column, in display order.
@@ -152,6 +155,29 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         page.body = body
         page.save_revision().publish()
 
+    def restore_missing_body(self):
+        """Restore the initializer's timeline only when the existing page body is empty."""
+        page = Page.objects.filter(slug=PAGE_SLUG).first()
+        if page is None:
+            self._check_parent()
+            self.create()
+            return
+
+        page = page.specific
+        if not isinstance(page, PetitionerExperiencePage):
+            raise TypeError(
+                f"Page '{PAGE_SLUG}' must be a PetitionerExperiencePage, "
+                f"not {type(page).__name__}."
+            )
+        if page.body:
+            logger.info(
+                f"Page '{PAGE_SLUG}' already has body content; leaving it unchanged."
+            )
+            return
+
+        logger.info(f"Restoring the missing body on page '{PAGE_SLUG}'.")
+        self.create_page_info(Page.objects.get(slug="home"), update_existing=True)
+
     def add_resource_cards(self):
         """Adds the Resources column to a page created before it existed."""
         page = PetitionerExperiencePage.objects.filter(slug=PAGE_SLUG).first()
@@ -165,13 +191,21 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         page.resource_cards = self.build_resource_cards()
         page.save_revision().publish()
 
-    def create_page_info(self, home_page):
+    def create_page_info(self, home_page, update_existing=False):
         slug = PAGE_SLUG
         title = "How to troubleshoot file upload errors"
 
-        if Page.objects.filter(slug=slug).exists():
-            logger.info(f"- {title} page already exists.")
-            return
+        existing_page = Page.objects.filter(slug=slug).first()
+        if existing_page:
+            existing_page = existing_page.specific
+            if not update_existing or existing_page.body:
+                logger.info(f"- {title} page already exists.")
+                return
+            if not isinstance(existing_page, PetitionerExperiencePage):
+                raise TypeError(
+                    f"Page '{slug}' must be a PetitionerExperiencePage, "
+                    f"not {type(existing_page).__name__}."
+                )
 
         user_guides_page = Page.objects.get(slug="dawson-user-guides")
         breadcrumb = [
@@ -199,189 +233,193 @@ class DawsonTroubleshootFileUploads(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        new_page = home_page.add_child(
-            instance=PetitionerExperiencePage(
-                title=title,
-                slug=slug,
-                seo_title=title,
-                search_description=title,
-                breadcrumb=breadcrumb,
-                show_floating_definitions_button=True,
-                resource_cards=self.build_resource_cards(),
-                body=[
-                    {
-                        "type": "detailed_timeline",
-                        "value": {
-                            "title": title,
-                            "introduction": (
-                                "<p>If you receive an error while uploading a document in DAWSON, "
-                                "the issue is often related to file size, PDF format, browser "
-                                "settings, network restrictions, or document security settings.</p>"
-                                "<p>Use the steps below to identify and resolve the most common "
-                                "upload errors.</p>"
+        new_page = PetitionerExperiencePage(
+            title=title,
+            slug=slug,
+            seo_title=title,
+            search_description=title,
+            breadcrumb=breadcrumb,
+            show_floating_definitions_button=True,
+            resource_cards=self.build_resource_cards(),
+            body=[
+                {
+                    "type": "detailed_timeline",
+                    "value": {
+                        "title": title,
+                        "introduction": (
+                            "<p>If you receive an error while uploading a document in DAWSON, "
+                            "the issue is often related to file size, PDF format, browser "
+                            "settings, network restrictions, or document security settings.</p>"
+                            "<p>Use the steps below to identify and resolve the most common "
+                            "upload errors.</p>"
+                        ),
+                        "show_title": False,
+                        "show_numbers_in_bubbles": True,
+                        "phases": [
+                            _phase(
+                                "Error Message #1: File size too big",
+                                _options(
+                                    "DAWSON could not upload the document because the file "
+                                    "exceeds the maximum upload size limit.",
+                                    [
+                                        "Check the size of the document you are uploading. "
+                                        "Documents uploaded to DAWSON must be 250 MB or less.",
+                                        "If a document exceeds 250 MB, divide it into multiple "
+                                        "files before uploading.",
+                                    ],
+                                ),
                             ),
-                            "show_title": False,
-                            "show_numbers_in_bubbles": True,
-                            "phases": [
-                                _phase(
-                                    "Error Message #1: File size too big",
-                                    _options(
-                                        "DAWSON could not upload the document because the file "
-                                        "exceeds the maximum upload size limit.",
-                                        [
-                                            "Check the size of the document you are uploading. "
-                                            "Documents uploaded to DAWSON must be 250 MB or less.",
-                                            "If a document exceeds 250 MB, divide it into multiple "
-                                            "files before uploading.",
-                                        ],
-                                    ),
-                                ),
-                                _phase(
-                                    "Error Message #2: The file is corrupt or in an unsupported PDF format",
-                                    _options(
-                                        "DAWSON cannot process PDF files that are damaged, improperly "
-                                        "created, or saved in an unsupported format. Creating a new PDF "
-                                        "often resolves these issues.",
-                                        [
-                                            "Re-save the file and confirm it opens properly in Adobe "
-                                            "Acrobat. Verify that the PDF opens without error before "
-                                            "uploading it again.",
-                                            "Save the document using Print to PDF. Creating a new PDF "
-                                            "may resolve formatting or compatibility issues.",
-                                            "Print the document and scan it as a new PDF. A newly "
-                                            "scanned PDF may upload successfully if the original file "
-                                            "is damaged or unsupported.",
-                                        ],
-                                    ),
-                                ),
-                                _phase(
-                                    "Error Message #3: Your firewall or network may be preventing submission",
-                                    _options(
-                                        "DAWSON could not complete the upload because a network or "
-                                        "firewall setting may be blocking the connection.",
-                                        [
-                                            "Try uploading the document using a different network or "
-                                            "Wi-Fi connection. Testing another network can help "
-                                            "determine whether your current network is blocking the "
-                                            "upload.",
-                                            "If the upload succeeds on another network, the issue may "
-                                            "be caused by a network or firewall restriction.",
-                                            "If necessary, contact your network administrator. They "
-                                            "may need to adjust firewall settings to allow document "
-                                            "submissions to DAWSON.",
-                                        ],
-                                    ),
-                                ),
-                                _phase(
-                                    "Error Message #4: There is a problem with this file",
-                                    _options(
-                                        "DAWSON encountered an issue while processing the uploaded "
-                                        "document. This may be related to the file itself or the "
-                                        "browser being used.",
-                                        [
-                                            "Verify that your browser is up to date.",
-                                            "Install any available browser updates.",
-                                            "Try uploading the file again after updating your browser.",
-                                        ],
-                                    ),
-                                    helpful_information=[
-                                        (
-                                            "What are the technical requirements for accessing DAWSON?",
-                                            "To use DAWSON, you only need an internet connection and a "
-                                            "current web browser. DAWSON works with Chrome, Microsoft "
-                                            "Edge, Firefox, and Safari. You do not need to install any "
-                                            "software.",
-                                        ),
+                            _phase(
+                                "Error Message #2: The file is corrupt or in an unsupported PDF format",
+                                _options(
+                                    "DAWSON cannot process PDF files that are damaged, improperly "
+                                    "created, or saved in an unsupported format. Creating a new PDF "
+                                    "often resolves these issues.",
+                                    [
+                                        "Re-save the file and confirm it opens properly in Adobe "
+                                        "Acrobat. Verify that the PDF opens without error before "
+                                        "uploading it again.",
+                                        "Save the document using Print to PDF. Creating a new PDF "
+                                        "may resolve formatting or compatibility issues.",
+                                        "Print the document and scan it as a new PDF. A newly "
+                                        "scanned PDF may upload successfully if the original file "
+                                        "is damaged or unsupported.",
                                     ],
                                 ),
-                                _phase(
-                                    "Error Message #5: The file is encrypted or password protected",
-                                    "<p>If you signed your document electronically using a program "
-                                    "such as Adobe Acrobat, the file may have been automatically saved "
-                                    "as a read-only or secured document. DAWSON cannot accept encrypted "
-                                    "or password-protected PDF files. Review the document for a "
-                                    '"(SECURED)" banner or security settings before attempting to '
-                                    "upload it again.</p>"
-                                    f"{images['dawson_faqs_case_management_secured.jpg']}<hr/>"
-                                    '<p><b>If you see "(SECURED)" at the top of the document</b></p>'
-                                    "<p>Create a new document file, and when signing it, decline "
-                                    'Adobe\'s prompt to save a read-only copy by clicking "Cancel" on '
-                                    "the screen when prompted. This will prevent Adobe from "
-                                    "automatically applying security measures to the file.</p>"
-                                    f"{images['dawson_faqs_case_management_banner.jpg']}<hr/>"
-                                    '<p><b>If you do not see "(SECURED)" at the top of the document</b></p>'
-                                    '<p>If you do NOT see the above banner or "(SECURED)" in the '
-                                    "document window, follow these steps.</p>"
-                                    "<ol>"
-                                    "<li>Right-click in the document.</li>"
-                                    "<li>Choose Document Properties from the options.</li>"
-                                    "<li>Click on the Security tab.</li>"
-                                    '<li>In the dropdown menu labeled Security Method, select "No Security".</li>'
-                                    "<li>Click OK.</li>"
-                                    "<li>Save the document. You should now be able to upload the "
-                                    "document to DAWSON without error.</li>"
-                                    "</ol>"
-                                    f"{images['dawson_faqs_case_management_properties.jpg']}",
-                                    helpful_information=[
-                                        (
-                                            "What digital signatures are accepted in DAWSON?",
-                                            "You may upload documents with a handwritten signature "
-                                            "scanned into a PDF, use an electronic signature tool such "
-                                            "as Adobe Acrobat or DocuSign, or upload documents "
-                                            "containing high-resolution images or digitized signatures. "
-                                            "Documents must be uploaded without encryption or password "
-                                            "protection. View "
-                                            '<a href="/dawson-faqs-case-management#FAQS7">full FAQ</a> for more details.',
-                                        ),
+                            ),
+                            _phase(
+                                "Error Message #3: Your firewall or network may be preventing submission",
+                                _options(
+                                    "DAWSON could not complete the upload because a network or "
+                                    "firewall setting may be blocking the connection.",
+                                    [
+                                        "Try uploading the document using a different network or "
+                                        "Wi-Fi connection. Testing another network can help "
+                                        "determine whether your current network is blocking the "
+                                        "upload.",
+                                        "If the upload succeeds on another network, the issue may "
+                                        "be caused by a network or firewall restriction.",
+                                        "If necessary, contact your network administrator. They "
+                                        "may need to adjust firewall settings to allow document "
+                                        "submissions to DAWSON.",
                                     ],
                                 ),
-                                _phase(
-                                    "Additional Troubleshooting",
-                                    _options(
-                                        "If the upload continues to fail after following the "
-                                        "recommended troubleshooting steps, additional assistance "
-                                        "may be required.",
-                                        [
-                                            "Review the troubleshooting steps for your specific error "
-                                            "message.",
-                                            "Most upload issues can be resolved by correcting file, "
-                                            "browser, network, or security settings.",
-                                            "Attempt the upload again after making the recommended "
-                                            "changes.",
-                                            "Contact DAWSON Support if the issue continues after "
-                                            "troubleshooting.",
-                                        ],
-                                        lead="Consider the following options:",
+                            ),
+                            _phase(
+                                "Error Message #4: There is a problem with this file",
+                                _options(
+                                    "DAWSON encountered an issue while processing the uploaded "
+                                    "document. This may be related to the file itself or the "
+                                    "browser being used.",
+                                    [
+                                        "Verify that your browser is up to date.",
+                                        "Install any available browser updates.",
+                                        "Try uploading the file again after updating your browser.",
+                                    ],
+                                ),
+                                helpful_information=[
+                                    (
+                                        "What are the technical requirements for accessing DAWSON?",
+                                        "To use DAWSON, you only need an internet connection and a "
+                                        "current web browser. DAWSON works with Chrome, Microsoft "
+                                        "Edge, Firefox, and Safari. You do not need to install any "
+                                        "software.",
                                     ),
-                                    show_info_icon=True,
-                                    helpful_information=[
-                                        (
-                                            "How can I access DAWSON and confirm it is working properly?",
-                                            "You can access DAWSON from a computer, smartphone, or "
-                                            "tablet by visiting "
-                                            '<a href="https://dawson.ustaxcourt.gov/">DAWSON</a> '
-                                            "directly. To check whether DAWSON is operating normally or "
-                                            "to view scheduled maintenance, visit the "
-                                            '<a href="https://status.ustaxcourt.gov/">system status page</a>. '
-                                            'View <a href="/dawson-faqs-basics#FAQS4">full FAQ</a> for more details.',
-                                        ),
+                                ],
+                            ),
+                            _phase(
+                                "Error Message #5: The file is encrypted or password protected",
+                                "<p>If you signed your document electronically using a program "
+                                "such as Adobe Acrobat, the file may have been automatically saved "
+                                "as a read-only or secured document. DAWSON cannot accept encrypted "
+                                "or password-protected PDF files. Review the document for a "
+                                '"(SECURED)" banner or security settings before attempting to '
+                                "upload it again.</p>"
+                                f"{images['dawson_faqs_case_management_secured.jpg']}<hr/>"
+                                '<p><b>If you see "(SECURED)" at the top of the document</b></p>'
+                                "<p>Create a new document file, and when signing it, decline "
+                                'Adobe\'s prompt to save a read-only copy by clicking "Cancel" on '
+                                "the screen when prompted. This will prevent Adobe from "
+                                "automatically applying security measures to the file.</p>"
+                                f"{images['dawson_faqs_case_management_banner.jpg']}<hr/>"
+                                '<p><b>If you do not see "(SECURED)" at the top of the document</b></p>'
+                                '<p>If you do NOT see the above banner or "(SECURED)" in the '
+                                "document window, follow these steps.</p>"
+                                "<ol>"
+                                "<li>Right-click in the document.</li>"
+                                "<li>Choose Document Properties from the options.</li>"
+                                "<li>Click on the Security tab.</li>"
+                                '<li>In the dropdown menu labeled Security Method, select "No Security".</li>'
+                                "<li>Click OK.</li>"
+                                "<li>Save the document. You should now be able to upload the "
+                                "document to DAWSON without error.</li>"
+                                "</ol>"
+                                f"{images['dawson_faqs_case_management_properties.jpg']}",
+                                helpful_information=[
+                                    (
+                                        "What digital signatures are accepted in DAWSON?",
+                                        "You may upload documents with a handwritten signature "
+                                        "scanned into a PDF, use an electronic signature tool such "
+                                        "as Adobe Acrobat or DocuSign, or upload documents "
+                                        "containing high-resolution images or digitized signatures. "
+                                        "Documents must be uploaded without encryption or password "
+                                        "protection. View "
+                                        '<a href="/dawson-faqs-case-management#FAQS7">full FAQ</a> for more details.',
+                                    ),
+                                ],
+                            ),
+                            _phase(
+                                "Additional Troubleshooting",
+                                _options(
+                                    "If the upload continues to fail after following the "
+                                    "recommended troubleshooting steps, additional assistance "
+                                    "may be required.",
+                                    [
+                                        "Review the troubleshooting steps for your specific error "
+                                        "message.",
+                                        "Most upload issues can be resolved by correcting file, "
+                                        "browser, network, or security settings.",
+                                        "Attempt the upload again after making the recommended "
+                                        "changes.",
+                                        "Contact DAWSON Support if the issue continues after "
+                                        "troubleshooting.",
                                     ],
+                                    lead="Consider the following options:",
                                 ),
-                            ],
-                        },
-                    }
-                ],
-            )
+                                show_info_icon=True,
+                                helpful_information=[
+                                    (
+                                        "How can I access DAWSON and confirm it is working properly?",
+                                        "You can access DAWSON from a computer, smartphone, or "
+                                        "tablet by visiting "
+                                        '<a href="https://dawson.ustaxcourt.gov/">DAWSON</a> '
+                                        "directly. To check whether DAWSON is operating normally or "
+                                        "to view scheduled maintenance, visit the "
+                                        '<a href="https://status.ustaxcourt.gov/">system status page</a>. '
+                                        'View <a href="/dawson-faqs-basics#FAQS4">full FAQ</a> for more details.',
+                                    ),
+                                ],
+                            ),
+                        ],
+                    },
+                }
+            ],
         )
 
-        new_page.save_revision().publish()
+        if existing_page:
+            existing_page.body = new_page.body
+            existing_page.save_revision().publish()
+        else:
+            new_page = home_page.add_child(instance=new_page)
+            new_page.save_revision().publish()
 
     def run(self):
         """Create the Dawson How to troubleshoot file upload errors page and its resource cards"""
         created = self._run_once(CREATE_COMMAND_NAME, self.create, self._check_parent)
         updated = self._run_once(RESOURCES_COMMAND_NAME, self.add_resource_cards)
+        restored = self._run_once(RESTORE_BODY_COMMAND_NAME, self.restore_missing_body)
         retitled = self._run_once(HIDE_TITLE_COMMAND_NAME, self.hide_timeline_title)
-        if not (created or updated or retitled):
+        if not (created or updated or restored or retitled):
             return 0
 
     def _check_parent(self):

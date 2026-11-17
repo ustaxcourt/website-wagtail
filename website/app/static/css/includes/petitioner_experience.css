@@ -401,11 +401,18 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
     line-height: 38px;
 }
 
-/* The rail is one column at every width, so these beat the tile grid's multi-column rules. */
+/* Keep the resource rail in one column by default, including on mobile and desktop. */
 .petitioner-resource-rail .quick-access-tiles-grid[data-max-columns] {
     grid-template-columns: 1fr;
     row-gap: 16px;
     margin: 15px 0 0;
+}
+
+/* Tablet resource cards sit below the timeline in two columns. */
+@media (min-width: 601px) and (max-width: 1023px) {
+    .petitioner-resource-rail .quick-access-tiles-grid[data-max-columns] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 /* Icon beside the title, left-aligned, at every width. */

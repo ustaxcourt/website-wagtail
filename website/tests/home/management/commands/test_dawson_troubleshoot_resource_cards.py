@@ -7,6 +7,7 @@ from home.management.commands.pages.rules_and_guidance import (
 from home.management.commands.pages.rules_and_guidance.dawson_troubleshoot_file_uploads import (
     PAGE_SLUG,
     HIDE_TITLE_COMMAND_NAME,
+    RESTORE_BODY_COMMAND_NAME,
     RESOURCES_COMMAND_NAME,
     troubleshoot_file_uploads_resources,
 )
@@ -138,6 +139,44 @@ class TestTroubleshootFileUploadsResourceCards(TestCase):
             page.get_latest_revision_as_object().body[0].value["show_title"]
         )
         self.assertEqual(len(page.body[0].value["phases"]), 6)
+
+    def test_existing_page_with_empty_body_gets_restored_once(self):
+        DawsonTroubleshootFileUploads().run()
+        page = PetitionerExperiencePage.objects.get(slug=PAGE_SLUG)
+        page.body = []
+        page.save_revision().publish()
+        ExecuteScript.objects.filter(command_name=RESTORE_BODY_COMMAND_NAME).delete()
+
+        DawsonTroubleshootFileUploads().run()
+
+        page = PetitionerExperiencePage.objects.get(slug=PAGE_SLUG)
+        self.assertEqual(len(page.body), 1)
+        self.assertEqual(page.body[0].block_type, "detailed_timeline")
+        self.assertEqual(len(page.body[0].value["phases"]), 6)
+        self.assertFalse(page.body[0].value["show_title"])
+        self.assertEqual(len(resource_tiles(page)), 3)
+        script = ExecuteScript.objects.get(command_name=RESTORE_BODY_COMMAND_NAME)
+        self.assertEqual(script.execution_status, "SUCCESS")
+        revision_count = page.revisions.count()
+
+        DawsonTroubleshootFileUploads().run()
+
+        page.refresh_from_db()
+        self.assertEqual(len(page.body), 1)
+        self.assertEqual(page.revisions.count(), revision_count)
+
+    def test_existing_nonempty_body_is_not_overwritten_by_restore(self):
+        DawsonTroubleshootFileUploads().run()
+        page = PetitionerExperiencePage.objects.get(slug=PAGE_SLUG)
+        body_before = page.body.get_prep_value()
+        revision_count = page.revisions.count()
+        ExecuteScript.objects.filter(command_name=RESTORE_BODY_COMMAND_NAME).delete()
+
+        DawsonTroubleshootFileUploads().run()
+
+        page.refresh_from_db()
+        self.assertEqual(page.body.get_prep_value(), body_before)
+        self.assertEqual(page.revisions.count(), revision_count)
 
 
 @override_settings(GITHUB_SHA="0123456789")
