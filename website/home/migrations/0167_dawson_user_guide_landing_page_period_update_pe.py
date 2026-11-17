@@ -18,11 +18,16 @@ def update_dawson_user_guides_landing_page_to_add_period(apps, schema_editor):
         TEXT_TO_FIND = '<p data-block-key="k9szf">Read this guide to troubleshoot common file upload errors</p>'
         TEXT_TO_REPLACE_WITH = '<p data-block-key="k9szf">Read this guide to troubleshoot common file upload errors.</p>'
         specific = page.specific
-        if TEXT_TO_FIND not in specific.body:
+        if (
+            TEXT_TO_FIND
+            != specific.body.raw_data[5]["value"][2]["value"]["description"]
+        ):
             logger.info("0167: text to find in card tile not found— skipping.")
             return
 
-        specific.body = specific.body.replace(TEXT_TO_FIND, TEXT_TO_REPLACE_WITH)
+        specific.body.raw_data[5]["value"][2]["value"]["description"] = (
+            TEXT_TO_REPLACE_WITH
+        )
         specific.save()
         specific.save_revision().publish()
         logger.info(
