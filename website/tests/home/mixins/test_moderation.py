@@ -1,6 +1,8 @@
 """Tests for home/mixins/moderation.py"""
 
 from datetime import timedelta
+
+import pytest
 from unittest.mock import MagicMock, patch
 from django.utils import timezone
 
@@ -161,3 +163,107 @@ class TestModerationMixinSaveRevision:
         obj = MagicMock(spec=[])  # no attributes
         # Should not raise
         ModerationMixin.on_workflow_approved(obj)
+
+
+@pytest.mark.django_db
+class TestModerationMixinWithRealModel:
+    """Integration-style tests using Banner, which includes ModerationMixin."""
+
+    def _banner(self, **kwargs):
+        from home.models.snippets.banners import Banner
+
+        defaults = dict(
+            banner_title="B",
+            description="D",
+            priority_level="high",
+            banner_start_date=timezone.now() - timedelta(days=30),
+        )
+        defaults.update(kwargs)
+        return Banner.objects.create(**defaults)
+
+    def test_save_revision_propagates_review_by_to_live_row(self):
+        banner = self._banner()
+        review_by = (timezone.now() + timedelta(days=3)).replace(microsecond=0)
+        banner.review_by = review_by
+        revision = banner.save_revision()
+
+        assert revision is not None
+        banner.refresh_from_db()
+        assert banner.review_by == review_by
+
+    def test_save_revision_clears_review_by_when_absent_from_revision(self):
+        banner = self._banner(review_by=timezone.now() + timedelta(days=1))
+        banner.review_by = None
+        banner.save_revision()
+
+        banner.refresh_from_db()
+        assert banner.review_by is None
+
+    def test_save_revision_accepts_clean_false(self):
+        # Invalid banner (high priority, no start date) must not raise
+        # when the caller opts out of validation.
+        banner = self._banner()
+        banner.priority_level = "high"
+        banner.banner_start_date = None
+        assert banner.save_revision(clean=False) is not None
+
+    def test_save_revision_runs_clean_by_default(self):
+        from django.core.exceptions import ValidationError
+
+        banner = self._banner()
+        banner.priority_level = "high"
+        banner.banner_start_date = None
+        with pytest.raises(ValidationError):
+            banner.save_revision()
+
+    def test_on_workflow_cancelled_persists_cleared_review_by(self):
+        banner = self._banner(review_by=timezone.now() + timedelta(days=1))
+        banner.on_workflow_cancelled()
+        banner.refresh_from_db()
+        assert banner.review_by is None
+
+    def test_on_workflow_approved_persists_cleared_review_by(self):
+        banner = self._banner(review_by=timezone.now() + timedelta(days=1))
+        banner.on_workflow_approved()
+        banner.refresh_from_db()
+        assert banner.review_by is None
+
+    def test_latest_revision_object_uses_review_by_from_revision(self):
+        banner = self._banner()
+        review_by = (timezone.now() + timedelta(days=5)).replace(microsecond=0)
+        banner.review_by = review_by
+        banner.save_revision()
+        # Live row diverges from the revision.
+        type(banner).objects.filter(pk=banner.pk).update(review_by=None)
+        banner.refresh_from_db()
+
+        obj = banner.get_latest_revision_as_object()
+        assert obj.review_by == review_by
+        assert obj._skip_review_by_validation is True
+
+    def test_latest_revision_object_falls_back_to_live_review_by(self):
+        banner = self._banner()
+        banner.save_revision()  # revision has review_by = None
+        live_value = timezone.now() + timedelta(days=2)
+        type(banner).objects.filter(pk=banner.pk).update(review_by=live_value)
+        banner.refresh_from_db()
+
+        obj = banner.get_latest_revision_as_object()
+        assert obj.review_by == live_value
+
+    def test_latest_revision_object_without_revisions(self):
+        banner = self._banner()
+        obj = banner.get_latest_revision_as_object()
+        assert obj._skip_review_by_validation is True
+
+    def test_latest_revision_object_falls_back_when_revision_lookup_fails(self):
+        banner = self._banner(review_by=timezone.now() + timedelta(days=1))
+        banner.save_revision()
+        broken = MagicMock()
+        broken.exists.return_value = True
+        broken.latest.side_effect = Exception("boom")
+        with patch.object(
+            type(banner), "revisions", new_callable=lambda: property(lambda s: broken)
+        ):
+            obj = banner.get_latest_revision_as_object()
+        assert obj.review_by == banner.review_by
