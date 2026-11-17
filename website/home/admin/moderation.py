@@ -18,7 +18,7 @@ def _contains_publishing_panel(panels):
     PublishingPanel must appear at most once per edit form: each one renders the
     ``go_live_at``/``expire_at`` inputs and the ``#schedule-publishing-dialog``
     markup, and duplicate DOM ids break the jQuery datetimepicker (which binds by
-    ``#id``), leaving the "Set schedule" calendar blank (WAG-1433).
+    ``#id``), leaving the "Set schedule" calendar blank (WAG-1411).
     """
     for panel in panels or []:
         if isinstance(panel, PublishingPanel):

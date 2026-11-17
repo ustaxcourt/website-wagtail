@@ -30,6 +30,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       adminLogin(username: string, password: string): Chainable<void>;
+      visitAndOpenScheduleDialog(url: string): Chainable<void>;
     }
   }
 }
@@ -52,6 +53,24 @@ cy.url({ timeout: 10000 }).should((url) => {
     expect(url).not.to.include('/admin/login');
     expect(url).not.to.include('/admin/local-login');
   });
+});
+
+// Visits a Wagtail page editor and opens the "Set publishing schedule" dialog.
+// Wagtail reopens the last-used side panel from localStorage, so the Status
+// panel is opened through that key rather than by clicking its toggle (a click
+// would close it again if it was already open).
+Cypress.Commands.add('visitAndOpenScheduleDialog', (url: string) => {
+  cy.visit(url, {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('wagtail:side-panel-open', 'status');
+    },
+  });
+  cy.get('[data-side-panel="status"]').should('be.visible');
+  cy.get('[data-side-panel="status"] [data-a11y-dialog-show="schedule-publishing-dialog"]')
+    .filter(':visible')
+    .first()
+    .click();
+  cy.get('#schedule-publishing-dialog').should('be.visible');
 });
 
 export function terminalLog(violations: Result[]): void {
