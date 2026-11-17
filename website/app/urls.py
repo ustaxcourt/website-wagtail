@@ -4,7 +4,6 @@ import os
 from django.conf import settings
 
 from django.contrib import admin
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import path, include
 from django.urls import re_path
@@ -67,18 +66,12 @@ def all_legacy_documents_redirect(request, filename):
     return render_404_util(request)
 
 
-def healthz(request):
-    """Lightweight health check for ECS/ALB: no DB queries, no template rendering."""
-    return HttpResponse("ok", content_type="text/plain")
-
-
 # Exists for testing purposes only
 def render_404_util(request):
     return render(request, "404.html", status=404)
 
 
 urlpatterns = [
-    path("healthz/", healthz, name="healthz"),
     path("sitemap.xml", sitemap),
     path(
         "robots.txt",
