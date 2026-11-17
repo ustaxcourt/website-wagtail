@@ -170,7 +170,7 @@ describe("DAWSON How to e-file a Petition guide", () => {
     it("preserves the desktop design", () => {
         cy.get(".enhanced-page")
             .should("have.css", "padding-left", "32px")
-            .and("have.css", "padding-top", "45px");
+            .and("have.css", "padding-top", "48px");
         cy.get('[data-testid="page-title"]').should("have.css", "font-size", "32px");
         cy.get(".detailed-timeline-expand-button")
             .should("have.css", "width", "130px")
