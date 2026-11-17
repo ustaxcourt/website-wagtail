@@ -142,6 +142,14 @@ resource "aws_ecs_task_definition" "this" {
       {
         name = "CLOUDFRONT_DISTRIBUTION_ID",
         value = aws_cloudfront_distribution.app.id
+      },
+      {
+        name = "GUNICORN_WORKERS",
+        value = tostring(local.gunicorn_workers)
+      },
+      {
+        name = "GUNICORN_THREADS",
+        value = tostring(local.gunicorn_threads)
       }
     ],
     secrets: [
@@ -172,7 +180,7 @@ resource "aws_ecs_task_definition" "this" {
     name         = local.container_name,
     portMappings = [{ containerPort = local.container_port }],
     healthCheck = {
-      "command"     = ["CMD", "curl", "-f", "http://localhost:${local.container_port}"]
+      "command"     = ["CMD", "curl", "-f", "http://localhost:${local.container_port}${local.health_check_path}"]
       "interval"    = 30 # check every 30 seconds
       "retries"     = 3  # retry 3 times before marking as unhealthy
       "startPeriod" = 30 # initial delay before starting health checks
