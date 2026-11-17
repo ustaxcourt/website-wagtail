@@ -415,6 +415,13 @@ class DawsonTroubleshootFileUploads(PageInitializer):
 
     def run(self):
         """Create the Dawson How to troubleshoot file upload errors page and its resource cards"""
+        page = Page.objects.filter(slug=PAGE_SLUG).first()
+        if page and page.has_unpublished_changes:
+            logger.warning(
+                f"Page '{PAGE_SLUG}' has unpublished changes; deferring initializer updates."
+            )
+            return 0
+
         created = self._run_once(CREATE_COMMAND_NAME, self.create, self._check_parent)
         updated = self._run_once(RESOURCES_COMMAND_NAME, self.add_resource_cards)
         restored = self._run_once(RESTORE_BODY_COMMAND_NAME, self.restore_missing_body)

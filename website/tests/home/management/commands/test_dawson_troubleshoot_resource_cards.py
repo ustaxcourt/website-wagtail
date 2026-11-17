@@ -178,6 +178,36 @@ class TestTroubleshootFileUploadsResourceCards(TestCase):
         self.assertEqual(page.body.get_prep_value(), body_before)
         self.assertEqual(page.revisions.count(), revision_count)
 
+    def test_run_defers_updates_while_page_has_unpublished_changes(self):
+        DawsonTroubleshootFileUploads().run()
+        page = PetitionerExperiencePage.objects.get(slug=PAGE_SLUG)
+        draft_body = page.body.get_prep_value()
+        draft_body[0]["value"]["introduction"] = "<p>Pending editorial draft.</p>"
+        page.body = []
+        page.save_revision().publish()
+        page.body = draft_body
+        page.save_revision()
+        page.refresh_from_db()
+        self.assertTrue(page.has_unpublished_changes)
+
+        pending_commands = [
+            RESOURCES_COMMAND_NAME,
+            RESTORE_BODY_COMMAND_NAME,
+            HIDE_TITLE_COMMAND_NAME,
+        ]
+        ExecuteScript.objects.filter(command_name__in=pending_commands).delete()
+        DawsonTroubleshootFileUploads().run()
+
+        page.refresh_from_db()
+        self.assertFalse(page.body)
+        self.assertEqual(
+            str(page.get_latest_revision_as_object().body[0].value["introduction"]),
+            "<p>Pending editorial draft.</p>",
+        )
+        self.assertFalse(
+            ExecuteScript.objects.filter(command_name__in=pending_commands).exists()
+        )
+
 
 @override_settings(GITHUB_SHA="0123456789")
 class TestTroubleshootFileUploadsResourcesColumn(TestCase):
@@ -211,6 +241,7 @@ class TestTroubleshootFileUploadsResourcesColumn(TestCase):
         self.assertIn("detailed-timeline-expand-button", html)
         self.assertNotIn(f"<h2>{self.page.title}</h2>", html)
         self.assertIn("detailed-timeline-print-button", html)
+        self.assertIn(f'data-print-title="{self.page.title}"', html)
         self.assertEqual(html.count('class="detailed-timeline-accordion-block"'), 6)
         self.assertEqual(html.count("detailed-timeline-accordion-header-button"), 6)
 
