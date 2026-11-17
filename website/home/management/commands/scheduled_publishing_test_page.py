@@ -17,7 +17,7 @@ from datetime import timedelta
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
-from wagtail.models import Page, Revision
+from wagtail.models import Page, Revision, Site
 
 from home.models import EnhancedStandardPage
 
@@ -36,7 +36,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options["delete"]:
-            Page.objects.filter(slug=SLUG).delete()
+            page = self._find_page()
+            if page is not None:
+                page.delete()
             self.stdout.write("Deleted scheduled publishing test page (if it existed).")
             return
 
@@ -51,17 +53,27 @@ class Command(BaseCommand):
 
         self._create()
 
+    def _home_page(self):
+        # The default site's root, so the page is served at /<SLUG>/.
+        return Site.objects.get(is_default_site=True).root_page
+
+    def _find_page(self):
+        # Slugs are only unique among siblings, so only look directly under
+        # the home page; a same-slug page elsewhere must never be touched.
+        return self._home_page().get_children().filter(slug=SLUG).first()
+
     def _get_page(self):
-        try:
-            return Page.objects.get(slug=SLUG)
-        except Page.DoesNotExist:
-            raise CommandError(f"No page with slug '{SLUG}'. Create it first.")
+        page = self._find_page()
+        if page is None:
+            raise CommandError(
+                f"No page with slug '{SLUG}' under the home page. Create it first."
+            )
+        return page
 
     def _create(self):
-        page = Page.objects.filter(slug=SLUG).first()
+        page = self._find_page()
         if page is None:
-            home_page = Page.objects.get(slug="home")
-            page = home_page.add_child(
+            page = self._home_page().add_child(
                 instance=EnhancedStandardPage(
                     title=TITLE,
                     slug=SLUG,
