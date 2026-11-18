@@ -408,10 +408,86 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
     margin: 15px 0 0;
 }
 
+.petitioner-resource-rail .petitioner-resource-side-cards {
+    margin-top: 16px;
+}
+
+/* Side cards keep their content and links but use the resource tile appearance in this rail. */
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 4px;
+    padding: 16px;
+    border: 1px solid #A9AEB1;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 4px 4px 0 rgba(86, 92, 101, 0.1);
+    color: #162E51;
+}
+
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card:not(:has(.side-card__icon)) {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card__icon {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+    color: #000;
+}
+
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card__title {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    color: #162E51;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card__intro,
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card__links {
+    grid-column: 2;
+}
+
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card:not(:has(.side-card__icon)) .side-card__title,
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card:not(:has(.side-card__icon)) .side-card__intro,
+.petitioner-resource-rail .petitioner-resource-side-cards .side-card:not(:has(.side-card__icon)) .side-card__links {
+    grid-column: 1;
+}
+
 /* Tablet resource cards sit below the timeline in two columns. */
 @media (min-width: 601px) and (max-width: 1023px) {
     .petitioner-resource-rail .quick-access-tiles-grid[data-max-columns] {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .petitioner-resource-rail .petitioner-resource-side-cards {
+        flex-direction: row;
+    }
+
+    .petitioner-resource-rail .petitioner-resource-side-cards .side-card {
+        flex: 1 1 calc(50% - 12px);
+        min-width: 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .petitioner-resource-rail .petitioner-resource-side-cards {
+        flex-direction: column;
+    }
+
+    .petitioner-resource-rail .petitioner-resource-side-cards .side-card {
+        flex: 1 1 auto;
+        min-width: 0;
     }
 }
 

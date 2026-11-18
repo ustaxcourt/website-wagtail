@@ -61,6 +61,13 @@
                     {% for resource_block in page.resource_cards %}
                         {% include "quick_access_tiles_block.html" with block=resource_block %}
                     {% endfor %}
+                    {% if page.side_cards.all %}
+                        <div class="side-card-rail petitioner-resource-side-cards">
+                            {% for side_card in page.side_cards.all %}
+                                {% include "includes/side_card.html" with side_card=side_card %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </section>
             </div>
         {% else %}
