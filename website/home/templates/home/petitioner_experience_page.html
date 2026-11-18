@@ -110,11 +110,13 @@
         }
 
         .petitioner-breadcrumb {
+            display: inline;
             font-size: 16px;
             line-height: 20px;
         }
 
         .petitioner-breadcrumb + h1 {
+            display: inline;
             font-size: 16px;
             line-height: 20px;
         }
@@ -317,7 +319,8 @@
         }
 
         @media (max-width: 600px) {
-            .petitioner-breadcrumb {
+            .petitioner-breadcrumb,
+            .petitioner-breadcrumb + h1 {
                 font-size: 24px;
                 line-height: 32px;
             }
