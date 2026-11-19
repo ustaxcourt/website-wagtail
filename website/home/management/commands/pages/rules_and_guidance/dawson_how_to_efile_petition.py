@@ -1,5 +1,8 @@
 import logging
+import uuid
+from urllib.parse import urljoin
 
+from django.conf import settings
 from wagtail.documents.models import Document
 from wagtail.models import Page
 
@@ -15,6 +18,8 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
     SLUG = "dawson-how-to-e-file-a-petition"
     TITLE = "How to e-file a Petition"
     SCRIPT_NAME = "WAG-1450: Populate e-file Petition guide timeline and instructions"
+    RESOURCE_SCRIPT_NAME = "WAG-1485: Add related resources to How to e-file a Petition"
+    INFO_ICON_SCRIPT_NAME = "WAG-1485: Fix e-file resource Info icon rendering"
     BREADCRUMB_TITLE = "DAWSON User Guides & Electronic Filing Instructions"
 
     DOCUMENT_FILENAMES = {
@@ -26,9 +31,145 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
         "training_video": "GMT20201013-122947_Jessica-Ma_1600x900.mp4",
     }
 
+    RESOURCE_CARDS = [
+        (
+            "DAWSON Self-Represented (Pro se) Electronic Filing Instructions",
+            "PDF_icon.svg",
+            "document",
+            "DAWSON_Petitioner_Training_Guide.pdf",
+        ),
+        (
+            "DAWSON Public Training Guide",
+            "PDF_icon.svg",
+            "document",
+            "DAWSON_Public_Training_Guide.pdf",
+        ),
+        (
+            "DAWSON Training Video: Petitioners",
+            "videocam-icon.svg",
+            "document",
+            "petitioners-how-to-efile-a-petition-in-dawson.mp4",
+        ),
+        (
+            "DAWSON User Guides",
+            "material_info_symbol.svg",
+            "page",
+            "dawson-user-guides",
+        ),
+        (
+            "Filing Checklist - Pro se",
+            "material_info_symbol.svg",
+            "page",
+            "petitioners-prepare-to-file",
+        ),
+    ]
+
     def create(self):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
+
+    def build_resource_cards(self):
+        icon_filenames = dict.fromkeys(icon for _, icon, _, _ in self.RESOURCE_CARDS)
+        icons = {
+            filename: self.load_document_from_documents_dir(
+                subdirectory=None,
+                filename=filename,
+                title=filename,
+            )
+            for filename in icon_filenames
+        }
+        tiles = []
+        for title, icon_filename, target_type, target in self.RESOURCE_CARDS:
+            if target_type == "document":
+                link_type = "external_url"
+                link_value = urljoin(
+                    getattr(settings, "BASE_URL", ""),
+                    self.get_document_url(target),
+                )
+            else:
+                target_page = Page.objects.filter(slug=target).first()
+                if target_page is None:
+                    raise Page.DoesNotExist(
+                        f"Page '{target}' not found for resource card '{title}'."
+                    )
+                link_type = "related_page"
+                link_value = target_page.pk
+
+            tiles.append(
+                {
+                    "type": "item",
+                    "value": {
+                        "title": title,
+                        "description": "",
+                        "icon": {"svg_file": icons[icon_filename].pk},
+                        "content_alignment": "left",
+                        "link": [
+                            {
+                                "type": link_type,
+                                "value": link_value,
+                                "id": str(uuid.uuid4()),
+                            }
+                        ],
+                    },
+                    "id": str(uuid.uuid4()),
+                }
+            )
+
+        return [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": tiles,
+                },
+                "id": str(uuid.uuid4()),
+            }
+        ]
+
+    def add_resource_cards(self):
+        page = PetitionerExperiencePage.objects.filter(slug=self.SLUG).first()
+        if page is None:
+            raise Page.DoesNotExist(
+                f"Page '{self.SLUG}' not found; cannot add resource cards."
+            )
+        if page.resource_cards:
+            logger.info("Resource cards already exist on '%s'.", self.TITLE)
+            return
+
+        page.resource_cards = self.build_resource_cards()
+        page.save_revision().publish()
+
+    def update_resource_card_info_icons(self):
+        page = PetitionerExperiencePage.objects.filter(slug=self.SLUG).first()
+        if page is None:
+            raise Page.DoesNotExist(
+                f"Page '{self.SLUG}' not found; cannot update resource card icons."
+            )
+
+        icon = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename="material_info_symbol.svg",
+            title="material_info_symbol.svg",
+        )
+        resource_cards = page.resource_cards.get_prep_value()
+        updated = False
+        for resource_block in resource_cards:
+            for tile in resource_block["value"].get("tiles", []):
+                if (
+                    tile["value"]["title"]
+                    in {
+                        "DAWSON User Guides",
+                        "Filing Checklist - Pro se",
+                    }
+                    and tile["value"]["icon"]["svg_file"] != icon.pk
+                ):
+                    tile["value"]["icon"]["svg_file"] = icon.pk
+                    updated = True
+
+        if updated:
+            page.resource_cards = resource_cards
+            page.save_revision().publish()
 
     def get_page_url(self, slug):
         page = Page.objects.filter(slug=slug).first()
@@ -389,6 +530,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 }
             ],
             "body": [{"type": "detailed_timeline", "value": self.build_timeline()}],
+            "resource_cards": self.build_resource_cards(),
         }
 
         existing_page = Page.objects.filter(slug=self.SLUG).first()
@@ -415,30 +557,64 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
         page.save_revision().publish()
         logger.info("%s the '%s' page.", action, self.TITLE)
 
-    def run(self):
-        if ExecuteScript.command_exists(self.SCRIPT_NAME):
-            logger.info("Script '%s' already exists. Skipping.", self.SCRIPT_NAME)
-            return 0
+    def _check_parent(self):
+        for slug in ("dawson-user-guides", "petitioners-prepare-to-file"):
+            if not Page.objects.filter(slug=slug).exists():
+                raise Page.DoesNotExist(
+                    f"'{slug}' page not found; cannot initialize '{self.SLUG}'."
+                )
 
-        if not Page.objects.filter(slug="dawson-user-guides").exists():
+    def _check_resource_page(self):
+        if not Page.objects.filter(slug=self.SLUG).exists():
             raise Page.DoesNotExist(
-                f"'dawson-user-guides' page not found; cannot run '{self.SCRIPT_NAME}'."
+                f"Page '{self.SLUG}' not found; cannot add resource cards."
             )
+        self._check_parent()
 
-        script_entry = ExecuteScript.create_script(self.SCRIPT_NAME)
+    def _run_once(self, command_name, action, precheck=None):
+        if ExecuteScript.command_exists(command_name):
+            logger.info("Script '%s' already exists. Skipping.", command_name)
+            return False
+
+        if precheck:
+            precheck()
+
+        script_entry = ExecuteScript.create_script(command_name)
         try:
-            self.create()
+            action()
             script_entry.execution_status = "SUCCESS"
-            script_entry.execution_log = (
-                "DAWSON How to e-file a Petition page created or updated successfully."
-            )
+            script_entry.execution_log = f"{command_name} completed successfully."
             script_entry.save()
         except Exception as error:
-            logger.exception("Could not initialize the DAWSON e-file petition page.")
+            logger.exception("Could not run script '%s'.", command_name)
             script_entry.execution_status = "FAILURE"
             script_entry.execution_log = f"<strong>Error:</strong> {error}"
             script_entry.save()
             raise
+        return True
+
+    def run(self):
+        page = Page.objects.filter(slug=self.SLUG).first()
+        if page is not None and page.has_unpublished_changes:
+            logger.warning(
+                "Page '%s' has unpublished changes; deferring initializer updates.",
+                self.SLUG,
+            )
+            return 0
+
+        created = self._run_once(self.SCRIPT_NAME, self.create, self._check_parent)
+        resources = self._run_once(
+            self.RESOURCE_SCRIPT_NAME,
+            self.add_resource_cards,
+            self._check_resource_page,
+        )
+        info_icon = self._run_once(
+            self.INFO_ICON_SCRIPT_NAME,
+            self.update_resource_card_info_icons,
+            self._check_resource_page,
+        )
+        if not (created or resources or info_icon):
+            return 0
 
 
 DawsonHowToEfilePetition = DawsonHowToEfilePetitionPageInitializer

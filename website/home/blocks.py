@@ -80,7 +80,7 @@ class QuickAccessTileBlock(blocks.StructBlock):
         ],
         min_num=1,
         max_num=1,
-        required=False,
+        required=True,
         help_text="Choose where this tile should link.",
     )
 
