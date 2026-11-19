@@ -132,7 +132,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-07-31",
-                "description": "<ul><li>E-filing Petitioners now have the option to 1) Answer some questions online and have DAWSON generate a petition document when creating a case, or 2) Upload a petition PDF document when creating a case.</li></ul>",
+                "description": "<ul><li>E-filing petitioners now have the option to 1) Answer some questions online and have DAWSON generate a petition document when creating a case, or 2) Upload a petition PDF document when creating a case.</li></ul>",
             },
             {
                 "release_date": "2024-07-28",
@@ -256,7 +256,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-02",
-                "description": '<ul><li>Parties no longer receive validation errors when e-filing a Motion for Leave or Motion for Leave to File Out of Time associated with an iteration type document.</li><li>"U.S.A." is no longer displayed as part of a Petitioner\'s address in the envelope window for paper service.</li></ul>',
+                "description": '<ul><li>Parties no longer receive validation errors when e-filing a Motion for Leave or Motion for Leave to File Out of Time associated with an iteration type document.</li><li>"U.S.A." is no longer displayed as part of a petitioner\'s address in the envelope window for paper service.</li></ul>',
             },
             {
                 "release_date": "2023-03-26",
@@ -280,7 +280,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2022-11-20",
-                "description": "<ul><li>Logged-in Petitioners can now search for other cases by docket number from the My Cases screen without needing to log out.</li><li>Resolved issue that impacted printing the docket record in consolidated cases. </li></ul>",
+                "description": "<ul><li>Logged-in petitioners can now search for other cases by docket number from the My Cases screen without needing to log out.</li><li>Resolved issue that impacted printing the docket record in consolidated cases. </li></ul>",
             },
             {
                 "release_date": "2022-11-01",

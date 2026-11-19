@@ -66,7 +66,7 @@ class DawsonFindAnOrderPageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": "An Order is a written direction or command issued by a Judge. Each day's Orders are posted on the Court's website, <strong><a href='https://www.ustaxcourt.gov/'>www.ustaxcourt.gov</a></strong>, under '<strong><a href='https://dawson.ustaxcourt.gov/todays-orders' target='_blank'>Today's Orders</a></strong>' in 'Orders & Opinions'. To search for an order, you can search by a keyword or phrase. In addition, you may also narrow your search results by adding in a specific Docket number, Case Title/Petitioner's name, the Judge who issued the order, or by including a specific date or date range.",
+                        "value": "An Order is a written direction or command issued by a judge. Each day's Orders are posted on the Court's website, <strong><a href='https://www.ustaxcourt.gov/'>www.ustaxcourt.gov</a></strong>, under '<strong><a href='https://dawson.ustaxcourt.gov/todays-orders' target='_blank'>Today's Orders</a></strong>' in 'Orders & Opinions'. To search for an order, you can search by a keyword or phrase. In addition, you may also narrow your search results by adding in a specific Docket number, Case Title/Petitioner's name, the judge who issued the order, or by including a specific date or date range.",
                     },
                     {"type": "hr", "value": True},
                     {
@@ -293,7 +293,7 @@ class DawsonFindAnOrderPageInitializer(PageInitializer):
                                             "list_type": "unordered",
                                             "items": [
                                                 {
-                                                    "text": "After you click <strong>Search or hit the enter key on your keyboard</strong>, you will see how many search results are shown. In the example below, a Case Title search for Jones returned the first 100 matches. If the Order that you are looking for is not in the first 100 matches, try to refine your search by adding in additional search criteria (date ranges, a specific Judge, etc.)"
+                                                    "text": "After you click <strong>Search or hit the enter key on your keyboard</strong>, you will see how many search results are shown. In the example below, a Case Title search for Jones returned the first 100 matches. If the Order that you are looking for is not in the first 100 matches, try to refine your search by adding in additional search criteria (date ranges, a specific judge, etc.)"
                                                 },
                                                 {
                                                     "text": "DAWSON will only load the first 25 results on the page. If you would like to view more results than what initially is displayed, scroll to the bottom of the page and click <strong>Load more</strong>.",
