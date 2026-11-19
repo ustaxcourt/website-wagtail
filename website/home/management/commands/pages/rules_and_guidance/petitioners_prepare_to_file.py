@@ -120,6 +120,13 @@ class PetitionersPrepareToFilePageInitializer(PageInitializer):
     def create_page_info(self, home_page):
         slug = "petitioners-prepare-to-file"
         title = "Prepare to File"
+
+        if Page.objects.filter(slug=slug).exists():
+            logger.info(f"- {title} page already exists.")
+            return
+
+        logger.info(f"Creating the '{title}' page.")
+
         fields = self.build_page_fields()
 
         existing_page = Page.objects.filter(slug=slug).first()
