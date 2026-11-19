@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
+from bs4 import BeautifulSoup
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 import re
@@ -523,7 +524,13 @@ class DetailedTimelineRenderTest(TestCase):
         content = response.render().content.decode()
 
         self.assertIn("Expand All", content)
-        self.assertIn("Print Detailed Timeline", content)
+
+        print_button = BeautifulSoup(content, "html.parser").select_one(
+            "button.detailed-timeline-print-button"
+        )
+        self.assertIsNotNone(print_button)
+        self.assertEqual(print_button.get_text(strip=True), "Print")
+
         self.assertIn("css/includes/timeline.css", content)
         self.assertIn("js/detailed_timeline.js", content)
 

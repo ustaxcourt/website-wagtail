@@ -137,7 +137,7 @@ describe('Process and Timeline Page - Detailed Timeline controls', () => {
         cy.stub(win, 'print').as('print');
       });
       cy.get('.detailed-timeline-print-button')
-        .should('contain', 'Print Detailed Timeline')
+        .should('contain', 'Print')
         .click();
       cy.get('@print').should('have.been.calledOnce');
 
