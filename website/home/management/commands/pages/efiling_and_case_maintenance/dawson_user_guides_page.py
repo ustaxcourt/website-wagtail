@@ -41,16 +41,6 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
         old_page = EnhancedStandardPage.objects.get(slug=self.slug).specific
         self.create_page_info(home_page, self.slug_temp, old_page.id)
 
-        # old_page = EnhancedStandardPage.objects.get(slug=self.slug).specific
-        # new_page = PetitionerExperiencePage.objects.get(slug=self.slug_temp).specific
-
-        # old_page.slug = "dawson-user-guides--to-be-deleted"
-        # old_page.save_revision().publish()
-
-        # new_page.id = old_page.id
-        # new_page.slug = "dawson-user-guides"
-        # new_page.save_revision().publish()
-
     def run(self):
         """Update the Dawson User Guides landing page."""
         command_name = "WAG-1437: Dawson User Guides landing page"
@@ -391,7 +381,7 @@ class DawsonUserGuidesPageInitializer(PageInitializer):
                                 "title_icon_alt_text": "",
                                 "subtitle": "Case Management",
                                 "title": "How to troubleshoot file upload errors",
-                                "description": '<p data-block-key="k9szf">Read this guide to troubleshoot common file upload errors</p>',
+                                "description": '<p data-block-key="k9szf">Read this guide to troubleshoot common file upload errors.</p>',
                                 "buttons": [
                                     {
                                         "type": "item",

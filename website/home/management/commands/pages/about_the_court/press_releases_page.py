@@ -1034,7 +1034,12 @@ class PressReleasesPageInitializer(PageInitializer):
         super().__init__()
 
     def create(self):
-        home_page = Page.objects.get(slug="home")
+        try:
+            home_page = Page.objects.get(slug="home")
+        except Page.DoesNotExist:
+            logger.info("Root page (home) does not exist.")
+            return
+
         self.create_page_info(home_page)
 
     def create_page_info(self, home_page):
