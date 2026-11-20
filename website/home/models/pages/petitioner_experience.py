@@ -178,6 +178,11 @@ class PetitionerExperiencePage(EnhancedStandardPage):
                 )
 
     @property
+    def has_resource_tiles(self):
+        # An empty Resource Cards block is still a truthy StreamField.
+        return any(block.value["tiles"] for block in self.resource_cards)
+
+    @property
     def breadcrumb_title(self):
         breadcrumb = self.breadcrumb[0] if self.breadcrumb else None
         return breadcrumb.value.get("breadcrumb_title") if breadcrumb else ""

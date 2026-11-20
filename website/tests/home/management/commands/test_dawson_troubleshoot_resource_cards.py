@@ -289,3 +289,22 @@ class TestTroubleshootFileUploadsResourcesColumn(TestCase):
         self.assertLess(
             html.index("petitioner-page-heading"), html.index("side-card-rail")
         )
+
+    def test_empty_resource_block_is_treated_as_no_resources(self):
+        self.page.resource_cards = [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": [],
+                },
+            }
+        ]
+        self.page.save_revision().publish()
+        self.add_need_legal_help_card()
+        html = self.render()
+
+        self.assertFalse(self.page.has_resource_tiles)
+        self.assertNotIn("petitioner-resource-rail", html)
+        self.assertIn("side-card-layout", html)

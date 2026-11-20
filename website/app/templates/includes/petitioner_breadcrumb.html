@@ -4,7 +4,7 @@
         <span aria-hidden="true"> / </span>
         {% if page.slug == "dawson-how-to-e-file-a-petition" %}
             <span class="petitioner-breadcrumb-current" aria-hidden="true">How to e-file a petition</span>
-        {% elif page.resource_cards %}
+        {% elif page.has_resource_tiles %}
             <span class="petitioner-breadcrumb-current" aria-hidden="true">{{ page.title }}</span>
         {% endif %}
     </nav>
