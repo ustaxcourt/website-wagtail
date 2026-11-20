@@ -128,11 +128,6 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         blank=True,
         max_num=1,
         use_json_field=True,
-        help_text=(
-            "Resource cards shown in a right-hand 'Resources' column beside the page "
-            "content on desktop, and below it on tablet and mobile. Side Cards are not "
-            "shown on a page that has Resource Cards."
-        ),
     )
 
     call_to_action = models.ForeignKey(

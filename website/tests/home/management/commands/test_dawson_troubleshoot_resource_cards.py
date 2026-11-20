@@ -11,6 +11,7 @@ from home.management.commands.pages.rules_and_guidance.dawson_troubleshoot_file_
     RESOURCES_COMMAND_NAME,
     troubleshoot_file_uploads_resources,
 )
+from home.models import SideCard
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.models.utils.execute_script import ExecuteScript
 
@@ -253,3 +254,38 @@ class TestTroubleshootFileUploadsResourcesColumn(TestCase):
         self.assertNotIn("petitioner-resources-heading", html)
         self.assertNotIn("petitioner-resource-rail", html)
         self.assertIn("side-card-layout", html)
+
+    def add_need_legal_help_card(self):
+        return SideCard.objects.create(
+            page=self.page,
+            header_title="Need Legal Help?",
+            introductory_text="<p>Low Income Taxpayer Clinics (LITCs) provide help.</p>",
+            color="navy",
+            link_display_style="button",
+        )
+
+    def test_side_cards_follow_resources_in_the_same_column(self):
+        self.add_need_legal_help_card()
+        html = self.render()
+
+        rail = html[html.index("petitioner-resource-rail") :]
+        self.assertIn("petitioner-resource-items", rail)
+        self.assertEqual(rail.count('role="listitem"'), 4)
+        self.assertIn("side-card--navy", rail)
+        self.assertIn("petitioner-resource-side-card-item", rail)
+        last_resource = max(rail.index(title) for title, _ in EXPECTED_RESOURCES)
+        self.assertLess(last_resource, rail.index("Need Legal Help?"))
+        self.assertNotIn("side-card-layout", html)
+
+    def test_page_with_only_side_cards_keeps_the_side_card_layout(self):
+        self.page.resource_cards = []
+        self.page.save_revision().publish()
+        self.add_need_legal_help_card()
+        html = self.render()
+
+        self.assertNotIn("petitioner-resource-items", html)
+        self.assertIn("side-card-layout", html)
+        self.assertIn("side-card-rail", html)
+        self.assertLess(
+            html.index("petitioner-page-heading"), html.index("side-card-rail")
+        )
