@@ -1,0 +1,11 @@
+{% if page.breadcrumb_title and page.breadcrumb_page_url %}
+    <nav class="petitioner-breadcrumb" aria-label="Breadcrumb">
+        <a class="petitioner-breadcrumb-link" href="{{ page.breadcrumb_page_url }}">{{ page.breadcrumb_title }}</a>
+        <span aria-hidden="true"> / </span>
+        {% if page.slug == "dawson-how-to-e-file-a-petition" %}
+            <span class="petitioner-breadcrumb-current" aria-hidden="true">How to e-file a petition</span>
+        {% elif page.has_resource_tiles %}
+            <span class="petitioner-breadcrumb-current" aria-hidden="true">{{ page.title }}</span>
+        {% endif %}
+    </nav>
+{% endif %}
