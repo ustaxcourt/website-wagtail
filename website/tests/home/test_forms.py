@@ -188,3 +188,26 @@ class TestSnippetFormClean:
             form.clean()
 
         assert "review_by" not in errors
+
+
+class TestDebugLoggingFailureIsSwallowed:
+    """If debug printing blows up, submit detection must still work."""
+
+    def test_debug_print_failure_does_not_break_detection(self):
+        from django.test import override_settings
+
+        class FlakyData(dict):
+            """`.get` fails on the first call (inside the debug block) only."""
+
+            calls = 0
+
+            def get(self, key, default=None):
+                FlakyData.calls += 1
+                if FlakyData.calls == 1:
+                    raise RuntimeError("debug logging failed")
+                return super().get(key, default)
+
+        FlakyData.calls = 0
+        form = make_form(FlakyData({"action-submit": ""}))
+        with override_settings(DEBUG=True):
+            assert form._is_submit_for_moderation() is True
