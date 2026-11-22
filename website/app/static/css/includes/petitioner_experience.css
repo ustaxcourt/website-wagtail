@@ -302,7 +302,7 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
 }
 
 @media (max-width: 479px) {
-    .dawson-efile-guide .detailed-timeline-controls {
+    .detailed-timeline-controls {
         width: 100%;
     }
 }
