@@ -6,7 +6,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0168_merge_20261120_1140"),
+        ("home", "0168_petitionerexperiencepage_resource_cards_pe"),
     ]
 
     operations = [
