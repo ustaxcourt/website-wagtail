@@ -78,6 +78,12 @@
             column-gap: 0px;
         }
 
+        /* Without intro text, only the 32px margin-bottom should separate the heading from the body. */
+        .petitioner-page-heading.no-intro {
+            grid-template-rows: auto;
+            row-gap: 0;
+        }
+
         .petitioner-page-heading-logo {
             grid-row: span 2;
             grid-column: 1;
@@ -407,7 +413,7 @@
             </div>
             {% endwith %}
         {% endif %}
-        <div class="petitioner-page-heading {% if not page.show_dawson_logo %}no-logo{% endif %}">
+        <div class="petitioner-page-heading {% if not page.show_dawson_logo %}no-logo{% endif %}{% if not page.introductory_text %} no-intro{% endif %}">
             {% if page.show_dawson_logo %}
                 <div class="petitioner-page-heading-logo">
                     <img class="dawson"
@@ -431,11 +437,11 @@
                         <span class="page-title-breadcrumb"></span>
                     </h1>
                 </div>
-                <div class="petitioner-page-heading-intro">
-                    {% if page.introductory_text %}
+                {% if page.introductory_text %}
+                    <div class="petitioner-page-heading-intro">
                         {{ page.introductory_text|richtext }}
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             <!-- </div> -->
         </div>
         <div class="grid-row grid-gap side-card-layout">
