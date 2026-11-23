@@ -6,7 +6,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0166_petitionerexperiencepage_show_dawson_logo_pe"),
+        ("home", "0167_dawson_user_guide_landing_page_period_update_pe"),
     ]
 
     operations = [
