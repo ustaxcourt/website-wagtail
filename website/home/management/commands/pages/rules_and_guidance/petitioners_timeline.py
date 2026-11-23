@@ -343,7 +343,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                                                 "type": "item",
                                                 "value": {
                                                     "text": '<p data-block-key="l4ngx"><b>Organize evidence to support your position.</b></p>',
-                                                    "subtext": '<p data-block-key="7tw0u">Documents, receipts, bank statements, etc. Make sure you have copies for yourself, the IRS, and the Judge.</p>',
+                                                    "subtext": '<p data-block-key="7tw0u">Documents, receipts, bank statements, etc. Make sure you have copies for yourself, the IRS, and the judge.</p>',
                                                 },
                                                 "id": "3213a259-bd28-4ae2-87a7-5198104d0f5e",
                                             },

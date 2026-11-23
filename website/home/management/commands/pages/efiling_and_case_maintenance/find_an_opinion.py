@@ -266,7 +266,7 @@ class DawsonFindAnOpinionPageInitializer(PageInitializer):
                                                     "text": "Enter a specific judge's name."
                                                 },
                                                 {
-                                                    "text": "Note: the default is all Judges."
+                                                    "text": 'Note: the default is "All judges".'
                                                 },
                                             ],
                                         },

@@ -53,7 +53,7 @@ class FindACasePageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": "To search for a case in <a href='https://dawson.ustaxcourt.gov/'>DAWSON</a>, go to the DAWSON homepage. You can search for a case by <a href='#NAME'>Petitioner Name</a> or <a href='#DOCKET'>Docket Number</a> on the Case tab.",
+                        "value": "To search for a case in <a href='https://dawson.ustaxcourt.gov/'>DAWSON</a>, go to the DAWSON homepage. You can search for a case by <a href='#NAME'>petitioner name</a> or <a href='#DOCKET'>Docket Number</a> on the Case tab.",
                     },
                     {"type": "hr", "value": True},
                     {

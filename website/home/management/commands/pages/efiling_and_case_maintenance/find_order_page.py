@@ -261,10 +261,10 @@ class DawsonFindAnOrderPageInitializer(PageInitializer):
                                             "list_type": "unordered",
                                             "items": [
                                                 {
-                                                    "text": "Choose a specific Judge's Name from the drop-down menu."
+                                                    "text": "Choose a specific judge's name from the drop-down menu."
                                                 },
                                                 {
-                                                    "text": "Note: the default is all Judges."
+                                                    "text": 'Note: the default is "All judges".'
                                                 },
                                             ],
                                         },

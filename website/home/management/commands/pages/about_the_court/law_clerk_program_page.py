@@ -47,7 +47,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                                         <strong>Law Clerk Interview Days will be updated in April 2025.</strong><br/>
                                         Last held August-September 2024.
                                         <br/><br/>
-                                        Law clerk vacancies also may occur throughout the year. Below is a list of judges and Special Trial Judges currently recruiting for law clerks. Click each Judge's name to view their biography which may contain Additional Information or Requirements for Law Clerk Applicants. More information and specific application requirements are provided in the <a href="#AP" title="Application Procedure">Application Procedure</a> section below.""",
+                                        Law clerk vacancies also may occur throughout the year. Below is a list of judges and Special Trial Judges currently recruiting for law clerks. Click each judge's name to view their biography which may contain Additional Information or Requirements for Law Clerk Applicants. More information and specific application requirements are provided in the <a href="#AP" title="Application Procedure">Application Procedure</a> section below.""",
                     },
                     {"type": "hr", "value": True},
                     {
@@ -93,7 +93,7 @@ class LawClerkProgramPageInitializer(PageInitializer):
                     {
                         "type": "paragraph",
                         "value": """
-                                        Please review the list of <strong><a href="/employment/judges-recruiting" title="Judges Currently Recruiting">judges and Special Trial Judges currently recruiting</a></strong> for Law Clerks prior to submitting your application. Click each Judge's name to view Additional Information or Requirements for Law Clerk Applicants.
+                                        Please review the list of <strong><a href="/employment/judges-recruiting" title="Judges Currently Recruiting">judges and Special Trial Judges currently recruiting</a></strong> for Law Clerks prior to submitting your application. Click each judge's name to view Additional Information or Requirements for Law Clerk Applicants.
                                         <br/><br/>
                                         To apply, send a cover letter, a complete resume, and a copy of your law school transcript. A legal writing sample, preferably in the tax field, should also accompany the application materials. All documents should be submitted in PDF format.
                                         <br/><br/>

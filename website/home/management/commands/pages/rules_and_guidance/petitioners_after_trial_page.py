@@ -50,7 +50,7 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                 "anchortag": "AFTER1",
             },
             {
-                "question": "When will the Judge decide my case? (When will I find out whether I’ve won or lost my case?)",
+                "question": "When will the judge decide my case? (When will I find out whether I’ve won or lost my case?)",
                 "answer": """<ol>
                                  <li>
                                      There is no fixed time within which a judge will decide your case. The judge might issue an oral opinion (called a Bench Opinion) during the trial session. If a Bench Opinion is not issued, the judge will return to Washington, D.C., to review the testimony and exhibits in the case and issue an opinion as quickly as practicable.
@@ -87,12 +87,12 @@ class PetitionersAfterTrialInitializer(PageInitializer):
                 "anchortag": "AFTER4",
             },
             {
-                "question": "What if I disagree with the opinion of the Judge?",
+                "question": "What if I disagree with the opinion of the judge?",
                 "answer": "You may not appeal the judge's decision in an S case. In a regular (non-S) case, you may appeal the judge's decision or you may file a motion for reconsideration of an opinion within 30 days after the written opinion was mailed. Your motion for reconsideration should clearly explain what you disagree with and the reasons you believe your disagreement has merit. Normally, the judge who decided your case will decide the motion for reconsideration. A motion for reconsideration will not usually be granted absent unusual circumstances or substantial error.",
                 "anchortag": "AFTER5",
             },
             {
-                "question": "How do I file an appeal from the Judge’s decision? Can I appeal my case?",
+                "question": "How do I file an appeal from the judge’s decision? Can I appeal my case?",
                 "answer": f"""If you chose, and the Tax Court granted you, small tax case status, there is no appeal from the decision of the Tax Court.
                 <strong><a href="/petitioners-start#START12" target="_blank" title="">See the discussion above about choosing S case status</a></strong>.
                 In an S case, neither the IRS nor the petitioner can appeal. The judge's decision is final.
