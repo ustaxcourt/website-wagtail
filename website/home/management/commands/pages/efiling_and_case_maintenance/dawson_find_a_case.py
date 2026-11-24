@@ -53,7 +53,7 @@ class FindACasePageInitializer(PageInitializer):
                 body=[
                     {
                         "type": "paragraph",
-                        "value": "To search for a case in <a href='https://dawson.ustaxcourt.gov/'>DAWSON</a>, go to the DAWSON homepage. You can search for a case by <a href='#NAME'>petitioner name</a> or <a href='#DOCKET'>Docket Number</a> on the Case tab.",
+                        "value": "To search for a case in <a href='https://dawson.ustaxcourt.gov/'>DAWSON</a>, go to the DAWSON homepage. You can search for a case by <a href='#NAME'>petitioner name</a> or <a href='#DOCKET'>docket number</a> on the Case tab.",
                     },
                     {"type": "hr", "value": True},
                     {
@@ -80,9 +80,9 @@ class FindACasePageInitializer(PageInitializer):
                         "value": """
 <ol>
 <li>Go to the <a href='https://dawson.ustaxcourt.gov/'>DAWSON homepage</a>.</li>
-<li>To search for a case by Docket Number, you must include the dash in the Docket Number (e.g., 123-18).</li>
-<li>You may, but do not have to, include the letter suffix (S, L, SL, R, X, D, or P) of the Docket Number to find a case.</li>
-<li>When you enter a Docket Number that matches a case in the system, that case will display. If you enter a Docket Number that has no matching case, you will get a “No Matches Found” message.</li>
+<li>To search for a case by docket number, you must include the dash in the docket number (e.g., 123-18).</li>
+<li>You may, but do not have to, include the letter suffix (S, L, SL, R, X, D, or P) of the docket number to find a case.</li>
+<li>When you enter a docket number that matches a case in the system, that case will display. If you enter a docket number that has no matching case, you will get a “No Matches Found” message.</li>
 </ol>
                      """,
                     },
