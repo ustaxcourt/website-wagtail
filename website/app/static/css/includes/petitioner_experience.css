@@ -152,7 +152,7 @@ h2 a {
 @media (min-width: 1201px) {
     .dawson-efile-guide .detailed-timeline-header {
         align-items: center;
-        column-gap: 73px;
+        column-gap: 48px;
     }
 
     .dawson-efile-guide .detailed-timeline-controls {

@@ -148,7 +148,7 @@ class DawsonHowToUpdateContactInfo(PageInitializer):
         page.save_revision().publish()
 
     def create_page_info(self, home_page, update_existing=False):
-        slug = "dawson-how-to-update-contact-info"
+        slug = PAGE_SLUG
         title = "How to update contact information"
 
         existing_page = Page.objects.filter(slug=slug).first()
@@ -164,14 +164,14 @@ class DawsonHowToUpdateContactInfo(PageInitializer):
                 )
 
         for key in images_in_timeline.keys():
-            key["id"] = None
+            images_in_timeline[key]["id"] = None
             image = self.load_image_from_images_dir(
-                subdirectory=None,
-                filename=key["filename"],
-                title=key["title"],
+                subdirectory="dawson",
+                filename=images_in_timeline[key]["filename"],
+                title=images_in_timeline[key]["title"],
             )
             if image:
-                key["id"] = image.pk
+                images_in_timeline[key]["id"] = image.pk
 
         user_guides_page = Page.objects.get(slug="dawson-user-guides")
         breadcrumb = [
@@ -188,61 +188,64 @@ class DawsonHowToUpdateContactInfo(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
-        new_page = home_page.add_child(
-            instance=PetitionerExperiencePage(
-                title=title,
-                slug=slug,
-                seo_title=title,
-                search_description=title,
-                breadcrumb=breadcrumb,
-                show_floating_definitions_button=True,
-                resource_cards=self.build_resource_cards(),
-                body=[
-                    {
-                        "type": "detailed_timeline",
-                        "value": {
-                            "title": "How to update contact information",
-                            "introduction": '<p data-block-key="6pwx6">Learn how to update your email address, mailing address, phone number, and other contact information in DAWSON. The steps you need to follow may differ depending on whether you are a practitioner or a petitioner.</p>',
-                            "print_button_text": "Print",
-                            "show_title": False,
-                            "warning_callout": {"heading": "", "text": ""},
-                            "show_numbers_in_bubbles": True,
-                            "phases": [
-                                {
-                                    "type": "phase",
-                                    "value": {
-                                        "title": "Practitioner",
-                                        "default_to_open": False,
-                                        "date_range": "",
-                                        "bubble_content": "scale",
-                                        "instructions": f'<p data-block-key="2y5fl"><b>Updating Practitioner Contact Information and Service Email Address</b></p><p data-block-key="b1ip7">As a practitioner, you can update your contact information by clicking on the Person Icon and then selecting My Account in the upper right corner.</p><ul><li data-block-key="3qgp5">Updating your contact information will automatically generate a Notice of Change of Address, Notice of Change of Phone Number, or Notice of Change of Address and Phone Number that will be filed and served in each of your open cases, and any case closed within the past 6 months.</li><li data-block-key="3psq9">Updating your email address will not automatically generate a Notice of Change of Email Address.<ul><li data-block-key="4lu9a">A verification email from <a href="mailto:noreply@dawson.ustaxcourt.gov">noreply@dawson.ustaxcourt.gov</a> will be sent to your new email address. If you don’t see it, check your junk/spam folder. You must verify your new email address to change it in DAWSON. After 24 hours, the verification link will expire.</li></ul></li></ul><p data-block-key="7t58h"></p><embed embedtype="image" format="fullwidth" id="{images_in_timeline["login_screen_private_practitioner_test"]["id"]}" alt=""/><p data-block-key="5c0vg"><br/><b>Updating Practitioner Employer Information</b></p><ul><li data-block-key="7d9hj">If you have changed employers (IRS to private practice/private practice to IRS), contact <a href="mailto:admissions@ustaxcourt.gov">admissions@ustaxcourt.gov</a> to have your employer updated in DAWSON.</li><li data-block-key="cfsek">REMINDER: Each person admitted to practice before the Court shall promptly notify the Court of any change in contact information. Rule 200(e), Tax Court Rules of Practice and Procedure.</li></ul>',
-                                        "your_tasks": [],
-                                        "helpful_information": [],
-                                    },
-                                    "id": "2224e788-57e4-4866-a76e-0b5552f200c9",
+        new_page = PetitionerExperiencePage(
+            title=title,
+            slug=slug,
+            seo_title=title,
+            search_description=title,
+            breadcrumb=breadcrumb,
+            show_floating_definitions_button=True,
+            resource_cards=self.build_resource_cards(),
+            body=[
+                {
+                    "type": "detailed_timeline",
+                    "value": {
+                        "title": "How to update contact information",
+                        "introduction": '<p data-block-key="6pwx6">Learn how to update your email address, mailing address, phone number, and other contact information in DAWSON. The steps you need to follow may differ depending on whether you are a practitioner or a petitioner.</p>',
+                        "print_button_text": "Print",
+                        "show_title": False,
+                        "warning_callout": {"heading": "", "text": ""},
+                        "show_numbers_in_bubbles": True,
+                        "phases": [
+                            {
+                                "type": "phase",
+                                "value": {
+                                    "title": "Practitioner",
+                                    "default_to_open": False,
+                                    "date_range": "",
+                                    "bubble_content": "scale",
+                                    "instructions": f'<p data-block-key="2y5fl"><b>Updating Practitioner Contact Information and Service Email Address</b></p><p data-block-key="b1ip7">As a practitioner, you can update your contact information by clicking on the Person Icon and then selecting My Account in the upper right corner.</p><ul><li data-block-key="3qgp5">Updating your contact information will automatically generate a Notice of Change of Address, Notice of Change of Phone Number, or Notice of Change of Address and Phone Number that will be filed and served in each of your open cases, and any case closed within the past 6 months.</li><li data-block-key="3psq9">Updating your email address will not automatically generate a Notice of Change of Email Address.<ul><li data-block-key="4lu9a">A verification email from <a href="mailto:noreply@dawson.ustaxcourt.gov">noreply@dawson.ustaxcourt.gov</a> will be sent to your new email address. If you don’t see it, check your junk/spam folder. You must verify your new email address to change it in DAWSON. After 24 hours, the verification link will expire.</li></ul></li></ul><p data-block-key="7t58h"></p><embed embedtype="image" format="fullwidth" id="{images_in_timeline["login_screen_private_practitioner_test"]["id"]}" alt=""/><p data-block-key="5c0vg"><br/><b>Updating Practitioner Employer Information</b></p><ul><li data-block-key="7d9hj">If you have changed employers (IRS to private practice/private practice to IRS), contact <a href="mailto:admissions@ustaxcourt.gov">admissions@ustaxcourt.gov</a> to have your employer updated in DAWSON.</li><li data-block-key="cfsek">REMINDER: Each person admitted to practice before the Court shall promptly notify the Court of any change in contact information. Rule 200(e), Tax Court Rules of Practice and Procedure.</li></ul>',
+                                    "your_tasks": [],
+                                    "helpful_information": [],
                                 },
-                                {
-                                    "type": "phase",
-                                    "value": {
-                                        "title": "Petitioner",
-                                        "default_to_open": False,
-                                        "date_range": "",
-                                        "bubble_content": "user",
-                                        "instructions": f'<p data-block-key="2y5fl"><b>Updating Petitioner Account Login and Service Email Address</b></p><p data-block-key="48d99">Petitioners who wish to update the login and service email address for a DAWSON account should click on the Person Icon and then My Account in the upper right corner of the DAWSON screen.</p><p data-block-key="dtm36"></p><p data-block-key="dt4fc"></p><embed embedtype="image" format="fullwidth" id="{images_in_timeline["login_screen_test_petitioner"]["id"]}" alt=""/><p data-block-key="1jniv"><br/></p><ul><li data-block-key="5r5ju">Input your new email address and click Save.<ul><li data-block-key="3n4ce">A verification email from <a href="mailto:noreply@dawson.ustaxcourt.gov">noreply@dawson.ustaxcourt.gov</a> will be sent to your new email address. If you don’t see it, check your junk/spam folder. You must verify your new email address to change it in DAWSON. After 24 hours, the verification link will expire.</li></ul></li><li data-block-key="bjs4a">Note: Changing the DAWSON account email address impacts the whole account, not just the email address for a particular case. Updating the service email address will automatically generate a Notice of Change of Email Address in each of your open cases, and any case closed within the past 6 months.</li></ul><p data-block-key="eevip"><b>Updating Petitioner Mailing Address and Phone Number</b></p><p data-block-key="cm0o4">A petitioner’s mailing address and phone number can be updated by clicking the Edit link by the petitioner’s name under the <b>Case Information</b> tab within a case.</p><p data-block-key="6v2tt"></p><embed embedtype="image" format="fullwidth" id="{images_in_timeline["edit_petitioner_contact_info"]["id"]}" alt=""/><p data-block-key="72eun"><br/></p><ul><li data-block-key="1chpe">Updating a petitioner’s mailing address or phone number will automatically generate a Notice of Change of Address, Notice of Change of Phone Number, or Notice of Change of Address and Phone Number in that specific case.</li><li data-block-key="ervmp">If a petitioner has more than one case, the petitioner’s mailing address and phone number will need to be updated separately in each of their cases.</li></ul>',
-                                        "your_tasks": [],
-                                        "helpful_information": [],
-                                    },
-                                    "id": "855f46e5-a0b1-44f3-b3ed-33fb44a2b7ec",
+                                "id": "2224e788-57e4-4866-a76e-0b5552f200c9",
+                            },
+                            {
+                                "type": "phase",
+                                "value": {
+                                    "title": "Petitioner",
+                                    "default_to_open": False,
+                                    "date_range": "",
+                                    "bubble_content": "user",
+                                    "instructions": f'<p data-block-key="2y5fl"><b>Updating Petitioner Account Login and Service Email Address</b></p><p data-block-key="48d99">Petitioners who wish to update the login and service email address for a DAWSON account should click on the Person Icon and then My Account in the upper right corner of the DAWSON screen.</p><p data-block-key="dtm36"></p><p data-block-key="dt4fc"></p><embed embedtype="image" format="fullwidth" id="{images_in_timeline["login_screen_test_petitioner"]["id"]}" alt=""/><p data-block-key="1jniv"><br/></p><ul><li data-block-key="5r5ju">Input your new email address and click Save.<ul><li data-block-key="3n4ce">A verification email from <a href="mailto:noreply@dawson.ustaxcourt.gov">noreply@dawson.ustaxcourt.gov</a> will be sent to your new email address. If you don’t see it, check your junk/spam folder. You must verify your new email address to change it in DAWSON. After 24 hours, the verification link will expire.</li></ul></li><li data-block-key="bjs4a">Note: Changing the DAWSON account email address impacts the whole account, not just the email address for a particular case. Updating the service email address will automatically generate a Notice of Change of Email Address in each of your open cases, and any case closed within the past 6 months.</li></ul><p data-block-key="eevip"><b>Updating Petitioner Mailing Address and Phone Number</b></p><p data-block-key="cm0o4">A petitioner’s mailing address and phone number can be updated by clicking the Edit link by the petitioner’s name under the <b>Case Information</b> tab within a case.</p><p data-block-key="6v2tt"></p><embed embedtype="image" format="fullwidth" id="{images_in_timeline["edit_petitioner_contact_info"]["id"]}" alt=""/><p data-block-key="72eun"><br/></p><ul><li data-block-key="1chpe">Updating a petitioner’s mailing address or phone number will automatically generate a Notice of Change of Address, Notice of Change of Phone Number, or Notice of Change of Address and Phone Number in that specific case.</li><li data-block-key="ervmp">If a petitioner has more than one case, the petitioner’s mailing address and phone number will need to be updated separately in each of their cases.</li></ul>',
+                                    "your_tasks": [],
+                                    "helpful_information": [],
                                 },
-                            ],
-                        },
-                        "id": "d284d4e1-ac72-40b3-be85-48a4526b9821",
-                    }
-                ],
-            )
+                                "id": "855f46e5-a0b1-44f3-b3ed-33fb44a2b7ec",
+                            },
+                        ],
+                    },
+                    "id": "d284d4e1-ac72-40b3-be85-48a4526b9821",
+                }
+            ],
         )
 
-        new_page.save_revision().publish()
+        if existing_page:
+            existing_page.body = new_page.body
+            existing_page.save_revision().publish()
+        else:
+            new_page = home_page.add_child(instance=new_page)
+            new_page.save_revision().publish()
 
     # def run(self):
     #     """Update the Dawson How to update contact information"""
