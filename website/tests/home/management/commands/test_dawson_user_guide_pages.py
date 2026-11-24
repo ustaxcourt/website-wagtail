@@ -39,7 +39,7 @@ DAWSON_PAGES = [
     (
         DawsonHowToSearchForACase,
         "dawson-how-to-search-for-a-case",
-        "WAG-1450: How to search for a case",
+        "WAG-1444: Populate How to search for a case guide",
     ),
     (
         DawsonHowToSearchForAnOrder,
