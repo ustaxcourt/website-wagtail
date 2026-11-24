@@ -128,6 +128,7 @@ class PetitionersTimelinePageInitializer(PageInitializer):
                         "value": {
                             "title": "United States Tax Court Case Timeline",
                             "introduction": '<p data-block-key="lamyb">Please note: The timeline of every court case is different. This is a general timeline to help you<br/>understand the lifecycle of a case and should not be used for planning purposes.</p>',
+                            "print_button_text": "Print Detailed Timeline",
                             "phases": [
                                 {
                                     "type": "phase",
