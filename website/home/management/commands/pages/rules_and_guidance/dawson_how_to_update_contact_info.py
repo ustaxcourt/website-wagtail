@@ -21,22 +21,20 @@ RESTORE_BODY_COMMAND_NAME = (
 )
 DAWSON_ICON_FILENAME = "DAWSON_icon.svg"
 
-images_in_timeline = (
-    {
-        "edit_petitioner_contact_info": {
-            "title": "Edit Petitioner Contact Info",
-            "filename": "edit-petitioner-contact-info.jpg",
-        },
-        "login_screen_test_petitioner": {
-            "title": "Login Screen Test Petitioner",
-            "filename": "login-screen-test-petitioner.jpg",
-        },
-        "login_screen_private_practitioner_test": {
-            "title": "Login Screen Private Practitioner Test",
-            "filename": "login-screen-private-practitioner-test.jpg",
-        },
+images_in_timeline = {
+    "edit_petitioner_contact_info": {
+        "title": "Edit Petitioner Contact Info",
+        "filename": "edit-petitioner-contact-info.jpg",
     },
-)
+    "login_screen_test_petitioner": {
+        "title": "Login Screen Test Petitioner",
+        "filename": "login-screen-test-petitioner.jpg",
+    },
+    "login_screen_private_practitioner_test": {
+        "title": "Login Screen Private Practitioner Test",
+        "filename": "login-screen-private-practitioner-test.jpg",
+    },
+}
 
 update_contact_info_resources = [
     (
