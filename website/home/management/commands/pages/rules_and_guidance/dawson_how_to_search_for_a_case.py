@@ -4,7 +4,6 @@ import uuid
 from wagtail.models import Page
 
 from home.management.commands.pages.page_initializer import PageInitializer
-from home.models import NavigationRibbon
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.models.utils.execute_script import ExecuteScript
 from search.dawson_client import get_environment_specific_dawson_url
@@ -196,15 +195,14 @@ class DawsonHowToSearchForACase(PageInitializer):
 
             logger.info(f"Populating the existing '{self.TITLE}' page.")
             page.breadcrumb = breadcrumb
+            # No navigation ribbon: the Figma guide has none, and the page
+            # template only applies the guide styling to pages without one.
+            page.navigation_ribbon = None
             page.body = [{"type": "detailed_timeline", "value": self.build_timeline()}]
             if not page.resource_cards:
                 page.resource_cards = self.build_resource_cards()
             page.save_revision().publish()
             return
-
-        navigation_ribbon = NavigationRibbon.objects.filter(
-            name="Guidance for Petitioners Ribbon"
-        ).first()
 
         logger.info(f"Creating the '{self.TITLE}' page.")
         new_page = home_page.add_child(
@@ -212,7 +210,7 @@ class DawsonHowToSearchForACase(PageInitializer):
                 title=self.TITLE,
                 slug=self.SLUG,
                 seo_title=self.TITLE,
-                navigation_ribbon=navigation_ribbon,
+                navigation_ribbon=None,
                 search_description=self.TITLE,
                 breadcrumb=breadcrumb,
                 show_floating_definitions_button=True,

@@ -5,6 +5,7 @@ from home.management.commands.pages.rules_and_guidance.dawson_how_to_search_for_
     DawsonHowToSearchForACase,
 )
 from home.management.commands.update_pages import pages_to_update
+from home.models import NavigationRibbon
 from home.models.pages.petitioner_experience import PetitionerExperiencePage
 from home.models.utils.execute_script import ExecuteScript
 
@@ -60,6 +61,7 @@ def test_run_creates_the_guide(user_guides_page):
 
     assert page.live
     assert page.show_floating_definitions_button is True
+    assert page.navigation_ribbon is None
     assert page.breadcrumb_page_url == user_guides_page.url
     assert (
         page.breadcrumb_title == "DAWSON User Guides & Electronic Filing Instructions"
@@ -140,12 +142,14 @@ def test_run_uses_production_dawson_url_in_production(user_guides_page, settings
 
 
 def test_run_populates_the_empty_placeholder_page(home_page, user_guides_page):
-    placeholder = _add_placeholder(home_page, body=[])
+    ribbon = NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
+    placeholder = _add_placeholder(home_page, body=[], navigation_ribbon=ribbon)
 
     DawsonHowToSearchForACase().run()
 
     page = PetitionerExperiencePage.objects.get(slug=SLUG)
     assert page.pk == placeholder.pk
+    assert page.navigation_ribbon is None
     assert [phase.value["title"] for phase in _phases(page)] == [
         "Search by Docket Number",
         "Search by Petitioner Name",
