@@ -80,7 +80,6 @@ rules_and_guidance_pages_to_initialize = [
     PetitionersDuringPageInitializer,
     PetitionersBeforeTrialInitializer,
     PetitionersAfterTrialInitializer,
-    PetitionersBeforeTrialInitializer,
     RemoteBasicsPageInitializer,
     ZoomgovProceedingPageInitializer,
     GettingReadyPageInitializer,

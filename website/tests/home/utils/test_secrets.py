@@ -269,3 +269,38 @@ def test_create_secret_error(monkeypatch):
 
     assert "Failed to create secret" in str(exc_info.value)
     assert "Internal service error" in str(exc_info.value)
+
+
+def test_environment_is_local_false_when_setting_missing():
+    """A settings module without ENVIRONMENT must not raise."""
+    with patch("home.utils.secrets.settings", spec=[]):
+        assert environment_is_local() is False
+
+
+class _OtherErrorsExceptions:
+    class ResourceNotFoundException(Exception):
+        """Distinct from ClientError so a plain ClientError is not caught as not-found."""
+
+
+class _ClientErrorOnGetClient:
+    def __init__(self):
+        self.exceptions = _OtherErrorsExceptions
+
+    def get_secret_value(self, SecretId):
+        raise ClientError(
+            error_response={
+                "Error": {"Code": "AccessDeniedException", "Message": "denied"}
+            },
+            operation_name="GetSecretValue",
+        )
+
+
+@pytest.mark.usefixtures("aws_credentials")
+def test_unexpected_client_error_on_retrieve_raises_runtime_error(monkeypatch):
+    monkeypatch.setattr(
+        boto3.session.Session, "client", lambda *a, **k: _ClientErrorOnGetClient()
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        get_secret("anything")
+    assert "Failed to retrieve or update" in str(exc_info.value)
+    assert "denied" in str(exc_info.value)
