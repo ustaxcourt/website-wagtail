@@ -44,7 +44,7 @@ DAWSON_PAGES = [
     (
         DawsonHowToSearchForAnOrder,
         "dawson-how-to-search-for-an-order",
-        "WAG-1450: How to search for an order",
+        "WAG-1445: Populate How to search for an order guide",
     ),
     (
         DawsonHowToSearchForAnOpinion,
