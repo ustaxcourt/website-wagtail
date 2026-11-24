@@ -11,7 +11,7 @@
 {% endblock %}
 {% block body_class %}template-standard_page{% endblock %}
 {% block content %}
-    <div {% if page.slug == "dawson-how-to-e-file-a-petition" %}id="dawson-efile-guide-print-content"{% endif %} class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}{% if page.slug == 'dawson-how-to-e-file-a-petition' %} dawson-efile-guide{% endif %}">
+    <div class="enhanced-page grid-container padding-bottom-2 padding-top-2{% if page.slug == 'petitioners-forms' %} petitioners-forms-page{% endif %}{% if not page.navigation_ribbon %} dawson-efile-guide{% endif %}">
         {% if page.navigation_ribbon %}
             {% with current_path=request.path|normalize_url_path %}
             <div class="blue-page-links-bar">

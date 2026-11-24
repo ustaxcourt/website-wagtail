@@ -139,6 +139,13 @@ class DetailedTimelineBlock(blocks.StructBlock):
         required=True,
     )
 
+    print_button_text = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        help_text="Text to be displayed at the beginning of the detailed timeline.",
+        default="Print",
+    )
+
     show_title = blocks.BooleanBlock(
         required=False,
         default=True,
