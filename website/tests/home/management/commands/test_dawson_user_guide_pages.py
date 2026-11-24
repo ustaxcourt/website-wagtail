@@ -59,7 +59,7 @@ DAWSON_PAGES = [
     (
         DawsonHowToViewDashboard,
         "dawson-how-to-view-dashboard",
-        "WAG-1450: How to view the DAWSON dashboard",
+        "WAG-1448: Populate How to view the DAWSON dashboard guide",
     ),
 ]
 
@@ -91,9 +91,10 @@ class TestDawsonUserGuidePages(TestCase):
 
         # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
-        for filename in DawsonHowToEfilePetition.DOCUMENT_FILENAMES.values():
-            for tag_name in get_tags_for_document(filename):
-                Tag.objects.get_or_create(name=tag_name)
+        for guide in (DawsonHowToEfilePetition, DawsonHowToViewDashboard):
+            for filename in guide.DOCUMENT_FILENAMES.values():
+                for tag_name in get_tags_for_document(filename):
+                    Tag.objects.get_or_create(name=tag_name)
 
     def test_registered_only_in_update_pages(self):
         for initializer, _, _ in DAWSON_PAGES:
