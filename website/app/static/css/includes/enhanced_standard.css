@@ -27,6 +27,10 @@
     margin-bottom: 0px;
 }
 
+.enhanced-page.grid-container.petitioners-guidance-page {
+    padding-bottom: 0;
+}
+
 .enhanced-page.grid-container > hr {
     margin-top: 17px;
     margin-bottom: 34px;
@@ -720,6 +724,10 @@ div.get-started-row + p + p {
 .info-card__buttons {
     display: flex;
     margin-top: auto;
+}
+
+.dawson-user-guides-page .info-card__buttons {
+    margin-top: 16px;
 }
 
 .info-card__button {

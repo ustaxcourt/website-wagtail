@@ -18,6 +18,12 @@ class PetitionerExperienceTestForm(PetitionerExperiencePage.base_form_class):
         fields = ("slug", "navigation_ribbon")
 
 
+def test_floating_definitions_button_is_on_by_default():
+    page = PetitionerExperiencePage(title="Test", slug="test")
+
+    assert page.show_floating_definitions_button is True
+
+
 def make_page(breadcrumb_title="", page_block=None):
     page = PetitionerExperiencePage.__new__(PetitionerExperiencePage)
     models.Model.__init__(page)

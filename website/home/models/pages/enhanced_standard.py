@@ -677,7 +677,7 @@ class EnhancedStandardPage(ModerationMixin, Page):
     )
 
     show_floating_definitions_button = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name="Floating Definitions Button",
         help_text="Check to display the floating definitions button on this page.",
     )
