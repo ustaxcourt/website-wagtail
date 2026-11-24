@@ -69,7 +69,7 @@ def migrate_show_info_icon_to_bubble_content(apps, schema_editor):
             revisions += 1
 
     logger.info(
-        "0169: converted %s page(s) and %s revision(s) to bubble_content.",
+        "0171: converted %s page(s) and %s revision(s) to bubble_content.",
         pages,
         revisions,
     )
