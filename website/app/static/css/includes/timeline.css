@@ -490,6 +490,7 @@
 
 .bubble-circle::before {
     content: "";
+    counter-increment: bubbleitem;
     position: absolute;
     left: -39px;
     top: 24px;
@@ -502,7 +503,6 @@
 }
 
 .bubble-number::before {
-    counter-increment: bubbleitem;
     content: counter(bubbleitem);
     text-align: center;
     color: var(--color-secondary);
