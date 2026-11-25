@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0167_dawson_user_guide_landing_page_period_update_pe"),
+        ("home", "0169_alter_petitionerexperiencepage_resource_cards"),
     ]
 
     operations = [

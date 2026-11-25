@@ -69,7 +69,7 @@ def migrate_show_info_icon_to_bubble_content(apps, schema_editor):
             revisions += 1
 
     logger.info(
-        "0169: converted %s page(s) and %s revision(s) to bubble_content.",
+        "0171: converted %s page(s) and %s revision(s) to bubble_content.",
         pages,
         revisions,
     )
@@ -77,7 +77,7 @@ def migrate_show_info_icon_to_bubble_content(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0168_alter_enhancedstandardpage_body"),
+        ("home", "0170_alter_enhancedstandardpage_body"),
         ("wagtailcore", "0097_baselogentry_uuid_action_timestamp_indexes"),
     ]
 

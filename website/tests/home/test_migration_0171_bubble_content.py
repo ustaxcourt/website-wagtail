@@ -2,7 +2,7 @@ import copy
 import importlib
 
 migration = importlib.import_module(
-    "home.migrations.0169_migrate_show_info_icon_to_bubble_content"
+    "home.migrations.0171_migrate_show_info_icon_to_bubble_content"
 )
 
 

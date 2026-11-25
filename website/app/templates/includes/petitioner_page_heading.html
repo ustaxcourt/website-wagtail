@@ -1,0 +1,28 @@
+{% load static wagtailcore_tags %}
+{% comment %}
+Title and introductory text of a Petitioner Experience page. Pass
+hide_breadcrumb=True when the breadcrumb is rendered separately above it.
+{% endcomment %}
+<div class="petitioner-page-heading {% if not page.show_dawson_logo %}no-logo{% endif %}">
+    {% if page.show_dawson_logo %}
+        <div class="petitioner-page-heading-logo">
+            <img class="dawson"
+                src="{% static 'images/header/dawson.webp' %}"
+                alt="" />
+        </div>
+    {% endif %}
+    <div class="petitioner-page-heading-title">
+        {% if not hide_breadcrumb %}
+            {% include "includes/petitioner_breadcrumb.html" %}
+        {% endif %}
+        <h1 data-testid="page-title" tabindex="-1">
+            <span class="page-title-start" id="page-title-start">{{ page.title }}</span>
+            <span class="page-title-breadcrumb"></span>
+        </h1>
+    </div>
+    <div class="petitioner-page-heading-intro">
+        {% if page.introductory_text %}
+            {{ page.introductory_text|richtext }}
+        {% endif %}
+    </div>
+</div>
