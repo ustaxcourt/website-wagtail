@@ -29,7 +29,7 @@ DAWSON_PAGES = [
     (
         DawsonHowToPayFilingFee,
         "dawson-how-to-pay-filing-fee",
-        "WAG-1450: How to pay the filing fee",
+        "WAG-1442: Populate How to pay the filing fee guide",
     ),
     (
         DawsonTroubleshootFileUploads,
@@ -91,9 +91,10 @@ class TestDawsonUserGuidePages(TestCase):
 
         # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
-        for filename in DawsonHowToEfilePetition.DOCUMENT_FILENAMES.values():
-            for tag_name in get_tags_for_document(filename):
-                Tag.objects.get_or_create(name=tag_name)
+        for guide in (DawsonHowToEfilePetition, DawsonHowToPayFilingFee):
+            for filename in guide.DOCUMENT_FILENAMES.values():
+                for tag_name in get_tags_for_document(filename):
+                    Tag.objects.get_or_create(name=tag_name)
 
     def test_registered_only_in_update_pages(self):
         for initializer, _, _ in DAWSON_PAGES:
