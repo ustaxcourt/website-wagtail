@@ -16,9 +16,17 @@ from home.management.commands.pages.rules_and_guidance import (
     rules_and_guidance_pages_to_initialize,
 )
 from home.management.commands.pages.rules_and_guidance.dawson_how_to_search_for_an_opinion import (
+    ACCESS_IMAGES_SCRIPT_NAME,
     IMAGE_ALT,
     IMAGE_TITLE,
     CONTENT_SCRIPT_NAME,
+    PRACTITIONER_IMAGE_ALT,
+    PRACTITIONER_IMAGE_TITLE,
+    PRACTITIONER_OPINION_IMAGE_ALT,
+    PRACTITIONER_OPINION_IMAGE_TITLE,
+    PUBLIC_IMAGE_ALT,
+    PUBLIC_IMAGE_TITLE,
+    RESOURCES_SCRIPT_NAME,
 )
 from home.management.commands.update_pages import pages_to_update
 from home.models import NavigationRibbon
@@ -215,16 +223,98 @@ class TestDawsonUserGuidePages(TestCase):
             for phase in page.body.get_prep_value()[0]["value"]["phases"]
         }
         image_marker = f'alt="{IMAGE_ALT}"'
-        # Only the one available screenshot is placed, under Review Search Results.
+        # The results screenshot is under Review Search Results.
         self.assertEqual(
             [phases[title].count(image_marker) for title in phases],
             [0, 0, 0, 1, 0],
         )
 
+        # Access Opinion Search: one screenshot for the public, two for practitioners.
+        access = phases["Access Opinion Search"]
+        public_marker = f'alt="{PUBLIC_IMAGE_ALT}"'
+        practitioner_marker = f'alt="{PRACTITIONER_IMAGE_ALT}"'
+        self.assertEqual(access.count(public_marker), 1)
+        practitioner_opinion_marker = f'alt="{PRACTITIONER_OPINION_IMAGE_ALT}"'
+        self.assertEqual(access.count(practitioner_marker), 1)
+        self.assertEqual(access.count(practitioner_opinion_marker), 1)
+        self.assertLess(access.index("Petitioner/Public"), access.index(public_marker))
+        self.assertLess(
+            access.index(public_marker), access.index("Practitioner</strong>")
+        )
+        self.assertLess(
+            access.index("Practitioner</strong>"), access.index(practitioner_marker)
+        )
+        self.assertLess(
+            access.index(practitioner_marker), access.index(practitioner_opinion_marker)
+        )
+        self.assertEqual(access.count(f'alt="{IMAGE_ALT}"'), 0)
+        image_model = get_image_model()
+        self.assertTrue(image_model.objects.filter(title=PUBLIC_IMAGE_TITLE).exists())
+        self.assertTrue(
+            image_model.objects.filter(title=PRACTITIONER_IMAGE_TITLE).exists()
+        )
+        self.assertTrue(
+            image_model.objects.filter(title=PRACTITIONER_OPINION_IMAGE_TITLE).exists()
+        )
+
         # The image closes out Review Search Results, after both paragraphs.
         review = phases["Review Search Results"]
         self.assertLess(review.index("next 100 results."), review.index(image_marker))
-        self.assertFalse(page.resource_cards)
+
+        tiles = page.resource_cards[0].value["tiles"]
+        dawson_url = get_environment_specific_dawson_url()
+        self.assertEqual(
+            [
+                (tile["title"], tile["link"][0].value, tile["icon"]["svg_file"].title)
+                for tile in tiles
+            ],
+            [
+                ("DAWSON", dawson_url, "DAWSON_icon.svg"),
+                (
+                    "Today's Opinions",
+                    f"{dawson_url}/todays-opinions",
+                    "DAWSON_icon.svg",
+                ),
+            ],
+        )
+
+    def test_existing_guide_gets_resource_cards_once(self):
+        DawsonHowToSearchForAnOpinion().run()
+
+        page = PetitionerExperiencePage.objects.get(
+            slug="dawson-how-to-search-for-an-opinion"
+        )
+        page.resource_cards = []
+        page.save_revision().publish()
+        ExecuteScript.objects.filter(command_name=RESOURCES_SCRIPT_NAME).delete()
+
+        DawsonHowToSearchForAnOpinion().run()
+
+        page.refresh_from_db()
+        self.assertEqual(
+            [tile["title"] for tile in page.resource_cards[0].value["tiles"]],
+            ["DAWSON", "Today's Opinions"],
+        )
+        self.assertEqual(
+            ExecuteScript.objects.filter(command_name=RESOURCES_SCRIPT_NAME).count(), 1
+        )
+
+    def test_existing_opinion_resource_cards_are_not_overwritten(self):
+        DawsonHowToSearchForAnOpinion().run()
+
+        page = PetitionerExperiencePage.objects.get(
+            slug="dawson-how-to-search-for-an-opinion"
+        )
+        cards = page.resource_cards.get_prep_value()
+        cards[0]["value"]["tiles"] = cards[0]["value"]["tiles"][:1]
+        page.resource_cards = cards
+        page.save_revision().publish()
+        ExecuteScript.objects.filter(command_name=RESOURCES_SCRIPT_NAME).delete()
+
+        DawsonHowToSearchForAnOpinion().run()
+
+        page.refresh_from_db()
+        self.assertEqual(len(page.resource_cards[0].value["tiles"]), 1)
 
     def test_existing_guide_content_update_matches_expanded_design(self):
         DawsonHowToSearchForAnOpinion().run()
@@ -256,6 +346,30 @@ class TestDawsonUserGuidePages(TestCase):
         self.assertIn("To search by opinion type:", html)
         self.assertNotIn("Outdated", html)
         self.assertEqual(html.count(f'alt="{IMAGE_ALT}"'), 1)
+
+    def test_existing_guide_gets_access_screenshots(self):
+        DawsonHowToSearchForAnOpinion().run()
+
+        page = PetitionerExperiencePage.objects.get(
+            slug="dawson-how-to-search-for-an-opinion"
+        )
+        body = page.body.get_prep_value()
+        phase = body[0]["value"]["phases"][0]["value"]
+        phase["instructions"] = "<p>Outdated access instructions.</p>"
+        page.body = body
+        page.save_revision().publish()
+        ExecuteScript.objects.filter(command_name=ACCESS_IMAGES_SCRIPT_NAME).delete()
+
+        DawsonHowToSearchForAnOpinion().run()
+
+        page.refresh_from_db()
+        html = render_to_string(
+            "detailed_timeline.html", {"block": page.body[0], "page": page}
+        )
+        self.assertNotIn("Outdated", html)
+        self.assertEqual(html.count(f'alt="{PUBLIC_IMAGE_ALT}"'), 1)
+        self.assertEqual(html.count(f'alt="{PRACTITIONER_IMAGE_ALT}"'), 1)
+        self.assertEqual(html.count(f'alt="{PRACTITIONER_OPINION_IMAGE_ALT}"'), 1)
 
     def test_existing_blank_opinion_guide_gets_populated(self):
         home_page = Page.objects.get(slug="home")

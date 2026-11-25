@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from wagtail.models import Page
 from wagtail.images import get_image_model
@@ -16,18 +17,36 @@ SCRIPT_NAME = "WAG-1446: Populate How to search for an opinion user guide"
 CONTENT_SCRIPT_NAME = (
     "WAG-1446: Keep only the opinion results screenshot in the opinion guide"
 )
+ACCESS_IMAGES_SCRIPT_NAME = (
+    "WAG-1446: Add the Access Opinion Search screenshots to the opinion guide"
+)
+RESOURCES_SCRIPT_NAME = "WAG-1446: Add resource cards to the opinion guide"
+RESOURCE_ICON_FILENAME = "DAWSON_icon.svg"
 BREADCRUMB_TITLE = "DAWSON User Guides & Electronic Filing Instructions"
-# Only this screenshot is available; the guide's other images are added in the admin.
 IMAGE_FILENAME = "opinion-limited-search.jpg"
 IMAGE_TITLE = "DAWSON Opinion Limited Search"
 IMAGE_ALT = "DAWSON Opinion search results showing the 5,000 result limit."
+PUBLIC_IMAGE_FILENAME = "opinion-search-public.jpg"
+PUBLIC_IMAGE_TITLE = "DAWSON Opinion Search Public"
+PUBLIC_IMAGE_ALT = (
+    "DAWSON homepage Search page with the Opinion tab selected and an arrow "
+    "pointing to it."
+)
+PRACTITIONER_IMAGE_FILENAME = "practitioner-advanced-search.jpg"
+PRACTITIONER_IMAGE_TITLE = "DAWSON Practitioner Advanced Search"
+PRACTITIONER_IMAGE_ALT = (
+    "Practitioner dashboard with an arrow pointing to the Advanced Search link "
+    "in the Search for a Case panel."
+)
+PRACTITIONER_OPINION_IMAGE_FILENAME = "opinion-search.jpg"
+PRACTITIONER_OPINION_IMAGE_TITLE = "DAWSON Opinion Search Practitioner"
+PRACTITIONER_OPINION_IMAGE_ALT = (
+    "DAWSON Search page for a logged-in practitioner with the Opinion tab selected."
+)
 
 
-def _image_embed(image_id):
-    return (
-        f'<embed alt="{IMAGE_ALT}" embedtype="image" format="fullwidth" '
-        f'id="{image_id}"/>'
-    )
+def _image_embed(image_id, alt=IMAGE_ALT):
+    return f'<embed alt="{alt}" embedtype="image" format="fullwidth" id="{image_id}"/>'
 
 
 def _heading(text):
@@ -52,16 +71,69 @@ def _phase(title, instructions, bubble_content="number"):
 
 
 class DawsonHowToSearchForAnOpinion(PageInitializer):
-    def get_opinion_image(self):
-        image_model = get_image_model()
-        image = image_model.objects.filter(title=IMAGE_TITLE).first()
+    def get_image(self, filename, title):
+        image = get_image_model().objects.filter(title=title).first()
         if image is None:
-            image = self.load_image_from_images_dir(
-                "dawson", IMAGE_FILENAME, IMAGE_TITLE
-            )
+            image = self.load_image_from_images_dir("dawson", filename, title)
         if image is None:
-            raise FileNotFoundError(f"Opinion search image not found: {IMAGE_FILENAME}")
+            raise FileNotFoundError(f"Opinion guide image not found: {filename}")
         return image
+
+    def build_resource_cards(self):
+        dawson_url = get_environment_specific_dawson_url()
+        icon = self.load_document_from_documents_dir(
+            subdirectory=None,
+            filename=RESOURCE_ICON_FILENAME,
+            title=RESOURCE_ICON_FILENAME,
+        )
+        resources = [
+            ("DAWSON", dawson_url),
+            ("Today's Opinions", f"{dawson_url}/todays-opinions"),
+        ]
+        return [
+            {
+                "type": "quick_access_tiles",
+                "value": {
+                    "tiles_hover_enabled": True,
+                    "icon_position": "desktop_top_mobile_left",
+                    "tiles": [
+                        {
+                            "type": "item",
+                            "value": {
+                                "title": title,
+                                "description": "",
+                                "icon": {"svg_file": icon.pk},
+                                "content_alignment": "left",
+                                "link": [
+                                    {
+                                        "type": "external_url",
+                                        "value": url,
+                                        "id": str(uuid.uuid4()),
+                                    }
+                                ],
+                            },
+                            "id": str(uuid.uuid4()),
+                        }
+                        for title, url in resources
+                    ],
+                },
+                "id": str(uuid.uuid4()),
+            }
+        ]
+
+    def add_resource_cards(self):
+        """Adds the Resources column to a guide created before it existed."""
+        page = PetitionerExperiencePage.objects.filter(slug=PAGE_SLUG).first()
+        if page is None:
+            raise Page.DoesNotExist(
+                f"Page '{PAGE_SLUG}' not found; cannot add its resource cards."
+            )
+        if page.resource_cards:
+            logger.info("Page '%s' already has resource cards.", PAGE_SLUG)
+            return
+
+        page.resource_cards = self.build_resource_cards()
+        page.save_revision().publish()
 
     def create(self):
         home_page = Page.objects.get(slug="home")
@@ -89,6 +161,7 @@ class DawsonHowToSearchForAnOpinion(PageInitializer):
                 }
             ],
             "body": [{"type": "detailed_timeline", "value": self.build_timeline()}],
+            "resource_cards": self.build_resource_cards(),
         }
 
         existing_page = Page.objects.filter(slug=PAGE_SLUG).first()
@@ -117,7 +190,21 @@ class DawsonHowToSearchForAnOpinion(PageInitializer):
     def build_timeline(self):
         dawson_url = get_environment_specific_dawson_url()
         todays_opinions_url = f"{dawson_url}/todays-opinions"
-        image_embed = _image_embed(self.get_opinion_image().id)
+        image_embed = _image_embed(self.get_image(IMAGE_FILENAME, IMAGE_TITLE).id)
+        public_image_embed = _image_embed(
+            self.get_image(PUBLIC_IMAGE_FILENAME, PUBLIC_IMAGE_TITLE).id,
+            PUBLIC_IMAGE_ALT,
+        )
+        practitioner_opinion_image_embed = _image_embed(
+            self.get_image(
+                PRACTITIONER_OPINION_IMAGE_FILENAME, PRACTITIONER_OPINION_IMAGE_TITLE
+            ).id,
+            PRACTITIONER_OPINION_IMAGE_ALT,
+        )
+        practitioner_image_embed = _image_embed(
+            self.get_image(PRACTITIONER_IMAGE_FILENAME, PRACTITIONER_IMAGE_TITLE).id,
+            PRACTITIONER_IMAGE_ALT,
+        )
         search_phrase_bullets = _bullets(
             "The case caption", "The content of the opinion", "The opinion title"
         )
@@ -166,11 +253,14 @@ class DawsonHowToSearchForAnOpinion(PageInitializer):
                     "<p>To access Opinion Search, go to the "
                     f'<a href="{dawson_url}">DAWSON homepage</a> and select the '
                     "<strong>Opinion</strong> tab.</p>"
+                    f"{public_image_embed}"
                     f"{_heading('Practitioner')}"
                     "<p>To access Opinion Search, log in to your DAWSON account and "
                     "select <strong>Advanced Search</strong> from the upper-right "
                     "corner of your dashboard. Then select the "
-                    "<strong>Opinion</strong> tab.</p>",
+                    "<strong>Opinion</strong> tab.</p>"
+                    f"{practitioner_image_embed}"
+                    f"{practitioner_opinion_image_embed}",
                 ),
                 _phase(
                     "Search by Keyword, Phrase, Judge, Date, or Opinion Type",
@@ -285,7 +375,11 @@ class DawsonHowToSearchForAnOpinion(PageInitializer):
         content_updated = self._run_once(
             CONTENT_SCRIPT_NAME, self.update_timeline_content
         )
-        if not (created or content_updated):
+        images_updated = self._run_once(
+            ACCESS_IMAGES_SCRIPT_NAME, self.update_timeline_content
+        )
+        resources_added = self._run_once(RESOURCES_SCRIPT_NAME, self.add_resource_cards)
+        if not (created or content_updated or images_updated or resources_added):
             return 0
 
     def _run_once(self, command_name, action):
