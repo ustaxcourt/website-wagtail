@@ -40,12 +40,12 @@ class RemoteBasicsPageInitializer(PageInitializer):
             },
             {
                 "question": "What if I don't have access to the Internet?",
-                "answer": "You will need to inform the Judge as soon as possible. You may be able to participate by telephone.",
+                "answer": "You will need to inform the judge as soon as possible. You may be able to participate by telephone.",
                 "anchortag": "ZOOM2",
             },
             {
                 "question": "What if I don't have access to a computer, smartphone, or tablet?",
-                "answer": "You will need to inform the Judge as soon as possible. You may be able to participate by telephone.",
+                "answer": "You will need to inform the judge as soon as possible. You may be able to participate by telephone.",
                 "anchortag": "ZOOM3",
             },
             {

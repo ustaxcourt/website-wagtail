@@ -76,7 +76,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2025-03-09",
-                "description": "<ul><li>The following document types/event codes are no longer available in the dropdown picklist for Petitioners and Practitioners when eFiling a document:<ul><li>Application for Waiver of Filing Fee and Affidavit (APPW)</li><li>Civil Penalty Approval Form (CIVP)</li><li>Motion to Appoint New Tax Matters Partner (M044)</li><li>Motion to Calendar in the Electronic (North) Courtroom (M038)</li><li>Motion to Appoint an Interpreter Pursuant to Rule 143(f) (M045)</li><li>Motion to Certify for Interlocutory Appeal (M055)</li><li>Motion to Preclude (M085)</li><li>Motion to Shorten the Time (M102)</li><li>Notice of Clarification of Tax Matters Partner (NCTP)</li><li>Notice of Judicial Ruling (NRJR)</li><li>Notice of Relevant Judicial Decisions (NRJD)</li><li>Notice of Telephone Number (NTN)</li><li>Seriatim Answering Memorandum Brief (SAMB)</li><li>Seriatim Opening Memorandum Brief (SOMB)</li><li>Seriatim Reply Memorandum Brief (SRMB)</li><li>Seriatim Sur-Reply Memorandum Brief (SSRB)</li><li>Simultaneous Answering Memorandum Brief (SIMB)</li><li>Simultaneous Opening Memorandum Brief (SIOM)</li><li>Simultaneous Sur-Reply Memorandum Brief (SSRM)</li><li>Unsworn Declaration of [Name] under Penalty of Perjury in Support of [Document Name] (USDL)</li></ul></li><li>Motion to Appoint an Interpreter (M045A) is now available in the dropdown picklist for Petitioners and Practitioners when eFiling a document.</li></ul>",
+                "description": "<ul><li>The following document types/event codes are no longer available in the dropdown picklist for petitioners and practitioners when eFiling a document:<ul><li>Application for Waiver of Filing Fee and Affidavit (APPW)</li><li>Civil Penalty Approval Form (CIVP)</li><li>Motion to Appoint New Tax Matters Partner (M044)</li><li>Motion to Calendar in the Electronic (North) Courtroom (M038)</li><li>Motion to Appoint an Interpreter Pursuant to Rule 143(f) (M045)</li><li>Motion to Certify for Interlocutory Appeal (M055)</li><li>Motion to Preclude (M085)</li><li>Motion to Shorten the Time (M102)</li><li>Notice of Clarification of Tax Matters Partner (NCTP)</li><li>Notice of Judicial Ruling (NRJR)</li><li>Notice of Relevant Judicial Decisions (NRJD)</li><li>Notice of Telephone Number (NTN)</li><li>Seriatim Answering Memorandum Brief (SAMB)</li><li>Seriatim Opening Memorandum Brief (SOMB)</li><li>Seriatim Reply Memorandum Brief (SRMB)</li><li>Seriatim Sur-Reply Memorandum Brief (SSRB)</li><li>Simultaneous Answering Memorandum Brief (SIMB)</li><li>Simultaneous Opening Memorandum Brief (SIOM)</li><li>Simultaneous Sur-Reply Memorandum Brief (SSRM)</li><li>Unsworn Declaration of [Name] under Penalty of Perjury in Support of [Document Name] (USDL)</li></ul></li><li>Motion to Appoint an Interpreter (M045A) is now available in the dropdown picklist for petitioners and practitioners when eFiling a document.</li></ul>",
             },
             {
                 "release_date": "2025-02-23",
@@ -132,7 +132,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-07-31",
-                "description": "<ul><li>E-filing Petitioners now have the option to 1) Answer some questions online and have DAWSON generate a petition document when creating a case, or 2) Upload a petition PDF document when creating a case.</li></ul>",
+                "description": "<ul><li>E-filing petitioners now have the option to 1) Answer some questions online and have DAWSON generate a petition document when creating a case, or 2) Upload a petition PDF document when creating a case.</li></ul>",
             },
             {
                 "release_date": "2024-07-28",
@@ -168,7 +168,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2024-04-28",
-                "description": '<ul><li>The "Country" data field options for Petitioner/Practitioner contact information are now displayed as radio button selections rather than in a dropdown.</li><li>Motion to Lift Stay of Proceedings is now a document type that can be e-filed/added to the docket record.</li><li>Updated the confirmation banner text a user receives after filing documents in all cases in a consolidated group.</li><li>Resolved issue that caused some large documents that were uploaded to the docket record to have missing coversheets and display 0 pages in length.</li></ul>',
+                "description": '<ul><li>The "Country" data field options for petitioner/practitioner contact information are now displayed as radio button selections rather than in a dropdown.</li><li>Motion to Lift Stay of Proceedings is now a document type that can be e-filed/added to the docket record.</li><li>Updated the confirmation banner text a user receives after filing documents in all cases in a consolidated group.</li><li>Resolved issue that caused some large documents that were uploaded to the docket record to have missing coversheets and display 0 pages in length.</li></ul>',
             },
             {
                 "release_date": "2024-03-24",
@@ -256,7 +256,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2023-04-02",
-                "description": '<ul><li>Parties no longer receive validation errors when e-filing a Motion for Leave or Motion for Leave to File Out of Time associated with an iteration type document.</li><li>"U.S.A." is no longer displayed as part of a Petitioner\'s address in the envelope window for paper service.</li></ul>',
+                "description": '<ul><li>Parties no longer receive validation errors when e-filing a Motion for Leave or Motion for Leave to File Out of Time associated with an iteration type document.</li><li>"U.S.A." is no longer displayed as part of a petitioner\'s address in the envelope window for paper service.</li></ul>',
             },
             {
                 "release_date": "2023-03-26",
@@ -280,7 +280,7 @@ class DawsonReleaseNotesInitializer(PageInitializer):
             },
             {
                 "release_date": "2022-11-20",
-                "description": "<ul><li>Logged-in Petitioners can now search for other cases by docket number from the My Cases screen without needing to log out.</li><li>Resolved issue that impacted printing the docket record in consolidated cases. </li></ul>",
+                "description": "<ul><li>Logged-in petitioners can now search for other cases by docket number from the My Cases screen without needing to log out.</li><li>Resolved issue that impacted printing the docket record in consolidated cases. </li></ul>",
             },
             {
                 "release_date": "2022-11-01",
