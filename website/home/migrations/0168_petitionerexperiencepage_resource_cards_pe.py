@@ -4,13 +4,41 @@ import wagtail.fields
 from django.db import migrations
 
 
+class AddFieldIfMissing(migrations.AddField):
+    """AddField that is a no-op in the database when the column already exists."""
+
+    def database_forwards(self, app_label, schema_editor, from_state, to_state):
+        model = to_state.apps.get_model(app_label, self.model_name)
+        connection = schema_editor.connection
+        with connection.cursor() as cursor:
+            columns = [
+                column.name
+                for column in connection.introspection.get_table_description(
+                    cursor, model._meta.db_table
+                )
+            ]
+        if self.name in columns:
+            return
+        super().database_forwards(app_label, schema_editor, from_state, to_state)
+
+
 class Migration(migrations.Migration):
+    # This branch previously shipped these resource_cards migrations under the
+    # names below (0167 + a 0168 merge) and later renamed them to this one.
+    # `replaces` lets databases that applied the old names stay consistent
+    # without manual edits; AddFieldIfMissing covers databases that already
+    # applied this renamed version.
+    replaces = [
+        ("home", "0167_petitionerexperiencepage_resource_cards_pe"),
+        ("home", "0168_merge_20261120_1140"),
+    ]
+
     dependencies = [
         ("home", "0167_dawson_user_guide_landing_page_period_update_pe"),
     ]
 
     operations = [
-        migrations.AddField(
+        AddFieldIfMissing(
             model_name="petitionerexperiencepage",
             name="resource_cards",
             field=wagtail.fields.StreamField(
