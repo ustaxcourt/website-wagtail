@@ -91,7 +91,7 @@ def test_timeline_heading_hierarchy(show_title, heading_level):
 class DetailedTimelineRenderTest(TestCase):
     """Verify that an EnhancedStandardPage with a detailed timeline renders without error."""
 
-    def page_setup(self, show_bubble_line_numbers, show_info_icon_on_first_phase=False):
+    def page_setup(self, show_bubble_line_numbers, first_phase_bubble_content="number"):
         self.factory = RequestFactory()
 
         Locale.objects.get_or_create(language_code="en")
@@ -130,7 +130,7 @@ class DetailedTimelineRenderTest(TestCase):
                                 "type": "phase",
                                 "value": {
                                     "title": "Receive an IRS Notice",
-                                    "show_info_icon": show_info_icon_on_first_phase,
+                                    "bubble_content": first_phase_bubble_content,
                                     "date_range": "Day 0",
                                     "instructions": '<p data-block-key="7qeva">You receive an IRS Notice.</p><ul><li data-block-key="2f120">Note the deadline on the notice - this is your starting point.</li><li data-block-key="d1h80">Do not ignore this notice.</li></ul>',
                                     "your_tasks": [
@@ -497,8 +497,8 @@ class DetailedTimelineRenderTest(TestCase):
         )  # Validate that bubble numbers are not shown when show_numbers_in_bubbles is False
 
     def test_detailed_timeline_info_icon_overrides_bubble_number(self):
-        """A phase with show_info_icon gets bubble-info instead of bubble-number."""
-        self.page_setup(True, show_info_icon_on_first_phase=True)
+        """A phase with bubble_content "info" gets bubble-info instead of bubble-number."""
+        self.page_setup(True, first_phase_bubble_content="info")
         request = self.factory.get(self.page.url)
         request.site = Site.objects.get(is_default_site=True)
         response = self.page.serve(request)
@@ -514,6 +514,29 @@ class DetailedTimelineRenderTest(TestCase):
         for classes in phase_classes[1:]:
             self.assertIn("bubble-number", classes.split())
             self.assertNotIn("bubble-info", classes.split())
+
+    def _first_phase_classes(self, first_phase_bubble_content):
+        self.page_setup(True, first_phase_bubble_content=first_phase_bubble_content)
+        request = self.factory.get(self.page.url)
+        request.site = Site.objects.get(is_default_site=True)
+        content = self.page.serve(request).render().content.decode()
+        phase_classes = re.findall(
+            r'class="(detailed-timeline-phase bubble-circle[^"]*)"', content
+        )
+        return phase_classes[0].split()
+
+    def test_bubble_content_scale_gets_bubble_scale_class(self):
+        classes = self._first_phase_classes("scale")
+        self.assertIn("bubble-scale", classes)
+        self.assertNotIn("bubble-number", classes)
+
+    def test_bubble_content_user_gets_bubble_user_class(self):
+        classes = self._first_phase_classes("user")
+        self.assertIn("bubble-user", classes)
+        self.assertNotIn("bubble-number", classes)
+
+    def test_bubble_content_number_gets_bubble_number_class(self):
+        self.assertIn("bubble-number", self._first_phase_classes("number"))
 
     def test_detailed_timeline_has_expand_and_print_controls(self):
         self.page_setup(False)
@@ -563,3 +586,10 @@ def test_populated_warning_callout_is_valid():
 
     assert cleaned["heading"] == "Reminder"
     assert cleaned["text"]
+
+
+def test_bubble_content_defaults_to_number():
+    block = DetailedTimelineBlock()
+    phase_block = block.child_blocks["phases"].child_blocks["phase"]
+    assert phase_block.child_blocks["bubble_content"].get_default() == "number"
+    assert "show_info_icon" not in phase_block.child_blocks

@@ -64,13 +64,13 @@ def _options(
     return f"<p>{summary}</p><p>{lead}</p><ul>{items}</ul>"
 
 
-def _phase(title, instructions, helpful_information=(), show_info_icon=False):
+def _phase(title, instructions, helpful_information=(), bubble_content="number"):
     return {
         "type": "phase",
         "value": {
             "title": title,
             "date_range": "",
-            "show_info_icon": show_info_icon,
+            "bubble_content": bubble_content,
             "instructions": instructions,
             "your_tasks": [],
             "helpful_information": [
@@ -386,7 +386,7 @@ class DawsonTroubleshootFileUploads(PageInitializer):
                                     ],
                                     lead="Consider the following options:",
                                 ),
-                                show_info_icon=True,
+                                bubble_content="info",
                                 helpful_information=[
                                     (
                                         "How can I access DAWSON and confirm it is working properly?",
