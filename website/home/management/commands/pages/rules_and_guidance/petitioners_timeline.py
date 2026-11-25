@@ -30,6 +30,12 @@ class PetitionersTimelinePageInitializer(PageInitializer):
 
         logger.info(f"Creating the '{title}' page.")
 
+        if Page.objects.filter(slug=slug).exists():
+            logger.info(f"- {title} page already exists.")
+            return
+
+        logger.info(f"Creating the '{title}' page.")
+
         navigation_ribbon = NavigationRibbon.objects.filter(
             name="Guidance for Petitioners Ribbon"
         ).first()

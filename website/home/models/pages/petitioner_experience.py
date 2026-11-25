@@ -5,6 +5,7 @@ from modelcluster.models import ClusterableModel
 from wagtail import blocks
 from wagtail.models import Orderable, Page
 from wagtail.fields import RichTextField, StreamField
+from home.blocks import QuickAccessTilesBlock
 from home.models.pages.enhanced_standard import EnhancedStandardPage
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.search import index
@@ -122,6 +123,13 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         use_json_field=True,
     )
 
+    resource_cards = StreamField(
+        [("quick_access_tiles", QuickAccessTilesBlock(label="Resource Cards"))],
+        blank=True,
+        max_num=1,
+        use_json_field=True,
+    )
+
     call_to_action = models.ForeignKey(
         CallToActionBox,
         null=True,
@@ -137,6 +145,7 @@ class PetitionerExperiencePage(EnhancedStandardPage):
         FieldPanel("show_dawson_logo"),
         FieldPanel("introductory_text"),
         FieldPanel("body"),
+        FieldPanel("resource_cards"),
         FieldPanel("call_to_action"),
         InlinePanel("side_cards", label="Side Cards"),
     ]
@@ -167,6 +176,11 @@ class PetitionerExperiencePage(EnhancedStandardPage):
                         "breadcrumb": "A Breadcrumb Page must be provided when Breadcrumb Title is provided."
                     }
                 )
+
+    @property
+    def has_resource_tiles(self):
+        # An empty Resource Cards block is still a truthy StreamField.
+        return any(block.value["tiles"] for block in self.resource_cards)
 
     @property
     def breadcrumb_title(self):

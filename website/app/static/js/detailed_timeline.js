@@ -110,9 +110,10 @@
         saveAccordionState(timeline);
     }
 
-    function createPrintClone(printRoot, isPetitionGuide) {
+    function createPrintClone(printRoot, isPetitionGuide, printTitle) {
         const clone = printRoot.cloneNode(true);
         const originalCheckboxes = printRoot.querySelectorAll('input[type="checkbox"]');
+        let titleText = printTitle;
 
         if (isPetitionGuide) {
             clone.querySelectorAll(
@@ -122,10 +123,17 @@
             });
             const pageTitle = printRoot.closest(".dawson-efile-guide")
                 .querySelector('[data-testid="page-title"]');
+            titleText = pageTitle.textContent.trim();
+        }
+
+        if (
+            isPetitionGuide ||
+            (titleText && !clone.querySelector(".detailed-timeline-title-block"))
+        ) {
             const titleBlock = document.createElement("div");
             titleBlock.className = "detailed-timeline-title-block";
             const title = document.createElement("h2");
-            title.textContent = pageTitle.textContent.trim();
+            title.textContent = titleText;
             titleBlock.appendChild(title);
             clone.querySelector(".detailed-timeline-header-text").prepend(titleBlock);
         }
@@ -195,6 +203,7 @@
             const clickedPrintButton = target.closest(".detailed-timeline-print-button");
             if (clickedPrintButton && timeline.contains(clickedPrintButton)) {
                 const isPetitionGuide = clickedPrintButton.hasAttribute("data-print-guide");
+                const printTitle = clickedPrintButton.dataset.printTitle;
                 const printRootSelector = printButton.dataset.printRoot;
                 const printRoot = printRootSelector
                     ? document.querySelector(printRootSelector)
@@ -204,7 +213,9 @@
                 cleanupPrintHost();
                 printHost = document.createElement("div");
                 printHost.className = "detailed-timeline-print-host";
-                printHost.appendChild(createPrintClone(printRoot, isPetitionGuide));
+                printHost.appendChild(
+                    createPrintClone(printRoot, isPetitionGuide, printTitle)
+                );
                 document.body.appendChild(printHost);
                 document.body.classList.add("printing-detailed-timeline");
                 window.requestAnimationFrame(function() {
