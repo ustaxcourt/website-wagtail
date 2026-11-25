@@ -214,6 +214,26 @@ class Command(BaseCommand):
             )
             return None
 
+    def remove_duplicate_promotions(self, query, page):
+        # Editors can promote the same page twice for a query in the admin,
+        # which makes update_or_create raise MultipleObjectsReturned. Keep the
+        # oldest promotion and delete the rest.
+        duplicate_ids = list(
+            SearchPromotion.objects.filter(query=query, page=page)
+            .order_by("id")
+            .values_list("id", flat=True)[1:]
+        )
+        if not duplicate_ids:
+            return
+
+        SearchPromotion.objects.filter(id__in=duplicate_ids).delete()
+        self.stdout.write(
+            self.style.WARNING(
+                f"    -> WARNING: Removed duplicate promotions {duplicate_ids} "
+                f"for '{query.query_string}' -> '{page.title}'."
+            )
+        )
+
     def handle(self, *args, **kwargs):
         self.stdout.write("Starting to update search promotions from JSON data...")
 
@@ -260,6 +280,7 @@ class Command(BaseCommand):
 
                 # Create/update a promotion for each page with the correct sort order
                 for sort_order, page in enumerate(promoted_pages):
+                    self.remove_duplicate_promotions(query, page)
                     SearchPromotion.objects.update_or_create(
                         query=query,
                         page=page,
