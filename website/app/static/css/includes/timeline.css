@@ -229,6 +229,12 @@
     display: block;
 }
 
+/* Adjacent block margins collapse, so this spaces an image from the next
+   heading and consecutive images from each other by 24px. */
+.dawson-efile-guide .detailed-timeline-accordion-content img {
+    margin: 16px 0 24px;
+}
+
 .detailed-timeline-accordion-content .detailed-timeline-rich-text:last-child p:last-child {
     margin-bottom: 0;
 }
