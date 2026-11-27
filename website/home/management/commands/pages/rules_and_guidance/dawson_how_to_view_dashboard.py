@@ -65,7 +65,7 @@ class DawsonHowToViewDashboard(PageInitializer):
             "type": "phase",
             "value": {
                 "title": title,
-                "default_to_open": True,
+                "default_to_open": False,
                 "date_range": "",
                 "bubble_content": bubble_content,
                 "instructions": instructions,
