@@ -1,5 +1,6 @@
 import logging
 import uuid
+from html import escape
 
 from wagtail.models import Page
 
@@ -9,7 +10,10 @@ from home.models.utils.execute_script import ExecuteScript
 
 logger = logging.getLogger(__name__)
 
-PAY_GOV_HOME_URL = "https://www.pay.gov/public/home"
+PAY_GOV_AGENCY_FORMS_URL = (
+    "https://www.pay.gov/public/search/agencyforms?agencyFilters=United+States+Tax+Court"
+    "&searchCategory=PAYMENT&searchType=AGENCYPAYMENT&agencyId=1392"
+)
 PAY_GOV_PETITION_FEES_FORM_URL = "https://www.pay.gov/public/form/start/60485840"
 # The superseded Rule 11 is not one of the site's documents, so this stays external.
 RULE_11_URL = "https://ustaxcourt.gov/resources/ropp/Rule-11(superseded).pdf"
@@ -81,7 +85,7 @@ class DawsonHowToPayFilingFee(PageInitializer):
             "type": "phase",
             "value": {
                 "title": title,
-                "default_to_open": True,
+                "default_to_open": False,
                 "date_range": "",
                 "bubble_content": bubble_content,
                 "instructions": instructions,
@@ -96,7 +100,7 @@ class DawsonHowToPayFilingFee(PageInitializer):
         waiver_link = f'<a href="{waiver_url}">Application for Waiver of Filing Fee</a>'
 
         introduction = (
-            f'<p>The Court uses <a href="{PAY_GOV_HOME_URL}">pay.gov</a> for '
+            f'<p>The Court uses <a href="{escape(PAY_GOV_AGENCY_FORMS_URL)}">pay.gov</a> for '
             "processing payments. Filing fees are required to submit a petition. "
             "The Court’s filing fee is $60 and may be paid online, by mail, or "
             f"in person. The fee may be waived by filing an {waiver_link}. Your "

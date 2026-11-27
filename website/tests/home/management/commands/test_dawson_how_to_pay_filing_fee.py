@@ -95,7 +95,7 @@ def test_run_creates_the_guide(user_guides_page):
         "info",
         "number",
     ]
-    assert all(phase.value["default_to_open"] for phase in phases)
+    assert not any(phase.value["default_to_open"] for phase in phases)
     assert all(not phase.value["your_tasks"] for phase in phases)
     assert (
         ExecuteScript.objects.get(command_name=SCRIPT_NAME).execution_status
@@ -110,7 +110,11 @@ def test_introduction_links_pay_gov_and_the_uploaded_waiver_form(user_guides_pag
 
     assert introduction.count("<p>") == 1
     assert "filing fee is $60" in introduction
-    assert '<a href="https://www.pay.gov/public/home">pay.gov</a>' in introduction
+    assert (
+        '<a href="https://www.pay.gov/public/search/agencyforms'
+        "?agencyFilters=United+States+Tax+Court&amp;searchCategory=PAYMENT"
+        '&amp;searchType=AGENCYPAYMENT&amp;agencyId=1392">pay.gov</a>'
+    ) in introduction
     # The waiver form is the uploaded document, so the link stays in this environment.
     assert 'href="/documents/' in introduction
     assert "Application_for_Waiver_of_Filing_Fee" in introduction
