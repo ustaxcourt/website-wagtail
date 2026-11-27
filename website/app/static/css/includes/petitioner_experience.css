@@ -505,3 +505,12 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
         margin-top: 0;
     }
 }
+
+/* Space below screenshots so the text or image that follows isn't flush against them. */
+.dawson-efile-guide .detailed-timeline-rich-text img {
+    margin-bottom: 24px;
+}
+
+.dawson-efile-guide .detailed-timeline-rich-text > img:last-child {
+    margin-bottom: 0;
+}
