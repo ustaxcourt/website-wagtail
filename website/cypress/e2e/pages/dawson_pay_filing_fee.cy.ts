@@ -39,7 +39,10 @@ describe("DAWSON How to pay the filing fee guide", () => {
         cy.get(".detailed-timeline-header-text a")
             .contains("pay.gov")
             .should("have.attr", "href")
-            .and("match", /^https:\/\/www\.pay\.gov\/public\/home$/);
+            .and(
+                "eq",
+                "https://www.pay.gov/public/search/agencyforms?agencyFilters=United+States+Tax+Court&searchCategory=PAYMENT&searchType=AGENCYPAYMENT&agencyId=1392",
+            );
         cy.get(".detailed-timeline-header-text a")
             .contains("Application for Waiver of Filing Fee")
             .should("have.attr", "href")
@@ -97,14 +100,8 @@ describe("DAWSON How to pay the filing fee guide", () => {
         });
     });
 
-    it("opens every phase by default and supports collapse and expand", () => {
+    it("collapses every phase by default and supports expand and collapse", () => {
         cy.get(".detailed-timeline-expand-button")
-            .should("have.attr", "aria-expanded", "true")
-            .and("contain.text", "Collapse All");
-        cy.get(".detailed-timeline-accordion-content").should("be.visible");
-
-        cy.get(".detailed-timeline-expand-button")
-            .click()
             .should("have.attr", "aria-expanded", "false")
             .and("contain.text", "Expand All");
         cy.get(".detailed-timeline-accordion-content.hidden").should("have.length", PHASES.length);
@@ -114,12 +111,16 @@ describe("DAWSON How to pay the filing fee guide", () => {
             .should("have.attr", "aria-expanded", "true")
             .and("contain.text", "Collapse All");
         cy.get(".detailed-timeline-accordion-content").should("be.visible");
-    });
 
-    it("prints the guide with every phase expanded and the button labelled Print", () => {
         cy.get(".detailed-timeline-expand-button")
             .click()
-            .should("have.attr", "aria-expanded", "false");
+            .should("have.attr", "aria-expanded", "false")
+            .and("contain.text", "Expand All");
+        cy.get(".detailed-timeline-accordion-content.hidden").should("have.length", PHASES.length);
+    });
+
+    it("prints the guide with every phase expanded, even when collapsed, and the button labelled Print", () => {
+        cy.get(".detailed-timeline-expand-button").should("have.attr", "aria-expanded", "false");
         cy.window().then((window) => cy.stub(window, "print").as("nativePrint"));
         cy.get(".detailed-timeline-print-button")
             .should(($button) => expect($button.text().trim()).to.equal("Print"))
