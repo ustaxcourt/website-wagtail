@@ -442,6 +442,7 @@
 
 .enhanced-page .detailed-timeline-controls .detailed-timeline-control-button {
     display: inline-flex;
+    margin-bottom: 0px;
 }
 
 .detailed-timeline-print-button-icon,
