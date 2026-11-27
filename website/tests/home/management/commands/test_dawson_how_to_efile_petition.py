@@ -184,6 +184,85 @@ def test_resource_script_updates_an_existing_page_without_replacing_its_body():
 
 
 @pytest.mark.django_db
+def test_failed_resource_script_is_retried_on_the_next_run():
+    home_page, _, _ = create_page_dependencies()
+    page = home_page.add_child(
+        instance=PetitionerExperiencePage(
+            title="How to e-file a Petition",
+            slug=DawsonHowToEfilePetitionPageInitializer.SLUG,
+            body=[],
+        )
+    )
+    page.save_revision().publish()
+    ExecuteScript.create_script(
+        DawsonHowToEfilePetitionPageInitializer.SCRIPT_NAME,
+        execution_status="SUCCESS",
+    )
+    resource_script = DawsonHowToEfilePetitionPageInitializer.RESOURCE_SCRIPT_NAME
+
+    with patch.object(
+        DawsonHowToEfilePetitionPageInitializer,
+        "get_document_url",
+        side_effect=RuntimeError("document missing"),
+    ):
+        with pytest.raises(RuntimeError):
+            DawsonHowToEfilePetitionPageInitializer().run()
+    assert ExecuteScript.objects.get(command_name=resource_script).execution_status == (
+        "FAILURE"
+    )
+
+    with patch.object(
+        DawsonHowToEfilePetitionPageInitializer,
+        "get_document_url",
+        side_effect=lambda filename: f"/documents/{filename}",
+    ):
+        DawsonHowToEfilePetitionPageInitializer().run()
+
+    page.refresh_from_db()
+    assert len(page.resource_cards[0].value["tiles"]) == 5
+    assert sorted(
+        ExecuteScript.objects.filter(command_name=resource_script).values_list(
+            "execution_status", flat=True
+        )
+    ) == ["FAILURE", "SUCCESS"]
+
+
+@pytest.mark.django_db
+def test_resource_script_populates_an_empty_resource_cards_block():
+    home_page, _, _ = create_page_dependencies()
+    page = home_page.add_child(
+        instance=PetitionerExperiencePage(
+            title="How to e-file a Petition",
+            slug=DawsonHowToEfilePetitionPageInitializer.SLUG,
+            body=[],
+            resource_cards=[
+                {
+                    "type": "quick_access_tiles",
+                    "value": {
+                        "tiles_hover_enabled": True,
+                        "icon_position": "desktop_top_mobile_left",
+                        "tiles": [],
+                    },
+                }
+            ],
+        )
+    )
+    page.save_revision().publish()
+    assert page.resource_cards
+    assert not page.has_resource_tiles
+
+    with patch.object(
+        DawsonHowToEfilePetitionPageInitializer,
+        "get_document_url",
+        side_effect=lambda filename: f"/documents/{filename}",
+    ):
+        DawsonHowToEfilePetitionPageInitializer().add_resource_cards()
+
+    page.refresh_from_db()
+    assert len(page.resource_cards[0].value["tiles"]) == 5
+
+
+@pytest.mark.django_db
 def test_info_icon_update_replaces_existing_resource_card_icons():
     home_page, _, _ = create_page_dependencies()
     initializer = DawsonHowToEfilePetitionPageInitializer()

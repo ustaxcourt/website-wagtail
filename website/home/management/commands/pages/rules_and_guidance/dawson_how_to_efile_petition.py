@@ -133,7 +133,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
             raise Page.DoesNotExist(
                 f"Page '{self.SLUG}' not found; cannot add resource cards."
             )
-        if page.resource_cards:
+        if page.has_resource_tiles:
             logger.info("Resource cards already exist on '%s'.", self.TITLE)
             return
 
@@ -577,8 +577,12 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
         self._check_parent()
 
     def _run_once(self, command_name, action, precheck=None):
-        if ExecuteScript.command_exists(command_name):
-            logger.info("Script '%s' already exists. Skipping.", command_name)
+        if ExecuteScript.objects.filter(
+            command_name=command_name,
+            execution_type="ONETIME",
+            execution_status="SUCCESS",
+        ).exists():
+            logger.info("Script '%s' already succeeded. Skipping.", command_name)
             return False
 
         if precheck:
