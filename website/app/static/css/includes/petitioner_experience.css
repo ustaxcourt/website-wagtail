@@ -302,7 +302,7 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
 }
 
 @media (max-width: 479px) {
-    .dawson-efile-guide .detailed-timeline-controls {
+    .detailed-timeline-controls {
         width: 100%;
     }
 }
@@ -401,18 +401,53 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
     line-height: 38px;
 }
 
-/* Keep the resource rail in one column by default, including on mobile and desktop. */
-.petitioner-resource-rail .quick-access-tiles-grid[data-max-columns] {
-    grid-template-columns: 1fr;
-    row-gap: 16px;
-    margin: 15px 0 0;
+/* Resources, then Side Cards, in one list. One column on mobile and desktop. */
+.petitioner-resource-items {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 15px;
 }
 
-/* Tablet resource cards sit below the timeline in two columns. */
+.petitioner-resource-items > [role="listitem"] {
+    display: flex;
+    flex-direction: column;
+}
+
+.petitioner-resource-items > [role="listitem"] > .side-card {
+    flex: 1;
+}
+
+/* Tablet: Resources in two columns; each Side Card takes its own full row, so a
+   leftover odd Resource keeps its own row instead of sharing one with a Side Card. */
 @media (min-width: 601px) and (max-width: 1023px) {
-    .petitioner-resource-rail .quick-access-tiles-grid[data-max-columns] {
+    .petitioner-resource-items {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .petitioner-resource-items > .petitioner-resource-side-card-item {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Side cards in the rail keep their blue color and match the Figma spacing. */
+.petitioner-resource-items .side-card {
+    padding: 24px;
+    gap: 8px;
+    border-radius: 5px;
+}
+
+.petitioner-resource-items .side-card__title {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.petitioner-resource-items .side-card__intro {
+    line-height: 1.3;
+}
+
+.petitioner-resource-items .side-card__links {
+    margin-top: 16px;
 }
 
 /* Icon beside the title, left-aligned, at every width. */
@@ -455,7 +490,7 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
     text-align: left;
 }
 
-.petitioner-resource-rail .quick-access-tile .tile-description {
+.petitioner-resource-rail .quick-access-tile.icon-desktop_top_mobile_left .tile-description {
     grid-column: 2;
     grid-row: 2;
     margin-top: 4px;

@@ -35,7 +35,7 @@ describe('Enhanced Standard Page Edit Validation', () => {
     let componentsExpectedToFind: string[] = ["Heading", "Heading 2", "Heading 3", "Heading 4", "Paragraph", "Indented Paragraph", "Snippet", "Button",
         "Horizontal Rule", "Iframe", "Alert", "Image", "Photo + Text", "Table", "Unstyled table", "Enhanced Table", "List", "List of Links",
         "Question and Answer", "Columns", "Embedded video", "Card Set", "Accordion Block", "Callout Block", "Grid", "Card Tiles", "Quick Access Tiles",
-        "Icon Header", "Summary Timeline", "Detailed Timeline", "Hero Section", "Printable Section"
+        "Icon Header", "Summary Timeline", "Detailed Timeline", "Hero Section", "Printable Section", "Section Header"
     ];
     //Find the element that represents the menu that appears when the "+" button is clicked
     cy.get('div#downshift-1-menu').within(() => {

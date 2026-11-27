@@ -225,6 +225,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "value": {
                     "title": "Gather Your Information and Documents",
                     "default_to_open": True,
+                    "bubble_content": "number",
                     "instructions": (
                         "<p>Before starting your case in DAWSON, have the following ready:</p>"
                         "<ul>"
@@ -296,6 +297,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "value": {
                     "title": "Create a DAWSON Account",
                     "default_to_open": True,
+                    "bubble_content": "number",
                     "instructions": (
                         "<p>To file electronically, create a DAWSON account.</p>"
                         "<ol><li>Go to DAWSON.</li>"
@@ -340,6 +342,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "value": {
                     "title": "Start Your Case and File Your Petition",
                     "default_to_open": True,
+                    "bubble_content": "number",
                     "instructions": (
                         "<p>After signing in to DAWSON:</p>"
                         "<ol><li>Select Create a Case.</li>"
@@ -392,6 +395,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "value": {
                     "title": "Receive Your Docket Number and Pay the Filing Fee",
                     "default_to_open": True,
+                    "bubble_content": "number",
                     "instructions": (
                         "<p>Once your petition is submitted, the Court will assign a docket number.</p>"
                         "<p>Use the docket number to pay the <strong>$60 Petition Filing Fee</strong> through Pay.gov or follow the instructions for mailing payment. Save your docket number and payment confirmation for your records.</p>"
@@ -436,6 +440,7 @@ class DawsonHowToEfilePetitionPageInitializer(PageInitializer):
                 "value": {
                     "title": "Manage Your Case in DAWSON",
                     "default_to_open": True,
+                    "bubble_content": "number",
                     "instructions": (
                         "<p>After filing, use DAWSON to:</p>"
                         "<ul><li>View case activity and documents</li>"

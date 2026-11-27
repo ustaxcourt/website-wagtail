@@ -40,7 +40,7 @@
             </div>
             {% endwith %}
         {% endif %}
-        {% if page.resource_cards %}
+        {% if page.has_resource_tiles %}
             {# Title, intro and body share the left column so the Resources column sits beside them. #}
             <div class="petitioner-resource-breadcrumb">
                 {% include "includes/petitioner_breadcrumb.html" %}
@@ -58,9 +58,21 @@
                 <section class="grid-col-12 desktop:grid-col-3 petitioner-resource-rail"
                          aria-labelledby="petitioner-resources-heading">
                     <h2 id="petitioner-resources-heading" class="petitioner-resource-rail-heading">Resources</h2>
-                    {% for resource_block in page.resource_cards %}
-                        {% include "quick_access_tiles_block.html" with block=resource_block %}
-                    {% endfor %}
+                    {# One flat list so Resources, then Side Cards, flow together in the tablet's two columns. #}
+                    <div class="petitioner-resource-items"
+                         role="list"
+                         aria-labelledby="petitioner-resources-heading">
+                        {% for resource_block in page.resource_cards %}
+                            {% for tile in resource_block.value.tiles %}
+                                {% include "quick_access_tile_block.html" with value=tile icon_position=resource_block.value.icon_position tiles_hover_enabled=resource_block.value.tiles_hover_enabled %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for side_card in page.side_cards.all %}
+                            <div role="listitem" class="petitioner-resource-side-card-item">
+                                {% include "includes/side_card.html" with side_card=side_card %}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </section>
             </div>
         {% else %}
