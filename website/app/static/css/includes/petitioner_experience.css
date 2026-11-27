@@ -382,6 +382,13 @@ body:has(.dawson-efile-guide) .definitions-btn .button-contents {
     line-height: 38px;
 }
 
+@media (max-width: 768px) {
+    .dawson-efile-guide .petitioner-resource-main .petitioner-page-heading h1 {
+        font-size: 24px;
+        line-height: 32px;
+    }
+}
+
 .petitioner-resource-layout {
     margin-top: 15px;
 }

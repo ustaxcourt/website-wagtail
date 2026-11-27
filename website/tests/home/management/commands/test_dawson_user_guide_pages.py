@@ -88,6 +88,12 @@ class TestDawsonUserGuidePages(TestCase):
             title="DAWSON User Guides", slug="dawson-user-guides"
         )
         home_page.add_child(instance=self.user_guides_page)
+        home_page.add_child(
+            instance=Page(
+                title="Prepare to File",
+                slug="petitioners-prepare-to-file",
+            )
+        )
 
         # Most DAWSON pages attach this navigation ribbon.
         NavigationRibbon.objects.create(name="Guidance for Petitioners Ribbon")
