@@ -89,7 +89,7 @@ def test_run_creates_the_guide(user_guides_page):
         "number",
         "info",
     ]
-    assert all(phase.value["default_to_open"] for phase in phases)
+    assert not any(phase.value["default_to_open"] for phase in phases)
     assert all(not phase.value["your_tasks"] for phase in phases)
     assert (
         ExecuteScript.objects.get(command_name=SCRIPT_NAME).execution_status
