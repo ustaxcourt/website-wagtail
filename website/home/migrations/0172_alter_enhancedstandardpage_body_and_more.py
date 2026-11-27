@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("home", "0167_petitionerexperiencepage_resource_cards_pe"),
+        ("home", "0171_migrate_show_info_icon_to_bubble_content"),
     ]
 
     operations = [
