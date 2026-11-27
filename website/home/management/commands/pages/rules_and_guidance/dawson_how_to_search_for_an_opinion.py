@@ -23,7 +23,7 @@ ACCESS_IMAGES_SCRIPT_NAME = (
 RESOURCES_SCRIPT_NAME = "WAG-1446: Add resource cards to the opinion guide"
 RESOURCE_ICON_FILENAME = "DAWSON_icon.svg"
 BREADCRUMB_TITLE = "DAWSON User Guides & Electronic Filing Instructions"
-IMAGE_FILENAME = "opinion-limited-search.jpg"
+IMAGE_FILENAME = "opinion-limited-search.png"
 IMAGE_TITLE = "DAWSON Opinion Limited Search"
 IMAGE_ALT = "DAWSON Opinion search results showing the 5,000 result limit."
 PUBLIC_IMAGE_FILENAME = "opinion-search-public.jpg"
@@ -38,7 +38,7 @@ PRACTITIONER_IMAGE_ALT = (
     "Practitioner dashboard with an arrow pointing to the Advanced Search link "
     "in the Search for a Case panel."
 )
-PRACTITIONER_OPINION_IMAGE_FILENAME = "opinion-search.jpg"
+PRACTITIONER_OPINION_IMAGE_FILENAME = "opinion-search-practitioner.png"
 PRACTITIONER_OPINION_IMAGE_TITLE = "DAWSON Opinion Search Practitioner"
 PRACTITIONER_OPINION_IMAGE_ALT = (
     "DAWSON Search page for a logged-in practitioner with the Opinion tab selected."
