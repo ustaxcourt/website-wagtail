@@ -45,7 +45,7 @@ class InternshipProgramsPageInitializer(PageInitializer):
                                 },
                                 {
                                     "type": "paragraph",
-                                    "value": "The Summer Internship Program provides significant exposure to the inner workings of the U.S. Tax Court. Information Technology interns will provide one-on-one customer service to Judges and Court staff in a professional setting within the Court’s headquarters in Washington, D.C.",
+                                    "value": "The Summer Internship Program provides significant exposure to the inner workings of the U.S. Tax Court. Information Technology interns will provide one-on-one customer service to judges and Court staff in a professional setting within the Court’s headquarters in Washington, D.C.",
                                 },
                             ],
                             "paragraph": """Starting salary is dependent upon education and availability of funds. Paid interns do not receive paid leave or other employee benefits.
