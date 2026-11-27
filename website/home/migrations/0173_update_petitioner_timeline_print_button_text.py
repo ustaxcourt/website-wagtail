@@ -34,7 +34,7 @@ def _convert_stream_json(raw):
     return data if _set_print_button_text(data) else None
 
 
-def migrate_show_info_icon_to_bubble_content(apps, schema_editor):
+def migrate_print_button_text_for_petitioners_timeline_page(apps, schema_editor):
     EnhancedStandardPage = apps.get_model("home", "EnhancedStandardPage")
     Revision = apps.get_model("wagtailcore", "Revision")
 
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(
-            migrate_show_info_icon_to_bubble_content,
+            migrate_print_button_text_for_petitioners_timeline_page,
             migrations.RunPython.noop,
         ),
     ]
