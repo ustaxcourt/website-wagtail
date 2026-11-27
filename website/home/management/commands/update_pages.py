@@ -44,6 +44,10 @@ from home.management.commands.redirects.petitioners_redirect_initializer import 
     PetitionersRedirectInitializer,
 )
 
+from home.management.commands.pages.rules_and_guidance.sandbox_dawson_guides_fixup import (
+    SandboxDawsonGuidesFixup,
+)
+
 # Ensure Home Page is initialized first
 pages_to_update = (
     about_the_court_pages_to_update
@@ -71,6 +75,7 @@ pages_to_update = (
         DawsonHowToUpdateContactInfo,
         DawsonHowToViewDashboard,
         DawsonUserGuidesPageInitializer,
+        SandboxDawsonGuidesFixup,
     ]
     + [PetitionersRedirectInitializer]
     + [NavigationRibbonUpdater]
