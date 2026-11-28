@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 PAGE_SLUG = "dawson-troubleshoot-file-uploads"
 CREATE_COMMAND_NAME = "WAG-1450: How to troubleshoot file upload errors"
-RESOURCES_COMMAND_NAME = (
-    "WAG-1484: Add resource cards to How to troubleshoot file upload errors"
+REMOVE_RESOURCES_COMMAND_NAME = (
+    "Remove resource cards from How to troubleshoot file upload errors"
 )
 HIDE_TITLE_COMMAND_NAME = (
     "WAG-1484: Hide duplicate timeline title on How to troubleshoot file upload errors"
@@ -19,24 +19,6 @@ HIDE_TITLE_COMMAND_NAME = (
 RESTORE_BODY_COMMAND_NAME = (
     "WAG-1484: Restore missing timeline body on How to troubleshoot file upload errors"
 )
-PDF_ICON_FILENAME = "PDF_icon.svg"
-
-# (title, link) for the Resources column, in display order.
-troubleshoot_file_uploads_resources = [
-    (
-        "Adobe Convert files to PDFs User Guide",
-        "https://helpx.adobe.com/acrobat/desktop/create-documents/create-pdfs/convert-to-pdf.html",
-    ),
-    (
-        "Adobe Combine files into one PDF User Guide",
-        "https://helpx.adobe.com/acrobat/desktop/edit-documents/combine-files/combine-files.html",
-    ),
-    (
-        "Adobe Remove passwords from PDF User Guide",
-        "https://helpx.adobe.com/acrobat/desktop/protect-documents/protect-with-passwords/remove-passwords-from-pdfs.html",
-    ),
-]
-
 # Same images (and titles) as the DAWSON FAQs page, so existing uploads are reused.
 troubleshoot_file_uploads_images = [
     {
@@ -97,43 +79,6 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         home_page = Page.objects.get(slug="home")
         self.create_page_info(home_page)
 
-    def build_resource_cards(self):
-        icon = self.load_document_from_documents_dir(
-            subdirectory=None,
-            filename=PDF_ICON_FILENAME,
-            title=PDF_ICON_FILENAME,
-        )
-        return [
-            {
-                "type": "quick_access_tiles",
-                "value": {
-                    "tiles_hover_enabled": True,
-                    "icon_position": "desktop_top_mobile_left",
-                    "tiles": [
-                        {
-                            "type": "item",
-                            "value": {
-                                "title": title,
-                                "description": "",
-                                "icon": {"svg_file": icon.pk},
-                                "content_alignment": "left",
-                                "link": [
-                                    {
-                                        "type": "external_url",
-                                        "value": url,
-                                        "id": str(uuid.uuid4()),
-                                    }
-                                ],
-                            },
-                            "id": str(uuid.uuid4()),
-                        }
-                        for title, url in troubleshoot_file_uploads_resources
-                    ],
-                },
-                "id": str(uuid.uuid4()),
-            }
-        ]
-
     def hide_timeline_title(self):
         """The page heading already shows the title, so hide the timeline's copy."""
         page = PetitionerExperiencePage.objects.filter(slug=PAGE_SLUG).first()
@@ -178,17 +123,17 @@ class DawsonTroubleshootFileUploads(PageInitializer):
         logger.info(f"Restoring the missing body on page '{PAGE_SLUG}'.")
         self.create_page_info(Page.objects.get(slug="home"), update_existing=True)
 
-    def add_resource_cards(self):
-        """Adds the Resources column to a page created before it existed."""
+    def remove_resource_cards(self):
+        """Clears the Resources column from a page created while it still had one."""
         page = PetitionerExperiencePage.objects.filter(slug=PAGE_SLUG).first()
         if page is None:
-            logger.warning(f"Page '{PAGE_SLUG}' not found; no resource cards added.")
+            logger.warning(f"Page '{PAGE_SLUG}' not found; no resource cards removed.")
             return
-        if page.resource_cards:
-            logger.info(f"Page '{PAGE_SLUG}' already has resource cards.")
+        if not page.resource_cards:
+            logger.info(f"Page '{PAGE_SLUG}' has no resource cards.")
             return
 
-        page.resource_cards = self.build_resource_cards()
+        page.resource_cards = []
         page.save_revision().publish()
 
     def create_page_info(self, home_page, update_existing=False):
@@ -240,7 +185,6 @@ class DawsonTroubleshootFileUploads(PageInitializer):
             search_description=title,
             breadcrumb=breadcrumb,
             show_floating_definitions_button=True,
-            resource_cards=self.build_resource_cards(),
             body=[
                 {
                     "type": "detailed_timeline",
@@ -414,7 +358,7 @@ class DawsonTroubleshootFileUploads(PageInitializer):
             new_page.save_revision().publish()
 
     def run(self):
-        """Create the Dawson How to troubleshoot file upload errors page and its resource cards"""
+        """Create the Dawson How to troubleshoot file upload errors page"""
         page = Page.objects.filter(slug=PAGE_SLUG).first()
         if page and page.has_unpublished_changes:
             logger.warning(
@@ -423,7 +367,9 @@ class DawsonTroubleshootFileUploads(PageInitializer):
             return 0
 
         created = self._run_once(CREATE_COMMAND_NAME, self.create, self._check_parent)
-        updated = self._run_once(RESOURCES_COMMAND_NAME, self.add_resource_cards)
+        updated = self._run_once(
+            REMOVE_RESOURCES_COMMAND_NAME, self.remove_resource_cards
+        )
         restored = self._run_once(RESTORE_BODY_COMMAND_NAME, self.restore_missing_body)
         retitled = self._run_once(HIDE_TITLE_COMMAND_NAME, self.hide_timeline_title)
         if not (created or updated or restored or retitled):
